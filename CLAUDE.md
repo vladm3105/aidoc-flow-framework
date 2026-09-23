@@ -135,7 +135,8 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 
 After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
 
-**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` or `python scripts/chg_lint.py <chg-file.yaml>` to check:
+**Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
@@ -143,6 +144,7 @@ After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
 
 **When to run the linter:**
+
 1. **Pre-commit** — After creating/updating a CHG, before `git commit`
 2. **Pre-implementation** — Before writing ANY code for a CHG
 3. **Pre-merge** — Before merging a PR that modifies CHG files
@@ -173,7 +175,7 @@ Before ANY write/edit call to code files or governance files:
 Recommended flow for non-trivial changes — plan → review → implement →
 verify → land:
 
-1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
+1. **Plan** into `plans/` (a `plans/<NAME>-PLAN.md` plan) before touching
    code.
 2. **Two-cycle gap review (mandatory, BEFORE the plan PR opens)** —
    once a plan draft exists, it MUST complete at least **two full review
@@ -627,7 +629,7 @@ The `aidoc-flow-ci/sync/check-drift.sh` script (run as a pre-commit
 hook or periodic GitHub Action) compares each workflow file against
 the canonical template at the pinned `ci/vX.Y.Z` tag and reports any
 diff as a warning. **Never blocks the commit or the PR.** Same shape
-as the existing `scripts/check-docs-updated.sh` doc-currency
+as the existing `hooks/check-docs-updated.sh` doc-currency
 reminder — see "## Durable conventions" item 3 above. Contributor
 decides: bring back to canonical, intentionally keep, or push the
 divergence upstream as a new shared default.
@@ -825,9 +827,8 @@ fresh to have settled, and never repeats one that is already here.
   **not** `archived (archive/tools/)` (which vendors `framework/` subtrees plus
   three named tools files and does not touch `sdd_doc_lint`).
 - **Propagation order for a framework version bump is load-bearing:**
-  `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
-  `archived (archive/tools/)`. Reversing it lands 51 drifted bundled playbooks
-  and a red bundle guard.
+  `framework/VERSION` → `hooks/sync-version-refs.sh` → **then** the rest of
+  the change (`framework/archive/` excluded — audit trail, never swept).
 - **The plugin and Hermes `CLAUDE.md` current-state tokens self-heal; the
   framework-spec token does not.** Since #389, `sync-version-refs.sh` detects the
   previous plugin and Hermes values **from `CLAUDE.md` itself**, so a stale token is

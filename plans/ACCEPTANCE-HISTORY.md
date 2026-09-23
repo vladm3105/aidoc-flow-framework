@@ -1,4 +1,9 @@
-# Acceptance Testing — methodology
+# Acceptance Testing — methodology (HISTORY)
+
+> Moved from `tests/ACCEPTANCE.md` (CHG-08 #670). Plugin-era methodology for a
+> deleted system (Claude Code plugin, `examples/<NAME>`, `test-acceptance.sh`);
+> preserved verbatim as the audit record. Live methodology:
+> `tests/acceptance/README.md`. Nothing below is executed.
 
 The framework's pre-deployment acceptance test exercises every active
 plugin surface element against a named example's seed. The chain it

@@ -86,9 +86,7 @@ def _leading_version_releases(text: str) -> set[str]:
 #: (CLEANUP-001): the platform streams are gone with archive/platforms/. The
 #: framework stream reads framework/CHANGELOG.md — the spec's own changelog —
 #: not the project CHANGELOG.md (project milestones, different stream).
-STREAMS = (
-    ("framework", "framework/VERSION", "framework/CHANGELOG.md", _framework_releases),
-)
+STREAMS = (("framework", "framework/VERSION", "framework/CHANGELOG.md", _framework_releases),)
 
 #: Phantoms that already shipped and are permanent by decision. Each entry needs
 #: the reason, because an unexplained allowlist entry is indistinguishable from a

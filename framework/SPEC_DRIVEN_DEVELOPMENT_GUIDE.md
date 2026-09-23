@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.0 |
+| Framework Version | 0.59.1 |
 
 
 ## Overview
@@ -46,8 +46,9 @@ through the scoped bugfix vehicle (**F4**, parent immutable), and small direct r
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer.
-Deeper lineage is transitive (one hop per layer, or a trace-walk query — the
-reference implementation ships `tools/trace_walk.py`, outside the spec):
+Deeper lineage is transitive (one hop per layer, or a trace-walk query over the
+`@`-tag graph — no such script ships in this repo; the traversal is the
+normative capability, outside the spec):
 
 ```
 BRD:   —
@@ -82,7 +83,7 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 | Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
 | Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
 | Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
-| Governance workflow | CHG overlay (L9) | Project-level control outside layer numbering |
+| Governance workflow | CHG overlay (L9) | Project-level control outside the sequential lifecycle (operational namespace 09) |
 
 ## Development vs Deployment Separation
 

@@ -21,11 +21,6 @@ governance:
           - "CLAUDE.md"
           - "docs/PROJECT.md"
 
-framework:
-  - changed-files:
-      - any-glob-to-any-file:
-          - "framework/**"
-
 linter:
   - changed-files:
       - any-glob-to-any-file:

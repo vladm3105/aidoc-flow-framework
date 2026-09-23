@@ -110,20 +110,14 @@ class EntryMetadataTests(unittest.TestCase):
             chg = _with_sdd_step(_base_chg(), "Governance docs", None, "0.54.0")
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L007" in e and "archive_path" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L007" in e and "archive_path" in e for e in errors), errors)
 
     def test_null_new_version_is_error(self):
         with tempfile.TemporaryDirectory() as tmp:
-            chg = _with_sdd_step(
-                _base_chg(), "Governance docs", "framework/archive/CHG-99/x", None
-            )
+            chg = _with_sdd_step(_base_chg(), "Governance docs", "framework/archive/CHG-99/x", None)
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L007" in e and "new_version" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L007" in e and "new_version" in e for e in errors), errors)
 
     def test_iplan_create_needs_no_archive(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -169,9 +163,7 @@ class TraceabilityTests(unittest.TestCase):
                 ]
             },
         }
-        (root / "03_EARS" / "EARS-01_x.yaml").write_text(
-            yaml.safe_dump(ears), encoding="utf-8"
-        )
+        (root / "03_EARS" / "EARS-01_x.yaml").write_text(yaml.safe_dump(ears), encoding="utf-8")
         return root
 
     def _citing_chg(self, cited_id: str):
@@ -183,9 +175,7 @@ class TraceabilityTests(unittest.TestCase):
             "framework/archive/CHG-99/03_EARS/EARS-01_x.yaml",
             "1.1",
         )
-        chg["change_control"]["supersedes"] = [
-            "framework/archive/CHG-99/03_EARS/EARS-01_x.yaml"
-        ]
+        chg["change_control"]["supersedes"] = ["framework/archive/CHG-99/03_EARS/EARS-01_x.yaml"]
         return chg
 
     def test_cited_id_resolves_in_tree(self):
@@ -280,9 +270,7 @@ class ScopePhaseTests(unittest.TestCase):
             )
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, warnings, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L003" in e and "no phase" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L003" in e and "no phase" in e for e in errors), errors)
             self.assertEqual([w for w in warnings if "CHG-L003" in w], [])
 
     def test_sdd_title_with_code_word_is_green(self):
@@ -338,13 +326,9 @@ class IplanReferenceTests(unittest.TestCase):
 
     def test_missing_reference_is_gov019_error(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = _write(
-                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._stripped())
-            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._stripped()))
             errors, _, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L004" in e and "GOV-019" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L004" in e and "GOV-019" in e for e in errors), errors)
 
     def test_bugfix_iplan_id_in_artifacts_counts(self):
         # CHG-05 interplay: a bugfix-flavored doc referencing its IPLAN via
@@ -396,22 +380,16 @@ class FlowMisclassificationTests(unittest.TestCase):
 
     def test_c1_direct_shape_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = _write(
-                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._direct_chg())
-            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._direct_chg()))
             errors, _, passes = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L013" in e], [])
             self.assertTrue(any("CHG-L013" in p for p in passes), passes)
 
     def test_unscoped_code_manifest_is_error(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = _write(
-                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._unscoped_chg())
-            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._unscoped_chg()))
             errors, _, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L013" in e and "F2" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L013" in e and "F2" in e for e in errors), errors)
 
     def test_feedback_without_iplan_names_bugfix_vehicle(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -419,9 +397,7 @@ class FlowMisclassificationTests(unittest.TestCase):
             chg["change_control"]["change_source"] = "feedback"
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
-            self.assertTrue(
-                any("CHG-L013" in e and "F4" in e for e in errors), errors
-            )
+            self.assertTrue(any("CHG-L013" in e and "F4" in e for e in errors), errors)
 
 
 if __name__ == "__main__":

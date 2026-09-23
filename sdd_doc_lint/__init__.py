@@ -282,7 +282,9 @@ _FRONTMATTER_FENCE = re.compile(r"^---\s*$")
 _SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
 _HEADING_NUMBER_PREFIX = re.compile(r"^\d+(?:\.\d+)*\.?\s*")
 # Candidate IDs whose prefix is a known artifact (avoids flagging unrelated tokens).
-_KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN"
+# CHG + EVAL joined the set with the triple-lock fill (CHG-08 #671 D5):
+# layer detection and ID patterns must see the artifacts the registry ships.
+_KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN|CHG|EVAL"
 _DOC_ID = re.compile(rf"\b({_KNOWN})-([A-Za-z0-9]+)\b")
 _ELEM_ID = re.compile(rf"\b({_KNOWN})((?:\.[A-Za-z0-9]+)+)\b")
 
@@ -528,7 +530,13 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
         return {}
     out: dict[str, int] = {}
     for key, body in doc.items():
-        if isinstance(body, dict) and isinstance(body.get("_size_target"), int):
+        # Sections without an int `_size_target` (the whole CHG template,
+        # EVAL `traceability`) fall back to the default budget — requiredness
+        # comes from the section's presence as a dict, not from the size
+        # marker (CHG-08 #670 D5: marker-gating left CHG STRUCT01-unenforced).
+        if isinstance(body, dict) and (
+            isinstance(body.get("_size_target"), int) or key != "metadata"
+        ):
             # CLEANUP-PR-D item 15: respect `_required: false` markers
             # (e.g. PRD's component_decomposition is OPTIONAL — present
             # only when downstream cites @threshold). Sections marked
@@ -545,7 +553,8 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
             # `doc-<layer>-audit` SKILL (which does parse the artifact).
             if isinstance(body.get("_required_when_subtype"), list):
                 continue
-            out[key] = body["_size_target"]
+            target = body.get("_size_target")
+            out[key] = target if isinstance(target, int) else _SECTION_TARGET_WORDS
     return out
 
 
@@ -3036,8 +3045,7 @@ def _check_eval_yaml(corpus: list[tuple[str, str]]) -> list[Finding]:
                             rel,
                             line,
                             "EVAL-ID-001",
-                            f"test case id '{tc_id}' does not match "
-                            f"EVAL.NN.SS.xxxx format",
+                            f"test case id '{tc_id}' does not match EVAL.NN.SS.xxxx format",
                             severity="error",
                         )
                     )

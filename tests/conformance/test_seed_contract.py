@@ -10,13 +10,11 @@ Part A of SEED-ABSORPTION-001. Guards two surfaces:
   use only the three legal dispositions.
 """
 
-import sys
 import unittest
 
 import yaml
-from _spec import FRAMEWORK, REPO_ROOT
+from _spec import FRAMEWORK
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _check_seed_disposition  # noqa: E402
 
 GOVERNANCE = FRAMEWORK / "governance"
@@ -105,13 +103,9 @@ class BrdSeedDispositionCarrier(unittest.TestCase):
     def test_mvp_skeleton_is_tombstone(self):
         """The retired MVP file is a tombstone pointer, not a template (#666)."""
         doc = yaml.safe_load(BRD_MVP_TEMPLATE.read_text(encoding="utf-8")) or {}
-        self.assertEqual(
-            set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}"
-        )
+        self.assertEqual(set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}")
         self.assertEqual(doc["tombstone"]["status"], "retired")
-        self.assertEqual(
-            doc["tombstone"]["canonical_template"], "./BRD-TEMPLATE.yaml"
-        )
+        self.assertEqual(doc["tombstone"]["canonical_template"], "./BRD-TEMPLATE.yaml")
 
 
 _BRD_HEAD = (

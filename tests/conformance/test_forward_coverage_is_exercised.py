@@ -20,13 +20,11 @@ the blind state persist — a blind gate and a satisfied gate are both quiet.
 
 from __future__ import annotations
 
-import sys
 import unittest
 from pathlib import Path
 
 from _spec import REPO_ROOT
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import lint_path, scan_fr_elements  # noqa: E402
 
 FIXTURES = REPO_ROOT / "tests" / "acceptance" / "fixtures"

@@ -21,13 +21,12 @@ See [`docs/REPO_STRUCTURE.md`](docs/REPO_STRUCTURE.md) for the full layout. The 
 
 ```bash
 # Conformance (framework spec invariants)
-cd tests/conformance && python3 -m unittest discover -q
+python3 -m unittest discover -s tests/conformance -q
 
-# Unit + per-layer + packaging + release (all tiers)
-cd .. && python3 -m unittest discover -s unit -q
-python3 -m unittest discover -s acceptance/deterministic -q
-python3 -m unittest discover -s packaging -q
-python3 -m unittest discover -s release -q
+# Linter, unit, acceptance (deterministic)
+python3 -m unittest discover -s sdd_doc_lint/tests -q
+python3 -m unittest discover -s tests/unit -q
+python3 -m unittest discover -s tests/acceptance/deterministic -q
 ```
 
 ## Documentation discipline — update docs of record per PR
@@ -38,19 +37,19 @@ Two pre-commit hooks automate the discipline:
 
 | Hook | Script | What it does |
 |---|---|---|
-| `sync-version-refs` | `scripts/sync-version-refs.sh` | **Mechanical auto-sync.** When a `VERSION` file changes, propagates the new version string into every doc-of-record that quotes it (`plugin.json`, `marketplace.json`, 52 × SKILL.md frontmatter, READMEs, PARITY.md current-state row, …). Re-stages on its own; idempotent. Silent on commits that don't bump a version. |
-| `check-docs-updated` | `scripts/check-docs-updated.sh` | **Semantic reminder.** Runs on every commit. When the staged change touches code/spec/skills but no document-of-record, prints a checklist of likely-stale docs. **Warning only — never blocks the commit.** Authors decide whether to update or proceed (false-positive friendly). |
+| `sync-version-refs` | `hooks/sync-version-refs.sh` | **Mechanical auto-sync.** When `framework/VERSION` changes, propagates the new version string into every doc-of-record that quotes it (playbook frontmatter, `framework_version` metadata, document-control rows). Re-stages on its own; idempotent. Silent on commits that don't bump a version. |
+| `check-docs-updated` | `hooks/check-docs-updated.sh` | **Semantic reminder.** Runs on every commit. When the staged change touches code/spec and no document-of-record, prints a checklist of likely-stale docs. **Warning only — never blocks the commit.** Authors decide whether to update or proceed (false-positive friendly). |
 
-Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (CHANGELOG entry, ROADMAP bullet, handoff narrative, Hermes-backlog entry) that the author must write themselves.
+Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (CHANGELOG entry, decision rationale, handoff narrative) that the author must write themselves.
 
 ### Documents of record — what to update for which change
 
 | Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
 |---|---|---|---|
-| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Recently shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
-| **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
-| **Platform follow-on / defect discovered** | Open GitHub issue with label `platform: <name>` | — | issue reproduction, blast radius, fix shape |
-| **Session milestone reached** | `plans/HANDOFF.md` prepend new current-state header | — | handoff narrative (PRs landed, next item) |
+| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]` | playbook frontmatter, `framework_version` metadata, document-control rows | DECISIONS entry; CHANGELOG entry |
+| **User-visible policy/rule** | `AGENTS.md` §Governance Gate; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
+| **Defect discovered** | Open GitHub issue with reproduction, blast radius, fix shape | — | issue body |
+| **Session milestone reached** | handoff narrative in PR description | — | handoff narrative (PRs landed, next item) |
 | **New advisory (warning) lint rule** | the affected manifests under `tests/acceptance/expected_warnings/` — the rule fires on the acceptance fixtures and reddens the tier until each new warning is pinned with a `reason` (or the fixture is cleared) | — | `reason` prose naming what would clear each pinned warning |
 | **Trivial / typo / internal refactor** | (none) | — | — |
 
@@ -60,8 +59,8 @@ If your change spans categories, do all the updates. The hooks above flag misses
 
 `check-docs-updated` prints a WARNING when:
 
-- Any of `framework/**`, `tools/**` is staged
-- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`) is staged
+- Any of `framework/**`, `sdd_doc_lint/**`, `hooks/**`, `tests/**` is staged
+- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `AGENTS.md`, `framework/CHANGELOG.md`, `framework/governance/DECISIONS.md`) is staged
 
 Common false positives (warning is correct to ignore):
 
@@ -86,7 +85,7 @@ silently reddened it (`REFGRAN01`, then `ACC01`). Pin the new warnings with a
 
 ## How to add a governance file or change a framework spec section
 
-The framework spec is GATE-SPEC governed. Any change under `framework/` (the spec subtree) requires bumping `framework/VERSION` and going through the conformance suite. See [`docs/PROJECT.md`](docs/PROJECT.md) §6 (Change Management).
+The framework spec is GATE-SPEC governed. Any change under `framework/` (the spec subtree) requires bumping `framework/VERSION` and going through the conformance suite. See `AGENTS.md` → Governance Gate.
 
 ## Secret scanning — where each pass runs
 
@@ -94,7 +93,7 @@ The framework spec is GATE-SPEC governed. Any change under `framework/` (the spe
 |---|---|---|---|
 | `pre-commit` (local) | `detect-secrets` | staged files | `.secrets.baseline` |
 | CI (`pre-commit.yml`) | `detect-secrets`, `detect-private-key` | full tree (`--all-files`) | `.secrets.baseline`, `.pre-commit-config.yaml` |
-| CI (`secret-scan.yml`) | `gitleaks` | **full git history** (`gitleaks git`, canon `ci/v2.x`) | `.gitleaks.toml` |
+| CI (`secret-scan.yml`) | `gitleaks` | **full git history** (`gitleaks git`) | `.gitleaks.toml` |
 
 There is deliberately **no local gitleaks hook** ([#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)): the upstream hook builds gitleaks from source and needs Go ≥ 1.21, and the failure lands in hook installation, aborting the commit before any other hook runs. Because CI scans history rather than the working tree, a clean local tree can still fail the gate — validate a suspected finding with `git log -p` / `git grep` over history, and record justified suppressions in `.gitleaks.toml`. See [`SECURITY.md`](SECURITY.md) for full details on automated security checks.
 

@@ -84,7 +84,7 @@ ARCHIVE_EXCL="archive/CHG-"
 # release on every MINOR bump (#663) — the conformance pin
 # (tests/conformance/test_sync_version_refs.py) fails if a swept-form
 # literal in the tree is missing from this list.
-OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0"
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0"
 
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
 while IFS= read -r f; do

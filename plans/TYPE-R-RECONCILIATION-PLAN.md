@@ -27,6 +27,7 @@ Formalize the **Type-R (Reconciliation) change flow**: when a verified working c
 | 6 | MINOR bump + fanout | `framework/VERSION` `0.54.0→0.55.0`, `CHANGELOG.md`, `framework/CHANGELOG.md` (mechanical pin sweep via `hooks/sync-version-refs.sh`) | release |
 
 **Out (explicitly not in this change):**
+
 - `GOVERNANCE_RULES.md` as a framework file — rejected; project manual, violates engine-agnostic spec + `EXPECTED_FILES` pin in `test_governance.py`.
 - New lint rules or `chg_lint.py` checks — `change_source` is not enum-validated by the linter today; docs + template only. A follow-up may add an advisory check.
 - `GATE_ERROR_CATALOG.md` new codes — no new blocking checks, so no catalog entries.
@@ -54,6 +55,7 @@ Formalize the **Type-R (Reconciliation) change flow**: when a verified working c
 ### Pass 1 — 2026-09-21T00:00:00Z (self-review vs codebase)
 
 Gaps found:
+
 1. Emergency vs Type-R disambiguation missing — donor lists "emergency operational bugfixes" as a Type-R trigger, which overlaps the framework's Emergency level and could route hotfixes around the post-mortem. Patched Decision B: Emergency-qualifying work must use Emergency; Type-R is non-emergency empirical work only. Spec text must carry this.
 2. Sync script path wrong (`scripts/` vs `hooks/sync-version-refs.sh`, verified by `ls hooks/`). Patched row 6.
 

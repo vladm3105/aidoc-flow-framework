@@ -1,0 +1,64 @@
+id: CHG-01
+title: "Fixture CHG — C1 direct docs tweak (acceptance golden)"
+document_control:
+  document_id: "CHG-01"
+  version: "1.0"
+  status: "Proposed"
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-23"
+  framework_version: "0.59.0"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+change_control:
+  chg_id: "CHG-01"
+  status: Proposed
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: none
+  version_action: none
+  author: "Fixture"
+  date_proposed: "2026-09-23T00:00:00Z"
+  date_approved: null
+  date_implemented: null
+  supersedes: []
+change_description:
+  summary: "Acceptance fixture: minimal C1 direct change with an IPLAN reference."
+  why: "Fixture only."
+  trigger: "Fixture only."
+  scope:
+    in:
+      - "docs tweak"
+    out:
+      - "everything else"
+impact_assessment:
+  risk: low
+  areas: []
+implementation:
+  steps:
+    - step: "Create IPLAN-01 with the docs tweak steps"
+      artifact: "IPLAN-01"
+      phase: "iplan_creation"
+      status: Completed
+  files_modified: []
+artifacts_modified: []
+verification:
+  gates:
+    - "chg_lint.py over CHG-01 (0 errors)"
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+rollback_plan:
+  steps: []
+emergency_change:
+  applicable: false
+glossary: {}
+creation_checklist:
+  items: []
+validation:
+  checks: []

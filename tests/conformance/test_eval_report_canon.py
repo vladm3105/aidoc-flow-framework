@@ -36,21 +36,15 @@ class ReportCanonTests(unittest.TestCase):
     def test_rpt_is_tombstone(self):
         """RPT file carries only the tombstone pointer, no report shape."""
         doc = _load(RPT)
-        self.assertEqual(
-            set(doc), {"tombstone"}, f"RPT tombstone gained keys: {sorted(doc)}"
-        )
+        self.assertEqual(set(doc), {"tombstone"}, f"RPT tombstone gained keys: {sorted(doc)}")
         self.assertEqual(doc["tombstone"]["status"], "retired")
-        self.assertEqual(
-            doc["tombstone"]["canonical_template"], "./EVAL-REPORT-TEMPLATE.yaml"
-        )
+        self.assertEqual(doc["tombstone"]["canonical_template"], "./EVAL-REPORT-TEMPLATE.yaml")
 
     def test_old_id_forms_banned_from_normative_positions(self):
         """Retired ID forms appear nowhere as template example values."""
         bad = []
         for path in (REPORT, RPT, STRATEGY):
-            for i, line in enumerate(
-                path.read_text(encoding="utf-8").splitlines(), 1
-            ):
+            for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                 code = line.split("#", 1)[0]
                 if "EVAL-NN.BDD-NN" in code or "BDD.NN.TC-NN" in code:
                     bad.append(f"{path.name}:{i}: {line.strip()}")

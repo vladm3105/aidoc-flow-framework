@@ -1,5 +1,12 @@
 # Project Management — AI Doc Flow Framework (Multi-Platform)
 
+> **History record (CHG-08 #670):** this document managed the archived
+> multi-platform migration project (Hermes + Claude Code plugin, cutover
+> `v1.0.0`). Values, branches, and pins inside are frozen at the 0.53.x era —
+> read them as history, not live instruction. Live project state: repo
+> `README.md` + `CHANGELOG.md`; live spec: `framework/`; live process:
+> `AGENTS.md`.
+>
 > Created 2026-05-18. Companion to `ROADMAP.md` and `docs/REPO_STRUCTURE.md`.
 
 ## 1. Overview

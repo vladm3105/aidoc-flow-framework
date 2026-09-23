@@ -1,6 +1,6 @@
 # Startup Handoff — AI Doc Flow Framework (extracted from migration session)
 
-> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../ROADMAP.md`](../ROADMAP.md) and [`../CHANGELOG.md`](../CHANGELOG.md). Plugin state lives in [`../archive/platforms/claude-code-plugin/CHANGELOG.md`](../archive/platforms/claude-code-plugin/CHANGELOG.md).
+> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../CHANGELOG.md`](../CHANGELOG.md) (`../ROADMAP.md` and `../archive/platforms/claude-code-plugin/CHANGELOG.md` no longer exist — CHG-08 #670).
 >
 > **Purpose:** Distill the business / startup ideas that surfaced during a
 > multi-phase technical-migration session into a self-contained brief a

@@ -4,7 +4,7 @@ set -uo pipefail
 
 LAYER="${1:-}"
 if [[ -z "$LAYER" ]]; then
-  echo "Usage: bash tests/scripts/test-layer.sh <brd|prd|ears|bdd|adr|spec|tdd|iplan>" >&2
+  echo "Usage: bash tests/scripts/test-layer.sh <brd|prd|ears|bdd|adr|spec|tdd|iplan|chg|eval>" >&2
   exit 2
 fi
 

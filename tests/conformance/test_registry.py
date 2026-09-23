@@ -53,9 +53,7 @@ class RegistryStructure(unittest.TestCase):
         registration has no excuse. Advisory prose — this test pins its
         presence, not a lint verdict.
         """
-        text = (FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml").read_text(
-            encoding="utf-8"
-        )
+        text = (FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml").read_text(encoding="utf-8")
         for token in (
             "REGISTRATION CHECKLIST",
             "total_layers",

@@ -8,11 +8,11 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.0 |
+| Framework Version | 0.59.1 |
 
 ## Overview
 
-The evaluation layer defines how BeeLocal's test strategy is governed, measured, and reported.
+The evaluation layer defines how test strategy is governed, measured, and reported.
 It bridges the SDD document chain (EARS/BDD/TDD/IPLAN) to concrete testing execution,
 providing a traceable path from requirements through test design to coverage evidence.
 
@@ -214,19 +214,11 @@ Each `EVAL-{NN}-RPT-{NNN}.yaml` contains (self-contained, no external deps):
 9. **Evidence** — CI URLs, artifacts, retention
 10. **Linkage** — eval ID, IPLAN ID, upstream references
 
-## Cross-Cutting Strategy Documents (Deprecated)
+## Cross-Cutting Strategy Documents (Deprecated, removed)
 
-The monolithic strategy documents are **deprecated** as of v2.0. They are retained for
-reference only. Test strategy is now per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
-
-| Document | Track | Purpose | Status |
-|----------|-------|---------|--------|
-| `EVAL-01_functional_strategy.yaml` | Functional | Test type decision tree, staging execution phases, verdict criteria | Deprecated |
-| `EVAL-02_unit_smoke_strategy.yaml` | Unit/Smoke | CI pipeline execution, smoke test definitions, deployment gates | Deprecated |
-
-**Migration**: Each IPLAN now owns its EVAL document. When creating a new EVAL, extract
-relevant test cases from these monolithic files into the per-IPLAN EVAL. The per-IPLAN
-documents define *what* to test for their specific IPLAN scope.
+The monolithic strategy documents (`EVAL-01_functional_strategy.yaml`,
+`EVAL-02_unit_smoke_strategy.yaml`) were deprecated as of v2.0 and have since
+been removed. Test strategy is per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
 
 ## Files
 

@@ -44,6 +44,7 @@ Step 1 gate satisfied (T1 issue #665 exists); the merge closes the issue(s).
 §§P0/P1/P2 below are the **verbatim finding record** (rev.2, corrections applied) — the audit trail. The executable part is §Step sequence + §Verification + §Risks. Finding text is normative for *what is wrong*; the step sequence is normative for *order and done-criteria*. Where they disagree, the step sequence wins and the finding gets a correction-log entry.
 
 ## Ground-truth re-verified at readiness pass (2026-09-22)
+
 - `framework/VERSION` = **0.56.0**, branch `dev` tracking `origin/dev` (`feat/* → dev → main`).
 - T1 still reproduces: `python3 -m unittest discover -s tests/unit` → `Ran 83 tests — FAILED (failures=24, errors=9, skipped=15)` (exit-127 `scripts/reconcile-pin-currency-issue.sh` missing confirmed in output).
 - EVAL fork still live: `framework/layers/10_EVAL/` ships both `EVAL-REPORT-TEMPLATE.yaml` and `EVAL-RPT-TEMPLATE.yaml`; `framework/playbooks/10_EVAL/` + `10_IPVERIFY/` both present (11 dirs for 10 layers).
@@ -57,6 +58,7 @@ re-derive with the commands in §Verification before quoting.
 ## P0 — red suite, wrong gates, linter-vs-governance contradictions (fix first)
 
 ### T1. `tests/unit` is RED on a clean tree (24 failures + 9 errors)
+
 | File | Cause | Fix |
 |---|---|---|
 | `tests/unit/test_skill_manifests.py:11` | `from _spec import skill_dirs` — helper gone with plugin archival | quarantine first (skip/stub `[]`), then delete |
@@ -71,6 +73,7 @@ re-derive with the commands in §Verification before quoting.
 re-anchorable contracts; deletion destroys the audit trail (independent-review finding 11).
 
 ### T2. `chg_lint.py` contradicts governance (false positives / false negatives)
+
 - `sdd_doc_lint/chg_lint.py:103-130` (CHG-L002) errors on `Proposed` C3 drafts; `governance/LINT_RULES.md` GOV-012 permits them → early-pass on `Proposed`.
 - `chg_lint.py:88-98` duplicates the C3-approver check inside L001 → double-report under two codes; delete L001 copy.
 - `chg_lint.py:132-164` (CHG-L003) never errors on missing `phase`, keyword heuristic warns on legit titles ("implement SDD lifecycle") → add missing-phase error, drop heuristic.
@@ -86,6 +89,7 @@ re-anchorable contracts; deletion destroys the audit trail (independent-review f
 - Coverage gap: `sdd_doc_lint/tests/test_chg_lint.py` has 11 test methods covering ≈L006–L011 + attestation paths, with zero cases touching L001–L005; CHG-04 `reconciliation` and CHG-05 bugfix interplay untested → add fixtures + cases.
 
 ### T3. Hook gate defects
+
 - `hooks/ch-gate-check.sh:40,59` scans `framework/layers/09_CHG`, so the template dir is in the scan list. No false positive reproduces today — the hook only treats `status: In-Progress|Approved` as active (`:59-68`) while `CHG-TEMPLATE.yaml:30` is `Draft` (and `:102` `Proposed`), and the gate is warn-only (`exit 0` at `:50-54,70-82`). Advisory hygiene only: skip `*TEMPLATE*` or drop the template dir so a future status-value edit can't arm it. (Corrected per independent review: earlier rev claimed an active false positive.)
 - `hooks/ch-gate-check.sh:23-33` watches `*.go` (nothing in tree) but not `*.sh` (all executable code) → add `*.sh`.
 - `hooks/ch-gate-check.sh:81` "bug-fix exception via commit message" never reads a commit message → check `git log -1 --format=%B` or delete line.
@@ -108,26 +112,33 @@ re-anchorable contracts; deletion destroys the audit trail (independent-review f
 ## P2 — doc sweeps (mechanical, do after P0/P1 so docs describe the fixed tree)
 
 ### D1. Versions (truth: 0.56.0)
+
 `README.md:301-304` (0.53.0 + v1.1.0 + 2026-09-07), `CLAUDE.md:21` (0.53.0), `docs/PROJECT.md:220` (`0.53.1` must-match), `docs/TAGGING.md:108-119,133-136` (0.51.0/0.44.0 snapshots), `framework/CHANGELOG.md:110` (`0.51.0 — 2026-01-20` breaks sequence), root `CHANGELOG.md:56` (0.53.2 dated 2026-10-23 listed above 0.54.0/2026-09-20; missing 0.55.0/0.56.0 sections that `framework/CHANGELOG.md:18,34` has), `plans/CLEANUP-001-PLAN.md` (pins 0.53.2→0.53.3 — mark point-in-time), `CLAUDE.md:429-437` pin census vs `CHANGELOG.md:100` ci/v4.0.0 claim (re-derive from `.github/workflows/`; verify `actions/checkout@v7`/`setup-python@v7` resolve — v7 series unconfirmed offline, check online).
 
 ### D2. Dead paths presented as live (all verified MISSING)
+
 `archive/` (incl `platforms/hermes/`, `platforms/claude-code-plugin/`, `tools/`), `examples/`, root `scripts/`, `tools/`, `platforms/`, `docs/PARITY.md`, `docs/CONFIG.md`, `ROADMAP.md`, `framework/docs/AIDOC.md` (canon: `framework/governance/aidoc/AIDOC.md`), `plans/{HANDOFF,FRAMEWORK-TODO,HERMES-BACKLOG,IPLAN-IPLANIC-DEFERRED,PLAN-TEMPLATE,PLUGIN-TEST-SUITE-PLAN,ACCEPTANCE-SUITE-HISTORY}.md`, `tests/{packaging,smoke,review,live}`, `tests/scripts/{test-plugin,test-acceptance}.sh`, `tests/smoke/COMMANDS.md`, `sdd_doc_lint/sync-vendored.sh`, `scripts/{chg_lint,check-docs-updated,sync-version-refs,reconcile-pin-currency-*.sh}`, `tools/{trace_walk,sdd_coverage,gherkin_to_bdd_yaml,saga_driver,finding_filter,bump_version}.py`, `framework/scripts/eval-trend.sh`, `EVAL-01/02_*strategy.yaml`, `plugin.json`/`marketplace.json`/`52×SKILL.md`.
 Sweep command: `rg 'archive/platforms|platforms/hermes|platforms/claude|tools/|examples/<NAME>|scripts/chg_lint|scripts/sync-version|scripts/check-docs|framework/docs/AIDOC|ROADMAP\.md|PARITY\.md|plans/HANDOFF|FRAMEWORK-TODO|HERMES-BACKLOG|IPLAN-IPLANIC-DEFERRED|PLAN-TEMPLATE|PLUGIN-TEST-SUITE|test-acceptance\.sh|test-plugin\.sh|cd framework|framework/tests/' --glob '!STALE*'`.
 Heaviest files: `tests/ACCEPTANCE.md` (538-line deleted-system doc — move to `plans/` history or rewrite as deterministic-suite methodology, preserving the record), `tests/{README,HOWTO,ENVIRONMENT,CONTRIBUTING,TROUBLESHOOTING,SCENARIOS}.md`, `tests/conformance/README.md` ("16 modules … plugin"), `tests/unit/README.md:5,17` (`Runs: every PR` contradicts `CLAUDE.md:775` "executed by no hook and no workflow"; `cd framework` broken), `docs/{PROJECT,REPO_STRUCTURE,STARTUP_HANDOFF,SUPPORT}.md`, `CLAUDE.md` (§sync block :825-858, workflow list :510-512 incl `hermes,plugin`, `examples/` cross-check :91-92,193-196, live harness :862+, `sdd_doc_lint/tests + Hermes suite` :778), `CONTRIBUTING.md:41,44,63` (phantom sync targets, HERMES-BACKLOG, `tools/**` trigger), `SECURITY.md:5-6,15,21-22` ("two platforms", "land on main"), `GOVERNANCE.md:58,66` (`:58` also names the live `sdd_doc_lint/` path — half true; `:66` usage line fully dead) + `CLAUDE.md:138` (dual-cites live `sdd_doc_lint/` alongside dead `scripts/` path), `CLAUDE.md:630` (`scripts/check-docs-updated.sh`).
 
 ### D3. Branch truth (`feat/* → dev → main`)
+
 Fix every `→ main` / `pull origin main` / `land on main` / `branch from main`: `docs/PROJECT.md:37-42,226`, `SECURITY.md:15,21-22`, `CLAUDE.md:681-692`, `.github/workflows/pre-commit.yml` push leg (`[main]` never fires) → `dev`. AGENTS.md:61-62,105-122 is the correct baseline (re-derived after worktree-pointer insertions).
 
 ### D4. Layer language (pick one)
+
 Registry says CHG=L9; `framework/AI_ASSISTANT_RULES.md:38-39`, `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:79`, `framework/TESTING_STRATEGY_TDD.md:29`, `framework/QUICK_REFERENCE.md:17-21,35-36` say "outside layer numbering". Decide, sweep. Same pass: `docs/STARTUP_HANDOFF.md` "8-layer" (:24,177,324,383), `CLAUDE.md:21` "8-layer sequence", `framework/README` 10-vs-11 folders, `NOTICES.md:71,247` double "Issue 5", `NOTICES.md:176-178` vs `archive/CHG-XX` paths, `AGENTS.md:42/44` 42-vs-41 entries (port CLAUDE's pseudo-heading explanation), `10_EVAL/README.md:15` "BeeLocal's" leak, `:212-224` dead strategy-file table, `framework/LEARNED_LESSONS.md` TDD-SYNC-001..009 vs canon A..E (`LINT_RULES.md:151-155`; also `framework/TESTING_STRATEGY_TDD.md:127-134`), `framework/LEARNED_LESSONS.md:104-112,299-310,369` IPLAN-VERIFY workflow + `scripts/verify_iplan_status.sh` path, `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:44` `tools/trace_walk.py` (no `SPEC_GUIDE.md` exists in tree).
 
 ### D5. Test-harness truths (counts point-in-time — re-derive via §Suggested order before quoting)
+
 `ARTIFACTS` (`tests/conformance/_spec.py:19`) lists 8 layers while `ACCEPTANCE.md:271` promises 10 (`chg, eval`); `tests/scripts/test-layer.sh:7` lists 8; conformance suite is ~365 tests, not 77 (`tests/CONTRIBUTING.md:55`) or 16 modules; CI is Python 3.12, no submodules (`TROUBLESHOOTING.md:47-48`). Missing coverage to add or claims to downgrade: CHG/EVAL goldens + `test_layer_chg/eval.py`, bugfix-subtype golden (`parent_iplan`/`source_chg`, rollback PENDING→DONE/SKIPPED), Type-R `change_source: reconciliation` case, EVAL `required_environment/test_data_setup/coverage_tracking/test_results` pins, `tests/acceptance/deterministic/test_layer_tdd.py:10` VALID_TYPES vs template `test_types` keys, IPLAN broken-fixture manifest-contract note, `expected_warnings/` layers-01-05 implicit-empty asymmetry (document it).
 
 ### D6. Duplicated-test ownership
+
 Forward coverage ×3, ref-granularity ×3, required-sections ×2 (`_harness.template_sections()` vs `test_required_section_sets.py` EXPECTED incl IPLAN-subtype mismatch), CHG enforcement ×3 (add codes-vs-catalog agreement test mirroring `test_iplan_bugfix_lifecycle.py:103-116`), `test_doc_validator.py` own `run_lint` copy → delegate to `_harness`, ACC01 synthetic vs golden cross-link, `test-auto-remediate-helpers.sh` tests a deleted script's inline copy → delete or re-anchor, `test-fullpath.sh --live` + `tests/acceptance/README.md:22` crash on missing `live/` dir → remove flag or restore harness. Plus ~20 `sys.path.insert(REPO_ROOT/"tools")` / `.exists()` fossils across `tests/conformance/` + `tests/unit/` (e.g. `test_acceptance_pairing.py:17`, `test_diagram_allowlist_source.py:26`, `test_forward_coverage_is_exercised.py:29`, `test_carrier_parity.py:193`, `test_saga_reconcile_post_audit.py:32`; re-derive the full list with the D2 sweep command) — replace with repo-root/`sdd_doc_lint`.
 
 ## Suggested order
+
 1. T1 (quarantine red unit modules — unblocks CI signal).
 2. T2 (linter-vs-governance contradictions — stops false errors/negatives) + T3 (`*.sh` gate blind spot, unwired pre-commit gate, sync-script self-obsolescence).
 3. P1 forks (EVAL-RPT name-vs-template contradiction first, then canon; CHG content first, then home; 10_EVAL/IPVERIFY; MVP; bugfix vehicle; triple-lock; §File Naming rewrite incl. bugfix row).
@@ -172,6 +183,7 @@ Forward coverage ×3, ref-granularity ×3, required-sections ×2 (`_harness.temp
 ## Review log
 
 ### Pass 1 — readiness pass 2026-09-22 (this edit)
+
 - Added plan header (Task/Type/Status/Depends/Feeds/Version), Objective, Scope, issue-triage gate (0 open — filing required pre-implementation), reading guide, re-verified ground truth (`0.56.0`, `dev`→`origin/dev`, T1 24F+9E+15S over 83 tests via `python3`, EVAL + CHG forks still live).
 - Promoted §Suggested order to normative §Step sequence with worktree/branch/CHG/IPLAN gates, per-step done-criteria, and `python3` interpreter fix; added §Verification + §Risks (R1–R6).
 - No finding text altered — audit trail preserved verbatim. Still required before implementation: file the §GitHub-issues rows, then run review pass 2 (AGENTS.md: plans get two review cycles before the plan PR opens). Suggested pass-2 checks: issue numbers filled in, Step 4 canon recommendations confirmed or overturned with reasons, version impact (PATCH/MINOR/none) settled.
@@ -195,6 +207,7 @@ Line-ref spot-checks re-verified live at pass 2 (`ls`/`grep`/`sed` outputs above
 Plan PR may now open (`feature/*` → `dev`, carrying `Closes #662–#672` as one keyword per reference). Implementation afterward still requires the authoring CHG (C1 allowed) + IPLAN `In Progress` per §Step sequence.
 
 ## Corrections log (independent review, same session)
+
 1. T3 CHG-template "false positive" → advisory hygiene (hook guards `In-Progress|Approved`, template is `Draft`/`Proposed`; gate is warn-only).
 2. "No test covers EVAL" → EVAL *template-shape* pins uncovered (layer wiring exists).
 3. Playbooks "point at REPORT" → playbooks internally split (RPT outputs, REPORT base template).

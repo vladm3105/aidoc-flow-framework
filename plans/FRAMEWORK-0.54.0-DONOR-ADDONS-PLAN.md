@@ -15,6 +15,7 @@
 Port the operational hardening learned in `b-local-privy` `.aidoc/project/governance/` (8 files, 1851 lines incl. `.aidoc/README.md` + `profile.yaml` — fully read 2026-09-20, cache in `/tmp/bprivy-gov/`) into the engine-agnostic spec. Donor `dev` has since moved (cites up to 2026-11-06); the `/tmp` snapshot is the frozen source — do NOT chase donor HEAD during implementation. The framework already owns the concepts (DECISION_WORKFLOW, MODULE_LAYOUT, SELF_LEARNING, NOTICES incl. Rule 6 TDD↔IPLAN, §3.4/A1-E27, §3.13); the donor delta is **checklists, gates, concurrency traps, and verification commands** that prevent measured rework (CHG-04 16 gaps, SPEC-09 18 fake IDs, CHG-10/CHG-32 clobbers). This plan implements every migratable addon, excludes project-only material, and ships the MINOR bump with mechanical fanout.
 
 Donor sources (dev branch, `.aidoc/`):
+
 - `.aidoc/README.md` v3.0 + `profile.yaml` (10 active_layers, team, 3 iters) — override-layer contract, already GD-28; no change.
 - `project/governance/GOVERNANCE_RULES.md` 538 lines (§1–§8)
 - `project/governance/DECISION_WORKFLOW.md` 128 lines
@@ -48,6 +49,7 @@ Donor sources (dev branch, `.aidoc/`):
 | 17 | §3.7 SQL-vs-schema + §6.7-RCA pointer (genericize: verify queries against declared schema artifact) | `IPLAN-TEMPLATE.yaml` guidance + `NOTICES.md` pointer (no Atlas/HCL names in spec) | guidance only |
 
 **Out (PROJECT-ONLY, never migrates):**
+
 - §1 infra (Debian/Atlas/Nginx, `ADMIN_BIND`, SSL blocks), §8 wire invariants (RPC envelope, KYC schema, Privy headers) — stack-specific.
 - Verify commands (`go vet/test`, `npm run verify:product`, `secret_scan.py`, boundary checks), LAN IPs, Docker `-p`/ports, `docs/sdd/` literal paths, CHG/PLAN next-IDs (§2.1), CI same-repo reusables/gate-doctor, P0-Card product gate (§3.12), `schema.hcl`/`Atlas` names, `.mimocode/`/`MEMORY.md` tool paths.
 

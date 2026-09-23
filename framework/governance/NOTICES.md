@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.0 |
+| Framework Version | 0.59.1 |
 
 
 Tracks issues encountered during SDD document generation, their root causes,
@@ -244,7 +244,7 @@ After completing any SDD layer, verify:
 - `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync
 - `ID_NAMING_STANDARDS.md` — Element ID format verification
 
-### Issue 5: Index document counts drift from source YAML (MEDIUM)
+### Issue 7: Index document counts drift from source YAML (MEDIUM)
 
 **What happened:** TDD-00_index.md stated "78 TDD test cases" but actual TDD
 YAML IDs total 104 (verified via `grep -c '^\s*- id: TDD\.' docs/sdd/07_TDD/TDD-0*.yaml`).
@@ -256,7 +256,7 @@ when TDD documents grew.
 - Rule: EVAL layer and any downstream doc must compute counts from source YAML, not copy from upstream index
 - Rule: Add `grep -c` verification to pre-commit checklist for count-dependent docs
 
-### Issue 6: Coverage summary contradicts entries (MEDIUM)
+### Issue 8: Coverage summary contradicts entries (MEDIUM)
 
 **What happened:** EVAL-01 and EVAL-02 had `coverage_matrix.entries` with
 `status: implemented, coverage: 100` while the `summary` block said

@@ -1,8 +1,9 @@
 """Conformance: each layer's derived required-section set is pinned, per layer.
 
 `STRUCT01`'s required set is **derived**, not declared — every top-level template
-key carrying `_size_target`, minus those marked `_required: false` or
-`_required_when_subtype:`. So a one-line marker edit in a template silently moves
+mapping (sans `metadata`, `_required: false`, `_required_when_subtype:`),
+sized by `_size_target` where present and the default budget otherwise. So a
+one-line marker edit in a template silently moves
 what the framework enforces, in either direction, and no existing check notices:
 
 * a marker **added** removes a required section. The acceptance suite keeps
@@ -35,13 +36,11 @@ but unnumbered", and asking it to carry both senses is what produced #557.
 
 from __future__ import annotations
 
-import sys
 import unittest
 
 import yaml
-from _spec import ARTIFACTS, FRAMEWORK, REPO_ROOT
+from _spec import ARTIFACTS, FRAMEWORK, OVERLAYS, POST_LAYERS
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _load_section_targets  # noqa: E402
 
 # The pinned sets. Held as literals — a derived expectation would move with the
@@ -57,6 +56,8 @@ EXPECTED = {
     "SPEC": 8,
     "TDD": 7,
     "IPLAN": 3,
+    "CHG": 12,
+    "EVAL": 7,
 }
 
 # The section NAMES, not just how many. The count pin alone cannot see an
@@ -158,6 +159,33 @@ SECTIONS: dict[str, frozenset] = {
         ]
     ),
     "IPLAN": frozenset(["document_control", "tdd_consistency", "traceability"]),
+    "CHG": frozenset(
+        [
+            "change_control",
+            "change_description",
+            "creation_checklist",
+            "document_control",
+            "emergency_change",
+            "gate_approval",
+            "glossary",
+            "impact_assessment",
+            "implementation",
+            "rollback_plan",
+            "validation",
+            "verification",
+        ]
+    ),
+    "EVAL": frozenset(
+        [
+            "coverage_matrix",
+            "document_control",
+            "evaluation_scope",
+            "execution_plan",
+            "quality_thresholds",
+            "test_design",
+            "traceability",
+        ]
+    ),
 }
 
 # The DECLARED half — `metadata.total_sections`, the numbered-section count.
@@ -174,6 +202,8 @@ DECLARED = {
     "SPEC": 8,
     "TDD": 7,
     "IPLAN": 6,
+    "EVAL": 6,
+    # CHG intentionally absent: its template carries no metadata.total_sections.
 }
 
 # Layers whose required set legitimately exceeds their `total_sections`, because
@@ -187,13 +217,16 @@ DECLARED = {
 # below derives this set from `derived > declared` so the frozenset cannot drift
 # from the templates — before that test existed this constant was referenced by
 # nothing and enforced nothing despite the comment above claiming it did.
-BACKMATTER_LAYERS = frozenset({"BRD", "EARS", "ADR"})
+BACKMATTER_LAYERS = frozenset({"BRD", "EARS", "ADR", "EVAL"})
 
 
 class RequiredSectionSetsArePinned(unittest.TestCase):
     def test_every_layer_is_pinned(self):
         """The roster is complete, so a new layer cannot slip in unpinned."""
-        self.assertEqual(set(EXPECTED), set(ARTIFACTS))
+        self.assertEqual(
+            set(EXPECTED),
+            set(ARTIFACTS) | set(OVERLAYS) | set(POST_LAYERS),
+        )
 
     def test_derived_required_counts_match_the_pins(self):
         for layer in sorted(EXPECTED):

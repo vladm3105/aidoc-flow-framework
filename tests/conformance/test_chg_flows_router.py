@@ -71,9 +71,7 @@ class RouterKernelAgreement(unittest.TestCase):
     def test_flows_doc_ratified(self):
         """The canonical flows doc is ratified law, not a proposal."""
         text = _text(FLOWS)
-        status_rows = [
-            line for line in text.splitlines() if line.startswith("| Status |")
-        ]
+        status_rows = [line for line in text.splitlines() if line.startswith("| Status |")]
         self.assertTrue(status_rows, "no Status row in CHG_REQUEST_FLOWS.md")
         self.assertTrue(
             any("RATIFIED" in row for row in status_rows),

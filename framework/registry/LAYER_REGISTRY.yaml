@@ -25,7 +25,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
-  framework_version: "0.59.0"  # synced from framework/VERSION
+  framework_version: "0.59.1"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this
