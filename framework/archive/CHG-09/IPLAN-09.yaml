@@ -1,0 +1,111 @@
+# =============================================================================
+#  IPLAN-09: Implement AGENTS.md authority-flip (scoped, F2 direct)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-09/CHG-09.yaml (F2 direct, C1, In-Progress)
+#  Source: user directive 2026-09-22 (unification) + in-session apply order —
+#  normative-text C1, AGENTS.md only (no code).
+# =============================================================================
+
+doc_id: IPLAN-09
+title: "Implement AGENTS.md authority-flip (flip lines + 0.59.2 bump, no version impact on spec)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-23"
+  framework_version: "0.59.1"
+  source_chg: "CHG-09"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-09"
+  subtype: combined
+  source_spec: "@spec: N/A (repo-root working-agreement fix under CHG-09; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-23T00:00:00Z"
+  last_updated: "2026-09-23T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 4
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "AGENTS.md"
+      description: "Authority-flip lines (single agreement, deprecated CLAUDE.md, dropped pointers, worktree pointer)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/VERSION + pin fanout + changelogs"
+      description: "PATCH bump 0.59.1 → 0.59.2 (E005), hook 0.59.1 sweep lines, framework + root CHANGELOG entries (E008)"
+      order: 2
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-09/CHG-09.yaml"
+      description: "Authorizing CHG vehicle (F2 direct C1)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-09/IPLAN-09.yaml"
+      description: "Authorizing IPLAN (this file)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3). Verification commands below are the check battery (mirrors CHG-07 vehicle precedent for doc-side verification)."
+  cases:
+    - "chg_lint.py over CHG-09: 0 errors"
+    - "grep battery: 'single working agreement' + 'deprecated' + 'this file wins' present; 'CLAUDE.md wins' absent"
+    - "sdd_doc_lint/tests green; conformance test_governance + test_spec_hygiene green"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-09/CHG-09.yaml"
+    - "grep -n 'single working agreement\\|deprecated\\|this file wins' AGENTS.md"
+    - "grep -n 'CLAUDE.md wins' AGENTS.md (expect no match)"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_governance.py'"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_spec_hygiene.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "AGENTS.md flip lines land UNCHANGED from the stashed session (no re-litigation, no drive-by edits)"
+  - "CLAUDE.md detail migration stays out (recorded open)"
+  - "No normative duplication: pointers to CHG_REQUEST_FLOWS.md / LINT_RULES.md, not restated rules"
+  - "PATCH bump 0.59.1 → 0.59.2 with machine-pin fanout only (E005/E008)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "All 4 manifest orders (vehicle + flip + bump + verify + land)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-09"
+  upstream: ["user directive 2026-09-22 (AGENTS.md unification)", "in-session apply order"]
+  downstream: ["AGENTS.md (repo-root working agreement)", "framework/VERSION 0.59.2"]
