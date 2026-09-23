@@ -23,6 +23,28 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-34 — STALE P1 canons: one canonical surface per fork (CHG-08, 0.58.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.57.1 → 0.58.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-08 + IPLAN-08 (`framework/archive/CHG-08/`).
+- **Context:** STALE P1 items #664, #667, #672, #666, #662, #671, #669 — seven live
+  forks/duplications with no canonical side, each forcing authors to pick at random.
+- **Decision (content-first, then canon; tombstone-with-pointer, never silent delete):**
+  EVAL report = REPORT template, RPT tombstoned (RPT survives as filename shorthand);
+  CHG template = KEEP §7 + 8-layer enumeration, home `governance/chg/`, layer copy
+  byte-identical; playbooks = split (10_EVAL authoring, 10_IPVERIFY execution),
+  `validator.md` retargeted to EVAL-RPT; MVP = 8 tombstones + 7 index-link retargets;
+  verification vehicle = EVAL-RPT flow + bugfix-subtype repairs, `tmp/` retired,
+  scripts deprecated; triple-lock = one-pass EVAL/CHG rows (schema, naming,
+  scope, traceability) with `acceptance_layers` deliberately unchanged
+  (`{BDD: [TDD]}` is case-scoped pairing by design; EVAL rides `realizing_layers`
+  + EVAL-COV rules, pinned by sync test); File Naming = general slug form +
+  EVAL/RPT/CHG carve-outs + bugfix row, no new PRD/EARS/ADR filename rules.
+- **Consequence:** every fork has exactly one canon path; conformance pins each
+  (REPORT shape, CHG identity, split layers, tombstone-only MVPs, lock rows).
+
+---
+
 ## GD-33 — STALE T2/T3 remediation: linter-vs-governance contradictions fixed, GOV-019 mints the IPLAN-reference rule, hooks rewired (CHG-08, 0.58.0 MINOR)
 
 - **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.57.1 → 0.58.0` (MINOR),

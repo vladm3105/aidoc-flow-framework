@@ -34,7 +34,7 @@
       "enum": [
         "01_BRD", "02_PRD", "03_EARS", "04_BDD",
         "05_ADR", "06_SPEC", "07_TDD", "08_IPLAN",
-        "09_CHG"
+        "09_CHG", "10_EVAL"
       ]
     },
     "personas_requested": {
