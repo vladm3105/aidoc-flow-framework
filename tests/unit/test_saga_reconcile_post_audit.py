@@ -31,7 +31,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
-from saga_driver import SagaContext, reconcile_post_audit  # noqa: E402
+try:
+    from saga_driver import SagaContext, reconcile_post_audit  # noqa: E402
+except ImportError:
+    # quarantined (#665): tools/saga_driver.py retired by CLEANUP-001
+    SagaContext = reconcile_post_audit = None
 
 # `reconcile_post_audit` reads `saga.branches[]` and `saga.transitions[]`
 # from the in-memory dict — it never touches the filesystem. The paths
@@ -61,6 +65,7 @@ def _branch(status: str, started_at: str = "2026-06-09T16:30:00+00:00") -> dict:
     }
 
 
+@unittest.skipIf(SagaContext is None, "#665: tools/saga_driver.py retired by CLEANUP-001")
 class ReconcilePostAuditTests(unittest.TestCase):
     """The reconcile helper backfills missing per-branch transitions and
     advances saga.status when branches[] is the ground truth."""

@@ -66,7 +66,7 @@ class WebsiteBadgeSelfHeal(unittest.TestCase):
 
     def setUp(self):
         if not SCRIPT.is_file():
-            self.skipTest("sync-version-refs.sh not present")
+            self.skipTest("sync-version-refs.sh not present (#665)")
         if shutil.which("git") is None:
             self.skipTest("git not available")
         self.plugin_ver = SANDBOX_VERSION

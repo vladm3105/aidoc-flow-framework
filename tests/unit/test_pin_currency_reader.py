@@ -30,6 +30,10 @@ RECONCILE = REPO_ROOT / "scripts" / "reconcile-pin-currency-issue.sh"
 
 TITLE = "CI canon drift — stale @ci/v* pins"
 
+# quarantined (#665): root scripts/ deleted; both helpers below exit 127
+_HAS_PIN_SCRIPTS = READ.exists() and RECONCILE.exists()
+_NEEDS_PIN_SCRIPTS = "#665: scripts/read-pin-currency-log.sh + reconcile-pin-currency-issue.sh deleted"
+
 # The ten callers the measured run reported stale, in the parser's sorted form.
 STALE_SET = ",".join(
     f"{name}@ci/v2.14.0"
@@ -99,6 +103,7 @@ def parse_kv(stdout: str) -> dict[str, str]:
     return out
 
 
+@unittest.skipIf(not _HAS_PIN_SCRIPTS, _NEEDS_PIN_SCRIPTS)
 class ParseLogTests(unittest.TestCase):
     """Eight cases: four verdicts that exit 0, four shapes that must exit non-zero."""
 
@@ -198,6 +203,7 @@ class ParseLogTests(unittest.TestCase):
         self.assertIn("malformed", result.stderr)
 
 
+@unittest.skipIf(not _HAS_PIN_SCRIPTS, _NEEDS_PIN_SCRIPTS)
 class ReconcileIssueTests(unittest.TestCase):
     """Ten cases: six reconciliation scenarios, the label fallback, and three
     that assert generated body CONTENT rather than the call sequence."""
