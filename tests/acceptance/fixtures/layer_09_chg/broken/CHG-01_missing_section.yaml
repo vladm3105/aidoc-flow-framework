@@ -1,0 +1,57 @@
+artifacts_modified: []
+change_control:
+  author: Fixture
+  change_level: C1
+  change_source: direct
+  chg_id: CHG-01
+  date_approved: null
+  date_implemented: null
+  date_proposed: '2026-09-23T00:00:00Z'
+  entry_gate: GATE-CODE
+  semver_impact: none
+  status: Proposed
+  supersedes: []
+  version_action: none
+change_description:
+  scope:
+    in:
+    - docs tweak
+    out:
+    - everything else
+  summary: 'Acceptance fixture: minimal C1 direct change with an IPLAN reference.'
+  trigger: Fixture only.
+  why: Fixture only.
+creation_checklist:
+  items: []
+document_control:
+  document_id: CHG-01
+  status: Proposed
+  version: '1.0'
+emergency_change:
+  applicable: false
+gate_approval:
+  approver: null
+  date: null
+  gate: GATE-CODE
+glossary: {}
+id: CHG-01
+impact_assessment:
+  areas: []
+  risk: low
+metadata:
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  document_type: chg-document
+  framework_version: 0.59.0
+  last_updated: '2026-09-23'
+  purpose: governance
+rollback_plan:
+  steps: []
+title: "Fixture CHG \u2014 C1 direct docs tweak (acceptance golden)"
+validation:
+  checks: []
+verification:
+  gates:
+  - chg_lint.py over CHG-01 (0 errors)

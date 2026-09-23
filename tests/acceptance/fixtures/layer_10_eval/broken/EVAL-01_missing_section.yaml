@@ -1,0 +1,28 @@
+document_control:
+  eval_id: EVAL-01
+  status: Draft
+  version: '1.0'
+evaluation_scope:
+  iplan_id: IPLAN-01
+  tracks:
+  - unit_smoke
+execution_plan:
+  command: python3 -m unittest discover -s tests/unit
+  runner: unittest
+id: EVAL-01
+quality_thresholds:
+- gate: error
+  metric: p0_critical_pass_rate
+  target: 100
+test_design:
+  entries:
+  - id: EVAL.01.01.ab12
+    name: Fixture case one
+    test_file: tests/unit/test_fixture_one.py
+  - id: EVAL.01.02.cd34
+    name: Fixture case two
+    test_file: tests/unit/test_fixture_two.py
+title: "Fixture EVAL \u2014 IPLAN-01 strategy (acceptance golden)"
+traceability:
+  upstream:
+    iplan: IPLAN-01
