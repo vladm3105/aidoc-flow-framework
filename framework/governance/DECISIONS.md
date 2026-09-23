@@ -19,13 +19,13 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.58.0 |
+| Framework Version | 0.59.0 |
 
 ---
 
-## GD-34 — STALE P1 canons: one canonical surface per fork (CHG-08, 0.58.0 MINOR)
+## GD-34 — STALE P1 canons: one canonical surface per fork (CHG-08, 0.59.0 MINOR)
 
-- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.57.1 → 0.58.0` (MINOR),
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.58.0 → 0.59.0` (MINOR),
   change-level **C2** (F3/spec). Vehicle: CHG-08 + IPLAN-08 (`framework/archive/CHG-08/`).
 - **Context:** STALE P1 items #664, #667, #672, #666, #662, #671, #669 — seven live
   forks/duplications with no canonical side, each forcing authors to pick at random.

@@ -143,6 +143,12 @@ file_manifest:
       status: DONE
       session: 1
       verified: true
+    - path: "framework/VERSION + changelogs + pin fanout (stacked PR)"
+      description: "0.58.0 → 0.59.0: second MINOR for the stacked P1 PR (GATE-SPEC needs VERSION+CHANGELOG per PR diff)"
+      order: 19
+      status: DONE
+      session: 1
+      verified: false
 
 # =============================================================================
 # Section 3: TDD Consistency
