@@ -41,13 +41,13 @@ file_manifest:
       order: 1
       status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/VERSION + pin fanout + changelogs"
       description: "PATCH bump 0.59.1 → 0.59.2 (E005), hook 0.59.1 sweep lines, framework + root CHANGELOG entries (E008)"
       order: 2
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-09/CHG-09.yaml"
       description: "Authorizing CHG vehicle (F2 direct C1)"
       order: 3

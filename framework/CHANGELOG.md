@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.1 |
+| Framework Version | 0.59.2 |
 
 ---
+
+## [0.59.2] — 2026-09-23
+
+### Fixed — AGENTS.md authority-flip (CHG-09, C1 PATCH)
+
+- `AGENTS.md` header declares the single working agreement; `CLAUDE.md` deprecated (legacy detail, never authority; this file wins on conflict).
+- Dropped the two self-contained CLAUDE.md pointers; closing reframed as deprecated legacy detail; worktree pointer added.
+- `framework/VERSION` bumped from `0.59.1` to `0.59.2` with mechanical pin sweep.
 
 ## [0.59.1] — 2026-09-23
 
