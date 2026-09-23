@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed — AGENTS.md authority-flip (CHG-09, C1 PATCH → 0.59.2)
+
+- Working agreement declares the single agreement (this file wins), CLAUDE.md deprecated/never-authority, self-contained CLAUDE.md pointers dropped, worktree pointer added
+- `framework/VERSION` bumped from `0.59.1` to `0.59.2` with mechanical pin sweep
+
 ### Fixed — STALE P2 sweeps + T1 remedy (CHG-08, C2 PATCH → 0.59.1)
 
 - P2 doc sweeps D1–D6: versions reworded-not-swept, dead paths framed-or-fixed, push leg → dev, one layer language (09 operational namespace) (#670)

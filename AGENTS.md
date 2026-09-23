@@ -1,9 +1,10 @@
 # AGENTS.md — working agreement for AI coding agents on aidoc-flow-framework
 
 Orients any AI agent (Claude Code, Codex, Gemini CLI, Copilot, Hermes, custom)
-working on this repo. **[`CLAUDE.md`](CLAUDE.md) is the full working agreement**;
-this file is the short orientation plus the rules that are most often missed.
-Where the two disagree, `CLAUDE.md` wins — fix this file.
+working on this repo. **This file is the single working agreement** — the short
+orientation plus the rules that are most often missed.
+[`CLAUDE.md`](CLAUDE.md) is deprecated: legacy detail only, never authority.
+Where the two disagree, this file wins.
 
 ## What this repo is
 
@@ -46,7 +47,7 @@ non-zero length is the only proof it published.
 
 If the defect is owned by **another** repo (the CI canon `aidoc-flow-ci`, a
 sibling submodule, an upstream spec), the issue goes **there**, not here. The
-test is ownership, not severity. See `CLAUDE.md` → "Cross-repo feedback".
+test is ownership, not severity.
 
 **Verify what you published.** Use `gh issue create --body-file -`; `--body -`
 sets the body to a literal `-`, exits 0, and prints a URL, so it looks like it
@@ -74,8 +75,8 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Submit only finalized work.** A PR has already completed its review-and-fix
   cycles locally. Amendment PRs patching a just-merged PR are a smell that the
   original shipped early.
-- **Plans get two review cycles before the plan PR opens** — see `CLAUDE.md`
-  → "Development workflow".
+- **Plans get two review cycles before the plan PR opens.**
+- **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.7 order guard: `worktree remove` BEFORE branch delete, §4).
 
 ## Governance Gate (applies to ALL agents)
 
@@ -127,6 +128,8 @@ git push origin main   # ❌ BLOCKED by this rule
 
 Branch promotion: `feature-branch → dev → main`
 
+Trivial single-shot edits may use the quick path above. Multi-step feature work (or any work with running subagents): use `WORKTREE_FLOW.md` §3.2 (`worktree add ../<project>-<issue> -b feature/<short-name> origin/dev`) instead of branch-switching the main checkout.
+
 ## Where state lives (this repo owns its own continuity)
 
 | Surface | Path |
@@ -149,6 +152,7 @@ umbrella — the umbrella holds no development of its own.
 - Conventional commit prefixes (`docs:`, `feat:`, `fix:`, `refactor:`,
   `chore:`), one logical change per commit.
 
-Everything else — CI consumption from `aidoc-flow-ci`, governance PR discipline,
-auto-merge defaults, multi-agent review, versioning and tagging — is in
-[`CLAUDE.md`](CLAUDE.md).
+Further detail — CI consumption from `aidoc-flow-ci`, governance PR discipline,
+auto-merge defaults, multi-agent review, versioning and tagging — lives in
+[`CLAUDE.md`](CLAUDE.md) (deprecated legacy detail, pending migration into this
+file). On any conflict, this file wins.
