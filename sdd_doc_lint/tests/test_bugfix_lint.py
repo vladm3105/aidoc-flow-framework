@@ -96,7 +96,9 @@ def _codes(errors):
 class NamingAndMinter(unittest.TestCase):
     def test_clean_name_passes(self):
         with tempfile.TemporaryDirectory() as td:
-            errors, warnings, passes = _lint(Path(td), "IPLAN-05_bugfix_03_slug.yaml", _bugfix_doc())
+            errors, warnings, passes = _lint(
+                Path(td), "IPLAN-05_bugfix_03_slug.yaml", _bugfix_doc()
+            )
             self.assertEqual(errors, [])
             self.assertEqual(warnings, [])
             self.assertTrue(passes, "clean fixture should record passes, not pass vacuously")

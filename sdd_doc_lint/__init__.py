@@ -3045,8 +3045,7 @@ def _check_eval_yaml(corpus: list[tuple[str, str]]) -> list[Finding]:
                             rel,
                             line,
                             "EVAL-ID-001",
-                            f"test case id '{tc_id}' does not match "
-                            f"EVAL.NN.SS.xxxx format",
+                            f"test case id '{tc_id}' does not match EVAL.NN.SS.xxxx format",
                             severity="error",
                         )
                     )

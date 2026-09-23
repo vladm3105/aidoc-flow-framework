@@ -43,7 +43,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   normative order fix → regression → rollback → revision entry last, mandatory rollback
   with PENDING→DONE/SKIPPED markers, no-fix-on-fix, parent immutable) in
   `IPLAN-TEMPLATE.yaml`; `## IPLAN Subtypes` + Completed-validatable vs Verified-terminal
-  + active-definition pointer in `08_IPLAN/README.md`
+  - active-definition pointer in `08_IPLAN/README.md`
 - Terminal semantics fixed canon-wide (`Completed` validatable with `validated_by: pending`
   after pre-VERIFY merge; only `Verified` terminal); **active** defined as
   `Draft | Approved | In Progress` (§3.13 exception covers active only); migration VERIFY

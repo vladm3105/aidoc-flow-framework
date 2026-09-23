@@ -95,6 +95,7 @@ Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only no
 (iv) F2 C1-direct (C1 CHG + scoped IPLAN). §3.13 + `CHG_REQUEST_FLOWS.md` govern.
 
 **Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG

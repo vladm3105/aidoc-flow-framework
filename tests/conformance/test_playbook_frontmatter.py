@@ -54,7 +54,9 @@ class PlaybookFrontmatterTests(unittest.TestCase):
 
     def test_lens_playbook_set_is_nonempty(self):
         """Guards the guard: an empty scope would pass every assertion below vacuously."""
-        self.assertGreater(len(self.playbooks), 0, "no lens playbooks found — scope predicate is broken")
+        self.assertGreater(
+            len(self.playbooks), 0, "no lens playbooks found — scope predicate is broken"
+        )
 
     def test_every_playbook_has_required_frontmatter_fields(self):
         for pb in self.playbooks:

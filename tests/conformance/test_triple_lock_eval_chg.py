@@ -38,18 +38,14 @@ EXPECTED_LAYERS = {
 class TripleLockRows(unittest.TestCase):
     def test_schema_layer_enum_is_complete(self):
         """saga.schema.json layer enum names all 10 layers."""
-        enum = json.loads(SCHEMA.read_text(encoding="utf-8"))["properties"][
-            "layer"
-        ]["enum"]
+        enum = json.loads(SCHEMA.read_text(encoding="utf-8"))["properties"]["layer"]["enum"]
         self.assertEqual(set(enum), EXPECTED_LAYERS)
 
     def test_registry_has_chg_eval_rows(self):
         """Registry declares CHG + EVAL layer rows with templates."""
         rows = {
             layer["artifact"]: layer
-            for layer in yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))[
-                "layers"
-            ]
+            for layer in yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))["layers"]
         }
         for artifact, template in (
             ("CHG", "CHG-TEMPLATE.yaml"),

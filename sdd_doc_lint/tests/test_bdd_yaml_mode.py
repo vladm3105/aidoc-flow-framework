@@ -16,6 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import yaml  # noqa: E402
+
 from sdd_doc_lint import (  # noqa: E402
     _check_ref_granularity,
     _check_trace_resolution,

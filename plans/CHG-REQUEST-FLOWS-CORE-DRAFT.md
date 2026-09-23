@@ -40,7 +40,7 @@ router is total — authors MUST NOT file greenfield work as F2 or F4 to dodge t
 
 A change request from a human or another AI agent that is NOT related to a previous IPLAN implementation and does
 NOT change product behavior: documentation edits, hook/script/tooling tweaks (`hooks/`, `framework/scripts/`,
-` sdd_doc_lint/` tooling), template typo fixes, non-normative prose. No full SDD chain is required because there is
+`sdd_doc_lint/` tooling), template typo fixes, non-normative prose. No full SDD chain is required because there is
 no SDD contract at stake — but the IPLAN Gate (§3.13) still applies to everything it does not exempt.
 
 **F2.1 — `change_source: direct` (new value).** Definition: origin is a direct requester instruction, not a layer
@@ -55,6 +55,7 @@ or vendor-API change, the flow is NOT F2 (reclassify: External → F3-shaped cas
 
 **F2.2 — C1 ruling (resolves the C1/§3.13 contradiction).** The template's C1 row ("None — direct commit") is
 reaffirmed AND bounded:
+
 - Docs-only, non-normative C1 (typo, formatting, clarification touching no code/scripts and no normative
   template/governance text): direct commit, no CHG, no IPLAN. Unchanged.
 - Code- or script-touching C1 (any `*.sh`, `*.py`, hook, workflow, or normative-template edit): a C1 CHG +
@@ -105,7 +106,7 @@ itself — the AGENTS.md exception — no CHG required).
 ## Router procedure (replaces ad-hoc classification)
 
 1. Critical production issue requiring fix before authorization? → **Emergency path** (fix → deploy → document
-   + post-mortem within 48h). The router yields. F2 is never the speed lane for production incidents.
+   - post-mortem within 48h). The router yields. F2 is never the speed lane for production incidents.
 2. Verified working codebase preceding its specs (non-emergency empirical work)? → **Type-R**: §3.1.2 governs
    (reverse-authored IPLAN, GATE-CODE, Phase-3 battery). The router yields; F1 MUST NOT claim it.
 3. Is there a defect traceable to a `Completed`/`Verified` IPLAN? → **F4**.

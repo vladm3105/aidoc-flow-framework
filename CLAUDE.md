@@ -136,6 +136,7 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
 
 **Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
@@ -143,6 +144,7 @@ After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
 
 **When to run the linter:**
+
 1. **Pre-commit** — After creating/updating a CHG, before `git commit`
 2. **Pre-implementation** — Before writing ANY code for a CHG
 3. **Pre-merge** — Before merging a PR that modifies CHG files

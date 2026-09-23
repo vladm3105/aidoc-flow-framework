@@ -84,7 +84,9 @@ def _doc_control(data: dict[str, Any]) -> dict[str, Any]:
     return dc if isinstance(dc, dict) else {}
 
 
-def check_naming(path: Path, errors: list[str], warnings: list[str], passes: list[str]) -> re.Match | None:
+def check_naming(
+    path: Path, errors: list[str], warnings: list[str], passes: list[str]
+) -> re.Match | None:
     """BGF-01: filename carries the parentage."""
     m = NAME_PAT.match(path.name)
     if not m:
@@ -96,7 +98,9 @@ def check_naming(path: Path, errors: list[str], warnings: list[str], passes: lis
     return m
 
 
-def check_minter(path: Path, m: re.Match, errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_minter(
+    path: Path, m: re.Match, errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """BGF-02: NEW_ID is max+1 from the directory listing."""
     try:
         entries = list(path.parent.iterdir())
@@ -124,7 +128,12 @@ def check_minter(path: Path, m: re.Match, errors: list[str], warnings: list[str]
 
 
 def check_id_match(
-    path: Path, m: re.Match, data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+    path: Path,
+    m: re.Match,
+    data: dict[str, Any],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
 ) -> None:
     """BGF-03: declared IDs match the filename stem."""
     dc = _doc_control(data)
@@ -144,14 +153,18 @@ def check_id_match(
         passes.append(f"BGF-03: declared IDs match filename stem ({want})")
 
 
-def check_step_order(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_step_order(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """BGF-04: keyword order across steps in step order, never presence."""
     steps: list[str] = []
     exec_cmds = data.get("execution_commands", {})
     if isinstance(exec_cmds, dict):
         raw_impl = exec_cmds.get("implementation", []) or []
         if not isinstance(raw_impl, list):
-            warnings.append("BGF-04: execution_commands.implementation is not a list — order unchecked")
+            warnings.append(
+                "BGF-04: execution_commands.implementation is not a list — order unchecked"
+            )
             return
         steps.extend(str(s) for s in raw_impl)
     # NOTE: rollback_procedure steps are deliberately NOT scanned — rollback
@@ -187,7 +200,9 @@ def check_step_order(data: dict[str, Any], errors: list[str], warnings: list[str
         passes.append("BGF-04: present keywords follow fix → regression → rollback → revision")
 
 
-def check_rollback(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_rollback(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """BGF-05: rollback present; resolution markers resolved."""
     rb = data.get("rollback_procedure")
     if not isinstance(rb, dict) or not rb.get("steps"):
@@ -195,7 +210,9 @@ def check_rollback(data: dict[str, Any], errors: list[str], warnings: list[str],
         return
     resolution = rb.get("resolution", []) or []
     if not isinstance(resolution, list) or not resolution:
-        errors.append("BGF-05: rollback resolution note missing — record PENDING→DONE/SKIPPED markers")
+        errors.append(
+            "BGF-05: rollback resolution note missing — record PENDING→DONE/SKIPPED markers"
+        )
         return
     bad = [
         str(r.get("item", "?")) if isinstance(r, dict) else repr(r)
@@ -249,14 +266,21 @@ def check_manifest(
 
 
 def check_parent(
-    path: Path, m: re.Match, data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+    path: Path,
+    m: re.Match,
+    data: dict[str, Any],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
 ) -> None:
     """BGF-07: parent is an original terminal IPLAN."""
     dc = _doc_control(data)
     parent = str(dc.get("parent_iplan", "") or "")
     fixed = f"IPLAN-{int(m.group(2)):02d}"
     if parent and parent != fixed:
-        warnings.append(f"BGF-07: parent_iplan '{parent}' disagrees with filename FIXED id ({fixed})")
+        warnings.append(
+            f"BGF-07: parent_iplan '{parent}' disagrees with filename FIXED id ({fixed})"
+        )
     target = parent or fixed
     num = re.fullmatch(r"IPLAN-(\d+)", target)
     if not num:
@@ -264,9 +288,13 @@ def check_parent(
         return
     nn = f"{int(num.group(1)):02d}"
     exact = [path.parent / f"IPLAN-{nn}.yaml", path.parent / f"IPLAN-{nn}.yml"]
-    suffixed = list(path.parent.glob(f"IPLAN-{nn}_*.yaml")) + list(path.parent.glob(f"IPLAN-{nn}_*.yml"))
+    suffixed = list(path.parent.glob(f"IPLAN-{nn}_*.yaml")) + list(
+        path.parent.glob(f"IPLAN-{nn}_*.yml")
+    )
     if not any(p.exists() for p in exact) and not suffixed:
-        warnings.append(f"BGF-07: parent file for {target} not found beside the bugfix — originality unchecked")
+        warnings.append(
+            f"BGF-07: parent file for {target} not found beside the bugfix — originality unchecked"
+        )
         return
     originals = [p for p in exact if p.exists()]
     originals += sorted(p for p in suffixed if "_bugfix_" not in p.name)
@@ -280,7 +308,9 @@ def check_parent(
     try:
         parent_doc = yaml.safe_load(candidates[0].read_text(encoding="utf-8"))
     except yaml.YAMLError:
-        warnings.append(f"BGF-07: parent file {candidates[0].name} unparsable — originality unchecked")
+        warnings.append(
+            f"BGF-07: parent file {candidates[0].name} unparsable — originality unchecked"
+        )
         return
     if not isinstance(parent_doc, dict):
         warnings.append(f"BGF-07: parent file {candidates[0].name} is not a mapping — unchecked")
@@ -288,7 +318,9 @@ def check_parent(
     pdc = _doc_control(parent_doc)
     pstatus = str(pdc.get("status", "") or "").strip().casefold()
     if str(pdc.get("subtype", "")).lower() == "bugfix":
-        errors.append(f"BGF-07: parent {target} is itself a bugfix — no fix-on-fix (mint a sibling)")
+        errors.append(
+            f"BGF-07: parent {target} is itself a bugfix — no fix-on-fix (mint a sibling)"
+        )
     elif pstatus in ACTIVE_STATUSES:
         errors.append(
             f"BGF-07: parent {target} is still active ({pdc.get('status')}) — "
@@ -348,18 +380,27 @@ def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
     if any(a in ("-h", "--help") for a in argv):
-        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+        print(
+            "Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]",
+            file=sys.stderr,
+        )
         return 2
     if "--" in argv:
         argv = argv[argv.index("--") + 1 :]
     unknown = [a for a in argv if a.startswith("-")]
     if unknown:
         print(f"Unknown option(s): {' '.join(unknown)}", file=sys.stderr)
-        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+        print(
+            "Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]",
+            file=sys.stderr,
+        )
         return 2
     files = argv
     if not files:
-        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+        print(
+            "Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]",
+            file=sys.stderr,
+        )
         return 2
 
     total_errors = 0
@@ -373,7 +414,7 @@ def main(argv: list[str] | None = None) -> int:
         errors, warnings, passes = lint_bugfix(path)
         total_errors += len(errors)
         total_warnings += len(warnings)
-        print(f"\n{'='*60}\nBugfix Lint: {path.name}\n{'='*60}")
+        print(f"\n{'=' * 60}\nBugfix Lint: {path.name}\n{'=' * 60}")
         for e in errors:
             print(f"  - ❌ {e}")
         for w in warnings:
@@ -382,7 +423,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  - ✅ {p}")
         if not errors and not warnings:
             print("\n✅ All checks passed")
-    print(f"\n{'='*60}\nSummary: {total_errors} error(s), {total_warnings} warning(s)\n{'='*60}")
+    print(
+        f"\n{'=' * 60}\nSummary: {total_errors} error(s), {total_warnings} warning(s)\n{'=' * 60}"
+    )
     return 1 if total_errors > 0 else 0
 
 

@@ -18,6 +18,7 @@ exercise the actual `doc-<layer>` skills via `claude -p`.
 ```bash
 python3 -m unittest discover -s tests/acceptance/deterministic -v
 ```
+
 (runs from the repository root)
 
 ## Accepted warnings (`expected_warnings/`)

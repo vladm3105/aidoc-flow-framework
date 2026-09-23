@@ -17,7 +17,6 @@ untagged one.
 | The most recent `framework/VERSION` release | ✅ |
 | Anything older | ❌ |
 
-
 ## Reporting a vulnerability
 
 **Please do not open a public issue, PR, or discussion for security

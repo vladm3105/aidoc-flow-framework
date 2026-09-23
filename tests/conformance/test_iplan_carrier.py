@@ -62,13 +62,9 @@ class IplanCarrier(unittest.TestCase):
         path = LAYER / "IPLAN-MVP-TEMPLATE.yaml"
         self.assertTrue(path.is_file(), f"missing tombstone: {path}")
         doc = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        self.assertEqual(
-            set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}"
-        )
+        self.assertEqual(set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}")
         self.assertEqual(doc["tombstone"]["status"], "retired")
-        self.assertEqual(
-            doc["tombstone"]["canonical_template"], "./IPLAN-TEMPLATE.yaml"
-        )
+        self.assertEqual(doc["tombstone"]["canonical_template"], "./IPLAN-TEMPLATE.yaml")
 
     def test_traceability_key_is_still_named_tdd_references(self):
         """A positive assertion, because the negative one was unfalsifiable.

@@ -62,7 +62,9 @@ except ImportError:
 VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Completed"]
 
 
-def check_status_lifecycle(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_status_lifecycle(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L001: Status must follow lifecycle (§3.3)."""
     change_control = data.get("change_control", {})
     if not isinstance(change_control, dict):
@@ -83,7 +85,9 @@ def check_status_lifecycle(data: dict[str, Any], errors: list[str], warnings: li
     date_implemented = change_control.get("date_implemented")
 
     if status in ("In-Progress", "Implemented", "Completed") and not date_approved:
-        errors.append(f"CHG-L001: status is '{status}' but date_approved is null — cannot skip 'Approved' stage")
+        errors.append(
+            f"CHG-L001: status is '{status}' but date_approved is null — cannot skip 'Approved' stage"
+        )
 
     if status in ("Implemented", "Completed") and not date_implemented:
         warnings.append(f"CHG-L001: status is '{status}' but date_implemented is null")
@@ -94,7 +98,9 @@ def check_status_lifecycle(data: dict[str, Any], errors: list[str], warnings: li
     passes.append(f"CHG-L001: status lifecycle check passed (status={status})")
 
 
-def check_gate_approval(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_gate_approval(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L002: C3 changes must have gate approval (§3.1)."""
     change_control = data.get("change_control", {})
     gate_approval = data.get("gate_approval", {})
@@ -129,7 +135,9 @@ def check_gate_approval(data: dict[str, Any], errors: list[str], warnings: list[
         passes.append(f"CHG-L002: gate approval present (approver={approver}, gate={gate})")
 
 
-def check_chg_scope(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_chg_scope(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L003: No code implementation steps in CHG (§3.4 items 13-14)."""
     implementation = data.get("implementation", {})
     if not isinstance(implementation, dict):
@@ -151,17 +159,23 @@ def check_chg_scope(data: dict[str, Any], errors: list[str], warnings: list[str]
         # Every step must declare its phase (§3.4 item 13).
         if not phase:
             code_step_count += 1
-            errors.append(f"CHG-L003: step '{step.get('title')}' has no phase — every step MUST declare sdd_lifecycle or iplan_creation")
+            errors.append(
+                f"CHG-L003: step '{step.get('title')}' has no phase — every step MUST declare sdd_lifecycle or iplan_creation"
+            )
         # Check if this looks like a code implementation step
         elif phase in ("code", "implementation", "code_implementation"):
             code_step_count += 1
-            errors.append(f"CHG-L003: step '{step.get('title')}' has phase '{phase}' — code steps belong in IPLAN")
+            errors.append(
+                f"CHG-L003: step '{step.get('title')}' has phase '{phase}' — code steps belong in IPLAN"
+            )
 
     if code_step_count == 0:
         passes.append("CHG-L003: no code implementation steps found in CHG")
 
 
-def check_iplan_reference(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_iplan_reference(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L004: CHG must reference an IPLAN for code changes (§3.1.1, GOV-019)."""
     # Look for IPLAN references in every location that can carry one —
     # each is optional, so all three are scanned unconditionally.
@@ -205,12 +219,16 @@ def check_iplan_reference(data: dict[str, Any], errors: list[str], warnings: lis
                 break
 
     if not has_iplan:
-        errors.append("CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); F2 files a scoped IPLAN, F4 a bugfix-subtype IPLAN")
+        errors.append(
+            "CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); F2 files a scoped IPLAN, F4 a bugfix-subtype IPLAN"
+        )
     else:
         passes.append("CHG-L004: IPLAN reference found")
 
 
-def check_sdd_first_order(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_sdd_first_order(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L005: SDD lifecycle steps must appear before IPLAN creation (§3.1.1)."""
     implementation = data.get("implementation", {})
     if not isinstance(implementation, dict):
@@ -243,7 +261,9 @@ def check_sdd_first_order(data: dict[str, Any], errors: list[str], warnings: lis
 
     if last_sdd_index >= 0 and first_iplan_index < len(steps):
         if first_iplan_index < last_sdd_index:
-            errors.append("CHG-L005: IPLAN creation appears before SDD lifecycle steps — SDD must come first")
+            errors.append(
+                "CHG-L005: IPLAN creation appears before SDD lifecycle steps — SDD must come first"
+            )
         else:
             passes.append("CHG-L005: SDD lifecycle steps appear before IPLAN creation")
 
@@ -256,10 +276,16 @@ def _sdd_lifecycle_steps(data: dict[str, Any]) -> list[dict[str, Any]]:
     steps = implementation.get("steps", [])
     if not isinstance(steps, list):
         return []
-    return [s for s in steps if isinstance(s, dict) and str(s.get("phase", "")).lower() == "sdd_lifecycle"]
+    return [
+        s
+        for s in steps
+        if isinstance(s, dict) and str(s.get("phase", "")).lower() == "sdd_lifecycle"
+    ]
 
 
-def check_sdd_lifecycle_completeness(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_sdd_lifecycle_completeness(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L006: sdd_lifecycle steps must exist when SDD documents are modified (§3.4.1 C16)."""
     modified = data.get("implementation", {})
     artifacts: list[dict[str, Any]] = []
@@ -278,7 +304,9 @@ def check_sdd_lifecycle_completeness(data: dict[str, Any], errors: list[str], wa
     passes.append("CHG-L006: SDD lifecycle completeness check passed")
 
 
-def check_sdd_entry_metadata(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_sdd_entry_metadata(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L007: every sdd_lifecycle step declares artifact + archive metadata (§3.4.1 C17)."""
     steps = _sdd_lifecycle_steps(data)
     if not steps:
@@ -313,10 +341,16 @@ def check_sdd_entry_metadata(data: dict[str, Any], errors: list[str], warnings: 
         passes.append(f"CHG-L007: all {len(steps)} sdd_lifecycle step(s) carry required metadata")
 
 
-def check_archive_path_convention(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_archive_path_convention(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L008: archive paths use CHG-ID format, not date-based (§3.4.1 C18)."""
     steps = _sdd_lifecycle_steps(data)
-    paths = [str(s.get("archive_path", "")) for s in steps if s.get("archive_path") not in (None, "null", "")]
+    paths = [
+        str(s.get("archive_path", ""))
+        for s in steps
+        if s.get("archive_path") not in (None, "null", "")
+    ]
     if not paths:
         passes.append("CHG-L008: no archive paths to check")
         return
@@ -324,7 +358,9 @@ def check_archive_path_convention(data: dict[str, Any], errors: list[str], warni
     date_pat = re.compile(r"(19|20)\d{2}[-_/](0[1-9]|1[0-2])[-_/](0[1-9]|[12]\d|3[01])")
     for p in paths:
         if date_pat.search(p):
-            errors.append(f"CHG-L008: archive path '{p}' looks date-based — use .../archive/<CHG-ID>/... instead")
+            errors.append(
+                f"CHG-L008: archive path '{p}' looks date-based — use .../archive/<CHG-ID>/... instead"
+            )
             bad += 1
         elif "archive/" not in p:
             warnings.append(f"CHG-L008: archive path '{p}' does not contain an 'archive/' segment")
@@ -332,7 +368,9 @@ def check_archive_path_convention(data: dict[str, Any], errors: list[str], warni
         passes.append(f"CHG-L008: all {len(paths)} archive path(s) follow CHG-ID convention")
 
 
-def check_version_bump(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_version_bump(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L009: new_version must differ from current when stated (§3.4.1 C19)."""
     steps = _sdd_lifecycle_steps(data)
     checked = 0
@@ -354,7 +392,9 @@ def check_version_bump(data: dict[str, Any], errors: list[str], warnings: list[s
         passes.append(f"CHG-L009: {checked} new_version(s) differ from current")
 
 
-def check_supersedes_completeness(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
+def check_supersedes_completeness(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
     """CHG-L010: supersedes lists every archived document with full path (§3.4.1 C20)."""
     change_control = data.get("change_control", {})
     supersedes = change_control.get("supersedes", []) if isinstance(change_control, dict) else []
@@ -459,7 +499,8 @@ def _traceable_docs_from_steps(data: dict[str, Any]) -> tuple[list[tuple[str, st
     return pairs, whole
 
 
-def check_cited_ids_exist(    data: dict[str, Any],
+def check_cited_ids_exist(
+    data: dict[str, Any],
     errors: list[str],
     warnings: list[str],
     passes: list[str],
@@ -520,9 +561,13 @@ def check_cited_ids_exist(    data: dict[str, Any],
                 )
                 continue
             checked += 1
-            haystack = " ".join(p.read_text(encoding="utf-8", errors="replace") for p in candidates[:5])
+            haystack = " ".join(
+                p.read_text(encoding="utf-8", errors="replace") for p in candidates[:5]
+            )
             if doc_id not in haystack:
-                warnings.append(f"CHG-L011: cited '{doc_id}' not found in {base}.* near {file_path.name}")
+                warnings.append(
+                    f"CHG-L011: cited '{doc_id}' not found in {base}.* near {file_path.name}"
+                )
         passes.append(f"CHG-L011: cited-ID existence checked ({checked} verifiable reference(s))")
         return
 
@@ -642,10 +687,14 @@ def check_completion_spec_sync(
     if checked == 0:
         passes.append("CHG-L012: no Completed IPLAN with a completion_spec_sync block referenced")
     else:
-        passes.append(f"CHG-L012: completion_spec_sync attestation checked on {checked} Completed IPLAN(s)")
+        passes.append(
+            f"CHG-L012: completion_spec_sync attestation checked on {checked} Completed IPLAN(s)"
+        )
 
 
-def lint_chg(file_path: Path, sdd_root: Path | None = None) -> tuple[list[str], list[str], list[str]]:
+def lint_chg(
+    file_path: Path, sdd_root: Path | None = None
+) -> tuple[list[str], list[str], list[str]]:
     """Lint a single CHG file and return (errors, warnings, passes)."""
     errors: list[str] = []
     warnings: list[str] = []
@@ -682,11 +731,7 @@ def _is_code_path(file: object) -> bool:
     """True when an artifacts_modified file entry is executable code (not an SDD doc)."""
     if not isinstance(file, str) or not file:
         return False
-    return (
-        file.endswith((".py", ".sh"))
-        or file.startswith("hooks/")
-        or ".github/workflows" in file
-    )
+    return file.endswith((".py", ".sh")) or file.startswith("hooks/") or ".github/workflows" in file
 
 
 def check_flow_misclassification(
@@ -775,7 +820,10 @@ def main(argv: list[str] | None = None) -> int:
             i += 1
 
     if not files:
-        print("Usage: chg_lint.py [--sdd-root <dir>] <chg-file.yaml> [chg-file2.yaml ...]", file=sys.stderr)
+        print(
+            "Usage: chg_lint.py [--sdd-root <dir>] <chg-file.yaml> [chg-file2.yaml ...]",
+            file=sys.stderr,
+        )
         return 2
 
     total_errors = 0
@@ -792,9 +840,9 @@ def main(argv: list[str] | None = None) -> int:
         total_errors += len(errors)
         total_warnings += len(warnings)
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"CHG Lint: {path.name}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         if errors:
             print("\n❌ ERRORS:")
@@ -814,9 +862,9 @@ def main(argv: list[str] | None = None) -> int:
         if not errors and not warnings:
             print("\n✅ All checks passed")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Summary: {total_errors} error(s), {total_warnings} warning(s)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     return 1 if total_errors > 0 else 0
 

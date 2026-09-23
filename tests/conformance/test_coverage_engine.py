@@ -17,6 +17,7 @@ directly, so it survives the framework-only reduction.
 import unittest
 
 from _spec import FRAMEWORK
+
 from sdd_doc_lint import (  # noqa: E402
     _check_backward_coverage,
     _check_forward_coverage,
@@ -104,7 +105,6 @@ class BackwardCoverageContract(unittest.TestCase):
             (REPO_ROOT / "examples").exists(),
             "examples/ is back — resurrect the example-corpus COV02 census",
         )
-
 
     def test_uncovered_requirement_doc_blocks_in_gate_code(self):
         corpus = [
