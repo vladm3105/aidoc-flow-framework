@@ -9,12 +9,10 @@ loophole is closed: appending scenario IDs to one traceability line cannot
 silence ACC01 (that is exactly what a document-scoped rule would have allowed).
 """
 
-import sys
 import unittest
 
 from _spec import REPO_ROOT, load_registry
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import ACCEPTANCE_LAYERS, _check_acceptance_pairing  # noqa: E402
 
 # A BDD doc declaring two scenarios, and a TDD doc that pairs ONE via a §3

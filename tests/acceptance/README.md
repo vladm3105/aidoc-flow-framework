@@ -1,12 +1,10 @@
 # Acceptance tests
 
 **Path:** `tests/acceptance/`
-**Pyramid tier:** 3 + 4
-**Runs:** deterministic in every PR (`.github/workflows/acceptance.yml`); live
-in nightly + release
-**Gating:** required status check on `main` — context
-`Acceptance tier (deterministic)` (2026-07-27)
-**Determinism:** deterministic (default) | live (`LIVE=1`)
+**Runs:** deterministic in every PR (`.github/workflows/acceptance.yml`)
+**Gating:** required status check on `dev` — context
+`Acceptance tier (deterministic)`
+**Determinism:** deterministic (live tiers retired with the plugin harness)
 
 ## What this suite covers
 
@@ -18,9 +16,9 @@ exercise the actual `doc-<layer>` skills via `claude -p`.
 ## Quickstart
 
 ```bash
-cd framework && python3 -m unittest discover tests/acceptance -v
-LIVE=1 python3 -m unittest discover tests/acceptance/live -v
+python3 -m unittest discover -s tests/acceptance/deterministic -v
 ```
+(runs from the repository root)
 
 ## Accepted warnings (`expected_warnings/`)
 

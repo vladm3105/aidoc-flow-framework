@@ -10,13 +10,11 @@ Part A of SEED-ABSORPTION-001. Guards two surfaces:
   use only the three legal dispositions.
 """
 
-import sys
 import unittest
 
 import yaml
-from _spec import FRAMEWORK, REPO_ROOT
+from _spec import FRAMEWORK
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _check_seed_disposition  # noqa: E402
 
 GOVERNANCE = FRAMEWORK / "governance"
