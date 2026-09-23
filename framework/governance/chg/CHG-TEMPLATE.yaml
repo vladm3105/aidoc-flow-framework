@@ -1,6 +1,10 @@
 # =============================================================================
 #  CHG-TEMPLATE.yaml — Unified Change Management Template
 # =============================================================================
+#  Canonical home: this file (CHG-08 #667). The layer copy at
+#  framework/layers/09_CHG/CHG-TEMPLATE.yaml is kept byte-identical;
+#  this copy wins on any conflict.
+# =============================================================================
 #  Document Authority: PRIMARY STANDARD (single source of truth)
 #  Purpose: Governance overlay for changes to SDD artifacts across all layers
 #  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts

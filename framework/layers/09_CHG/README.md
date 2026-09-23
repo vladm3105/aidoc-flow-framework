@@ -21,6 +21,8 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
+**Canonical home**: the CHG template lives canonically at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). This directory's copy is kept byte-identical; the governance copy wins on conflict.
+
 ## What CHG Is and Is Not
 
 | CHG **IS** | CHG **IS NOT** |

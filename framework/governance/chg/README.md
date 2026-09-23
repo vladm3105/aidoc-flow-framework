@@ -21,6 +21,8 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
+**Canonical home**: this directory (`framework/governance/chg/`) holds the canonical CHG template (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; this copy wins on conflict.
+
 ## What CHG Is and Is Not
 
 | CHG **IS** | CHG **IS NOT** |
@@ -211,7 +213,7 @@ When an SDD document needs updating, the CHG record owns the version lifecycle:
 
 ### CHG Archive Convention
 
-Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `06_SPEC`, `07_TDD`, `08_IPLAN`. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
+Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `05_ADR`, `06_SPEC`, `07_TDD`, `08_IPLAN` — any SDD layer the CHG modifies, not only the downstream design layers. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
 
 ### No Stale Context in SDD Docs
 
