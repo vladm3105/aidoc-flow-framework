@@ -39,7 +39,9 @@ metadata:
 # =============================================================================
 document_control:
   iplan_id: "IPLAN-NN"
-  subtype: audit_fix  # audit_fix | code_build | deploy | combined
+  subtype: audit_fix  # audit_fix | bugfix | code_build | deploy | combined —
+    # bugfix-subtype (parent_iplan + source_chg) is the canon repair vehicle
+    # (CHG-08 #662); audit_fix retained for in-window validation passes only.
   source_spec: "Verification of [IPLAN-NN] completion"  # or "Cross-cutting (audit findings from [source])"
   status: Draft  # Draft | In Progress | Completed | Verified
   # Status lifecycle:

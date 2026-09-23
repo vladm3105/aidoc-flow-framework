@@ -2,6 +2,12 @@
 # generate_validation_report.sh — Generate IPLAN validation report
 # SDD Layer 8 — IPLAN Verification Report Generation
 #
+# DEPRECATED (CHG-08 #662): validation is recorded as EVAL-RPT reports
+# (EVAL-REPORT-TEMPLATE.yaml) and repairs run through the bugfix-subtype
+# IPLAN vehicle. This script still generates the legacy audit_fix flow and
+# `${id}_validation_fixes.yaml` outputs, which fail bugfix_lint BGF-01/02
+# naming — do not use for new validation; retained for existing readers.
+#
 # Usage: ./scripts/generate_validation_report.sh <IPLAN-NN> [--fix-found]
 #
 # Arguments:

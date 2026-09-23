@@ -163,18 +163,21 @@ the bugfix IPLAN + the authorizing CHG + the index.
 
 ## Validation Workflow (Completed → Verified)
 
+Validation runs as EVAL cycles (CHG-08 #662 — the legacy create-IPLAN-VERIFY
+flow below is superseded):
+
 1. All `file_manifest` entries reach `DONE` + `verified: true`
 2. Document status flips to `Completed`
-3. Run unit tests from `file_manifest` (tdd_ref cases)
-4. Run integration tests from `execution_commands.validation`
-5. Create validation report using `IPLAN-VERIFY-TEMPLATE`
-6. If findings exist:
-   a. Create IPLAN-VERIFY to fix P0/P1 issues
+3. Author (or reuse) the owning EVAL document (`EVAL-{NN}/EVAL-{NN}.yaml`)
+4. Run eval cycle 1 (`initial_eval`) from `execution_commands.validation`;
+   record `EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` (EVAL-REPORT-TEMPLATE)
+5. If findings exist:
+   a. Repair via a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`)
    b. Fix all critical findings
-   c. Re-run validation
-7. When all findings resolved:
+   c. Re-run the next cycle (`bug_fix_verification`)
+6. When all findings resolved:
    a. Mark original IPLAN as `Verified` (FINAL/FINITE)
-   b. Close validation IPLAN as `Completed`
+   b. Close the bugfix IPLAN per its rollback/resolution markers
 
 ## Verified IPLAN Immutability Rule
 
@@ -193,7 +196,7 @@ To modify a Verified IPLAN:
 | File | Purpose |
 |------|---------|
 | `IPLAN-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `IPLAN-VERIFY-TEMPLATE.yaml` | **Validation/Verification** — use after Completed status to verify implementation correctness. Records findings, severity, fixes. When all P0/P1 resolved, mark original IPLAN as Verified. |
+| `IPLAN-VERIFY-TEMPLATE.yaml` | **Legacy validation** — superseded by the EVAL-RPT flow (CHG-08 #662); retained for existing readers. New validation authors EVAL-RPT reports; repairs use the `bugfix` subtype. |
 
 **Downstream**: [10_EVAL](../10_EVAL/) — Evaluation & QA Governance
 
