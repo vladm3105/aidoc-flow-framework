@@ -15,6 +15,10 @@ custom_fields:
 Four channels. Different intents, same triage destination, transparent
 trade-offs. Pick the one that matches what you're trying to do.
 
+> **Retired channels (CHG-08 #670):** the in-product (`/aidoc-flow:*`) and
+> website channels below died with the Claude Code plugin — only **Direct on
+> GitHub** remains live. The rest of this doc is the preserved record.
+
 > **One thing to know up front:** the plugin **never auto-submits**
 > anything. Every channel below ends at a form on `github.com` or in
 > your Gmail — *you* click Submit. The AI Team handles filtering and

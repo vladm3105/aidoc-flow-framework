@@ -1,10 +1,12 @@
 # Repository Structure — AI Doc Flow Framework (Multi-Platform)
 
-> Status: **as-built (post-cutover).** Created 2026-05-18; the repository
+> Status: **as-built (post-cutover) history.** Created 2026-05-18; the repository
 > converged to this layout through Phases 1–5 and replaced `main` at the
 > `v1.0.0` cutover. The `legacy/` tree was removed (preserved on the protected
 > `legacy-ucx-v3.2-read-only` branch). Post-v1.0 additions (CI + security
 > tooling, the GATE-SPEC change gate, the adaptation overlay) are reflected below.
+> Since then the platforms were archived and the layout evolved (CHG-08 #670) —
+> read the tree below as the migration-era record; the live layout is the repo root.
 
 ## Principles
 
