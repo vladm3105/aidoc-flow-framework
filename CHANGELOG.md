@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed — STALE P0 remediation: tests, linter, hooks (CHG-08, C2 MINOR → 0.58.0)
+
+- `tests/unit` quarantine: red modules skip with cited issue until the delete-or-reanchor remedy (#665)
+- `sdd_doc_lint/chg_lint.py` contradictions fixed (Proposed early-pass, L001 dedup, missing-phase error, steps-scan L004 + GOV-019, L005 fold) + L001–L005 fixtures + `_common.py` extraction (#668)
+- Hook gates: `*.sh` watch, TEMPLATE skip, commit-message check, pre-commit wiring, docs-list resync, `OLD_VERSIONS` + pin test, pre-push/review fixes (#663)
+- `framework/VERSION` bumped from `0.57.1` to `0.58.0` with mechanical pin sweep
+
 ### Fixed — AGENTS.md freshness post-0.57.0 (CHG-07, C1 PATCH → 0.57.1)
 
 - Root working agreement: dead-file mandates dropped, gate exceptions corrected,

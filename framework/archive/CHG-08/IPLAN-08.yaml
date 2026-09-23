@@ -140,9 +140,9 @@ file_manifest:
     - path: "framework/VERSION + changelogs + pin fanout"
       description: "0.57.1 → 0.58.0 via fixed sync-version-refs.sh (machine pins only)"
       order: 18
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
