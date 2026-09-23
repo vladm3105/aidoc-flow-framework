@@ -21,7 +21,7 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 - P2 doc sweeps D1–D6: point-in-time snapshots grandfathered with rationale, dead paths framed-or-fixed, `.github` push leg → dev, layer language unified on 09 operational namespace (#670).
 - T1 remedy: 8 unrunnable `tests/unit` modules deleted (subjects archived), sync test re-anchored to `hooks/sync-version-refs.sh` — 41 tests, zero skips (#665).
-- D5/D6: CHG/EVAL acceptance goldens + `test_layer_chg/eval.py`; linter sees CHG/EVAL (`_KNOWN`, section-target fallback); `VALID_TYPES` derived from TDD template; required-section pins extended to CHG/EVAL; doc-validator delegates to `_harness`; `tools/` fossils removed; dead scripts retired (#670).
+- D5/D6: CHG/EVAL acceptance goldens + layer tests; linter covers CHG/EVAL (known-artifact set, section-target fallback); case-type vocabulary derived from TDD template; required-section pins extended; fixture validator delegates to the shared harness; deleted-dir path inserts removed; dead scripts retired (#670).
 - `framework/VERSION` bumped from `0.59.0` to `0.59.1` with mechanical pin sweep.
 
 ## [0.59.0] — 2026-09-23
