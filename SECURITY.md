@@ -2,25 +2,21 @@
 
 ## Supported versions
 
-This is a specification + tooling project (an engine-agnostic `framework/` spec
-plus two platforms). The project, the spec, and each platform are versioned and
-released independently (`docs/PROJECT.md` §2), and each carries its own
-`VERSION` file.
+This is a specification + tooling project: an engine-agnostic `framework/` spec
+plus `sdd_doc_lint/` and `hooks/` tooling, versioned via `framework/VERSION`
+(CHG-08 #670 — the two-platforms/streams layout below is retired).
 
-> **Note:** Both platforms (Hermes MCP server, Claude Code plugin) and the
-> shared `tools/` directory have been archived to `archive/platforms/` and
-> `archive/tools/` respectively. The `legacy/` parking area remains archived
-> in place. Archived directories are not actively maintained or released.
-
-Security fixes land on `main` and ship in the next release of each affected
-stream; they are not backported to earlier releases. Report against `main`, or
-against whatever build you are running — including an untagged one.
+Security fixes land via pull request to `dev` and ship in the next
+`framework/VERSION` release; they are not backported to earlier releases.
+Report against `dev`, or against whatever build you are running — including an
+untagged one.
 
 | Component | Supported |
 |-----------|-----------|
-| `main` | ✅ — fixes land here first |
-| The most recent release of each stream | ✅ — fixed on `main`, shipped in that stream's next release |
-| Anything older, pre-cutover project releases (`< v1.0`) included, and branch `legacy-ucx-v3.2-read-only` | ❌ |
+| `dev` | ✅ — fixes land here first |
+| The most recent `framework/VERSION` release | ✅ |
+| Anything older | ❌ |
+
 
 ## Reporting a vulnerability
 
@@ -46,27 +42,19 @@ This opens a private advisory visible only to the maintainers.
 
 ## Scope
 
-In scope: the `framework/` spec tooling, the shared `tests/` tooling, and this
-repository's own automation (`.github/workflows/`, `scripts/`) — workflow
-definitions and hook scripts both execute, and some workflows run on a
-self-hosted runner pool.
+In scope: the `framework/` spec, `sdd_doc_lint/` + `hooks/` tooling, the shared
+`tests/` tooling, and this repository's own automation (`.github/workflows/`,
+`sdd_doc_lint/`, `hooks/`) — workflow definitions, hook scripts, and linters
+both execute, and some workflows run on a self-hosted runner pool.
 
-Archived (in scope only for historical / security-advisory purposes): the
-Hermes MCP server (`archive/platforms/hermes/`), the Claude Code plugin
-(`archive/platforms/claude-code-plugin/`), the shared tooling in
-`archive/tools/` (the SDD linter, the saga driver and the sync scripts among
-others). Archived directories are read-only and not actively released.
-
-Out of scope: `legacy/`, a parking area for plugin skills pulled from the
-shipped surface — nothing under it is discovered or shipped — and the
-pre-migration archive branch
-`legacy-ucx-v3.2-read-only`.
+Out of scope: anything under `framework/archive/` (pre-change originals —
+read-only audit trail, never executed).
 
 ## Automated security checks
 
 **Only three of the checks below can block a merge:** `bandit`,
 `detect-secrets` and `detect-private-key`. They run in the `pre-commit` job,
-which is a required status check on `main`
+which is a required status check on `dev`
 (`call / Lint / format / security hooks`). Everything else reports without
 gating: a red advisory check leaves a pull request warned but mergeable, and
 maintainers triage those findings by hand. The one control that stops a change
