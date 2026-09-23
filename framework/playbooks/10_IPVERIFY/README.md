@@ -8,12 +8,17 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.58.0 |
+| Framework Version | 0.59.0 |
 
 ## Purpose
 
 Playbooks for verifying IPLAN implementation correctness through iterative EVAL cycles.
 These playbooks enforce the IPLAN status lifecycle and ensure quality before marking IPLANs as Verified.
+
+> Canon split (CHG-08 #672): `10_EVAL` authors EVAL documents (strategy +
+> REPORT template); `10_IPVERIFY` executes eval cycles and records RPT
+> reports. Authoring questions go to `playbooks/10_EVAL/`; execution
+> questions are answered here.
 
 ## Core Concept: The Eval Cycle
 
@@ -34,6 +39,7 @@ IPLAN Completed
 | Playbook | Role | Purpose |
 |----------|------|---------|
 | `evaluator.md` | EVAL Executor | Runs eval cycles, creates RPT reports |
+| `validator.md` | Cycle Validator | Runs one eval cycle per validation pass, records EVAL-RPT (retargeted #672; legacy VERIFY flow superseded) |
 | `verifier.md` | IPLAN Verifier | Reviews latest RPT verdict, marks IPLAN Verified |
 | `report_generator.md` | RPT Generator | Generates EVAL-RPT from test execution output |
 
@@ -123,6 +129,10 @@ docs/sdd/10_EVAL/
 ```
 
 ## Scripts
+
+> `eval-trend.sh` does not exist in this tree (documented below from the
+> archived layout; see #662 — scripts retarget to EVAL-RPT or are marked
+> deprecated there).
 
 | Script | Purpose |
 |--------|---------|

@@ -80,45 +80,45 @@ file_manifest:
     - path: "framework/layers/10_EVAL/ + playbook outputs"
       description: "P1-1 #664: REPORT canon + RPT tombstone + test_results pin + old-ID ban + conformance pins"
       order: 8
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/layers/09_CHG/ + framework/governance/chg/"
       description: "P1-2 #667: KEEP §7 + 8-layer enum, canon governance/chg, sync + pointer"
       order: 9
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/playbooks/10_EVAL/ + 10_IPVERIFY/ + framework/README.md"
       description: "P1-3 #672: authoring-vs-execution split statement + validator.md retarget + README fix"
       order: 10
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "MVP set (8) + index skeleton links (7) + DOC_GOVERNANCE claim"
       description: "P1-4 #666: tombstone-with-pointer + link retargets + claim fix"
       order: 11
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "08_IPLAN README + PLAN_STANDARD + scripts + VERIFY template"
       description: "P1-5 #662: quarantine-first retarget/deprecate + tmp row removal + bugfix subtype note"
       order: 12
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "saga.schema.json + LAYER_REGISTRY + ID_NAMING + DOC_CORE + TRACEABILITY + LINT_RULES"
       description: "P1-6 #671: one-pass EVAL/CHG rows (enum, prefixes, lifecycles, scope, chain, ACC01)"
       order: 13
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/ID_NAMING_STANDARDS.md §File Naming"
       description: "P1-7 #669: general slug form + EVAL/RPT/CHG carve-outs + bugfix row (no new PRD/EARS/ADR rules)"
       order: 14
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "P2 sweep files (D1/D2/D3/D4)"
       description: "#670: versions → 0.58.0 truth; dead paths reword-or-sweep; branches → dev; one layer language"
       order: 15
@@ -143,6 +143,12 @@ file_manifest:
       status: DONE
       session: 1
       verified: true
+    - path: "framework/VERSION + changelogs + pin fanout (stacked PR)"
+      description: "0.58.0 → 0.59.0: second MINOR for the stacked P1 PR (GATE-SPEC needs VERSION+CHANGELOG per PR diff)"
+      order: 19
+      status: DONE
+      session: 1
+      verified: false
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -154,7 +160,7 @@ tdd_consistency:
     - "T2: Proposed C3 draft passes L002; L001 reports once; missing phase errors; steps-scan L004 green on iplan_creation ref"
     - "T3: ch-gate skips *TEMPLATE*, watches *.sh; sync-version-refs regex test pins 0.58.0"
     - "P1-1: conformance pins REPORT test_results shape; old BDD.NN.TC-NN.NN form banned"
-    - "P1-2: both CHG homes byte-identical except the pointer file"
+    - "P1-2: both CHG homes byte-identical with governance canon declared"
     - "D2: rg sweep clean except grandfathered history"
 
 # =============================================================================

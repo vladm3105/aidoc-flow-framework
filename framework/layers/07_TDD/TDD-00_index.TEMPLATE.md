@@ -51,7 +51,7 @@ SPEC (L6)  ──►  TDD (L7)  ──►  IPLAN (L8)  ──►  Code
 ## Templates
 
 - [TDD-TEMPLATE.yaml](TDD-TEMPLATE.yaml) — **Default** — full template with embedded authoring guidance
-- [TDD-MVP-TEMPLATE.yaml](TDD-MVP-TEMPLATE.yaml) — Skeleton — not standalone; must also read the full template
+- [TDD-MVP-TEMPLATE.yaml](TDD-MVP-TEMPLATE.yaml) — retired tombstone pointer to the canonical template (CHG-08 #666)
 
 ## Quality Gate
 

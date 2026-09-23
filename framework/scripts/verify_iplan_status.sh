@@ -2,6 +2,12 @@
 # verify_iplan_status.sh — Verify IPLAN status transitions and generate validation report
 # SDD Layer 8 — IPLAN Status Lifecycle Enforcement
 #
+# PARTLY DEPRECATED (CHG-08 #662): status-transition checks below remain live;
+# the validation/report arms (`run_validation`, `generate_validation_report`)
+# drive the legacy VERIFY flow — validation is recorded as EVAL-RPT reports
+# and repairs run through the bugfix-subtype IPLAN vehicle. Retained for
+# existing readers; do not extend.
+#
 # Usage: ./scripts/verify_iplan_status.sh <IPLAN-NN> [--validate] [--report]
 #
 # Arguments:

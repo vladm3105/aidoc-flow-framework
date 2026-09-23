@@ -1,16 +1,22 @@
 ---
 name: IPLAN Validator
-description: Validates IPLAN implementation correctness, runs tests, and records findings
+description: Runs an eval cycle against a Completed IPLAN per its EVAL document, records an EVAL-RPT report
 agent: general
-layer: 08_IPLAN
+layer: 10_EVAL
 trigger: IPLAN status = "Completed"
 ---
 
 # IPLAN Validator Playbook
 
+> Flow note (CHG-08 #672): this playbook drives the EVAL-RPT flow — one eval
+> cycle per validation pass, recorded as `EVAL-{NN}-RPT-{NNN}.yaml` authored
+> from `EVAL-REPORT-TEMPLATE.yaml`. The legacy `IPLAN-VERIFY-TEMPLATE.yaml`
+> flow (`IPLAN-NN_VALIDATION_REPORT.yaml`) is superseded; its template file
+> remains until the last live readers retarget (see #662).
+
 ## Purpose
 
-Validate that an IPLAN's implementation is correct by running tests, checking code quality, and recording any findings. This playbook enforces the quality gates before an IPLAN can be marked as Verified.
+Validate that an IPLAN's implementation is correct by running the eval cycle defined in its EVAL document and recording an EVAL-RPT report. This playbook enforces the quality gates before an IPLAN can be marked as Verified.
 
 ## When to Use
 
@@ -20,15 +26,16 @@ Validate that an IPLAN's implementation is correct by running tests, checking co
 
 ## Inputs
 
-- **IPLAN file**: The IPLAN to validate
-- **Validation template**: `IPLAN-VERIFY-TEMPLATE.yaml`
+- **IPLAN file**: The IPLAN to validate (status "Completed")
+- **EVAL document**: `EVAL-{NN}/EVAL-{NN}.yaml` — defines what to test
+- **Report template**: `EVAL-REPORT-TEMPLATE.yaml`
 - **Test commands**: From IPLAN's `execution_commands.validation`
 
 ## Outputs
 
-- **Validation report**: `IPLAN-NN_VALIDATION_REPORT.yaml`
-- **Findings list**: P0-P3 severity findings
-- **Recommendation**: PASS/FAIL/PARTIAL
+- **Eval report**: `EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml`
+- **Findings list**: P0-P2 severity findings (finding IDs `F-NNN`)
+- **Verdict**: PASS | PASS-WITH-NOTES | FAIL | BLOCKED
 
 ## Workflow
 
@@ -74,12 +81,11 @@ Validate that an IPLAN's implementation is correct by running tests, checking co
 
 ```
 For each test failure or issue:
-1. Assign finding ID (FINDING-001, FINDING-002, ...)
+1. Assign finding ID (F-001, F-002, ...)
 2. Classify severity:
    - P0: Test failure, security issue, data corruption
    - P1: Logic error, resilience gap
    - P2: Hardening, edge case
-   - P3: Code quality, documentation
 3. Record file:line reference
 4. Describe what was wrong
 5. Document fix applied (if any)
@@ -88,26 +94,27 @@ For each test failure or issue:
 ### Step 5: Generate Report
 
 ```
-1. Use IPLAN-VERIFY-TEMPLATE.yaml as base
+1. Use EVAL-REPORT-TEMPLATE.yaml as base
 2. Fill in:
-   - validation_summary (file completion, findings count)
-   - validation_findings (all findings)
-   - severity_classification (P0-P3 definitions)
-   - cross_iplan_impact (if fixes affect other IPLANs)
-   - file_manifest (files modified during validation)
-3. Save as IPLAN-NN_VALIDATION_REPORT.yaml
+   - §3 results (totals from this run)
+   - §4 test_results (one entry per EVAL test case, `EVAL.NN.SS.xxxx` IDs)
+   - §5 findings (one per failure, `F-NNN` IDs, P0-P2)
+   - §9 verdict (PASS | PASS-WITH-NOTES | FAIL | BLOCKED with reasoning)
+3. Save as EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml (next cycle number)
 ```
 
-### Step 6: Provide Recommendation
+### Step 6: Record Verdict
 
 ```
-Based on findings:
+Based on findings (REPORT §9 rules):
 - If P0_count == 0 AND P1_count == 0:
-  recommendation = "Verified" (ready for final status)
+  verdict = "PASS" (ready for Verified)
+- If P0 pass but some P1 fail with documented workaround:
+  verdict = "PASS-WITH-NOTES"
 - If P0_count > 0:
-  recommendation = "FAIL" (must fix P0 before Verified)
-- If P1_count > 0:
-  recommendation = "PARTIAL" (should fix P1 before Verified)
+  verdict = "FAIL" (must fix P0, then run the next cycle)
+- If infrastructure unavailable:
+  verdict = "BLOCKED"
 ```
 
 ## Severity Classification
@@ -117,7 +124,6 @@ Based on findings:
 | P0 | Critical | Test failure, runtime panic, data corruption, security breach | Blocks Verified status |
 | P1 | High | Incorrect behavior, resilience gap, business logic error | Should fix before Verified |
 | P2 | Medium | Missing feature, incomplete handling, hardening gap | Can defer to follow-up IPLAN |
-| P3 | Low | Code quality, naming, documentation | No gate |
 
 ## Validation Checklist
 
@@ -129,7 +135,7 @@ Based on findings:
 - [ ] All file_manifest entries have verified: true
 - [ ] No P0 findings
 - [ ] No P1 findings (or documented exceptions)
-- [ ] Validation report generated
+- [ ] EVAL-RPT report generated (`EVAL-{NN}-RPT-{NNN}.yaml`)
 
 ## Example Usage
 

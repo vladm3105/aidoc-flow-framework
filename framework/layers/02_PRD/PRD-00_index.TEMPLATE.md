@@ -113,7 +113,7 @@ PRD must achieve **EARS-Ready score >=90/100** before downstream EARS generation
 ## Related Documents
 
 - **Template** (default): [PRD-TEMPLATE.yaml](./PRD-TEMPLATE.yaml)
-- **MVP skeleton**: [PRD-MVP-TEMPLATE.yaml](./PRD-MVP-TEMPLATE.yaml) — not standalone
+- **MVP skeleton**: retired — [PRD-MVP-TEMPLATE.yaml](./PRD-MVP-TEMPLATE.yaml) is a tombstone pointer to the canonical template (CHG-08 #666)
 - **README**: [README.md](./README.md) — PRD purpose and structure
 - **Upstream**: [01_BRD](../01_BRD/) — Business Requirements
 - **Downstream**: [03_EARS](../03_EARS/) — Formal Requirements

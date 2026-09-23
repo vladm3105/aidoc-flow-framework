@@ -102,6 +102,20 @@ class GuardCatalogAgreement(unittest.TestCase):
                 self.assertIn("| Direct | GATE-CODE", text)
                 self.assertIn("CHG_REQUEST_FLOWS.md", text)
 
+    def test_template_copies_identical(self):
+        """The CHG template fork is closed: both copies byte-identical (#667)."""
+        self.assertEqual(
+            _text(LAYER_TEMPLATE),
+            _text(GOV_TEMPLATE),
+            "CHG-TEMPLATE.yaml copies diverged — sync from the governance canon",
+        )
+
+    def test_canon_home_declared(self):
+        """Both copies name the governance home as canon on conflict (#667)."""
+        for template in (LAYER_TEMPLATE, GOV_TEMPLATE):
+            with self.subTest(template=str(template)):
+                self.assertIn("Canonical home", _text(template))
+
 
 if __name__ == "__main__":
     unittest.main()

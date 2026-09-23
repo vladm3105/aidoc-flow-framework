@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — STALE P1 canons: one canonical surface per fork (CHG-08, C2 MINOR → 0.59.0)
+
+- EVAL report canon REPORT + RPT tombstone; CHG template canon `governance/chg/` (KEEP §7, 8-layer enum, byte-identical twins); playbook split + `validator.md` retarget; 8 MVP tombstones + index retargets; vehicle → EVAL-RPT + bugfix canon (`tmp/` retired); triple-lock rows + File Naming rewrite (#664 #667 #672 #666 #662 #671 #669)
+- `framework/VERSION` bumped from `0.58.0` to `0.59.0` with mechanical pin sweep
+
 ### Fixed — STALE P0 remediation: tests, linter, hooks (CHG-08, C2 MINOR → 0.58.0)
 
 - `tests/unit` quarantine: red modules skip with cited issue until the delete-or-reanchor remedy (#665)

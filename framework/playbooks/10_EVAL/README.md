@@ -8,13 +8,17 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.58.0 |
+| Framework Version | 0.59.0 |
 
 ## Purpose
 
 Playbooks for authoring and managing EVAL (Layer 10) documents. EVAL documents
 define what to test for each IPLAN, enforce the ID naming standard, and ensure
 one-source-per-test-case traceability.
+
+> Canon split (CHG-08 #672): this directory authors EVAL documents (strategy +
+> REPORT template). Cycle execution and RPT reports live in
+> `playbooks/10_IPVERIFY/`.
 
 ## Core Concept: EVAL Authoring
 

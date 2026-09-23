@@ -11,9 +11,21 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.58.0 |
+| Framework Version | 0.59.0 |
 
 ---
+
+## [0.59.0] — 2026-09-23
+
+### Added — STALE P1 canons: one canonical surface per fork (CHG-08, GD-34, C2 MINOR)
+
+- EVAL report canon REPORT + RPT tombstone + `test_results` pin + old-ID ban (#664).
+- CHG template canon `governance/chg/` (KEEP §7 validation block, 8-layer enumeration, byte-identical twins, canon-home pins) (#667).
+- Playbook split: 10_EVAL authoring vs 10_IPVERIFY execution; `validator.md` retargeted to EVAL-RPT; framework README folder count fixed (#672).
+- MVP: 8 retired-schema templates tombstoned with pointers, 7 index skeleton links retargeted, one-template claim fixed, carrier/seed tests re-anchored (#666).
+- Verification vehicle retargeted to EVAL-RPT flow + bugfix-subtype repairs; `tmp/` retired; scripts deprecated with headers (#662).
+- Triple-lock one-pass EVAL/CHG rows (schema enum, naming prefixes/lifecycles, scope 1–10, traceability chain/table); File Naming general slug form + carve-outs + bugfix row (#671 #669).
+- `framework/VERSION` bumped from `0.58.0` to `0.59.0` with mechanical pin sweep.
 
 ## [0.58.0] — 2026-09-23
 

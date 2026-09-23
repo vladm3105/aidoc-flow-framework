@@ -3,7 +3,7 @@
 ## Traceability Chain
 
 ```
-BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
+BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → EVAL (L10) → Code
 ```
 
 ## Necessary-upstream tagging
@@ -26,6 +26,7 @@ Layer 5 (ADR):   @ears @bdd
 Layer 6 (SPEC):  @ears @bdd @adr
 Layer 7 (TDD):   @ears @bdd @adr @spec
 Layer 8 (IPLAN): @spec @tdd
+Layer 10 (EVAL): @ears @bdd @tdd @iplan
 ```
 
 `required_tags` is the **minimum trace-resolution set**: a layer MAY
@@ -110,7 +111,8 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
 | ADR | @ears, @bdd | SPEC |
 | SPEC | @ears, @bdd, @adr | TDD |
 | TDD | @ears, @bdd, @adr, @spec | IPLAN |
-| IPLAN | @spec, @tdd | Code |
+| IPLAN | @spec, @tdd | EVAL |
+| EVAL | @ears, @bdd, @tdd, @iplan | Code |
 
 ## Layer Readiness Gates
 

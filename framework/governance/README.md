@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.58.0 |
+| Framework Version | 0.59.0 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents

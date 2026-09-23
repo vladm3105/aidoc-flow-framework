@@ -14,6 +14,8 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential n
 | SPEC | SPEC | SPEC-01 |
 | TDD | TDD | TDD-01 |
 | IPLAN | IPLAN | IPLAN-01 |
+| CHG | CHG | CHG-01 |
+| EVAL | EVAL | EVAL-01 |
 
 ### Cross-layer cardinality (CLEANUP-PR-F item 18)
 
@@ -301,9 +303,10 @@ Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 
 The `status:` field appears across different scopes with distinct legal-value enumerations:
 
-- **Document Lifecycle (Layers 1-4, 6-7):** `Draft` | `In Review` | `Approved`
+- **Document Lifecycle (Layers 1-4, 6-7, 10):** `Draft` | `In Review` | `Approved`
 - **ADR Lifecycle (Layer 5):** `Proposed` | `Accepted` | `Deprecated` | `Superseded`
-- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed`
+- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed` | `Verified`
+- **CHG Lifecycle (Layer 9):** `Proposed` | `Approved` | `In-Progress` | `Implemented` | `Completed` (§3.3)
 - **Option / Item Status:** `Selected` | `Pending` | `Rejected`
 
 ## File Naming
@@ -311,10 +314,20 @@ The `status:` field appears across different scopes with distinct legal-value en
 | File | Format | Example |
 |------|--------|---------|
 | Template | `{TYPE}-TEMPLATE.yaml` | `BRD-TEMPLATE.yaml` |
-| Index | `{TYPE}-00_index.md` (Layers 1-7) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
+| Index | `{TYPE}-00_index.md` (Layers 1-7, 9, 10) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
-| Document | `{TYPE}-NN.yaml` (BRD, IPLAN: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
+| Document | `{TYPE}-NN_{slug}.yaml`, with carve-outs below | `BRD-01_kyc_onboarding.yaml` |
+| Bugfix IPLAN | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | `IPLAN-10_bugfix_09_slug.yaml` |
 | README | `README.md` | — |
+
+Document carve-outs (the general slug form holds unless listed here — CHG-08 #669;
+no new PRD/EARS/ADR filename rules are minted: those index templates carry only
+generic slug-allocation bullets, not normative filename rules):
+
+- EVAL strategy: `EVAL-{NN}.yaml` (no slug) — `10_EVAL/README.md` Naming Conventions
+- EVAL report: `EVAL-{NN}-RPT-{NNN}.yaml` (RPT cycle number, no slug)
+- CHG record: `CHG-{NN}.yaml` (no slug; archive originals sit under
+  `framework/archive/{CHG-ID}/`)
 
 > **Extensions are authoritative in `../registry/LAYER_REGISTRY.yaml` `extensions`** — the
 > single normative source (GD-17). The table above states the values; it does not re-specify

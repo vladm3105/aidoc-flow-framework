@@ -1,6 +1,10 @@
 # =============================================================================
-#  CHG-08: STALE batch remediation (#662–#672, 11 issues) + MINOR 0.57.1 → 0.58.0
+#  CHG-08: STALE batch remediation (#662–#672, 11 issues) + MINOR 0.57.1 → 0.58.0 → 0.59.0
 # =============================================================================
+#  Landing: two PRs — #678 (vehicle + P0 + 0.58.0 bump) then #679 (P1 canons +
+#  0.59.0 bump). One MINOR per landing PR (GATE-SPEC needs VERSION+CHANGELOG in
+#  each PR diff); both under this CHG. Lifecycle new_version rows state the
+#  0.58.0 SDD-rewrite target; the stacked PR re-pins mechanically to 0.59.0.
 #  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
 #  IPLAN: framework/archive/CHG-08/IPLAN-08.yaml (In Progress, authorizing)
 #  Issues: #662 (P1-5 vehicle) #663 (T3 hooks) #664 (P1-1 EVAL fork)

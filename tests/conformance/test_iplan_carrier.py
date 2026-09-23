@@ -1,13 +1,9 @@
-"""Conformance: both IPLAN templates carry the `tdd_ref` TDD-case carrier.
+"""Conformance: the canonical IPLAN template carries the `tdd_ref` TDD-case carrier.
 
 IPLAN-TDDREF-001. The carrier is the key a downstream coverage rule matches on one
-line (the analogue of the TDD layer's `bdd_ref`). Nothing else locks it:
-`test_seed_contract.py`'s MVP-skeleton precedent is BRD-scoped, and
-`test_element_id_layer_contract.py` explicitly excludes `*-MVP-TEMPLATE.yaml`. Without
-this guard, dropping the field from either template stays green.
-
-Both templates are asserted, not just the skeleton: the canonical template is exactly
-as unguarded as the MVP one.
+line (the analogue of the TDD layer's `bdd_ref`). The retired MVP skeleton is
+pinned as a tombstone pointer instead (CHG-08 #666) — nothing may re-add
+template content to it.
 
 The asserts PARSE the YAML rather than grepping — a substring check for `tdd_ref` is
 satisfied by the unrelated `tdd_references:` key in the traceability section.
@@ -25,16 +21,11 @@ CARRIER = "tdd_ref"
 
 
 def _entries(doc: dict) -> list:
-    """The manifest entries, across both shapes.
+    """The manifest entries of the canonical template.
 
-    The canonical template nests them under `file_manifest.files`; the MVP skeleton
-    makes `file_manifest` a bare list. That divergence is tracked separately (the
-    carrier is line-local, so it attaches either way) — this helper tolerates both so
-    the guard does not silently pass by finding nothing to check.
+    The canonical template nests them under `file_manifest.files`.
     """
     manifest = doc.get("file_manifest")
-    if isinstance(manifest, list):
-        return [e for e in manifest if isinstance(e, dict)]
     if isinstance(manifest, dict):
         return [e for e in manifest.get("files") or [] if isinstance(e, dict)]
     return []
@@ -66,8 +57,18 @@ class IplanCarrier(unittest.TestCase):
     def test_canonical_template_carries_tdd_ref(self):
         self._assert_carrier("IPLAN-TEMPLATE.yaml")
 
-    def test_mvp_skeleton_carries_tdd_ref(self):
-        self._assert_carrier("IPLAN-MVP-TEMPLATE.yaml")
+    def test_mvp_skeleton_is_tombstone(self):
+        """The retired MVP file is a tombstone pointer, not a template (#666)."""
+        path = LAYER / "IPLAN-MVP-TEMPLATE.yaml"
+        self.assertTrue(path.is_file(), f"missing tombstone: {path}")
+        doc = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        self.assertEqual(
+            set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}"
+        )
+        self.assertEqual(doc["tombstone"]["status"], "retired")
+        self.assertEqual(
+            doc["tombstone"]["canonical_template"], "./IPLAN-TEMPLATE.yaml"
+        )
 
     def test_traceability_key_is_still_named_tdd_references(self):
         """A positive assertion, because the negative one was unfalsifiable.
