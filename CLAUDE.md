@@ -173,7 +173,7 @@ Before ANY write/edit call to code files or governance files:
 Recommended flow for non-trivial changes — plan → review → implement →
 verify → land:
 
-1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
+1. **Plan** into `plans/` (a `plans/<NAME>-PLAN.md` plan) before touching
    code.
 2. **Two-cycle gap review (mandatory, BEFORE the plan PR opens)** —
    once a plan draft exists, it MUST complete at least **two full review
@@ -825,9 +825,8 @@ fresh to have settled, and never repeats one that is already here.
   **not** `archived (archive/tools/)` (which vendors `framework/` subtrees plus
   three named tools files and does not touch `sdd_doc_lint`).
 - **Propagation order for a framework version bump is load-bearing:**
-  `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
-  `archived (archive/tools/)`. Reversing it lands 51 drifted bundled playbooks
-  and a red bundle guard.
+  `framework/VERSION` → `hooks/sync-version-refs.sh` → **then** the rest of
+  the change (`framework/archive/` excluded — audit trail, never swept).
 - **The plugin and Hermes `CLAUDE.md` current-state tokens self-heal; the
   framework-spec token does not.** Since #389, `sync-version-refs.sh` detects the
   previous plugin and Hermes values **from `CLAUDE.md` itself**, so a stale token is
