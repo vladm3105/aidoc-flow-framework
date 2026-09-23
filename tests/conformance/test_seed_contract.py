@@ -102,12 +102,15 @@ class BrdSeedDispositionCarrier(unittest.TestCase):
                     f"_example absorbed row must cite a real BRD element id, got {elem!r}",
                 )
 
-    def test_mvp_skeleton_has_seed_disposition_row(self):
-        mvp = BRD_MVP_TEMPLATE.read_text(encoding="utf-8")
-        self.assertIn(
-            "seed_disposition",
-            mvp,
-            "BRD-MVP-TEMPLATE.yaml is missing the seed_disposition skeleton row",
+    def test_mvp_skeleton_is_tombstone(self):
+        """The retired MVP file is a tombstone pointer, not a template (#666)."""
+        doc = yaml.safe_load(BRD_MVP_TEMPLATE.read_text(encoding="utf-8")) or {}
+        self.assertEqual(
+            set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}"
+        )
+        self.assertEqual(doc["tombstone"]["status"], "retired")
+        self.assertEqual(
+            doc["tombstone"]["canonical_template"], "./BRD-TEMPLATE.yaml"
         )
 
 

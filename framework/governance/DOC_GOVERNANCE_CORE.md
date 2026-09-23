@@ -44,7 +44,10 @@ Practical effect:
   them. Both mandate YAML — read Principle 2 before concluding that a layer's
   instance format is unconstrained. The per-layer value is `../registry/LAYER_REGISTRY.yaml`
   `extensions` — the single normative source (GD-17); this bullet does not re-specify it.
-- Each layer has exactly one `{TYPE}-TEMPLATE.yaml`.
+- Each layer has exactly one normative `{TYPE}-TEMPLATE.yaml`. IPLAN and EVAL carry
+  additional normative templates (`IPLAN-VERIFY-TEMPLATE.yaml`,
+  `EVAL-REPORT-TEMPLATE.yaml`); retired MVP variants survive only as tombstone
+  pointers carrying no template content (CHG-08 #666).
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.
 
