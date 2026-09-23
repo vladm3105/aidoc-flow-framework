@@ -56,9 +56,9 @@ file_manifest:
     - path: "tests/unit/ quarantine"
       description: "T1 #665: skip/stub per table row first; delete or re-anchor second"
       order: 4
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "sdd_doc_lint/chg_lint.py"
       description: "T2 #668: Proposed early-pass; drop L001 dup; missing-phase error + drop heuristic; L004 scan steps with correct rule; fold/delete L005; drop inner import re"
       order: 5
