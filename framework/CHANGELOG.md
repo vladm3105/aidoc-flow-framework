@@ -11,9 +11,19 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.57.0 |
+| Framework Version | 0.57.1 |
 
 ---
+
+## [0.57.1] — 2026-09-22
+
+### Fixed — AGENTS.md freshness post-0.57.0 (CHG-07, C1 PATCH)
+
+- Root working agreement brought current with the 0.56.0/0.57.0 canon: dead-file
+  mandates dropped (`plans/HANDOFF.md`, `ROADMAP.md`), gate exceptions corrected
+  (active-IPLAN bugfixes, docs-only C1, bugfix vehicle, F2 C1-direct), SDD-first
+  scoped to F1/F3, `python3` invocation, CHG-L013/GOV-018 line, flows-router pointer.
+- `hooks/sync-version-refs.sh`: 0.57.0 sweep lines (E005/E008 compliance for this bump).
 
 ## [0.57.0] — 2026-09-22
 
