@@ -7,7 +7,7 @@
 | Status | PLANNED — 2026-09-20T00:00:00Z |
 | Depends on | `bd32a927` (feat/clean-up: deleted `archive/`, `examples/`, `tmp/` — 1027 files); prior removal of top-level `platforms/`, `tools/`, `plans/` |
 | Feeds | green conformance on `feat/clean-up`; subsequent breaking-change work |
-| Version impact | none for the pure-cleanup steps (test/hook/tooling repair only); PATCH `0.53.2 → 0.53.3` if the #652 archive-scope text fix ships in the same PR (governance doc change) |
+| Version impact | none for the pure-cleanup steps (test/hook/tooling repair only); PATCH `0.53.2 → 0.53.3` if the #652 archive-scope text fix ships in the same PR (governance doc change). Point-in-time (frozen 2026-09-20; spec is at 0.59.0 — CHG-08 #670): version literals in this plan record are history, not live pins. |
 
 ## GitHub issues — triage (2026-09-20)
 
