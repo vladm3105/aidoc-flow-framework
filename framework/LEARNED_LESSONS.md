@@ -7,6 +7,12 @@ last_updated: 2026-10-06
 
 # Learned Lessons & Project Knowledge
 
+> ID vintage note (CHG-08 #670): rule IDs below are quoted as minted
+> (`TDD-SYNC-001`…); the live catalog is `TDD-SYNC-A`…`E`
+> (`LINT_RULES.md`). Script paths below name their era (`./scripts/…`,
+> `tools/…`); live paths are `framework/scripts/…`, `sdd_doc_lint/…`.
+> Incident evidence is preserved verbatim — do not "fix" it into current IDs.
+
 Institutional knowledge extracted from live project sessions. Every rule in this file was
 earned the hard way — through bugs, broken governance, or SDD chain failures. Reference this
 document when writing governance rules, lint checks, or templates.

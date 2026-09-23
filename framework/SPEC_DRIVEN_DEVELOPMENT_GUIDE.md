@@ -46,8 +46,9 @@ through the scoped bugfix vehicle (**F4**, parent immutable), and small direct r
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer.
-Deeper lineage is transitive (one hop per layer, or a trace-walk query — the
-reference implementation ships `tools/trace_walk.py`, outside the spec):
+Deeper lineage is transitive (one hop per layer, or a trace-walk query over the
+`@`-tag graph — no such script ships in this repo; the traversal is the
+normative capability, outside the spec):
 
 ```
 BRD:   —

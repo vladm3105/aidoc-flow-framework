@@ -12,10 +12,10 @@ Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
 layer. Deeper lineage is discoverable transitively (one hop per layer, or a
 one-shot trace-walk query). The `tools/*.py` helpers this document names
-(`trace_walk.py`, `sdd_coverage.py`) are a **reference implementation outside
-the engine-agnostic spec** — the traversal they perform over the `@`-tag graph
-is the normative capability; the scripts themselves are a convenience an engine
-MAY provide.
+(`trace_walk.py`, `sdd_coverage.py`) describe a **reference implementation
+outside the engine-agnostic spec** — no such scripts ship in this repo; the
+traversal they would perform over the `@`-tag graph is the normative
+capability, and the scripts themselves are a convenience an engine MAY provide.
 
 ```
 Layer 1 (BRD):   —
@@ -32,10 +32,10 @@ Layer 10 (EVAL): @ears @bdd @tdd @iplan
 `required_tags` is the **minimum trace-resolution set**: a layer MAY
 additionally carry provenance tags (e.g. a platform ADR recording `@brd`/`@prd`
 in its `context`) but is not required to. Reverse lookup ("which BRD does
-SPEC-07 trace to?") walks the chain transitively, not a local tag — run
-`tools/trace_walk.py <ID>` for that one-shot backward query, or consult the
-generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (produced by
-`tools/sdd_coverage.py <docs_root>`; CFB-PR-2) for the forward direction — "which
+SPEC-07 trace to?") walks the chain transitively, not a local tag — query the
+`@`-tag graph directly for that one-shot backward lookup, or consult the
+generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (CFB-PR-2)
+for the forward direction — "which
 SPEC/IPLAN realizes this BRD requirement?". Both read the same `@`-tag graph, so
 the forward matrix and the backward walker never disagree. The matrix is
 **generated/regenerable — never hand-edited.**

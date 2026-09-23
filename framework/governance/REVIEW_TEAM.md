@@ -284,7 +284,7 @@ The synthesizer emits `verdict.playbook_coverage` summarizing how many findings 
 
 ## Necessary upstream + transitive trace
 
-A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query (the reference implementation ships `tools/trace_walk.py`, outside the spec).
+A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query over that graph (no such script ships in this repo — the traversal is the normative capability, outside the spec).
 
 The necessary-upstream set per layer:
 

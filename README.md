@@ -333,10 +333,9 @@ for the vulnerability-reporting policy.
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - `framework/README.md` — the engine-agnostic SDD specification.
-- [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
-- [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).
+- [`framework/governance/aidoc/AIDOC.md`](framework/governance/aidoc/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
+- [`plans/ACCEPTANCE-HISTORY.md`](plans/ACCEPTANCE-HISTORY.md) — retired acceptance-test methodology (moved from `tests/ACCEPTANCE.md`, CHG-08 #670).
 - [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
-- [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md) — per-PR implementation timeline + design evolution + lessons learned for the acceptance suite.
 - [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
 
 ## Pre-migration history
