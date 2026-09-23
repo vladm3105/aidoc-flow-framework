@@ -1,20 +1,20 @@
 # Unit tests
 
 **Path:** `tests/unit/`
-**Pyramid tier:** 2
-**Runs:** every PR
+**Runs:** manually — no CI workflow or hook executes this suite
 **Determinism:** deterministic
 
 ## What this suite covers
 
-Per-skill SKILL.md manifest validation, lint-code targeting matrix
-(each code fires on its own fixture only), sync-script idempotency, helper
-resolution, and orphan-governance guards. Pure-Python, no LLM, no network.
+Focused unit checks for lint/test helpers (pin-currency reader, trace
+resolution, template checks, sync-script guards). Modules whose subject was
+deleted with the plugin/tools archivals skip with a cited issue (#665) until
+the delete-or-reanchor remedy. Pure-Python, no LLM, no network.
 
 ## Quickstart
 
 ```bash
-cd framework && python3 -m unittest discover tests/unit -v
+python3 -m unittest discover -s tests/unit -v
 ```
 
 ## Environment
