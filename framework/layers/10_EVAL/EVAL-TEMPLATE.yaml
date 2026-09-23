@@ -200,7 +200,7 @@ coverage_matrix:
     Every scenario/case in this IPLAN's scope MUST appear in this matrix.
 
   entries:
-    - source_id: "BDD.NN.TC-NN.NN"
+    - source_id: "BDD.NN.SS.xxxx"
       source_type: bdd_scenario
       test_case_id: "EVAL.NN.SS.xxxx"
       test_file: "[path/to/test_file]"

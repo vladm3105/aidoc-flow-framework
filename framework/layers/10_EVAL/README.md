@@ -86,8 +86,13 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
 - `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
-- `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report
+- `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
 - `EVAL-00_index.TEMPLATE.md` — master index template
+
+> Canon note: `EVAL-RPT-TEMPLATE.yaml` is tombstoned — it lacked §4
+> `test_results` and carried the banned `EVAL-NN.BDD-NN.TC-NN.NN` ID form.
+> RPT survives only as the report *filename* shorthand
+> (`EVAL-{NN}-RPT-{NNN}.yaml`). Author reports from `EVAL-REPORT-TEMPLATE.yaml`.
 
 ## Layer Position
 
