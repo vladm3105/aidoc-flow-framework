@@ -52,6 +52,7 @@ title: "[Change Title]"
 
 metadata:
   document_type: "chg-document"
+  layer: 9
   purpose: governance  # NOT a lifecycle artifact — governance overlay
   last_updated: "2026-04-29"
 
