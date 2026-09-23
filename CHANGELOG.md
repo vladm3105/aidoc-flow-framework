@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed — AGENTS.md freshness post-0.57.0 (CHG-07, C1 PATCH → 0.57.1)
+
+- Root working agreement: dead-file mandates dropped, gate exceptions corrected,
+  SDD-first scoped, `python3` invocation, CHG-L013 line, flows-router pointer (#675)
+- `framework/VERSION` bumped from `0.57.0` to `0.57.1` with mechanical pin sweep
+  (E005/E008: archive vehicle under `framework/archive/CHG-07/` counts as framework change)
+
 ### Added — CHG request flows router (CHG-06, GD-32, C2 MINOR → 0.57.0)
 
 - New `framework/governance/CHG_REQUEST_FLOWS.md` (canonical, ratified): F1 greenfield,

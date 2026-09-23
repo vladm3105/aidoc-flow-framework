@@ -47,7 +47,7 @@ change_control:
   change_source: direct
   entry_gate: GATE-CODE
   semver_impact: patch
-  version_action: keep
+  version_action: upgrade
   author: "Framework Maintainer"
   date_proposed: "2026-09-22T00:00:00Z"
   date_approved: "2026-09-22T00:00:00Z"
@@ -69,6 +69,7 @@ change_description:
   scope:
     in:
       - "AGENTS.md: 7 edits (items 1–7 of #675)"
+      - "PATCH bump 0.57.0 → 0.57.1 + pin fanout + changelogs (E005/E008: the archive vehicle counts as framework change)"
     out:
       - "Authority-flip (unmerged, another session — non-overlapping lines)"
       - "42-vs-41 census item (stays with #670/D4)"

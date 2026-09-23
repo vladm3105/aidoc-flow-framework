@@ -38,7 +38,13 @@ file_manifest:
     - path: "AGENTS.md"
       description: "7 edits per #675 items 1–7 (HANDOFF/ROADMAP rows, gate exceptions, SDD-first scope, python3, L013 line, router pointer)"
       order: 1
-      status: PLANNED
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/VERSION + pin fanout + changelogs"
+      description: "PATCH bump 0.57.0 → 0.57.1 (E005), hook 0.57.0 sweep lines, framework + root CHANGELOG entries (E008)"
+      order: 2
+      status: DONE
       session: 1
       verified: false
 
