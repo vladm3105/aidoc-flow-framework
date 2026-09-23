@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed — STALE P2 sweeps + T1 remedy (CHG-08, C2 PATCH → 0.59.1)
+
+- P2 doc sweeps D1–D6: versions reworded-not-swept, dead paths framed-or-fixed, push leg → dev, one layer language (09 operational namespace) (#670)
+- T1 remedy: 8 unrunnable unit modules deleted, sync test re-anchored to the live hook — suite green with zero skips (#665)
+- D5/D6 harness: CHG/EVAL goldens + layer tests, linter CHG/EVAL coverage (section fallback, `_KNOWN`), VALID_TYPES derived from template, section pins extended, validator delegation, fossil repoint (#670)
+- `framework/VERSION` bumped from `0.59.0` to `0.59.1` with mechanical pin sweep
+
 ### Added — STALE P1 canons: one canonical surface per fork (CHG-08, C2 MINOR → 0.59.0)
 
 - EVAL report canon REPORT + RPT tombstone; CHG template canon `governance/chg/` (KEEP §7, 8-layer enum, byte-identical twins); playbook split + `validator.md` retarget; 8 MVP tombstones + index retargets; vehicle → EVAL-RPT + bugfix canon (`tmp/` retired); triple-lock rows + File Naming rewrite (#664 #667 #672 #666 #662 #671 #669)

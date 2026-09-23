@@ -120,17 +120,17 @@ file_manifest:
       session: 1
       verified: true
     - path: "P2 sweep files (D1/D2/D3/D4)"
-      description: "#670: versions → 0.58.0 truth; dead paths reword-or-sweep; branches → dev; one layer language"
+      description: "#670: versions → 0.59.0 truth; dead paths reword-or-sweep; branches → dev; one layer language (09 operational namespace)"
       order: 15
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "tests/conformance/ + tests/acceptance/deterministic/ (D5/D6)"
-      description: "#670: CHG/EVAL goldens + bugfix golden + Type-R case + harness delegation + fossil repoint"
+      description: "#670: CHG/EVAL goldens + layer tests, VALID_TYPES derived, section pins extended, delegation, fossils; EVAL-keys/ARTIFACTS/dedup downgraded with rationale"
       order: 16
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DECISIONS.md"
       description: "GD entry: 7 canon decisions + version slot 0.58.0"
       order: 17
