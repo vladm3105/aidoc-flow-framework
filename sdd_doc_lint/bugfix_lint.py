@@ -31,10 +31,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import yaml
+    from sdd_doc_lint._common import yaml
 except ImportError:
-    print("ERROR: PyYAML required. Install with: pip install pyyaml", file=sys.stderr)
-    sys.exit(3)
+    from _common import yaml
 
 
 NAME_PAT = re.compile(r"^IPLAN-(\d+)_bugfix_(\d+)_(.+)\.ya?ml$", re.IGNORECASE)

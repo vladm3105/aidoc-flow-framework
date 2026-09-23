@@ -23,6 +23,30 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-33 — STALE T2/T3 remediation: linter-vs-governance contradictions fixed, GOV-019 mints the IPLAN-reference rule, hooks rewired (CHG-08, 0.58.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.57.1 → 0.58.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-08 + IPLAN-08 (`framework/archive/CHG-08/`).
+- **Context:** STALE issues #668 (T2) and #663 (T3). `chg_lint.py` contradicted governance
+  (false positives on Proposed C3 drafts, double-reported approver, heuristic L003 warnings,
+  L004 hunting the wrong schema location, a dead L005 arm, shadowed imports) and five hooks
+  carried stale paths, blind spots, and hardcoded version literals.
+- **Decision:** L002 early-passes Proposed C3 drafts (GOV-012); L001 drops its C3-approver copy
+  (L002 is sole owner); L003 errors on missing `phase` and drops the keyword heuristic (GOV-010
+  already states the phase contract); L004 scans canon `implementation.steps[]`
+  (`phase: iplan_creation`) and escalates to error under newly minted **GOV-019** (GOV-013
+  deliberately not cited — it governs code-without-IPLAN, a different defect); L005 drops the
+  code-phase arm (code steps are L003 errors, not ordering inputs); shared PyYAML-guard/loader
+  extracted to `sdd_doc_lint/_common.py` with dual script/package import. Hooks: CHG gate watches
+  `*.sh`, skips `*TEMPLATE*`, reads the commit message, and is wired into pre-commit (warn-only);
+  docs list resynced (AGENTS.md replaces deprecated CLAUDE.md, plus versioned changelogs);
+  sync-version-refs refactored to one `OLD_VERSIONS` list + conformance pin; pre-push paths fixed;
+  sdd-doc-review repointed off archived surfaces.
+- **Consequence:** `chg_lint` agrees with governance on all five contradiction points; the next
+  version bump extends one list instead of N literals; pre-commit contributors get the CHG gate.
+
+---
+
 ## GD-32 — CHG request flows ratified: F1–F4 router + F2 direct + GOV-018 (CHG-06, 0.57.0 MINOR)
 
 - **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.56.0 → 0.57.0` (MINOR),
