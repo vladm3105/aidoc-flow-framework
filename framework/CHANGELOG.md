@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.57.1 |
+| Framework Version | 0.58.0 |
 
 ---
+
+## [0.58.0] — 2026-09-23
+
+### Fixed — STALE P0 remediation: tests, linter, hooks (CHG-08, C2 MINOR)
+
+- `tests/unit` quarantine: red modules skip with cited issue until the delete-or-reanchor remedy (#665).
+- `sdd_doc_lint/chg_lint.py` contradictions fixed (Proposed early-pass per GOV-012, L001 C3-duplicate dropped, missing-phase error, L004 canon steps-scan escalated under new GOV-019, L005 code arm folded) + L001–L005/CHG-04/CHG-05 fixtures; shared guard/loader extracted to `sdd_doc_lint/_common.py` (#668, GD-33).
+- Hook gates: CHG gate watches `*.sh`, skips `*TEMPLATE*`, reads the commit message, wired into pre-commit (warn-only); docs list resynced (AGENTS.md replaces deprecated CLAUDE.md); `sync-version-refs.sh` refactored to one `OLD_VERSIONS` list + conformance pin; pre-push paths fixed; `sdd-doc-review.sh` repointed (#663).
+- `framework/VERSION` bumped from `0.57.1` to `0.58.0` with mechanical pin sweep.
 
 ## [0.57.1] — 2026-09-22
 

@@ -1,0 +1,201 @@
+# =============================================================================
+#  IPLAN-08: Implement STALE batch remediation (#662–#672) + MINOR 0.57.1 → 0.58.0
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-08/CHG-08.yaml (F3/spec, C2, In-Progress)
+#  Source: issues #662–#672 + plans/STALE-REVIEW-REPORT.md (Step sequence normative)
+# =============================================================================
+
+doc_id: IPLAN-08
+title: "Implement STALE batch remediation (#662–#672) + MINOR bump 0.57.1 → 0.58.0"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-23"
+  framework_version: "0.57.1"
+  source_chg: "CHG-08"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-08"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-08; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-23T00:00:00Z"
+  last_updated: "2026-09-23T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 5
+  estimated_files: 120
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-08/CHG-08.yaml"
+      description: "Authorizing CHG vehicle (F3/spec C2 MINOR)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-08/IPLAN-08.yaml"
+      description: "Authorizing IPLAN (this file)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-08/ (snapshots)"
+      description: "Pre-change originals of all lifecycle docs + VERSION 0.57.1"
+      order: 3
+      status: DONE
+      session: 1
+      verified: false
+    - path: "tests/unit/ quarantine"
+      description: "T1 #665: skip/stub per table row first; delete or re-anchor second"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "T2 #668: Proposed early-pass; drop L001 dup; missing-phase error + drop heuristic; L004 scan steps with correct rule; fold/delete L005; drop inner import re"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "T2 #668: L001–L005 + CHG-04 reconciliation + CHG-05 bugfix fixtures"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/ + .pre-commit-config.yaml"
+      description: "T3 #663: *.sh watch; TEMPLATE skip; commit-message read-or-delete; pre-commit wiring-or-split; docs-list resync; sync regex + test; pre_push + review repoint"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/10_EVAL/ + playbook outputs"
+      description: "P1-1 #664: REPORT canon + RPT tombstone + test_results pin + old-ID ban + conformance pins"
+      order: 8
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/layers/09_CHG/ + framework/governance/chg/"
+      description: "P1-2 #667: KEEP §7 + 8-layer enum, canon governance/chg, sync + pointer"
+      order: 9
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/playbooks/10_EVAL/ + 10_IPVERIFY/ + framework/README.md"
+      description: "P1-3 #672: authoring-vs-execution split statement + validator.md retarget + README fix"
+      order: 10
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "MVP set (8) + index skeleton links (7) + DOC_GOVERNANCE claim"
+      description: "P1-4 #666: tombstone-with-pointer + link retargets + claim fix"
+      order: 11
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "08_IPLAN README + PLAN_STANDARD + scripts + VERIFY template"
+      description: "P1-5 #662: quarantine-first retarget/deprecate + tmp row removal + bugfix subtype note"
+      order: 12
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "saga.schema.json + LAYER_REGISTRY + ID_NAMING + DOC_CORE + TRACEABILITY + LINT_RULES"
+      description: "P1-6 #671: one-pass EVAL/CHG rows (enum, prefixes, lifecycles, scope, chain, ACC01)"
+      order: 13
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/ID_NAMING_STANDARDS.md §File Naming"
+      description: "P1-7 #669: general slug form + EVAL/RPT/CHG carve-outs + bugfix row (no new PRD/EARS/ADR rules)"
+      order: 14
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "P2 sweep files (D1/D2/D3/D4)"
+      description: "#670: versions → 0.58.0 truth; dead paths reword-or-sweep; branches → dev; one layer language"
+      order: 15
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "tests/conformance/ + tests/acceptance/deterministic/ (D5/D6)"
+      description: "#670: CHG/EVAL goldens + bugfix golden + Type-R case + harness delegation + fossil repoint"
+      order: 16
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD entry: 7 canon decisions + version slot 0.58.0"
+      order: 17
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/VERSION + changelogs + pin fanout"
+      description: "0.57.1 → 0.58.0 via fixed sync-version-refs.sh (machine pins only)"
+      order: 18
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Test-first where the suite exists: quarantine makes T1 auditable (skips cite #665); chg_lint fixtures pin the fixed T2 behavior; conformance pins lock each P1 canon; the D2 sweep + sync run verify P2. Conformance stays a contract on framework/ (R2 — nothing weakened to go green)."
+  cases:
+    - "T1: tests/unit green-or-skipped, every skip cites #665; no deletion without a preceding quarantine commit"
+    - "T2: Proposed C3 draft passes L002; L001 reports once; missing phase errors; steps-scan L004 green on iplan_creation ref"
+    - "T3: ch-gate skips *TEMPLATE*, watches *.sh; sync-version-refs regex test pins 0.58.0"
+    - "P1-1: conformance pins REPORT test_results shape; old BDD.NN.TC-NN.NN form banned"
+    - "P1-2: both CHG homes byte-identical except the pointer file"
+    - "D2: rg sweep clean except grandfathered history"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-08/CHG-08.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+    - "bash hooks/sync-version-refs.sh"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Quarantine-first: every T1 skip cites its issue; item 3/5 and D2 quarantine before tombstone/delete"
+  - "Content before canon: EVAL name-vs-template, CHG §7+enum, validator retarget before any tombstone"
+  - "Conformance stays a contract on framework/: no weakened checks (R2)"
+  - "Snapshots reworded, not swept; tests/ACCEPTANCE.md preserved as history/methodology"
+  - "Counts re-derived at verify time, never quoted point-in-time"
+  - "Archive/CHANGELOG prose history untouched by fanout (machine-pin forms only)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Orders 1–7 (vehicle + T1 quarantine + T2/T3); P1/P2/verify continue next sessions"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-08"
+  upstream: ["#662", "#663", "#664", "#665", "#666", "#667", "#668", "#669", "#670", "#671", "#672", "plans/STALE-REVIEW-REPORT.md"]
+  downstream: ["Code (sdd_doc_lint + tests + hooks)", "framework/VERSION 0.58.0"]

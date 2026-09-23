@@ -1,0 +1,307 @@
+# =============================================================================
+#  CHG-08: STALE batch remediation (#662–#672, 11 issues) + MINOR 0.57.1 → 0.58.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-08/IPLAN-08.yaml (In Progress, authorizing)
+#  Issues: #662 (P1-5 vehicle) #663 (T3 hooks) #664 (P1-1 EVAL fork)
+#    #665 (T1 unit) #666 (P1-4 MVP) #667 (P1-2 CHG fork) #668 (T2 chg_lint)
+#    #669 (P1-7 naming) #670 (P2 sweeps) #671 (P1-6 triple-lock)
+#    #672 (P1-3 playbooks)
+#  Plan: plans/STALE-REVIEW-REPORT.md (READY, 2 review passes; Step sequence
+#    normative; canon rulings in pass-2 log: EVAL=REPORT, CHG home=
+#    governance/chg with §7 KEPT, playbooks=split, MVP=tombstone-with-pointer,
+#    §File Naming=minimal rewrite)
+#  §3.4 checklist (completed 2026-09-23 BEFORE authoring):
+#   1. Read every referenced file — spot-verified live 2026-09-23: both
+#      CHG-TEMPLATE.yaml (39-line diff), both EVAL templates present, 11
+#      playbook dirs, 8 MVP files, PLAN_STANDARD.md:24 tmp/ row,
+#      ID_NAMING :316 slug row + zero bugfix hits, saga.schema enum ends at
+#      09_CHG, TRACEABILITY zero EVAL hits, hooks/chg_lint excerpts,
+#      tests/unit 24F+9E over 83 tests, README/CLAUDE 0.53.0 pins.
+#   2. Architectural claim — framework self-change: static spec prose + YAML
+#      templates + Python lint + bash hooks. No client/server split.
+#   3. Struct/type signatures — N/A (no struct changes; chg_lint function
+#      signatures read at implementation: check_*_metadata, _sdd_lifecycle_steps).
+#   4. INSERT/SELECT queries — N/A (no database).
+#   5. Upstream EARS/BDD IDs — vacuous (upstream is issues #662–#672 + the
+#      STALE plan; no element IDs cited, so D21/D22 vacuous; mirrors CHG-06).
+#   6. Handlers/webhooks — N/A (no events).
+#   7. Coupled issues — YES by design: the 11 share one vehicle (STALE batch);
+#      implemented as phased steps in plan Step-sequence order, one branch.
+#   8. Automated test specs — in IPLAN-08 tdd_consistency per phase (unit
+#      green-or-skipped, chg_lint L001–L005 + CHG-04/05 fixtures, conformance
+#      EVAL-shape/ID-ban/router pins, D2 sweep, sync-version-refs run).
+#   9. Fix location — verified per issue in the 2026-09-23 audit (file:line
+#      reproductions in each issue body, re-run live).
+#  10. DB migration + rollback — N/A (no database).
+#  11. SDD versioning — lifecycle below covers every amended SDD/governance doc
+#      (archive → rewrite → supersedes → 0.58.0); tests/hooks/repo-prose ride
+#      in files_modified + IPLAN manifest (not SDD docs).
+#  12. SDD lifecycle rules — archive-first (snapshots land in the vehicle
+#      commit), CHG-ID archive paths, versions bumped 0.57.1 → 0.58.0.
+#  13. SDD-first order — every step carries phase; all sdd_lifecycle steps
+#      precede the iplan_creation step; no code_implementation anywhere.
+#  14. CHG scope — governance steps only (snapshot/amend/tombstone/create);
+#      all file edits live in IPLAN-08.
+#  Classification (router): Emergency no; Type-R no; F4 no (no parent-IPLAN
+#    defect); behavior/contract change to the framework product YES → F3,
+#    change_source spec, C2 (precedent CHG-06 F3/spec C2 MINOR), GATE-SPEC.
+#    Rejected: F2 (normative templates/governance at stake), F1 (not
+#    greenfield), F4 (no Completed-IPLAN defect to repair).
+#  §3.4.1 A2 note: no document_control section (mirrors CHG-06/07, which pass
+#    automated lint); authorization is change_control.status In-Progress with
+#    date_proposed + date_approved recorded (no stage skipped per §3.3).
+# =============================================================================
+
+id: CHG-08
+title: "STALE batch remediation (P0/P1/P2, #662–#672) + MINOR bump 0.57.1 → 0.58.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-23"
+  framework_version: "0.57.1"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-08"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-23T00:00:00Z"
+  date_approved: "2026-09-23T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance docs v0.57.1 (framework/archive/CHG-08/)"
+    - "CHG templates v0.57.1 (framework/archive/CHG-08/)"
+    - "EVAL templates v0.57.1 (framework/archive/CHG-08/)"
+    - "MVP templates v0.57.1 (framework/archive/CHG-08/)"
+    - "lint tooling v0.57.1 (framework/archive/CHG-08/)"
+    - "framework/VERSION 0.57.1 (framework/archive/CHG-08/VERSION)"
+    - "IPLAN-08 authorizing record (framework/archive/CHG-08/IPLAN-08.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Remediate the verified STALE findings batch (T1 red unit suite, T2 chg_lint contradictions, T3 hook gates, P1 forks/canons P1-1..P1-7, P2 doc sweeps) per plans/STALE-REVIEW-REPORT.md Step sequence, restoring one canon per forked surface and a green signal without weakening any conformance contract."
+  why: "Eleven open issues describe live forks (EVAL REPORT/RPT, CHG template twins, 10_EVAL/10_IPVERIFY, VERIFY-vs-bugfix vehicle), retired schemas (MVP), a red unit suite, linter-vs-governance contradictions, and doc rot — every new artifact picks a fork at random until canon is declared."
+  trigger: "Issues #662–#672 (STALE review batch) + user instruction to fix all 11."
+  scope:
+    in:
+      - "T1 quarantine-then-remedy per table row (#665)"
+      - "T2 linter-vs-governance fixes + L001–L005/CHG-04/05 fixtures (#668)"
+      - "T3 hook gate fixes (#663)"
+      - "P1 canons with DECISIONS record each (#664 #667 #672 #666 #662 #671 #669)"
+      - "P2 sweeps D1–D6 mechanical after P0/P1 (#670)"
+      - "MINOR bump 0.57.1 → 0.58.0: VERSION + changelogs + machine-pin fanout"
+    out:
+      - "New SDD layers, registry shape changes"
+      - "Restoring deleted corpora (archive/examples/tools/platforms/scripts) — consumers repointed, never resurrected"
+      - "New normative PRD/EARS/ADR filename rules (adopt-or-not ruled: NO)"
+      - "The unmerged AGENTS.md authority-flip (foreign session, out of scope)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-08/DOC_GOVERNANCE_CORE.md"
+    new_version: "0.58.0"
+    changes: "Fix one-template-per-layer claim (:42-47); scope includes L10; §3.1.1 enumeration baseline kept"
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-08/LINT_RULES.md"
+    new_version: "0.58.0"
+    changes: "ACC01 EVAL/CHG acceptance_layers rows + any new pin rows (P1-6)"
+  - layer: "09_CHG"
+    document: "framework/governance/ID_NAMING_STANDARDS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-08/ID_NAMING_STANDARDS.md"
+    new_version: "0.58.0"
+    changes: "§File Naming general slug form + EVAL/RPT/CHG carve-outs + bugfix row; CHG/EVAL prefixes/lifecycles/index rows (P1-6/P1-7)"
+  - layer: "09_CHG"
+    document: "framework/governance/TRACEABILITY.md"
+    action: amend
+    archive_path: "framework/archive/CHG-08/TRACEABILITY.md"
+    new_version: "0.58.0"
+    changes: "EVAL chain/table/prose rows (P1-6)"
+  - layer: "09_CHG"
+    document: "framework/governance/saga.schema.json"
+    action: amend
+    archive_path: "framework/archive/CHG-08/saga.schema.json"
+    new_version: "0.58.0"
+    changes: "Layer enum gains 10_EVAL (+ audit other enums for CHG/EVAL)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-08/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.58.0"
+    changes: "Canon home: KEEP §7 validation block + adopt 8-layer enumeration (P1-2)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-08/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.58.0"
+    changes: "Synced to canon then pointer/symlink to governance home (P1-2)"
+  - layer: "10_EVAL"
+    document: "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-08/EVAL-REPORT-TEMPLATE.yaml"
+    new_version: "0.58.0"
+    changes: "Canon REPORT: test_results pin surface (P1-1)"
+  - layer: "10_EVAL"
+    document: "framework/layers/10_EVAL/EVAL-RPT-TEMPLATE.yaml"
+    action: tombstone
+    archive_path: "framework/archive/CHG-08/EVAL-RPT-TEMPLATE.yaml"
+    new_version: "0.58.0"
+    changes: "Tombstoned with pointer to REPORT canon; RPT survives as filename shorthand only (P1-1)"
+  - layer: "10_EVAL"
+    document: "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-08/EVAL-TEMPLATE.yaml"
+    new_version: "0.58.0"
+    changes: "Fix stale BDD.NN.TC-NN.NN ID form (P1-1)"
+  - layer: "08_IPLAN"
+    document: "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-08/IPLAN-VERIFY-TEMPLATE.yaml"
+    new_version: "0.58.0"
+    changes: "Subtype comment gains bugfix + README precedence note (P1-5/P1-7)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-08/IPLAN-08.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance/template/linter originals to framework/archive/CHG-08/"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, EVAL templates, MVP set, index templates, PLAN_STANDARD, chg_lint.py"
+      archive_path: "framework/archive/CHG-08/"
+      new_version: "0.58.0"
+      current_version: "0.57.1"
+      status: Completed
+    - step: "Amend governance triple-lock docs and canonize templates per lifecycle above"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md, LINT_RULES.md, DECISIONS.md, ID_NAMING_STANDARDS.md, TRACEABILITY.md, saga.schema.json, CHG templates, EVAL templates"
+      archive_path: "framework/archive/CHG-08/"
+      new_version: "0.58.0"
+      current_version: "0.57.1"
+      status: In-Progress
+    - step: "Tombstone MVP set with pointers and retarget index skeleton links plus vehicle docs"
+      phase: "sdd_lifecycle"
+      artifact: "8 MVP templates, 7 layer index templates, 08_IPLAN README, PLAN_STANDARD.md, IPLAN-VERIFY-TEMPLATE.yaml, playbook READMEs"
+      archive_path: "framework/archive/CHG-08/"
+      new_version: "0.58.0"
+      current_version: "0.57.1"
+      status: In-Progress
+    - step: "Create IPLAN-08 with all unit, linter, hook, sweep execution steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-08"
+      status: Completed
+  files_modified:
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/governance/ID_NAMING_STANDARDS.md"
+    - "framework/governance/TRACEABILITY.md"
+    - "framework/governance/saga.schema.json"
+    - "framework/registry/LAYER_REGISTRY.yaml"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+    - "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-RPT-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-00_index.TEMPLATE.md"
+    - "framework/layers/10_EVAL/README.md"
+    - "framework/playbooks/10_EVAL/README.md"
+    - "framework/playbooks/10_IPVERIFY/README.md"
+    - "framework/playbooks/10_IPVERIFY/validator.md"
+    - "framework/playbooks/10_IPVERIFY/evaluator.md"
+    - "framework/playbooks/10_IPVERIFY/report_generator.md"
+    - "framework/layers/08_IPLAN/README.md"
+    - "framework/layers/08_IPLAN/PLAN_STANDARD.md"
+    - "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
+    - "framework/scripts/verify_iplan_status.sh"
+    - "framework/scripts/generate_validation_report.sh"
+    - "MVP templates (8 files, layers 01-08)"
+    - "Layer index templates skeleton links (01-07)"
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+    - "hooks/ch-gate-check.sh"
+    - "hooks/check-docs-updated.sh"
+    - "hooks/sync-version-refs.sh"
+    - "hooks/pre_push_check.sh"
+    - "hooks/sdd-doc-review.sh"
+    - ".pre-commit-config.yaml"
+    - "tests/unit/ (quarantine per row)"
+    - "tests/conformance/ (new EVAL-shape/ID-ban pins)"
+    - "P2 sweep files (versions, dead paths, branches, layer language)"
+    - "framework/README.md"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-08"
+    changes: "Authorizing record for STALE batch remediation (this file)"
+  - id: "IPLAN-08"
+    changes: "Authorizing IPLAN (framework/archive/CHG-08/IPLAN-08.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level: tests/chg/spec_gate.py)"
+    - "chg_lint.py over CHG-08 (0 errors)"
+    - "tests/unit green-or-skipped (every skip cites #665)"
+    - "sdd_doc_lint/tests green (incl. new L001–L005 + CHG-04/05 fixtures)"
+    - "conformance green (incl. new EVAL-shape + old-ID-ban pins)"
+    - "acceptance deterministic green"
+    - "bash hooks/sync-version-refs.sh pins 0.58.0 with no silent no-ops"
+    - "D2 dead-path sweep clean except grandfathered history"
+    - "pre-commit run --all-files clean (or documented CHG-gate split)"

@@ -9,7 +9,14 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "platforms" / "claude-code-plugin" / "tools"))
 
+import importlib.util
 
+# quarantined (#665): platforms/claude-code-plugin/tools archived
+_HAS_FINDING_FILTER = importlib.util.find_spec("finding_filter") is not None
+_NEEDS_FINDING_FILTER = "#665: finding_filter retired with plugin archival"
+
+
+@unittest.skipIf(not _HAS_FINDING_FILTER, _NEEDS_FINDING_FILTER)
 class FindingFilterTests(unittest.TestCase):
     def _filter(self, findings, valid_checks):
         from finding_filter import filter_findings
@@ -58,6 +65,7 @@ class FindingFilterTests(unittest.TestCase):
         self.assertEqual(len(discarded), 0)
 
 
+@unittest.skipIf(not _HAS_FINDING_FILTER, _NEEDS_FINDING_FILTER)
 class CoverageEmissionTests(unittest.TestCase):
     def test_coverage_groups_findings_by_check(self):
         from finding_filter import emit_coverage

@@ -14,7 +14,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 
-from sdd_coverage import render_matrix  # noqa: E402
+try:
+    from sdd_coverage import render_matrix  # noqa: E402
+except ImportError:
+    render_matrix = None  # quarantined (#665): tools/ deleted by CLEANUP-001
 
 _ORDER = ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"]
 
@@ -40,6 +43,7 @@ def _chain(last_layer: str) -> list[tuple[str, str]]:
     return corpus
 
 
+@unittest.skipIf(render_matrix is None, "#665: sdd_coverage retired with tools/ deletion")
 class RenderMatrix(unittest.TestCase):
     def test_fully_covered_fr_row_has_all_checks(self):
         out = render_matrix(_chain("IPLAN"))

@@ -1,4 +1,4 @@
-"""Unit: CHG governance linter CHG-L006..CHG-L012 (canonical implementation.steps schema).
+"""Unit: CHG governance linter CHG-L001..CHG-L013 (canonical implementation.steps schema).
 
 Adapted from #653 (`tests/unit/test_chg_lint.py` on the donor branch
 `fix/chg-lint-archive-lifecycle`), which targets the donor's top-level
@@ -233,6 +233,145 @@ class TraceabilityTests(unittest.TestCase):
             errors, warnings, _ = chg_lint.lint_chg(path, root)
             self.assertEqual([e for e in errors if "CHG-L011" in e], [])
             self.assertTrue(any("CHG-L011" in w for w in warnings), warnings)
+
+
+class StatusLifecycleTests(unittest.TestCase):
+    """CHG-L001/L002 (#668): single approver owner; Proposed C3 drafts pass."""
+
+    def _c3_approved_no_approver(self):
+        chg = _base_chg()
+        chg["change_control"]["change_level"] = "C3"
+        chg["change_control"]["status"] = "Approved"
+        chg["gate_approval"]["approver"] = None
+        return chg
+
+    def test_proposed_c3_draft_is_green(self):
+        # GOV-012 permits null approver while Proposed.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._c3_approved_no_approver()
+            chg["change_control"]["status"] = "Proposed"
+            chg["change_control"].pop("date_approved", None)
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L001" in e], [])
+            self.assertEqual([e for e in errors if "CHG-L002" in e], [])
+            self.assertTrue(any("CHG-L002" in p and "Proposed" in p for p in passes), passes)
+
+    def test_approver_reported_once_under_l002(self):
+        # The defect is double-reported under two codes; L002 is sole owner.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml",
+                yaml.safe_dump(self._c3_approved_no_approver()),
+            )
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L001" in e], [])
+            self.assertTrue(any("CHG-L002" in e for e in errors), errors)
+
+
+class ScopePhaseTests(unittest.TestCase):
+    """CHG-L003 (#668): missing phase errors; no keyword heuristic."""
+
+    def test_step_without_phase_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"].append(
+                {"step": "Do the thing", "artifact": "Docs", "status": "Completed"}
+            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, _ = chg_lint.lint_chg(path)
+            self.assertTrue(
+                any("CHG-L003" in e and "no phase" in e for e in errors), errors
+            )
+            self.assertEqual([w for w in warnings if "CHG-L003" in w], [])
+
+    def test_sdd_title_with_code_word_is_green(self):
+        # "Implement SDD lifecycle" is a governance step, not a code step.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"].insert(
+                0,
+                {
+                    "step": "Implement SDD lifecycle",
+                    "artifact": "Governance docs",
+                    "phase": "sdd_lifecycle",
+                    "status": "Completed",
+                    "archive_path": "framework/archive/CHG-99/x",
+                    "new_version": "0.54.0",
+                },
+            )
+            chg["change_control"]["supersedes"] = ["framework/archive/CHG-99/x"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L003" in e], [])
+            self.assertEqual([w for w in warnings if "CHG-L003" in w], [])
+
+
+class IplanReferenceTests(unittest.TestCase):
+    """CHG-L004/GOV-019 (#668): canon steps-scan; missing reference errors."""
+
+    def _stripped(self):
+        chg = _base_chg()
+        chg["implementation"]["steps"] = []
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "HOOK", "file": "hooks/sync-version-refs.sh"}
+        ]
+        return chg
+
+    def test_iplan_creation_step_counts_as_reference(self):
+        # Top-level sdd_lifecycle list and artifacts_modified carry no IPLAN —
+        # the canon steps-scan alone must satisfy L004.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._stripped()
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Create IPLAN-99",
+                    "artifact": "IPLAN-99",
+                    "phase": "iplan_creation",
+                    "status": "Completed",
+                }
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L004" in e], [])
+            self.assertTrue(any("CHG-L004" in p for p in passes), passes)
+
+    def test_missing_reference_is_gov019_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._stripped())
+            )
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(
+                any("CHG-L004" in e and "GOV-019" in e for e in errors), errors
+            )
+
+    def test_bugfix_iplan_id_in_artifacts_counts(self):
+        # CHG-05 interplay: a bugfix-flavored doc referencing its IPLAN via
+        # artifacts_modified satisfies L004 through the id branch.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._stripped()
+            chg["implementation"]["artifacts_modified"] = [
+                {
+                    "id": "IPLAN-10_bugfix_09_slug",
+                    "file": "framework/archive/CHG-99/IPLAN-10_bugfix_09_slug.yaml",
+                }
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L004" in e], [])
+            self.assertTrue(any("CHG-L004" in p for p in passes), passes)
+
+    def test_reconciliation_source_passes_guards(self):
+        # CHG-04 interplay: the reconciliation source value trips neither
+        # the IPLAN guard nor the flow guard on a referenced shape.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["change_source"] = "reconciliation"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L004" in e], [])
+            self.assertEqual([e for e in errors if "CHG-L013" in e], [])
 
 
 class FlowMisclassificationTests(unittest.TestCase):

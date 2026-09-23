@@ -53,10 +53,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import yaml
+    from sdd_doc_lint._common import load_yaml_file, yaml
 except ImportError:
-    print("ERROR: PyYAML required. Install with: pip install pyyaml", file=sys.stderr)
-    sys.exit(3)
+    from _common import load_yaml_file, yaml
 
 
 # Valid status transitions (must follow this order)
@@ -89,17 +88,8 @@ def check_status_lifecycle(data: dict[str, Any], errors: list[str], warnings: li
     if status in ("Implemented", "Completed") and not date_implemented:
         warnings.append(f"CHG-L001: status is '{status}' but date_implemented is null")
 
-    # Check gate approval for C3
-    level = change_control.get("change_level")
-    gate_approval = data.get("gate_approval", {})
-
-    if level == "C3" and status != "Proposed":
-        if isinstance(gate_approval, dict):
-            approver = gate_approval.get("approver")
-            if not approver or approver == "null":
-                errors.append(f"CHG-L001: C3 change with status '{status}' but gate_approval.approver is null")
-        else:
-            errors.append(f"CHG-L001: C3 change with status '{status}' but no gate_approval section")
+    # NOTE: the C3 gate-approval check lives solely in CHG-L002 (GOV-012).
+    # A copy here would double-report one defect under two codes (#668).
 
     passes.append(f"CHG-L001: status lifecycle check passed (status={status})")
 
@@ -112,6 +102,12 @@ def check_gate_approval(data: dict[str, Any], errors: list[str], warnings: list[
     level = change_control.get("change_level")
     if level != "C3":
         passes.append(f"CHG-L002: gate approval check skipped (level={level})")
+        return
+
+    # GOV-012 permits null approver while status is Proposed — approval is
+    # recorded before status advances beyond Proposed, not before.
+    if change_control.get("status") == "Proposed":
+        passes.append("CHG-L002: Proposed C3 draft — gate approval not yet required (GOV-012)")
         return
 
     if not isinstance(gate_approval, dict):
@@ -145,43 +141,33 @@ def check_chg_scope(data: dict[str, Any], errors: list[str], warnings: list[str]
         passes.append("CHG-L003: no implementation steps found")
         return
 
-    code_keywords = ["implement", "code", "function", "struct", "interface", "method", "handler"]
     code_step_count = 0
 
     for step in steps:
         if not isinstance(step, dict):
             continue
-        title = str(step.get("title", "")).lower()
-        description = str(step.get("description", "")).lower()
         phase = str(step.get("phase", "")).lower()
 
+        # Every step must declare its phase (§3.4 item 13).
+        if not phase:
+            code_step_count += 1
+            errors.append(f"CHG-L003: step '{step.get('title')}' has no phase — every step MUST declare sdd_lifecycle or iplan_creation")
         # Check if this looks like a code implementation step
-        if phase in ("code", "implementation", "code_implementation"):
+        elif phase in ("code", "implementation", "code_implementation"):
             code_step_count += 1
             errors.append(f"CHG-L003: step '{step.get('title')}' has phase '{phase}' — code steps belong in IPLAN")
-        elif any(kw in title for kw in code_keywords) and "sdd" not in phase and "iplan" not in phase:
-            # Heuristic: title contains code keywords but isn't SDD or IPLAN phase
-            code_step_count += 1
-            warnings.append(f"CHG-L003: step '{step.get('title')}' may be a code step (check if it belongs in IPLAN)")
 
     if code_step_count == 0:
         passes.append("CHG-L003: no code implementation steps found in CHG")
 
 
 def check_iplan_reference(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
-    """CHG-L004: CHG must reference an IPLAN for code changes (§3.1.1)."""
-    artifacts = data.get("sdd_lifecycle", {})
-    if not isinstance(artifacts, dict):
-        # Try artifacts_modified
-        artifacts = data.get("implementation", {})
-        if not isinstance(artifacts, dict):
-            passes.append("CHG-L004: no artifacts section found")
-            return
-
-    # Look for IPLAN references
+    """CHG-L004: CHG must reference an IPLAN for code changes (§3.1.1, GOV-019)."""
+    # Look for IPLAN references in every location that can carry one —
+    # each is optional, so all three are scanned unconditionally.
     has_iplan = False
 
-    # Check sdd_lifecycle
+    # Check top-level sdd_lifecycle list
     lifecycle = data.get("sdd_lifecycle", [])
     if isinstance(lifecycle, list):
         for item in lifecycle:
@@ -189,16 +175,37 @@ def check_iplan_reference(data: dict[str, Any], errors: list[str], warnings: lis
                 has_iplan = True
                 break
 
-    # Check artifacts_modified
-    artifacts_modified = artifacts.get("artifacts_modified", [])
-    if isinstance(artifacts_modified, list):
-        for item in artifacts_modified:
-            if isinstance(item, dict) and "IPLAN" in str(item.get("id", "")):
+    # Check implementation.steps[] for the canon iplan_creation phase
+    # (CHG-TEMPLATE links IPLAN via steps, not via the top-level list)
+    # and implementation.artifacts_modified for IPLAN ids.
+    implementation = data.get("implementation", {})
+    if not isinstance(implementation, dict) and not isinstance(lifecycle, list):
+        passes.append("CHG-L004: no artifacts section found")
+        return
+    steps: list[dict[str, Any]] = []
+    artifacts_modified: list[dict[str, Any]] = []
+    if isinstance(implementation, dict):
+        raw_steps = implementation.get("steps", [])
+        if isinstance(raw_steps, list):
+            steps = [s for s in raw_steps if isinstance(s, dict)]
+        raw_modified = implementation.get("artifacts_modified", [])
+        if isinstance(raw_modified, list):
+            artifacts_modified = [a for a in raw_modified if isinstance(a, dict)]
+
+    if not has_iplan:
+        for step in steps:
+            if "iplan" in str(step.get("phase", "")).lower():
                 has_iplan = True
                 break
 
     if not has_iplan:
-        warnings.append("CHG-L004: no IPLAN reference found — CHG should reference an IPLAN for code changes")
+        for item in artifacts_modified:
+            if "IPLAN" in str(item.get("id", "")):
+                has_iplan = True
+                break
+
+    if not has_iplan:
+        errors.append("CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); F2 files a scoped IPLAN, F4 a bugfix-subtype IPLAN")
     else:
         passes.append("CHG-L004: IPLAN reference found")
 
@@ -217,11 +224,9 @@ def check_sdd_first_order(data: dict[str, Any], errors: list[str], warnings: lis
 
     sdd_phases = {"sdd_lifecycle", "sdd", "archive", "rewrite"}
     iplan_phases = {"iplan_creation", "iplan"}
-    code_phases = {"code", "implementation", "code_implementation"}
 
     last_sdd_index = -1
     first_iplan_index = len(steps)
-    first_code_index = len(steps)
 
     for i, step in enumerate(steps):
         if not isinstance(step, dict):
@@ -233,22 +238,14 @@ def check_sdd_first_order(data: dict[str, Any], errors: list[str], warnings: lis
             last_sdd_index = max(last_sdd_index, i)
         elif any(ip in phase for ip in iplan_phases) or "iplan" in title:
             first_iplan_index = min(first_iplan_index, i)
-        elif any(cp in phase for cp in code_phases) or "implement" in title:
-            first_code_index = min(first_code_index, i)
+        # NOTE: code phases are not ordered here — a code step in a CHG is a
+        # CHG-L003 error, not an ordering input (#668).
 
     if last_sdd_index >= 0 and first_iplan_index < len(steps):
         if first_iplan_index < last_sdd_index:
             errors.append("CHG-L005: IPLAN creation appears before SDD lifecycle steps — SDD must come first")
         else:
             passes.append("CHG-L005: SDD lifecycle steps appear before IPLAN creation")
-
-    if first_code_index < len(steps):
-        if first_code_index < first_iplan_index:
-            errors.append("CHG-L005: code implementation appears before IPLAN creation — IPLAN must come first")
-        elif last_sdd_index >= 0 and first_code_index < last_sdd_index:
-            errors.append("CHG-L005: code implementation appears before SDD lifecycle steps")
-        else:
-            passes.append("CHG-L005: code implementation order correct")
 
 
 def _sdd_lifecycle_steps(data: dict[str, Any]) -> list[dict[str, Any]]:
@@ -318,8 +315,6 @@ def check_sdd_entry_metadata(data: dict[str, Any], errors: list[str], warnings: 
 
 def check_archive_path_convention(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
     """CHG-L008: archive paths use CHG-ID format, not date-based (§3.4.1 C18)."""
-    import re
-
     steps = _sdd_lifecycle_steps(data)
     paths = [str(s.get("archive_path", "")) for s in steps if s.get("archive_path") not in (None, "null", "")]
     if not paths:
@@ -595,8 +590,6 @@ def check_completion_spec_sync(
     verify the codebase comparison itself. CHGs whose referenced IPLANs carry
     no such block, or none in `Completed` status, pass silently.
     """
-    import re
-
     text = file_path.read_text(encoding="utf-8", errors="replace") if file_path.exists() else ""
     # Resolve referenced IPLAN files: `file:` values ending in .yaml naming IPLAN-*.yaml.
     # Paths in a CHG are usually repo-root-relative; fall back to CHG-parent-relative.
@@ -658,14 +651,9 @@ def lint_chg(file_path: Path, sdd_root: Path | None = None) -> tuple[list[str], 
     warnings: list[str] = []
     passes: list[str] = []
 
-    try:
-        with open(file_path) as f:
-            data = yaml.safe_load(f)
-    except yaml.YAMLError as e:
-        errors.append(f"YAML parse error: {e}")
-        return errors, warnings, passes
-    except FileNotFoundError:
-        errors.append(f"File not found: {file_path}")
+    data, load_error = load_yaml_file(file_path)
+    if load_error is not None:
+        errors.append(load_error)
         return errors, warnings, passes
 
     if not isinstance(data, dict):

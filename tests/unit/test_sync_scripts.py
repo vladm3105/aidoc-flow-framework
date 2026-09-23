@@ -33,7 +33,7 @@ class SyncScriptIdempotencyTests(unittest.TestCase):
             REPO_ROOT / "tools" / "sync-plugin-framework.sh",
         )
         if sync is None:
-            self.skipTest("sync-plugin-framework.sh not present")
+            self.skipTest("sync-plugin-framework.sh not present (#665)")
 
         target = plugin_bundle_root() / "framework"
         before = hash_tree(target)
@@ -65,7 +65,7 @@ class SyncScriptIdempotencyTests(unittest.TestCase):
             REPO_ROOT / "tools" / "sdd_doc_lint" / "sync-vendored.sh",
         )
         if sync is None:
-            self.skipTest("sdd_doc_lint/sync-vendored.sh not present")
+            self.skipTest("sdd_doc_lint/sync-vendored.sh not present (#665)")
         bundle_lint = plugin_bundle_root() / "sdd_doc_lint"
         before = hash_tree(bundle_lint)
         result = subprocess.run(

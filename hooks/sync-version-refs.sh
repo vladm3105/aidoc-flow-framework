@@ -80,32 +80,33 @@ sweep() {
 # framework/archive/CHG-04/ originals before this exclusion landed).
 ARCHIVE_EXCL="archive/CHG-"
 
+# Old version literals swept to $FRAMEWORK_VERSION. Extend with the previous
+# release on every MINOR bump (#663) — the conformance pin
+# (tests/conformance/test_sync_version_refs.py) fails if a swept-form
+# literal in the tree is missing from this list.
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1"
+
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
 while IFS= read -r f; do
   rel="${f#"$REPO_ROOT"/}"
-  sweep "$rel" 'framework_spec_version: "0.50.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.53.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.53.2"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.54.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.55.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.56.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
-  sweep "$rel" 'framework_spec_version: "0.57.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
+  for old in $OLD_VERSIONS; do
+    sweep "$rel" "framework_spec_version: \"$old\"" "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
+  done
 done < <(grep -rl 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbooks/" 2>/dev/null || true)
 
 # --- framework metadata + document-control rows (archive excluded — see above) ---
+_meta_pat=""
+for old in $OLD_VERSIONS; do
+  [ -n "$_meta_pat" ] && _meta_pat="${_meta_pat}\\|"
+  _meta_pat="${_meta_pat}framework_version: \"${old}\"\\|| Framework Version | ${old} |"
+done
 while IFS= read -r f; do
   rel="${f#"$REPO_ROOT"/}"
-  sweep "$rel" 'framework_version: "0.53.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
-  sweep "$rel" '| Framework Version | 0.53.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-  sweep "$rel" 'framework_version: "0.54.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
-  sweep "$rel" '| Framework Version | 0.54.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-  sweep "$rel" 'framework_version: "0.55.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
-  sweep "$rel" '| Framework Version | 0.55.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-  sweep "$rel" 'framework_version: "0.56.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
-  sweep "$rel" '| Framework Version | 0.56.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-  sweep "$rel" 'framework_version: "0.57.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
-  sweep "$rel" '| Framework Version | 0.57.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-done < <(grep -rl 'framework_version: "0.53.0"\|| Framework Version | 0.53.0 |\|framework_version: "0.54.0"\|| Framework Version | 0.54.0 |\|framework_version: "0.55.0"\|| Framework Version | 0.55.0 |\|framework_version: "0.56.0"\|| Framework Version | 0.56.0 |\|framework_version: "0.57.0"\|| Framework Version | 0.57.0 |' "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
+  for old in $OLD_VERSIONS; do
+    sweep "$rel" "framework_version: \"$old\"" "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
+    sweep "$rel" "| Framework Version | $old |" "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
+  done
+done < <(grep -rl "$_meta_pat" "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
 
 if [ "$rc" -ne 0 ]; then
   echo "sync-version-refs: one or more files refused (see above)" >&2

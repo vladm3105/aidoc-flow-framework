@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.57.1 |
+| Framework Version | 0.58.0 |
 
 
 > **Position**: Orthogonal to the artifact cascade — governs the `framework/`

@@ -1,0 +1,297 @@
+# =============================================================================
+#  EVAL-TEMPLATE.yaml — Per-IPLAN Evaluation Strategy (SDD Layer 10)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD
+#  Purpose: AI-consumable + human-reviewable evaluation strategy per IPLAN
+#  Lifecycle: 1:1 with IPLAN — versions when IPLAN versions
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Upstream: IPLAN (L8), TDD (L7), BDD (L4), EARS (L3)
+#  Downstream: EVAL-RPT (evaluation reports), CI/CD, deployment gates
+#
+#  Naming:
+#    Directory:  EVAL-{NN}/
+#    Document:   EVAL-{NN}/EVAL-{NN}.yaml
+#    Reports:    EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml
+#    Test IDs:   EVAL.NN.SS.xxxx  (element ID, independent from source)
+# =============================================================================
+
+id: EVAL-NN
+title: "Eval — IPLAN-NN [IPLAN Title]"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "eval-document"
+  layer: 10
+  lifecycle: iplan-coupled
+  total_sections: 6
+  last_updated: "2026-10-27"
+  validation:
+    _guidance: |
+      Evaluation is performed by the platform's conformance tooling.
+      Evaluation-Ready Score: >=90/100 is the advisory target.
+
+      Evaluation scoring criteria:
+        Coverage completeness (40%): all IPLAN-relevant sources mapped to test cases
+        Traceability integrity (25%): bidirectional source ↔ test linking
+        Threshold alignment (20%): quality gates match PRD thresholds
+        Execution readiness (15%): CI/staging environments configured
+
+  tags:
+    - eval-document
+    - layer-10-artifact
+    - iplan-coupled
+
+  id_standard:
+    state: canonical
+    _guidance: |
+      Test case IDs follow the standard element ID format.
+      The ID is independent from the source — source type and source
+      document are tracked via source_type and source_id fields.
+      Format: EVAL.{NN}.{SS}.{hash}
+        NN — two-digit EVAL document number
+        SS — two-digit section number within the EVAL document
+        hash — 4-char hex content hash (SHA256, per ID_NAMING_STANDARDS.md)
+      Examples:
+        EVAL.01.04.4d64  (section 04, content hash 4d64)
+
+      RULE: One source per test case. Each test case maps to exactly one
+      upstream source (one source_type + one source_id). Never mix BDD,
+      TDD, EARS, or other sources in a single test case. Create as many
+      test cases as needed — one per source element.
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  _guidance: |
+    This EVAL document is owned by a single IPLAN. When the IPLAN versions
+    (via CHG), the EVAL versions with it. The iplan_version field tracks
+    which IPLAN version this EVAL covers.
+
+    Revision history must record the iplan_version at each EVAL version.
+  version: "1.0"
+  status: Draft  # Draft | In Review | Approved
+  owning_iplan: "IPLAN-NN"                # 1:1 — this EVAL owns this IPLAN
+  iplan_version: "1.0"                    # IPLAN version at EVAL creation
+  eval_track: unit_smoke                  # functional | unit_smoke
+  # Track naming: "functional" = EVAL-F (EARS/BDD → staging), "unit_smoke" = EVAL-U (TDD/IPLAN → CI)
+  eval_strategy: null                     # optional: reference to cross-cutting strategy doc (deprecated)
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[QA Engineer]"
+  priority: P1
+  evaluation_ready_score: "[Score]/100"
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      iplan_version: "1.0"
+      changes: "Initial evaluation strategy for IPLAN-NN v1.0"
+    # When IPLAN versions, add:
+    # - version: "2.0"
+    #   date: "..."
+    #   iplan_version: "2.0"
+    #   changes: "Rebased to IPLAN-NN v2.0 after CHG-XX"
+    #   supersedes: "EVAL-NN v1.0"
+
+# =============================================================================
+# Section 2: Evaluation Scope
+# =============================================================================
+
+evaluation_scope:
+  _size_target: 200
+  _guidance: |
+    Define what this EVAL covers. Scoped to the owning IPLAN's scope —
+    NOT all BDD/TDD in the project, only those relevant to this IPLAN.
+
+    The owning_iplan field creates the 1:1 link. The iplan_scope field
+    documents which components/files this EVAL covers.
+    The relevant_bdd field lists only BDD scenarios that overlap with
+    the IPLAN's scope.
+
+  owning_iplan: "IPLAN-NN"
+  iplan_scope: "[List of components/files from IPLAN's scope]"
+  eval_track: unit_smoke  # functional | unit_smoke
+
+  upstream_sources:
+    # Only sources relevant to this IPLAN
+    - layer: 7
+      type: TDD
+      ids: ["TDD-NN"]
+    - layer: 8
+      type: IPLAN
+      ids: ["IPLAN-NN"]
+
+  relevant_bdd:
+    # Only BDD scenarios that overlap with this IPLAN's scope
+    # Use actual BDD scenario IDs (e.g., BDD.01.03.756e)
+    - id: "BDD-NN"
+      scenarios: ["BDD.NN.SS.xxxx", "BDD.NS.SS.xxxx"]
+
+  coverage_target: 100
+  environment: ci  # staging | ci | both
+
+# =============================================================================
+# Section 3: Test Design
+# =============================================================================
+
+test_design:
+  _size_target: 800
+  _guidance: |
+    Test cases for THIS IPLAN's scope only. Each test case has a clean ID
+    scoped to this EVAL document.
+
+    ID format: EVAL.{NN}.{SS}.{hash}  (standard element ID, independent from source)
+
+    RULE: One source per test case. Each test case must reference exactly
+    one upstream element via source_type + source_id. Never combine
+    multiple sources (BDD + TDD, etc.) in a single test case.
+
+    The source_type and source_id fields create traceability to upstream.
+    The priority is derived from upstream BDD/TDD priority.
+
+  test_cases:
+    # BDD-sourced test cases
+    - id: "EVAL.NN.SS.xxxx"
+      name: "[Test case name]"
+      source_type: bdd_scenario
+      source_id: "BDD.NN.SS.xxxx"              # actual BDD scenario ID
+      test_type: "[integration | e2e | unit]"
+      priority: "[p0-critical | p1-high | p2-medium]"
+      preconditions: ["[Precondition 1]"]
+      assertions: ["[Expected outcome 1]"]
+      implementation:
+        language: "[go | js]"
+        test_file: "[path/to/test_file]"
+
+    # TDD-sourced test cases
+    - id: "EVAL.NN.SS.xxxx"
+      name: "[Test case name]"
+      source_type: tdd_test_case
+      source_id: "TDD.NN.04.xxxx"
+      test_type: unit
+      priority: "[p0-critical | p1-high]"
+      target: "[function/module under test]"
+      implementation:
+        language: "[go | js]"
+        test_file: "[path/to/test_file]"
+
+# =============================================================================
+# Section 4: Coverage Matrix
+# =============================================================================
+
+coverage_matrix:
+  _size_target: 200
+  _guidance: |
+    Bidirectional traceability from upstream source to test implementation.
+    Every scenario/case in this IPLAN's scope MUST appear in this matrix.
+
+  entries:
+    - source_id: "BDD.NN.TC-NN.NN"
+      source_type: bdd_scenario
+      test_case_id: "EVAL.NN.SS.xxxx"
+      test_file: "[path/to/test_file]"
+      status: implemented  # implemented | pending | skipped
+      coverage: 100
+
+  summary:
+    total: 0
+    implemented: 0
+    pending: 0
+    skipped: 0
+    coverage_percent: 0
+
+# =============================================================================
+# Section 5: Quality Thresholds
+# =============================================================================
+
+quality_thresholds:
+  _size_target: 200
+  _guidance: |
+    Quality gates for this IPLAN's eval. P0-critical failures always block.
+    P1-high failures should be fixed before PASS.
+
+  p0_critical_pass_rate:
+    target: 100
+    gate: error
+  p1_high_pass_rate:
+    target: 100
+    gate: error
+  coverage_percent:
+    target: 100
+    gate: error
+
+# =============================================================================
+# Section 6: Execution Plan
+# =============================================================================
+
+execution_plan:
+  _size_target: 200
+  _guidance: |
+    How and when this EVAL runs. The trigger field on each RPT records
+    why a specific cycle ran.
+
+  trigger: "[on_merge_to_staging | ci_push | manual]"
+  environment: ci  # ci | staging
+
+  eval_cycle:
+    _guidance: |
+      The eval cycle is iterative:
+        1. Create EVAL when IPLAN reaches Completed
+        2. Run initial_eval (cycle 1)
+        3. If FAIL: fix findings, run bug_fix_verification (cycle 2)
+        4. Repeat until PASS
+        5. IPLAN can then be Verified
+
+    initial_eval:
+      trigger: initial_eval
+      when: "IPLAN status = Completed"
+    bug_fix_verification:
+      trigger: bug_fix_verification
+      when: "Code fixes applied for findings from previous cycle"
+    chg_verification:
+      trigger: chg_verification
+      when: "CHG modified this IPLAN or its code"
+    scheduled:
+      trigger: scheduled
+      when: "Periodic regression check"
+    pre_deploy:
+      trigger: pre_deploy
+      when: "Gate check before branch promotion"
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream:
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    tdd_references:
+      - "@tdd: TDD.NN.SS.xxxx"  # element-level (GD-03); pipe-delimit several
+    iplan_references:
+      - "@iplan: IPLAN-NN"  # document-level (SPEC/IPLAN exempt, GD-03)
+  downstream:
+    - type: EVAL-RPT
+      description: "Evaluation reports in EVAL-{NN}/reports/"
+    - type: CI
+      description: "Pipeline gates enforce test pass criteria"
+
+# =============================================================================
+# End of EVAL-TEMPLATE.yaml
+# =============================================================================

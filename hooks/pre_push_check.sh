@@ -3,7 +3,7 @@
 # so mechanical issues don't burn a long-running remote ai-review round.
 # Wired via `.pre-commit-config.yaml` `default_install_hook_types:
 # [pre-commit, pre-push]` per PLAN-002 §4.2; safe to run by hand:
-# `scripts/pre_push_check.sh`
+# `hooks/pre_push_check.sh`
 #
 # CANONICAL SCOPE (per PLAN-002 §4.1):
 #   1. markdownlint (skipped-with-notice if not installed)
