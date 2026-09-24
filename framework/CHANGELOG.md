@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.2 |
+| Framework Version | 0.60.0 |
 
 ---
+
+## [0.60.0] — 2026-09-23
+
+### Added — Modules-first F3 extension (CHG-10, C2 MINOR)
+
+- F3 Phase 0 splits into 0a seed_scope (record, usually no-change, never rewrite seed) + 0b module_lifecycle (archive → sync → version, affected modules only) + 0c SDD cascade, with a seed → modules review checkpoint gating SDD rewrites and IPLAN authoring. F1/F2/F4/Emergency/Type-R untouched.
+- Both CHG templates carry §4A module_lifecycle + §4B seed_scope (F3-gated, `_required: false` optional); GOV-020 enforced as CHG-L014 for F3 seed/module touches.
+- `framework/VERSION` bumped from `0.59.2` to `0.60.0` with mechanical pin sweep.
 
 ## [0.59.2] — 2026-09-23
 

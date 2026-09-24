@@ -115,5 +115,40 @@ class GuardCatalogAgreement(unittest.TestCase):
                 self.assertIn("Canonical home", _text(template))
 
 
+class ModulesFirstAgreement(unittest.TestCase):
+    def test_flows_doc_has_phases(self):
+        """F3 carries Phase 0a/0b plus the review checkpoint (CHG-10)."""
+        text = _text(FLOWS)
+        for token in ("Phase 0a", "Phase 0b", "Phase 0c", "Review checkpoint"):
+            self.assertIn(token, text)
+
+    def test_kernel_f3_row_is_modules_first(self):
+        """The §3.1.3 kernel F3 row carries the modules-first note."""
+        self.assertIn("modules-first", _text(CORE))
+
+    def test_templates_carry_f3_sections(self):
+        """Both template copies carry §4A/§4B, F3-gated (CHG-10)."""
+        for template in (LAYER_TEMPLATE, GOV_TEMPLATE):
+            with self.subTest(template=str(template)):
+                text = _text(template)
+                self.assertIn("module_lifecycle:", text)
+                self.assertIn("seed_scope:", text)
+                self.assertIn("F3", text)
+
+    def test_readmes_point_at_phases(self):
+        """Both 09_CHG READMEs point Phase 0 at the modules-first flow."""
+        for readme in (LAYER_README, GOV_README):
+            with self.subTest(readme=str(readme)):
+                text = _text(readme)
+                self.assertIn("modules-first", text)
+                self.assertIn("CHG_REQUEST_FLOWS.md", text)
+
+    def test_gov020_catalogued_and_emitted(self):
+        """GOV-020 is catalogued and the linter emits CHG-L014 (codes-vs-catalog)."""
+        self.assertIn("`GOV-020`", _text(LINT_RULES))
+        self.assertIn("CHG-L014", _text(CHG_LINT))
+        self.assertIn("GOV-020", _text(CHG_LINT))
+
+
 if __name__ == "__main__":
     unittest.main()

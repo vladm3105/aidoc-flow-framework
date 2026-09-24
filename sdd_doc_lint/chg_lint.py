@@ -723,6 +723,7 @@ def lint_chg(
     check_cited_ids_exist(data, errors, warnings, passes, file_path, sdd_root)
     check_completion_spec_sync(data, errors, warnings, passes, file_path)
     check_flow_misclassification(data, errors, warnings, passes)
+    check_seed_module_lifecycle(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -796,6 +797,92 @@ def check_flow_misclassification(
         "F2 needs source direct + scoped IPLAN, F3 needs the SDD cascade, "
         "F4 needs a bugfix-subtype IPLAN with parent_iplan"
     )
+
+
+def check_seed_module_lifecycle(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L014: F3 seed/module lifecycle coverage (§3.1.3 router, GOV-020).
+
+    F3-only syntactic guard (same philosophy as CHG-L013): an F3-sourced CHG
+    (upstream/midstream/design) that touches seed or module docs must cover
+    them — seed touches need a `seed_scope` record, module touches need a
+    `module_lifecycle` entry. Coverage is presence-checked, not content-judged:
+    a well-formed but wrong-scope filing still lints green — semantic review
+    owns that. Other flows pass through untouched.
+    """
+    control = data.get("change_control", {})
+    if not isinstance(control, dict):
+        control = {}
+    source = control.get("change_source")
+    if source in (None, "null", ""):
+        meta = data.get("metadata", {})
+        if isinstance(meta, dict):
+            fallback = meta.get("change_source")
+            if isinstance(fallback, dict):
+                fallback = fallback.get("value", source)
+            if fallback not in (None, "null", ""):
+                source = fallback
+
+    if source not in ("upstream", "midstream", "design"):
+        passes.append("CHG-L014: non-F3 source — seed/module guard not applicable")
+        return
+
+    impl = data.get("implementation", {})
+    artifacts: list[dict[str, Any]] = []
+    if isinstance(impl, dict):
+        raw_artifacts = impl.get("artifacts_modified", [])
+        if isinstance(raw_artifacts, list):
+            artifacts = [a for a in raw_artifacts if isinstance(a, dict)]
+
+    seed_touches = [
+        a.get("file", "")
+        for a in artifacts
+        if isinstance(a.get("file", ""), str)
+        and a.get("file", "").startswith(("docs/seed/", "seed/"))
+    ]
+    module_touches = [
+        a.get("file", "")
+        for a in artifacts
+        if isinstance(a.get("file", ""), str)
+        and a.get("file", "").startswith(("docs/modules/", "modules/"))
+    ]
+    if not seed_touches and not module_touches:
+        passes.append("CHG-L014: no seed/module touches — guard not applicable")
+        return
+
+    seed_scope = data.get("seed_scope", {})
+    seed_covered = isinstance(seed_scope, dict) and seed_scope.get("decision") in (
+        "no-change",
+        "create",
+    )
+    module_lifecycle = data.get("module_lifecycle")
+    if isinstance(module_lifecycle, dict):
+        entries = module_lifecycle.get("entries", module_lifecycle)
+        module_covered = isinstance(entries, list) and len(entries) > 0
+    else:
+        module_covered = isinstance(module_lifecycle, list) and len(module_lifecycle) > 0
+
+    problems: list[str] = []
+    if seed_touches and not seed_covered:
+        problems.append(
+            "seed docs touched without a seed_scope record "
+            f"({len(seed_touches)} file(s)): record Phase 0a seed_scope "
+            "(decision no-change with checked files cited, or create)"
+        )
+    if module_touches and not module_covered:
+        problems.append(
+            "module docs touched without a module_lifecycle entry "
+            f"({len(module_touches)} file(s)): record Phase 0b module_lifecycle "
+            "(archive → sync → version, affected modules only)"
+        )
+    if problems:
+        errors.append(
+            "CHG-L014: F3 change touches seed/module docs without lifecycle coverage "
+            "(GOV-020) — suspected F3 Phase 0a/0b omission: " + "; ".join(problems)
+        )
+        return
+    passes.append("CHG-L014: seed/module touches covered by seed_scope/module_lifecycle")
 
 
 def main(argv: list[str] | None = None) -> int:

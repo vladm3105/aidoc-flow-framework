@@ -1,4 +1,4 @@
-"""Unit: CHG governance linter CHG-L001..CHG-L013 (canonical implementation.steps schema).
+"""Unit: CHG governance linter CHG-L001..CHG-L014 (canonical implementation.steps schema).
 
 Adapted from #653 (`tests/unit/test_chg_lint.py` on the donor branch
 `fix/chg-lint-archive-lifecycle`), which targets the donor's top-level
@@ -398,6 +398,52 @@ class FlowMisclassificationTests(unittest.TestCase):
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertTrue(any("CHG-L013" in e and "F4" in e for e in errors), errors)
+
+
+class SeedModuleLifecycleTests(unittest.TestCase):
+    """CHG-L014 (GOV-020): F3 seed/module touches need lifecycle coverage; other flows pass."""
+
+    def _f3_module_chg(self):
+        chg = _base_chg()
+        chg["change_control"]["change_source"] = "midstream"
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "MODULE-12-README", "file": "docs/modules/MODULE-12_observability/README.md"},
+            {"id": "IPLAN-99", "file": "framework/archive/CHG-99/IPLAN-99.yaml"},
+        ]
+        return chg
+
+    def test_covered_f3_touches_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_module_chg()
+            chg["module_lifecycle"] = [
+                {
+                    "module": "MODULE-12_observability/README.md",
+                    "action": "sync",
+                    "archive_path": "docs/sdd/09-CHG/archive/CHG-99/modules/MODULE-12_observability_README.md",
+                    "new_version": "1.0",
+                    "changes": "health-check section",
+                }
+            ]
+            chg["seed_scope"] = {"decision": "no-change", "rationale": "seed checked", "checked": []}
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L014" in e], [])
+            self.assertTrue(any("CHG-L014" in p for p in passes), passes)
+
+    def test_uncovered_module_touch_is_gov020_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._f3_module_chg()))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L014" in e and "GOV-020" in e for e in errors), errors)
+
+    def test_direct_source_passes_through(self):
+        # F3-only boundary: a direct-source CHG touching modules trips no L014.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_module_chg()
+            chg["change_control"]["change_source"] = "direct"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L014" in e], [])
 
 
 if __name__ == "__main__":

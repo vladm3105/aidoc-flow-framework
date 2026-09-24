@@ -1,0 +1,204 @@
+# =============================================================================
+#  CHG-10: Modules-first F3 extension (seed_scope + module_lifecycle) + MINOR 0.59.2 → 0.60.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-10/IPLAN-10.yaml (to be authored after approval)
+#  Pilot: /tmp/chg41-pilot/CHG-41_modules_first_exporter_health.yaml (b-local-privy
+#  MODULE-12 pilot, F3/midstream/C2 — proves affected-only module_lifecycle +
+#  seed_scope no-change keeps seed → modules → SDD actual without tree-wide versioning)
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — framework doc/tooling self-change, no runtime code (mirrors CHG-06):
+#  EARS/BDD IDs vacuous (upstream is the owner request + pilot; no element IDs
+#  cited, so D21/D22 vacuous). SECURITY_REVIEW (GATE-SPEC-W003): assessed —
+#  prose + template-structure change only, no executable content, no
+#  prompt-injection surface (pilot citation is carried data, never instruction).
+# =============================================================================
+
+id: CHG-10
+title: "Modules-first F3 extension (seed_scope + module_lifecycle, affected-only) + MINOR bump 0.59.2 → 0.60.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-23"
+  framework_version: "0.59.2"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-10"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-23T00:00:00Z"
+  date_approved: "2026-09-23T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance routing docs v0.59.2 (framework/archive/CHG-10/)"
+    - "CHG template v0.59.2 (framework/archive/CHG-10/)"
+    - "lint tooling v0.59.2 (framework/archive/CHG-10/)"
+    - "framework/VERSION 0.59.2 (framework/archive/CHG-10/VERSION)"
+    - "IPLAN-10 authorizing record (framework/archive/CHG-10/IPLAN-10.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Give F3 a legal modules-first shape: Phase 0a seed_scope (append-only, affected-only, usually no-change) + Phase 0b module_lifecycle (archive → sync → version, affected modules only); template sections in both CHG-TEMPLATE copies; GOV-020 touch-without-lifecycle guard with fixtures; conformance extension; MINOR bump 0.59.2 → 0.60.0."
+  why: "F3 has no legal shape for keeping seed → modules → SDD actual. Authors either rewrite frozen seed in place (SEED_CONTRACT R1 violation, disposition audit goes circular) or version the whole tree per change (cascade explosion against the minimal-regeneration rule). The MODULE-12 pilot proves the middle path: affected-only module sync + verified seed no-change in the same CHG lifecycle."
+  trigger: "Owner request 2026-09-23 (pilot modules-first F3 on MODULE-12, then generalize) + pilot evidence at /tmp/chg41-pilot/CHG-41_modules_first_exporter_health.yaml."
+  scope:
+    in:
+      - "governance/CHG_REQUEST_FLOWS.md F3 section: Phase 0a seed_scope + 0b module_lifecycle (affected-only, seed append-only)"
+      - "DOC_GOVERNANCE_CORE.md §3.1.1 Phase 0a/0b insert + §3.1.3 kernel F3 row note"
+      - "LINT_RULES.md GOV-020 row (seed/module touch without lifecycle entry)"
+      - "CHG-TEMPLATE.yaml both copies: module_lifecycle + seed_scope sections (identical — no fork widening)"
+      - "chg_lint.py GOV-020 check + green/red fixtures + conformance router-matrix extension"
+      - "MINOR bump 0.59.2 → 0.60.0: VERSION + changelogs + machine-pin fanout"
+      - "DECISIONS.md GD-35 entry for the modules-first ruling"
+      - "both 09_CHG READMEs: Phase 0 0a/0b pointer to the flows doc (identical)"
+    out:
+      - "b-local-privy CHG-41 pilot landing (separate vehicle, separate repo)"
+      - "Other flows (F1/F2/F4/Emergency/Type-R) — untouched; the extension is F3-only"
+      - "CHG template canon decision (edits both copies identically)"
+      - "STALE remediation or registry shape changes"
+      - "New SDD layers"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-10/CHG_REQUEST_FLOWS.md"
+    new_version: "1.1"
+    changes: "F3 section gains Phase 0a seed_scope + 0b module_lifecycle (affected-only, seed append-only, pilot-shaped); doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-10/DOC_GOVERNANCE_CORE.md"
+    new_version: "0.60.0"
+    changes: "§3.1.1 Phase 0a/0b insert; §3.1.3 kernel F3 row carries the modules-first note"
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-10/LINT_RULES.md"
+    new_version: "0.60.0"
+    changes: "Add GOV-020 row (seed/module touch without lifecycle entry)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-10/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.60.0"
+    changes: "module_lifecycle + seed_scope sections (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-10/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.60.0"
+    changes: "module_lifecycle + seed_scope sections (identical to layer copy)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-10/IPLAN-10.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance/template/linter originals to framework/archive/CHG-10/ (pre-flight first: run test_required_section_sets, test_carrier_parity, test_seed_contract to confirm module_lifecycle/seed_scope additions collide with nothing)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, LINT_RULES.md, chg_lint.py"
+      archive_path: "framework/archive/CHG-10/"
+      new_version: "0.60.0"
+      current_version: "0.59.2"
+      status: Completed
+    - step: "Amend governance + template docs per lifecycle above (F3 Phase 0a/0b, kernel note, GOV-020, template sections, both 09_CHG README pointers)"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md, LINT_RULES.md, DECISIONS.md (GD-35), both CHG-TEMPLATE.yaml, CHG_REQUEST_FLOWS.md (v1.1), both 09_CHG READMEs"
+      archive_path: "framework/archive/CHG-10/"
+      new_version: "0.60.0"
+      current_version: "0.59.2"
+      status: Completed
+    - step: "Extend lint tooling + fixtures + conformance test + MINOR fanout per IPLAN-10 manifest"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py, tests/conformance router matrix, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, hooks/sync-version-refs.sh + version-pin sweep"
+      archive_path: "framework/archive/CHG-10/"
+      new_version: "0.60.0"
+      current_version: "0.59.2"
+      status: Completed
+    - step: "Create IPLAN-10 with all tooling and test implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-10"
+      status: Completed
+  files_modified:
+    - "framework/governance/CHG_REQUEST_FLOWS.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+    - "tests/conformance/test_chg_flows_router.py"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "hooks/sync-version-refs.sh"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+
+artifacts_modified:
+  - id: "CHG-10"
+    changes: "Authorizing record for modules-first F3 extension (this file)"
+  - id: "IPLAN-10"
+    changes: "Authorizing IPLAN (framework/archive/CHG-10/IPLAN-10.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: Owner (session approval 2026-09-23)
+  date: "2026-09-23T00:00:00Z"
+  conditions:
+    - IPLAN-10 authored as Draft before approval (authorizing record for the tooling/test steps).
+    - C2 peer review (maintainer) recorded here before Implemented.
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level)"
+    - "chg_lint.py over CHG-10 (0 errors)"
+    - "sdd_doc_lint/tests green (incl. new GOV-020 fixtures)"
+    - "conformance: frontmatter + spec_hygiene + router-matrix green"
+    - "D2 dead-path sweep: no new live-path refs introduced"

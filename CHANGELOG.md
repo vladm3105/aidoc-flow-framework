@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — Modules-first F3 extension (CHG-10, C2 MINOR → 0.60.0)
+
+- F3 Phase 0a seed_scope + 0b module_lifecycle + review checkpoint (F3-only); GOV-020/CHG-L014 enforcement, template §4A/§4B, router-matrix agreement
+- `framework/VERSION` bumped from `0.59.2` to `0.60.0` with mechanical pin sweep
+
 ### Fixed — AGENTS.md authority-flip (CHG-09, C1 PATCH → 0.59.2)
 
 - Working agreement declares the single agreement (this file wins), CLAUDE.md deprecated/never-authority, self-contained CLAUDE.md pointers dropped, worktree pointer added
