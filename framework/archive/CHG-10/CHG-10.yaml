@@ -39,7 +39,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-10"
-  status: In-Progress
+  status: Completed
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -48,7 +48,7 @@ change_control:
   author: "Framework Maintainer"
   date_proposed: "2026-09-23T00:00:00Z"
   date_approved: "2026-09-23T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-09-24T00:00:00Z"
   supersedes:
     - "governance routing docs v0.59.2 (framework/archive/CHG-10/)"
     - "CHG template v0.59.2 (framework/archive/CHG-10/)"
