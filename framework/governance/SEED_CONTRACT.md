@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.2 |
+| Framework Version | 0.60.0 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source

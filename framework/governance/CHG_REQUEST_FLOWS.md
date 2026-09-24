@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-22 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.2 |
+| Framework Version | 0.60.0 |
 
 | Field | Value |
 |---|---|
@@ -30,7 +30,7 @@ row wins:
 |---|---|---|---|---|---|---|---|---|
 | F1 | Greenfield development | New product / new layer chain, no prior implementation | `upstream` | C3 | GATE-01 | Yes — full 10-layer authoring per §3.1.1 | Full (all code steps, full manifest) | EVAL cycles |
 | F2 | Direct request | Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling) | `direct` (new — see §3) | C1 (docs-only: no CHG/IPLAN; code-touching: C1 CHG + scoped IPLAN) | GATE-CODE | No (`sdd_lifecycle: []`) | Scoped (manifest + steps only, §3.3) | Covering tests + verification commands in the scoped IPLAN |
-| F3 | Brownfield behavior change | Product design or behavior change to an implemented product | `upstream` / `midstream` / `design` (by lowest affected layer) | C2 / C3 (C3 if cross-layer or new requirements) | GATE-01 / 03 / 06 (by source) | Yes — SDD-first restart per §3.1.1 (affected layers and everything below) | Full, referencing NEW SDD versions | EVAL cycles |
+| F3 | Brownfield behavior change | Product design or behavior change to an implemented product | `upstream` / `midstream` / `design` (by lowest affected layer) | C2 / C3 (C3 if cross-layer or new requirements) | GATE-01 / 03 / 06 (by source) | Yes — modules-first restart per §4 (0a seed_scope, 0b affected-module sync + review checkpoint, 0c SDD cascade over affected layers and everything below) | Full, referencing NEW SDD versions (authored only after the checkpoint passes) | EVAL cycles |
 | F4 | Bugfix on implemented IPLAN | Defect found in EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN | `feedback` | C1 CHG (CHG-05 vehicle) | GATE-CODE | No (parent SDD stands; fix-IPLAN carries `validation_findings`) | Bugfix-subtype (`parent_iplan` + `source_chg`, repair-scoped manifest, rollback) | Regression suite + parent revision entry |
 | — | Emergency (non-flow path) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | Document within 48h + post-mortem | Fix IPLAN post-hoc per `09_CHG/README.md:318` + `templates/POST_MORTEM-TEMPLATE.md` (post-mortem ≤48h) | Post-mortem verification |
 | — | Type-R reconciliation (non-flow path) | Verified working codebase preceding its specs (non-emergency empirical work) | `reconciliation` | C2 typical (classify by cascade breadth) | GATE-CODE | Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2 | Reverse-authored (ground truth from code) | §3.1.2 Phase-3 battery |
@@ -94,12 +94,31 @@ relies on human review of the requester citation (§F2.3) and the rejected-candi
 A product design or behavior change to an implemented product restarts the full SDD chain at the lowest affected
 layer: source `upstream` (BRD/PRD-level) / `midstream` (EARS/BDD/ADR) / `design` (SPEC/TDD), level C2 (single-layer
 refinement, peer review) or C3 (cross-layer or new requirements, formal gate + approver), entry GATE-01/03/06 by
-source. The §3.1.1 cascade is MANDATORY and ordered: Phase 0 archive → rewrite → bump (upper layers first),
-Phase 1 IPLAN referencing the NEW versions, Phase 2 code. `change_source: spec` (framework self-changes:
+source. The §3.1.1 cascade is MANDATORY and ordered — and Phase 0 itself is ordered (modules-first):
+Phase 0a seed_scope, Phase 0b module_lifecycle, Phase 0c SDD archive → rewrite → bump (upper layers first),
+then Phase 1 IPLAN referencing the NEW versions, Phase 2 code.
+
+**Phase 0a — seed_scope (record, usually no-change).** The CHG records a `seed_scope` decision against the
+seed tier: either `no-change` (with the checked seed files cited — the common case, proven by verification, never
+assumed) or `create` (a genuinely new domain mints a new `seed/architecture/` or `seed/agent-surface/` file).
+Seed files are NEVER rewritten in place (SEED_CONTRACT R1, frozen input); a stale seed assumption is superseded by
+a new file, not edited away. `change_source: spec` (framework self-changes:
 templates/governance/registry/VERSION, GATE-SPEC, level ≥ C2 per GATE-SPEC-E003) is the special case of F3 where
 the "product" is the framework itself. F3 MUST NOT be filed as F2 (no SDD
 cascade) even when the diff looks small: behavior change without SDD update is the exact defect §3.1.1 exists to
 prevent. F3 MUST NOT be filed as F4: F4 repairs output to match standing SDD; F3 changes what the SDD promises.
+
+**Phase 0b — module_lifecycle (sync affected modules only).** Every module the change touches is archived and
+synced in the same CHG lifecycle as the SDD rewrites — version/date/changelog header, scope and invariants
+updated, seed references re-pointed, never duplicated. Untouched modules are NOT versioned: the lifecycle lists
+affected modules only, mirroring the SDD minimal-regeneration rule. Modules are the living source of truth the
+SDD chain formalizes from, so a stale module is a defect of the same class as a stale SPEC.
+
+**Review checkpoint (hard gate).** The seed → modules chain is reviewed and MUST pass BEFORE any SDD rewrite
+begins and BEFORE any IPLAN is authored: seed_scope verified (checked files read, no-change justified or new
+seed file landed), every affected module synced and archived, every untouched module provably out of scope.
+No SDD lifecycle step runs and no IPLAN is authored until this checkpoint passes — an IPLAN written against
+unreviewed modules references a chain that is not actual. The checkpoint verdict is recorded in the CHG.
 
 ## 5. F4 — Bugfix on implemented IPLAN
 

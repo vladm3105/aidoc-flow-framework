@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.2 |
+| Framework Version | 0.60.0 |
 
 
 ## Overview
@@ -45,7 +45,7 @@ When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** b
 ```
 CHG (authorize only)
   ↓
-Phase 0: SDD Document Updates (FIRST — before ANY code work)
+Phase 0: SDD Document Updates (FIRST — before ANY code work; for F3 ordered modules-first: 0a seed_scope, 0b affected-module sync + review checkpoint, then SDD archive → rewrite → bump — see CHG_REQUEST_FLOWS.md §4)
   1. Archive current SDD versions to docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/
   2. Rewrite each SDD document as clean v2 (upper layers first: PRD → SPEC → IPLAN)
   3. Update supersedes field with archive paths

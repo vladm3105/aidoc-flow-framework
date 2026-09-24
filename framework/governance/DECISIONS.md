@@ -19,7 +19,23 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.59.2 |
+| Framework Version | 0.60.0 |
+
+---
+
+## GD-35 — Modules-first F3: seed_scope + module_lifecycle + review checkpoint (CHG-10, 0.60.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.59.2 → 0.60.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-10 + IPLAN-10 (`framework/archive/CHG-10/`).
+- **Context:** F3 had no legal shape for keeping seed → modules → SDD actual — authors either
+  rewrote frozen seed in place (SEED_CONTRACT R1 violation) or versioned the whole tree per
+  change (cascade explosion). Piloted on b-local-privy MODULE-12 (exporter-health CHG).
+- **Decision (F3-only; F1/F2/F4/Emergency/Type-R untouched):** Phase 0 splits into 0a seed_scope
+  (record, usually no-change, never rewrite) + 0b module_lifecycle (archive → sync → version,
+  affected modules only) + 0c SDD cascade; a review checkpoint gates SDD rewrites and IPLAN
+  authoring; GOV-020 enforces lifecycle coverage; both CHG templates carry §4A/§4B sections.
+- **Consequence:** affected-only chain stays actual without tree-wide versioning; seed stays
+  historical input, modules stay the living source of truth.
 
 ---
 

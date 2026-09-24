@@ -65,7 +65,9 @@ When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** b
 ```
 CHG (authorize only)
   ↓
-Phase 0: SDD Document Updates (FIRST — MANDATORY)
+Phase 0: SDD Document Updates (FIRST — MANDATORY; for F3 ordered modules-first per CHG_REQUEST_FLOWS.md §4)
+  0a. Record seed_scope (F3 only: no-change with checked files cited, or create for a new domain — never rewrite seed)
+  0b. Archive + sync affected modules only (F3 only), then pass the seed → modules review checkpoint
   1. Archive current versions to the <CHG-ID> archive path (CHG archive convention)
   2. Rewrite each SDD document as a clean new version (upper layers first: PRD → SPEC → IPLAN)
   3. Update supersedes field with archive paths
@@ -84,6 +86,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 - SDD updates MUST happen BEFORE IPLAN creation (not "deferred").
 - The IPLAN MUST reference the NEW (updated) SDD versions.
 - If SDD updates are "deferred", the CHG is INCORRECT.
+- **For F3: no SDD rewrite and no IPLAN authoring until the seed → modules review checkpoint passes (flows doc §4).**
 - **No code may be written without an In-Progress IPLAN (IPLAN Gate — see §3.13).**
 
 **What Goes Where:**
@@ -150,7 +153,7 @@ own section — before its CHG is authored. First match wins, in this order:
 |---|---|---|---|---|---|
 | F1 | Greenfield development (new chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
 | F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (docs-only: no CHG/IPLAN; code-touching: C1 CHG + scoped IPLAN) | GATE-CODE | No (`sdd_lifecycle: []`) |
-| F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — affected layers down |
+| F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — modules-first (0a/0b + checkpoint, §4), affected layers down |
 | F4 | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
 | — | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
 | — | Type-R reconciliation (verified code precedes specs) | `reconciliation` | C2 typical | GATE-CODE | Reverse (§3.1.2) |

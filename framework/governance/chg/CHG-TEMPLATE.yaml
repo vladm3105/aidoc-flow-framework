@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.59.2"
+  framework_version: "0.60.0"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -215,6 +215,39 @@ implementation:
     - id: "[Artifact ID]"
       file: "[File path]"
       change_type: "modified"  # created | modified | deleted | superseded
+
+# =============================================================================
+# Section 4A: Module Lifecycle (F3 brownfield only)
+# =============================================================================
+
+module_lifecycle:
+  _required: false  # OPTIONAL — F3 brownfield only (flows doc §4, Phase 0b)
+  _guidance: |
+    F3 ONLY — affected modules sync in the same CHG lifecycle as the SDD
+    rewrites (flows doc §4, Phase 0b). Other flows never use this section
+    (F1 starts from modules/seed; F2 carries sdd_lifecycle: []; F4 leaves
+    parent output standing). Untouched modules are NOT listed.
+  entries:
+    - module: "[MODULE path]"
+      action: sync  # sync | create
+      archive_path: "[Archive path under docs/sdd/09-CHG/archive/{CHG-ID}/modules/]"
+      new_version: "[Module version]"
+      changes: "[Header/scope/invariants/seed-reference updates]"
+
+# =============================================================================
+# Section 4B: Seed Scope (F3 brownfield only)
+# =============================================================================
+
+seed_scope:
+  _required: false  # OPTIONAL — F3 brownfield only (flows doc §4, Phase 0a)
+  _guidance: |
+    F3 ONLY — record what the change needs from the frozen seed tier
+    (flows doc §4, Phase 0a). The seed is NEVER rewritten in place.
+
+  decision: no-change  # no-change | create
+  rationale: "[no-change: checked files cited | create: new domain + new file path]"
+  checked:
+    - "[Seed file read for this decision]"
 
 # =============================================================================
 # Section 5: Verification
