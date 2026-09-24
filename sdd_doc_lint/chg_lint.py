@@ -35,6 +35,16 @@ Checks:
     manifest with an empty SDD lifecycle but no `direct` source, no IPLAN
     reference, or no `parent_iplan` where F4 applies, is an error naming the
     suspected flow (F2/F3/F4)
+  CHG-L014: F3 seed/module lifecycle coverage (§3.1.3 router, GOV-020) —
+    an F3-sourced CHG touching seed/module docs must cover them: seed touches
+    need `seed_scope` (decision no-change | create | supersede; supersede
+    requires non-empty `entries`), module touches need a `module_lifecycle`
+    entry. Other flows pass through untouched.
+  CHG-L015: Lifecycle-entry attribution (flows doc §4, GOV-021) — every
+    `seed_scope.entries[]` / `module_lifecycle` entry on an F3 CHG must carry
+    a non-empty `author` (agent id + supervising human); module entries must
+    also carry `chg_ref`. Deterministic half of GOV-021; carrier completeness
+    stays with the reviewer lens.
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -724,6 +734,7 @@ def lint_chg(
     check_completion_spec_sync(data, errors, warnings, passes, file_path)
     check_flow_misclassification(data, errors, warnings, passes)
     check_seed_module_lifecycle(data, errors, warnings, passes)
+    check_lifecycle_attribution(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -806,10 +817,11 @@ def check_seed_module_lifecycle(
 
     F3-only syntactic guard (same philosophy as CHG-L013): an F3-sourced CHG
     (upstream/midstream/design) that touches seed or module docs must cover
-    them — seed touches need a `seed_scope` record, module touches need a
-    `module_lifecycle` entry. Coverage is presence-checked, not content-judged:
-    a well-formed but wrong-scope filing still lints green — semantic review
-    owns that. Other flows pass through untouched.
+    them — seed touches need a `seed_scope` record (decision no-change |
+    create | supersede, with supersede requiring non-empty `entries`), module
+    touches need a `module_lifecycle` entry. Coverage is presence-checked, not
+    content-judged: a well-formed but wrong-scope filing still lints green —
+    semantic review owns that. Other flows pass through untouched.
     """
     control = data.get("change_control", {})
     if not isinstance(control, dict):
@@ -852,10 +864,16 @@ def check_seed_module_lifecycle(
         return
 
     seed_scope = data.get("seed_scope", {})
-    seed_covered = isinstance(seed_scope, dict) and seed_scope.get("decision") in (
+    decision = seed_scope.get("decision") if isinstance(seed_scope, dict) else None
+    seed_covered = decision in (
         "no-change",
         "create",
+        "supersede",
     )
+    if decision == "supersede":
+        entries = seed_scope.get("entries", []) if isinstance(seed_scope, dict) else []
+        if not isinstance(entries, list) or len(entries) == 0:
+            seed_covered = False
     module_lifecycle = data.get("module_lifecycle")
     if isinstance(module_lifecycle, dict):
         entries = module_lifecycle.get("entries", module_lifecycle)
@@ -865,11 +883,20 @@ def check_seed_module_lifecycle(
 
     problems: list[str] = []
     if seed_touches and not seed_covered:
-        problems.append(
-            "seed docs touched without a seed_scope record "
-            f"({len(seed_touches)} file(s)): record Phase 0a seed_scope "
-            "(decision no-change with checked files cited, or create)"
-        )
+        if decision == "supersede":
+            problems.append(
+                "seed docs touched with a supersede decision but empty/missing "
+                "`seed_scope.entries` "
+                f"({len(seed_touches)} file(s)): record one entry per superseded "
+                "seed file (Phase 0a)"
+            )
+        else:
+            problems.append(
+                "seed docs touched without a seed_scope record "
+                f"({len(seed_touches)} file(s)): record Phase 0a seed_scope "
+                "(decision no-change with checked files cited, create, or "
+                "supersede with entries)"
+            )
     if module_touches and not module_covered:
         problems.append(
             "module docs touched without a module_lifecycle entry "
@@ -883,6 +910,85 @@ def check_seed_module_lifecycle(
         )
         return
     passes.append("CHG-L014: seed/module touches covered by seed_scope/module_lifecycle")
+
+
+def _lifecycle_entries(data: dict[str, Any]) -> tuple[list[Any], list[Any]]:
+    """Collect (seed_entries, module_entries) from a CHG, tolerating both the
+    mapping shape (`module_lifecycle: {entries: [...]}`) and the bare-list shape."""
+    seed_entries: list[Any] = []
+    scope = data.get("seed_scope", {})
+    if isinstance(scope, dict):
+        raw = scope.get("entries", [])
+        if isinstance(raw, list):
+            seed_entries = raw
+    module_entries: list[Any] = []
+    lifecycle = data.get("module_lifecycle")
+    if isinstance(lifecycle, dict):
+        raw = lifecycle.get("entries", lifecycle)
+        if isinstance(raw, list):
+            module_entries = raw
+    elif isinstance(lifecycle, list):
+        module_entries = lifecycle
+    return seed_entries, module_entries
+
+
+def check_lifecycle_attribution(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L015: lifecycle-entry attribution (flows doc §4, GOV-021).
+
+    F3-only presence guard: every `seed_scope.entries[]` / `module_lifecycle`
+    entry must carry a non-empty `author` (AI agent id + supervising human);
+    module entries must also carry `chg_ref`. Deterministic half of GOV-021 —
+    carrier completeness on the documents themselves stays with the reviewer
+    lens. Other flows pass through untouched.
+    """
+    control = data.get("change_control", {})
+    if not isinstance(control, dict):
+        control = {}
+    source = control.get("change_source")
+    if source in (None, "null", ""):
+        meta = data.get("metadata", {})
+        if isinstance(meta, dict):
+            fallback = meta.get("change_source")
+            if isinstance(fallback, dict):
+                fallback = fallback.get("value", source)
+            if fallback not in (None, "null", ""):
+                source = fallback
+
+    if source not in ("upstream", "midstream", "design"):
+        passes.append("CHG-L015: non-F3 source — attribution guard not applicable")
+        return
+
+    seed_entries, module_entries = _lifecycle_entries(data)
+    if not seed_entries and not module_entries:
+        passes.append("CHG-L015: no lifecycle entries — guard not applicable")
+        return
+
+    problems: list[str] = []
+    for idx, entry in enumerate(seed_entries):
+        if not isinstance(entry, dict) or not entry.get("author"):
+            problems.append(f"seed_scope.entries[{idx}] lacks a non-empty `author` (GOV-021)")
+    for idx, entry in enumerate(module_entries):
+        if not isinstance(entry, dict):
+            problems.append(f"module_lifecycle entry[{idx}] is not a mapping (GOV-021)")
+            continue
+        if not entry.get("author"):
+            problems.append(
+                f"module_lifecycle entry[{idx}] lacks a non-empty `author` (GOV-021)"
+            )
+        if not entry.get("chg_ref"):
+            problems.append(
+                f"module_lifecycle entry[{idx}] lacks `chg_ref` (GOV-021)"
+            )
+    if problems:
+        errors.append(
+            "CHG-L015: lifecycle entries without AI attribution "
+            "(GOV-021) — every seed/module lifecycle entry must name its author; "
+            "module entries must also cite chg_ref: " + "; ".join(problems)
+        )
+        return
+    passes.append("CHG-L015: lifecycle entries carry author/chg_ref attribution")
 
 
 def main(argv: list[str] | None = None) -> int:

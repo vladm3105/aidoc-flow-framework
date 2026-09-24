@@ -2773,19 +2773,50 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     return findings
 
 
-# --- Seed disposition ledger lint (SEED-ABSORPTION-001, GD-08) -----------------
+# --- Seed disposition ledger lint (SEED-ABSORPTION-001, GD-08/GD-36) -----------
+_SEED_VERSION_RE = re.compile(
+    r"document_control\s*:\s*\n(?:.*\n){0,12}?\s*version\s*:\s*[\"']?([0-9][0-9A-Za-z.\-]*)[\"']?"
+)
+
+
+def _seed_document_versions(corpus: list[tuple[str, str]]) -> set[str]:
+    """Collect `document_control.version` values from corpus seed files.
+
+    A corpus entry counts as a seed file when its relative path names the
+    seed tier (`seed/...`, `docs/seed/...`, or any `/seed/` segment).
+    Files without a parseable control version contribute nothing — the pin
+    check skips what it cannot judge rather than failing it.
+    """
+    versions: set[str] = set()
+    for rel, text in corpus:
+        if not (
+            rel == "seed"
+            or rel.startswith("seed/")
+            or rel.startswith("docs/seed/")
+            or "/seed/" in rel
+        ):
+            continue
+        match = _SEED_VERSION_RE.search(text)
+        if match:
+            versions.add(match.group(1).strip())
+    return versions
+
+
 def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     """SEED01 — structural validation of a BRD's ``seed_disposition:`` ledger
-    (governance/SEED_CONTRACT.md, GD-08).
+    (governance/SEED_CONTRACT.md, GD-08/GD-36).
 
     Deterministic half of the enforcement split: every ledger row must be
-    well-formed, and each ``absorbed`` row's ``brd_elements`` must resolve to a
-    declared element. It CANNOT tell whether the ledger missed a claim the seed
-    prose makes — that is the BRD auditor lens's check C8 (a reading judgement).
+    well-formed, each ``absorbed`` row's ``brd_elements`` must resolve to a
+    declared element, and each ``seed_version`` pin must match a corpus seed
+    file's ``document_control.version``. It CANNOT tell whether the ledger
+    missed a claim the seed prose makes — that is the BRD auditor lens's
+    check C8 (a reading judgement).
 
     The carrier is optional (``_required: false``): a BRD with no ledger block is
     silently skipped, so the rule fires on nothing in corpora authored before the
-    contract.
+    contract. Rows without a pin pass as before; pinned rows skip when no seed
+    file (or no parseable seed version) is in the corpus.
     """
 
     # Resolve `absorbed` targets against elements declared OUTSIDE the ledger.
@@ -2801,6 +2832,7 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
 
     stripped = [(rel, _YAML_FENCE.sub(_drop_ledger, text)) for rel, text in corpus]
     declared: set[str] = set(build_edge_graph(stripped).element_host)
+    seed_versions = _seed_document_versions(corpus)
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text, rel)
@@ -2911,6 +2943,20 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
                             line,
                             "SEED01",
                             f"deferred seed claim '{label}' must name a 'target_cycle'",
+                        )
+                    )
+            pin = row.get("seed_version")
+            if isinstance(pin, (str, int, float)) and str(pin).strip() and seed_versions:
+                pin_s = str(pin).strip()
+                if pin_s not in seed_versions:
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"seed claim '{label}' pins seed_version '{pin_s}' but the "
+                            f"corpus seed is version {sorted(seed_versions)[0]} — "
+                            "re-point or re-dispose the row",
                         )
                     )
     return findings

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-22 |
+| Last Updated | 2026-09-24 |
 | Author | Framework Maintainer |
-| Framework Version | 0.60.0 |
+| Framework Version | 0.61.0 |
 
 | Field | Value |
 |---|---|
@@ -98,11 +98,14 @@ source. The §3.1.1 cascade is MANDATORY and ordered — and Phase 0 itself is o
 Phase 0a seed_scope, Phase 0b module_lifecycle, Phase 0c SDD archive → rewrite → bump (upper layers first),
 then Phase 1 IPLAN referencing the NEW versions, Phase 2 code.
 
-**Phase 0a — seed_scope (record, usually no-change).** The CHG records a `seed_scope` decision against the
-seed tier: either `no-change` (with the checked seed files cited — the common case, proven by verification, never
-assumed) or `create` (a genuinely new domain mints a new `seed/architecture/` or `seed/agent-surface/` file).
-Seed files are NEVER rewritten in place (SEED_CONTRACT R1, frozen input); a stale seed assumption is superseded by
-a new file, not edited away. `change_source: spec` (framework self-changes:
+**Phase 0a — seed_scope (record, or supersede).** The CHG records a `seed_scope` decision against the
+seed tier: `no-change` (with the checked seed files cited — the common case, proven by verification, never
+assumed), `create` (a genuinely new domain mints a new `seed/architecture/` or `seed/agent-surface/` file),
+or `supersede` (a changed assumption archives the affected seed file's vN and authors vN+1 clean with a
+`supersedes` link — affected files only, per `seed_scope.entries`). A published seed version is NEVER
+rewritten in place (SEED_CONTRACT R1, frozen per version); a stale seed assumption is superseded, not
+edited away. Every supersede re-points or re-disposes the BRD ledger rows pinned (`seed_version`) to the archived version
+in the same CHG lifecycle. `change_source: spec` (framework self-changes:
 templates/governance/registry/VERSION, GATE-SPEC, level ≥ C2 per GATE-SPEC-E003) is the special case of F3 where
 the "product" is the framework itself. F3 MUST NOT be filed as F2 (no SDD
 cascade) even when the diff looks small: behavior change without SDD update is the exact defect §3.1.1 exists to
@@ -115,8 +118,8 @@ affected modules only, mirroring the SDD minimal-regeneration rule. Modules are 
 SDD chain formalizes from, so a stale module is a defect of the same class as a stale SPEC.
 
 **Review checkpoint (hard gate).** The seed → modules chain is reviewed and MUST pass BEFORE any SDD rewrite
-begins and BEFORE any IPLAN is authored: seed_scope verified (checked files read, no-change justified or new
-seed file landed), every affected module synced and archived, every untouched module provably out of scope.
+begins and BEFORE any IPLAN is authored: seed_scope verified (checked files read; no-change justified, new
+seed file landed, or supersede archived + bumped with ledger rows re-pointed), every affected module synced and archived, every untouched module provably out of scope.
 No SDD lifecycle step runs and no IPLAN is authored until this checkpoint passes — an IPLAN written against
 unreviewed modules references a chain that is not actual. The checkpoint verdict is recorded in the CHG.
 

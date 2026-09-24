@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: auditor
 weight: 20
 agent: traceability-auditor
-framework_spec_version: "0.60.0"
+framework_spec_version: "0.61.0"
 ---
 # auditor lens — BRD layer
 
@@ -87,12 +87,15 @@ change provenance. Missing → P3 finding citing C7.
 **C8 — Seed-disposition ledger complete against the seed.** When the cycle has
 a `<project>/seed/` input, read the seed prose against this BRD's
 `seed_disposition:` ledger and confirm **every** claim the seed makes has a row
-(governance `SEED_CONTRACT.md`, GD-08). This is a reading judgement the
+(governance `SEED_CONTRACT.md`, GD-08/GD-36). This is a reading judgement the
 deterministic `SEED01` lint cannot make — `SEED01` proves each row is
-well-formed and each `absorbed` target resolves, but only this lens can catch a
-seed claim the ledger *omitted*. Flag any seed claim with no disposition, and
-any finding "resolved" by editing the seed rather than by a ledger row (the seed
-is frozen). Missing claim / seed edited to pass → P2 finding citing C8.
+well-formed, each `absorbed` target resolves, and each `seed_version` pin is
+current, but only this lens can catch a seed claim the ledger *omitted* or a
+re-pointed row that misreads the new version. Flag any seed claim with no
+disposition, any row pinned to an archived seed version, and any finding
+"resolved" by editing a published seed version rather than by a ledger row
+(versions are frozen; change ships as a CHG supersede). Missing claim / stale pin /
+seed edited to pass → P2 finding citing C8.
 
 ## Beyond-checklist
 

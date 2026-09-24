@@ -150,5 +150,40 @@ class ModulesFirstAgreement(unittest.TestCase):
         self.assertIn("GOV-020", _text(CHG_LINT))
 
 
+class SeedVersioningAgreement(unittest.TestCase):
+    def test_flows_doc_has_supersede(self):
+        """F3 Phase 0a names the supersede decision + ledger re-point (CHG-11)."""
+        text = _text(FLOWS)
+        for token in ("supersede", "seed_version", "Review checkpoint"):
+            self.assertIn(token, text)
+
+    def test_kernel_f3_row_is_seed_versioned(self):
+        """The §3.1.3 kernel F3 row carries the seed-versioning note."""
+        self.assertIn("supersede-capable", _text(CORE))
+
+    def test_templates_carry_supersede_entries(self):
+        """Both template copies carry the supersede enum + entries + attribution (CHG-11)."""
+        for template in (LAYER_TEMPLATE, GOV_TEMPLATE):
+            with self.subTest(template=str(template)):
+                text = _text(template)
+                self.assertIn("no-change | supersede | create", text)
+                self.assertIn("entries:", text)
+                self.assertIn("chg_ref", text)
+
+    def test_readmes_point_at_supersede(self):
+        """Both 09_CHG READMEs point Phase 0 at the supersede-capable flow."""
+        for readme in (LAYER_README, GOV_README):
+            with self.subTest(readme=str(readme)):
+                text = _text(readme)
+                self.assertIn("supersede", text)
+                self.assertIn("CHG_REQUEST_FLOWS.md", text)
+
+    def test_gov021_catalogued_and_emitted(self):
+        """GOV-021 is catalogued and the linter emits CHG-L015 (codes-vs-catalog)."""
+        self.assertIn("`GOV-021`", _text(LINT_RULES))
+        self.assertIn("CHG-L015", _text(CHG_LINT))
+        self.assertIn("GOV-021", _text(CHG_LINT))
+
+
 if __name__ == "__main__":
     unittest.main()

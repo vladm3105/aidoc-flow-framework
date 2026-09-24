@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.60.0 |
+| Framework Version | 0.61.0 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -47,7 +47,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `REVIEW_CREWS.yaml` | Machine-readable per-layer review crews + scoring weights behind `REVIEW_TEAM.md`. |
 | `REVIEW_SAGA.md` | The engine-agnostic saga lifecycle over the create→review→revise loop — state machine, transition table, journal schema, break-circuit policy. |
 | `saga.schema.json` | Machine-readable JSON Schema for the saga journal (`saga.json`) behind `REVIEW_SAGA.md`. |
-| `SEED_CONTRACT.md` | The `seed/` input tier — frozen historical input, total per-claim disposition (absorbed/rejected/deferred), BRD as the absorption point, and the `SEED01`-vs-auditor enforcement split. |
+| `SEED_CONTRACT.md` | The `seed/` input tier — versioned input, frozen per version, total per-claim disposition (absorbed/rejected/deferred, `absorbed` pins `seed_version`), BRD as the absorption point, the AI-attribution rule (GOV-021), and the `SEED01`-vs-auditor enforcement split. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |

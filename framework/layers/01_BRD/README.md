@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.60.0 |
+| Framework Version | 0.61.0 |
 
 
 ## Overview
@@ -28,13 +28,15 @@ raw, human-authored source material a cycle starts from
 governed by [`../../governance/SEED_CONTRACT.md`](../../governance/SEED_CONTRACT.md)
 (GD-08):
 
-- **The seed is frozen historical input.** Once this cycle's first BRD is
-  authored, seed files are not edited to resolve findings — a "the seed says X,
+- **The seed is frozen per version.** Once this cycle's first BRD is
+  authored, a published seed version is not edited to resolve findings — a "the seed says X,
   the chain does not" finding is resolved **in the BRD**, never by amending the
-  seed. New human input arrives through the gated `chg/` tier.
+  published version. The tier itself versions (supersede via CHG Phase 0a);
+  new human input arrives through the gated `chg/` tier.
 - **Every seed claim gets a total disposition** in the BRD's `seed_disposition:`
-  section: `absorbed` (names ≥1 BRD element ID), `rejected` (rationale), or
-  `deferred` (rationale + target cycle). A claim first appearing at PRD or later
+  section: `absorbed` (names ≥1 BRD element ID **and** pins `seed_version`), `rejected` (rationale), or
+  `deferred` (rationale + target cycle). Rows pinned to a superseded seed version
+  are re-pointed or re-disposed in the superseding CHG. A claim first appearing at PRD or later
   with no BRD row is a gap.
 
 The `seed_disposition:` carrier ships `_required: false` (additive), so BRDs

@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — Versioned seed tier + GOV-021 AI document-control rule (CHG-11, C2 MINOR → 0.61.0)
+
+- Seed tier versions via archive → rewrite → bump + supersedes (frozen per version, affected files only); `seed_scope` gains the `supersede` decision with entries; BRD ledger rows pin `seed_version` with SEED01 failing stale pins (GD-36, #684)
+- GOV-021: every AI-created/modified versioned document carries `document_control` + metadata (backfilled when missing); deterministic half enforced as CHG-L015, seed carrier schema in SEED_CONTRACT
+- `framework/VERSION` bumped from `0.60.0` to `0.61.0` with mechanical pin sweep
+
 ### Added — Modules-first F3 extension (CHG-10, C2 MINOR → 0.60.0)
 
 - F3 Phase 0a seed_scope + 0b module_lifecycle + review checkpoint (F3-only); GOV-020/CHG-L014 enforcement, template §4A/§4B, router-matrix agreement

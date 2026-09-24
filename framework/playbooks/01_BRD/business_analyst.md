@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: business_analyst
 weight: 30
 agent: requirements-analyst
-framework_spec_version: "0.60.0"
+framework_spec_version: "0.61.0"
 ---
 # business_analyst lens — BRD layer
 
@@ -82,11 +82,13 @@ Missing → P2 finding citing C7.
 **C8 — Author the seed-disposition ledger.** When the cycle has a
 `<project>/seed/` input, this BRD's `seed_disposition:` section must give
 **every** claim the seed makes exactly one disposition (governance
-`SEED_CONTRACT.md`, GD-08): `absorbed` names ≥1 BRD element ID from §Functional
-Requirements that carries it; `rejected` gives a rationale; `deferred` gives a
+`SEED_CONTRACT.md`, GD-08/GD-36): `absorbed` names ≥1 BRD element ID from §Functional
+Requirements that carries it AND pins `seed_version:` to the seed file version
+absorbed from; `rejected` gives a rationale; `deferred` gives a
 rationale and a target cycle (and SHOULD also appear in §out_of_scope). Do
-**not** edit the seed to resolve a finding — the seed is frozen historical
-input; dispose the claim here. A seed claim first accounted for at PRD or later,
+**not** edit a published seed version to resolve a finding — versions are frozen;
+dispose the claim here, or supersede the seed via a CHG (flows doc §4 Phase 0a)
+and re-point the pinned rows. A seed claim first accounted for at PRD or later,
 with no BRD row, is a gap. Missing/incomplete ledger → P2 finding citing C8.
 
 ## Beyond-checklist

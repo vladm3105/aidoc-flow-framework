@@ -19,7 +19,33 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.60.0 |
+| Framework Version | 0.61.0 |
+
+---
+
+## GD-36 — Versioned seed tier (frozen-per-version) + mandatory AI document-control rule (CHG-11, 0.61.0 MINOR)
+
+- **Status:** Accepted — 2026-09-24 · **SemVer:** framework `0.60.0 → 0.61.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-11 + IPLAN-11 (`framework/archive/CHG-11/`).
+  Issue: #684.
+- **Context:** The seed was the only tier that could not version (GD-08 froze it
+  outright), so the living chain (modules → SDD → code) slowly cited a stale v1
+  seed while every F3 re-verified `seed_scope: no-change` with no lint signal.
+- **Decision (F3-only; F1/F2/F4/Emergency/Type-R untouched):** the seed tier
+  versions via archive → rewrite → bump + `supersedes`, affected files only —
+  frozen **per version** instead of frozen forever (GD-08 stays untouched as the
+  historical record; this entry carries the update). `seed_scope` gains the
+  `supersede` decision with non-empty `entries`; BRD ledger rows pin
+  `seed_version` with `SEED01` failing stale pins (unpinned rows pass as
+  before); new rule GOV-021 requires every AI-created/modified versioned
+  document to carry `document_control` + metadata, backfilled by the agent when
+  missing (carriers verified present in all ten layer templates + governance
+  docs; the seed carrier ships here). Deterministic halves enforced as
+  CHG-L014 (extended) + CHG-L015 (new); reading judgements stay with the
+  auditor lens.
+- **Consequence:** the full chain seed → modules → SDD → code stays actual
+  under one lifecycle, and every AI-touched version says which agent, under
+  which CHG, changed what.
 
 ---
 
