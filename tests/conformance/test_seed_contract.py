@@ -118,6 +118,59 @@ def _brd_with_ledger(ledger_yaml: str) -> list[tuple[str, str]]:
     return [("01_BRD/BRD-01.md", f"{_BRD_HEAD}\n```yaml\n{ledger_yaml}\n```\n")]
 
 
+_SEED_V2 = (
+    "document_control:\n"
+    "  document_id: SEED-auth\n"
+    "  version: \"2.0\"\n"
+    "  status: Approved\n"
+)
+
+
+def _pinned_row(version: str) -> str:
+    return (
+        "seed_disposition:\n"
+        "  - claim: uniqueness\n"
+        "    disposition: absorbed\n"
+        "    brd_elements: [BRD.01.07.be48]\n"
+        f"    seed_version: \"{version}\"\n"
+    )
+
+
+class Seed01VersionPin(unittest.TestCase):
+    """GD-36: `absorbed` rows pin the seed version they were absorbed from."""
+
+    def _codes(self, corpus):
+        return [f.code for f in _check_seed_disposition(corpus)]
+
+    def test_pin_match_passes(self):
+        corpus = _brd_with_ledger(_pinned_row("2.0"))
+        corpus.append(("seed/architecture/auth.md", _SEED_V2))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_stale_pin_is_error(self):
+        """A row pinned to an archived seed version fails until re-pointed."""
+        corpus = _brd_with_ledger(_pinned_row("2.0"))
+        corpus.append(("seed/architecture/auth.md", _SEED_V2.replace('"2.0"', '"1.0"')))
+        self.assertEqual(self._codes(corpus), ["SEED01"])
+
+    def test_unpinned_row_passes_as_before(self):
+        """Pre-pin corpora stay green — pins are required only for rows
+        authored or re-pointed after a supersede."""
+        corpus = _brd_with_ledger(
+            "seed_disposition:\n"
+            "  - claim: uniqueness\n"
+            "    disposition: absorbed\n"
+            "    brd_elements: [BRD.01.07.be48]\n"
+        )
+        corpus.append(("seed/architecture/auth.md", _SEED_V2))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_absent_seed_file_skips(self):
+        """A pinned row with no seed file in the corpus cannot be judged —
+        skip, never fail."""
+        self.assertEqual(self._codes(_brd_with_ledger(_pinned_row("2.0"))), [])
+
+
 class Seed01Lint(unittest.TestCase):
     def _codes(self, corpus):
         return [f.code for f in _check_seed_disposition(corpus)]

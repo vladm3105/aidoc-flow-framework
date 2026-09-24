@@ -1,4 +1,4 @@
-"""Unit: CHG governance linter CHG-L001..CHG-L014 (canonical implementation.steps schema).
+"""Unit: CHG governance linter CHG-L001..CHG-L015 (canonical implementation.steps schema).
 
 Adapted from #653 (`tests/unit/test_chg_lint.py` on the donor branch
 `fix/chg-lint-archive-lifecycle`), which targets the donor's top-level
@@ -444,6 +444,141 @@ class SeedModuleLifecycleTests(unittest.TestCase):
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L014" in e], [])
+
+    def _f3_seed_chg(self):
+        chg = _base_chg()
+        chg["change_control"]["change_source"] = "midstream"
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "SEED-auth", "file": "docs/seed/architecture/auth.md"},
+            {"id": "IPLAN-99", "file": "framework/archive/CHG-99/IPLAN-99.yaml"},
+        ]
+        return chg
+
+    def test_supersede_with_entries_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_seed_chg()
+            chg["seed_scope"] = {
+                "decision": "supersede",
+                "rationale": "PKCE assumption changed",
+                "checked": ["docs/seed/architecture/auth.md"],
+                "entries": [
+                    {
+                        "seed": "docs/seed/architecture/auth.md",
+                        "old_version": "1.0",
+                        "new_version": "2.0",
+                        "archive_path": "docs/sdd/09-CHG/archive/CHG-99/seed/auth-v1.md",
+                        "changes": "PKCE required",
+                        "author": "ai-agent: mimo + human: owner",
+                    }
+                ],
+            }
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L014" in e], [])
+            self.assertTrue(any("CHG-L014" in p for p in passes), passes)
+
+    def test_supersede_without_entries_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_seed_chg()
+            chg["seed_scope"] = {
+                "decision": "supersede",
+                "rationale": "changed",
+                "checked": [],
+                "entries": [],
+            }
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L014" in e and "entries" in e for e in errors), errors)
+
+    def test_legacy_decisions_still_pass(self):
+        # Backward compatible: no-change + create keep passing (CHG-11).
+        for decision in ("no-change", "create"):
+            with tempfile.TemporaryDirectory() as tmp:
+                chg = self._f3_seed_chg()
+                chg["seed_scope"] = {
+                    "decision": decision,
+                    "rationale": "seed checked",
+                    "checked": ["docs/seed/architecture/auth.md"],
+                }
+                path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+                errors, _, _ = chg_lint.lint_chg(path)
+                self.assertEqual(
+                    [e for e in errors if "CHG-L014" in e], [], f"decision={decision}"
+                )
+
+
+class LifecycleAttributionTests(unittest.TestCase):
+    """CHG-L015 (GOV-021): F3 lifecycle entries must carry author/chg_ref; other flows pass."""
+
+    def _f3_chg_with_entries(self):
+        chg = _base_chg()
+        chg["change_control"]["change_source"] = "midstream"
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "SEED-auth", "file": "docs/seed/architecture/auth.md"},
+            {"id": "MODULE-12", "file": "docs/modules/MODULE-12/x.md"},
+            {"id": "IPLAN-99", "file": "framework/archive/CHG-99/IPLAN-99.yaml"},
+        ]
+        chg["seed_scope"] = {
+            "decision": "supersede",
+            "rationale": "changed",
+            "checked": ["docs/seed/architecture/auth.md"],
+            "entries": [
+                {
+                    "seed": "docs/seed/architecture/auth.md",
+                    "old_version": "1.0",
+                    "new_version": "2.0",
+                    "archive_path": "docs/sdd/09-CHG/archive/CHG-99/seed/auth-v1.md",
+                    "changes": "PKCE required",
+                    "author": "ai-agent: mimo + human: owner",
+                }
+            ],
+        }
+        chg["module_lifecycle"] = [
+            {
+                "module": "MODULE-12/x.md",
+                "action": "sync",
+                "archive_path": "docs/sdd/09-CHG/archive/CHG-99/modules/x.md",
+                "new_version": "1.1",
+                "changes": "seed re-point",
+                "author": "ai-agent: mimo + human: owner",
+                "chg_ref": "CHG-99",
+            }
+        ]
+        return chg
+
+    def test_attributed_entries_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._f3_chg_with_entries())
+            )
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L015" in e], [])
+            self.assertTrue(any("CHG-L015" in p for p in passes), passes)
+
+    def test_missing_author_is_gov021_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_chg_with_entries()
+            del chg["seed_scope"]["entries"][0]["author"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L015" in e and "GOV-021" in e for e in errors), errors)
+
+    def test_missing_chg_ref_is_gov021_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_chg_with_entries()
+            del chg["module_lifecycle"][0]["chg_ref"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L015" in e and "GOV-021" in e for e in errors), errors)
+
+    def test_direct_source_passes_through(self):
+        # F3-only boundary: attribution guard does not touch other flows.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_chg_with_entries()
+            chg["change_control"]["change_source"] = "direct"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L015" in e], [])
 
 
 if __name__ == "__main__":

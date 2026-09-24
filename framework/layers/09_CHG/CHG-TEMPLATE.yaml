@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.60.0"
+  framework_version: "0.61.0"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -233,6 +233,8 @@ module_lifecycle:
       archive_path: "[Archive path under docs/sdd/09-CHG/archive/{CHG-ID}/modules/]"
       new_version: "[Module version]"
       changes: "[Header/scope/invariants/seed-reference updates]"
+      author: "[AI agent id + supervising human — GOV-021]"
+      chg_ref: "[This CHG id — GOV-021]"
 
 # =============================================================================
 # Section 4B: Seed Scope (F3 brownfield only)
@@ -241,13 +243,23 @@ module_lifecycle:
 seed_scope:
   _required: false  # OPTIONAL — F3 brownfield only (flows doc §4, Phase 0a)
   _guidance: |
-    F3 ONLY — record what the change needs from the frozen seed tier
-    (flows doc §4, Phase 0a). The seed is NEVER rewritten in place.
+    F3 ONLY — record what the change needs from the versioned seed tier
+    (flows doc §4, Phase 0a). A published seed version is NEVER rewritten in
+    place (frozen per version); changed assumptions are superseded with
+    non-empty entries. Every supersede re-points or re-disposes the BRD ledger
+    rows pinned to the archived version in the same lifecycle.
 
-  decision: no-change  # no-change | create
-  rationale: "[no-change: checked files cited | create: new domain + new file path]"
+  decision: no-change  # no-change | supersede | create
+  rationale: "[no-change: checked files cited | supersede: what changed + why | create: new domain + new file path]"
   checked:
     - "[Seed file read for this decision]"
+  entries:  # REQUIRED when decision is supersede; omit otherwise
+    - seed: "[Seed file path]"
+      old_version: "[Archived version]"
+      new_version: "[New version]"
+      archive_path: "[Archive path under docs/sdd/09-CHG/archive/{CHG-ID}/seed/]"
+      changes: "[Assumption updates]"
+      author: "[AI agent id + supervising human — GOV-021]"
 
 # =============================================================================
 # Section 5: Verification

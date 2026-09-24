@@ -1058,27 +1058,33 @@ seed_disposition:
   _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _required: false
   _guidance: |
-    The seed→SDD absorption ledger (governance/SEED_CONTRACT.md, GD-08).
-    <project>/seed/ is FROZEN historical input once this BRD is authored — do
-    NOT edit the seed to resolve a finding; resolve it here instead. Give EVERY
+    The seed→SDD absorption ledger (governance/SEED_CONTRACT.md, GD-08/GD-36).
+    <project>/seed/ is versioned input, frozen PER VERSION once this BRD is
+    authored — do NOT edit a published seed version to resolve a finding;
+    resolve it here instead, or supersede the seed via a CHG (flows doc §4
+    Phase 0a) and re-point the pinned rows. Give EVERY
     claim the seed makes exactly ONE disposition:
       absorbed — the chain realizes it; name >=1 BRD element ID (this BRD's §7)
-                 that carries it, in `brd_elements`.
+                 that carries it, in `brd_elements`, AND pin `seed_version:` to
+                 the seed file version the claim was absorbed from.
       rejected — deliberately not carried; give a `rationale`.
       deferred — carried by a later cycle; give a `rationale` AND a
                  `target_cycle` (and SHOULD also list it in `out_of_scope:`).
     Render the ledger as a fenced ```yaml block whose top-level key is
     `seed_disposition:` — a list of rows in the shape shown in `_example`.
-    SEED01 checks each row is well-formed and each `absorbed` target resolves;
-    it CANNOT tell whether a seed claim is missing — that is the BRD auditor
-    lens's check C8 (a reading judgement).
+    SEED01 checks each row is well-formed, each `absorbed` target resolves, and
+    each `seed_version` pin matches the corpus seed file's version (unpinned rows
+    pass as before); it CANNOT tell whether a seed claim is missing — that is the
+    BRD auditor lens's check C8 (a reading judgement).
   _example:
     - claim: "Every issued short code must be unique."
       disposition: absorbed
       brd_elements: ["BRD.01.07.be48"]
+      seed_version: "2.0"
     - claim: "Visitors follow links without creating an account."
       disposition: absorbed
       brd_elements: ["BRD.01.07.15e1", "BRD.01.07.6c3f"]
+      seed_version: "2.0"
     - claim: "Per-user vanity/custom short codes."
       disposition: rejected
       rationale: "Not a business objective for this MVP cycle; no owner."
@@ -1087,8 +1093,9 @@ seed_disposition:
       rationale: "Out of MVP scope; needs an abuse-model BRD first."
       target_cycle: "BRD-02"
   _antipatterns:
-    - "Editing a seed file so an audit passes — the seed is frozen; dispose here."
+    - "Editing a published seed version so an audit passes — versions are frozen; dispose here or supersede via CHG."
     - "An `absorbed` row that names no BRD element, or one that does not resolve."
+    - "An `absorbed` row pinned to an archived seed version (re-point it in the superseding CHG)."
     - "A seed claim that first appears at PRD or later with no BRD row (a gap)."
     - "A `deferred` row with no `target_cycle`, or a `rejected` row with no rationale."
 

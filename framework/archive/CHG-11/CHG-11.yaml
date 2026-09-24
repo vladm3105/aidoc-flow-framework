@@ -1,0 +1,282 @@
+# =============================================================================
+#  CHG-11: Versioned seed tier (supersede lifecycle) + mandatory AI document-control rule + MINOR 0.60.0 → 0.61.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-11/IPLAN-11.yaml (to be authored after approval)
+#  Issue: #684 ([Governance] Seed tier has no versioning lifecycle)
+#  §3.4 checklist: completed before authoring (2026-09-24); app-oriented items N/A
+#  with reason — framework doc/tooling self-change, no runtime code (mirrors
+#  CHG-06/CHG-10): items 2/3/4/6/10 N/A (no client/server arch, no structs, no
+#  DB, no handlers); item 5 EARS/BDD IDs vacuous (upstream is owner request +
+#  issue #684; no element IDs cited, so D21/D22/B9/B10 vacuous); SECURITY_REVIEW
+#  (GATE-SPEC-W003): assessed — prose + template-structure + linter-presence
+#  checks only, no executable content, no prompt-injection surface.
+# =============================================================================
+
+id: CHG-11
+title: "Versioned seed tier (supersede lifecycle) + mandatory AI document-control rule + MINOR bump 0.60.0 → 0.61.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-24"
+  framework_version: "0.60.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-11"
+  status: Completed
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-24T00:00:00Z"
+  date_approved: "2026-09-24T00:00:00Z"
+  date_implemented: "2026-09-24T00:00:00Z"
+  supersedes:
+    - "governance routing docs v0.60.0 (framework/archive/CHG-11/)"
+    - "CHG template v0.60.0 (framework/archive/CHG-11/)"
+    - "lint tooling v0.60.0 (framework/archive/CHG-11/)"
+    - "framework/VERSION 0.60.0 (framework/archive/CHG-11/VERSION)"
+    - "IPLAN-11 authorizing record (framework/archive/CHG-11/IPLAN-11.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Promote the seed tier to the SDD lifecycle (archive → rewrite → bump + supersedes, affected files only, frozen-per-version instead of frozen-forever) via a new seed_scope `supersede` decision; pin each BRD `seed_disposition` row to the seed version it was absorbed from (`seed_version:`) with SEED01 failing stale pins (unpinned rows pass as before — pre-contract corpora stay green); add mandatory governance rule GOV-021 (any AI-changed document must carry document_control + metadata, backfilled by the AI agent in the next version when missing); extend GOV-020/SEED01 + CHG-L014 accordingly; MINOR bump 0.60.0 → 0.61.0."
+  why: "The seed is the only tier that cannot version (SEED_CONTRACT R1 freezes it outright), so the living chain (modules → SDD → code) slowly cites a stale v1 seed while every F3 re-verifies `seed_scope: no-change` without a lint signal. Issue #684. SDD docs and modules already version affected-only; the seed joins the same lifecycle. The AI-attribution rule closes the second half of the staleness loop: AI agents do the mechanical sync work, so every AI-touched version must say which agent, under which CHG, changed what — otherwise future readers cannot tell curated history from drift."
+  trigger: "Owner request 2026-09-24 (review session: version seed + modules like SDD, always-actual chain seed → modules → SDD → code) + issue #684."
+  scope:
+    in:
+      - "governance/SEED_CONTRACT.md R1 rewording (frozen-per-version) + seed document_control schema + AI-backfill rule"
+      - "governance/CHG_REQUEST_FLOWS.md F3 Phase 0a: no-change | supersede | create + archive → rewrite → bump ordering (Version 1.0 → 1.1)"
+      - "DOC_GOVERNANCE_CORE.md §3.1.1 Phase 0a steps + §3.1.3 kernel F3 row note"
+      - "LINT_RULES.md: GOV-020 extended (supersede), SEED01 extended (seed_version pin — stale pins fail, unpinned rows pass as before), GOV-021 new (AI document-control)"
+      - "framework/layers/01_BRD/BRD-TEMPLATE.yaml: seed_disposition rows gain optional `seed_version:` pin + guidance + example (additive — carrier stays `_required: false`)"
+      - "sdd_doc_lint/__init__.py: SEED01 resolves pinned rows against the corpus seed file's document_control.version (absent seed file or unpinned row → skip, stays green)"
+      - "tests/conformance/test_seed_contract.py: pin-match green, stale-pin red, unpinned-row green, absent-seed-file green"
+      - "framework/playbooks/01_BRD/business_analyst.md + auditor.md: C8 frozen → frozen-per-version (supersede via CHG Phase 0a, re-point ledger)"
+      - "framework/governance/README.md: SEED_CONTRACT row (frozen historical input → versioned input tier, frozen-per-version)"
+      - "CHG-TEMPLATE.yaml both copies: seed_scope decision enum `no-change | supersede | create` + `entries[]` (seed, old_version, new_version, archive_path, changes, author) — `supersede` requires non-empty entries; module_lifecycle entries gain `author` + `chg_ref` convention (identical — no fork widening)"
+      - "framework/governance/MODULE_LAYOUT.md §7: frozen-separate → versioned-separate (seed versions beside modules, frozen-per-version; modules reference current seed version, never duplicate)"
+      - "chg_lint.py: CHG-L014 accepts `supersede` (+ entries presence); new CHG-L015 lifecycle-entry attribution presence (GOV-021 deterministic half)"
+      - "sdd_doc_lint/tests/test_chg_lint.py: supersede-green, supersede-without-entries red, unattributed-entry red (L015), boundary passthrough"
+      - "tests/conformance/test_chg_flows_router.py: seed-versioning agreement extension"
+      - "both 09_CHG READMEs: Phase 0 0a pointer update (identical); 01_BRD README seed-input section (frozen-per-version)"
+      - "DECISIONS.md GD-36 entry for the seed-versioning + AI-control ruling (GD-08 stays untouched as historical record — GD-36 records the frozen-forever → frozen-per-version update, newest-first)"
+      - "GOV-021 carrier note: `document_control` carriers already exist in all ten layer templates + CHG template (verified 2026-09-24) and in all governance docs (GD-24) — this CHG adds the carrier to the seed tier only; no other template changes required"
+      - "MINOR bump 0.60.0 → 0.61.0: VERSION + changelogs + machine-pin fanout"
+    out:
+      - "Other flows (F1/F2/F4/Emergency/Type-R) — untouched; the extension is F3/spec-only"
+      - "seed_disposition ledger shape (absorbed/rejected/deferred) — only the version it points at changes"
+      - "SEED01 semantic completeness (auditor lens C8) — stays human judgement by design"
+      - "Consumer seed content — framework ships no seed instances; the schema governs consumer projects"
+      - "New SDD layers"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/SEED_CONTRACT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/SEED_CONTRACT.md"
+    new_version: "1.1"
+    changes: "R1 frozen-per-version rewording; seed document_control schema section; GOV-021 AI-backfill rule; doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/CHG_REQUEST_FLOWS.md"
+    new_version: "1.1"
+    changes: "F3 Phase 0a gains supersede decision + archive → rewrite → bump ordering (affected seed only); doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/DOC_GOVERNANCE_CORE.md"
+    new_version: "0.61.0"
+    changes: "§3.1.1 Phase 0a supersede steps; §3.1.3 kernel F3 row carries the seed-versioning note"
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/LINT_RULES.md"
+    new_version: "0.61.0"
+    changes: "GOV-020 extended (supersede); SEED01 extended (current-version resolution); GOV-021 new (AI document-control)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-11/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.61.0"
+    changes: "seed_scope enum + entries fields; module_lifecycle author/chg_ref convention (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-11/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.61.0"
+    changes: "seed_scope enum + entries fields; module_lifecycle author/chg_ref convention (identical to layer copy)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/09_CHG-README.layer.md"
+    new_version: "0.61.0"
+    changes: "Phase 0 0a pointer: seed archive → rewrite → bump (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/09_CHG-README.gov.md"
+    new_version: "0.61.0"
+    changes: "Phase 0 0a pointer: seed archive → rewrite → bump (identical to layer copy)"
+  - layer: "01_BRD"
+    document: "framework/layers/01_BRD/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/01_BRD-README.md"
+    new_version: "0.61.0"
+    changes: "Seed-input section: frozen historical input → frozen-per-version; disposition rows re-point on seed supersede"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/DECISIONS.md"
+    new_version: "0.61.0"
+    changes: "GD-36 entry for the seed-versioning + AI-control ruling"
+  - layer: "01_BRD"
+    document: "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-11/BRD-TEMPLATE.yaml"
+    new_version: "0.61.0"
+    changes: "seed_disposition rows gain optional seed_version pin + guidance + example (additive; carrier stays _required: false)"
+  - layer: "01_BRD"
+    document: "framework/playbooks/01_BRD/business_analyst.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/business_analyst.md"
+    new_version: "0.61.0"
+    changes: "C8 frozen → frozen-per-version (supersede via CHG Phase 0a, re-point ledger)"
+  - layer: "01_BRD"
+    document: "framework/playbooks/01_BRD/auditor.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/auditor.md"
+    new_version: "0.61.0"
+    changes: "C8 frozen → frozen-per-version + stale-pin reading check"
+  - layer: "09_CHG"
+    document: "framework/governance/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/GOVERNANCE-README.md"
+    new_version: "0.61.0"
+    changes: "SEED_CONTRACT row: frozen historical input → versioned input tier, frozen-per-version"
+  - layer: "09_CHG"
+    document: "framework/governance/MODULE_LAYOUT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-11/MODULE_LAYOUT.md"
+    new_version: "0.61.0"
+    changes: "§7 frozen-separate → versioned-separate (seed versions beside modules, frozen-per-version)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-11/IPLAN-11.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance/template/linter originals to framework/archive/CHG-11/ (excluding the CHG-11 vehicle files themselves — CHG-11.yaml, IPLAN-11.yaml — so the snapshot never clobbers the authorizing record; pre-flight first: run test_required_section_sets, test_carrier_parity, seed-contract tests to confirm seed_scope-enum + GOV-021 + seed_version-pin additions collide with nothing)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, both 09_CHG READMEs, 01_BRD README, LINT_RULES.md, DECISIONS.md, chg_lint.py"
+      archive_path: "framework/archive/CHG-11/"
+      new_version: "0.61.0"
+      current_version: "0.60.0"
+      status: Completed
+    - step: "Amend governance + template + README + playbook docs per lifecycle above (seed supersede Phase 0a, seed_version pin, GOV-020/SEED01 extensions, GOV-021, template enum + entries with explicit supersede/entries shape, README pointers, MODULE_LAYOUT §7, GD-36)"
+      phase: "sdd_lifecycle"
+      artifact: "SEED_CONTRACT.md, CHG_REQUEST_FLOWS.md (v1.1), DOC_GOVERNANCE_CORE.md, LINT_RULES.md, DECISIONS.md (GD-36), MODULE_LAYOUT.md, governance/README.md, both CHG-TEMPLATE.yaml, BRD-TEMPLATE.yaml, both 09_CHG READMEs, 01_BRD README, both 01_BRD playbooks"
+      archive_path: "framework/archive/CHG-11/"
+      new_version: "0.61.0"
+      current_version: "0.60.0"
+      status: Completed
+    - step: "Extend lint tooling + tests + conformance + MINOR fanout per IPLAN-11 manifest (tooling/test files ride steps + IPLAN manifest per CHG-10 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/__init__.py (SEED01 pin resolution), sdd_doc_lint/tests/test_chg_lint.py, tests/conformance/test_seed_contract.py, tests/conformance router matrix, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, hooks/sync-version-refs.sh + version-pin sweep"
+      archive_path: "framework/archive/CHG-11/"
+      new_version: "0.61.0"
+      current_version: "0.60.0"
+      status: Pending
+    - step: "Create IPLAN-11 with all tooling and test implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-11"
+      status: Pending
+  files_modified:
+    - "framework/governance/SEED_CONTRACT.md"
+    - "framework/governance/CHG_REQUEST_FLOWS.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+    - "framework/governance/README.md"
+    - "framework/governance/MODULE_LAYOUT.md"
+    - "framework/layers/01_BRD/README.md"
+    - "framework/playbooks/01_BRD/business_analyst.md"
+    - "framework/playbooks/01_BRD/auditor.md"
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/__init__.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+    - "tests/conformance/test_seed_contract.py"
+    - "tests/conformance/test_chg_flows_router.py"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "hooks/sync-version-refs.sh"
+
+artifacts_modified:
+  - id: "CHG-11"
+    changes: "Authorizing record for versioned seed tier + GOV-021 AI document-control rule (this file)"
+  - id: "IPLAN-11"
+    changes: "Authorizing IPLAN (framework/archive/CHG-11/IPLAN-11.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: Owner (session approval 2026-09-24)
+  date: "2026-09-24T00:00:00Z"
+  conditions:
+    - IPLAN-11 authored as Draft before approval (authorizing record for the tooling/test steps).
+    - C2 peer review (maintainer) recorded here before Implemented.
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level)"
+    - "chg_lint.py over CHG-11 (0 errors)"
+    - "sdd_doc_lint/tests green (incl. new supersede + L015 fixtures)"
+    - "conformance: frontmatter + spec_hygiene + router-matrix green"
+    - "D2 dead-path sweep: no new live-path refs introduced"

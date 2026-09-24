@@ -9,11 +9,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 |-------|-------|
 | Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-24 |
 | Author | Framework Maintainer |
-| Framework Version | 0.60.0 |
+| Framework Version | 0.61.0 |
 
 ---
+
+## [0.61.0] — 2026-09-24
+
+### Added — Versioned seed tier + GOV-021 AI document-control rule (CHG-11, C2 MINOR)
+
+- Seed tier joins the SDD lifecycle: archive → rewrite → bump + `supersedes`, affected files only, frozen per version (GD-08 stays historical; GD-36 carries the update). F3 Phase 0a `seed_scope` gains `supersede` with non-empty `entries`; the review checkpoint verifies ledger re-points. F1/F2/F4/Emergency/Type-R untouched.
+- BRD `seed_disposition` rows pin `seed_version`; `SEED01` fails stale pins (unpinned rows pass as before; absent seed file skips). Template carrier stays `_required: false`.
+- New rule GOV-021: any AI-created/modified versioned document carries `document_control` + metadata, backfilled by the agent when missing; lifecycle-entry half enforced as CHG-L015; both CHG templates carry attribution fields.
+- `framework/VERSION` bumped from `0.60.0` to `0.61.0` with mechanical pin sweep.
 
 ## [0.60.0] — 2026-09-23
 
