@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.0 |
+| Framework Version | 0.61.1 |
 
 
 > **Position**: Between design/test and Layer 8 (IPLAN)
@@ -245,4 +245,4 @@ transitively through the chain, not cited locally:
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../templates/GATE_APPROVAL_FORM.md](../templates/GATE_APPROVAL_FORM.md)
-- [../../08_IPLAN/](../../08_IPLAN/)
+- [IPLAN layer](../../../layers/08_IPLAN/README.md)

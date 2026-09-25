@@ -40,6 +40,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    # Override the default for PRIVATE consumers:
-    # with:
-    #   runner_labels: '"runner-self"'
+      # Override the default for PRIVATE consumers:
+      # with:
+      #   runner_labels: '"runner-self"'

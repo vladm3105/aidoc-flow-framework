@@ -534,10 +534,10 @@ iterations:
 
 ## See also
 
-- [`../framework/docs/AIDOC.md`](../framework/docs/AIDOC.md) — `.aidoc/` provenance tier definition
+- [`../framework/governance/aidoc/AIDOC.md`](../framework/governance/aidoc/AIDOC.md) — `.aidoc/` provenance tier definition
 - [`../framework/governance/REVIEW_TEAM.md`](../framework/governance/REVIEW_TEAM.md) — multi-persona review model
 - [`../framework/governance/REVIEW_REMEDIATION_FLOW.md`](../framework/governance/REVIEW_REMEDIATION_FLOW.md) — review/remediation gate flow
 - [`../framework/governance/ADAPTATION.md`](../framework/governance/ADAPTATION.md) — `.aidoc/profile.yaml` semantics
-- [`README.md`](README.md) — test-suite navigation hub
-- [`../plans/ACCEPTANCE-SUITE-HISTORY.md`](../plans/ACCEPTANCE-SUITE-HISTORY.md) — project-level history (per-PR record + v1→v4 plan evolution)
+- [`../tests/acceptance/README.md`](../tests/acceptance/README.md) — test-suite navigation hub
+- `plans/ACCEPTANCE-SUITE-HISTORY.md` — project-level history (per-PR record + v1→v4 plan evolution), retired (see this file)
 - `../examples/<NAME>/README.md` — per-example specifics (seed summary, CHG content)

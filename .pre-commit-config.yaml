@@ -87,6 +87,12 @@ repos:
     hooks:
       - id: yamllint
         args: [-c, .yamllint.yaml]
+        # Acceptance + doc-linter fixtures are test data, not maintained YAML:
+        # broken/ is deliberately malformed (negative cases) and the golden
+        # files are byte-sensitive (element hashes are computed over their
+        # content). Style-linting them is out of scope — mirrors the
+        # markdownlint fixture exclusion above.
+        exclude: '^(tests/acceptance/fixtures/|sdd_doc_lint/fixtures/)'
 
   # ---- secrets ---------------------------------------------------------------
   - repo: https://github.com/Yelp/detect-secrets

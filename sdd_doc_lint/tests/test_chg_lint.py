@@ -424,7 +424,11 @@ class SeedModuleLifecycleTests(unittest.TestCase):
                     "changes": "health-check section",
                 }
             ]
-            chg["seed_scope"] = {"decision": "no-change", "rationale": "seed checked", "checked": []}
+            chg["seed_scope"] = {
+                "decision": "no-change",
+                "rationale": "seed checked",
+                "checked": [],
+            }
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, passes = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L014" in e], [])
@@ -502,9 +506,7 @@ class SeedModuleLifecycleTests(unittest.TestCase):
                 }
                 path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
                 errors, _, _ = chg_lint.lint_chg(path)
-                self.assertEqual(
-                    [e for e in errors if "CHG-L014" in e], [], f"decision={decision}"
-                )
+                self.assertEqual([e for e in errors if "CHG-L014" in e], [], f"decision={decision}")
 
 
 class LifecycleAttributionTests(unittest.TestCase):
@@ -548,9 +550,7 @@ class LifecycleAttributionTests(unittest.TestCase):
 
     def test_attributed_entries_pass(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = _write(
-                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._f3_chg_with_entries())
-            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._f3_chg_with_entries()))
             errors, _, passes = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L015" in e], [])
             self.assertTrue(any("CHG-L015" in p for p in passes), passes)

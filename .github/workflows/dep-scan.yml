@@ -27,6 +27,6 @@ jobs:
       # Report-only rollout. Flip to true to block PRs on a known-vulnerable dependency.
       fail-on-findings: false
       runner_labels: '["self-hosted", "ci-runner", "single-use"]'
-    # No `secrets: inherit` — dep-scan uses only GITHUB_TOKEN (least privilege; the
-    # reusable references no secrets and runs osv-scanner over untrusted-influenced
-    # lockfiles, so it must not be handed the caller's secret set).
+      # No `secrets: inherit` — dep-scan uses only GITHUB_TOKEN (least privilege; the
+      # reusable references no secrets and runs osv-scanner over untrusted-influenced
+      # lockfiles, so it must not be handed the caller's secret set).

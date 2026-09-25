@@ -1,11 +1,15 @@
-# lychee config — framework. Two classes of exclusion:
+# lychee config — framework. Three classes of exclusion:
 #  1. platforms/** + examples/** + tests/** — deep platform/skill docs +
 #     system-under-test corpora (never hand-edited); pre-existing internal-link
 #     debt tracked in issue #481 (LINKS-PLATFORM-DEBT).
 #  2. cross-repo relative links (../business, ../operations, …) — resolve only
 #     in the local multi-repo workspace, never in single-repo CI. Verified by
 #     the umbrella, not per-repo CI.
-exclude_path = ["platforms", "examples", "tests"]
+#  3. framework/archive/** — frozen CHG snapshots. Rewriting their links would
+#     destroy the audit trail (same principle as the version-sweep exclusion
+#     in hooks/sync-version-refs.sh). Links *into* the archive from live files
+#     are still checked — only scanning the frozen files themselves is skipped.
+exclude_path = ["platforms", "examples", "tests", "framework/archive"]
 exclude = [
   "/archive/platforms/", "/examples/", "/tests/",
   "/business/", "/operations/", "/iplanic/", "/interlog/",

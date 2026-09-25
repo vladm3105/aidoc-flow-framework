@@ -9,11 +9,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 |-------|-------|
 | Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-09-24 |
+| Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.0 |
+| Framework Version | 0.61.1 |
 
 ---
+
+## [0.61.1] — 2026-09-25
+
+### Fixed — Archive VERSION snapshots cited by CHG-03/05/11 manifests (C1 PATCH)
+
+- Ship the three missing pre-bump snapshots cited by archived manifests: `framework/archive/CHG-03/VERSION` = `0.53.3`, `framework/archive/CHG-05/VERSION` = `0.55.0`, `framework/archive/CHG-11/VERSION` = `0.60.0` (closes #721).
+- `framework/VERSION` bumped from `0.61.0` to `0.61.1` with mechanical pin sweep.
 
 ## [0.61.0] — 2026-09-24
 

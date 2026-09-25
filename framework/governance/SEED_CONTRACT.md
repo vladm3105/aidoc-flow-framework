@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-24 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.61.0 |
+| Framework Version | 0.61.1 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -101,7 +101,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.61.0"
+  framework_version: "0.61.1"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:

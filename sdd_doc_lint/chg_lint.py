@@ -974,13 +974,9 @@ def check_lifecycle_attribution(
             problems.append(f"module_lifecycle entry[{idx}] is not a mapping (GOV-021)")
             continue
         if not entry.get("author"):
-            problems.append(
-                f"module_lifecycle entry[{idx}] lacks a non-empty `author` (GOV-021)"
-            )
+            problems.append(f"module_lifecycle entry[{idx}] lacks a non-empty `author` (GOV-021)")
         if not entry.get("chg_ref"):
-            problems.append(
-                f"module_lifecycle entry[{idx}] lacks `chg_ref` (GOV-021)"
-            )
+            problems.append(f"module_lifecycle entry[{idx}] lacks `chg_ref` (GOV-021)")
     if problems:
         errors.append(
             "CHG-L015: lifecycle entries without AI attribution "
