@@ -69,6 +69,7 @@ re-derive with the commands in §Verification before quoting.
 | `tests/unit/test_pin_currency_reader.py:29` | needs deleted root `scripts/reconcile-pin-currency-issue.sh` (~24 FAILs, exit 127) | quarantine first (skip), then delete or restore helpers |
 | `tests/unit/test_nonlayer_skills.py:12-13` | `sdd_doc_lint/skills/` doesn't exist | quarantine first (skip), then delete or repoint at `framework/playbooks/` |
 | `tests/unit/test_sync_scripts.py:32-33,64-65` | all `tools/…sync-*.sh` candidates gone → permanent `skipTest` dead guards | quarantine first (skip), then repoint at `hooks/sync-version-refs.sh` or delete |
+
 **Remedy policy (applies to the whole table): quarantine/skip first, delete second** — several modules encode
 re-anchorable contracts; deletion destroys the audit trail (independent-review finding 11).
 

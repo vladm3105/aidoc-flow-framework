@@ -118,12 +118,7 @@ def _brd_with_ledger(ledger_yaml: str) -> list[tuple[str, str]]:
     return [("01_BRD/BRD-01.md", f"{_BRD_HEAD}\n```yaml\n{ledger_yaml}\n```\n")]
 
 
-_SEED_V2 = (
-    "document_control:\n"
-    "  document_id: SEED-auth\n"
-    "  version: \"2.0\"\n"
-    "  status: Approved\n"
-)
+_SEED_V2 = 'document_control:\n  document_id: SEED-auth\n  version: "2.0"\n  status: Approved\n'
 
 
 def _pinned_row(version: str) -> str:
@@ -132,7 +127,7 @@ def _pinned_row(version: str) -> str:
         "  - claim: uniqueness\n"
         "    disposition: absorbed\n"
         "    brd_elements: [BRD.01.07.be48]\n"
-        f"    seed_version: \"{version}\"\n"
+        f'    seed_version: "{version}"\n'
     )
 
 

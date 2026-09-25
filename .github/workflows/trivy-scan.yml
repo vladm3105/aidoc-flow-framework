@@ -26,4 +26,4 @@ jobs:
       # Report-only rollout. Flip to true to block PRs on an IaC/config misconfiguration.
       fail-on-findings: false
       runner_labels: '["self-hosted", "ci-runner", "single-use"]'
-    # No `secrets: inherit` — trivy-scan uses only GITHUB_TOKEN (least privilege).
+      # No `secrets: inherit` — trivy-scan uses only GITHUB_TOKEN (least privilege).

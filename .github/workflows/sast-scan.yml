@@ -45,4 +45,4 @@ jobs:
       # GitHub-hosted is safe and free here (public repo) and the reusable's fork guard
       # (`if: …head.repo.fork != true`) skips fork PRs independently of the label.
       runner_labels: '["ubuntu-latest"]'
-    # No `secrets: inherit` — sast-scan uses only GITHUB_TOKEN (least privilege).
+      # No `secrets: inherit` — sast-scan uses only GITHUB_TOKEN (least privilege).

@@ -61,7 +61,9 @@ jobs:
     name: Read pin-currency verdict
     # Run on manual dispatch OR when workflow_run completes (success or failure),
     # so that an upstream standards-drift failure does not skip reading the verdict.
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    if: ${{ github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success' ||
+      github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     # The reconcile's arg parser is arity-checked, but an unattended job with no
     # ceiling would burn the 6h default if anything ever did hang.
