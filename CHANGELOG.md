@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed — Archive VERSION snapshots cited by CHG-03/05/11 manifests (C1 PATCH → 0.61.1)
+
+- Ship the three missing pre-bump snapshots cited by archived manifests: `framework/archive/CHG-03/VERSION` = `0.53.3`, `framework/archive/CHG-05/VERSION` = `0.55.0`, `framework/archive/CHG-11/VERSION` = `0.60.0` (closes #721)
+- `framework/VERSION` bumped from `0.61.0` to `0.61.1` with mechanical pin sweep (E005/E008: archive vehicle under `framework/archive/` counts as framework change)
+
 ### Added — Versioned seed tier + GOV-021 AI document-control rule (CHG-11, C2 MINOR → 0.61.0)
 
 - Seed tier versions via archive → rewrite → bump + supersedes (frozen per version, affected files only); `seed_scope` gains the `supersede` decision with entries; BRD ledger rows pin `seed_version` with SEED01 failing stale pins (GD-36, #684)
