@@ -54,7 +54,7 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 
 ### `profile.yaml` — the project profile
 
-Per [`framework/governance/ADAPTATION.md`](../governance/ADAPTATION.md):
+Per [`framework/governance/ADAPTATION.md`](../ADAPTATION.md):
 
 > The project profile (`.aidoc/profile.yaml`) is the single input an
 > engine reads when authoring or auditing. Version-controlled, so audits
@@ -65,14 +65,14 @@ profile`.
 
 The profile carries the **project's adaptation-knob overrides only** — the
 closed knob set defined in
-[`ADAPTATION_SURFACE.yaml`](../governance/ADAPTATION_SURFACE.yaml)
+[`ADAPTATION_SURFACE.yaml`](../ADAPTATION_SURFACE.yaml)
 (`active_layers`, `section_toggles`, `audit_threshold`, `glossary`,
 `review_mode`, `quality_loop_max_iterations`). It is an override-only delta;
 absent keys fall through to the framework default. **Per-layer review crews and
 persona weights are framework-defined** (`REVIEW_CREWS.yaml`) and are **not**
 project-overridable through this surface. If a project has no `profile.yaml`, an
 engine bootstraps one from
-[`PROFILE-TEMPLATE.yaml`](../governance/PROFILE-TEMPLATE.yaml).
+[`PROFILE-TEMPLATE.yaml`](../PROFILE-TEMPLATE.yaml).
 
 ### `framework/` — the shared framework symlink
 
@@ -148,6 +148,6 @@ layer (GD-25).
 
 ## See also
 
-- [`governance/ADAPTATION.md`](../governance/ADAPTATION.md) — profile semantics + §10 project overrides
-- [`governance/ADAPTATION_SURFACE.yaml`](../governance/ADAPTATION_SURFACE.yaml) — closed knob registry
+- [`governance/ADAPTATION.md`](../ADAPTATION.md) — profile semantics + §10 project overrides
+- [`governance/ADAPTATION_SURFACE.yaml`](../ADAPTATION_SURFACE.yaml) — closed knob registry
 - [`README.md`](../README.md) — framework layout and four-tier model

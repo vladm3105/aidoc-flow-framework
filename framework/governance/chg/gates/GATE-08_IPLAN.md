@@ -245,4 +245,4 @@ transitively through the chain, not cited locally:
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../templates/GATE_APPROVAL_FORM.md](../templates/GATE_APPROVAL_FORM.md)
-- [../../08_IPLAN/](../../08_IPLAN/)
+- [IPLAN layer](../../../layers/08_IPLAN/README.md)
