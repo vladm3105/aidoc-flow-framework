@@ -1,15 +1,40 @@
 # lychee config — framework. Three classes of exclusion:
-#  1. platforms/** + examples/** + tests/** — deep platform/skill docs +
-#     system-under-test corpora (never hand-edited); pre-existing internal-link
-#     debt tracked in issue #481 (LINKS-PLATFORM-DEBT).
-#  2. cross-repo relative links (../business, ../operations, …) — resolve only
+#  1. framework/archive/** — frozen snapshots of superseded spec versions. Their
+#     relative links rotted when the live tree moved on, and the archive
+#     convention makes the contents immutable (hooks/sync-version-refs.sh refuses
+#     to sweep them), so this is debt that must never be edited away.
+#     Measured with lychee 0.24.2 on a pristine origin/dev before excluding: of
+#     the 70 [ERROR] lines blocking `internal links`, 60 were emitted by 17
+#     archived source files. #726 counts the same debt by target rather than by
+#     source — 50 of its 60 distinct broken targets. No live document links into
+#     framework/archive/, so this narrows which files get scanned without
+#     silencing a single live-doc link. Deliberately NOT added to `exclude` below:
+#     `exclude_path` filters scanned inputs only, so a live doc pointing at a
+#     missing archived file is still reported as the dead link it is.
+#     The trailing slash is load-bearing — entries are unanchored regexes, so a
+#     bare "framework/archive" would also swallow a future framework/archived/.
+#     Do not anchor it with ^ either: lychee sees inputs as ./framework/archive/…,
+#     so an anchored pattern matches nothing and silently re-enables the scan.
+#     Cost, stated plainly: lychee is this repo's only link checker (docs-sync's
+#     cross_ref_repair is disabled, markdownlint cannot resolve targets), so
+#     archived snapshots now have no link coverage at all. Accepted because they
+#     are immutable history — check them at archive time if that ever changes.
+#  2. tests/** — acceptance goldens, fixtures and conformance corpora. This entry
+#     also silences the hand-maintained tests/*.md (README, HOWTO, ENVIRONMENT,
+#     CONTRIBUTING, SCENARIOS, TROUBLESHOOTING), which are ordinary authored docs
+#     and do get edited. That gap is inherited from the pre-existing entry, not
+#     introduced here. The `platforms` and `examples` entries are retained no-ops:
+#     platforms/ was archived in #638, examples/ was deleted outright, and both
+#     were purged with the top-level archive/ in #655. #481
+#     (LINKS-PLATFORM-DEBT), which tracked their link debt, is closed. They stay
+#     as a guard should either directory be re-vendored.
+#  3. cross-repo relative links (../business, ../operations, …) — resolve only
 #     in the local multi-repo workspace, never in single-repo CI. Verified by
 #     the umbrella, not per-repo CI.
-#  3. framework/archive/** — frozen CHG snapshots. Rewriting their links would
-#     destroy the audit trail (same principle as the version-sweep exclusion
-#     in hooks/sync-version-refs.sh). Links *into* the archive from live files
-#     are still checked — only scanning the frozen files themselves is skipped.
-exclude_path = ["platforms", "examples", "tests", "framework/archive"]
+exclude_path = ["framework/archive/", "platforms", "examples", "tests"]
+# "/archive/platforms/" and "/examples/" are dead for the same reason their
+# exclude_path twins are — those trees are gone. Kept beside the live cross-repo
+# patterns rather than pruned, so a re-vendored directory stays excluded.
 exclude = [
   "/archive/platforms/", "/examples/", "/tests/",
   "/business/", "/operations/", "/iplanic/", "/interlog/",
