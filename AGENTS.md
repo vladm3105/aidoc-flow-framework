@@ -59,6 +59,16 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 
 ## Non-negotiables
 
+- **Validate the task before implementing.** Re-check a picked-up issue live
+  (`gh issue view` + the target branch): still open, still reproducible,
+  still applicable — not fixed, stale, superseded, or declined. If it is,
+  report that with evidence and stop; do not build around it. See
+  `framework/AI_ASSISTANT_RULES.md` → "Issue Validation Before Work".
+- **Keep changes safe.** No behavior change beyond the issue's scope, no
+  weakened checks, suites green before the PR. Breaking or otherwise
+  significant changes need a CHG first, then the CHG procedure — never code
+  before the cascade (see Governance Gate below).
+
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks
   and review gates.
