@@ -368,7 +368,7 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 | CHG-L002 | §3.1 Gate Approval | error | C3 changes have `gate_approval.approver` set (not null). |
 | CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle` or `phase: iplan_creation`. |
 | CHG-L004 | §3.1.1 IPLAN Reference | error | CHG references an IPLAN for code changes. |
-| CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps. |
+| CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps; IPLAN-only with zero SDD steps errors on lifecycle-carrying sources. |
 | CHG-L006 | §3.4.1 C16 SDD lifecycle completeness | error | `implementation.steps` with phase `sdd_lifecycle` exists when SDD documents are modified. |
 | CHG-L007 | §3.4.1 C17 SDD entry metadata | error | Every `sdd_lifecycle` step declares artifact + status; `archive_path`/`new_version` required except IPLAN-create steps. |
 | CHG-L008 | §3.4.1 C18 Archive path convention | error | Archive paths use CHG-ID format, never date-based paths. |

@@ -104,6 +104,37 @@ class LifecycleCompletenessTests(unittest.TestCase):
             self.assertTrue(any("CHG-L006" in p for p in passes))
 
 
+class SddFirstOrderTests(unittest.TestCase):
+    """CHG-L005 (§3.1.1): SDD scope precedes IPLAN creation; lifecycle flows
+    cannot file IPLAN-only (#733)."""
+
+    def test_spec_source_iplan_only_is_error(self):
+        # #733: a spec-sourced Type-F shape with zero SDD steps bypasses
+        # Seed → Module → SDD — error, not vacuous pass.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["change_source"] = "spec"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L005" in e for e in errors), errors)
+
+    def test_direct_source_iplan_only_passes(self):
+        # F2 carries an empty lifecycle — the historic pass is preserved.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["change_source"] = "direct"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L005" in e], [])
+
+    def test_missing_source_iplan_only_passes(self):
+        # No source, no provable SDD scope owed — unverifiable, not a violation.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(_base_chg()))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L005" in e], [])
+
+
 class EntryMetadataTests(unittest.TestCase):
     def test_null_archive_path_is_error(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -220,6 +251,49 @@ class TraceabilityTests(unittest.TestCase):
                 Path(tmp) / "CHG-99.yaml",
                 yaml.safe_dump(self._citing_chg("EARS.01.03.8e4b")),
             )
+            errors, warnings, _ = chg_lint.lint_chg(path, root)
+            self.assertEqual([e for e in errors if "CHG-L011" in e], [])
+            self.assertTrue(any("CHG-L011" in w for w in warnings), warnings)
+
+    def test_nearby_dash_named_doc_resolves(self):
+        # #713 mode 1: real documents are EARS-01.yaml, not files named EARS.*.
+        with tempfile.TemporaryDirectory() as tmp:
+            ears = {
+                "id": "EARS-01",
+                "requirements": {
+                    "ubiquitous": [{"id": "EARS.01.03.8e4b", "statement": "THE x SHALL y."}]
+                },
+            }
+            (Path(tmp) / "EARS-01.yaml").write_text(yaml.safe_dump(ears), encoding="utf-8")
+            chg = _base_chg()
+            chg["change_description"]["what"] = "Adds EARS.01.03.8e4b"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L011" in e], [])
+            self.assertEqual([w for w in warnings if "CHG-L011" in w], [])
+            self.assertTrue(any("CHG-L011" in p for p in passes), passes)
+
+    def test_empty_lifecycle_falls_back_to_root_scan(self):
+        # #713 mode 2: empty lifecycle (legal for F2) + --sdd-root where the
+        # cited ID resolves on disk — verifiable, not a false error.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._tree(tmp)
+            chg = _base_chg()
+            chg["change_description"]["what"] = "Adds EARS.01.03.8e4b"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path, root)
+            self.assertEqual([e for e in errors if "CHG-L011" in e], [])
+            self.assertTrue(any("CHG-L011" in p for p in passes), passes)
+
+    def test_empty_lifecycle_without_layer_dirs_warns(self):
+        # #713 mode 2b: empty lifecycle and no EARS/BDD dirs under root —
+        # unverifiable, warned but never errored.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "sdd"
+            root.mkdir(parents=True)
+            chg = _base_chg()
+            chg["change_description"]["what"] = "Adds EARS.01.03.8e4b"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, warnings, _ = chg_lint.lint_chg(path, root)
             self.assertEqual([e for e in errors if "CHG-L011" in e], [])
             self.assertTrue(any("CHG-L011" in w for w in warnings), warnings)

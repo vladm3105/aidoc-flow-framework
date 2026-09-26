@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: tech_lead
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.61.6"
+framework_spec_version: "0.61.7"
 ---
 # tech_lead lens — ADR layer
 

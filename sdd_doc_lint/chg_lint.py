@@ -262,6 +262,16 @@ def check_sdd_first_order(
         passes.append("CHG-L005: no implementation steps found")
         return
 
+    control = data.get("change_control", {})
+    if not isinstance(control, dict):
+        control = {}
+    source = control.get("change_source")
+    # Lifecycle-carrying family (same set as CHG-L014/L015): flows whose
+    # contract includes SDD scope. `direct` (F2 carries an empty lifecycle),
+    # execution/external/feedback, and missing sources cannot prove SDD scope
+    # is owed, so they keep the historic pass — L003/L004/L006/L013 police
+    # those shapes instead.
+
     sdd_phases = {"sdd_lifecycle", "sdd", "archive", "rewrite"}
     iplan_phases = {"iplan_creation", "iplan"}
 
@@ -288,6 +298,22 @@ def check_sdd_first_order(
             )
         else:
             passes.append("CHG-L005: SDD lifecycle steps appear before IPLAN creation")
+    elif first_iplan_index < len(steps) and source in (
+        "upstream",
+        "midstream",
+        "design",
+        "spec",
+        "reconciliation",
+    ):
+        # #733: IPLAN creation with zero SDD lifecycle steps is not
+        # "SDD-first" — a lifecycle-carrying flow that files no SDD scope
+        # bypasses Seed → Module → SDD (Type-F). F2-direct and the other
+        # non-lifecycle sources keep the historic pass (see above).
+        errors.append(
+            "CHG-L005: IPLAN creation steps present but no SDD lifecycle steps — "
+            "a lifecycle-carrying flow must declare SDD scope (Seed → Module → SDD) "
+            "before IPLAN creation (§3.1.1)"
+        )
 
 
 def _sdd_lifecycle_steps(data: dict[str, Any]) -> list[dict[str, Any]]:
@@ -535,8 +561,12 @@ def check_cited_ids_exist(
     nearby-heuristic (warning) otherwise: in the framework-only repo the
     referenced EARS/BDD documents usually live in the consuming project, not
     beside the CHG, so absence without a tree is unverifiable rather than a
-    proven fabrication. Ported from #653, adapted to the canonical
-    implementation.steps schema (see GOV-014..GOV-017 in LINT_RULES.md).
+    proven fabrication. With --sdd-root but an empty lifecycle (legal for
+    F2), the pool falls back to the root's EARS/BDD layer directories; if
+    those are absent too, the citations are warned as unverifiable, never
+    errored as false fabrications (#713). Ported from #653, adapted to the
+    canonical implementation.steps schema (see GOV-014..GOV-017 in
+    LINT_RULES.md).
     """
     texts: list[str] = []
 
@@ -574,11 +604,19 @@ def check_cited_ids_exist(
         checked = 0
         for doc_id in sorted(cited):
             # Heuristic: a same-directory or nearby file carrying the doc's base ID.
+            # Real documents are named {BASE}-NN.yaml (e.g. EARS-01.yaml) — never
+            # a file literally named {BASE}.* (#713).
             base = doc_id.split(".")[0]
-            candidates = list(root.rglob(f"{base}.*")) if root.exists() else []
+            candidates = (
+                list(root.rglob(f"{base}-*.yaml"))
+                + list(root.rglob(f"{base}-*.yml"))
+                + list(root.rglob(f"{base}-*.md"))
+                if root.exists()
+                else []
+            )
             if not candidates:
                 warnings.append(
-                    f"CHG-L011: cited '{doc_id}' but no {base}.* document found near "
+                    f"CHG-L011: cited '{doc_id}' but no {base}-* document found near "
                     f"{file_path.name} — verify it exists in the consuming project"
                 )
                 continue
@@ -588,7 +626,7 @@ def check_cited_ids_exist(
             )
             if doc_id not in haystack:
                 warnings.append(
-                    f"CHG-L011: cited '{doc_id}' not found in {base}.* near {file_path.name}"
+                    f"CHG-L011: cited '{doc_id}' not found in {base}-* near {file_path.name}"
                 )
         passes.append(f"CHG-L011: cited-ID existence checked ({checked} verifiable reference(s))")
         return
@@ -598,6 +636,18 @@ def check_cited_ids_exist(
     declared: set[str] = set()
     missing_files: list[str] = []
     pairs, whole_layers = _traceable_docs_from_steps(data)
+    if not pairs and not whole_layers:
+        # No lifecycle signal (legal for F2; CHG-L013 polices the shape): fall
+        # back to scanning the root's traceable layer directories instead of
+        # erroring on an empty pool (#713). A cited ID that resolves on disk
+        # is verifiable and must not become a hard false error.
+        whole_layers = {layer for layer in TRACEABLE_LAYERS if (sdd_root / layer).is_dir()}
+        if not whole_layers:
+            warnings.append(
+                "CHG-L011: no SDD lifecycle and no EARS/BDD layer directories under "
+                "--sdd-root — cited IDs unverifiable, not proven fabrications"
+            )
+            return
     for layer, name in pairs:
         path = _resolve_sdd_file(sdd_root, layer, name)
         if path is None:
