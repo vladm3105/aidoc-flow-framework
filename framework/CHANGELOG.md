@@ -11,9 +11,16 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.1 |
+| Framework Version | 0.61.2 |
 
 ---
+
+## [0.61.2] — 2026-09-26
+
+### Added — Validate-before-work agent rule (C1 PATCH)
+
+- `AI_ASSISTANT_RULES.md`: new "Issue Validation Before Work" section — re-validate picked-up issues live (open, reproducible, applicable), keep changes behavior-safe, CHG first for breaking/significant changes.
+- `framework/VERSION` bumped from `0.61.1` to `0.61.2` with mechanical pin sweep.
 
 ## [0.61.1] — 2026-09-25
 

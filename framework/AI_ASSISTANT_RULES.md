@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.1 |
+| Framework Version | 0.61.2 |
 
 
 ## Template Usage
@@ -119,6 +119,24 @@ Each AI agent session follows this protocol:
 4. Continue from that point — do NOT regenerate completed work
 5. Update file status after completion or session end
 6. Append to `session_handoff.sessions` with next_session_directive
+
+## Issue Validation Before Work
+
+Re-validate any picked-up issue live before acting on it — an issue may
+already be fixed, stale, inapplicable, or declined since it was filed:
+
+1. Read it back (`gh issue view`): still OPEN, and nothing in the comments,
+   linked PRs, or newer issues supersedes, declines, or already resolves it.
+2. Check the target branch: the defect is still reproducible (or the gap
+   still present) there — not fixed by an intervening change.
+3. If it is fixed, stale, inapplicable, or declined: report that with
+   evidence and stop. Do not implement, do not "improve around" it.
+
+Keep every change safe for the existing code: no behavior change beyond the
+issue's scope, no weakened checks, suites green before the PR. A change that
+breaks compatibility or is otherwise significant needs a CHG first — create
+it and follow the CHG procedure (`framework/governance/CHG_REQUEST_FLOWS.md`,
+`framework/governance/chg/`) before any implementation, not alongside it.
 
 ## What NOT to Reference
 

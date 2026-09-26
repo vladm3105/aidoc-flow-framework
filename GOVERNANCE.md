@@ -39,7 +39,7 @@ validator, CI, protected-branch review). This model is recorded as GD-01 in
 
 ## Agent Enforcement
 
-The framework provides five enforcement mechanisms for AI agents:
+The framework provides six enforcement mechanisms for AI agents:
 
 1. **Working-agreement gate** — `AGENTS.md` must include a mandatory governance
    gate (§3.4) and session-start verification. See `AGENTS.md` → "MANDATORY:
@@ -67,6 +67,14 @@ The framework provides five enforcement mechanisms for AI agents:
    Usage: `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>`
 
    Lint rules: GOV-011 (status lifecycle), GOV-012 (gate approval), GOV-013 (IPLAN Gate) in `LINT_RULES.md`.
+
+6. **Validate-before-work rule** — agents re-validate a picked-up issue live
+   (still open, still reproducible on the target branch, still applicable —
+   not fixed, stale, superseded, or declined) before implementing, keep
+   changes behavior-safe with suites green, and file a CHG first for
+   breaking or otherwise significant changes. See `AGENTS.md` →
+   Non-negotiables; `framework/AI_ASSISTANT_RULES.md` → "Issue Validation
+   Before Work".
 
 Consuming projects MUST propagate these enforcement mechanisms. See
 `ADAPTATION.md` for the adaptation checklist.
