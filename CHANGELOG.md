@@ -9,6 +9,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.61.7] — 2026-09-26
+
+### Fixed — enforcement-scope pair: L011 resolver + L005 Type-F gap (C2 PATCH → 0.61.7)
+
+- `CHG-L011` glob repair + empty-lifecycle root-scan fallback (#713); `CHG-L005` fires on IPLAN-only lifecycle flows, F2-direct preserved (#733)
+- `framework/VERSION` bumped from `0.61.6` to `0.61.7` with mechanical pin sweep
+
 ## [0.61.6] — 2026-09-26
 
 ### Fixed — governance truthfulness batch (C1 PATCH → 0.61.6)

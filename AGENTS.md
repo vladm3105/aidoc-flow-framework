@@ -95,7 +95,7 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 1. Create a CHG document — do NOT write code first
 2. Complete §3.4 checklist BEFORE writing the CHG
 3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
-4. Update EARS/BDD before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing)
+4. Declare SDD scope before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
 5. Create IPLAN with code steps (not in CHG)
 
 Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).

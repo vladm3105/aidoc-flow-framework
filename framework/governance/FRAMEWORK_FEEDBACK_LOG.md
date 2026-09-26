@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.6 |
+| Framework Version | 0.61.7 |
 
 
 > Codifies the two-tier feedback pipeline introduced by

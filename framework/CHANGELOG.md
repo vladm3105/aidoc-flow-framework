@@ -11,9 +11,28 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.6 |
+| Framework Version | 0.61.7 |
 
 ---
+
+## [0.61.7] — 2026-09-26
+
+### Fixed — enforcement-scope pair: L011 resolver repair + L005 Type-F gap (C2 PATCH)
+
+- `CHG-L011` reference resolution repaired (#713): nearby-heuristic globs
+  `{BASE}-*.yaml/yml/md` (real documents are `EARS-01.yaml`, never files
+  named `EARS.*`); with `--sdd-root` but an empty lifecycle the pool falls
+  back to the root's EARS/BDD layer directories, and missing directories
+  warn as unverifiable rather than erroring as false fabrications. 6 new
+  unit tests total (negative control: 4 fail pre-fix, 2 are boundary pins).
+- `CHG-L005` no longer passes vacuously on lifecycle-carrying flows (#733):
+  IPLAN creation with zero SDD steps errors for
+  upstream/midstream/design/spec/reconciliation sources; `direct` (F2 empty
+  lifecycle), execution/external/feedback, and missing sources keep the
+  historic pass. `AGENTS.md` gate names Seed → Module → SDD explicitly.
+  3 new unit tests; no existing-test regressions.
+- Catalog (`LINT_RULES.md` L005/L011 rows) and §3.14 (L005) reworded to match.
+- `framework/VERSION` bumped from `0.61.6` to `0.61.7` with mechanical pin sweep.
 
 ## [0.61.6] — 2026-09-26
 
