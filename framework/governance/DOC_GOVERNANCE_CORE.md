@@ -365,15 +365,27 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 | CHG-L001 | §3.3 Status Lifecycle | error | Status follows: Proposed → Approved → In-Progress → Implemented → Completed. No skipping stages. |
 | CHG-L002 | §3.1 Gate Approval | error | C3 changes have `gate_approval.approver` set (not null). |
 | CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle` or `phase: iplan_creation`. |
-| CHG-L004 | §3.1.1 IPLAN Reference | warning | CHG references an IPLAN for code changes. |
+| CHG-L004 | §3.1.1 IPLAN Reference | error | CHG references an IPLAN for code changes. |
 | CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps. |
+| CHG-L006 | §3.4.1 C16 SDD lifecycle completeness | error | `implementation.steps` with phase `sdd_lifecycle` exists when SDD documents are modified. |
+| CHG-L007 | §3.4.1 C17 SDD entry metadata | error | Every `sdd_lifecycle` step declares artifact + status; `archive_path`/`new_version` required except IPLAN-create steps. |
+| CHG-L008 | §3.4.1 C18 Archive path convention | error | Archive paths use CHG-ID format, never date-based paths. |
+| CHG-L009 | §3.4.1 C19 Version bump | error | `new_version` differs from current when stated. |
+| CHG-L010 | §3.4.1 C20 Supersedes completeness | error | `change_control.supersedes` lists every archived document with its full path. |
+| CHG-L011 | §3.4.1 D21/D22 Cited IDs exist | error (exact `--sdd-root`) / warning (heuristic) | Cited EARS/BDD IDs exist in the referenced documents. |
+| CHG-L012 | §IPLAN Lifecycle SDD sync | warning | Completed IPLANs attest SPEC/TDD checks in `completion_spec_sync:`. |
+| CHG-L013 | §3.1.3 Flow misclassification | error | Code manifest + empty lifecycle + wrong source names the suspected flow (F2/F3/F4). |
+| CHG-L014 | §3.1.3 Seed/module coverage | error | Lifecycle-carrying sources (upstream/midstream/design/spec/reconciliation) touching seed/module docs need `seed_scope` / `module_lifecycle`. |
+| CHG-L015 | §4 Lifecycle attribution | error | Lifecycle entries carry `author` (+ `chg_ref` for modules). |
+
+Severities match `sdd_doc_lint/chg_lint.py`'s actual `errors`/`warnings` placement (#716); the full catalog with `GOV-*` aliases lives in `LINT_RULES.md`.
 
 #### Required Workflow
 
 ```
 1. Create CHG (status: Proposed)
    ↓
-2. Run linter: python scripts/chg_lint.py <chg-file.yaml>
+2. Run linter: python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>
    ↓
 3. If errors → fix CHG, re-run linter
    ↓

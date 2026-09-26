@@ -11,9 +11,27 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.4 |
+| Framework Version | 0.61.5 |
 
 ---
+
+## [0.61.5] — 2026-09-26
+
+### Fixed — lint truthfulness batch: severity fork, L014/L015 source gate, stale vendoring docstrings (C2 PATCH)
+
+- `DOC_GOVERNANCE_CORE.md` §3.14 resynced to emitter reality (#716):
+  `CHG-L004` warning → error, table extended `L006`–`L015` with verified
+  severities, stale `python scripts/chg_lint.py` path fixed.
+- `CHG-L014`/`L015` source gate widened (#722): `spec` (framework
+  self-changes) and `reconciliation` (Type-R) join the lifecycle-carrying
+  family — the guards had never fired on any archived CHG. Other sources
+  still pass through; `direct`-skip pinned by tests. Catalog + `AGENTS.md`
+  rows reworded to match; 3 new unit tests.
+- Stale vendoring docstrings rewritten (#696): `sdd_doc_lint/__init__.py`,
+  `trace_graph.py` (canonical single copy; `tools/` gone with CLEANUP-001),
+  `test_repo_scripts.py` unregistration rationale (subject retired with the
+  platform archive, not coming back).
+- `framework/VERSION` bumped from `0.61.4` to `0.61.5` with mechanical pin sweep.
 
 ## [0.61.4] — 2026-09-26
 

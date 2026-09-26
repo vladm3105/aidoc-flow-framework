@@ -9,6 +9,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.61.5] — 2026-09-26
+
+### Fixed — lint truthfulness batch: severity fork, L014/L015 source gate, stale docstrings (C2 PATCH → 0.61.5)
+
+- §3.14 severity table resynced to emitter reality (#716); `CHG-L014`/`L015` cover `spec` + `reconciliation` sources (#722); vendoring docstrings rewritten (#696)
+- `framework/VERSION` bumped from `0.61.4` to `0.61.5` with mechanical pin sweep
+
 ## [0.61.4] — 2026-09-26
 
 ### Fixed — lint catalog single source of truth + codes-vs-catalog guard (C1 PATCH → 0.61.4)

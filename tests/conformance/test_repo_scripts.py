@@ -15,7 +15,9 @@ suite runs — which includes the `always_run` pre-commit hook and the
 SCOPE (CLEANUP-001): only runnable modules are registered. Modules coupled to
 deleted surfaces (`test_sync_website_badge` → `scripts/sync-version-refs.sh` three-source sweep,
 `test_sdd_coverage` → `tools/sdd_coverage.py`, `test_sync_scripts` →
-`tools/sync-plugin-framework.sh`, `test_skill_manifests` / `test_nonlayer_skills` /
+`archive/tools/sync-plugin-framework.sh` (retired with the 2026-09-07 platform
+archive — the vendored plugin bundle it synced is gone, so the subject is not
+coming back), `test_skill_manifests` / `test_nonlayer_skills` /
 `test_provisional_ids` / `test_ref_granularity` / `test_reuse_manifest` →
 `skill_dirs()`/`plugin_bundle_root()`) stay unregistered until their subjects
 return or they are rewritten. Registering an unrunnable module reds the suite,

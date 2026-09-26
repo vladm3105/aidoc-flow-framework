@@ -1,10 +1,9 @@
 """sdd_doc_lint — deterministic structural check for SDD instance documents.
 
 CANONICAL SOURCE: sdd_doc_lint/__init__.py (edit here).
-Previously vendored to platforms/ (now archived)
-and sdd_doc_lint/ (archived copies at archive/platforms/) are produced by
-tools/sdd_doc_lint/sync-vendored.sh — DO NOT EDIT the vendored copies; any
-direct edit there is overwritten on the next sync run. (CLEANUP-PR-A item 3.)
+Single copy since CLEANUP-001 retired the platform-vendored duplicates with
+the 2026-09-07 platform archive — there is no `tools/sdd_doc_lint/` tree, no
+`sync-vendored.sh`, and nothing left to sync. Edit this package directly.
 
 The platform-tier implementation of the framework's `on_author` / `pre_merge`
 trigger-point check (see `framework/governance/REVIEW_REMEDIATION_FLOW.md`). It
