@@ -36,15 +36,16 @@ Checks:
     reference, or no `parent_iplan` where F4 applies, is an error naming the
     suspected flow (F2/F3/F4)
   CHG-L014: F3 seed/module lifecycle coverage (§3.1.3 router, GOV-020) —
-    an F3-sourced CHG touching seed/module docs must cover them: seed touches
+    a CHG from a lifecycle-carrying source (upstream/midstream/design, spec,
+    reconciliation) touching seed/module docs must cover them: seed touches
     need `seed_scope` (decision no-change | create | supersede; supersede
     requires non-empty `entries`), module touches need a `module_lifecycle`
-    entry. Other flows pass through untouched.
+    entry. Other sources pass through untouched.
   CHG-L015: Lifecycle-entry attribution (flows doc §4, GOV-021) — every
-    `seed_scope.entries[]` / `module_lifecycle` entry on an F3 CHG must carry
-    a non-empty `author` (agent id + supervising human); module entries must
-    also carry `chg_ref`. Deterministic half of GOV-021; carrier completeness
-    stays with the reviewer lens.
+    `seed_scope.entries[]` / `module_lifecycle` entry on a lifecycle-carrying
+    CHG must carry a non-empty `author` (agent id + supervising human);
+    module entries must also carry `chg_ref`. Deterministic half of GOV-021;
+    carrier completeness stays with the reviewer lens.
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -826,13 +827,15 @@ def check_seed_module_lifecycle(
 ) -> None:
     """CHG-L014: F3 seed/module lifecycle coverage (§3.1.3 router, GOV-020).
 
-    F3-only syntactic guard (same philosophy as CHG-L013): an F3-sourced CHG
-    (upstream/midstream/design) that touches seed or module docs must cover
-    them — seed touches need a `seed_scope` record (decision no-change |
-    create | supersede, with supersede requiring non-empty `entries`), module
-    touches need a `module_lifecycle` entry. Coverage is presence-checked, not
-    content-judged: a well-formed but wrong-scope filing still lints green —
-    semantic review owns that. Other flows pass through untouched.
+    Syntactic guard (same philosophy as CHG-L013): a CHG from a
+    lifecycle-carrying source (upstream/midstream/design, plus spec for
+    framework self-changes and reconciliation for Type-R) that touches seed
+    or module docs must cover them — seed touches need a `seed_scope` record
+    (decision no-change | create | supersede, with supersede requiring
+    non-empty `entries`), module touches need a `module_lifecycle` entry.
+    Coverage is presence-checked, not content-judged: a well-formed but
+    wrong-scope filing still lints green — semantic review owns that. Other
+    sources pass through untouched.
     """
     control = data.get("change_control", {})
     if not isinstance(control, dict):
@@ -847,8 +850,11 @@ def check_seed_module_lifecycle(
             if fallback not in (None, "null", ""):
                 source = fallback
 
-    if source not in ("upstream", "midstream", "design"):
-        passes.append("CHG-L014: non-F3 source — seed/module guard not applicable")
+    # Lifecycle-carrying sources: the F3 family (upstream/midstream/design)
+    # plus spec (framework self-changes, e.g. CHG-11's seed tier) and
+    # reconciliation (Type-R) — both can touch seed/module docs (#722).
+    if source not in ("upstream", "midstream", "design", "spec", "reconciliation"):
+        passes.append("CHG-L014: non-lifecycle source — seed/module guard not applicable")
         return
 
     impl = data.get("implementation", {})
@@ -948,11 +954,13 @@ def check_lifecycle_attribution(
 ) -> None:
     """CHG-L015: lifecycle-entry attribution (flows doc §4, GOV-021).
 
-    F3-only presence guard: every `seed_scope.entries[]` / `module_lifecycle`
-    entry must carry a non-empty `author` (AI agent id + supervising human);
-    module entries must also carry `chg_ref`. Deterministic half of GOV-021 —
-    carrier completeness on the documents themselves stays with the reviewer
-    lens. Other flows pass through untouched.
+    Presence guard over the lifecycle-carrying sources (upstream/midstream/
+    design, plus spec and reconciliation — same family as CHG-L014): every
+    `seed_scope.entries[]` / `module_lifecycle` entry must carry a non-empty
+    `author` (AI agent id + supervising human); module entries must also
+    carry `chg_ref`. Deterministic half of GOV-021 — carrier completeness on
+    the documents themselves stays with the reviewer lens. Other sources pass
+    through untouched.
     """
     control = data.get("change_control", {})
     if not isinstance(control, dict):
@@ -967,8 +975,9 @@ def check_lifecycle_attribution(
             if fallback not in (None, "null", ""):
                 source = fallback
 
-    if source not in ("upstream", "midstream", "design"):
-        passes.append("CHG-L015: non-F3 source — attribution guard not applicable")
+    # Same lifecycle-carrying family as CHG-L014 (#722).
+    if source not in ("upstream", "midstream", "design", "spec", "reconciliation"):
+        passes.append("CHG-L015: non-lifecycle source — attribution guard not applicable")
         return
 
     seed_entries, module_entries = _lifecycle_entries(data)

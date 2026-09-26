@@ -464,6 +464,24 @@ class SeedModuleLifecycleTests(unittest.TestCase):
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L014" in e], [])
 
+    def test_spec_source_uncovered_touch_is_error(self):
+        # #722: framework self-changes carry seed/module scope too.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_module_chg()
+            chg["change_control"]["change_source"] = "spec"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L014" in e and "GOV-020" in e for e in errors), errors)
+
+    def test_reconciliation_source_uncovered_touch_is_error(self):
+        # #722: Type-R touches seed/module scope too.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_module_chg()
+            chg["change_control"]["change_source"] = "reconciliation"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L014" in e and "GOV-020" in e for e in errors), errors)
+
     def _f3_seed_chg(self):
         chg = _base_chg()
         chg["change_control"]["change_source"] = "midstream"
@@ -594,6 +612,16 @@ class LifecycleAttributionTests(unittest.TestCase):
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L015" in e], [])
+
+    def test_spec_source_missing_author_is_error(self):
+        # #722: attribution guard covers spec-sourced changes too.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._f3_chg_with_entries()
+            chg["change_control"]["change_source"] = "spec"
+            del chg["seed_scope"]["entries"][0]["author"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L015" in e and "GOV-021" in e for e in errors), errors)
 
 
 if __name__ == "__main__":

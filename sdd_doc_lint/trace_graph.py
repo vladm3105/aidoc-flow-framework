@@ -1,17 +1,18 @@
 """Shared @-tag trace primitives — the single source of the parsing/locating
-rules used by both the backward walker (`trace_walk.py`) and the forward
-coverage engine (`sdd_coverage.py` / the `sdd_doc_lint` coverage gate).
+rules used by the `sdd_doc_lint` coverage gate (imported by `__init__.py`).
+The backward walker (`trace_walk.py`) and forward engine (`sdd_coverage.py`)
+this module was extracted for are gone with `tools/` (CLEANUP-001).
 
 Extracted from `trace_walk.py` per CFB-PR-2 DD-1 so the two directions of the
 trace graph agree byte-for-byte on: the layer order, the `@`-tag regex, the
 doc/element ID forms, and the token→doc-id / doc-id→path helpers.
 
 Lives as a submodule of the `sdd_doc_lint` package (rather than a loose
-`tools/` sibling) so the **vendored** linter copies — synced into each platform
-by `sync-vendored.sh` — can import it via a package-relative path
+`tools/` sibling) so it imports via a package-relative path
 (`from .trace_graph import …`) that resolves regardless of how the package was
-placed on `sys.path`. The two unvendored `tools/` scripts (`trace_walk.py`,
-`sdd_coverage.py`) reach it via `from sdd_doc_lint.trace_graph import …`.
+placed on `sys.path`. The platform-vendored copies this arrangement once
+served were retired with the 2026-09-07 platform archive (CLEANUP-001); the
+`tools/` scripts (`trace_walk.py`, `sdd_coverage.py`) are gone with them.
 
 Pure stdlib (`re` + `pathlib` only); no framework or third-party imports — the
 module itself is importable standalone even where PyYAML is absent.

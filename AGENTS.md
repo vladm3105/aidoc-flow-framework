@@ -113,8 +113,8 @@ Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only no
 - CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
 - CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
-- CHG-L014: Seed/module coverage (§3.1.3) — F3 touches need `seed_scope` / `module_lifecycle` (GOV-020)
-- CHG-L015: Lifecycle attribution (§3.1.3) — F3 entries need `author` (+ `chg_ref` for modules; GOV-021)
+- CHG-L014: Seed/module coverage (§3.1.3) — upstream/midstream/design/spec/reconciliation touches need `seed_scope` / `module_lifecycle` (GOV-020)
+- CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - Full catalog (L006–L015, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
