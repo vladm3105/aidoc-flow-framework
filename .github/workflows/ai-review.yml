@@ -25,8 +25,10 @@
 #
 # Secrets required (consumer adds to repo secrets):
 #   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
-#   LITELLM_BASE_URL                         proxy base URL (normally .../v1)
-#   LITELLM_REVIEW_API_KEY                   review-scoped LiteLLM virtual key
+#   LLM_URL                                  proxy base URL (normally .../v1)
+#   LLM_API_KEY                              review-scoped virtual key
+# (ci/v4.0.0 CI-0051 unified names; the LITELLM_* fallbacks are removed and no
+# longer declared by the reusable — mapping them fails the workflow at load.)
 #
 # Autofix (PLAN-012) is OPT-IN and DEFAULT-OFF; this repo sets
 # `autofix.enabled: false` in its config and holds none of the autofix App
@@ -97,12 +99,14 @@ jobs:
       # model: ai-reviewer
       runner_labels_routine: '["self-hosted", "ci-runner", "single-use"]'
       runner_labels_review: '["self-hosted", "ci-runner", "single-use"]'
-      # REQUIRED here, not optional. This repo's LITELLM_BASE_URL is the
+      # REQUIRED here, not optional. This repo's LLM_URL is the
       # host-local Docker-bridge URL (port 4001 binds only to 172.17.0.1 and
-      # 127.0.0.1 — no public, no TLS listener), and canon's litellm_client.py
+      # 127.0.0.1 — no public, no TLS listener), and canon's llm_client.py
       # rejects any non-HTTPS scheme unless this is true, failing with
-      # "LITELLM_BASE_URL must use HTTPS (or explicitly allow HTTP)".
-      litellm_allow_insecure_http: true
+      # "LLM_URL must use HTTPS (or explicitly allow HTTP)".
+      # Renamed at ci/v4.0.0 (was `litellm_allow_insecure_http`); the old name
+      # is an unknown input and fails the workflow at load.
+      llm_allow_insecure_http: true
       # `tier:` deliberately unset, and `tier: spec` would still be redundant
       # (PLAN-009 Phase 2, framework row) — but NOT for the reason this comment
       # used to give. It said the human-merge floor was "canon composition.yml
@@ -133,6 +137,5 @@ jobs:
       APP_AUTOFIX_ID: ${{ secrets.APP_AUTOFIX_ID }}
       APP_AUTOFIX_KEY: ${{ secrets.APP_AUTOFIX_KEY }}
       AI_REVIEW_TOKEN: ${{ secrets.AI_REVIEW_TOKEN }}
-      LITELLM_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
-      LITELLM_REVIEW_API_KEY: ${{ secrets.LITELLM_REVIEW_API_KEY }}
-      LITELLM_FIX_API_KEY: ${{ secrets.LITELLM_FIX_API_KEY }}
+      LLM_URL: ${{ secrets.LLM_URL }}
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
