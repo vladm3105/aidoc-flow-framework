@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: operator
 weight: 10
 agent: devops-release-engineer
-framework_spec_version: "0.61.7"
+framework_spec_version: "0.61.8"
 ---
 # operator lens — BDD layer
 

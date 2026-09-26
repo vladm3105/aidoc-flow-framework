@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.7 |
+| Framework Version | 0.61.8 |
 
 ---
+
+## [0.61.8] — 2026-09-26
+
+### Removed — dead framework/scripts/ directory (C1 PATCH)
+
+- Deleted `framework/scripts/generate_validation_report.sh` +
+  `verify_iplan_status.sh` (#740): self-deprecated drivers of the retired
+  IPLAN-VERIFY flow, zero callers repo-wide, reading a tombstoned template.
+- `framework/VERSION` bumped from `0.61.7` to `0.61.8` with mechanical pin sweep.
 
 ## [0.61.7] — 2026-09-26
 
