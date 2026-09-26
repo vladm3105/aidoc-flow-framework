@@ -16,10 +16,11 @@ specification with two independent platforms:
 
 | Platform | Engine | Source of truth |
 |----------|--------|-----------------|
-| A — Hermes AI | MCP server (`ucx_hermes`) | `archive/platforms/hermes/` |
-| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | `archive/platforms/claude-code-plugin/` |
+| A — Hermes AI | MCP server (`ucx_hermes`) | retired with the 2026-09-07 archive; code removed |
+| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | retired with the 2026-09-07 archive; code removed |
 
-Both implement the same `framework/` spec; they share no runtime code.
+Both implemented the same `framework/` spec; they shared no runtime code. No
+live platform code remains — the framework is the whole product.
 
 ## 2. Versioning
 
@@ -29,12 +30,12 @@ Semantic Versioning ([semver.org](https://semver.org)). Four independent streams
 |--------|------|---------|
 | Project (migration) | `CHANGELOG.md` / `ROADMAP.md` | Tracks migration milestones only |
 | Framework spec | `framework/VERSION` | The shared contract |
-| Hermes AI | `archive/platforms/hermes/VERSION` | Platform A releases |
-| Claude Code plugin | `archive/platforms/claude-code-plugin/VERSION` | Platform B releases |
+| Hermes AI | retired | Platform stream frozen at the 2026-09-07 archive |
+| Claude Code plugin | retired | Platform stream frozen at the 2026-09-07 archive |
 
-Each platform declares the `framework_spec_version` it conforms to. A MAJOR
+Each consumer declares the spec version it conforms to. A MAJOR
 bump of the framework spec signals a potentially breaking contract change for
-both platforms.
+all consumers.
 
 The migration project starts a fresh `0.x` line (it is a separate, independent
 project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
@@ -55,14 +56,14 @@ project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
 - **Branch protection:** changes to `framework/**` require code-owner review
   plus the `Framework-spec change gate` status check — the human half of
   GATE-SPEC (§6).
-- Platforms tag their own releases independently.
+- Platforms tagged their own releases independently (frozen at the 2026-09-07 archive).
 
 ### Tag namespaces
 
-Git tags use three release namespaces — project milestones `vX.Y.Z`,
-framework spec `framework/vX.Y.Z`, and platforms `<platform>/vX.Y.Z` — plus a
-`mark/<slug>` namespace for non-release bookmarks. `VERSION` files hold the
-bare SemVer; the tag adds the `v` prefix and the namespace.
+Git tags use two live release namespaces — project milestones `vX.Y.Z` and
+framework spec `framework/vX.Y.Z` — plus a `mark/<slug>` namespace for
+non-release bookmarks (the `<platform>/vX.Y.Z` namespace is frozen history).
+`VERSION` files hold the bare SemVer; the tag adds the `v` prefix and the namespace.
 
 **See [`docs/TAGGING.md`](TAGGING.md) for the full tagging policy** — category
 definitions, create / push / find commands, and the rules (annotated release
@@ -104,12 +105,12 @@ The gated CHG process is **not** applied to migration work. Interim controls:
 Post-migration, the gated CHG process returns in two roles:
 
 1. **Process** — governing changes to the `framework/` spec. A spec change has
-   two downstream consumers and real breaking-change risk; that is exactly the
+   downstream consumers and real breaking-change risk; that is exactly the
    cross-layer, formal-gate scenario CHG exists for.
 2. **Feature** — the CHG overlay ships inside `framework/governance/` as a
-   capability both platforms expose to their end users.
+   capability consumers expose to their end users.
 
-Per-platform internal development continues under ordinary SemVer + changelog; PR review applies, the gated process is not.
+Consumer-internal development continues under ordinary SemVer + changelog; PR review applies, the gated process is not.
 
 ### CHG implementation model (implemented — CHG-D1, D-0020)
 
@@ -135,14 +136,13 @@ Implemented twice against the same `framework/` spec — the Claude Code plugin
 validated by the shared conformance suite. **CHG-D2** is done: the model is
 recorded as **GD-01** in `framework/governance/DECISIONS.md`.
 
-**Spec change → re-sync the plugin's vendored bundle.** The Claude Code plugin
-ships a byte-identical copy of `framework/{layers,governance,registry}` (+ the
-SDD guide) so it installs self-contained (D-0022). A spec change therefore has
-one more obligation: run `bash archive/tools/sync-plugin-framework.sh` to regenerate
-`archive/platforms/claude-code-plugin/framework/` and commit it in the same change. The
-conformance drift-guard (`test_plugin_framework_bundle.py`) fails CI if the
-bundle drifts from canonical — it is the backstop, not a surprise; the bundle is
-a snapshot pinned to the plugin's `FRAMEWORK_SPEC_VERSION`.
+**Historical: the plugin's vendored bundle.** The Claude Code plugin used to ship
+a byte-identical copy of `framework/{layers,governance,registry}` (+ the
+SDD guide) so it installed self-contained (D-0022), and a spec change carried
+one more obligation: regenerating `archive/platforms/claude-code-plugin/framework/`
+via `archive/tools/sync-plugin-framework.sh` in the same change, backstopped by
+the `test_plugin_framework_bundle.py` drift-guard. That bundle, script, and guard
+were retired with the 2026-09-07 platform archive — no re-sync obligation remains.
 
 ## 7. Project Integration — Consuming the Framework
 

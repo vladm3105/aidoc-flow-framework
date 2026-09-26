@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 Visual representation of the Change Management gate system (5 artifact gates GATE-01/03/06/08/CODE + the GATE-SPEC meta gate) across the SDD workflow.
@@ -53,7 +53,7 @@ Visual representation of the Change Management gate system (5 artifact gates GAT
 GATE-SPEC sits *beside* the cascade above, not inside it. The artifact gates
 govern a project's artifact instances; GATE-SPEC governs the **`framework/` spec
 that defines the layers**. It has no cascade successor — instead, a passed spec
-change obliges every platform to re-declare `FRAMEWORK_SPEC_VERSION` and re-pass
+change obliges every consumer to re-adopt the new `framework/VERSION` and re-pass
 the shared conformance suite.
 
 ```
@@ -63,7 +63,7 @@ the shared conformance suite.
                               │
                            PASSED
                               │
-        both platforms re-declare FRAMEWORK_SPEC_VERSION
+        consumers re-adopt the new framework/VERSION
               and re-pass the shared conformance suite
 ```
 
@@ -285,7 +285,7 @@ Legend:
 | Code fix | GATE-CODE | CODE only |
 | Security vulnerability | GATE-03 or EMERGENCY | Depends on CVSS |
 | P1 Production incident | EMERGENCY | Bypass + Post-mortem |
-| `framework/` spec change | GATE-SPEC | Meta — no cascade; both platforms re-sync |
+| `framework/` spec change | GATE-SPEC | Meta — no cascade; consumers re-sync |
 
 ### 8.2 Gate Entry Points by Change Source
 

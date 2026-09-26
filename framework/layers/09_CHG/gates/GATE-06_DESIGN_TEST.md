@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 > **Position**: Between architecture decisions and Layers 6-7 (SPEC, TDD)

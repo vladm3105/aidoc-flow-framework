@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -84,11 +84,11 @@ the change routes through **GATE-SPEC** — the meta gate. Requirements:
 | Provenance documented | Yes | Yes |
 | SemVer impact classified | Yes | Yes |
 | Change level ≥ C2 | Yes | Yes (major ⇒ C3) |
-| `framework/VERSION` bumped | Yes | Yes |
-| Both platforms re-declare `FRAMEWORK_SPEC_VERSION` | Yes | Yes |
+| `framework/VERSION` bumped (archive-tier-only repairs exempt) | Yes | Yes |
+| Spec-version pins re-declared | Yes | Yes |
 | Conformance suite green | Yes | Yes |
-| `CHANGELOG.md` updated | Yes | Yes |
-| Human approval | Maintainer + 1 platform owner | Maintainer + both platform owners |
+| `CHANGELOG.md` updated (archive-tier-only repairs exempt) | Yes | Yes |
+| Human approval | Maintainer + 1 reviewer | Maintainer + 2 reviewers |
 
 All framework changes also require:
 1. **Archive** originals to `archive/{CHG-ID}/` before modification

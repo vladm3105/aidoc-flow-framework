@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: gate_spec_process
 weight: 0
 agent: framework-maintainer
-framework_spec_version: "0.61.2"
+framework_spec_version: "0.61.3"
 type: process-playbook
 ---
 # GATE-SPEC Framework Self-Change Process
@@ -16,7 +16,7 @@ type: process-playbook
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 ## Purpose
 
@@ -37,7 +37,8 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 
 - Change classified as C2 or C3 (spec changes are NEVER C1 per GATE-SPEC-E003)
 - SemVer impact determined (major/minor/patch)
-- Both platform owners identified (for C3 approval)
+- Reviewers identified (C2: maintainer + 1 reviewer; C3: maintainer + 2 reviewers)
+- Archive-tier-only repairs (`framework/archive/**` only) skip this playbook — they are not spec changes (#725)
 
 ## Process Steps
 
@@ -150,18 +151,18 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 - [ ] semver_impact set (major | minor | patch)
 - [ ] change_level proposed (>= C2; major => C3)
 - [ ] CHANGELOG.md entry drafted
-- [ ] For C3: both platform owners notified
+- [ ] For C3: downstream consumers notified (migration note per consumer)
 ```
 
 ## GATE-SPEC Exit Criteria Checklist
 
 ```markdown
 - [ ] GATE-SPEC-E001..E004 pass (record-level)
-- [ ] GATE-SPEC-E005..E008 pass (VERSION bump, FSV match, suite green, CHANGELOG)
+- [ ] GATE-SPEC-E005..E008 pass (VERSION bump, pins match, suite green, CHANGELOG)
 - [ ] GATE-SPEC-W001..W003 reviewed
 - [ ] CHG document created (>= C2)
 - [ ] Human approval obtained per matrix (branch protection)
-- [ ] Both platforms re-declare FRAMEWORK_SPEC_VERSION; conformance green
+- [ ] Spec-version pins re-declared; conformance green
 - [ ] Ready to merge
 ```
 

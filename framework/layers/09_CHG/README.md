@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 ## Overview
@@ -309,7 +309,7 @@ of the artifact cascade gates. The workflow:
 4. **Bump VERSION** — `framework/VERSION` follows SemVer
 5. **Update CHANGELOG.md** — document-of-record for spec changes (E008)
 6. **Record decision** — add GD entry to `DECISIONS.md` if significant
-7. **Both platforms re-declare** — `FRAMEWORK_SPEC_VERSION` + conformance green
+7. **Re-declare spec-version pins** — `sync-version-refs` clean + conformance green
 
 CHG records for framework self-changes live in `archive/{CHG-ID}/CHG-{NN}.yaml`
 alongside the archived originals. The CHG `supersedes` field lists every

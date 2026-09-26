@@ -296,14 +296,15 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 | `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against layer templates |
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 
-The former platforms (Hermes MCP server, Claude Code plugin) are archived at
-`archive/platforms/`.
+The former platforms (Hermes MCP server, Claude Code plugin) were archived on
+2026-09-07 and their code has since been removed — no live platform code
+remains; the framework is the whole product.
 
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.61.1`. Platforms (Hermes, Claude Code plugin) have been archived —
+framework spec `0.61.3`. Platforms (Hermes, Claude Code plugin) have been archived —
 the framework is now self-sufficient for any AI agent.
 
 > *This overview is a point-in-time snapshot (as of 2026-09-26); it is not
