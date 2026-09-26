@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 
 ## Template Usage
@@ -97,18 +97,19 @@ To modify a Verified IPLAN:
 
 ## Validation Workflow (Completed → Verified)
 
+Validation runs as EVAL cycles (canon: `layers/08_IPLAN/README.md`):
+
 1. All `file_manifest` entries reach `DONE` + `verified: true`
 2. Document status flips to `Completed`
-3. Run unit tests from `file_manifest` (tdd_ref cases)
-4. Run integration tests from `execution_commands.validation`
-5. Create validation report using `IPLAN-VERIFY-TEMPLATE`
-6. If findings exist:
-   a. Create IPLAN-VERIFY to fix P0/P1 issues
+3. Author (or reuse) the owning EVAL document (`EVAL-{NN}/EVAL-{NN}.yaml`)
+4. Run eval cycle 1 (`initial_eval`); record `EVAL-{NN}-RPT-001.yaml` (`EVAL-REPORT-TEMPLATE.yaml`)
+5. If findings exist:
+   a. Repair via a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`)
    b. Fix all critical findings
-   c. Re-run validation
-7. When all findings resolved:
+   c. Re-run the next cycle (`bug_fix_verification`)
+6. When all findings resolved:
    a. Mark original IPLAN as `Verified` (FINAL/FINITE)
-   b. Close validation IPLAN as `Completed`
+   b. Close the bugfix IPLAN per its rollback/resolution markers
 
 ## IPLAN Session Handoff
 
@@ -153,7 +154,7 @@ you do NOT need to reference CHG gates.
 contract: `CHG-TEMPLATE.yaml` is the primary artifact, `templates/GATE_APPROVAL_FORM.md`
 its companion, and `gates/GATE-*.md` define the checks. See especially
 `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
-checklist (§3.4 of `GOVERNANCE_RULES.md`) is a MANDATORY PROCESS GATE —
+checklist (§3.4 of `DOC_GOVERNANCE_CORE.md`) is a MANDATORY PROCESS GATE —
 complete it BEFORE writing any CHG document.
 
 ## Delegation and concurrency pointers

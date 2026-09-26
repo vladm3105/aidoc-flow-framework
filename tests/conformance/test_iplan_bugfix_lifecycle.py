@@ -17,6 +17,7 @@ IPLAN_DIR = FRAMEWORK / "layers" / "08_IPLAN"
 TEMPLATE = IPLAN_DIR / "IPLAN-TEMPLATE.yaml"
 README = IPLAN_DIR / "README.md"
 VERIFY_TEMPLATE = IPLAN_DIR / "IPLAN-VERIFY-TEMPLATE.yaml"
+CORE = FRAMEWORK / "governance" / "DOC_GOVERNANCE_CORE.md"
 INDEX_TEMPLATE = IPLAN_DIR / "IPLAN-00_index.TEMPLATE.yaml"
 LINT_RULES = FRAMEWORK / "governance" / "LINT_RULES.md"
 BUGFIX_LINT = REPO_ROOT / "sdd_doc_lint" / "bugfix_lint.py"
@@ -88,9 +89,11 @@ class IndexTemplate(unittest.TestCase):
 class VerifyTemplate(unittest.TestCase):
     def test_dry_run_requirement(self):
         """Migration verification requires fresh-rebuild + live-DB dry-run,
-        not fmt/lint alone."""
-        text = _text(VERIFY_TEMPLATE)
-        self.assertIn("dry-run", text.lower(), "no dry-run requirement in VERIFY template")
+        not fmt/lint alone. Canonical home is the Migration VERIFY rule in
+        DOC_GOVERNANCE_CORE.md since IPLAN-VERIFY-TEMPLATE.yaml was
+        tombstoned (#698) — the retired template no longer carries requirements."""
+        text = _text(CORE)
+        self.assertIn("dry-run", text.lower(), "no dry-run requirement in CORE")
 
 
 class LintCatalog(unittest.TestCase):

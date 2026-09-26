@@ -793,8 +793,11 @@ def check_flow_misclassification(
             artifacts = [a for a in raw_artifacts if isinstance(a, dict)]
 
     code_files = [a.get("file", "") for a in artifacts if _is_code_path(a.get("file", ""))]
-    has_sdd_steps = any(s.get("phase") == "sdd_lifecycle" for s in steps)
-    has_iplan_ref = any(s.get("phase") == "iplan_creation" for s in steps) or any(
+    # Case-normalized like every sibling rule (#714): an uppercase phase is
+    # the same phase, and must not read as an empty lifecycle here while a
+    # sibling check reports it complete.
+    has_sdd_steps = any(str(s.get("phase", "")).lower() == "sdd_lifecycle" for s in steps)
+    has_iplan_ref = any(str(s.get("phase", "")).lower() == "iplan_creation" for s in steps) or any(
         "IPLAN" in str(a.get("id", "")) for a in artifacts
     )
 

@@ -14,6 +14,8 @@ from _spec import FRAMEWORK, REPO_ROOT
 
 LAYER_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-TEMPLATE.yaml"
 GOV_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-TEMPLATE.yaml"
+LAYER_GATES = FRAMEWORK / "layers" / "09_CHG" / "gates"
+GOV_GATES = FRAMEWORK / "governance" / "chg" / "gates"
 LAYER_README = FRAMEWORK / "layers" / "09_CHG" / "README.md"
 GOV_README = FRAMEWORK / "governance" / "chg" / "README.md"
 CORE = FRAMEWORK / "governance" / "DOC_GOVERNANCE_CORE.md"
@@ -107,6 +109,24 @@ class GuardCatalogAgreement(unittest.TestCase):
             _text(GOV_TEMPLATE),
             "CHG-TEMPLATE.yaml copies diverged — sync from the governance canon",
         )
+
+    def test_gate_copies_identical(self):
+        """The 8 mirrored gate files stay byte-identical (#700).
+
+        The #724 drive-by diverged GATE-08 silently because nothing pinned the
+        gate twins — only the template. Both mirrors sit three levels under
+        framework/, so links authored up-three-then-down resolve in both.
+        """
+        gov_files = sorted(p.name for p in GOV_GATES.glob("*.md"))
+        layer_files = sorted(p.name for p in LAYER_GATES.glob("*.md"))
+        self.assertEqual(gov_files, layer_files, "gate mirror file sets differ")
+        for name in gov_files:
+            with self.subTest(gate=name):
+                self.assertEqual(
+                    _text(GOV_GATES / name),
+                    _text(LAYER_GATES / name),
+                    f"{name} copies diverged — sync from the governance canon",
+                )
 
     def test_canon_home_declared(self):
         """Both copies name the governance home as canon on conflict (#667)."""

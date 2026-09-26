@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: document_control_lifecycle
 weight: 0
 agent: framework-maintainer
-framework_spec_version: "0.61.5"
+framework_spec_version: "0.61.6"
 type: process-playbook
 ---
 # Document Control Lifecycle Management
@@ -16,7 +16,7 @@ type: process-playbook
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 ## Purpose
 

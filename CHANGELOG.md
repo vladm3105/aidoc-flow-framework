@@ -9,6 +9,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.61.6] — 2026-09-26
+
+### Fixed — governance truthfulness batch (C1 PATCH → 0.61.6)
+
+- Phantom governance pointers, IPLAN-VERIFY retirement, phase casing, mirror pin (#697, #698, #714, #700)
+- `framework/VERSION` bumped from `0.61.5` to `0.61.6` with mechanical pin sweep
+
 ## [0.61.5] — 2026-09-26
 
 ### Fixed — lint truthfulness batch: severity fork, L014/L015 source gate, stale docstrings (C2 PATCH → 0.61.5)

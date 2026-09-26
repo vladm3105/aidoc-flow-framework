@@ -44,9 +44,11 @@ Practical effect:
   them. Both mandate YAML — read Principle 2 before concluding that a layer's
   instance format is unconstrained. The per-layer value is `../registry/LAYER_REGISTRY.yaml`
   `extensions` — the single normative source (GD-17); this bullet does not re-specify it.
-- Each layer has exactly one normative `{TYPE}-TEMPLATE.yaml`. IPLAN and EVAL carry
-  additional normative templates (`IPLAN-VERIFY-TEMPLATE.yaml`,
-  `EVAL-REPORT-TEMPLATE.yaml`); retired MVP variants survive only as tombstone
+- Each layer has exactly one normative `{TYPE}-TEMPLATE.yaml`. EVAL carries
+  one additional normative template (`EVAL-REPORT-TEMPLATE.yaml`);
+  `IPLAN-VERIFY-TEMPLATE.yaml` is a retired tombstone pointer carrying no
+  template content (CHG-08 #662 — validation runs as EVAL cycles, repairs via
+  the `bugfix`-subtype IPLAN). Retired MVP variants survive only as tombstone
   pointers carrying no template content (CHG-08 #666).
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.
@@ -165,7 +167,7 @@ Full definitions, the C1/IPLAN-gate ruling (code-touching C1 requires a scoped I
 direct-commit), the misclassification guard (GOV-018), and verification expectations:
 `governance/CHG_REQUEST_FLOWS.md` (canonical — this section is the kernel, not a second source).
 
-## CHG creation checklist
+## CHG creation checklist (§3.4)
 
 Before writing any CHG document, complete this checklist. Each item maps to a
 gap class found in CHG post-creation reviews. Items 11-12 were added after
@@ -320,7 +322,7 @@ covering every touched file, covering test cases) — "small diff" is not an exe
 
 **SDD sync on IPLAN completion.** When an IPLAN is marked `Completed`, the corresponding SPEC and TDD documents MUST be checked against what was actually built — not what was originally planned. If implementation diverged from the spec, a CHG must be created and the SPEC/TDD rewritten as a new version. The status flip and the SPEC/TDD version check ship in the same change, so the SDD docs stay the current source of truth without requiring codebase comparison. The machine-checkable half of this rule is the `completion_spec_sync:` field on the IPLAN template, validated by CHG-L012 (warning).
 
-**Post-merge VERIFY obligation.** Merging at `Completed` is not forbidden, but the VERIFY window stays explicitly open: the index keeps `validated_by: pending` until the validation IPLAN lands. A defect surfacing in that window is fixed through the validation IPLAN itself. Only after `Verified` does the bugfix vehicle take over.
+**Post-merge VERIFY obligation.** Merging at `Completed` is not forbidden, but the VERIFY window stays explicitly open: the index keeps `validated_by: pending` until the first EVAL cycle lands. A defect surfacing in that window is fixed through a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`) — the 0.56.0 canon — never through a validation IPLAN, and never by reopening the plan. The `bugfix` vehicle owns defect repair in this window and after `Verified` alike.
 
 **Migration VERIFY rule.** For migration IPLANs, fmt/lint/unit green is necessary but NOT sufficient: validation MUST include a fresh-image rebuild plus a live-DB dry-run of the migration apply step. A formatter parsing cleanly does not prove the artefact applies; a stale image does not prove the current tree boots (#656).
 

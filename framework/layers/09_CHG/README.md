@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 
 ## Overview
@@ -21,7 +21,7 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
-**Canonical home**: the CHG template lives canonically at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). This directory's copy is kept byte-identical; the governance copy wins on conflict.
+**Canonical home**: the CHG template lives canonically at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). This directory's copy is kept byte-identical; the governance copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical`.
 
 ## What CHG Is and Is Not
 

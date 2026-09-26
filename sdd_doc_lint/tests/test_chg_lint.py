@@ -406,6 +406,52 @@ class FlowMisclassificationTests(unittest.TestCase):
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertTrue(any("CHG-L013" in e and "F2" in e for e in errors), errors)
 
+    def test_uppercase_phases_match_lowercase(self):
+        # #714: phase comparison is case-insensitive everywhere — an
+        # uppercase SDD step must not read as an empty lifecycle here while
+        # L006 reports it complete.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Rewrite SPEC-99",
+                    "artifact": "SPEC-99",
+                    "phase": "SDD_LIFECYCLE",
+                    "status": "Completed",
+                },
+                {
+                    "step": "Create IPLAN-99",
+                    "artifact": "IPLAN-99",
+                    "phase": "Iplan_Creation",
+                    "status": "Completed",
+                },
+            ]
+            chg["implementation"]["artifacts_modified"] = [
+                {"id": "HOOK", "file": "hooks/sync-version-refs.sh"}
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L013" in e], [])
+            self.assertTrue(any("CHG-L013" in p for p in passes), passes)
+            self.assertEqual([e for e in errors if "CHG-L006" in e], [])
+
+    def test_uppercase_iplan_phase_keeps_direct_shape(self):
+        # #714: the C1-direct shape survives an uppercase IPLAN phase.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._direct_chg()
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Create IPLAN-99",
+                    "artifact": "IPLAN-99",
+                    "phase": "IPLAN_CREATION",
+                    "status": "Completed",
+                }
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L013" in e], [])
+            self.assertTrue(any("CHG-L013" in p for p in passes), passes)
+
     def test_feedback_without_iplan_names_bugfix_vehicle(self):
         with tempfile.TemporaryDirectory() as tmp:
             chg = self._unscoped_chg()

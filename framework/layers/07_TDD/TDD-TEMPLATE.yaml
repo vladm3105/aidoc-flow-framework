@@ -409,9 +409,11 @@ thresholds:
   _guidance: |
     Quality gates per test type. CI must enforce these.
 
-    IPLAN VERIFICATION: These thresholds are used during IPLAN verification
-    (IPLAN-VERIFY-TEMPLATE). If tests don't meet thresholds, findings are
-    recorded as P0/P1 severity and must be fixed before Verified status.
+    IPLAN VERIFICATION: These thresholds are used during IPLAN validation
+    (EVAL cycles — IPLAN-VERIFY-TEMPLATE.yaml is tombstoned, see
+    layers/08_IPLAN/README.md Validation Workflow). If tests don't meet
+    thresholds, findings are recorded as P0/P1 severity and must be fixed
+    before Verified status.
   unit:
     coverage_target: ">=90%"
     pass_criteria:
