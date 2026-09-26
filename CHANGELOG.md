@@ -4,6 +4,11 @@ All notable changes to the AI Doc Flow Framework are documented here. Format
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> Scope (#687): this log records project releases and mirrors each framework
+> spec release cut in `framework/CHANGELOG.md` (same version, same date).
+> Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
+> project-level entry.
+
 ## [Unreleased]
 
 ### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)
@@ -11,10 +16,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
 - Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
 
+## [0.61.1] — 2026-09-25
+
 ### Fixed — Archive VERSION snapshots cited by CHG-03/05/11 manifests (C1 PATCH → 0.61.1)
 
 - Ship the three missing pre-bump snapshots cited by archived manifests: `framework/archive/CHG-03/VERSION` = `0.53.3`, `framework/archive/CHG-05/VERSION` = `0.55.0`, `framework/archive/CHG-11/VERSION` = `0.60.0` (closes #721)
 - `framework/VERSION` bumped from `0.61.0` to `0.61.1` with mechanical pin sweep (E005/E008: archive vehicle under `framework/archive/` counts as framework change)
+
+## [0.61.0] — 2026-09-24
 
 ### Added — Versioned seed tier + GOV-021 AI document-control rule (CHG-11, C2 MINOR → 0.61.0)
 
@@ -22,15 +31,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - GOV-021: every AI-created/modified versioned document carries `document_control` + metadata (backfilled when missing); deterministic half enforced as CHG-L015, seed carrier schema in SEED_CONTRACT
 - `framework/VERSION` bumped from `0.60.0` to `0.61.0` with mechanical pin sweep
 
+## [0.60.0] — 2026-09-23
+
 ### Added — Modules-first F3 extension (CHG-10, C2 MINOR → 0.60.0)
 
 - F3 Phase 0a seed_scope + 0b module_lifecycle + review checkpoint (F3-only); GOV-020/CHG-L014 enforcement, template §4A/§4B, router-matrix agreement
 - `framework/VERSION` bumped from `0.59.2` to `0.60.0` with mechanical pin sweep
 
+## [0.59.2] — 2026-09-23
+
 ### Fixed — AGENTS.md authority-flip (CHG-09, C1 PATCH → 0.59.2)
 
 - Working agreement declares the single agreement (this file wins), CLAUDE.md deprecated/never-authority, self-contained CLAUDE.md pointers dropped, worktree pointer added
 - `framework/VERSION` bumped from `0.59.1` to `0.59.2` with mechanical pin sweep
+
+## [0.59.1] — 2026-09-23
 
 ### Fixed — STALE P2 sweeps + T1 remedy (CHG-08, C2 PATCH → 0.59.1)
 
@@ -39,10 +54,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - D5/D6 harness: CHG/EVAL goldens + layer tests, linter CHG/EVAL coverage (section fallback, `_KNOWN`), VALID_TYPES derived from template, section pins extended, validator delegation, fossil repoint (#670)
 - `framework/VERSION` bumped from `0.59.0` to `0.59.1` with mechanical pin sweep
 
+## [0.59.0] — 2026-09-23
+
 ### Added — STALE P1 canons: one canonical surface per fork (CHG-08, C2 MINOR → 0.59.0)
 
 - EVAL report canon REPORT + RPT tombstone; CHG template canon `governance/chg/` (KEEP §7, 8-layer enum, byte-identical twins); playbook split + `validator.md` retarget; 8 MVP tombstones + index retargets; vehicle → EVAL-RPT + bugfix canon (`tmp/` retired); triple-lock rows + File Naming rewrite (#664 #667 #672 #666 #662 #671 #669)
 - `framework/VERSION` bumped from `0.58.0` to `0.59.0` with mechanical pin sweep
+
+## [0.58.0] — 2026-09-23
 
 ### Fixed — STALE P0 remediation: tests, linter, hooks (CHG-08, C2 MINOR → 0.58.0)
 
@@ -51,12 +70,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Hook gates: `*.sh` watch, TEMPLATE skip, commit-message check, pre-commit wiring, docs-list resync, `OLD_VERSIONS` + pin test, pre-push/review fixes (#663)
 - `framework/VERSION` bumped from `0.57.1` to `0.58.0` with mechanical pin sweep
 
+## [0.57.1] — 2026-09-22
+
 ### Fixed — AGENTS.md freshness post-0.57.0 (CHG-07, C1 PATCH → 0.57.1)
 
 - Root working agreement: dead-file mandates dropped, gate exceptions corrected,
   SDD-first scoped, `python3` invocation, CHG-L013 line, flows-router pointer (#675)
 - `framework/VERSION` bumped from `0.57.0` to `0.57.1` with mechanical pin sweep
   (E005/E008: archive vehicle under `framework/archive/CHG-07/` counts as framework change)
+
+## [0.57.0] — 2026-09-22
 
 ### Added — CHG request flows router (CHG-06, GD-32, C2 MINOR → 0.57.0)
 
@@ -69,6 +92,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `tests/conformance/test_chg_flows_router.py` agreement test; 09_CHG READMEs gain
   the selector table; `hooks/sync-version-refs.sh` gains 0.56.0 sweep lines
 - `framework/VERSION` bumped from `0.56.0` to `0.57.0` with mechanical pin sweep
+
+## [0.56.0] — 2026-09-22
 
 ### Added — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, GD-31, C2 MINOR → 0.56.0)
 
@@ -87,6 +112,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `tests/conformance/test_iplan_bugfix_lifecycle.py` (10/10, incl. BGF catalog-agreement guard)
 - Rejects: both-terminal, mandatory `detection_gap`, `Related-IPLAN` bypass,
   `revision_history`-on-IPLAN, new layer/registry/template fork (issues #656/#657)
+
+## [0.55.0] — 2026-09-21
 
 ### Added — Type-R code-to-doc reconciliation flow (CHG-04, GD-30, C2 MINOR → 0.55.0)
 
@@ -117,7 +144,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (worktree-remove-before-branch-delete order guard)
 - `framework/VERSION` bumped from `0.53.3` to `0.54.0` with mechanical pin sweep
 
-## [0.53.2] — 2026-10-23
+## [0.53.2] — 2026-09-08
 
 ### Fixed — CHG template phase enforcement, governance sync, AI_ASSISTANT_RULES fix
 
@@ -140,7 +167,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **AI_ASSISTANT_RULES.md:**
 
-- Rewrote "What NOT to Reference" section — moved CHG gates out of the "do not reference" list into a dedicated "When to Reference" section (self-learn 2026-10-23 found the original actively undermined governance)
+- Rewrote "What NOT to Reference" section — moved CHG gates out of the "do not reference" list into a dedicated "When to Reference" section (self-learn 2026-09-08 found the original actively undermined governance)
 
 ## [0.53.1] — 2026-09-08
 
