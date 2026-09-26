@@ -258,6 +258,21 @@ class StatusLifecycleTests(unittest.TestCase):
             self.assertEqual([e for e in errors if "CHG-L001" in e], [])
             self.assertTrue(any("CHG-L002" in e for e in errors), errors)
 
+    def test_non_mapping_change_control_does_not_crash(self):
+        # #712: a scalar change_control crashed check_gate_approval with
+        # AttributeError, skipping all checks with no report while exit 1
+        # masqueraded as "errors found". L001 owns the malformed section;
+        # L002 coerces silently per the #668 single-owner rule.
+        for bad in ("C3", ["C3"], None):
+            with self.subTest(change_control=bad):
+                with tempfile.TemporaryDirectory() as tmp:
+                    chg = _base_chg(change_control=bad)
+                    path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+                    errors, _, passes = chg_lint.lint_chg(path)
+                    self.assertEqual(len([e for e in errors if "CHG-L001" in e]), 1)
+                    self.assertEqual([e for e in errors if "CHG-L002" in e], [])
+                    self.assertTrue(passes, "remaining checks did not run")
+
 
 class ScopePhaseTests(unittest.TestCase):
     """CHG-L003 (#668): missing phase errors; no keyword heuristic."""

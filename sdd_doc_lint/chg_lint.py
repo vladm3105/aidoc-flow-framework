@@ -113,6 +113,12 @@ def check_gate_approval(
 ) -> None:
     """CHG-L002: C3 changes must have gate approval (§3.1)."""
     change_control = data.get("change_control", {})
+    # Silent coerce, not a second report: CHG-L001 already owns the malformed
+    # section (#668 single-owner rule — a copy here would double-report one
+    # defect under two codes). Same idiom as the CHG-L014/L015 sites. Without
+    # this a scalar change_control crashes the whole run (#712).
+    if not isinstance(change_control, dict):
+        change_control = {}
     gate_approval = data.get("gate_approval", {})
 
     level = change_control.get("change_level")
