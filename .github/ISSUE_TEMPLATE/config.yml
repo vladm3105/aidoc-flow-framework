@@ -1,11 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security Vulnerability
-    url: mailto:security@{DOMAIN}
-    about: Report security vulnerabilities privately via email
-  - name: Project Board
-    url: https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}
-    about: View the project roadmap and sprint planning
+    url: https://github.com/vladm3105/aidoc-flow-framework/security/advisories/new
+    about: Report security vulnerabilities privately via a GitHub security advisory (see SECURITY.md) — never open a public issue for them
   - name: Documentation
-    url: https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/tree/main/docs
+    url: https://github.com/vladm3105/aidoc-flow-framework/tree/dev/docs
     about: Check existing documentation before creating an issue

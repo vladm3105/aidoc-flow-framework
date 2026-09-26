@@ -303,10 +303,10 @@ The former platforms (Hermes MCP server, Claude Code plugin) are archived at
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.53.0`. Platforms (Hermes, Claude Code plugin) have been archived —
+framework spec `0.61.1`. Platforms (Hermes, Claude Code plugin) have been archived —
 the framework is now self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-09-07); it is not
+> *This overview is a point-in-time snapshot (as of 2026-09-26); it is not
 > wired into the version-sync hook. For live version state see the per-package
 > `VERSION` files.*
 
