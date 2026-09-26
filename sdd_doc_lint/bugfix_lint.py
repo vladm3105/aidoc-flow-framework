@@ -41,6 +41,11 @@ SIBLING_PAT = re.compile(r"^IPLAN-(\d+)(?:[_.].*)?\.ya?ml$", re.IGNORECASE)
 TERMINAL_STATUSES = frozenset({"completed", "verified"})
 ACTIVE_STATUSES = frozenset({"draft", "approved", "in progress"})
 
+# Rule IDs this linter can emit. Imported by the catalog guard
+# (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
+# sync with framework/governance/LINT_RULES.md (#715).
+CODES = frozenset(f"BGF-{i:02d}" for i in range(8))
+
 # BGF-04: step-order scan over present keywords only (presence is reviewer's job).
 # Word boundaries defeat substring false positives ("fixture", "prefix", "hotfix").
 ORDER_PATTERNS = (

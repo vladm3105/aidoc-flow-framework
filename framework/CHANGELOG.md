@@ -11,9 +11,29 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.3 |
+| Framework Version | 0.61.4 |
 
 ---
+
+## [0.61.4] — 2026-09-26
+
+### Fixed — lint catalog single source of truth + codes-vs-catalog guard (C1 PATCH)
+
+- `framework/governance/LINT_RULES.md` is now the exhaustive catalog (#715):
+  new `CHG-L001`–`L015` registry table (severity verified against emitter
+  code), every `GOV-*` row marked **Alias of** its enforcing check or
+  **Reserved**, and 18 unimplemented IDs honestly marked **Reserved**
+  (`TDD-SYNC-A..E`, `EVAL-001/002/003`, `EVAL-COV-001/002/003`, `IPLAN01`,
+  `REG01`, `GOV-008/009/010/013/015`). Census corrected the filed list:
+  `EVAL-ID-001`/`SRC-001`/`COV-004` are emitted after all.
+- New `tests/conformance/test_lint_catalog.py` guard: linter `CODES`
+  registries ⊆ catalog, every catalog row grounded (emitted, aliased, or
+  reserved), reserved set pinned. Header now names the real guard; the
+  "vendored byte-identical by each platform" claim retired with the archive.
+- `sdd_doc_lint/chg_lint.py` + `bugfix_lint.py` declare `CODES` registries
+  (`CHG-L001`–`L015`, `BGF-00`–`07`); `GOVERNANCE.md`/`AGENTS.md` pointers
+  repointed at the catalog (incl. new `L014`/`L015` rows).
+- `framework/VERSION` bumped from `0.61.3` to `0.61.4` with mechanical pin sweep.
 
 ## [0.61.3] — 2026-09-26
 

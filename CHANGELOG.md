@@ -9,6 +9,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.61.4] — 2026-09-26
+
+### Fixed — lint catalog single source of truth + codes-vs-catalog guard (C1 PATCH → 0.61.4)
+
+- `LINT_RULES.md` now catalogues all `CHG-L001`–`L015` with verified severities; every `GOV-*` row marked **Alias of** its enforcing check or **Reserved** (18 unimplemented IDs honest); new `test_lint_catalog.py` guard enforces both directions (#715)
+- `framework/VERSION` bumped from `0.61.3` to `0.61.4` with mechanical pin sweep
+
 ## [Unreleased]
 
 ### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)

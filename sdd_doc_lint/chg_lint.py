@@ -71,6 +71,11 @@ except ImportError:
 # Valid status transitions (must follow this order)
 VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Completed"]
 
+# Rule IDs this linter can emit. Imported by the catalog guard
+# (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
+# sync with framework/governance/LINT_RULES.md (#715).
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 16))
+
 
 def check_status_lifecycle(
     data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]

@@ -66,7 +66,10 @@ The framework provides six enforcement mechanisms for AI agents:
 
    Usage: `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>`
 
-   Lint rules: GOV-011 (status lifecycle), GOV-012 (gate approval), GOV-013 (IPLAN Gate) in `LINT_RULES.md`.
+   Full catalog (`CHG-L001`–`CHG-L015`, `BGF-00`–`BGF-07`, `GOV-*` aliases,
+   reserved IDs): `framework/governance/LINT_RULES.md` — the single source of
+   truth. Governance aliases: GOV-011/L001 (status lifecycle), GOV-012/L002
+   (gate approval), GOV-019/L004 (IPLAN reference).
 
 6. **Validate-before-work rule** — agents re-validate a picked-up issue live
    (still open, still reproducible on the target branch, still applicable —
