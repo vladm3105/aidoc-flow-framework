@@ -13,14 +13,14 @@ suite runs — which includes the `always_run` pre-commit hook and the
 `Framework + platform conformance` required context.
 
 SCOPE (CLEANUP-001): only runnable modules are registered. Modules coupled to
-deleted surfaces (`test_pin_currency_reader` → `scripts/read-pin-currency-log.sh`,
-`test_sync_website_badge` → `scripts/sync-version-refs.sh` three-source sweep,
+deleted surfaces (`test_sync_website_badge` → `scripts/sync-version-refs.sh` three-source sweep,
 `test_sdd_coverage` → `tools/sdd_coverage.py`, `test_sync_scripts` →
 `tools/sync-plugin-framework.sh`, `test_skill_manifests` / `test_nonlayer_skills` /
 `test_provisional_ids` / `test_ref_granularity` / `test_reuse_manifest` →
 `skill_dirs()`/`plugin_bundle_root()`) stay unregistered until their subjects
 return or they are rewritten. Registering an unrunnable module reds the suite,
-not the subject.
+not the subject. (`test_pin_currency_reader` re-registered by #710: its
+subjects were restored under `hooks/`.)
 """
 
 import sys
@@ -31,6 +31,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # Modules under tests/unit/ that must run wherever conformance runs.
 REGISTERED = (
+    "tests.unit.test_pin_currency_reader",
     "tests.unit.test_sdd_doc_lint_trace_resolution",
     "tests.unit.test_spec_helpers",
     "tests.unit.test_template_yaml",

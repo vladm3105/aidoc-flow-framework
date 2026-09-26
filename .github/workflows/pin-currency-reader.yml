@@ -8,7 +8,9 @@
 # the script's tail. This workflow reads the completed run's LOG, the only
 # surface that carries the signal, and reconciles one tracking issue from it.
 #
-# It adds NO second detector. See plans/PIN-CURRENCY-READER-PLAN.md.
+# It adds NO second detector. (The PIN-CURRENCY-READER plan doc was archived
+# with `archive/`; the rationale now lives in this header. Restored 2026-09
+# under `hooks/` after #710 — root `scripts/` no longer exists.)
 #
 # LOCAL OVERRIDE, not a canon caller. Canon has no adopter-facing pin reader —
 # in fact its own weekly fleet audit (standards-drift-self.yml) discards its
@@ -116,7 +118,7 @@ jobs:
 
       - name: Parse the pin-currency verdict
         id: parse
-        run: bash scripts/read-pin-currency-log.sh drift.log >> "$GITHUB_OUTPUT"
+        run: bash hooks/read-pin-currency-log.sh drift.log >> "$GITHUB_OUTPUT"
 
       - name: Reconcile the tracking issue
         env:
@@ -124,8 +126,8 @@ jobs:
           RUN_URL: ${{ steps.src.outputs.run_url }}
           ASSIGNEE: ${{ github.repository_owner }}
         run: |
-          bash scripts/read-pin-currency-log.sh drift.log \
-            | bash scripts/reconcile-pin-currency-issue.sh \
+          bash hooks/read-pin-currency-log.sh drift.log \
+            | bash hooks/reconcile-pin-currency-issue.sh \
                 --repo "$GITHUB_REPOSITORY" \
                 --run-url "$RUN_URL" \
                 --assignee "$ASSIGNEE"
