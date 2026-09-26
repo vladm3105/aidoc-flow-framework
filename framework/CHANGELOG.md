@@ -11,9 +11,29 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 ---
+
+## [0.61.6] — 2026-09-26
+
+### Fixed — governance truthfulness batch: phantom pointers, IPLAN-VERIFY retirement, phase casing, mirror pin (C1 PATCH)
+
+- Phantom `GOVERNANCE_RULES.md` pointers repointed at `DOC_GOVERNANCE_CORE.md`
+  §3.4 (checklist heading numbered), override rows retargeted, and a
+  phantom-recurrence guard added (#697). Full path-resolution scan measured
+  56 dangling shorthand/consumer refs — separate cleanup, not this guard.
+- `IPLAN-VERIFY-TEMPLATE.yaml` tombstoned; validation sections of
+  `AI_ASSISTANT_RULES.md`, `IPLAN-TEMPLATE.yaml`, and `DOC_GOVERNANCE_CORE.md`
+  retargeted to the EVAL-cycle + `bugfix`-IPLAN canon; dry-run test follows
+  the Migration VERIFY rule (#698). `framework/scripts/*.sh` still cite the
+  template but have no callers — left for their own stale issue.
+- `CHG-L013` phase comparison case-normalized like its siblings (#714) with
+  uppercase/mixed-case regression tests.
+- Gate mirror re-pinned (#700 option b): `GATE-08` re-mirrored from the
+  governance canon (both depths resolve the up-three link), link-authoring
+  rule recorded in both READMEs, `test_gate_copies_identical` pins all 8.
+- `framework/VERSION` bumped from `0.61.5` to `0.61.6` with mechanical pin sweep.
 
 ## [0.61.5] — 2026-09-26
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -243,7 +243,7 @@ replaces the framework version. If not, the framework version applies.
 │   └── 06_SPEC/
 │       └── SPEC-TEMPLATE.yaml
 ├── governance/                # rule overrides
-│   ├── GOVERNANCE_RULES.md
+│   ├── DOC_GOVERNANCE_CORE.md
 │   └── ...
 └── playbooks/                 # playbook overrides
     └── 01_BRD/
@@ -287,10 +287,10 @@ When adapting the framework, consuming projects MUST propagate these enforcement
 |------|------|----------|
 | 1 | Add governance gate to project CLAUDE.md (§3.4 — NON-NEGOTIABLE) | Yes |
 | 2 | Add session-start verification checklist (10 items, before any code work) | Yes |
-| 3 | Add §3.4.1 CHG post-creation validation to project GOVERNANCE_RULES.md | Yes |
+| 3 | Add §3.4.1 CHG post-creation validation to project DOC_GOVERNANCE_CORE.md | Yes |
 | 4 | Install framework hooks (ch-gate-check.sh in hooks.json PreCommit) | Yes |
 | 5 | Verify enforcement works (test: say "build" → agent stops at gate) | Yes |
 
 These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
-skills (process-level), and GOVERNANCE_RULES.md (documentation-level) all enforce
+skills (process-level), and DOC_GOVERNANCE_CORE.md (documentation-level) all enforce
 the CHG gate independently.

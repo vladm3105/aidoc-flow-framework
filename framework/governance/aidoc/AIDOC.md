@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.5 |
+| Framework Version | 0.61.6 |
 
 `.aidoc/` is the **project customization layer** for every project that uses the
 framework. It holds the project profile (adaptation knobs) and project-specific
@@ -44,7 +44,7 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 │   │   └── 06_SPEC/
 │   │       └── SPEC-TEMPLATE.yaml
 │   ├── governance/          # rule overrides
-│   │   ├── GOVERNANCE_RULES.md
+│   │   ├── DOC_GOVERNANCE_CORE.md
 │   │   └── ...
 │   └── playbooks/           # playbook overrides
 │       └── 01_BRD/
@@ -96,7 +96,7 @@ Override structure mirrors `framework/`:
 | Override path | Replaces |
 |---------------|----------|
 | `.aidoc/project/layers/06_SPEC/SPEC-TEMPLATE.yaml` | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` |
-| `.aidoc/project/governance/GOVERNANCE_RULES.md` | `framework/governance/GOVERNANCE_RULES.md` |
+| `.aidoc/project/governance/DOC_GOVERNANCE_CORE.md` | `framework/governance/DOC_GOVERNANCE_CORE.md` |
 | `.aidoc/project/playbooks/01_BRD/auditor.md` | `framework/playbooks/01_BRD/auditor.md` |
 
 **Project overrides are project-local** — they never modify the shared
