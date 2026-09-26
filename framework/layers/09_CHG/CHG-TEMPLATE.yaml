@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.61.2"
+  framework_version: "0.61.3"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -86,7 +86,7 @@ metadata:
       | Feedback             | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC→ADR/BDD/EARS→PRD/BRD (bubble-up reaches GATE-08/06/03/01; the upstream fix is a separate dependent CHG — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
       | Reconciliation       | Verified codebase propagating backward to IPLAN and SDD layers (Type-R §3.1.2) | GATE-CODE | Code→IPLAN→TDD→SPEC→BDD→EARS (reverse-authored IPLAN first; the upstream doc fix is a dependent CHG where the cascade requires it — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
       | Direct               | Human/AI-agent request, no behavior change, no prior IPLAN (F2: docs/scripts/hooks/tooling) | GATE-CODE | IPLAN→Code, no SDD cascade (`sdd_lifecycle: []`; covering tests required for code) |
-      | Spec                 | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
+      | Spec                 | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; consumers re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
 
       Workflow per source:
         1. Classify change (C1/C2/C3; spec changes are >= C2)

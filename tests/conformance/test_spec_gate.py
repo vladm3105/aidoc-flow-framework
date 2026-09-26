@@ -57,6 +57,30 @@ class SpecGateGuard(unittest.TestCase):
         )
         self.assertEqual(failures, [])
 
+    def test_archive_only_change_is_not_a_spec_change(self):
+        """Edits confined to framework/archive/** carry no VERSION obligation (#725)."""
+        module = _load_spec_gate()
+        self.assertEqual(
+            module.evaluate(
+                [
+                    "framework/archive/CHG-03/VERSION",  # pragma: allowlist secret
+                    "framework/archive/CHG-05/VERSION",  # pragma: allowlist secret
+                ]
+            ),
+            [],
+        )
+
+    def test_archive_plus_normative_change_still_fails(self):
+        """An archive repair shipped with a normative edit is still a spec change (#725)."""
+        module = _load_spec_gate()
+        failures = module.evaluate(
+            [
+                "framework/archive/CHG-03/VERSION",  # pragma: allowlist secret
+                "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md",
+            ]
+        )
+        self.assertEqual(set(failures), {"GATE-SPEC-E005", "GATE-SPEC-E008"})
+
 
 if __name__ == "__main__":
     unittest.main()

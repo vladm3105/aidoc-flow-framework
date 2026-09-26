@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 > **CHG Reference**: CHG-XX
@@ -175,13 +175,13 @@ custom_fields:
 | GATE-SPEC-E003: Not C1 (≥ C2) | [ ] Pass / [ ] Fail | |
 | GATE-SPEC-E004: C3 human approval recorded | [ ] Pass / [ ] Fail / [ ] N/A | |
 | GATE-SPEC-E005: `framework/VERSION` bumped (CI) | [ ] Pass / [ ] Fail | |
-| GATE-SPEC-E006: both `FRAMEWORK_SPEC_VERSION` match (CI) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E006: spec-version pins match (CI) | [ ] Pass / [ ] Fail | |
 | GATE-SPEC-E007: conformance suite green (CI) | [ ] Pass / [ ] Fail | |
 | GATE-SPEC-E008: `CHANGELOG.md` updated (CI) | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
-- [ ] GATE-SPEC-W001: `major` change has a per-platform migration note
-- [ ] GATE-SPEC-W002: both platforms track the new spec version (no parity drift)
+- [ ] GATE-SPEC-W001: `major` change has a per-consumer migration note
+- [ ] GATE-SPEC-W002: all consumers track the new spec version (no parity drift)
 - [ ] GATE-SPEC-W003: agent-facing spec change has a recorded `SECURITY_REVIEW.md` assessment
 - [ ] GATE-SPEC-W004: CHG with stale `framework_version` documents has `version_action` set
 

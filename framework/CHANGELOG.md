@@ -11,9 +11,25 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 ---
+
+## [0.61.3] — 2026-09-26
+
+### Fixed — GATE-SPEC criteria engine-agnostic; archive-tier exemption (C1 PATCH)
+
+- GATE-SPEC rewritten engine-agnostic (#702): "both platforms re-declare
+  `FRAMEWORK_SPEC_VERSION`" and "both platform owners" approval (unsatisfiable
+  since the 2026-09-07 platform archive) become consumer-neutral criteria —
+  spec-version pins re-declared, conformance green, maintainer + reviewers.
+  Applied across the gate definition + twin, error catalog + twin, interaction
+  diagram + twin, approval form + twin, CHG template + twin, both CHG READMEs,
+  `framework/README.md`, governance README, gate-spec playbook, and the
+  `archive/platforms` pointers in root README and `docs/PROJECT.md`.
+- `tests/chg/spec_gate.py`: edits confined to `framework/archive/**` are not
+  spec changes — no VERSION/CHANGELOG obligation (#725), with conformance tests.
+- `framework/VERSION` bumped from `0.61.2` to `0.61.3` with mechanical pin sweep.
 
 ## [0.61.2] — 2026-09-26
 

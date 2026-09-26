@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.2 |
+| Framework Version | 0.61.3 |
 
 
 Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
@@ -142,10 +142,10 @@ Where:
 ## 6b. GATE-SPEC: Framework Specification Errors (meta)
 
 Governs changes to the `framework/` spec (templates, governance, registry,
-VERSION). Split by enforcer: E001–E004 are validated from the CHG record (each
-platform's record validator); E005–E008 are enforced by continuous integration
-(diff-aware checks + the conformance suite); the human approval half is the
-platform's protected-branch review.
+VERSION). Split by enforcer: E001–E004 are validated from the CHG record (the
+record validator); E005–E008 are enforced by continuous integration
+(diff-aware checks + the conformance suite); the human approval half is
+protected-branch review.
 
 ### 6b.1 Blocking Errors (E)
 
@@ -155,17 +155,17 @@ platform's protected-branch review.
 | GATE-SPEC-E002 | Classification | SemVer impact undeclared, or `major` not classified C3 | Set `semver_impact`; escalate a breaking change to C3 |
 | GATE-SPEC-E003 | Classification | Spec change classified C1 | Reclassify ≥ C2 — a spec change reaches multiple consumers |
 | GATE-SPEC-E004 | Approval | C3 spec change missing human gate approval | Record `gate_approval` (gate GATE-SPEC + approver); a human signs |
-| GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped when `framework/**` changed | Bump `framework/VERSION` per `semver_impact` |
-| GATE-SPEC-E006 | Conformance | Platform `FRAMEWORK_SPEC_VERSION` out of sync | Update both to match `framework/VERSION` |
-| GATE-SPEC-E007 | Conformance | Shared conformance suite failing | Fix the spec or the platform; never weaken a check |
-| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change |
+| GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped when normative `framework/**` changed (archive-tier-only repairs exempt) | Bump `framework/VERSION` per `semver_impact` |
+| GATE-SPEC-E006 | Conformance | Spec-version pins out of sync | Re-declare in-repo pins (`bash hooks/sync-version-refs.sh`) and re-run conformance |
+| GATE-SPEC-E007 | Conformance | Shared conformance suite failing | Fix the spec; never weaken a check |
+| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change (archive-tier-only repairs exempt) |
 
 ### 6b.2 Warnings (W)
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| GATE-SPEC-W001 | Migration | `major` change without a per-platform migration note | Add a migration note for each platform |
-| GATE-SPEC-W002 | Parity | Change touches only one platform's conformance | Confirm both platforms track the new spec version |
+| GATE-SPEC-W001 | Migration | `major` change without a per-consumer migration note | Add a migration note for each consumer |
+| GATE-SPEC-W002 | Parity | Consumer adoption drift | Confirm all consumers track the new spec version |
 | GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
 | GATE-SPEC-W004 | Versioning | CHG touches documents with stale `framework_version` without setting `version_action` | Set `version_action: upgrade` or `version_action: keep` with justification |
 
