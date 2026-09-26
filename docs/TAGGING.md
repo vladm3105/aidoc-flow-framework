@@ -146,8 +146,17 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > all without putting a tag on a commit that contradicts it — see
 > `plans/DECISIONS.md` D-0078 (#558) and the guard
 > `tests/conformance/test_release_record_integrity.py` (#617), which fails on any
-> new one. Two already exist and are permanent: framework `0.42.0`, and
-> `hermes/v0.1.1`, whose tag sits on a commit whose `VERSION` reads `0.1.0`.
+> new one. Four are known and permanent: framework `0.42.0`, framework
+> `0.52.0`, `hermes/v0.1.1` (whose tag sits on a commit whose `VERSION` reads
+> `0.1.0`), and framework `0.53.3` (#731) — the CHG-03 author's assumed pre-bump
+> baseline (`CHG-03.yaml`/`IPLAN-03.yaml` declare `framework_version: 0.53.3`
+> and a `0.53.3 → 0.54.0` bump; both CHANGELOG `[0.54.0]` bodies repeat it),
+> but no commit ever held an intervening value — the VERSION file went
+> `0.53.2` (`75c5ca6d`, CHG-FW-001) → `0.54.0` (`25e4390d`, CHG-03), so the
+> planned patch was skipped, not shipped. The `framework/archive/CHG-03/VERSION` snapshot (`0.53.3`, shipped
+> by #724) satisfies the archive manifest's citation and stays; published
+> records are corrected forward, never rewritten — and no `framework/v0.53.3`
+> tag is ever cut, since no commit holds the value.
 
 | Version / tag | Commit | Marks |
 |-----|--------|-------|
