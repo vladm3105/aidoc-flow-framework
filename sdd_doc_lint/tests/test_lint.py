@@ -1,6 +1,6 @@
-"""Unit test for sdd_doc_lint. Run with `tools/` on the path:
+"""Unit test for sdd_doc_lint. Run from the repo root:
 
-PYTHONPATH=tools python3 -m unittest discover -s tools/sdd_doc_lint/tests
+python3 -m unittest discover -s sdd_doc_lint/tests
 """
 
 import unittest

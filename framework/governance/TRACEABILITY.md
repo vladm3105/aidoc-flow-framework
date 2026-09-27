@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.3 |
+| Framework Version | 0.62.4 |
 
 ## Traceability Chain
 
@@ -85,15 +85,15 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
   to re-band the FR `P1`/`P2` for the current cycle or confirm the deferral is intentional. A
   `realized_by:` FR is a positive coverage claim, not a leak, and is never flagged. Cross-cycle
   leaks need no gate — later-cycle BRDs are `Planned`/`Sketch` (trace-inert), so their
-  elements are not in the graph. *Origin:* D54-F13 / D-0055.
+  elements are not in the graph. *Origin:* D54-F13 / D-0055 (see the D-series annex in `governance/DECISIONS.md`).
 
 `reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
 realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
 
 ## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
 
-Under Model 2 (D-0061), an element ID's 4-hex hash **is** the mint-time content
-fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
+Under Model 2 (D-0061 — see the D-series annex in `governance/DECISIONS.md`),
+an element ID's 4-hex hash **is** the mint-time content fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
 §7 gated FR elements it recomputes `SHA256("{doc}:{sec}:{norm(title)}:{norm(description)}")[:N]`
 (the normative transform + extraction boundary in `ID_NAMING_STANDARDS.md`) and
 warns when the ID's declared hash no longer matches — a **content drift** since the

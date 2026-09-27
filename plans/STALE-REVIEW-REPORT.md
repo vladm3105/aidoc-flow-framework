@@ -4,7 +4,7 @@
 |-------|-------|
 | Task | STALE-REMEDIATION |
 | Type | cleanup (test/hook/linter repair + doc sweeps; spec-content decisions where flagged) |
-| Status | READY FOR PLAN PR — 2 review passes complete (2026-09-22); implementation still gated on authoring CHG + IPLAN per §Step sequence |
+| Status | SHIPPED as CHG-08 (#678 / #679 / #680) — was READY FOR PLAN PR after 2 review passes (2026-09-22) |
 | Depends on | `84b1b9af` (CHG-05 / 0.56.0, current `dev`); CLEANUP-001 (shipped shape: framework-only repo) |
 | Feeds | green `tests/unit` + conformance signal; EVAL/CHG canon decisions recorded in `framework/governance/DECISIONS.md` |
 | Version impact | SETTLED (pass 2): Steps 2–3 (T1/T2/T3) tooling/test/hook-only → none; Step 4 (P1) touches `framework/` templates + governance prose + schema → MINOR `0.56.0 → 0.57.0`; Steps 5–6 (P2/D5/D6) docs + test-fixtures only → none |

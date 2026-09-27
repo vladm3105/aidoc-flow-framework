@@ -6,13 +6,16 @@ drives the EVAL-RPT flow (`layer: 10_EVAL`), and the README table lists all
 four playbooks.
 """
 
+import re
 import unittest
 
+import yaml
 from _spec import FRAMEWORK
 
 EVAL_PB = FRAMEWORK / "playbooks" / "10_EVAL"
 VERIFY_PB = FRAMEWORK / "playbooks" / "10_IPVERIFY"
 PLAYBOOKS = ("evaluator.md", "validator.md", "verifier.md", "report_generator.md")
+RPT_TEMPLATE = FRAMEWORK / "layers" / "10_EVAL" / "EVAL-REPORT-TEMPLATE.yaml"
 
 
 def _frontmatter(path):
@@ -51,6 +54,32 @@ class PlaybookSplitTests(unittest.TestCase):
             if "IPLAN-VERIFY-TEMPLATE.yaml as base" in text:
                 bad.append(name)
         self.assertEqual(bad, [], f"still driving VERIFY flow: {bad}")
+
+    def test_validator_example_uses_template_keys(self):
+        """validator.md's Output Example uses only EVAL-REPORT-TEMPLATE keys (#709).
+
+        The example once showed `validation_summary:` / `recommendations:` /
+        `p3_count:` — a shape no template or consumer recognizes.
+        """
+        text = (VERIFY_PB / "validator.md").read_text(encoding="utf-8")
+        section = text.split("## Output Example", 1)[1]
+        fence = re.search(r"```yaml\n(.*?)```", section, re.DOTALL)
+        self.assertIsNotNone(fence, "validator.md has no yaml Output Example")
+        example = yaml.safe_load(fence.group(1))
+        # Top-level keys by shape, not by parse: the template mixes a
+        # `_guidance` mapping key with sequence items under one node, so no
+        # YAML loader accepts it (separate defect — see the issue it files).
+        template_keys = set(
+            re.findall(
+                r"^([a-z][a-z0-9_]*):", RPT_TEMPLATE.read_text(encoding="utf-8"), re.MULTILINE
+            )
+        )
+        self.assertTrue(template_keys, "no top-level keys found in template")
+        self.assertTrue(
+            set(example) <= template_keys,
+            f"example keys not in template: {sorted(set(example) - template_keys)}",
+        )
+        self.assertNotIn("p3", fence.group(1), "example invents a P3 severity")
 
 
 if __name__ == "__main__":

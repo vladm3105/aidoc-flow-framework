@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.3 |
+| Framework Version | 0.62.4 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -76,6 +76,8 @@ framework/
   QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
   TESTING_STRATEGY_TDD.md  Test-strategy guidance feeding the TDD layer.
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
+  LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
+                         evidence preserved verbatim; era caveats in header).
   layers/                The 10 layer definitions — one folder per layer, each
                          with a template, a README, and an index template
                          (08_IPLAN also carries PLAN_STANDARD.md and

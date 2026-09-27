@@ -11,9 +11,40 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.3 |
+| Framework Version | 0.62.4 |
 
 ---
+
+## [0.62.4] — 2026-09-27
+
+### Fixed — docs-truthfulness batch (C2 PATCH)
+
+- Playbook rot (#709): `10_IPVERIFY/validator.md` Example Usage + Output
+  Example replaced with a real EVAL-RPT §3/§4/§5/§9 skeleton (`results`,
+  `test_results`, `findings`, `verdict`; severities stop at P2) — the old
+  `validation_summary:`/`recommendations:`/`p3_count:` shape existed in no
+  template. `README.md` script rows marked archived/nonexistent;
+  `report_generator.md` unbuilt-CLI block replaced with manual-authoring steps.
+  New `test_validator_example_uses_template_keys` pins example ⊆ template keys.
+- Dead tool paths (#686): `SPEC-00_index.TEMPLATE.md` cites the in-tree
+  `sdd_doc_lint._check_forward_coverage` (COV01) instead of
+  `tools/sdd_coverage.py`; vendored-copy remnants fixed in
+  `sdd_doc_lint/__init__.py` + test comments + `test_lint.py` run instruction.
+- Plan statuses (#692): CLEANUP-001/STALE-REVIEW/IPLAN-TERMINAL/TYPE-R headers
+  SHIPPED/RATIFIED with evidence; CLEANUP-001 gains a per-step disposition table.
+- Census (#707): `REVIEW_TEAM.md` — 58 files (53 layer+lens), IPVERIFY
+  `layer: 10_EVAL` exception documented, CHG+EVAL upstream rows, auditor at
+  IPLAN+CHG, 9 crews with EVAL verdict-graded not crew-scored.
+- Anchors (#694): §3.7 cites → §"IPLAN Lifecycle" (+ LEARNED_LESSONS era
+  caveat); §SDD/§CHG-Rules → C13–C14/C16 (both CHG-TEMPLATE twins + both
+  09_CHG READMEs); GOV-018 → flows §1; Emergency line-number cites dropped.
+- Hygiene (#695): `framework/README.md` layout gains LEARNED_LESSONS.md;
+  `tests/conformance/README.md` 10 dense layers + exact `required_tags`.
+- Decision log (#720): D-series annex (14 cited IDs with commit evidence +
+  live equivalents); D-0065/D-0070/D-0078/D-0084/D-0085 recorded in
+  `plans/DECISIONS.md` (authority line fixed); REVIEW_SAGA, TRACEABILITY,
+  STARTUP_HANDOFF, pin-currency pointers repointed.
+- `framework/VERSION` bumped from `0.62.3` to `0.62.4` with mechanical pin sweep.
 
 ## [0.62.3] — 2026-09-27
 

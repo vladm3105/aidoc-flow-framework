@@ -184,16 +184,11 @@ npm run test -- --reporter=junit > test-results.xml
 
 ## Example Generation
 
-```bash
-# Manual RPT generation (when scripts/generate-rpt.sh is implemented)
-# scripts/generate-rpt.sh \
-#   --eval EVAL-01 \
-#   --cycle 2 \
-#   --trigger bug_fix_verification \
-#   --input test-output.json \
-#   --output EVAL-01/reports/EVAL-01-RPT-002.yaml
-```
+RPT files are authored manually following the EVAL-REPORT-TEMPLATE.yaml
+structure: copy the template to `EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml`
+(next cycle number) and fill in §3 `results`, §4 `test_results` (one entry per
+EVAL test case), §5 `findings`, and §9 `verdict`.
 
-**Note**: `scripts/generate-rpt.sh` is not yet implemented. Currently, RPT files are
-authored manually following the EVAL-REPORT-TEMPLATE.yaml structure. The script is planned
-for future implementation to automate RPT generation from CI test output.
+**Note**: `scripts/generate-rpt.sh` is not implemented — the commented CLI that
+used to be documented here described an unbuilt tool. Automation from CI test
+output remains future work.

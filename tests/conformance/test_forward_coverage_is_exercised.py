@@ -38,7 +38,7 @@ FIXTURES = REPO_ROOT / "tests" / "acceptance" / "fixtures"
 # invisible to `build_edge_graph`, and injecting an uncovered FR into it now
 # yields COV01. `layer_06_spec/valid` and `layer_07_tdd/valid` stage no IPLAN,
 # and `_check_forward_coverage` returns `[]` unless the corpus holds both a SPEC
-# and an IPLAN (`tools/sdd_doc_lint/__init__.py:2293`) — so COV01 there is
+# and an IPLAN (`sdd_doc_lint/__init__.py:_check_forward_coverage`) — so COV01 there is
 # *inapplicable*, not blind. Re-derive from that precondition rather than
 # trusting this comment; an earlier revision of it went stale by attributing all
 # three targets to a fence defect that had already been fixed.

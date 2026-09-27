@@ -139,30 +139,31 @@ Based on findings (REPORT §9 rules):
 
 ## Example Usage
 
-```bash
-# Run validator on IPLAN-15
-./scripts/verify_iplan_status.sh IPLAN-15 --validate
-
-# Generate validation report
-./scripts/generate_validation_report.sh IPLAN-15
-```
+There is no validator script — `framework/scripts/` was removed (#740), so
+reports are authored manually from `layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml`.
+Run the steps above against the IPLAN, then fill in the template sections.
 
 ## Output Example
 
 ```yaml
-validation_summary:
-  original_iplan: "IPLAN-15"
-  validation_result: "PASS"
-  files_declared: 22
-  files_done: 22
-  completion_rate: "100%"
-  findings_count: 0
-  p0_count: 0
-  p1_count: 0
-  p2_count: 0
-  p3_count: 0
-
-recommendations:
-  status_recommendation: "Verified"
+# EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml — sections §3/§4/§5/§9 only;
+# key names must match EVAL-REPORT-TEMPLATE.yaml (severities stop at P2).
+results:
+  total: 22
+  passed: 22
+  failed: 0
+  skipped: 0
+  by_severity:
+    p0_critical: {total: 5, passed: 5, failed: 0}
+    p1_high: {total: 9, passed: 9, failed: 0}
+    p2_medium: {total: 8, passed: 8, failed: 0}
+test_results:
+  - eval_case_id: "EVAL.01.SM.0001"
+    status: passed
+    error_message: null
+findings: []
+verdict:
+  overall: PASS
   reasoning: "All tests pass, lint clean, no findings"
+  blockers: []
 ```

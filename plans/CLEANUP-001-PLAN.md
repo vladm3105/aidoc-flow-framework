@@ -4,8 +4,8 @@
 |-------|-------|
 | Task | CLEANUP-001 |
 | Type | cleanup / bugfix |
-| Status | PLANNED — 2026-09-20T00:00:00Z |
-| Depends on | `bd32a927` (feat/clean-up: deleted `archive/`, `examples/`, `tmp/` — 1027 files); prior removal of top-level `platforms/`, `tools/`, `plans/` |
+| Status | SHIPPED — deletions landed in `0af49fac` / `25e4390d`; dep `bd32a927` never merged to `dev` |
+| Depends on | `bd32a927` (feat/clean-up: deleted `archive/`, `examples/`, `tmp/` — 1027 files — never merged); prior removal of top-level `platforms/`, `tools/`, `plans/` |
 | Feeds | green conformance on `feat/clean-up`; subsequent breaking-change work |
 | Version impact | none for the pure-cleanup steps (test/hook/tooling repair only); PATCH `0.53.2 → 0.53.3` if the #652 archive-scope text fix ships in the same PR (governance doc change). Point-in-time (frozen 2026-09-20; spec is at 0.59.0 — CHG-08 #670): version literals in this plan record are history, not live pins. |
 
@@ -112,6 +112,21 @@ Add `framework_spec_version: "0.53.2"` to the 6 playbooks missing it (`10_EVAL/a
 7. **Docs/config** — `REPO_STRUCTURE.md`, `STARTUP_HANDOFF.md` header, `README.md`, `CLAUDE.md:138,828,838`, `CONTRIBUTING.md:41`, `DOC_GOVERNANCE_CORE.md`, `GOVERNANCE.md`, `docs/TAGGING.md` high-water refresh (re-derive cut marks from `git tag -l`, don't copy the `v0.51.0` snapshot), `.pre-commit-config.yaml` comments, `markdown-lint.yml:59,71`, `.gitignore`. Re-derive the `CLAUDE.md` pin census from the tree (#604), don't copy the old figures.
 8. **Verify** (see below). `chg_lint` C16–C20/D21/D22 check on in-tree fixtures included.
 9. **Land:** commit on `feat/clean-up`; PR `feat/clean-up` → `dev`. VERSION bump only if Step 1b's governance-doc half ships (PATCH `0.53.2 → 0.53.3` + mechanical fanout); pure-cleanup steps are tooling-only. Include the OPS-0065 self-review phrase in the commit message (`call / verify` greps it literally). `plans/` is currently untracked (`?? plans/` in `git status`; no `plans/` in `origin/dev`) — `git add` the plan in the same branch so it lands with the work.
+
+## Disposition (added 2026-09-27 — plan shipped, steps landed via other PRs)
+
+| Step | Disposition | Evidence |
+|------|-------------|----------|
+| 1 Dead scripts | SHIPPED | `sdd_doc_lint/sync-vendored.sh` + `scripts/chg_lint.py` absent; `__init__.py` / `trace_graph.py` headers state `sdd_doc_lint/` canonical |
+| 1b #652 | PARTIAL | C16–C20 / D21–D22 enforced (`LINT_RULES.md` CHG-L006/CHG-L011); archive-scope + grandfathering remainder not verified here — do not re-execute blindly |
+| 2 Hooks | SHIPPED in effect | `hooks.json` uses `AIDOC_ROOT`; `pre_push_check.sh` bases on `origin/dev` with fallback chain |
+| 3 `_spec.py` + repoints | SUBSTANCE PRESENT, detail unverified | `plugin_bundle_root()` exists in `tests/conformance/_spec.py`; per-file repoint list not re-checked |
+| 4 Subject-less suites | SHIPPED | `tests/smoke`, `tests/review`, `tests/packaging`, `tests/release` all absent |
+| 5 `tests/unit/` | PARTIAL — see #688 | Stale paths + registration still open |
+| 6 Playbooks | SHIPPED (superseded pins) | Zero `0.50.0` under `framework/playbooks/`; pins swept to current VERSION |
+| 7 Docs/config | MIXED, unverified per item | Do not re-execute as a batch — file successor issues instead |
+| 8 Verify | SHIPPED in effect | Conformance + linter + acceptance suites green in CI |
+| 9 Land | SUPERSEDED | Landed via other PRs, not `feat/clean-up` |
 
 ## Verification
 

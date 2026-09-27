@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.3 |
+| Framework Version | 0.62.4 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
@@ -221,11 +221,11 @@ in this engine-agnostic spec.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the
   blackboard (separate concern from saga state).
 - `saga.schema.json` — formal JSON Schema for the journal.
-- `plans/DECISIONS.md` D-0031 — the supersession decision that brought
-  this contract into the framework spec.
-- `plans/DECISIONS.md` D-0005 — the prior decision that one engine
-  would not port the saga, superseded in scope (its blackboard-for-
-  crew-state reasoning remains authoritative).
+- D-0031 (see the D-series annex in `governance/DECISIONS.md`) — the
+  supersession decision that brought this contract into the framework spec.
+- D-0005 (see the D-series annex in `governance/DECISIONS.md`) — the prior
+  decision that one engine would not port the saga, superseded in scope
+  (its blackboard-for-crew-state reasoning remains authoritative).
 - `docs/PARITY.md` — the per-platform binding of the contract (which
   engine uses preemptive vs cooperative enforcement, specific numeric
   soft-deadline values, etc.).

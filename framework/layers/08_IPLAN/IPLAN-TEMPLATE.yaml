@@ -207,7 +207,7 @@ file_manifest:
     `DONE` is necessary but NOT sufficient for `Completed` — see
     `framework/AI_ASSISTANT_RULES.md` §"Development Completion Rule", which is the
     authority and additionally requires tests pass, lint clean, SPEC/TDD sync,
-    and completion gate checks (DOC_GOVERNANCE_CORE.md §3.7) BEFORE the flip.
+    and completion gate checks (DOC_GOVERNANCE_CORE.md §"IPLAN Lifecycle") BEFORE the flip.
 
     VALIDATION WORKFLOW (Completed → Verified) — EVAL cycles (canon:
     layers/08_IPLAN/README.md; AI_ASSISTANT_RULES.md is the authority):

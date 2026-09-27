@@ -19,7 +19,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.3 |
+| Framework Version | 0.62.4 |
 
 ---
 
@@ -2020,3 +2020,31 @@ candidates to graduate into this register as it matures:
 - **Project adaptation surface.** A closed, declarative knob set lets a project
   adapt the flow without forking — `ADAPTATION.md` + `ADAPTATION_SURFACE.yaml`
   (migration D-0019).
+
+---
+
+## D-series (retired) — cited IDs and where they resolve (#720)
+
+The `D-00xx` migration-decision series has no live log: it was recorded across
+the May–June migration session (notably `docs/STARTUP_HANDOFF.md`, 2026-05-20)
+and never graduated entry-by-entry. Live files still cite these IDs. This annex
+is the resolution hop — every cited ID below names its substance, its commit
+evidence, and its live equivalent (a GD entry, a plans-log entry, or
+"historical only"). `git log --all --grep="<ID>"` re-derives each row.
+
+| ID | Substance | Commit evidence | Live equivalent |
+|----|-----------|-----------------|-----------------|
+| D-0005 | One engine would not port the saga; its blackboard-for-crew-state reasoning remains authoritative (per `REVIEW_SAGA.md`) | Origin commit unverified — saga-parity era, June 2026 | Historical only; nearest principle GD-06 (engine-agnosticism) |
+| D-0007 | Review gate (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0009 | Versioning (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0011 | Tagging (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0012 (+R1/R2) | IPLAN is the terminal product; planned/executed states; curated IPLAN corpus as unit of value | `docs/STARTUP_HANDOFF.md` §3.1–§3.2 (2026-05-20) | Historical only — no GD equivalent |
+| D-0013 | Templates are the single source of truth | Migration session; substance survives above under Pending graduation | Pending graduation bullet (this file) |
+| D-0031 | Saga lifecycle promoted into the framework spec (SAGA-PARITY-001 Phase 1) | `d5cdb5bc` (2026-06-05) | Historical only — the saga contract itself is the live record |
+| D-0055 | COV03 phase-leak advisory, deferred-band over-realization (D54-F13) | `d593316b` (2026-07-06) | Historical only — the COV03 rule in `TRACEABILITY.md` is the live record |
+| D-0061 | SHA-256 element-ID guarantee scoped to reality | `19e0c27e` (2026-07-07) | GD-02…GD-05 (ratified by that change); Model 2 in `ID_NAMING_STANDARDS.md` |
+| D-0065 | CI PRs get CHANGELOG entries | `ce953f09` (2026-07-25) | `plans/DECISIONS.md` 2026-07-25 entry |
+| D-0070 | Concurrency rationale recorded where sweeps grep | `d3d7f845` / `7cfcf4a0` (2026-07-30) | `plans/DECISIONS.md` 2026-07-30 entry |
+| D-0078 | Phantom versions recorded, never tagged | `0d588c7c` (2026-09-26) | `plans/DECISIONS.md` 2026-09-26 entry |
+| D-0084 | ai-review and composition stop gating merges | `e2a10ef5` (2026-08-31) | `plans/DECISIONS.md` 2026-08-31 entry |
+| D-0085 | Canon pin census correction + semver-major hold | `794aa573` / `fecb4595` (2026-08-31) | `plans/DECISIONS.md` 2026-08-31 entry |
