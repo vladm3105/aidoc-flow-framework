@@ -1,5 +1,15 @@
 # Definition of Done
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.2 |
+
 Engine-agnostic completion criteria for an SDD **artifact** and for a **change**
 to the spec. This is a *light contract*: it names *what must be true* before work
 is considered done; it does not prescribe *how* an engine or platform checks it

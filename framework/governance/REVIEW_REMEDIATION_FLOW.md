@@ -1,5 +1,15 @@
 # Review, Remediation & Gate Flow
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.2 |
+
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
 review, remediation, and gating — and names the **trigger points** where an

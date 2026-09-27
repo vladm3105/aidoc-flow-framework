@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.0 |
+| Framework Version | 0.62.2 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -42,8 +42,10 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | 9 | CHG | Change management overlay — gates, versioning, audit trail |
 | 10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices |
 
-Each layer N may reference only the layers before it; `downstream` and
-`required_tags` in the registry encode the full traceability graph.
+Each layer N may reference only the layers before it; `downstream` names each
+layer's primary successor (the single next step of the authoring chain), while
+`required_tags` plus `realizing_layers` encode the full traceability graph —
+every upstream layer a consumer actually reads (#708).
 
 ## C4 alignment
 
