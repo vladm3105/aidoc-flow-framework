@@ -121,7 +121,7 @@ Add `framework_spec_version: "0.53.2"` to the 6 playbooks missing it (`10_EVAL/a
 | 1b #652 | PARTIAL | C16–C20 / D21–D22 enforced (`LINT_RULES.md` CHG-L006/CHG-L011); archive-scope + grandfathering remainder not verified here — do not re-execute blindly |
 | 2 Hooks | SHIPPED in effect | `hooks.json` uses `AIDOC_ROOT`; `pre_push_check.sh` bases on `origin/dev` with fallback chain |
 | 3 `_spec.py` + repoints | SUBSTANCE PRESENT, detail unverified | `plugin_bundle_root()` exists in `tests/conformance/_spec.py`; per-file repoint list not re-checked |
-| 4 Subject-less suites | SHIPPED | `tests/smoke|review|packaging|release` all absent |
+| 4 Subject-less suites | SHIPPED | `tests/smoke`, `tests/review`, `tests/packaging`, `tests/release` all absent |
 | 5 `tests/unit/` | PARTIAL — see #688 | Stale paths + registration still open |
 | 6 Playbooks | SHIPPED (superseded pins) | Zero `0.50.0` under `framework/playbooks/`; pins swept to current VERSION |
 | 7 Docs/config | MIXED, unverified per item | Do not re-execute as a batch — file successor issues instead |

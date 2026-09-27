@@ -10,7 +10,6 @@ import re
 import unittest
 
 import yaml
-
 from _spec import FRAMEWORK
 
 EVAL_PB = FRAMEWORK / "playbooks" / "10_EVAL"
@@ -71,7 +70,9 @@ class PlaybookSplitTests(unittest.TestCase):
         # `_guidance` mapping key with sequence items under one node, so no
         # YAML loader accepts it (separate defect — see the issue it files).
         template_keys = set(
-            re.findall(r"^([a-z][a-z0-9_]*):", RPT_TEMPLATE.read_text(encoding="utf-8"), re.MULTILINE)
+            re.findall(
+                r"^([a-z][a-z0-9_]*):", RPT_TEMPLATE.read_text(encoding="utf-8"), re.MULTILINE
+            )
         )
         self.assertTrue(template_keys, "no top-level keys found in template")
         self.assertTrue(
