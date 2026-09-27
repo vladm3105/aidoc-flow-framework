@@ -143,6 +143,16 @@ Branch promotion: `feature-branch → dev → main`
 
 Trivial single-shot edits may use the quick path above. Multi-step feature work (or any work with running subagents): use `WORKTREE_FLOW.md` §3.2 (`worktree add ../<project>-<issue> -b feature/<short-name> origin/dev`) instead of branch-switching the main checkout.
 
+### Watching your PR
+
+After opening a PR you own, poll its status every 15 seconds until required checks settle — never assume a push is green:
+
+```bash
+gh pr checks <N> --json name,state,bucket,workflow --jq '.[] | select(.bucket!="pass")'
+```
+
+`gh pr checks --required --watch` blocks until required checks settle and is preferred for a single wait; poll manually at 15s intervals when you need to interleave other work. Read `mergeStateStatus` before any merge decision (`BLOCKED` ends the question regardless of check colour). Only merge when the user or the repo's auto-merge rule authorizes it — tool access is not merge authority.
+
 ## Where state lives (this repo owns its own continuity)
 
 | Surface | Path |
