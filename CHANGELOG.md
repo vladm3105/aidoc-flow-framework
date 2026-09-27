@@ -9,6 +9,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [Unreleased]
+
+### Fixed — required CI checks vendored locally: canon went private (#746)
+
+- `.github/workflows/pre-commit.yml` + `links.yml` run vendored inline jobs (copied from canon `@ci/v4.0.0`, source tag + date in header comments) — the `uses: ...aidoc-flow-ci...` calls load-fail while canon is private, leaving both required contexts permanently Expected. No framework version change (CI-only, no `framework/` files touched)
+
+### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)
+
+- `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
+- Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
+
 ## [0.62.0] — 2026-09-27
 
 ### Added — framework skills library (MINOR → 0.62.0)
@@ -50,13 +61,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `LINT_RULES.md` now catalogues all `CHG-L001`–`L015` with verified severities; every `GOV-*` row marked **Alias of** its enforcing check or **Reserved** (18 unimplemented IDs honest); new `test_lint_catalog.py` guard enforces both directions (#715)
 - `framework/VERSION` bumped from `0.61.3` to `0.61.4` with mechanical pin sweep
-
-## [Unreleased]
-
-### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)
-
-- `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
-- Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
 
 ## [0.61.3] — 2026-09-26
 
