@@ -14,15 +14,12 @@
 # Default — owner reviews anything not matched below
 *                                       @vladm3105
 
-# The shared framework spec (the contract both platforms consume) — GATE-SPEC
+# The shared framework spec (the engine-agnostic contract) — GATE-SPEC
 /framework/                             @vladm3105
 /framework/governance/                  @vladm3105
 
 # The runnable contract — conformance suite + the CHG diff-aware guard
 /tests/                                 @vladm3105
-
-# The two platforms
-/platforms/                             @vladm3105
 
 # Security-sensitive
 /.github/workflows/                     @vladm3105
@@ -31,5 +28,4 @@
 # Project governance docs
 /docs/                                  @vladm3105
 /CLAUDE.md                              @vladm3105
-/ROADMAP.md                             @vladm3105
 /CHANGELOG.md                           @vladm3105

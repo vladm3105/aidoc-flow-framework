@@ -54,6 +54,8 @@ Usage:
   --sdd-root points at the SDD tree root holding 03_EARS/04_BDD/... and
   switches CHG-L011 to exact-match (error) verification; without it L011
   falls back to the nearby-heuristic (warning).
+
+Exit codes: 0 clean, 1 error(s), 2 usage error, 3 missing prerequisite.
 """
 
 from __future__ import annotations

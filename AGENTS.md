@@ -13,7 +13,7 @@ flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG �
 Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
-(PostToolUse advisory hook) as the only retained tooling.
+(advisory hooks — `PostToolUse` + `PreCommit`, see `hooks/README.md`) as the only retained tooling.
 
 ## Filing gaps — open a GitHub issue
 
@@ -118,7 +118,7 @@ Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only no
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - Full catalog (L006–L015, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
-**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
+**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
 **IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Governed paths without a full CHG cascade: bug fixes on active IPLANs; post-completion repairs via the bugfix vehicle; F2 C1-direct (scoped IPLAN). Docs-only non-normative C1 needs neither CHG nor IPLAN.
 

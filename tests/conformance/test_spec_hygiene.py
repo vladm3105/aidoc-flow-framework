@@ -97,14 +97,32 @@ class EngineTokenHygiene(unittest.TestCase):
 
 
 class VersionStringHygiene(unittest.TestCase):
-    def test_no_framework_version_field(self):
-        """Retired CLEANUP-001: GD-23/GD-24 ratified `framework_version` metadata
-        across the spec (registry, templates, governance docs, playbooks). The
-        D-0006-era ban this asserted is superseded; the live invariant is that
-        every pin equals framework/VERSION, enforced by
-        test_sync_version_refs_counts' successor (hooks/sync-version-refs.sh)
-        and the playbook frontmatter tests."""
-        self.skipTest("superseded by GD-23/GD-24 — framework_version is now the norm")
+    def test_all_version_pins_equal_framework_version(self):
+        """Every swept-form pin equals `framework/VERSION` exactly (#689).
+
+        Replaces the retired skip-stub: `test_sync_version_refs.py` only
+        asserts membership in OLD_VERSIONS (weaker), so a stale pin sails
+        through. Scope mirrors `hooks/sync-version-refs.sh` (live tree only —
+        `framework_files()` already excludes the frozen `archive/` snapshots).
+        """
+        current = (FRAMEWORK / "VERSION").read_text(encoding="utf-8").strip()
+        forms = (
+            re.compile(r'framework_spec_version: "(\d+\.\d+\.\d+)"'),
+            re.compile(r'framework_version: "(\d+\.\d+\.\d+)"'),
+            re.compile(r"\| Framework Version \| (\d+\.\d+\.\d+) \|"),
+        )
+        stale = []
+        for path in framework_files():
+            try:
+                text = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            rel = path.relative_to(FRAMEWORK)
+            for pattern in forms:
+                for version in pattern.findall(text):
+                    if version != current:
+                        stale.append(f"{rel}: {version} != {current}")
+        self.assertEqual(stale, [], f"stale version pins: {stale}")
 
     def test_no_stale_sdd_v3_strings(self):
         violations = []

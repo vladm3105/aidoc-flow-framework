@@ -1,6 +1,6 @@
 # Configuration for actions/labeler (v5 format: changed-files / any-glob-to-any-file).
 #
-# Path -> label map for the multi-platform layout. Run by .github/workflows/labeler.yml.
+# Path -> label map for the framework-only layout. Run by .github/workflows/labeler.yml.
 # The labels below must exist in the repo (actions/labeler does not create them).
 
 documentation:
@@ -35,6 +35,11 @@ conformance:
   - changed-files:
       - any-glob-to-any-file:
           - "tests/**"
+
+plans:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "plans/**"
 
 ci:
   - changed-files:
