@@ -20,6 +20,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
 - Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
 
+## [0.62.3] — 2026-09-27
+
+### Fixed — adaptation knob parity: template documents sixth knob (C2 PATCH → 0.62.3)
+
+- `PROFILE-TEMPLATE.yaml` declared 5 knobs while `ADAPTATION_SURFACE.yaml` declares 6; `quality_loop_max_iterations` gains its override row and the count header reads 6 (#704)
+- New `test_profile_template_covers_surface_knobs` pins three-way parity (template rows == surface knobs == `ADAPTATION.md` §4 sections)
+- `framework/VERSION` bumped from `0.62.2` to `0.62.3` with mechanical pin sweep
+
 ## [0.62.2] — 2026-09-27
 
 ### Fixed — linter pair: CHG rule coverage + SEED01 per-file pins (C2 PATCH → 0.62.2)
