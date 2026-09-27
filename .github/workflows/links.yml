@@ -1,6 +1,18 @@
-# Caller for aidoc-flow-ci's reusable links workflow (@ci/v4.0.0).
+# links — LOCAL (vendored) lychee runner.
+#
+# VENDORED 2026-09-27 from aidoc-flow-ci/.github/workflows/links.yml@ci/v4.0.0
+# (job "lychee (internal)") because canon went private (#746): the reusable
+# call load-fails (zero jobs, no logs) and the required internal-links context
+# never reports. Installs + runs the upstream lychee BINARY directly (musl
+# static build, SHA-verified) — NOT the lycheeverse marketplace wrapper, which
+# the allowed-actions policy blocks (same defect class as canon secret-scan,
+# fixed ci/v1.9.2).
 # internal = PR-blocking (offline; internal/relative links only);
-# external = weekly cron, non-blocking. See aidoc-flow-ci docs/REPO_STANDARDS §4.3.
+# external = weekly cron, non-blocking.
+# RESYNC: diff against the canon source above when canon access returns; revert
+# to the `internal:`/`external:` callers then (and restore the required context
+# name, #746).
+
 name: links
 
 on:
@@ -22,15 +34,98 @@ jobs:
   internal:
     name: internal links (blocking)
     if: github.event_name != 'schedule'
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v4.0.0
-    with:
-      mode: internal
-      fail-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Restore lychee cache
+        id: cache-restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: lychee-internal-${{ github.sha }}
+          restore-keys: |
+            lychee-internal-
+
+      - name: Install lychee (musl static binary)
+        env:
+          LYCHEE_VERSION: "0.24.2"
+          LYCHEE_SHA256: "73657a111819a30c47c08352896796f23d64e4eb2b3ed39b6d32149241566fc5" # pragma: allowlist secret — pinned upstream release hash, not a credential (#746)
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-musl.tar.gz" -o /tmp/lychee.tgz
+          echo "${LYCHEE_SHA256}  /tmp/lychee.tgz" | sha256sum -c -
+          tar -xzf /tmp/lychee.tgz -C /tmp
+          BIN_DIR="$RUNNER_TEMP/bin"
+          mkdir -p "$BIN_DIR"
+          install -m 0755 /tmp/lychee-x86_64-unknown-linux-musl/lychee "$BIN_DIR/lychee"
+          echo "$BIN_DIR" >> "$GITHUB_PATH"
+          "$BIN_DIR/lychee" --version
+
+      - name: Run lychee (internal, offline)
+        env:
+          CONFIG: .lychee.toml
+        run: |
+          set -euo pipefail
+          args=(--no-progress --cache --max-cache-age 1d)
+          [ -f "${CONFIG}" ] && args+=(--config "${CONFIG}")
+          args+=(--offline)
+          lychee "${args[@]}" -- .
+          rc=$?
+          exit "${rc}"
+
+      - name: Save lychee cache
+        if: always()
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
   external:
     name: external links (non-blocking)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v4.0.0
-    with:
-      mode: external
-      fail-on-error: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Restore lychee cache
+        id: cache-restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: lychee-external-${{ github.sha }}
+          restore-keys: |
+            lychee-external-
+
+      - name: Install lychee (musl static binary)
+        env:
+          LYCHEE_VERSION: "0.24.2"
+          LYCHEE_SHA256: "73657a111819a30c47c08352896796f23d64e4eb2b3ed39b6d32149241566fc5" # pragma: allowlist secret — pinned upstream release hash, not a credential (#746)
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-musl.tar.gz" -o /tmp/lychee.tgz
+          echo "${LYCHEE_SHA256}  /tmp/lychee.tgz" | sha256sum -c -
+          tar -xzf /tmp/lychee.tgz -C /tmp
+          BIN_DIR="$RUNNER_TEMP/bin"
+          mkdir -p "$BIN_DIR"
+          install -m 0755 /tmp/lychee-x86_64-unknown-linux-musl/lychee "$BIN_DIR/lychee"
+          echo "$BIN_DIR" >> "$GITHUB_PATH"
+          "$BIN_DIR/lychee" --version
+
+      - name: Run lychee (external, non-blocking)
+        env:
+          CONFIG: .lychee.toml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          args=(--no-progress --cache --max-cache-age 1d)
+          [ -f "${CONFIG}" ] && args+=(--config "${CONFIG}")
+          lychee "${args[@]}" -- . || true
