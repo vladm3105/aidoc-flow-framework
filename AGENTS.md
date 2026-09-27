@@ -151,7 +151,13 @@ After opening a PR you own, poll its status every 15 seconds until required chec
 gh pr checks <N> --json name,state,bucket,workflow --jq '.[] | select(.bucket!="pass")'
 ```
 
-`gh pr checks --required --watch` blocks until required checks settle and is preferred for a single wait; poll manually at 15s intervals when you need to interleave other work. Read `mergeStateStatus` before any merge decision (`BLOCKED` ends the question regardless of check colour). Only merge when the user or the repo's auto-merge rule authorizes it — tool access is not merge authority.
+`gh pr checks --required --watch` blocks until required checks settle and is preferred for a single wait; poll manually at 15s intervals when you need to interleave other work. Read `mergeStateStatus` before any merge decision (`BLOCKED` ends the question regardless of check colour).
+
+Auto-merge is authorized by default: on a PR you opened, once all required checks pass and the PR is mergeable (`mergeStateStatus` CLEAN on the current head — confirm `headRefOid`), enable it (`gh pr merge <N> --auto --squash --delete-branch`, the repo's squash-only convention) and read the merge back. Withhold auto-merge when the user said hold, required checks are incomplete or red, a repo rule reserves the merge for a human, or the PR is not yours — tool access is not merge authority.
+
+Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards switch to `dev`, fast-forward, and delete the local branch (`git branch -d`) once the merge commit is on `dev`. Never delete a branch with unmerged work still on it.
+
+When a required check fails, fix every error: diagnose from the failed logs, fix on the PR branch, push, and re-watch from the new head (confirm `headRefOid` — a previous run's green is not this commit's). Never merge while red. Stop and report to the human when the same check fails twice after a fix attempt, or when the fix reaches beyond the PR's scope.
 
 ## Where state lives (this repo owns its own continuity)
 

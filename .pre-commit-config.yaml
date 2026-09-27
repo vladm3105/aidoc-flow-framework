@@ -28,7 +28,13 @@
 # lookahead spares exactly that one path and nothing else; the spec tree stays excluded.
 # Safe for the autofixing hooks too: it is a one-line file (`X.Y.Z\n`) that they
 # no-op on, and it is only ever staged by the bump that already rewrites it.
-exclude: '^(framework/(?!VERSION$)|tests/conformance/fixtures/refgran/|.*\.pytest_cache/|.*/__pycache__/)'
+#
+# `.agents/skills/` gets the same exemption as `framework/` for the same reason:
+# its `.py`/`.md` files are canon mirrors (byte-identical extras) and adapted skill
+# prose of the same class as `framework/skills/`, which the global `framework/`
+# exclusion already keeps out of every hook. Style-linting them here would fork the
+# mirrors (the #648 lesson) while their twins stay untouched — so they stay out.
+exclude: '^(framework/(?!VERSION$)|tests/conformance/fixtures/refgran/|\.agents/skills/|.*\.pytest_cache/|.*/__pycache__/)'
 
 repos:
   # ---- general hygiene -------------------------------------------------------
