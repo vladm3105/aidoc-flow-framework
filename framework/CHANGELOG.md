@@ -11,9 +11,27 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.0 |
+| Framework Version | 0.62.1 |
 
 ---
+
+## [0.62.1] — 2026-09-27
+
+### Fixed — governance pair: Document Control backfill + downstream semantics (C2 PATCH)
+
+- `GD-24` Document Control blocks backfilled on the 13 governance docs missing
+  them (#706): AUTHORING_STYLE, DEFINITION_OF_DONE, DIAGRAM_STANDARDS,
+  DOC_GOVERNANCE_CORE, ID_NAMING_STANDARDS, LINT_RULES, REVIEW_REMEDIATION_FLOW,
+  REVIEW_SAGA, REVIEW_TEAM, SECURITY_REVIEW, TAG_SYNTAX, THRESHOLD_NAMING_RULES,
+  TRACEABILITY; new `tests/conformance/test_document_control.py` guard pins the
+  block, its five fields, and the Framework Version pin on every
+  `framework/governance/*.md`.
+- `downstream` semantics decided as primary-successor chain, not the inverse of
+  `required_tags` (#708): `framework/README.md` no longer calls it the full
+  traceability graph, `LAYER_REGISTRY.yaml` header records the decision, the
+  CODE sink is documented as a terminal (not a layer), and
+  `test_downstream_is_primary_successor_not_inverse` pins the EARS asymmetry.
+- `framework/VERSION` bumped from `0.62.0` to `0.62.1` with mechanical pin sweep.
 
 ## [0.62.0] — 2026-09-27
 

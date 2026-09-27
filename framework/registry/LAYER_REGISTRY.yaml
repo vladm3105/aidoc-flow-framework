@@ -15,6 +15,14 @@
 #   - document new lint rule IDs in governance/LINT_RULES.md when the
 #     layer's template references them.
 # (Enforced by REG01, advisory; asserted in tests/conformance/test_registry.py.)
+#
+# DOWNSTREAM SEMANTICS (#708): `downstream` names each layer's PRIMARY SUCCESSOR
+# (the single next step of the authoring chain), NOT the inverse of
+# `required_tags`. A layer may be read by several downstream layers (e.g. EARS is
+# required by BDD, ADR, SPEC, and TDD) while `downstream` lists only the next
+# step (EARS → BDD). Consumers answering "what must I re-check when X changes"
+# MUST use `required_tags` (fan-in) and `realizing_layers` (realization
+# fan-out), never `downstream`.
 
 metadata:
   framework: "Specification-Driven Development (SDD)"
@@ -25,7 +33,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
-  framework_version: "0.62.0"  # synced from framework/VERSION
+  framework_version: "0.62.1"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this
@@ -154,7 +162,9 @@ layers:
     optional: false
     description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Post-completion repairs use the bugfix subtype (parent_iplan + source_chg); layers/08_IPLAN/tmp/ was retired in 0.56.0."
     template: "IPLAN-TEMPLATE.yaml"
-    downstream: [CODE, EVAL]
+    downstream: [CODE, EVAL] # CODE is a legitimate terminal sink but NOT a
+                             # registered SDD document layer (see `code.note`
+                             # below); EVAL is the governance terminal (#708).
 
   - number: 9
     artifact: CHG

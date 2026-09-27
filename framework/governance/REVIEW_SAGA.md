@@ -1,5 +1,15 @@
 # Review Saga — lifecycle contract for the review-team's create→review→revise loop
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.1 |
+
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
 **lifecycle saga**: the state machine, transition table, journal schema, and

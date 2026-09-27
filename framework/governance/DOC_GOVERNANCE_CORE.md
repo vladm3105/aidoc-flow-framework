@@ -1,5 +1,15 @@
 # Document Governance — SDD
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.1 |
+
 ## Principles
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
