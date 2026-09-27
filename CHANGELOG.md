@@ -9,6 +9,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.62.0] — 2026-09-27
+
+### Added — framework skills library (MINOR → 0.62.0)
+
+- `framework/skills/` ships 12 engine-agnostic skills adapted from canon (#719 skills leg); `AGENTS.md` points at them
+- `framework/VERSION` bumped from `0.61.8` to `0.62.0` with mechanical pin sweep
+
 ## [0.61.8] — 2026-09-26
 
 ### Removed — dead framework/scripts/ directory (C1 PATCH → 0.61.8)

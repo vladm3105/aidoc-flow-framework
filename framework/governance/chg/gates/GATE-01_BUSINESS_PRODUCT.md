@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.8 |
+| Framework Version | 0.62.0 |
 
 
 > **Position**: Between the change request and Layers 1-2 (BRD, PRD)

@@ -1,0 +1,52 @@
+# SKILLS-REGISTRY.yaml — framework skills index
+# Single owner for skill list: this file. SKILL.md frontmatter `name` must match directory name.
+version: "1.0"
+framework_version: "0.62.0"
+source: "aidoc-flow-claude-agents-config/skills (private, 2026-09-27)"
+skills:
+  - name: approval-gate
+    path: framework/skills/approval-gate/SKILL.md
+    files: ["SKILL.md"]
+  - name: context-handoff
+    path: framework/skills/context-handoff/SKILL.md
+    files: ["SKILL.md"]
+  - name: memory-hygiene
+    path: framework/skills/memory-hygiene/SKILL.md
+    files: ["SKILL.md", "lint.py"]
+    provenance: "lint.py adapted from GlassOnTin/claude-memory-skills MIT 2026-08-12"
+  - name: preprod-review
+    path: framework/skills/preprod-review/SKILL.md
+    files: ["SKILL.md", "references/lens-briefs.md", "references/github-actions-review.md"]
+  - name: recall
+    path: framework/skills/recall/SKILL.md
+    files: ["SKILL.md"]
+  - name: second-opinion
+    path: framework/skills/second-opinion/SKILL.md
+    files: ["SKILL.md"]
+    agents: ["_shared/agents/second-opinion-judge.md"]
+  - name: self-learn
+    path: framework/skills/self-learn/SKILL.md
+    files: ["SKILL.md"]
+  - name: ship-it
+    path: framework/skills/ship-it/SKILL.md
+    files: ["SKILL.md"]
+    provenance: "mined-from netresearch/git-workflow-skill v1.23.0 MIT AND CC-BY-SA-4.0 2026-08-12"
+  - name: start-session
+    path: framework/skills/start-session/SKILL.md
+    files: ["SKILL.md"]
+  - name: submit-feedback
+    path: framework/skills/submit-feedback/SKILL.md
+    files: ["SKILL.md"]
+  - name: verified-planning
+    path: framework/skills/verified-planning/SKILL.md
+    files: ["SKILL.md", "check_plan.py", "PLAN-TEMPLATE.snippet.md", "plan-gate.yml", "precommit-hook.snippet.txt", "install.sh", "DESIGN.md", "PLAN.md", "tests/test_check_plan.py", "tests/test_install.sh"]
+  - name: wrap-session
+    path: framework/skills/wrap-session/SKILL.md
+    files: ["SKILL.md"]
+shared:
+  agents:
+    - _shared/agents/second-opinion-judge.md
+    - _shared/agents/verified-planning-reviewer.md
+    - _shared/agents/preprod-review-lens.md
+  scripts:
+    - _shared/scripts/check-skill-shadowing.sh
