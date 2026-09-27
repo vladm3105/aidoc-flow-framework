@@ -22,21 +22,19 @@
 
 ```
 aidoc-flow-framework/
-├── README.md                       Project overview, platform matrix
-├── ROADMAP.md                      Delivery plan + post-v1.0 work
+├── README.md                       Project overview
 ├── CHANGELOG.md                    Project-level changelog (Keep a Changelog)
 ├── SECURITY.md                     Security policy / vulnerability reporting
 ├── LICENSE
 ├── .pre-commit-config.yaml         Pre-commit hooks (lint / format / security)
-├── ruff.toml · .markdownlint.json · .markdownlintignore · .yamllint · .secrets.baseline
+├── ruff.toml · .markdownlint.json · .markdownlintignore · .yamllint.yaml · .secrets.baseline
 ├── .github/
-│   ├── workflows/                  CI: ai-review, audit-trail, auto-merge-ai-prs, chg-gate, codeql, composition, conformance, doc-review, hermes, labeler, plugin, pre-commit, standards-drift
+│   ├── workflows/                  CI: acceptance, ai-review, audit-trail, auto-merge-ai-prs, chg-gate, codeql, composition, conformance, dep-scan, doc-review, docs-sync, labeler, links, markdown-lint, pin-currency-reader, pre-commit, sast-scan, secret-scan, standards-drift, trivy-scan
 │   ├── CODEOWNERS · dependabot.yml · labeler.yml
 │   └── ISSUE_TEMPLATE/ · PULL_REQUEST_TEMPLATE.md
 ├── docs/
 │   ├── REPO_STRUCTURE.md            This file
 │   ├── PROJECT.md                   Versioning, branches, milestones, change management
-│   ├── PARITY.md                    Hermes ↔ plugin capability comparison
 │   ├── TAGGING.md                   Git-tag policy
 │   ├── SUPPORT.md                   Support channels + how to get help
 │   └── STARTUP_HANDOFF.md
@@ -54,9 +52,10 @@ aidoc-flow-framework/
 │   ├── trace_graph.py               Cross-document trace graph
 │   └── tests/                       Linter self-tests
 │
-├── hooks/                           PostToolUse advisory hook
-│   ├── sdd-doc-review.sh            Surfaces lint findings on SDD document edits
-│   └── hooks.json                   Hook registration
+├── hooks/                           Advisory hooks (see hooks/README.md)
+│   ├── sdd-doc-review.sh            PostToolUse: lint findings on SDD edits
+│   ├── ch-gate-check.sh             PreCommit (+ pre-commit): CHG gate
+│   └── hooks.json                   Hook registration (PostToolUse + PreCommit)
 │
 ├── tests/
 │   ├── unit/                          Framework-level unit tests

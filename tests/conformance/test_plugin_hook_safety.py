@@ -519,11 +519,13 @@ class TheHookIsBounded(HookHarness):
         manifest = json.loads(_HOOKS_JSON.read_text(encoding="utf-8"))
         entries = [
             hook
-            for group in manifest["hooks"]["PostToolUse"]
+            for groups in manifest["hooks"].values()  # every registered event (#691)
+            for group in groups
             for hook in group["hooks"]
             if hook.get("type") == "command"
         ]
         self.assertTrue(entries, "no command hook declared")
+        self.assertIn("PreCommit", manifest["hooks"], "PreCommit event unregistered")
         for hook in entries:
             self.assertIsInstance(
                 hook.get("timeout"), int, f"no integer timeout declared on {hook.get('command')}"

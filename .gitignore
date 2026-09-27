@@ -10,6 +10,10 @@ examples/*/logs/
 # Work plans (local planning documents)
 work_plans/
 
+# Agent-session state (per-session scratch: context, plans, learnings).
+# Untracked by design — its presence must never dirty the tree (#688).
+.mimocode/
+
 # BMAD commands (external module)
 .claude/commands/bmad/
 

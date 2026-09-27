@@ -61,7 +61,9 @@ for chg in "$CHG_DIR"/CHG-*.yaml; do
   case "$chg" in
     *TEMPLATE*) continue ;;
   esac
-  status=$(grep -E '^\s*status:' "$chg" 2>/dev/null | head -1 | sed 's/.*status:\s*//' | tr -d '"' | tr -d "'")
+  # NOTE: `[[:space:]]`, not `\s` — the latter is a GNU grep/sed extension
+  # and silently never matches on BSD/macOS (#690).
+  status=$(grep -E '^[[:space:]]*status:' "$chg" 2>/dev/null | head -1 | sed 's/.*status:[[:space:]]*//' | tr -d '"' | tr -d "'" | tr -d '[:space:]')
   case "$status" in
     In-Progress|Approved)
       ACTIVE_CHG="$chg"
@@ -81,8 +83,25 @@ if [ -z "$ACTIVE_CHG" ]; then
   echo "  4. Run §3.4.1 validation"
   echo ""
   echo "See AGENTS.md → MANDATORY: Governance Gate"
-  if git log -1 --format=%B 2>/dev/null | grep -q "Bug fix on IPLAN-"; then
-    echo "Note: HEAD commit message claims a bug fix on an active IPLAN — verify it names the right plan."
+  # At pre-commit time HEAD is the *previous* commit, never the one being
+  # committed — so read the staged content instead (#690). A staged CHG that
+  # names a bug-fix vehicle suggests the author is on the repair path.
+  STAGED_BUGFIX=""
+  for f in $STAGED; do
+    case "$f" in
+      *CHG-*.yaml)
+        case "$f" in
+          *TEMPLATE*) continue ;;
+        esac
+        if git show ":$f" 2>/dev/null | grep -qi "parent_iplan\|bugfix"; then
+          STAGED_BUGFIX="$f"
+          break
+        fi
+        ;;
+    esac
+  done
+  if [ -n "$STAGED_BUGFIX" ]; then
+    echo "Note: staged $STAGED_BUGFIX looks like a bug-fix vehicle — verify it names the right plan."
   else
     echo "Exception: bug fixes on active IPLANs (add 'Bug fix on IPLAN-XX' to commit message)"
   fi

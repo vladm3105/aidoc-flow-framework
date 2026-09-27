@@ -877,5 +877,20 @@ class CompletionSpecSyncTests(unittest.TestCase):
             self.assertTrue(any("CHG-L012" in w and "chg_ref" in w for w in warnings), warnings)
 
 
+class UsageExitTests(unittest.TestCase):
+    """`main()` returns 2 on usage errors (exit-code contract, #718)."""
+
+    def test_no_files_returns_2(self):
+        self.assertEqual(chg_lint.main([]), 2)
+
+    def test_sdd_root_missing_arg_returns_2(self):
+        self.assertEqual(chg_lint.main(["--sdd-root"]), 2)
+
+    def test_sdd_root_not_a_dir_returns_2(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = str(Path(tmp) / "no-such-dir")
+            self.assertEqual(chg_lint.main(["--sdd-root", missing, "x.yaml"]), 2)
+
+
 if __name__ == "__main__":
     unittest.main()

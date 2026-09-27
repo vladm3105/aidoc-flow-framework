@@ -172,7 +172,7 @@ rm -rf AGENTS.md CHANGELOG.md CLAUDE.md CONTRIBUTING.md GOVERNANCE.md \
 | `framework/` | Core spec — governance, layers, playbooks, scripts, templates, registry |
 | `docs/` | Framework documentation |
 | `examples/` | Reference examples (url-shortener) |
-| `hooks/` | PostToolUse advisory hooks |
+| `hooks/` | Advisory hooks (`PostToolUse` + `PreCommit` — see `hooks/README.md`) |
 | `sdd_doc_lint/` | Structural linter (296+ checks) |
 | `tests/` | Conformance and unit tests |
 
