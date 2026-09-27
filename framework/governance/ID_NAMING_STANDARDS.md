@@ -1,5 +1,15 @@
 # ID Naming Standards — SDD
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.2 |
+
 ## Document IDs
 
 Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential number of **two or more digits** (two-digit is the common case; the authoritative pattern is `registry/LAYER_REGISTRY.yaml` `id_patterns.document` = `^[A-Z]+-\d{2,}$`, which the registry README declares wins on any discrepancy).

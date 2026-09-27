@@ -80,6 +80,9 @@ class RegistryStructure(unittest.TestCase):
 class RegistryTraceability(unittest.TestCase):
     def test_downstream_chain(self):
         # IPLAN fans out to CODE + EVAL; CHG/EVAL are terminal overlays.
+        # `downstream` is the PRIMARY-SUCCESSOR chain, not the inverse of
+        # `required_tags` — see test_downstream_is_primary_successor_not_inverse
+        # (#708). CODE is a terminal sink, not a registered SDD layer.
         expected_downstream = {
             "BRD": ["PRD"],
             "PRD": ["EARS"],
@@ -95,6 +98,20 @@ class RegistryTraceability(unittest.TestCase):
         for layer in LAYERS:
             with self.subTest(layer=layer["number"]):
                 self.assertEqual(layer["downstream"], expected_downstream[layer["artifact"]])
+
+    def test_downstream_is_primary_successor_not_inverse(self):
+        """`downstream` is deliberately NOT the inverse of `required_tags` (#708).
+
+        EARS is required by BDD, ADR, SPEC, and TDD, yet EARS.downstream is
+        [BDD] only — the next authoring step. This asymmetry is the decided
+        semantics (primary-successor chain), not drift: impact analysis MUST
+        use `required_tags`/`realizing_layers`, never `downstream`.
+        """
+        by_artifact = {layer["artifact"]: layer for layer in LAYERS}
+        self.assertEqual(by_artifact["EARS"]["downstream"], ["BDD"])
+        for consumer in ("BDD", "ADR", "SPEC", "TDD"):
+            self.assertIn("ears", by_artifact[consumer]["required_tags"])
+        self.assertNotIn("ADR", by_artifact["EARS"]["downstream"])
 
     def test_required_tags_match_necessary_upstream_table(self):
         """Each layer declares ONLY the upstream layers its evaluation reads.

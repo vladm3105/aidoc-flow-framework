@@ -15,6 +15,16 @@ custom_fields:
 
 # Diagram Standards
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.2 |
+
 ## Mandatory Format: Mermaid Only
 
 All diagrams, charts, workflows, and visual representations in SDD framework artifacts MUST use Mermaid syntax.

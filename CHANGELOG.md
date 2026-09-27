@@ -27,6 +27,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - First unit tests for CHG-L005/L008/L009/L012 + L009 PASS-suppression + `bugfix_lint -h` exit 0 (#717); `SEED01` per-file `seed_file:` resolution + honest set message (#723)
 - `framework/VERSION` bumped from `0.62.0` to `0.62.2` with mechanical pin sweep (0.62.1 ships on #744 — merge first)
 
+## [0.62.1] — 2026-09-27
+
+### Fixed — governance pair: Document Control backfill + downstream semantics (C2 PATCH → 0.62.1)
+
+- `GD-24` blocks backfilled on 13 governance docs + conformance guard (#706); `downstream` decided as primary-successor chain (#708)
+- `framework/VERSION` bumped from `0.62.0` to `0.62.1` with mechanical pin sweep
+
 ## [0.62.0] — 2026-09-27
 
 ### Added — framework skills library (MINOR → 0.62.0)

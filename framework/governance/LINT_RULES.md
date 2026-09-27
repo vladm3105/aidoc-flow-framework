@@ -1,5 +1,15 @@
 # Lint Rules Catalog
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.62.2 |
+
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
 structure. Each rule has a stable **ID**, a one-line **meaning**, a typical
