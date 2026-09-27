@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.61.8 |
+| Framework Version | 0.62.0 |
 
 ---
+
+## [0.62.0] — 2026-09-27
+
+### Added — framework skills library (MINOR)
+
+- New `framework/skills/` (12 engine-agnostic skills adapted from private canon `aidoc-flow-claude-agents-config/skills` 2026-09-27): approval-gate, context-handoff, memory-hygiene (+`lint.py`), preprod-review (+lens briefs), recall, second-opinion, self-learn, ship-it, start-session, submit-feedback, verified-planning (+`check_plan.py` gate), wrap-session; shared judges/lens in `_shared/agents/`, shadowing check in `_shared/scripts/`; index in `README.md` + `SKILLS-REGISTRY.yaml` (#719 skills leg).
+- `hooks/sync-version-refs.sh` `OLD_VERSIONS` extended with `0.61.8` (sweep was vacuous without it).
+- `framework/VERSION` bumped from `0.61.8` to `0.62.0` with mechanical pin sweep.
 
 ## [0.61.8] — 2026-09-26
 

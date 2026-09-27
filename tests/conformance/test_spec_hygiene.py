@@ -84,6 +84,13 @@ class EngineTokenHygiene(unittest.TestCase):
                             if rel == allow_path and allow_token.lower() in line.lower():
                                 allowlisted = True
                                 break
+                        # Owned skills surface (0.62.0): framework/skills/ ships
+                        # the skill contract itself, so the SKILL filename token
+                        # is the contract, not engine leakage. Other engine
+                        # tokens remain banned there.
+                        if not allowlisted and rel.startswith("skills/"):
+                            if pattern.pattern.startswith(r"\bSKILL"):
+                                allowlisted = True
                         if not allowlisted:
                             violations.append(f"{rel}:{lineno}: {line.strip()}")
         self.assertEqual(violations, [], f"engine tokens in framework/: {violations}")
