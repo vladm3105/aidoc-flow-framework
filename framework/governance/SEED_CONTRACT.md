@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-24 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.62.2 |
+| Framework Version | 0.62.0 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -63,7 +63,7 @@ that cycle:
 
 | Disposition | Meaning | Required carrier fields |
 | --- | --- | --- |
-| `absorbed` | The claim is realized by the chain. | names **≥1 BRD element ID** that carries it, pins `seed_version:` — the seed file version the claim was absorbed from — **and** names that file in `seed_file:` (corpus-relative path) so the pin resolves against the cited document (#723) |
+| `absorbed` | The claim is realized by the chain. | names **≥1 BRD element ID** that carries it, **and** pins `seed_version:` — the seed file version the claim was absorbed from |
 | `rejected` | The claim is deliberately not carried. | a `rationale` |
 | `deferred` | The claim is carried by a later cycle. | a `rationale` **and** a `target_cycle` |
 
@@ -101,7 +101,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.62.2"
+  framework_version: "0.62.0"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:
@@ -139,7 +139,7 @@ proof the seed was fully absorbed, which no lint can be:
 | Question | Enforcer |
 | --- | --- |
 | Is every ledger row well-formed, and does each `absorbed` row's target element resolve? | `SEED01` — deterministic lint (`LINT_RULES.md`) |
-| Does each pinned row's `seed_version` match the cited seed file's `document_control.version` — the named `seed_file:` when the row carries one, else any corpus seed file (legacy set-membership; never a per-file guess)? | `SEED01` — deterministic lint (skip when the row is unpinned or the seed file is absent from the corpus) |
+| Does each pinned row's `seed_version` match the corpus seed file's `document_control.version`? | `SEED01` — deterministic lint (skip when the row is unpinned or the seed file is absent from the corpus) |
 | Did the ledger *miss* a claim the seed makes, or does a re-pointed row misread the new version? | the BRD auditor lens (check **C8**) — requires reading the seed prose against the ledger; not machine-checkable |
 
 `SEED01` guarantees the ledger is *structurally* sound and *version-current*; it cannot know whether

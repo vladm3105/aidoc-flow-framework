@@ -20,13 +20,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
 - Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
 
-## [0.62.2] — 2026-09-27
-
-### Fixed — linter pair: CHG rule coverage + SEED01 per-file pins (C2 PATCH → 0.62.2)
-
-- First unit tests for CHG-L005/L008/L009/L012 + L009 PASS-suppression + `bugfix_lint -h` exit 0 (#717); `SEED01` per-file `seed_file:` resolution + honest set message (#723)
-- `framework/VERSION` bumped from `0.62.0` to `0.62.2` with mechanical pin sweep (0.62.1 ships on #744 — merge first)
-
 ## [0.62.0] — 2026-09-27
 
 ### Added — framework skills library (MINOR → 0.62.0)

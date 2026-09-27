@@ -422,7 +422,6 @@ def check_version_bump(
     """CHG-L009: new_version must differ from current when stated (§3.4.1 C19)."""
     steps = _sdd_lifecycle_steps(data)
     checked = 0
-    bad = 0
     for step in steps:
         title = step.get("step", step.get("title", "?"))
         new_version = step.get("new_version")
@@ -435,12 +434,9 @@ def check_version_bump(
                 f"CHG-L009: sdd_lifecycle step '{title}' new_version '{new_version}' "
                 "equals current version — a rewrite must bump the version"
             )
-            bad += 1
     if checked == 0:
         passes.append("CHG-L009: no stated new_version to compare")
-    elif bad == 0:
-        # #717: no PASS line on a run that errored — the "N differ" summary
-        # contradicts the ERROR lines above it on the same run.
+    else:
         passes.append(f"CHG-L009: {checked} new_version(s) differ from current")
 
 

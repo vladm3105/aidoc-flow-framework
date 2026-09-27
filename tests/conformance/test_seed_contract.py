@@ -166,61 +166,6 @@ class Seed01VersionPin(unittest.TestCase):
         self.assertEqual(self._codes(_brd_with_ledger(_pinned_row("2.0"))), [])
 
 
-class Seed01PerFileResolution(unittest.TestCase):
-    """#723: rows naming `seed_file:` resolve against THAT file, not the set."""
-
-    def _codes(self, corpus):
-        return [f.code for f in _check_seed_disposition(corpus)]
-
-    def _two_seed_corpus(self, ledger_yaml: str):
-        corpus = _brd_with_ledger(ledger_yaml)
-        corpus.append(("seed/architecture/auth.md", _SEED_V2.replace('"2.0"', '"1.0"')))
-        corpus.append(("seed/architecture/billing.md", _SEED_V2))
-        return corpus
-
-    def _file_row(self, seed_file: str, version: str) -> str:
-        return (
-            "seed_disposition:\n"
-            "  - claim: uniqueness\n"
-            "    disposition: absorbed\n"
-            "    brd_elements: [BRD.01.07.be48]\n"
-            f"    seed_file: {seed_file}\n"
-            f'    seed_version: "{version}"\n'
-        )
-
-    def test_stale_pin_against_named_file_is_error(self):
-        """A row pinned to the archived version fails even though ANOTHER
-        seed file in the corpus carries the pinned version — the mask #723
-        reports."""
-        corpus = self._two_seed_corpus(self._file_row("seed/architecture/billing.md", "1.0"))
-        self.assertEqual(self._codes(corpus), ["SEED01"])
-
-    def test_current_pin_against_named_file_passes(self):
-        corpus = self._two_seed_corpus(self._file_row("seed/architecture/billing.md", "2.0"))
-        self.assertEqual(self._codes(corpus), [])
-
-    def test_row_without_seed_file_keeps_set_membership(self):
-        """Rows authored before the field keep the legacy behavior: any
-        corpus seed carrying the pin satisfies it."""
-        corpus = self._two_seed_corpus(_pinned_row("2.0"))
-        self.assertEqual(self._codes(corpus), [])
-
-    def test_legacy_message_names_no_single_version(self):
-        """The set-membership diagnostic reports the whole corpus set instead
-        of an arbitrary `sorted(...)[0]` that may belong to another file."""
-        corpus = self._two_seed_corpus(_pinned_row("9.9"))
-        findings = _check_seed_disposition(corpus)
-        self.assertEqual([f.code for f in findings], ["SEED01"])
-        self.assertIn("1.0", findings[0].message)
-        self.assertIn("2.0", findings[0].message)
-
-    def test_named_but_absent_file_skips(self):
-        """A `seed_file:` naming no corpus file cannot be judged — skip."""
-        corpus = _brd_with_ledger(self._file_row("seed/architecture/gone.md", "1.0"))
-        corpus.append(("seed/architecture/auth.md", _SEED_V2))
-        self.assertEqual(self._codes(corpus), [])
-
-
 class Seed01Lint(unittest.TestCase):
     def _codes(self, corpus):
         return [f.code for f in _check_seed_disposition(corpus)]

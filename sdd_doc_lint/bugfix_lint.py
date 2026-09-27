@@ -389,7 +389,7 @@ def main(argv: list[str] | None = None) -> int:
             "Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]",
             file=sys.stderr,
         )
-        return 0  # #717: help is not a usage error (exit 2 is for bad options)
+        return 2
     if "--" in argv:
         argv = argv[argv.index("--") + 1 :]
     unknown = [a for a in argv if a.startswith("-")]
