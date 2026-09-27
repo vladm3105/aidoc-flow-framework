@@ -28,7 +28,7 @@ metadata:
   framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
 
 # =============================================================================
-#  Adaptation knobs (5 — see ADAPTATION_SURFACE.yaml for the closed set)
+#  Adaptation knobs (6 — see ADAPTATION_SURFACE.yaml for the closed set)
 #  Uncomment and edit any line to override the framework default.
 # =============================================================================
 
@@ -76,3 +76,11 @@ metadata:
 # glossary:
 #   "MAU": "Monthly Active Users"
 #   "p95": "95th percentile"
+
+# quality_loop_max_iterations caps review→remediate cycles before the saga
+# transitions to PARTIAL_TIMEOUT (see REVIEW_REMEDIATION_FLOW.md §Iteration cap).
+# Range 1-10; a value outside the range is treated as malformed and falls back
+# to the default. This bounds the loop; it does not weaken any gate.
+# Default: 3.
+#
+# quality_loop_max_iterations: 3
