@@ -11,6 +11,9 @@ last_updated: 2026-10-06
 > (`TDD-SYNC-001`…); the live catalog is `TDD-SYNC-A`…`E`
 > (`LINT_RULES.md`). Script paths below name their era (`./scripts/…`,
 > `tools/…`); live paths are `framework/scripts/…`, `sdd_doc_lint/…`.
+> Section citations likewise name their era: `§3.7` below was never a numbered
+> heading — the IPLAN completion gate lives in `DOC_GOVERNANCE_CORE.md`
+> §"IPLAN Lifecycle".
 > Incident evidence is preserved verbatim — do not "fix" it into current IDs.
 
 Institutional knowledge extracted from live project sessions. Every rule in this file was

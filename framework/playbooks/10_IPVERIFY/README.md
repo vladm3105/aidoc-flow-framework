@@ -136,5 +136,5 @@ docs/sdd/10_EVAL/
 
 | Script | Purpose |
 |--------|---------|
-| `eval-trend.sh` | Compute trend metrics from RPT files |
-| `eval-trend.sh --status` | Show latest verdict for all IPLANs |
+| `eval-trend.sh` (archived — does not exist, see note above) | Compute trend metrics from RPT files |
+| `eval-trend.sh --status` (archived — does not exist, see note above) | Show latest verdict for all IPLANs |

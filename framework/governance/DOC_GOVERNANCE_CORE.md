@@ -206,7 +206,7 @@ failures).
 | 9 | **Verify the fix location** — if error handling is needed, check whether the error is thrown in the function or in the caller. | Wrong fix location |
 | 10 | **Add DB migration + rollback** — if adding columns, provide the full migration SQL, rollback SQL, backfill strategy, and indexes. | Migration without rollback |
 | 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. | No SDD lifecycle steps |
-| 12 | **Check traceability to SDD lifecycle rules** — verify this document's §SDD Document Management and §CHG Rules are satisfied. | Rules not enforced at creation time |
+| 12 | **Check traceability to SDD lifecycle rules** — verify the SDD lifecycle completeness (§3.4.1 C16) and CHG scope rules (§3.4.1 C13–C14) are satisfied. | Rules not enforced at creation time |
 | 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
 | 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 

@@ -100,8 +100,8 @@ except ImportError as exc:
 # Shared @-tag trace primitives (CFB-PR-2 DD-1). The forward coverage engine
 # reuses the SAME token→doc reduction, layer order, and `@`-tag regex as the
 # backward walker so the two directions of the trace graph agree byte-for-byte.
-# Package-relative import → resolves in the canonical tree and in every vendored
-# copy (the submodule is carried by sync-vendored.sh).
+# Package-relative import → resolves in the canonical tree and wherever the
+# package is placed on `sys.path`.
 from .trace_graph import DOC_FORM as _DOC_FORM
 from .trace_graph import ELEM_FORM as _ELEM_FORM
 from .trace_graph import LAYER_INDEX as _LAYER_INDEX

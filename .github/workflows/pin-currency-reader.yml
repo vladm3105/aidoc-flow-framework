@@ -43,7 +43,7 @@ permissions:
 # that is verbatim this repo's justification for shipping NO `concurrency:`
 # block at all (see audit-trail.yml), so a future sweep reading it here would
 # delete the block and reintroduce the duplicate-issue race. Recorded at the
-# level a `concurrency:` sweep actually greps, per D-0070.
+# level a `concurrency:` sweep actually greps, per D-0070 (`plans/DECISIONS.md`).
 #
 # This workflow feeds no required context, so the #329 allowlist does not apply.
 # Counting by SHAPE rather than by filename, as `CLAUDE.md` requires, this is a

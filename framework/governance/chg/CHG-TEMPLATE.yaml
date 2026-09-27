@@ -426,7 +426,7 @@ creation_checklist:
 
     - id: 12
       check: "Check traceability to SDD lifecycle rules"
-      description: "Before finalizing, verify this document's §SDD Document Management and §CHG Rules are satisfied."
+      description: "Before finalizing, verify the SDD lifecycle completeness (DOC_GOVERNANCE_CORE.md §3.4.1 C16) and CHG scope rules (§3.4.1 C13–C14) are satisfied."
       gap_prevented: "Rules not enforced at creation time"
 
     - id: 13

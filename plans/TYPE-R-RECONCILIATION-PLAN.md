@@ -4,7 +4,7 @@
 |-------|-------|
 | Task | TYPE-R-RECONCILIATION |
 | Type | feature (governance, engine-agnostic) |
-| Status | DRAFT — 2026-09-21T00:00:00Z (Pass 0; needs two review cycles before plan PR) |
+| Status | RATIFIED 0.55.0 (`e4aa1857`) — was DRAFT Pass 0 2026-09-21 |
 | Base | `feat/type-r-reconciliation-flow` @ `dev` (framework `0.54.0`) |
 | Feeds | `0.55.0` release |
 | Version impact | **MINOR `0.54.0 → 0.55.0`** — new `change_source` enum value + governance prose; no instance-format break (GD-17 untouched); change-level **C2** per GATE-SPEC |

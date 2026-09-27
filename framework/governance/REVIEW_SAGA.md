@@ -221,11 +221,11 @@ in this engine-agnostic spec.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the
   blackboard (separate concern from saga state).
 - `saga.schema.json` — formal JSON Schema for the journal.
-- `plans/DECISIONS.md` D-0031 — the supersession decision that brought
-  this contract into the framework spec.
-- `plans/DECISIONS.md` D-0005 — the prior decision that one engine
-  would not port the saga, superseded in scope (its blackboard-for-
-  crew-state reasoning remains authoritative).
+- D-0031 (see the D-series annex in `governance/DECISIONS.md`) — the
+  supersession decision that brought this contract into the framework spec.
+- D-0005 (see the D-series annex in `governance/DECISIONS.md`) — the prior
+  decision that one engine would not port the saga, superseded in scope
+  (its blackboard-for-crew-state reasoning remains authoritative).
 - `docs/PARITY.md` — the per-platform binding of the contract (which
   engine uses preemptive vs cooperative enforcement, specific numeric
   soft-deadline values, etc.).

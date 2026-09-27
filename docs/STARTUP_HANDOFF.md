@@ -387,9 +387,10 @@ an active sell into regulated industries.
   enforced until post-Phase-5).
 - `framework/layers/<NN>_<X>/` — per-layer templates.
 - `ROADMAP.md` Phases 4–5 + Post-Migration TODOs + Post-v1.0 sections.
-- `plans/DECISIONS.md` — D-0007 (review gate), D-0009 (versioning),
+- Retired D-series decisions — D-0007 (review gate), D-0009 (versioning),
   D-0011 (tagging), D-0012 (IPLAN purpose + R1/R2), D-0013 (single
-  source of truth for templates).
+  source of truth for templates). The D-series was never logged live;
+  see the D-series annex in `framework/governance/DECISIONS.md`.
 - `plans/P2-T1-DESIGN.md` — example of the design-pass discipline.
 - `plans/P2-T7-PLAN.md` G11–G13 — examples of retrospective
   knowledge generation.

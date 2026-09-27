@@ -34,7 +34,7 @@ prefer that runner.
 
 | Module | Checks |
 |--------|--------|
-| `test_registry.py` | registry structure; 8 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; cumulative `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
+| `test_registry.py` | registry structure; 10 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; exact `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
 | `test_layers.py` | each layer folder has template + README + index template; templates parse; `metadata.layer` matches the registry; `metadata.document_type` present |
 | `test_governance.py` | the governance + CHG files listed in `EXPECTED_FILES` are present (and only those — any new `framework/governance/` file must be registered); `CHG-TEMPLATE.yaml` parses |
 | `test_version.py` | `framework/VERSION` is present and a bare `X.Y.Z` SemVer string |

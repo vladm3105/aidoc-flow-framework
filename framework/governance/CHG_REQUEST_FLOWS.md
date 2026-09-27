@@ -32,7 +32,7 @@ row wins:
 | F2 | Direct request | Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling) | `direct` (new — see §3) | C1 (docs-only: no CHG/IPLAN; code-touching: C1 CHG + scoped IPLAN) | GATE-CODE | No (`sdd_lifecycle: []`) | Scoped (manifest + steps only, §3.3) | Covering tests + verification commands in the scoped IPLAN |
 | F3 | Brownfield behavior change | Product design or behavior change to an implemented product | `upstream` / `midstream` / `design` (by lowest affected layer) | C2 / C3 (C3 if cross-layer or new requirements) | GATE-01 / 03 / 06 (by source) | Yes — modules-first restart per §4 (0a seed_scope, 0b affected-module sync + review checkpoint, 0c SDD cascade over affected layers and everything below) | Full, referencing NEW SDD versions (authored only after the checkpoint passes) | EVAL cycles |
 | F4 | Bugfix on implemented IPLAN | Defect found in EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN | `feedback` | C1 CHG (CHG-05 vehicle) | GATE-CODE | No (parent SDD stands; fix-IPLAN carries `validation_findings`) | Bugfix-subtype (`parent_iplan` + `source_chg`, repair-scoped manifest, rollback) | Regression suite + parent revision entry |
-| — | Emergency (non-flow path) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | Document within 48h + post-mortem | Fix IPLAN post-hoc per `09_CHG/README.md:318` + `templates/POST_MORTEM-TEMPLATE.md` (post-mortem ≤48h) | Post-mortem verification |
+| — | Emergency (non-flow path) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | Document within 48h + post-mortem | Fix IPLAN post-hoc per `09_CHG/README.md` (Emergency rows) + `templates/POST_MORTEM-TEMPLATE.md` (post-mortem ≤48h) | Post-mortem verification |
 | — | Type-R reconciliation (non-flow path) | Verified working codebase preceding its specs (non-emergency empirical work) | `reconciliation` | C2 typical (classify by cascade breadth) | GATE-CODE | Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2 | Reverse-authored (ground truth from code) | §3.1.2 Phase-3 battery |
 
 ## 2. F1 — Greenfield development
@@ -173,9 +173,9 @@ record the rejected candidate and one-line rationale in the CHG so reclassificat
 ## 8. Open decisions (pass 2 verdicts — all CONFIRMED 2026-09-22)
 
 - (a) Emergency handling: CONFIRMED — router step 1 yields to the Emergency path (fix → deploy → document +
-  post-mortem 48h); Emergency keeps its post-hoc procedure unchanged (`09_CHG/README.md:22,102,318`,
-  `templates/POST_MORTEM-TEMPLATE.md` in both CHG homes); the change here is routing only. F2 is never a speed
-  lane for production incidents (Type-R §3.1.2 Emergency-exclusion applies).
+  post-mortem 48h); Emergency keeps its post-hoc procedure unchanged (`09_CHG/README.md` Workflow line +
+  entry-gate and change-class Emergency rows, `templates/POST_MORTEM-TEMPLATE.md` in both CHG homes);
+  the change here is routing only. F2 is never a speed lane for production incidents (Type-R §3.1.2 Emergency-exclusion applies).
 - (b) `direct` vs broadening `External`: `direct` CONFIRMED — `External`'s GATE-01/03 cascades are load-bearing
   (`CHG-TEMPLATE.yaml:70-111` re-read at pass 2: business→GATE-01, technical→GATE-03); broadening it would route
   script tweaks through phantom multi-layer cascades.
@@ -191,9 +191,7 @@ record the rejected candidate and one-line rationale in the CHG so reclassificat
   requires upstream gates + TDD unconditionally); G4 misclassification guard GOV-017 → GOV-018 (`LINT_RULES.md:135`
   collision); G5 lifecycle/artifacts binding; G6 citation home (change description); G7 enum comment; G8
   verification column; G9 version sequencing; G10 router rewrite. Method: `ls`/`grep`/`sed` against the 0.56.0 tree.
-- Pass 2 (pending): final confirmation — §8 decisions, GATE-CODE routing for F2, version slot. Full log:
-  `plans/CHG-REQUEST-FLOWS-CORE-DRAFT.md`.
-- Pass 2 (2026-09-22, on this file): §8 all CONFIRMED with live re-verification (`09_CHG/README.md:22,102,318`,
+- Pass 2 (2026-09-22, on this file): §8 all CONFIRMED with live re-verification (`09_CHG/README.md` Workflow line + entry-gate and change-class Emergency rows,
   `templates/POST_MORTEM-TEMPLATE.md` both homes, `CHG-TEMPLATE.yaml:70-111`, GATE-CODE §2 entry). Amendments:
   F2.3 covering-tests REQUIRED for code-touching F2 (GATE-CODE entry demands test cases exist — commands alone
   insufficient); F2.4 documented syntactic-guard limit (semantic misclassification → human review of citation +

@@ -4,7 +4,7 @@
 |-------|-------|
 | Task | IPLAN-TERMINAL-DEFECT |
 | Type | feature |
-| Status | DRAFT — 2026-09-21T00:00:00Z |
+| Status | SHIPPED as 0.56.0 (#661) — was DRAFT 2026-09-21 |
 | Depends on | #656 (gap report), #657 (design proposal); GD-30 / Type-R flow (landed 0.55.0); #569 precedent (status as write-target) |
 | Feeds | mirror PR for #657 Phase 3; IPLAN-VERIFY guidance; GOV-013 linter carve-out |
 | Version impact | MINOR stream (`0.55.0 → 0.56.0`, to confirm at implementation kickoff): additive template fields + governance prose + new lint checks; no removal of `combined` default, no registry shape change |

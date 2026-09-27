@@ -339,6 +339,6 @@ modified file with its archive path.
 
 ## Cross-References
 
-- `framework/governance/DOC_GOVERNANCE_CORE.md` — Core governance including CHG rules (§CHG Rules)
+- `framework/governance/DOC_GOVERNANCE_CORE.md` — Core governance including CHG rules (§3.4 CHG creation checklist)
 - `framework/governance/DECISIONS.md` — Durable governance decisions (GD-01: CHG as overlay)
 - `docs/sdd/09-CHG/` — Project-level CHG instance documents and archive
