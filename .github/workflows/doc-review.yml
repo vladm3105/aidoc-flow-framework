@@ -10,16 +10,11 @@ name: Document review gate
 # here it self-tests against the linter's fixtures (this repo has no docs/ tree).
 
 on:
+  # No paths filter: this workflow feeds the REQUIRED "SDD document
+  # structural gate" context (#726 protection). A path-filtered required
+  # gate never reports on PRs outside its paths and deadlocks them (#741).
   push:
-    paths:
-      - 'docs/**'
-      - 'sdd_doc_lint/**'
-      - '.github/workflows/doc-review.yml'
   pull_request:
-    paths:
-      - 'docs/**'
-      - 'sdd_doc_lint/**'
-      - '.github/workflows/doc-review.yml'
 
 permissions:
   contents: read
