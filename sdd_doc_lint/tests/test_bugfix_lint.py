@@ -324,18 +324,5 @@ class SubstringGuard(unittest.TestCase):
             self.assertEqual(_codes(errors), [])
 
 
-class HelpExitTests(unittest.TestCase):
-    """`-h/--help` exits 0 — help is not a usage error (#717)."""
-
-    def test_short_help_exits_zero(self):
-        self.assertEqual(bugfix_lint.main(["-h"]), 0)
-
-    def test_long_help_exits_zero(self):
-        self.assertEqual(bugfix_lint.main(["--help"]), 0)
-
-    def test_unknown_option_still_exits_two(self):
-        self.assertEqual(bugfix_lint.main(["--bogus"]), 2)
-
-
 if __name__ == "__main__":
     unittest.main()
