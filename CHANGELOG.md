@@ -9,6 +9,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.62.4] — 2026-09-27
+
+### Fixed — docs-truthfulness batch: playbook rot, plan statuses, census, anchors, D-series log (C2 PATCH → 0.62.4)
+
+- Playbook rot (#709): IPVERIFY validator example replaced with the real EVAL-RPT §3/§4/§5/§9 skeleton; dead-script rows marked archived; unbuilt `generate-rpt` CLI removed. SPEC index template repoints `tools/sdd_coverage.py` at the in-tree COV01 gate (#686)
+- Stale statuses (#692): four plan headers SHIPPED/RATIFIED with a per-step CLEANUP-001 disposition. Stale counts fixed: REVIEW_TEAM census (58 files, 9 crews, auditor IPLAN+CHG) (#707); conformance README 10 layers; README layout gains LEARNED_LESSONS (#695)
+- Dangling anchors repaired (#694): DOC_GOVERNANCE_CORE §3.7 → §"IPLAN Lifecycle"; §SDD/§CHG-Rules → C13–C14/C16; LINT_RULES GOV-018 → flows §1; Emergency line-number cites dropped
+- D-series log (#720): retired-ID annex in `governance/DECISIONS.md`; D-0065/D-0070/D-0078/D-0084/D-0085 recorded in `plans/DECISIONS.md`; live pointers repointed
+- New regression test: `test_validator_example_uses_template_keys`
+- `framework/VERSION` bumped from `0.62.3` to `0.62.4` with mechanical pin sweep
+
 ## [Unreleased]
 
 ### Fixed — required CI checks vendored locally: canon went private (#746)
