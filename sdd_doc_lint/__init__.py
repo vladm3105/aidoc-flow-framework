@@ -2778,15 +2778,16 @@ _SEED_VERSION_RE = re.compile(
 )
 
 
-def _seed_document_versions(corpus: list[tuple[str, str]]) -> set[str]:
-    """Collect `document_control.version` values from corpus seed files.
+def _seed_document_versions_by_path(corpus: list[tuple[str, str]]) -> dict[str, str]:
+    """Map corpus-relative path → `document_control.version` for seed files.
 
-    A corpus entry counts as a seed file when its relative path names the
-    seed tier (`seed/...`, `docs/seed/...`, or any `/seed/` segment).
-    Files without a parseable control version contribute nothing — the pin
-    check skips what it cannot judge rather than failing it.
+    Same seed-tier rule as `_seed_document_versions`, but the version stays
+    keyed to its file so a ledger row naming `seed_file:` resolves against
+    the document it was actually absorbed from (#723). First version wins on
+    duplicate paths; files without a parseable control version contribute
+    nothing.
     """
-    versions: set[str] = set()
+    versions: dict[str, str] = {}
     for rel, text in corpus:
         if not (
             rel == "seed"
@@ -2797,8 +2798,19 @@ def _seed_document_versions(corpus: list[tuple[str, str]]) -> set[str]:
             continue
         match = _SEED_VERSION_RE.search(text)
         if match:
-            versions.add(match.group(1).strip())
+            versions.setdefault(rel, match.group(1).strip())
     return versions
+
+
+def _seed_document_versions(corpus: list[tuple[str, str]]) -> set[str]:
+    """Collect `document_control.version` values from corpus seed files.
+
+    A corpus entry counts as a seed file when its relative path names the
+    seed tier (`seed/...`, `docs/seed/...`, or any `/seed/` segment).
+    Files without a parseable control version contribute nothing — the pin
+    check skips what it cannot judge rather than failing it.
+    """
+    return set(_seed_document_versions_by_path(corpus).values())
 
 
 def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
@@ -2808,9 +2820,11 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     Deterministic half of the enforcement split: every ledger row must be
     well-formed, each ``absorbed`` row's ``brd_elements`` must resolve to a
     declared element, and each ``seed_version`` pin must match a corpus seed
-    file's ``document_control.version``. It CANNOT tell whether the ledger
-    missed a claim the seed prose makes — that is the BRD auditor lens's
-    check C8 (a reading judgement).
+    file's ``document_control.version`` — the named ``seed_file:`` when the
+    row carries one (#723), else any corpus seed file (legacy set-membership
+    for rows authored before the field existed). It CANNOT tell whether the
+    ledger missed a claim the seed prose makes — that is the BRD auditor
+    lens's check C8 (a reading judgement).
 
     The carrier is optional (``_required: false``): a BRD with no ledger block is
     silently skipped, so the rule fires on nothing in corpora authored before the
@@ -2832,6 +2846,7 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     stripped = [(rel, _YAML_FENCE.sub(_drop_ledger, text)) for rel, text in corpus]
     declared: set[str] = set(build_edge_graph(stripped).element_host)
     seed_versions = _seed_document_versions(corpus)
+    seed_versions_by_path = _seed_document_versions_by_path(corpus)
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text, rel)
@@ -2947,14 +2962,34 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
             pin = row.get("seed_version")
             if isinstance(pin, (str, int, float)) and str(pin).strip() and seed_versions:
                 pin_s = str(pin).strip()
-                if pin_s not in seed_versions:
+                # #723: a row naming `seed_file:` resolves against THAT file's
+                # version — never the corpus-wide set, which masks stale pins
+                # on multi-seed corpora. A named file absent from the corpus
+                # (or version-less) cannot be judged: skip, like absent seeds.
+                ref = row.get("seed_file")
+                ref_s = ref.strip().lstrip("./") if isinstance(ref, str) and ref.strip() else ""
+                if ref_s:
+                    actual = seed_versions_by_path.get(ref_s)
+                    if actual is not None and pin_s != actual:
+                        findings.append(
+                            Finding(
+                                rel,
+                                line,
+                                "SEED01",
+                                f"seed claim '{label}' pins seed_version '{pin_s}' but "
+                                f"seed file '{ref_s}' is version '{actual}' — "
+                                "re-point or re-dispose the row",
+                            )
+                        )
+                elif pin_s not in seed_versions:
                     findings.append(
                         Finding(
                             rel,
                             line,
                             "SEED01",
-                            f"seed claim '{label}' pins seed_version '{pin_s}' but the "
-                            f"corpus seed is version {sorted(seed_versions)[0]} — "
+                            f"seed claim '{label}' pins seed_version '{pin_s}' but no "
+                            "corpus seed file carries that version (corpus seed "
+                            f"versions: {', '.join(sorted(seed_versions))}) — "
                             "re-point or re-dispose the row",
                         )
                     )

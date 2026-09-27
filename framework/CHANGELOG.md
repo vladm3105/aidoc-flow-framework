@@ -11,9 +11,30 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.1 |
+| Framework Version | 0.62.2 |
 
 ---
+
+## [0.62.2] — 2026-09-27
+
+### Fixed — linter pair: CHG rule coverage + SEED01 per-file pins (C2 PATCH)
+
+- Four CHG rules gain first unit tests (#717): L005 ordering half (SddOrderTests;
+  IPLAN-only half already pinned by #733), L008 date-vs-CHG-ID paths, L009
+  equal-vs-differing versions, L012 attested/unattested/diverged attestations
+  (13 tests: 10 in `test_chg_lint.py`, 3 help-exit in `test_bugfix_lint.py`).
+  Two output-contract minors fixed alongside: L009 no longer prints the
+  "N new_version(s) differ" PASS on runs where it errored; `bugfix_lint -h`
+  exits 0 instead of 2.
+- `SEED01` resolves `seed_version` pins per file (#723): new optional
+  `seed_file:` row field (BRD template `_guidance` + `_example`,
+  `SEED_CONTRACT.md` Rule 2 + enforcement split, `LINT_RULES.md` SEED01 row);
+  rows naming it resolve against that file's version, rows without it keep
+  legacy set-membership (never a per-file guess), unresolvable names skip.
+  The legacy diagnostic reports the whole corpus set instead of an arbitrary
+  `sorted(...)[0]`. 5 new conformance tests pin the behavior.
+- `framework/VERSION` bumped from `0.62.0` to `0.62.2` with mechanical pin sweep
+  (0.62.1 ships on #744 — merge first).
 
 ## [0.62.1] — 2026-09-27
 

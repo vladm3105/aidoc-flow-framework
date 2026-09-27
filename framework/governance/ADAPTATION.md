@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.1 |
+| Framework Version | 0.62.2 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
