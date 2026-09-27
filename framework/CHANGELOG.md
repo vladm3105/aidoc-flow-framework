@@ -11,9 +11,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.2 |
+| Framework Version | 0.62.3 |
 
 ---
+
+## [0.62.3] — 2026-09-27
+
+### Fixed — adaptation knob parity: template documents sixth knob (C2 PATCH)
+
+- `governance/PROFILE-TEMPLATE.yaml` declared 5 knobs while
+  `governance/ADAPTATION_SURFACE.yaml` declares 6 — `quality_loop_max_iterations`
+  had no override row, so adapters starting from the template silently lost it
+  (#704). Count header 5→6; new commented override row (`3`, range 1–10,
+  malformed-falls-back-to-default per `ADAPTATION.md` §4.6).
+- New `test_profile_template_covers_surface_knobs`
+  (`tests/conformance/test_governance.py`) pins three-way parity: every surface
+  knob has a template override row, the template count header equals the surface
+  knob count, and the `ADAPTATION.md` §4 subsections match the surface knob set.
+- `framework/VERSION` bumped from `0.62.2` to `0.62.3` with mechanical pin sweep.
 
 ## [0.62.2] — 2026-09-27
 
