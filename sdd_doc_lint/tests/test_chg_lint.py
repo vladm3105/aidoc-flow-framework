@@ -744,5 +744,138 @@ class LifecycleAttributionTests(unittest.TestCase):
             self.assertTrue(any("CHG-L015" in e and "GOV-021" in e for e in errors), errors)
 
 
+class SddOrderTests(unittest.TestCase):
+    """CHG-L005 ordering half (§3.1.1): SDD steps before IPLAN creation (#717).
+
+    The IPLAN-only half lives in SddFirstOrderTests (#733); these pin the
+    order comparison itself, which had zero coverage.
+    """
+
+    def _sdd_step(self):
+        return {
+            "step": "Rewrite SPEC-01",
+            "artifact": "SPEC-01",
+            "phase": "sdd_lifecycle",
+            "status": "Completed",
+            "archive_path": "framework/archive/CHG-99/SPEC-01.md",
+            "new_version": "0.54.0",
+        }
+
+    def test_sdd_before_iplan_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _with_sdd_step(_base_chg(), "SPEC-01", "framework/archive/CHG-99/x", "0.54.0")
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L005" in e], [])
+            self.assertTrue(any("CHG-L005" in p for p in passes), passes)
+
+    def test_iplan_before_sdd_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"].append(self._sdd_step())
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L005" in e for e in errors), errors)
+
+
+class ArchivePathTests(unittest.TestCase):
+    """CHG-L008 (§3.4.1 C18): archive paths use CHG-ID format (#717)."""
+
+    def test_date_based_archive_path_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _with_sdd_step(
+                _base_chg(), "Governance docs", "docs/archive/2026-09-01/x", "0.54.0"
+            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L008" in e and "date-based" in e for e in errors), errors)
+
+    def test_chg_id_archive_path_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _with_sdd_step(
+                _base_chg(), "Governance docs", "framework/archive/CHG-99/x", "0.54.0"
+            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L008" in e], [])
+            self.assertTrue(any("CHG-L008" in p for p in passes), passes)
+
+
+class VersionBumpTests(unittest.TestCase):
+    """CHG-L009 (§3.4.1 C19): new_version must differ from current (#717)."""
+
+    def _versioned(self, current, new):
+        chg = _with_sdd_step(_base_chg(), "Governance docs", "framework/archive/CHG-99/x", new)
+        chg["implementation"]["steps"][0]["current_version"] = current
+        return chg
+
+    def test_equal_versions_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._versioned("0.54.0", "0.54.0"))
+            )
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L009" in e for e in errors), errors)
+
+    def test_differing_versions_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._versioned("0.53.0", "0.54.0"))
+            )
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L009" in e], [])
+            self.assertTrue(any("differ" in p for p in passes if "CHG-L009" in p), passes)
+
+    def test_error_suppresses_differ_pass(self):
+        # #717 minor: the "N new_version(s) differ" PASS must not print on a
+        # run where L009 already recorded an ERROR.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._versioned("0.54.0", "0.54.0"))
+            )
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L009" in e for e in errors), errors)
+            self.assertEqual([p for p in passes if "CHG-L009" in p and "differ" in p], [])
+
+
+class CompletionSpecSyncTests(unittest.TestCase):
+    """CHG-L012: completion_spec_sync attestation on Completed IPLANs (#717)."""
+
+    def _chg_with_iplan(self, tmp: Path, sync):
+        chg = _base_chg()
+        chg["implementation"]["artifacts_modified"][0]["file"] = "IPLAN-99.yaml"
+        iplan = {"document_control": {"status": "Completed"}}
+        if sync is not None:
+            iplan["document_control"]["completion_spec_sync"] = sync
+        _write(Path(tmp) / "IPLAN-99.yaml", yaml.safe_dump(iplan))
+        return _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+
+    def test_attested_sync_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._chg_with_iplan(
+                Path(tmp), {"spec_checked": True, "tdd_checked": True, "diverged": False}
+            )
+            errors, warnings, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L012" in e], [])
+            self.assertEqual([w for w in warnings if "CHG-L012" in w], [])
+            self.assertTrue(any("CHG-L012" in p for p in passes), passes)
+
+    def test_unattested_sync_warns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._chg_with_iplan(
+                Path(tmp), {"spec_checked": True, "tdd_checked": False, "diverged": False}
+            )
+            _, warnings, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L012" in w for w in warnings), warnings)
+
+    def test_diverged_without_chg_ref_warns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._chg_with_iplan(
+                Path(tmp), {"spec_checked": True, "tdd_checked": True, "diverged": True}
+            )
+            _, warnings, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L012" in w and "chg_ref" in w for w in warnings), warnings)
+
+
 if __name__ == "__main__":
     unittest.main()
