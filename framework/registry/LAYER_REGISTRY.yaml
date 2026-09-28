@@ -33,7 +33,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
-  framework_version: "0.62.5"  # synced from framework/VERSION
+  framework_version: "0.62.6"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this
@@ -175,7 +175,7 @@ layers:
     can_reference: []
     error_prefix: CHG
     optional: false
-    description: "Layer 9 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
+    description: "Namespace 09 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
     template: "CHG-TEMPLATE.yaml"
     downstream: []
     notes: "Operational namespace, not a sequential lifecycle layer. The 09_CHG prefix is reserved for playbook definitions, example artifacts, and saga review dispatch."

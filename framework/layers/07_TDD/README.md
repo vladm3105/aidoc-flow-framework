@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 
 ## C4 Model Position
@@ -18,6 +18,8 @@ TDD is part of the **Implementation Bridge** (L7-L8, no C4 level). It defines te
 ## Purpose
 
 Defines test cases that validate SPEC component contracts. Each TDD document maps BDD acceptance scenarios to concrete tests with inputs, outputs, edge cases, and quality thresholds. Positioned after SPEC (L6) and before IPLAN (L8).
+
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
 
 ## Design Decisions
 

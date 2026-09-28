@@ -11,9 +11,55 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 ---
+
+## [0.62.6] — 2026-09-28
+
+### Fixed — review-sweep batch: workflow chain, CHG status hardening, ID obligations, saga cleanup (C2 PATCH)
+
+- Workflow chain (#759): L1–L5 `**Workflow**` lines now read `… IPLAN → EVAL → Code`
+  (were `… IPLAN → Code`); L6 SPEC / L7 TDD / L8 IPLAN gain the canonical chain
+  line. Canonical chain stays `TRACEABILITY.md:16` with the EVAL return edge
+  (`PASS → IPLAN Verified`) defined in `10_EVAL/README.md`.
+- CHG overlay naming (#760): glossary, CHG template definition, post-mortem root-cause
+  row, EVAL README + index diagram, and registry description stop calling CHG `L9` —
+  CHG is the `09` operational namespace (governance overlay, GD-01), lifecycle layers
+  are L1–L8 + L10. Mirror twins edited identically. Qualified `(L9, overlay)` mentions
+  in top-level guides left untouched.
+- ID obligations (#761): `ID_NAMING_STANDARDS.md` exemption section now accounts all ten
+  layers — 6 MUST + SPEC/IPLAN MAY + **EVAL MUST** (every `test_cases[]` entry carries
+  `EVAL.NN.SS.xxxx`) + CHG exempt/NA. Matching MUST lines in `10_EVAL/README.md` and
+  `EVAL-TEMPLATE.yaml` §3 guidance. Presence is an author/auditor obligation; the
+  linter pins format only (`EVAL-ID-001`).
+- SPEC README (#762): new Element-ID exemption + Upstream Traceability sections
+  (ADR pattern); readiness cell now states the normative threshold
+  (`TDD-Ready >= 90%`, GATE-06).
+- ADR wording (#763): overview synthesizes EARS and BDD (which transitively carry
+  PRD context); `required_tags: [ears, bdd]` unchanged.
+- Phantom pointer (#764): §3.4 item 12 now cites `§3.4.1 E25–E27` (were nonexistent
+  `C13–C14`).
+- CHG status hardening (#765): §3.3 gains rules 5–9 (issue-level match,
+  ship-in-same-change, In-Progress resumption, step-status invariant, zero-work
+  Completed ban) and §3.4.1 gains **E28** (no `Completed` step before its code is
+  written and verified). Deterministic half enforced by new rule **CHG-L017**
+  (`Proposed` / `Approved` + `Completed` step errors; `In-Progress`+ passes);
+  catalog updates (`CODES` 1..17, `LINT_RULES.md` L017 row, `test_lint_catalog`
+  pin, `AGENTS.md` catalog line) + 5 new unit tests (`PrematureCompletionTests`).
+- Rewrite hygiene (#766): §3.4 item 11 states the purge obligation — rewrites drop
+  stale content so v2 reads as written from scratch.
+- Agent conduct (#767): new `AI_ASSISTANT_RULES.md` prohibition — no `--no-verify`
+  (or equivalents), no hook bypasses, auto-merge only on all-green. Boundary
+  detection stays the backstop, not the permission.
+- Gate hygiene (#768): `REVIEW_REMEDIATION_FLOW.md` `pre_merge` section states the
+  load-proof rule — every required gate proven to execute, full set enumerated in
+  one list. No tool names ported (D-0013).
+- Saga cleanup (#701): `REVIEW_SAGA.md` drops dead `docs/PARITY.md` + `platforms/`
+  references, rewrites the spec-version section engine-agnostic, matches the
+  `layer` enum and `transitions[]` required fields to `saga.schema.json`.
+  D-0031/D-0005 cites and the parity test already resolve (stale sub-claims).
+- `framework/VERSION` bumped from `0.62.5` to `0.62.6` with mechanical pin sweep.
 
 ## [0.62.5] — 2026-09-27
 

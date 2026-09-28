@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 ## Document IDs
 
@@ -212,7 +212,9 @@ only — provisional elements are still subject to coverage and traceability gat
 
 Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
 element IDs on every distinct content unit per their template's required
-sections. The remaining two layers carry a documented exemption:
+sections. Of the remaining four layers, two carry a documented MAY exemption
+(SPEC, IPLAN — below), EVAL test cases **MUST** carry IDs, and CHG is
+exempt (governance overlay with no authored content units):
 
 - **SPEC layer:** §5 fail-closed rules, §3 Protocol method specifications,
   and similar policy statements **MAY** carry `SPEC.NN.SS.xxxx` element
@@ -225,6 +227,14 @@ sections. The remaining two layers carry a documented exemption:
   but are not required to. The traceability surface is provided by
   upstream `@spec: SPEC-NN` and `@tdd: TDD.NN.SS.xxxx` citations plus the
   per-step file-path declarations in the manifest table.
+- **EVAL layer:** every test case in `test_design.test_cases` **MUST**
+  carry an `EVAL.NN.SS.xxxx` element ID (format §"Format", independent from
+  source). The ID identifies the test case stably across eval cycles; the
+  coverage matrix (§4) then binds each ID to its upstream source and
+  implementation. Presence is an author/auditor obligation — the linter
+  pins ID *format* (`EVAL-ID-001`), not presence.
+- **CHG layer:** exempt — CHG documents are governance records with no
+  authored content units to identify; no element IDs required.
 
 **Rationale.** SPEC and IPLAN content is overwhelmingly already-bound to
 upstream content via mandatory `@<layer>:` citations. Adding layer-local

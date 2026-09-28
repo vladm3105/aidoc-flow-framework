@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 ## Overview
 
@@ -103,13 +103,13 @@ flowchart LR
     EARS[EARS - L3] --> BDD[BDD - L4]
     BDD --> EVAL
     EVAL --> GATES[CI / Staging / Deploy Gates]
-    CHG[CHG - L9] -->|versions IPLAN| IPLAN
+    CHG[CHG - 09 namespace] -->|versions IPLAN| IPLAN
     CHG -->|versions EVAL| EVAL
     style EVAL fill:#fff3e0,stroke:#e65100,stroke-width:3px
 ```
 
 **Layer**: 10 (Evaluation & QA Governance)
-**Note**: Layer 9 is CHG (Change Record — governance overlay). EVAL is L10.
+**Note**: CHG lives in the 09 operational namespace (governance overlay, not a lifecycle layer). EVAL is L10.
 **Upstream (necessary)**: EARS (L3), BDD (L4), TDD (L7), IPLAN (L8)
 **Downstream**: Code, CI/CD pipelines, deployment gates
 **Traceability**: IPLAN → EVAL → RPT → verdict
@@ -144,6 +144,7 @@ docs/sdd/10_EVAL/
 - `{NN}` is a zero-padded sequential number (01, 02, ... 99)
 - `{hash}` is a 4-character content-derived identifier from the TDD
 - Test case IDs are stable across eval cycles — they identify the test case, not a specific run
+- Every test case **MUST** carry an `EVAL.NN.SS.xxxx` ID — IDs are required, not optional (no exemption; the CHG overlay is the only layer with no element IDs)
 - Report IDs include the cycle number: RPT-001, RPT-002, ...
 - **One source per test case** — each test case maps to exactly one upstream element (one source_type + one source_id). Never mix BDD, TDD, EARS, or other sources in a single test case. Create as many test cases as needed.
 

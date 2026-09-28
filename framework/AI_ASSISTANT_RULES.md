@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 
 ## Template Usage
@@ -63,6 +63,16 @@ A development IPLAN is **NOT** blocked by:
 - Image not yet built or deployed to a registry
 
 These operator-only execution steps belong to a separate deployment plan. When closing a development IPLAN, register any deployment-handoff obligations in the IPLAN registry's `deferred_items` before flipping `Completed`.
+
+## Hook and Verification-Bypass Prohibition
+
+AI agents MUST NOT bypass verification gates:
+
+- Never pass `--no-verify` (or any equivalent skip flag) on any `git` invocation (`commit`, `push`, `merge`, rebase).
+- Never disable, uninstall, or route around configured hooks (`pre-commit`, `pre-push`, `hooks/`), and never document a bypass path as a recommended workflow.
+- Auto-merge only when every required check is green. Boundary detection (`REVIEW_REMEDIATION_FLOW.md` audit-trail check) is the backstop, not the permission.
+
+If a hook blocks legitimate work, fix the underlying cause or escalate to the human — the hook is never the problem to route around.
 
 ## IPLAN Status Lifecycle
 

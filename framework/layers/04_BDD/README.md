@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 
 ## Overview
@@ -17,7 +17,7 @@ BDD defines executable acceptance scenarios as structured Given-When-Then YAML,
 translating EARS formal requirements into testable behaviors with spec_trace links to
 SPEC sections for req-to-implementation traceability.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
 
 ## YAML vs Gherkin
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 
 ## Overview
@@ -325,7 +325,7 @@ modified file with its archive path.
 | C3 | Major change — cross-layer, new requirements (formal gate) |
 | Emergency | Critical production fix — bypass normal process, post-mortem within 48h |
 | Gate | Approval checkpoint — GATE-01 (business), GATE-03 (requirements/architecture), GATE-06 (design/test), GATE-08 (IPLAN), GATE-CODE (implementation), GATE-SPEC (framework-spec change — meta) |
-| Layer L1-L10 | SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL |
+| Layer L1-L8, L10 (+ CHG 09) | Lifecycle layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L10=EVAL. CHG occupies the 09 operational namespace as a governance overlay — not a lifecycle layer (GD-01). |
 
 ## Files
 

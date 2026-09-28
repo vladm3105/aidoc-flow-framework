@@ -9,6 +9,22 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.62.6] — 2026-09-28
+
+### Fixed — review-sweep batch: workflow chain, CHG status hardening, ID obligations, saga cleanup (C2 PATCH → 0.62.6)
+
+- Docs-truthfulness batch (#759, #760, #762, #763, #764, #701): EVAL restored to the
+  workflow chain in all layer READMEs; CHG de-labeled from L9 to the 09 overlay
+  namespace; SPEC README gains Element-ID + Traceability sections and the normative
+  TDD-Ready threshold pointer; ADR overview matches `required_tags`; §3.4 item 12
+  cites live E25–E27; REVIEW_SAGA matches `saga.schema.json` with platform-era refs removed
+- Governance hardening (#765, #766, #761): §3.3 rules 5–9 + §3.4.1 E28 with new
+  lint rule CHG-L017 (5 new tests); rewrite purge obligation in §3.4 item 11; EVAL
+  test-case IDs MUST (6 MUST + 2 MAY + EVAL MUST + CHG exempt)
+- Agent conduct + gate hygiene (#767, #768): `--no-verify`/hook-bypass prohibition;
+  required gates must prove they load
+- `framework/VERSION` bumped from `0.62.5` to `0.62.6` with mechanical pin sweep
+
 ## [0.62.5] — 2026-09-27
 
 ### Fixed — CHG-L016 archive-snapshot existence + EVAL template parses (C2 PATCH → 0.62.5)

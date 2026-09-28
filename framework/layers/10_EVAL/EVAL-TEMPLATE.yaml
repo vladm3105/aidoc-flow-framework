@@ -156,6 +156,10 @@ test_design:
 
     ID format: EVAL.{NN}.{SS}.{hash}  (standard element ID, independent from source)
 
+    RULE: Every test case MUST carry an EVAL.NN.SS.xxxx ID — IDs are required,
+    not optional (no exemption; see governance/ID_NAMING_STANDARDS.md
+    §"Element-ID exemptions").
+
     RULE: One source per test case. Each test case must reference exactly
     one upstream element via source_type + source_id. Never combine
     multiple sources (BDD + TDD, etc.) in a single test case.
