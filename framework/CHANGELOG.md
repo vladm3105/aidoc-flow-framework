@@ -11,9 +11,27 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.6 |
+| Framework Version | 0.62.7 |
 
 ---
+
+## [0.62.7] — 2026-09-28
+
+### Fixed — 09_CHG README mirror twins byte-identical + dead link repaired (C2 PATCH)
+
+- Mirror twins (#770): both 09_CHG READMEs carry one perspective-neutral
+  `Canonical home` paragraph (governance copy canonical, wins on conflict) —
+  the byte-identical claim is true again (verified with `diff -q`).
+- Dead link (#770): the layer copy's `../governance/CHG_REQUEST_FLOWS.md`
+  (resolved to nonexistent `framework/layers/governance/`) is now the
+  location-independent `framework/governance/CHG_REQUEST_FLOWS.md` in both
+  copies. A single relative string cannot resolve from both mirror
+  directories (same structural tension as closed #700), so the reference
+  ships link-free and greppable.
+- Guard: new `test_readme_copies_identical` pins the README twins in
+  `tests/conformance/test_chg_flows_router.py` (failed before the fix, passes
+  after); the `Canonical home` paragraph now names both pinning tests.
+- `framework/VERSION` bumped from `0.62.6` to `0.62.7` with mechanical pin sweep.
 
 ## [0.62.6] — 2026-09-28
 

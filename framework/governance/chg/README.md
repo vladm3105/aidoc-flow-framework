@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.6 |
+| Framework Version | 0.62.7 |
 
 
 ## Overview
@@ -21,7 +21,7 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
-**Canonical home**: this directory (`framework/governance/chg/`) holds the canonical CHG template (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; this copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical`.
+**Canonical home**: the canonical CHG template lives at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; the governance copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical` (gates) and `test_readme_copies_identical` (READMEs).
 
 ## What CHG Is and Is Not
 
@@ -123,7 +123,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 ## Request Flows
 
 Classify-then-route detail (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
-paths): `../CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
+paths): `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
 
 ---
 

@@ -9,6 +9,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.62.7] — 2026-09-28
+
+### Fixed — 09_CHG README twins byte-identical + dead link repaired (C2 PATCH → 0.62.7)
+
+- Mirror twins (#770): one perspective-neutral `Canonical home` paragraph in both
+  09_CHG READMEs; layer copy's dead flows link repaired location-independent;
+  new `test_readme_copies_identical` guard pins the twins
+- `framework/VERSION` bumped from `0.62.6` to `0.62.7` with mechanical pin sweep
+
 ## [0.62.6] — 2026-09-28
 
 ### Fixed — review-sweep batch: workflow chain, CHG status hardening, ID obligations, saga cleanup (C2 PATCH → 0.62.6)
