@@ -3,7 +3,7 @@
 ``framework/governance/LINT_RULES.md`` is the single source of truth for lint
 rule IDs. This guard keeps it and the linters in sync, both directions:
 
-* every ID the linters' ``CODES`` registries own (``CHG-L001``–``L015``,
+* every ID the linters' ``CODES`` registries own (``CHG-L001``–``L016``,
   ``BGF-00``–``07``) appears in the catalog, and
 * every catalogued table-row ID is grounded: emitted by ``sdd_doc_lint/``
   sources, an ``Alias of`` an emitted ID, or marked ``Reserved``.
@@ -64,8 +64,8 @@ class LintCatalogAgreement(unittest.TestCase):
         module = _load("chg_lint", CHG_LINT)
         self.assertEqual(
             set(module.CODES),
-            {f"CHG-L{i:03d}" for i in range(1, 16)},
-            "chg_lint owns exactly CHG-L001–L015",
+            {f"CHG-L{i:03d}" for i in range(1, 17)},
+            "chg_lint owns exactly CHG-L001–L016",
         )
         catalog = _catalog_text()
         for code in sorted(module.CODES):

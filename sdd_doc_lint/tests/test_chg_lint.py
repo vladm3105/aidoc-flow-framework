@@ -18,6 +18,7 @@ L011 (CHG-L011 / GOV-017) coverage:
 Run: python3 -m unittest discover -s sdd_doc_lint/tests
 """
 
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -875,6 +876,69 @@ class CompletionSpecSyncTests(unittest.TestCase):
             )
             _, warnings, _ = chg_lint.lint_chg(path)
             self.assertTrue(any("CHG-L012" in w and "chg_ref" in w for w in warnings), warnings)
+
+
+class ArchiveSnapshotTests(unittest.TestCase):
+    """CHG-L016 (§3.4.1 C18): cited snapshots exist and are committable (#757)."""
+
+    def test_missing_snapshot_warns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _with_sdd_step(
+                _base_chg(),
+                "Governance docs",
+                "framework/archive/CHG-99/DOES-NOT-EXIST.md",
+                "0.54.0",
+            )
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L016" in e], [])
+            self.assertTrue(any("CHG-L016" in w and "not found" in w for w in warnings), warnings)
+
+    def test_existing_tracked_snapshot_passes(self):
+        version_file = str(Path(chg_lint.__file__).resolve().parents[1] / "framework" / "VERSION")
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _with_sdd_step(_base_chg(), "Governance docs", version_file, "0.54.0")
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L016" in e], [])
+            self.assertEqual([w for w in warnings if "CHG-L016" in w], [])
+            self.assertTrue(any("CHG-L016" in p for p in passes), passes)
+
+    def test_ignored_snapshot_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True, capture_output=True)
+            subprocess.run(
+                ["git", "config", "user.email", "t@t"], cwd=root, check=True, capture_output=True
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "t"], cwd=root, check=True, capture_output=True
+            )
+            (root / ".gitignore").write_text("snap.yaml\n", encoding="utf-8")
+            (root / "snap.yaml").write_text("snapshot\n", encoding="utf-8")
+            chg = _with_sdd_step(_base_chg(), "Governance docs", str(root / "snap.yaml"), "0.54.0")
+            path = _write(root / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L016" in e and "git-ignored" in e for e in errors), errors)
+
+    def test_untracked_snapshot_warns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True, capture_output=True)
+            subprocess.run(
+                ["git", "config", "user.email", "t@t"], cwd=root, check=True, capture_output=True
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "t"], cwd=root, check=True, capture_output=True
+            )
+            (root / "snap.yaml").write_text("snapshot\n", encoding="utf-8")
+            chg = _with_sdd_step(_base_chg(), "Governance docs", str(root / "snap.yaml"), "0.54.0")
+            path = _write(root / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, warnings, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L016" in e], [])
+            self.assertTrue(
+                any("CHG-L016" in w and "not git-tracked" in w for w in warnings), warnings
+            )
 
 
 class UsageExitTests(unittest.TestCase):

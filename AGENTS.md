@@ -116,7 +116,7 @@ Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only no
 - CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
 - CHG-L014: Seed/module coverage (§3.1.3) — upstream/midstream/design/spec/reconciliation touches need `seed_scope` / `module_lifecycle` (GOV-020)
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
-- Full catalog (L006–L015, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
+- Full catalog (L006–L016, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 

@@ -9,6 +9,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.62.5] — 2026-09-27
+
+### Fixed — CHG-L016 archive-snapshot existence + EVAL template parses (C2 PATCH → 0.62.5)
+
+- New rule CHG-L016 (#757): cited `archive_path` must resolve on disk and be git-tracked (unresolvable warns, ignored errors, unstaged warns); catalog, CODES, and §3.4.1 C18 updated
+- EVAL-REPORT-TEMPLATE.yaml list sections gain `_example` lists — file parses; validator/report-canon tests upgraded to parsed assertions (#753)
+- `framework/VERSION` bumped from `0.62.4` to `0.62.5` with mechanical pin sweep
+
 ## [0.62.4] — 2026-09-27
 
 ### Fixed — docs-truthfulness batch: playbook rot, plan statuses, census, anchors, D-series log (C2 PATCH → 0.62.4)

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.4 |
+| Framework Version | 0.62.5 |
 
 ## Principles
 
@@ -234,7 +234,7 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 | B15 | DB migration + rollback included | Migration without rollback |
 | C16 | `sdd_lifecycle` lists EVERY modified SDD document | Incomplete SDD lifecycle |
 | C17 | Each SDD entry has: layer, document, action, archive_path, new_version, changes | Missing SDD metadata |
-| C18 | Archive paths use CHG-ID format, not date-based | Wrong archive convention |
+| C18 | Archive paths use CHG-ID format, not date-based; every cited snapshot must exist on disk and be git-tracked | Wrong archive convention or missing snapshot |
 | C19 | New versions are bumped (not same as current) | Version not bumped |
 | C20 | `supersedes` lists ALL archived documents with full paths | Missing supersedes |
 | D21 | Every EARS ID exists in actual EARS document | Wrong traceability |
@@ -382,6 +382,7 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 | CHG-L006 | §3.4.1 C16 SDD lifecycle completeness | error | `implementation.steps` with phase `sdd_lifecycle` exists when SDD documents are modified. |
 | CHG-L007 | §3.4.1 C17 SDD entry metadata | error | Every `sdd_lifecycle` step declares artifact + status; `archive_path`/`new_version` required except IPLAN-create steps. |
 | CHG-L008 | §3.4.1 C18 Archive path convention | error | Archive paths use CHG-ID format, never date-based paths. |
+| CHG-L016 | §3.4.1 C18 Archive snapshots exist | error (ignored) / warning (missing, unstaged) | Every cited snapshot resolves to a file on disk and is git-tracked. |
 | CHG-L009 | §3.4.1 C19 Version bump | error | `new_version` differs from current when stated. |
 | CHG-L010 | §3.4.1 C20 Supersedes completeness | error | `change_control.supersedes` lists every archived document with its full path. |
 | CHG-L011 | §3.4.1 D21/D22 Cited IDs exist | error (exact `--sdd-root`) / warning (heuristic) | Cited EARS/BDD IDs exist in the referenced documents. |

@@ -17,6 +17,9 @@ Checks:
     artifact + status; archive_path/new_version required except IPLAN-create steps
   CHG-L008: Archive path convention (§3.4.1 C18) — archive paths use CHG-ID
     format (`.../archive/<CHG-ID>/...`), never date-based paths
+  CHG-L016: Archive snapshots exist (§3.4.1 C18) — every cited archive_path
+    resolves to a file on disk and is git-tracked (unresolvable warns,
+    ignored errors, unstaged warns)
   CHG-L009: Version bump (§3.4.1 C19) — new_version must differ from current
     when stated
   CHG-L010: Supersedes completeness (§3.4.1 C20) — `change_control.supersedes`
@@ -61,6 +64,7 @@ Exit codes: 0 clean, 1 error(s), 2 usage error, 3 missing prerequisite.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -77,7 +81,7 @@ VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Com
 # Rule IDs this linter can emit. Imported by the catalog guard
 # (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
 # sync with framework/governance/LINT_RULES.md (#715).
-CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 16))
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 17))
 
 
 def check_status_lifecycle(
@@ -416,6 +420,114 @@ def check_archive_path_convention(
             warnings.append(f"CHG-L008: archive path '{p}' does not contain an 'archive/' segment")
     if bad == 0:
         passes.append(f"CHG-L008: all {len(paths)} archive path(s) follow CHG-ID convention")
+
+
+def _resolve_archive_candidate(raw: str, file_path: Path) -> Path | None:
+    """First existing resolution of an archive_path, else None.
+
+    Absolute paths resolve as-is; relative paths resolve against the repo
+    root (cwd) then the CHG file's own directory — the same bases L011-style
+    checks use. A miss is unverifiable (fixtures, out-of-tree refs), never a
+    proven fabrication.
+    """
+    p = Path(raw)
+    if p.is_absolute():
+        return p if p.exists() else None
+    for base in (Path.cwd(), file_path.parent):
+        candidate = base / p
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _git_tracked_status(path: Path) -> str | None:
+    """'tracked', 'ignored', 'untracked', or None when git cannot tell.
+
+    None covers: git absent, path outside any work tree. Callers treat None
+    as unverifiable (no output), never as a failure.
+    """
+    try:
+        top = subprocess.run(
+            ["git", "-C", str(path.parent), "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if top.returncode != 0:
+            return None
+        root = top.stdout.strip()
+        if (
+            subprocess.run(
+                ["git", "-C", root, "ls-files", "--error-unmatch", str(path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            ).returncode
+            == 0
+        ):
+            return "tracked"
+        ignored = subprocess.run(
+            ["git", "-C", root, "check-ignore", "-q", str(path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        return "ignored" if ignored.returncode == 0 else "untracked"
+    except (OSError, ValueError):
+        return None
+
+
+def check_archive_snapshots_exist(
+    data: dict[str, Any],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+    file_path: Path,
+) -> None:
+    """CHG-L016: cited archive snapshots exist and are committable (§3.4.1 C18).
+
+    The #757 hole: a CHG citing `archive_path`s that exist nowhere passes
+    L007 (non-null) + L008 (shape) + L010 (supersedes parity) silently, and a
+    snapshot swallowed by `.gitignore` never lands. Unresolvable paths warn
+    (fixtures and out-of-tree refs are unverifiable, not fabrications);
+    resolvable-but-ignored paths error (they can never commit without `-f`);
+    resolvable-but-unstaged paths warn (stage reminder).
+    """
+    steps = _sdd_lifecycle_steps(data)
+    paths = [
+        str(s.get("archive_path", ""))
+        for s in steps
+        if s.get("archive_path") not in (None, "null", "")
+    ]
+    if not paths:
+        passes.append("CHG-L016: no archive paths to check")
+        return
+    bad = 0
+    verified = 0
+    for p in paths:
+        hit = _resolve_archive_candidate(p, file_path)
+        if hit is None:
+            warnings.append(
+                f"CHG-L016: archive snapshot '{p}' not found "
+                "(checked repo-root- and CHG-relative) — cited-but-missing "
+                "snapshots pass silently (#757)"
+            )
+            continue
+        track = _git_tracked_status(hit)
+        if track == "ignored":
+            errors.append(
+                f"CHG-L016: archive snapshot '{p}' exists but is git-ignored — "
+                "it can never land without -f (#757)"
+            )
+            bad += 1
+        elif track == "untracked":
+            warnings.append(
+                f"CHG-L016: archive snapshot '{p}' exists but is not git-tracked — stage it"
+            )
+        else:
+            verified += 1
+    if bad == 0 and verified == len(paths):
+        passes.append(f"CHG-L016: all {len(paths)} archive snapshot(s) exist and are committable")
 
 
 def check_version_bump(
@@ -796,6 +908,7 @@ def lint_chg(
     check_sdd_lifecycle_completeness(data, errors, warnings, passes)
     check_sdd_entry_metadata(data, errors, warnings, passes)
     check_archive_path_convention(data, errors, warnings, passes)
+    check_archive_snapshots_exist(data, errors, warnings, passes, file_path)
     check_version_bump(data, errors, warnings, passes)
     check_supersedes_completeness(data, errors, warnings, passes)
     check_cited_ids_exist(data, errors, warnings, passes, file_path, sdd_root)

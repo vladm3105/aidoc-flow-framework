@@ -26,12 +26,16 @@ def _load(path):
 class ReportCanonTests(unittest.TestCase):
     def test_report_has_test_results_section(self):
         """Canon REPORT pins §4 `test_results` with new-grammar case IDs."""
-        # NOTE: textual, not parsed — the template mixes a `_guidance` block
-        # with a sequence under one key, so it is not a plain YAML mapping.
-        text = REPORT.read_text(encoding="utf-8")
-        self.assertIn("Section 4: Test Results", text)
-        self.assertIn("test_results:", text)
-        self.assertIn('eval_case_id: "EVAL.NN.SS.xxxx"', text)
+        # Parsed, not textual (#753): list sections carry `_example` lists
+        # beside `_guidance`, so the template loads as a plain mapping.
+        doc = _load(REPORT)
+        self.assertIn("Section 4: Test Results", REPORT.read_text(encoding="utf-8"))
+        section = doc["test_results"]
+        self.assertIn("_guidance", section)
+        self.assertTrue(
+            any(e.get("eval_case_id") == "EVAL.NN.SS.xxxx" for e in section["_example"]),
+            "no new-grammar example case ID in §4",
+        )
 
     def test_rpt_is_tombstone(self):
         """RPT file carries only the tombstone pointer, no report shape."""
