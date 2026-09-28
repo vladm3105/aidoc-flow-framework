@@ -49,6 +49,9 @@ Checks:
     CHG must carry a non-empty `author` (agent id + supervising human);
     module entries must also carry `chg_ref`. Deterministic half of GOV-021;
     carrier completeness stays with the reviewer lens.
+  CHG-L017: Premature step completion (§3.4.1 E28) — on a `Proposed` /
+    `Approved` CHG no `implementation.steps[]` entry may be `Completed`;
+    `In-Progress` and beyond pass (executor's record, reviewer lens).
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -81,7 +84,7 @@ VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Com
 # Rule IDs this linter can emit. Imported by the catalog guard
 # (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
 # sync with framework/governance/LINT_RULES.md (#715).
-CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 17))
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 18))
 
 
 def check_status_lifecycle(
@@ -916,6 +919,7 @@ def lint_chg(
     check_flow_misclassification(data, errors, warnings, passes)
     check_seed_module_lifecycle(data, errors, warnings, passes)
     check_lifecycle_attribution(data, errors, warnings, passes)
+    check_premature_step_completion(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -1177,6 +1181,44 @@ def check_lifecycle_attribution(
         )
         return
     passes.append("CHG-L015: lifecycle entries carry author/chg_ref attribution")
+
+
+def check_premature_step_completion(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L017: no Completed implementation step on a pre-implementation CHG (§3.4.1 E28).
+
+    Deterministic half of E28: while the CHG status is `Proposed` or
+    `Approved` no implementation code has been written, so any
+    `implementation.steps[]` entry already marked `Completed` is premature.
+    Once implementation starts (`In-Progress` and beyond) per-step completion
+    is the executor's record — the linter cannot verify code was written, so
+    those statuses pass and the full E28 stays with the reviewer lens.
+    """
+    control = data.get("change_control", {})
+    status = control.get("status") if isinstance(control, dict) else None
+    if status not in ("Proposed", "Approved"):
+        passes.append(f"CHG-L017: step-completion guard not applicable (status={status})")
+        return
+    impl = data.get("implementation", {})
+    steps = impl.get("steps", []) if isinstance(impl, dict) else []
+    if not isinstance(steps, list) or not steps:
+        passes.append("CHG-L017: no implementation steps to check")
+        return
+    bad = [
+        idx
+        for idx, entry in enumerate(steps)
+        if isinstance(entry, dict) and str(entry.get("status") or "").strip().lower() == "completed"
+    ]
+    if bad:
+        errors.append(
+            f"CHG-L017: CHG status is '{status}' but "
+            f"implementation.steps[{', '.join(str(i) for i in bad)}] "
+            "marked Completed before any implementation code exists (E28) — "
+            "steps stay Pending (or In Progress) until their code is written and verified"
+        )
+        return
+    passes.append(f"CHG-L017: no premature Completed steps (status={status})")
 
 
 def main(argv: list[str] | None = None) -> int:

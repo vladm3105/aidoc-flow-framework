@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 
 ## C4 Model Position
@@ -31,6 +31,8 @@ Code             — source code                                    C4-L4
 
 Implementation-ready technical specification for a single software component. Defines interfaces, data models, and behavior contracts before downstream TDD test cases are written.
 
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+
 ## Design Decisions
 
 - **Unified template** — no CSPEC/DSPEC/UXSPEC/PROCSPEC/RISKSPEC subtypes
@@ -48,7 +50,25 @@ Implementation-ready technical specification for a single software component. De
 | Upstream | EARS + BDD + ADR |
 | Downstream | TDD → IPLAN → Code |
 | Document shape | 8 core sections |
-| Readiness gate | TDD-Ready score |
+| Readiness gate | TDD-Ready score >= 90% (GATE-06) |
+
+## Element IDs
+
+SPEC content **MAY** carry `SPEC.NN.SS.xxxx` element IDs but is not required to
+(exemption: `governance/ID_NAMING_STANDARDS.md` §"Element-ID exemptions").
+Lineage for §3 Protocol method specifications and §5 fail-closed rules comes
+from upstream `@ears` / `@bdd` / `@adr` citations plus the declared method
+names — do not over-assign layer-local IDs.
+
+## Upstream Traceability
+
+SPEC cites its necessary upstream (Layer 6 `required_tags`) — `@ears` + `@bdd` + `@adr`:
+
+```text
+@ears: EARS.NN.03.xxxx   (formal requirements the component realizes)
+@bdd: BDD.NN.03.xxxx     (acceptance scenarios the component must satisfy)
+@adr: ADR.NN.03.xxxx     (architecture decisions constraining the design)
+```
 
 ## Template
 

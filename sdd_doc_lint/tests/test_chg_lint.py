@@ -1,4 +1,4 @@
-"""Unit: CHG governance linter CHG-L001..CHG-L015 (canonical implementation.steps schema).
+"""Unit: CHG governance linter CHG-L001..CHG-L017 (canonical implementation.steps schema).
 
 Adapted from #653 (`tests/unit/test_chg_lint.py` on the donor branch
 `fix/chg-lint-archive-lifecycle`), which targets the donor's top-level
@@ -939,6 +939,55 @@ class ArchiveSnapshotTests(unittest.TestCase):
             self.assertTrue(
                 any("CHG-L016" in w and "not git-tracked" in w for w in warnings), warnings
             )
+
+
+class PrematureCompletionTests(unittest.TestCase):
+    """CHG-L017 (§3.4.1 E28): no Completed step on a pre-implementation CHG (#765)."""
+
+    def test_proposed_with_completed_step_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["status"] = "Proposed"
+            chg["change_control"].pop("date_approved", None)
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L017" in e and "steps[0]" in e for e in errors), errors)
+
+    def test_approved_with_completed_step_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()  # Approved + Completed step, the premature shape
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L017" in e for e in errors), errors)
+
+    def test_approved_with_pending_steps_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            for step in chg["implementation"]["steps"]:
+                step["status"] = "Pending"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L017" in e], [])
+            self.assertTrue(any("CHG-L017" in p for p in passes), passes)
+
+    def test_in_progress_with_completed_step_passes(self):
+        # Executor's record — the linter cannot verify code was written.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["status"] = "In-Progress"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L017" in e], [])
+            self.assertTrue(any("CHG-L017" in p for p in passes), passes)
+
+    def test_no_steps_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"] = []
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L017" in e], [])
+            self.assertTrue(any("CHG-L017" in p for p in passes), passes)
 
 
 class UsageExitTests(unittest.TestCase):

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -17,7 +17,7 @@ structure. Each rule has a stable **ID**, a one-line **meaning**, a typical
 one exists). The reference implementation is `sdd_doc_lint` — the canonical
 source since CLEANUP-001 retired the platform-vendored copies. The
 `tests/conformance/test_lint_catalog.py` guard keeps catalog and code in sync
-(#715): every ID in the linters' `CODES` registries (`CHG-L001–L015`,
+(#715): every ID in the linters' `CODES` registries (`CHG-L001–L017`,
 `BGF-00–07`) appears here, and every catalogued table-row ID is either emitted
 in `sdd_doc_lint/` sources, an alias of an emitted ID, or marked **Reserved**.
 
@@ -140,7 +140,7 @@ each layer's derived count so that edit cannot be made silently.
 
 ## Governance (CHG)
 
-The machine checks live in `sdd_doc_lint/chg_lint.py` (`CODES`: `CHG-L001`–`CHG-L016`;
+The machine checks live in `sdd_doc_lint/chg_lint.py` (`CODES`: `CHG-L001`–`CHG-L017`;
 `CHG-L012` is catalogued with the IPLAN rows below).
 `GOV-*` rows below are the governance-contract prose; where a `GOV-*` rule is
 enforced by a `CHG-L*` check the row says **Alias of** that check, and where
@@ -163,6 +163,7 @@ nothing emits it the row says **Reserved**.
 | `CHG-L014` | F3 seed/module lifecycle coverage — a CHG from a lifecycle-carrying source (upstream/midstream/design, plus spec for framework self-changes and reconciliation for Type-R) touching seed/module docs must cover them (`seed_scope` / `module_lifecycle`). Other sources pass through untouched. Governance alias: `GOV-020`. | error | `governance/CHG_REQUEST_FLOWS.md` §4 |
 | `CHG-L015` | Lifecycle-entry attribution — every `seed_scope.entries[]` / `module_lifecycle` entry on a lifecycle-carrying CHG (same source family as `CHG-L014`) must carry a non-empty `author`; module entries must also carry `chg_ref`. Deterministic half of the AI-attribution rule. Governance alias: `GOV-021`. | error | `governance/CHG_REQUEST_FLOWS.md` §4, `SEED_CONTRACT.md` |
 | `CHG-L016` | Archive snapshots exist — every cited `archive_path` resolves to a file on disk and is git-tracked. Unresolvable paths warn (fixtures/out-of-tree refs are unverifiable); resolvable-but-ignored paths error (never land without `-f`); resolvable-but-unstaged paths warn. | error (ignored) / warning (missing, unstaged) | `DOC_GOVERNANCE_CORE.md` §3.4.1 C18 |
+| `CHG-L017` | Premature step completion — on a `Proposed` / `Approved` CHG no `implementation.steps[]` entry may be marked `Completed`; `In-Progress` and beyond pass (executor's record). Deterministic half of the step-status invariant; the full code-written-and-verified judgement stays with the reviewer lens. | error | `DOC_GOVERNANCE_CORE.md` §3.4.1 E28 |
 | `GOV-008` | A CHG document was created without completing the creation checklist (§CHG creation checklist). The checklist is a MANDATORY PROCESS GATE — blocking prerequisite, not post-hoc validation. The "write before read" pattern has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). **Reserved** — documented contract, no machine check emits this ID yet. | error | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist MANDATORY PROCESS GATE |
 | `GOV-009` | A CHG document's `traceability.upstream.ears_references` or `bdd_references` is empty when the CHG describes a change that affects authenticated or requirement-traced functionality. Checklist item #5 requires citing specific EARS/BDD IDs. TAG01 covers general traceability but not CHG-specific upstream citation. **Reserved** — documented contract, no machine check emits this ID yet. | warning | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist item #5 |
 | `GOV-010` | A CHG document's `implementation.steps` contains a step without a `phase` field, or a step with `phase: code_implementation`. Every step MUST have `phase: sdd_lifecycle` or `phase: iplan_creation`. Code implementation steps belong exclusively in IPLAN. Added after CHG-04, CHG-06, CHG-08 violated SDD-first ordering. **Reserved** — overlaps `CHG-L003`'s code-step check, but the phase-presence half has no emitter. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` + checklist item #13 |

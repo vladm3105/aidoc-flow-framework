@@ -25,13 +25,13 @@ flowchart LR
     EARS[EARS - L3] --> BDD[BDD - L4]
     BDD --> EVAL
     EVAL --> GATES[CI / Staging / Deploy Gates]
-    CHG[CHG - L9] -->|versions IPLAN| IPLAN
+    CHG[CHG - 09 namespace] -->|versions IPLAN| IPLAN
     CHG -->|versions EVAL| EVAL
     style EVAL fill:#fff3e0,stroke:#e65100,stroke-width:3px
 ```
 
 **Layer**: 10 (Evaluation & QA Governance)
-**Note**: Layer 9 is CHG (Change Record — governance overlay). EVAL is L10.
+**Note**: CHG lives in the 09 operational namespace (governance overlay, not a lifecycle layer). EVAL is L10.
 **Upstream (necessary)**: IPLAN (L8) — 1:1 mapping
 **Downstream**: Code, CI/CD pipelines, deployment gates
 **Traceability chain**: IPLAN → EVAL → RPT → verdict

@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.62.5"
+  framework_version: "0.62.6"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -341,7 +341,7 @@ glossary:
     - term: Gate
       definition: "Approval checkpoint — GATE-01 (business), GATE-03 (requirements/architecture), GATE-06 (design/test), GATE-08 (IPLAN), GATE-CODE (implementation), GATE-SPEC (framework-spec change — meta)"
     - term: Layer L1-L10
-      definition: "SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL"
+      definition: "Lifecycle layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L10=EVAL. CHG is the 09 operational namespace (governance overlay, not a lifecycle layer)."
 
 # =============================================================================
 # CHG Creation Checklist

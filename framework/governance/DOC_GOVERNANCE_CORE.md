@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.5 |
+| Framework Version | 0.62.6 |
 
 ## Principles
 
@@ -205,8 +205,8 @@ failures).
 | 8 | **Add automated test specifications** — for each implementation step, specify the test file, test name, and assertion method. Manual checks alone are insufficient. | No automated test specs |
 | 9 | **Verify the fix location** — if error handling is needed, check whether the error is thrown in the function or in the caller. | Wrong fix location |
 | 10 | **Add DB migration + rollback** — if adding columns, provide the full migration SQL, rollback SQL, backfill strategy, and indexes. | Migration without rollback |
-| 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. | No SDD lifecycle steps |
-| 12 | **Check traceability to SDD lifecycle rules** — verify the SDD lifecycle completeness (§3.4.1 C16) and CHG scope rules (§3.4.1 C13–C14) are satisfied. | Rules not enforced at creation time |
+| 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. Rewrites purge stale content (unused sections, duplicate entries, dead references, retired approaches) so the new version reads as written from scratch with current knowledge. | No SDD lifecycle steps |
+| 12 | **Check traceability to SDD lifecycle rules** — verify the SDD lifecycle completeness (§3.4.1 C16) and CHG scope rules (§3.4.1 E25–E27) are satisfied. | Rules not enforced at creation time |
 | 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
 | 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 
@@ -244,6 +244,7 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 | E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation) | Scope creep |
 | E26 | NO code implementation steps in CHG | Code in wrong document |
 | E27 | `implementation.steps` references IPLAN, not code files | Wrong reference |
+| E28 | No `implementation.steps` entry is marked `Completed` before its implementation code is written and verified (pre-implementation CHG statuses `Proposed` / `Approved`: every step is `Pending` or `In Progress`) | Premature step completion |
 
 **Gate:** ALL checks pass → commit. ANY check fails → fix, re-validate, then commit.
 
@@ -268,6 +269,11 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 2. **No skipping stages.** A CHG MUST NOT jump from `Proposed` directly to `In-Progress` or `Implemented`. The `Approved` stage is a mandatory gate — it records that the change was authorized before implementation began.
 3. **Gate approval required for C3.** C3 changes MUST have `gate_approval.approver` set before status can advance beyond `Proposed`.
 4. **`Implemented` ≠ `Completed`.** `Implemented` means code is merged. `Completed` means verification passed.
+5. **Issues track the lifecycle (issue-level match).** Every issue the CHG claims MUST carry a `status` that advances with the CHG — no issue left at `Proposed` when the CHG is `Implemented`.
+6. **Ship in the same change.** All issues listed on a CHG ship in that change's diff. An issue that slips scope gets its own CHG; it is not carried silently.
+7. **Resume via `In-Progress`.** Paused work resumes by returning the CHG to `In-Progress` with a `revision_history` note — never by editing artifacts under a later status.
+8. **Step statuses follow the CHG (step-status invariant).** `implementation.steps[]` statuses MUST be consistent with the CHG status: no step is `Completed` while the CHG is pre-implementation (`Proposed` / `Approved`) — see E28.
+9. **No zero-work `Completed`.** A CHG with zero implementation steps and zero `artifacts_modified` MUST NOT advance beyond `Approved` — nothing was implemented, so there is nothing to complete.
 
 **Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 
