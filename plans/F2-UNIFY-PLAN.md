@@ -107,8 +107,8 @@ pure prose).
 | 7 | Governance core §3.13 repeats the F2.2 direct-commit carve-out | Direct-request C1 (F2.2) | framework/governance/DOC_GOVERNANCE_CORE.md:313 |
 | 8 | Governance core §3.1.3 F2 row: docs-only = no CHG/IPLAN | Direct request (human/AI ask, no behavior change, no prior IPLAN) | framework/governance/DOC_GOVERNANCE_CORE.md:167 |
 | 9 | Layer/governance CHG copies are kept byte-identical, governance wins | kept byte-identical | framework/layers/09_CHG/README.md:24 |
-| 10 | Issue #772 is OPEN — blocks Phase 1 (CHG authoring cites the issue) | PROBE: `gh issue view 772 -R vladm3105/aidoc-flow-framework --json state --jq .state` |
-| 11 | Worktree clean on `dev` at plan time — blocks Phase 3 (worktree/branch creation) | PROBE: `git status --short --branch` |
+| 10 | Issue #772 is OPEN — blocks Phase 1 (CHG authoring cites the issue) | — | PROBE: `gh issue view 772 -R vladm3105/aidoc-flow-framework --json state --jq .state` |
+| 11 | Worktree clean on `dev` at plan time — blocks Phase 3 (worktree/branch creation) | — | PROBE: `git status --short --branch` |
 | 12 | `major` ⇒ C3 required; `minor`/`patch` may be C2 (NEW@pass1) | SemVer impact declared; `major` must be C3 | framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md:108 |
 | 13 | Spec change never C1 (NEW@pass1) | A framework-spec change is never C1 | framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md:109 |
 | 14 | VERSION must bump on normative `framework/**` change (NEW@pass1) | `framework/VERSION` must bump when normative `framework/**` changes | framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md:111 |

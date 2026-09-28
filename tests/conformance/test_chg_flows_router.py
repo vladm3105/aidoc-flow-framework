@@ -245,9 +245,7 @@ class AlwaysTracedAgreement(unittest.TestCase):
     def test_kernel_f2_row_always_traced(self):
         """The §3.1.3 kernel F2 row requires C1 CHG + scoped IPLAN for every author."""
         rows = [
-            line.strip()
-            for line in _text(CORE).splitlines()
-            if line.strip().startswith("| F2 |")
+            line.strip() for line in _text(CORE).splitlines() if line.strip().startswith("| F2 |")
         ]
         self.assertEqual(len(rows), 1, "kernel F2 row count != 1")
         self.assertIn("C1 CHG + scoped IPLAN", rows[0])
