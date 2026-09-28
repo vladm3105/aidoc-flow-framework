@@ -25,7 +25,7 @@ document_control:
   iplan_id: "IPLAN-12"
   subtype: combined
   source_spec: "@spec: N/A (framework self-change under CHG-12; no SPEC component)"
-  status: In Progress
+  status: Completed
   version: "1.0"
   date_created: "2026-09-28T00:00:00Z"
   last_updated: "2026-09-28T00:00:00Z"
@@ -146,7 +146,7 @@ implementation_contracts:
 session_handoff:
   sessions:
     - session: 1
-      status: In Progress
+      status: Completed
       scope: "All 15 manifest orders (snapshot DONE + 8 SDD amends + AGENTS.md + plan D2 + conformance rows + version + changelogs + sweep + verify)"
 
 # =============================================================================

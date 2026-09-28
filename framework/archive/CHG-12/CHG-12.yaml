@@ -46,7 +46,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-12"
-  status: Implemented
+  status: Completed
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
