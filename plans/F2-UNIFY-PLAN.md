@@ -9,8 +9,8 @@ issue → CHG → IPLAN → code/documentation/governance/AGENTS.md.
 
 ## Status
 
-- Issue: #772 OPEN, body verified (length 2791 on read-back).
-- This plan: Draft, pre-review.
+- Issue: #772 OPEN; issue #773 OPEN (owner-directed mandatory-trackability rule, triaged 2026-09-28).
+- This plan: ready (pass 3) + D2 AMENDED (see below) — merged vehicle with #773 per triage ordering.
 
 ## Scope
 
@@ -71,10 +71,14 @@ pure prose).
 ## Decisions
 
 - D1: Default for agents becomes always-traced. No agent exception.
-- D2 (decided): retain direct commit as an explicit human-only exception.
-  Agents are always traced; trivial human typos stay cheap. The CHG records
-  the rejected candidate (full removal) with its one-line rationale, as the
-  router mandates for reclassification.
+- D2 (SUPERSEDED by #773, 2026-09-28): was "retain direct commit as an explicit
+  human-only exception". The owner-directed #773 rule (mandatory CHG+IPLAN for
+  every post-seed activity, seed-phase drafting the sole exception) overrides
+  it: NO direct-commit path survives, for any author. The CHG-12 record carries
+  the new rejected candidate (retain-human-exception) with rationale, per the
+  router mandate. Scope delta from the supersede: AGENTS.md exceptions collapse
+  fully, template/C1 rows lose the human carve-out, seed-phase exception added
+  everywhere a carve-out was cited.
 - D3: Docs-only C1 CHG entry gate: None (peer review) vs GATE-CODE.
   Recommendation: keep the existing C1 split — None for human docs-only,
   GATE-CODE for anything code-touching or agent-authored.
