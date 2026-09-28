@@ -110,6 +110,14 @@ class GuardCatalogAgreement(unittest.TestCase):
             "CHG-TEMPLATE.yaml copies diverged — sync from the governance canon",
         )
 
+    def test_readme_copies_identical(self):
+        """The 09_CHG README fork is closed: both copies byte-identical (#770)."""
+        self.assertEqual(
+            _text(LAYER_README),
+            _text(GOV_README),
+            "09_CHG README copies diverged — sync from the governance canon",
+        )
+
     def test_gate_copies_identical(self):
         """The 8 mirrored gate files stay byte-identical (#700).
 
