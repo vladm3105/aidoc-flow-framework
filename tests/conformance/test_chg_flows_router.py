@@ -213,5 +213,56 @@ class SeedVersioningAgreement(unittest.TestCase):
         self.assertIn("GOV-021", _text(CHG_LINT))
 
 
+class AlwaysTracedAgreement(unittest.TestCase):
+    """Every post-seed C1 is traced: C1 CHG + scoped IPLAN, every author (CHG-12, #772/#773)."""
+
+    def _c1_row(self, text):
+        rows = [
+            line.strip()
+            for line in text.splitlines()
+            if line.strip().startswith("| C1") and "F2.2" in line
+        ]
+        self.assertEqual(len(rows), 1, "Change-Levels C1 row count != 1")
+        return rows[0]
+
+    def test_templates_c1_always_traced(self):
+        """Both template C1 rows require C1 CHG + scoped IPLAN — no direct commit."""
+        for template in (LAYER_TEMPLATE, GOV_TEMPLATE):
+            with self.subTest(template=str(template)):
+                row = self._c1_row(_text(template))
+                self.assertIn("C1 CHG + scoped IPLAN", row)
+                self.assertIn("seed-phase", row)
+                self.assertNotIn("direct commit", row)
+
+    def test_readmes_c1_always_traced(self):
+        """Both 09_CHG README C1 rows require C1 CHG + scoped IPLAN — no direct commit."""
+        for readme in (LAYER_README, GOV_README):
+            with self.subTest(readme=str(readme)):
+                row = self._c1_row(_text(readme))
+                self.assertIn("C1 CHG + scoped IPLAN", row)
+                self.assertNotIn("direct commit", row)
+
+    def test_kernel_f2_row_always_traced(self):
+        """The §3.1.3 kernel F2 row requires C1 CHG + scoped IPLAN for every author."""
+        rows = [
+            line.strip() for line in _text(CORE).splitlines() if line.strip().startswith("| F2 |")
+        ]
+        self.assertEqual(len(rows), 1, "kernel F2 row count != 1")
+        self.assertIn("C1 CHG + scoped IPLAN", rows[0])
+        self.assertNotIn("no CHG/IPLAN", rows[0])
+
+    def test_core_iplan_gate_always_traced(self):
+        """§3.13 states no direct-commit path survives, seed-phase the sole exception."""
+        text = _text(CORE)
+        self.assertIn("No direct-commit path survives", text)
+        self.assertIn("seed-phase drafting", text)
+
+    def test_flows_f2_ruling_always_traced(self):
+        """Flows F2.2 rules always-traced C1 with the seed-phase sole exception."""
+        text = _text(FLOWS)
+        self.assertIn("always-traced", text)
+        self.assertIn("seed-phase drafting", text)
+
+
 if __name__ == "__main__":
     unittest.main()

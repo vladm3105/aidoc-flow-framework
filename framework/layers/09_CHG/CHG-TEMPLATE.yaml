@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.62.7"
+  framework_version: "0.63.0"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -62,7 +62,7 @@ metadata:
 
       | Level     | Scope | Gate Required | Process |
       |-----------|-------|---------------|---------|
-      | C1        | Typo, formatting, clarification (docs-only: direct commit; code/script-touching: C1 CHG + scoped IPLAN per F2.2) | None (docs-only) / GATE-CODE (code-touching) | Fix → commit → completed / Fix → IPLAN → commit |
+      | C1        | Typo, formatting, clarification (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE (scoped IPLAN; covering tests N/A-allowed for pure prose) | Fix → IPLAN → commit → completed |
       | C2        | Section update, requirement refinement | Peer review | Assess impact → update → verify |
       | C3        | Cross-layer change, new requirements | Formal gate | Full CHG process |
       | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document → post-mortem within 48h |
@@ -113,7 +113,7 @@ change_control:
   #   Completed   — Verification passed, final status
   change_level: C2  # C1 | C2 | C3 | Emergency (Note: change_source: spec requires >= C2)
   change_source: null  # upstream | midstream | design | execution | external | feedback | reconciliation | direct | spec
-  entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC | None (C1 docs-only, non-spec)
+  entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC (every C1 routes GATE-CODE via scoped IPLAN — no None path post-seed, CHG-12)
   semver_impact: null  # major | minor | patch — REQUIRED for change_source: spec (GATE-SPEC). major => change_level: C3
   version_action: null  # keep | upgrade — when a CHG touches a document created under an older framework_version: "keep" if schema is compatible, "upgrade" if the document must be rewritten to the current framework_version
   author: "[Author Name]"
@@ -331,7 +331,7 @@ glossary:
     - term: CHG
       definition: "Change Record — governance document for SDD artifact modifications"
     - term: C1
-      definition: "Trivial change — typo, formatting, clarification (no gate)"
+      definition: "Trivial change — typo, formatting, clarification (C1 CHG + scoped IPLAN, GATE-CODE)"
     - term: C2
       definition: "Minor change — section update, refinement (peer review)"
     - term: C3

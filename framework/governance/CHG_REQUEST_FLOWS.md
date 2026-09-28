@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-09-24 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.7 |
+| Framework Version | 0.63.0 |
 
 | Field | Value |
 |---|---|
@@ -48,7 +48,10 @@ router is total — authors MUST NOT file greenfield work as F2 or F4 to dodge t
 A change request from a human or another AI agent that is NOT related to a previous IPLAN implementation and does
 NOT change product behavior: documentation edits, hook/script/tooling tweaks (`hooks/`, `framework/scripts/`,
 `sdd_doc_lint/` tooling), template typo fixes, non-normative prose. No full SDD chain is required because there is
-no SDD contract at stake — but the IPLAN Gate (§3.13) still applies to everything it does not exempt.
+no SDD contract at stake — but every F2 change is traced: a C1 CHG + scoped IPLAN for every author (agents and
+humans), no direct-commit path (CHG-12, issues #772/#773). The sole exception is seed-phase drafting before the
+first BRD is authored against seed vN (SEED_CONTRACT R1) — when no other documents exist yet, there is nothing
+to trace against.
 
 **F2.1 — `change_source: direct` (new value).** Definition: origin is a direct requester instruction, not a layer
 artifact, not production feedback, not an empirical codebase. Entry gate: GATE-CODE — its entry criteria apply
@@ -60,17 +63,21 @@ which a cascade-free change cannot satisfy. `External` MUST NOT be used for dire
 routing a script tweak through either would mandate a phantom cascade. If the requester cites a regulation, CVE,
 or vendor-API change, the flow is NOT F2 (reclassify: External → F3-shaped cascade).
 
-**F2.2 — C1 ruling (resolves the C1/§3.13 contradiction).** The template's C1 row ("None — direct commit") is
-reaffirmed AND bounded:
+**F2.2 — C1 ruling (always-traced; CHG-12).** The template's old C1 row ("None — direct commit") is
+retired. Every C1 requires a C1 CHG + scoped IPLAN, for every author (agents and humans):
 - Docs-only, non-normative C1 (typo, formatting, clarification touching no code/scripts and no normative
-  template/governance text): direct commit, no CHG, no IPLAN. Unchanged.
+  template/governance text): C1 CHG + scoped IPLAN. The shape stays minimal (requester citation, manifest,
+  steps/commands, verification; covering tests N/A-allowed for pure prose) so trivial edits stay cheap —
+  but traced. No direct-commit path survives (supersedes the F2-UNIFY-PLAN D2 human-only exception, CHG-12).
 - Code- or script-touching C1 (any `*.sh`, `*.py`, hook, workflow, or normative-template edit): a C1 CHG +
-  a scoped IPLAN are REQUIRED. §3.13 admits exactly the AGENTS.md exceptions plus this sentence: the IPLAN Gate
-  is satisfied by a scoped IPLAN (`In Progress`, `source_chg` naming the C1 CHG, manifest covering every touched
-  file). "Small diff" is not an exemption; the IPLAN is what makes small diffs auditable.
+  a scoped IPLAN are REQUIRED. The IPLAN Gate (§3.13) is satisfied by a scoped IPLAN (`In Progress`,
+  `source_chg` naming the C1 CHG, manifest covering every touched file, covering test cases for code).
+  "Small diff" is not an exemption; the IPLAN is what makes small diffs auditable.
 - Normative-text C1 (a one-line governance/template fix that changes a contract): C1 CHG + scoped IPLAN; the
   prose change itself ships in the same diff. (This is how §7-type one-line fixes avoid full F3 ceremony
   without evading review.)
+- Sole exception (all bullets): seed-phase drafting before the first BRD is authored against seed vN
+  (SEED_CONTRACT R1) — pre-first-BRD drafting with no other documents in existence ships without a CHG/IPLAN.
 
 **F2.3 — Minimal shapes.** The C1 CHG carries: change control (`direct`, C1), `sdd_lifecycle: []` (EMPTY —
 any entry reclassifies the change to F1/F3) PAIRED WITH SDD-free `artifacts_modified` (GOV-014 binds the two:
@@ -88,6 +95,9 @@ GOV-018, see §7. The failure message MUST name the suspected correct flow (F2/F
 instead of force-passing. Known limit (pass 2): the guard is SYNTACTIC — a behavior change filed with a
 well-formed F2 shape (source `direct` + scoped IPLAN + code manifest) lints green. Semantic misclassification
 relies on human review of the requester citation (§F2.3) and the rejected-candidate record (§6, router rule).
+Untraced changes (commits riding no CHG/IPLAN at all) are caught the same way: the PR reviewer verifies every
+commit against the authorizing CHG/IPLAN manifest (CHG-12 enforcement decision) — branch protection forces
+every change through a PR, so the review gate is total. GOV-018 stays syntactic by design (see LINT_RULES.md).
 
 ## 4. F3 — Brownfield behavior change
 
@@ -143,7 +153,7 @@ itself — the AGENTS.md exception — no CHG required).
    (reverse-authored IPLAN, GATE-CODE, Phase-3 battery). The router yields; F1 MUST NOT claim it.
 3. Is there a defect traceable to a `Completed`/`Verified` IPLAN? → **F4**.
 4. Does the change alter product behavior, requirements, specs, or test contracts? → **F3** (at the lowest affected layer; framework self-change → F3/spec).
-5. Is there any prior IPLAN this change relates to, or any SDD contract at stake? If neither: code/script-touching → **F2 with C1 CHG + scoped IPLAN**; docs-only non-normative → **C1 direct commit** (no flow, no CHG).
+5. Is there any prior IPLAN this change relates to, or any SDD contract at stake? If neither: **F2 with C1 CHG + scoped IPLAN** (code/script-touching AND docs-only non-normative alike, every author — CHG-12). Sole exception: seed-phase drafting before the first BRD is authored against seed vN (no flow, no CHG).
 6. Otherwise → **F1** (new chain) — the default for anything that reaches IPLAN without a parent.
 
 Steps 1–6 are ordered as a decision list: Emergency first (safety), Type-R second (chronology), F4 third (narrowest
@@ -179,9 +189,14 @@ record the rejected candidate and one-line rationale in the CHG so reclassificat
 - (b) `direct` vs broadening `External`: `direct` CONFIRMED — `External`'s GATE-01/03 cascades are load-bearing
   (`CHG-TEMPLATE.yaml:70-111` re-read at pass 2: business→GATE-01, technical→GATE-03); broadening it would route
   script tweaks through phantom multi-layer cascades.
-- (c) Who may select F2: any author CONFIRMED, with two backstops acknowledged: the syntactic F2.4 lint guard
-  (fails closed, names the suspected flow) for malformed filings, and human review of the citation +
-  rejected-candidate record for well-formed-but-wrong filings (documented limit in F2.4). No human approval gate.
+- (c) Who may select F2: any author CONFIRMED, always-traced (CHG-12 — the F2-UNIFY-PLAN D2 human-only
+  exception is superseded: no direct-commit path survives for any author), with two backstops acknowledged:
+  the syntactic F2.4 lint guard (fails closed, names the suspected flow) for malformed filings, and human
+  review of the citation + rejected-candidate record for well-formed-but-wrong filings (documented limit in
+  F2.4) — plus reviewer verification that every commit rides the authorizing CHG/IPLAN manifest, for filings
+  with no record at all. Rejected candidate: retain-human-exception (trivial human typos stay cheap) — rejected
+  because Agent-first trackability traces every post-seed change regardless of author; cheapness survives via
+  the minimal C1 shape. No human approval gate.
 
 ## Appendix A — Review history (condensed from the draft)
 

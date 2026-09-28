@@ -9,11 +9,34 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 |-------|-------|
 | Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-09-25 |
+| Last Updated | 2026-09-28 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.7 |
+| Framework Version | 0.63.0 |
 
 ---
+
+## [0.63.0] — 2026-09-28
+
+### Changed — mandatory CHG+IPLAN for every post-seed activity (C2 MINOR, CHG-12 + IPLAN-12, issues #772/#773)
+
+- Always-traced rule: every post-seed C1 requires a C1 CHG + scoped IPLAN for
+  every author (agents and humans). Retired: F2.2 docs-only direct commit, the
+  AGENTS.md (i) bug-fix and (ii) docs-only-C1 exceptions, the §3.13 repeats,
+  router step 5's direct-commit branch, and both CHG-TEMPLATE C1 rows.
+- Sole exception: seed-phase drafting before the first BRD is authored against
+  seed vN (`SEED_CONTRACT.md` R1), when no other documents exist yet.
+- Supersedes the F2-UNIFY-PLAN D2 human-only exception (rejected candidate
+  retain-human-exception recorded in CHG-12). Enforcement is reviewer-lens —
+  the PR reviewer verifies every commit rides the authorizing CHG/IPLAN
+  manifest, backstopped by branch protection; GOV-018/CHG-L013 stay syntactic
+  by design (scope note in `LINT_RULES.md`).
+- `DOC_GOVERNANCE_CORE.md` v1.0 → v1.1 (§3.1.3 F2 row, §3.13);
+  `CHG_REQUEST_FLOWS.md` v1.1 → v1.2 (F2.2, router step 5, §8(c), F2.4);
+  `LINT_RULES.md` v1.0 → v1.1; GD-37 entered in `DECISIONS.md`.
+- Guard: new `AlwaysTracedAgreement` pins the unified wording in
+  `tests/conformance/test_chg_flows_router.py`; mirror twins stay
+  byte-identical (`diff -q` clean on both pairs).
+- `framework/VERSION` bumped from `0.62.7` to `0.63.0` with mechanical pin sweep.
 
 ## [0.62.7] — 2026-09-28
 

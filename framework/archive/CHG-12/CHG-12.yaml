@@ -1,0 +1,244 @@
+# =============================================================================
+#  CHG-12: Mandatory CHG+IPLAN for every post-seed activity (Agent-first trackability) + MINOR 0.62.7 → 0.63.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-12/IPLAN-12.yaml (to be authored after approval)
+#  Issues: #772 ([Governance][gap] F2 docs-only direct-commit permits silent agent changes)
+#          #773 ([Governance][rule] mandatory CHG+IPLAN post-seed; seed-drafting sole exception)
+#  §3.4 checklist: completed before authoring (2026-09-28); app-oriented items N/A
+#  with reason — framework doc self-change, no runtime code (mirrors CHG-06/CHG-10/CHG-11):
+#  items 2/3/4/6/10 N/A (no client/server arch, no structs, no DB, no handlers);
+#  item 5 EARS/BDD IDs vacuous (upstream is owner direction + issues #772/#773;
+#  no element IDs cited, so D21/D22/B9/B10 vacuous); item 7 couples #772 + #773
+#  in this one CHG (shared files, #773 supersedes #772/D2 — separate CHGs would
+#  conflict on the same rows).
+#  Covering tests: tests/conformance/test_chg_flows_router.py agreement rows
+#  updated to the unified wording (pins the exact rows this CHG rewrites) +
+#  mirror-twin suites (diff -q both pairs); no linter-engine change, so no new
+#  unit fixtures — enforcement vehicle is reviewer-lens, decided below.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose + template-guidance wording
+#  only, no executable content, no prompt-injection surface; the tightened rule
+#  shrinks the silent-edit attack surface (every post-seed change traced).
+# =============================================================================
+
+id: CHG-12
+title: "Mandatory CHG+IPLAN for every post-seed activity (Agent-first trackability) + MINOR bump 0.62.7 → 0.63.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-28"
+  framework_version: "0.62.7"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-12"
+  status: Completed
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-28T00:00:00Z"
+  date_approved: "2026-09-28T00:00:00Z"
+  date_implemented: "2026-09-28T00:00:00Z"
+  supersedes:
+    - "governance routing docs v0.62.7 (framework/archive/CHG-12/CHG_REQUEST_FLOWS.md)"
+    - "governance core v0.62.7 (framework/archive/CHG-12/DOC_GOVERNANCE_CORE.md)"
+    - "lint rules v0.62.7 (framework/archive/CHG-12/LINT_RULES.md)"
+    - "governance decisions v0.62.7 (framework/archive/CHG-12/DECISIONS.md)"
+    - "CHG template v0.62.7 governance copy (framework/archive/CHG-12/CHG-TEMPLATE.gov.yaml)"
+    - "CHG template v0.62.7 layer copy (framework/archive/CHG-12/CHG-TEMPLATE.layer.yaml)"
+    - "09_CHG README v0.62.7 layer copy (framework/archive/CHG-12/09_CHG-README.layer.md)"
+    - "09_CHG README v0.62.7 governance copy (framework/archive/CHG-12/09_CHG-README.gov.md)"
+    - "framework/VERSION 0.62.7 (framework/archive/CHG-12/VERSION)"
+    - "IPLAN-12 authorizing record (framework/archive/CHG-12/IPLAN-12.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Remove every no-CHG/no-IPLAN carve-out for post-seed activity: F2.2 docs-only direct commit, the AGENTS.md (i)/(ii) exceptions, the §3.13 IPLAN-Gate repeat, router step 5, and both CHG-TEMPLATE C1 rows now require a C1 CHG + scoped IPLAN for ALL authors (agents and humans); the sole exception is seed-phase drafting pre-first-BRD (SEED_CONTRACT R1 boundary, seed_scope create). This supersedes the F2-UNIFY-PLAN D2 decision (human-only direct-commit exception retained) — #773's owner-directed rule overrides it. Enforcement vehicle (mandatory deliverable per the #772 plan): reviewer-lens — the PR reviewer verifies every commit rides a CHG+IPLAN, backstopped by branch protection (no direct pushes to dev/main exist); GOV-018 stays a syntactic code-manifest guard with a scope note. MINOR bump 0.62.7 → 0.63.0."
+  why: "Untracked changes succeed silently (exit 0, no lint tripwire — GOV-018 fires only on code/script manifests), so the absence of a record is the defect (issues #772, #773 — same class). As an Agent-first framework, every post-seed change must be traced: requester citation, file manifest, verification record, status lifecycle. The carve-outs removed here ARE the current contract, so this is a rule change, not a contradiction fix."
+  trigger: "Owner direction 2026-09-28 (Agent-first trackability) + issue #773 (rule) + issue #772 (gap, same files)."
+  breaking_change_analysis: "C2 (not C3): no gate/ID/schema/enum removed — `direct` source, GATE-CODE entry, and C1 level all survive; the change ADDS a tracking obligation (C1 CHG + scoped IPLAN, minimal shape keeps trivial edits cheap) rather than removing a capability. Existing CHG/IPLAN records are unaffected; 0.x line. Contract-tightening for consumers relying on direct commit is acknowledged — reviewer may escalate to C3 at PR review, in which case E004 (human approver) applies before merge."
+  d2_supersede: "F2-UNIFY-PLAN D2 (retain direct commit as explicit human-only exception, rejected candidate: full removal) is SUPERSEDED by #773: the rejected candidate becomes the adopted rule. New rejected candidate: retain-human-exception (rationale: trivial human typos stay cheap) — rejected because Agent-first trackability requires every post-seed change traced regardless of author; cheapness is preserved by the minimal C1 CHG + scoped IPLAN shape. Recorded here per the router mandate (rejected candidate + one-line rationale)."
+  enforcement_decision: "Reviewer-lens (not a new linter emitter). Rationale: chg_lint validates RECORDS, not commits — the absence of a CHG for a commit is invisible to it, and teaching it to scan commit history is out of vehicle scope. Branch protection already forces every change through a PR, so the review gate is total: the PR reviewer checks every commit against the authorizing CHG/IPLAN file manifest. GOV-018/CHG-L013 stay syntactic (code/script manifest + empty lifecycle) with a scope note pointing at this decision."
+  scope:
+    in:
+      - "governance/CHG_REQUEST_FLOWS.md F2.2 rewrite (no direct commit; C1 always CHG + scoped IPLAN, all authors; seed-phase sole exception) + router step 5 + §8(c) (F2 selection always-traced; rejected-candidate record updated) + F2.3/F2.4 wording touch-ups (Version 1.1 → 1.2)"
+      - "DOC_GOVERNANCE_CORE.md §3.1.3 F2 row + intro line 176-177 (docs-only direct-commit fix) + §3.13 F2.2 paragraph (Version 1.0 → 1.1)"
+      - "CHG-TEMPLATE.yaml both copies: C1 row requires C1 CHG + scoped IPLAN for all authors/all content; sole exception seed-phase drafting pre-first-BRD (identical — no fork widening)"
+      - "both 09_CHG READMEs: C1 row + Direct routing row + flows pointer (identical per #770)"
+      - "LINT_RULES.md: GOV-018 scope note (reviewer-lens enforcement decision + branch-protection backstop; guard stays syntactic)"
+      - "AGENTS.md: Governance Gate exceptions collapse to the single seed-phase exception; IPLAN Gate paragraph same (root working agreement, not an SDD doc — files_modified only, no lifecycle entry, per CHG-07 precedent)"
+      - "framework/governance/DECISIONS.md: GD-37 entry (mandatory trackability + D2 supersede)"
+      - "plans/F2-UNIFY-PLAN.md: D2 amended (superseded by #773), status updated (plan file, not an SDD doc)"
+      - "tests/conformance/test_chg_flows_router.py: agreement rows updated to unified wording (F2.2, C1 rows, router step 5, §8(c))"
+      - "MINOR bump 0.62.7 → 0.63.0: VERSION + changelogs + machine-pin fanout (sync-version-refs clean)"
+      - "SECURITY_REVIEW W003 assessment recorded in this CHG (verification section)"
+    out:
+      - "Emergency / Type-R paths — untouched"
+      - "Seed versioning / supersede mechanics (SEED_CONTRACT R1 boundary reused, not amended)"
+      - "Bugfix vehicle (C1 CHG + bugfix IPLAN) and F2 code-touching C1-direct — already carry both objects, compliant, unchanged"
+      - "chg_lint engine changes — no new emitter (reviewer-lens enforcement decided above)"
+      - "Other flows (F1/F3/F4 routing), platform code, consumer content"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/CHG_REQUEST_FLOWS.md"
+    new_version: "1.2"
+    changes: "F2.2 rewrite (always-traced C1, seed-phase sole exception); router step 5; §8(c) always-traced verdict + updated rejected-candidate record; F2.3/F2.4 touch-ups; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/DOC_GOVERNANCE_CORE.md"
+    new_version: "1.1"
+    changes: "§3.1.3 F2 row + intro (no direct commit); §3.13 F2.2 paragraph (always-traced, seed-phase sole exception); doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/LINT_RULES.md"
+    new_version: "1.1"
+    changes: "GOV-018 scope note (reviewer-lens enforcement + branch-protection backstop; guard stays syntactic); doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/DECISIONS.md"
+    new_version: "0.63.0"
+    changes: "GD-37 entry (mandatory trackability rule + D2 supersede)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-12/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.63.0"
+    changes: "C1 row requires C1 CHG + scoped IPLAN for all authors; seed-phase exception (identical to layer copy)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-12/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.63.0"
+    changes: "C1 row requires C1 CHG + scoped IPLAN for all authors; seed-phase exception (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/09_CHG-README.layer.md"
+    new_version: "0.63.0"
+    changes: "C1 row + Direct routing row + flows pointer (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-12/09_CHG-README.gov.md"
+    new_version: "0.63.0"
+    changes: "C1 row + Direct routing row + flows pointer (identical to layer copy)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-12/IPLAN-12.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance/template originals to framework/archive/CHG-12/ (excluding the CHG-12 vehicle files themselves — CHG-12.yaml, IPLAN-12.yaml — so the snapshot never clobbers the authorizing record; pre-flight first: run router-agreement + mirror-twin suites to confirm the unified-wording updates collide with nothing)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, both 09_CHG READMEs, VERSION"
+      archive_path: "framework/archive/CHG-12/"
+      new_version: "0.63.0"
+      current_version: "0.62.7"
+      status: Completed
+    - step: "Amend governance + template + README docs per lifecycle above (F2.2 always-traced rewrite, router step 5, §8(c) verdict, core §3.1.3/§3.13, template C1 rows, README C1/Direct rows, GOV-018 scope note, GD-37)"
+      phase: "sdd_lifecycle"
+      artifact: "CHG_REQUEST_FLOWS.md (v1.2), DOC_GOVERNANCE_CORE.md (v1.1), LINT_RULES.md (v1.1), DECISIONS.md (GD-37), both CHG-TEMPLATE.yaml, both 09_CHG READMEs"
+      archive_path: "framework/archive/CHG-12/"
+      new_version: "0.63.0"
+      current_version: "0.62.7"
+      status: Pending
+    - step: "AGENTS.md gate collapse + plan D2 amendment + conformance test updates + MINOR fanout per IPLAN-12 manifest (non-SDD files ride steps + IPLAN manifest per CHG-10 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
+      phase: "sdd_lifecycle"
+      artifact: "AGENTS.md, plans/F2-UNIFY-PLAN.md, tests/conformance/test_chg_flows_router.py, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, hooks/sync-version-refs.sh + version-pin sweep"
+      archive_path: "framework/archive/CHG-12/"
+      new_version: "0.63.0"
+      current_version: "0.62.7"
+      status: Pending
+    - step: "Create IPLAN-12 with all edit and verification steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-12"
+      status: Pending
+  files_modified:
+    - "framework/governance/CHG_REQUEST_FLOWS.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+    - "AGENTS.md"
+    - "plans/F2-UNIFY-PLAN.md"
+    - "tests/conformance/test_chg_flows_router.py"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "hooks/sync-version-refs.sh"
+
+artifacts_modified:
+  - id: "CHG-12"
+    changes: "Authorizing record for mandatory trackability rule (#772 + #773) (this file)"
+  - id: "IPLAN-12"
+    changes: "Authorizing IPLAN (framework/archive/CHG-12/IPLAN-12.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: Owner (session direction 2026-09-28, issues #772/#773)
+  date: "2026-09-28T00:00:00Z"
+  conditions:
+    - IPLAN-12 authored as Draft before approval (authorizing record for the edit steps).
+    - C2 peer review (maintainer) recorded here before Implemented; reviewer may escalate to C3 per the breaking-change analysis above.
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level)"
+    - "chg_lint.py over CHG-12 (0 errors)"
+    - "conformance: router-agreement green on unified wording + full suite green"
+    - "mirror-twin suites green (diff -q clean on both template and README pairs)"
+    - "E005–E008: VERSION 0.63.0, pins match (sync-version-refs clean), both CHANGELOGs cut"
+    - "W003 SECURITY_REVIEW assessment recorded (this CHG header + verification)"
+    - "D2 dead-path sweep: no live-path direct-commit refs remain (grep)"
+    - "gh pr checks green on the PR head before any merge decision"
+

@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: security_engineer
 weight: 6
 agent: security-engineer
-framework_spec_version: "0.62.7"
+framework_spec_version: "0.63.0"
 ---
 # security_engineer lens — BDD layer
 

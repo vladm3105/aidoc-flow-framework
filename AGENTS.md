@@ -102,9 +102,11 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).
 
 If user says "build", "implement", "add feature" → stop, create CHG first.
-Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only non-normative C1 (direct commit);
-(iii) post-completion repairs via the bugfix vehicle (C1 CHG + bugfix IPLAN, parent immutable);
-(iv) F2 C1-direct (C1 CHG + scoped IPLAN). §3.13 + `CHG_REQUEST_FLOWS.md` govern.
+Exception (only one): seed-phase drafting before the first BRD is authored against seed vN
+(`SEED_CONTRACT.md` R1) — pre-first-BRD drafting with no other documents in existence. Everything else
+is traced: (i) bug fixes ride their IPLAN's authorizing CHG (active IPLAN) or the bugfix vehicle (C1 CHG +
+bugfix IPLAN, parent immutable, post-completion); (ii) every C1 — docs-only non-normative included —
+requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.13 + `CHG_REQUEST_FLOWS.md` govern.
 
 **Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
 
@@ -121,7 +123,7 @@ Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only no
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
-**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Governed paths without a full CHG cascade: bug fixes on active IPLANs; post-completion repairs via the bugfix vehicle; F2 C1-direct (scoped IPLAN). Docs-only non-normative C1 needs neither CHG nor IPLAN.
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Every post-seed change carries both objects: bug fixes ride their IPLAN's CHG (active IPLAN) or the bugfix vehicle (C1 CHG + bugfix IPLAN); every C1 rides a C1 CHG + scoped IPLAN. The sole change needing neither object is seed-phase drafting pre-first-BRD (CHG-12).
 
 ### Push Workflow
 
