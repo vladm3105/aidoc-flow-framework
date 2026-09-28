@@ -118,6 +118,7 @@ test_results:
     RULE: One entry per EVAL test case. The eval_case_id must match the
     test case ID from the EVAL document (EVAL.NN.SS.xxxx format).
 
+  _example:
   - eval_case_id: "EVAL.NN.SS.xxxx"      # test case ID from EVAL document
     source_id: "TDD.NN.SS.xxxx"           # upstream source element ID
     source_type: tdd_test_case             # tdd_test_case | bdd_scenario
@@ -139,6 +140,7 @@ findings:
     Status lifecycle: OPEN → RESOLVED | DEFERRED | WONTFIX
     A finding is only RESOLVED when a subsequent cycle passes that test case.
 
+  _example:
   - id: "F-001"
     eval_case_id: "EVAL.NN.SS.xxxx"       # test case that failed
     source_id: "BDD.NN.SS.xxxx"           # upstream source (BDD scenario ID)
@@ -180,6 +182,7 @@ quality_thresholds:
   _guidance: |
     Compare actual results against targets from the EVAL document.
     Each metric gets a verdict: PASS or FAIL. Must mirror the EVAL strategy's thresholds.
+  _example:
   - metric: "p0_critical_pass_rate"
     target: 100
     actual: 0

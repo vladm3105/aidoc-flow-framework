@@ -66,14 +66,10 @@ class PlaybookSplitTests(unittest.TestCase):
         fence = re.search(r"```yaml\n(.*?)```", section, re.DOTALL)
         self.assertIsNotNone(fence, "validator.md has no yaml Output Example")
         example = yaml.safe_load(fence.group(1))
-        # Top-level keys by shape, not by parse: the template mixes a
-        # `_guidance` mapping key with sequence items under one node, so no
-        # YAML loader accepts it (separate defect — see the issue it files).
-        template_keys = set(
-            re.findall(
-                r"^([a-z][a-z0-9_]*):", RPT_TEMPLATE.read_text(encoding="utf-8"), re.MULTILINE
-            )
-        )
+        # The template must itself parse (see #753) — an unparseable
+        # template errors here rather than passing silently.
+        template = yaml.safe_load(RPT_TEMPLATE.read_text(encoding="utf-8"))
+        template_keys = set(template)
         self.assertTrue(template_keys, "no top-level keys found in template")
         self.assertTrue(
             set(example) <= template_keys,
