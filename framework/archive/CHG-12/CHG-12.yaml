@@ -46,7 +46,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-12"
-  status: Approved
+  status: Implemented
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -55,7 +55,7 @@ change_control:
   author: "Framework Maintainer (AI agent + owner)"
   date_proposed: "2026-09-28T00:00:00Z"
   date_approved: "2026-09-28T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-09-28T00:00:00Z"
   supersedes:
     - "governance routing docs v0.62.7 (framework/archive/CHG-12/CHG_REQUEST_FLOWS.md)"
     - "governance core v0.62.7 (framework/archive/CHG-12/DOC_GOVERNANCE_CORE.md)"
@@ -172,7 +172,7 @@ implementation:
       archive_path: "framework/archive/CHG-12/"
       new_version: "0.63.0"
       current_version: "0.62.7"
-      status: In Progress
+      status: Completed
     - step: "Amend governance + template + README docs per lifecycle above (F2.2 always-traced rewrite, router step 5, §8(c) verdict, core §3.1.3/§3.13, template C1 rows, README C1/Direct rows, GOV-018 scope note, GD-37)"
       phase: "sdd_lifecycle"
       artifact: "CHG_REQUEST_FLOWS.md (v1.2), DOC_GOVERNANCE_CORE.md (v1.1), LINT_RULES.md (v1.1), DECISIONS.md (GD-37), both CHG-TEMPLATE.yaml, both 09_CHG READMEs"

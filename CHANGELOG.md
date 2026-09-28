@@ -9,6 +9,22 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.63.0] — 2026-09-28
+
+### Changed — mandatory CHG+IPLAN for every post-seed activity (C2 MINOR → 0.63.0)
+
+- Trackability rule (#772, #773; CHG-12 + IPLAN-12 in `framework/archive/CHG-12/`):
+  every post-seed C1 requires a C1 CHG + scoped IPLAN for every author (agents and
+  humans) — F2.2 docs-only direct commit, the AGENTS.md (i)/(ii) exceptions, router
+  step 5, and both template C1 rows retired; sole exception is seed-phase drafting
+  pre-first-BRD (`SEED_CONTRACT.md` R1)
+- Supersedes the F2-UNIFY-PLAN D2 human-only exception (rejected candidate recorded
+  in CHG-12); enforcement is reviewer-lens — the PR reviewer verifies every commit
+  rides the authorizing CHG/IPLAN manifest — GOV-018 stays syntactic by design
+- New `AlwaysTracedAgreement` conformance pins (unified C1/F2 wording, no live-path
+  direct-commit refs); mirror twins stay byte-identical
+- `framework/VERSION` bumped from `0.62.7` to `0.63.0` with mechanical pin sweep
+
 ## [0.62.7] — 2026-09-28
 
 ### Fixed — 09_CHG README twins byte-identical + dead link repaired (C2 PATCH → 0.62.7)

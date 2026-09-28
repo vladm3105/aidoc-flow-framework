@@ -17,9 +17,40 @@ Newest first. Timestamps are ISO 8601 UTC.
 |-------|-------|
 | Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-28 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.7 |
+| Framework Version | 0.63.0 |
+
+---
+
+## GD-37 — Mandatory CHG+IPLAN for every post-seed activity; seed-drafting phase the sole exception (CHG-12, 0.63.0 MINOR)
+
+- **Status:** Accepted — 2026-09-28 · **SemVer:** framework `0.62.7 → 0.63.0` (MINOR),
+  change-level **C2** (F3/spec; breaking-change analysis in CHG-12 — additive
+  tracking obligation, no gate/ID/schema removed; reviewer may escalate to C3).
+  Vehicle: CHG-12 + IPLAN-12 (`framework/archive/CHG-12/`).
+  Issues: #772 (gap) + #773 (owner-directed rule).
+- **Context:** The framework permitted untracked changes through no-CHG/no-IPLAN
+  paths (F2.2 docs-only direct commit; AGENTS.md exceptions for bug fixes on
+  active IPLANs and docs-only non-normative C1; router step 5; template C1
+  rows). Untracked changes succeed silently — exit 0, no lint tripwire
+  (GOV-018 fires only on code/script manifests) — so the absence of a record
+  is the defect (same class as #772).
+- **Decision:** every post-seed activity carries a CHG request and an IPLAN —
+  every C1 (docs-only included) requires a C1 CHG + scoped IPLAN for every
+  author (agents and humans). Minimal shape keeps trivial edits cheap but
+  traced (requester citation, manifest, steps/commands, verification; covering
+  tests N/A-allowed for pure prose). Sole exception: seed-phase drafting
+  before the first BRD is authored against seed vN (SEED_CONTRACT R1), when no
+  other documents exist yet. This SUPERSEDES the F2-UNIFY-PLAN D2 decision
+  (human-only direct-commit exception retained); rejected candidate
+  retain-human-exception recorded in CHG-12 with rationale. Enforcement is
+  reviewer-lens (PR reviewer verifies every commit rides the CHG/IPLAN
+  manifest), backstopped by branch protection — GOV-018 stays syntactic by
+  design. The §3.13 bootstrap exemption (authoring the CHG/IPLAN vehicle docs
+  themselves) is kept: it covers record creation, not change shipping.
+- **Consequence:** no post-seed change ships without a requester citation,
+  file manifest, verification record, and status lifecycle.
 
 ---
 

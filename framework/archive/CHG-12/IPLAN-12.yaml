@@ -25,7 +25,7 @@ document_control:
   iplan_id: "IPLAN-12"
   subtype: combined
   source_spec: "@spec: N/A (framework self-change under CHG-12; no SPEC component)"
-  status: Draft
+  status: In Progress
   version: "1.0"
   date_created: "2026-09-28T00:00:00Z"
   last_updated: "2026-09-28T00:00:00Z"
@@ -46,59 +46,59 @@ file_manifest:
     - path: "framework/governance/CHG_REQUEST_FLOWS.md"
       description: "F2.2 always-traced rewrite; router step 5; §8(c) verdict; F2.3/F2.4 touch-ups; Version 1.1 → 1.2"
       order: 2
-      status: TODO
+      status: DONE
     - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
       description: "§3.1.3 F2 row + intro direct-commit fix; §3.13 F2.2 paragraph; Version 1.0 → 1.1"
       order: 3
-      status: TODO
+      status: DONE
     - path: "framework/governance/LINT_RULES.md"
       description: "GOV-018 scope note (reviewer-lens enforcement + branch-protection backstop); Version 1.0 → 1.1"
       order: 4
-      status: TODO
+      status: DONE
     - path: "framework/governance/DECISIONS.md"
       description: "GD-37 entry (mandatory trackability + D2 supersede; newest-first)"
       order: 5
-      status: TODO
+      status: DONE
     - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
       description: "C1 row requires C1 CHG + scoped IPLAN, all authors; seed-phase exception (identical to layer copy)"
       order: 6
-      status: TODO
+      status: DONE
     - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
       description: "Byte-identical to governance copy (diff -q clean)"
       order: 7
-      status: TODO
+      status: DONE
     - path: "framework/layers/09_CHG/README.md"
       description: "C1 row + Direct routing row + flows pointer (identical to governance copy)"
       order: 8
-      status: TODO
+      status: DONE
     - path: "framework/governance/chg/README.md"
       description: "Byte-identical to layer copy (diff -q clean)"
       order: 9
-      status: TODO
+      status: DONE
     - path: "AGENTS.md"
       description: "Governance Gate exceptions collapse to single seed-phase exception; IPLAN Gate paragraph same"
       order: 10
-      status: TODO
+      status: DONE
     - path: "plans/F2-UNIFY-PLAN.md"
       description: "D2 amended (superseded by #773); status updated"
       order: 11
-      status: TODO
+      status: DONE
     - path: "tests/conformance/test_chg_flows_router.py"
       description: "Agreement rows updated to unified wording (F2.2, C1 rows, router step 5, §8(c))"
       order: 12
-      status: TODO
+      status: DONE
     - path: "framework/VERSION"
       description: "MINOR bump 0.62.7 → 0.63.0"
       order: 13
-      status: TODO
+      status: DONE
     - path: "framework/CHANGELOG.md + CHANGELOG.md"
       description: "0.63.0 entries (both changelogs, E008)"
       order: 14
-      status: TODO
+      status: DONE
     - path: "hooks/sync-version-refs.sh + version-pin sweep"
       description: "Machine-pin fanout to 0.63.0 (sync-version-refs clean, E006)"
       order: 15
-      status: TODO
+      status: DONE
 
 # =============================================================================
 # Section 3: TDD Consistency

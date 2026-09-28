@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.7 |
+| Framework Version | 0.63.0 |
 
 
 ## Overview
@@ -98,7 +98,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 
 | Level | Scope | Gate Required | Process |
 |-------|-------|---------------|---------|
-| C1 | Typo, formatting, clarification (docs-only: direct commit; code-touching: C1 CHG + scoped IPLAN per F2.2) | None (docs-only) / GATE-CODE | Fix → commit / Fix → IPLAN → commit |
+| C1 | Typo, formatting, clarification (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE (scoped IPLAN) | Fix → IPLAN → commit |
 | C2 | Section update, requirement refinement | Peer review | Assess impact → update → verify |
 | C3 | Cross-layer change, new requirements | Formal gate | Full CHG process |
 | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
@@ -320,7 +320,7 @@ modified file with its archive path.
 | Term | Definition |
 |------|-----------|
 | CHG | Change Record — governance document for SDD artifact modifications |
-| C1 | Trivial change — typo, formatting, clarification (no gate) |
+| C1 | Trivial change — typo, formatting, clarification (C1 CHG + scoped IPLAN, GATE-CODE) |
 | C2 | Minor change — section update, refinement (peer review) |
 | C3 | Major change — cross-layer, new requirements (formal gate) |
 | Emergency | Critical production fix — bypass normal process, post-mortem within 48h |

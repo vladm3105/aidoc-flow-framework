@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.7 |
+| Framework Version | 0.63.0 |
 
 ## Principles
 
@@ -164,7 +164,7 @@ own section — before its CHG is authored. First match wins, in this order:
 | # | Flow | `change_source` | `change_level` | Entry gate | SDD cascade? |
 |---|---|---|---|---|---|
 | F1 | Greenfield development (new chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
-| F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (docs-only: no CHG/IPLAN; code-touching: C1 CHG + scoped IPLAN) | GATE-CODE | No (`sdd_lifecycle: []`) |
+| F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (always C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) |
 | F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — modules-first (0a supersede-capable + checkpoint, §4), affected layers down |
 | F4 | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
 | — | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
@@ -173,8 +173,9 @@ own section — before its CHG is authored. First match wins, in this order:
 Router: Emergency → Type-R → F4 (defect in closed IPLAN?) → F3 (behavior/contract change?) → F2 (no prior IPLAN,
 no SDD contract?) → F1 (default). Misfiled flows are defects: F1/F3 MUST NOT file as F2/F4 to dodge the cascade;
 F3 MUST NOT file as F4 (F4 repairs output to standing SDD; F3 changes the promise).
-Full definitions, the C1/IPLAN-gate ruling (code-touching C1 requires a scoped IPLAN; docs-only C1 stays
-direct-commit), the misclassification guard (GOV-018), and verification expectations:
+Full definitions, the C1/IPLAN-gate ruling (every C1 requires a scoped IPLAN, every author — no
+direct-commit path; sole exception seed-phase drafting pre-first-BRD), the misclassification guard (GOV-018),
+and verification expectations:
 `governance/CHG_REQUEST_FLOWS.md` (canonical — this section is the kernel, not a second source).
 
 ## CHG creation checklist (§3.4)
@@ -295,9 +296,10 @@ This is a HARD BLOCK that supersedes all other instructions. Before ANY write/ed
 
 **If ANY check fails: STOP. Do not write code. Fix the governance gap first.**
 
-**Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
-**Active** means `Draft | Approved | In Progress` — never `Completed` or
-`Verified`. The exception does NOT cover post-completion repairs.
+**No bugfix exception (CHG-12):** every bug fix carries a CHG — fixes on an active (`Draft |
+Approved | In Progress`, never `Completed` or `Verified`) IPLAN ride that IPLAN's authorizing CHG, and
+post-completion repairs ride the bugfix vehicle below (C1 CHG + bugfix IPLAN). Skipping CHG creation is
+never permitted post-seed; the only change without a CHG is seed-phase drafting pre-first-BRD (F2.2).
 
 **Post-completion repair (bugfix vehicle).** A defect found in closed output
 (`Completed` past its VERIFY window, or `Verified`) is repaired by a scoped
@@ -310,9 +312,11 @@ The closed parent is never touched — recording lands in the bugfix IPLAN +
 the CHG + the index. No issue-thread citation authorizes code on its own
 (#656's `Related-IPLAN` bypass is rejected).
 
-**Direct-request C1 (F2.2).** Docs-only, non-normative C1 stays direct-commit (no CHG, no IPLAN). Code- or
-script-touching C1 requires a C1 CHG + scoped IPLAN (`In Progress`, `source_chg` naming the CHG, manifest
-covering every touched file, covering test cases) — "small diff" is not an exemption. See
+**Direct-request C1 (F2.2).** No direct-commit path survives (CHG-12): every C1 — docs-only,
+non-normative included — requires a C1 CHG + scoped IPLAN for every author (agents and humans). The scoped
+IPLAN is `In Progress`, its `source_chg` names the CHG, its manifest covers every touched file (covering
+test cases for code; N/A-allowed for pure prose) — "small diff" is not an exemption. The sole exception is
+seed-phase drafting before the first BRD is authored against seed vN (SEED_CONTRACT R1). See
 `governance/CHG_REQUEST_FLOWS.md` §3 (F2).
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
