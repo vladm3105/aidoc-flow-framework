@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: tech_lead
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.62.4"
+framework_spec_version: "0.62.5"
 ---
 # tech_lead lens — IPLAN layer
 

@@ -11,9 +11,32 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-25 |
 | Author | Framework Maintainer |
-| Framework Version | 0.62.4 |
+| Framework Version | 0.62.5 |
 
 ---
+
+## [0.62.5] — 2026-09-27
+
+### Fixed — CHG-L016 archive-snapshot existence + EVAL template parses (C2 PATCH)
+
+- New rule **CHG-L016** (`§3.4.1 C18`): every cited `archive_path` must
+  resolve to a file on disk (repo-root- or CHG-relative) and be git-tracked.
+  Unresolvable paths warn (fixtures/out-of-tree refs are unverifiable, not
+  fabrications); resolvable-but-ignored paths error (the #757 swallow shape —
+  never lands without `-f`); resolvable-but-unstaged paths warn. Closes the
+  cited-but-missing hole the #757 transfer reports against the L001–L005-era
+  tool (L007/L008/L010 already cover non-null/shape/parity; the adopter
+  `.gitignore` half is N/A here; `--diff`/`archive_sdd.py` are adopter-side).
+- Catalog updates: `CODES` 1..16, `LINT_RULES.md` L016 row, `test_lint_catalog`
+  pin, `AGENTS.md` catalog line, DOC_GOVERNANCE_CORE C18 clause + rule-table
+  row. 4 new unit tests (`ArchiveSnapshotTests`); L016 verified passing on
+  live CHG-11 (3 snapshots exist and are committable).
+- #753: `EVAL-REPORT-TEMPLATE.yaml` §4/§5/§8 list sections carry `_example`
+  lists beside `_guidance` (BRD convention) — the file parses as a plain
+  mapping; `test_validator_example_uses_template_keys` and
+  `test_report_has_test_results_section` upgraded from textual to parsed
+  assertions.
+- `framework/VERSION` bumped from `0.62.4` to `0.62.5` with mechanical pin sweep.
 
 ## [0.62.4] — 2026-09-27
 
