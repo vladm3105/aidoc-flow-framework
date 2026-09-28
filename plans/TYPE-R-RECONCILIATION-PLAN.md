@@ -11,7 +11,7 @@
 
 ## Objective
 
-Formalize the **Type-R (Reconciliation) change flow**: when a verified working codebase temporarily precedes its specifications (empirical integration discovery, browser-authored test suites, critical flakiness remediation, emergency operational fixes handled outside the Emergency path), the change propagates **backward** Code → IPLAN (reverse-authored from ground truth) → upstream SDD layers, instead of fabricating a fictional design-first chronology. The framework today defines only the forward flow plus `Emergency: fix → deploy → document in 48h`; `Feedback/GATE-CODE` bubble-up covers production defects but not code-leads-docs reconciliation. This plan lands the Type-R kernel generalized from PR #654's project-donor text (no donor literals: no Privy/Bridge, Playwright, `go test`/`npm` commands, `USER_JOURNEYS.md`, `*-00` ledgers, `docs/sdd/` paths, `chg_lint.py` script names).
+Formalize the **Type-R (Reconciliation) change flow**: when a verified working codebase temporarily precedes its specifications (empirical integration discovery, browser-authored test suites, critical flakiness remediation, emergency operational fixes handled outside the Emergency path), the change propagates **backward** Code → IPLAN (reverse-authored from ground truth) → upstream SDD layers, instead of fabricating a fictional design-first chronology. The framework today defines only the forward flow plus `Emergency: fix → deploy → document in 48h`; `Feedback/GATE-CODE` bubble-up covers production defects but not code-leads-docs reconciliation. This plan lands the Type-R kernel generalized from PR #654's project-donor text (no donor literals: no vendor SDKs, runner-specific test commands, project-journal files, `*-00` ledgers, `docs/sdd/` paths, linter script names).
 
 ## Scope
 
@@ -73,7 +73,7 @@ Gaps found:
 ### Implementation review (OPS-0065 3-agent parallel, single fold cycle) — 2026-09-21
 
 - Templates/gates reviewer: success, no findings (enum in all 4 lines, twins identical, YAML parses).
-- Release-mechanics reviewer: success + 1 flag: stray untracked `.mimocode/learning/` file — left untracked, never staged (explicit file-list commits only); no fixer noise in tree (19 pre-commit reformats reverted, 107 sweep-only files kept).
+- Release-mechanics reviewer: success + 1 flag: stray untracked learning-store file — left untracked, never staged (explicit file-list commits only); no fixer noise in tree (19 pre-commit reformats reverted, 107 sweep-only files kept).
 - Spec-prose reviewer: success + 2 SHOULD-FIX, both folded into §3.1.2: (1) §3.13 carve-out — new guardrail 4 states the reverse-authored In-Progress IPLAN authorizes all post-freeze writes and GOV-013 stays a forward-flow check; (2) Emergency-exclusion rationale now required in the Type-R CHG description, trigger reworded off "critical".
 - Pre-existing failures documented as out of scope: `check-yaml` (`.github/labeler.yml` duplicate key), `yamllint` (acceptance fixtures), `markdownlint` (`plans/CLEANUP-001-PLAN.md`), `ruff (legacy alias)` env issue — all in files outside this change set, all present on dev baseline.
 - Incidental finding promoted: `hooks/sync-version-refs.sh` was stale (no 0.54.0 literals — every future bump would silently no-op) and rewrote frozen `framework/archive/` originals; fixed with 0.54.0 literals + archive exclusion (order 12, CHG-04 SYNC-SCRIPT entry).

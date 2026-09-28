@@ -179,8 +179,8 @@ humans — write, ship, and maintain code. Grouped by what they actually break:
 
 - **Silent requirement loss** — an agent produces a clean-looking module that quietly
   omits a requirement nobody noticed was missing. → **Coverage checks** force every EARS
-  requirement and BDD scenario to map to a component or be explicitly deferred. On
-  BeeLocal this literally surfaced two whole missing components (compliance/resilience,
+  requirement and BDD scenario to map to a component or be explicitly deferred. In
+  practice this has surfaced whole missing components (compliance/resilience,
   recipient management) that read as "done" until measured.
 - **No oracle, so "looks right" passes for "is right"** — agents are confident and
   wrong. → **Test-first (BDD→TDD→IPLAN)**: the acceptance test exists before the code,
@@ -235,8 +235,8 @@ humans — write, ship, and maintain code. Grouped by what they actually break:
   (human or agent) becomes "query the chain," not "reverse-engineer the code."
 
 **What it deliberately does *not* solve** — and shouldn't be expected to: it doesn't
-verify that your assumptions are *true about the world* (e.g., "Privy supports custodial
-USDC on Solana"), and it can't make a bad **seed** good. Those stay with the human
+verify that your assumptions are *true about the world* (e.g., "the chosen provider
+supports the required flow on the target platform"), and it can't make a bad **seed** good. Those stay with the human
 (quality of the seed) and the world (the spike/canary/prod signal that tells you an
 assumption is false). The framework's job is to make a wrong idea's consequences
 **visible and cheap to correct** — caught at BDD, fixed via CHG — not to make a wrong
@@ -305,10 +305,10 @@ remains; the framework is the whole product.
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.62.4`. Platforms (Hermes, Claude Code plugin) have been archived —
+framework spec `0.62.5`. Platforms (Hermes, Claude Code plugin) have been archived —
 the framework is now self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-09-27); it is not
+> *This overview is a point-in-time snapshot (as of 2026-09-28); it is not
 > wired into the version-sync hook. For live version state see the per-package
 > `VERSION` files.*
 
@@ -332,6 +332,7 @@ for the vulnerability-reporting policy.
 - `CHANGELOG.md` — project-level changelog.
 - `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
+- `docs/ADAPTATION-GUIDE.md` — how a new project adapts the framework (`.aidoc/` layer, profile knobs, overrides).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - `framework/README.md` — the engine-agnostic SDD specification.

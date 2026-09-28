@@ -1,4 +1,4 @@
-# FRAMEWORK-0.54.0 Plan — donor-hardening addons (b-local-privy → framework) + MINOR bump
+# FRAMEWORK-0.54.0 Plan — donor-hardening addons (donor project → framework) + MINOR bump
 
 | Field | Value |
 |-------|-------|
@@ -12,7 +12,7 @@
 
 ## Objective
 
-Port the operational hardening learned in `b-local-privy` `.aidoc/project/governance/` (8 files, 1851 lines incl. `.aidoc/README.md` + `profile.yaml` — fully read 2026-09-20, cache in `/tmp/bprivy-gov/`) into the engine-agnostic spec. Donor `dev` has since moved (cites up to 2026-11-06); the `/tmp` snapshot is the frozen source — do NOT chase donor HEAD during implementation. The framework already owns the concepts (DECISION_WORKFLOW, MODULE_LAYOUT, SELF_LEARNING, NOTICES incl. Rule 6 TDD↔IPLAN, §3.4/A1-E27, §3.13); the donor delta is **checklists, gates, concurrency traps, and verification commands** that prevent measured rework (CHG-04 16 gaps, SPEC-09 18 fake IDs, CHG-10/CHG-32 clobbers). This plan implements every migratable addon, excludes project-only material, and ships the MINOR bump with mechanical fanout.
+Port the operational hardening learned in a donor project's `.aidoc/project/governance/` (8 files, 1851 lines incl. `.aidoc/README.md` + `profile.yaml` — fully read 2026-09-20, cache in `/tmp/donor-gov/`) into the engine-agnostic spec. Donor `dev` has since moved (cites up to 2026-11-06); the `/tmp` snapshot is the frozen source — do NOT chase donor HEAD during implementation. The framework already owns the concepts (DECISION_WORKFLOW, MODULE_LAYOUT, SELF_LEARNING, NOTICES incl. Rule 6 TDD↔IPLAN, §3.4/A1-E27, §3.13); the donor delta is **checklists, gates, concurrency traps, and verification commands** that prevent measured rework (CHG-04 16 gaps, SPEC-09 18 fake IDs, CHG-10/CHG-32 clobbers). This plan implements every migratable addon, excludes project-only material, and ships the MINOR bump with mechanical fanout.
 
 Donor sources (dev branch, `.aidoc/`):
 
@@ -46,16 +46,16 @@ Donor sources (dev branch, `.aidoc/`):
 | 14 | SELF_LEARNING hardening (§6.9/§7.4 feedback-submit contract, §8 checklist — 13 boxes at `:184–196`, additive-only + cite-source, 3KB cap) | `framework/governance/SELF_LEARNING.md` + `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` cross-ref (full path — never a bare filename) | prose |
 | 15 | notices donor-only deltas: §4 `audit_fix` table (feeds #16), §5 CHG-04 RCA → GOVERNANCE already has §3.4 (verify no gap), index-drift + coverage-count Issues 5–6 (already upstreamed — fold remaining grep one-liners) | `NOTICES.md` prevention rules (idempotent append, no duplicate sections) | prose |
 | 16 | `audit_fix` vs `code_build` IPLAN subtype (donor: `combined` REMOVED, `deploy` merged into planned `devops`; framework today: `code_build \| deploy \| combined`, default `combined` — Decision F resolves) | `IPLAN-TEMPLATE.yaml` `_required_when_subtype:` + `framework/layers/08_IPLAN/README.md` | template |
-| 17 | §3.7 SQL-vs-schema + §6.7-RCA pointer (genericize: verify queries against declared schema artifact) | `IPLAN-TEMPLATE.yaml` guidance + `NOTICES.md` pointer (no Atlas/HCL names in spec) | guidance only |
+| 17 | §3.7 SQL-vs-schema + §6.7-RCA pointer (genericize: verify queries against declared schema artifact) | `IPLAN-TEMPLATE.yaml` guidance + `NOTICES.md` pointer (no vendor/schema-tool names in spec) | guidance only |
 
 **Out (PROJECT-ONLY, never migrates):**
 
-- §1 infra (Debian/Atlas/Nginx, `ADMIN_BIND`, SSL blocks), §8 wire invariants (RPC envelope, KYC schema, Privy headers) — stack-specific.
-- Verify commands (`go vet/test`, `npm run verify:product`, `secret_scan.py`, boundary checks), LAN IPs, Docker `-p`/ports, `docs/sdd/` literal paths, CHG/PLAN next-IDs (§2.1), CI same-repo reusables/gate-doctor, P0-Card product gate (§3.12), `schema.hcl`/`Atlas` names, `.mimocode/`/`MEMORY.md` tool paths.
+- §1 infra (OS/schema-tool/proxy, `ADMIN_BIND`, SSL blocks), §8 wire invariants (RPC envelope, identity-verification schema, vendor auth headers) — stack-specific.
+- Verify commands (vet/test suites, product-verify scripts, secret scanning, boundary checks), LAN IPs, container `-p`/ports, `docs/sdd/` literal paths, CHG/PLAN next-IDs (§2.1), CI same-repo reusables/gate tooling, P0 product gate (§3.12), schema-file/vendor names, tool-state/memory paths.
 
 ## Approach / Design
 
-- **Decision A — genericize, don't vendor.** Every donor snippet citing `docs/sdd/`, Go structs, Atlas, Privy, or `.mimocode/` is rewritten to `<project>/…` / "declared schema artifact" / "learning store" before landing. Engine-token hygiene (`test_spec_hygiene.py`) stays green.
+- **Decision A — genericize, don't vendor.** Every donor snippet citing project-local paths, service-specific structs, vendor/product names, or tool-state paths is rewritten to `<project>/…` / "declared schema artifact" / "learning store" before landing. Engine-token hygiene (`test_spec_hygiene.py`) stays green.
 - **Decision B — one bundle, one MINOR.** 17 addons ship as a single `0.54.0` (not 17 patches): all are additive governance/template guidance; none changes instance `extensions`, `realizing_layers`, or digest-pinned prose (TRACEABILITY COV02 bullet stays deferred per digest-regen decision).
 - **Decision C — lint where it prevents rework, prose elsewhere.** New checks are advisory/warning ONLY — no new hard errors that could red-line existing corpus: CHG-L012 (completion sync, warning), REG01 (registration checklist, advisory), TDD-SYNC A–E (advisory, NOT error). Everything else is auditor-lens prose.
 - **Decision D — governance gate first.** Framework `**` change ⇒ CHG + IPLAN per AGENTS.md/CLAUDE.md before code. Plan PR → two review cycles → impl PR `feat/0.54.0-donor-addons` → `dev`.

@@ -40,14 +40,14 @@ Close the real gap behind #656 with the smallest canon change that makes post-co
 - `revision_history` on the IPLAN template or mandatory `detection_gap` field (rejected; record homes already exist — D6).
 - `Related-IPLAN` authorisation bypass of §3.13 (rejected; the vehicle satisfies §3.13 instead of bypassing it).
 - Reopening/mutating `Verified` plans or backward status transitions (forbidden; parent stays immutable).
-- The b-local-privy IPLAN-47 data fix itself (consumer-side, already repaired via its own PRs).
+- The donor project's IPLAN-47 data fix itself (consumer-side, already repaired via its own PRs).
 - Merge-policy reversal (no retroactive "must have been Verified" rule; forward rule only — D5).
 
 ## Approach / Design
 
 ### Decision D1 — verdict on #656 (what is real)
 
-Real, threefold, narrow: (a) **lifecycle-completeness** — no proportionate ceremony for a code-only repair to closed output (full CHG cascade vs. edit-without-authorisation is the entire menu); (b) **broken reference** — `LAYER_REGISTRY.yaml:155` and `GATE-08:70` promise `IPLAN/tmp/` bugfix plans that do not exist on disk (7 files in `08_IPLAN/`, no `tmp/`, no template); (c) **validation-completeness** — `atlas fmt exit 0` vs `apply exit 1` plus stale-image masking shows migration VERIFY can go green on a broken artefact. Not a missing lifecycle: the validation-window pattern (VERIFY over `Completed`) and the heavyweight post-`Verified` pattern (CHG + new IPLAN) both exist.
+Real, threefold, narrow: (a) **lifecycle-completeness** — no proportionate ceremony for a code-only repair to closed output (full CHG cascade vs. edit-without-authorisation is the entire menu); (b) **broken reference** — `LAYER_REGISTRY.yaml:155` and `GATE-08:70` promise `IPLAN/tmp/` bugfix plans that do not exist on disk (7 files in `08_IPLAN/`, no `tmp/`, no template); (c) **validation-completeness** — a schema-format check exiting 0 while migration-apply exits 1, plus stale-image masking, shows migration VERIFY can go green on a broken artefact. Not a missing lifecycle: the validation-window pattern (VERIFY over `Completed`) and the heavyweight post-`Verified` pattern (CHG + new IPLAN) both exist.
 
 ### Decision D2 — terminal semantics (reject #656's "both terminal")
 

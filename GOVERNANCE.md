@@ -66,7 +66,7 @@ The framework provides six enforcement mechanisms for AI agents:
 
    Usage: `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>`
 
-   Full catalog (`CHG-L001`–`CHG-L015`, `BGF-00`–`BGF-07`, `GOV-*` aliases,
+   Full catalog (`CHG-L001`–`CHG-L016`, `BGF-00`–`BGF-07`, `GOV-*` aliases,
    reserved IDs): `framework/governance/LINT_RULES.md` — the single source of
    truth. Governance aliases: GOV-011/L001 (status lifecycle), GOV-012/L002
    (gate approval), GOV-019/L004 (IPLAN reference).
@@ -80,4 +80,4 @@ The framework provides six enforcement mechanisms for AI agents:
    Before Work".
 
 Consuming projects MUST propagate these enforcement mechanisms. See
-`ADAPTATION.md` for the adaptation checklist.
+`framework/governance/ADAPTATION.md` for the adaptation checklist.

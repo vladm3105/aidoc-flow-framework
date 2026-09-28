@@ -55,7 +55,7 @@ Newest first. Timestamps are ISO 8601 UTC.
   change-level **C2** (F3/spec). Vehicle: CHG-10 + IPLAN-10 (`framework/archive/CHG-10/`).
 - **Context:** F3 had no legal shape for keeping seed → modules → SDD actual — authors either
   rewrote frozen seed in place (SEED_CONTRACT R1 violation) or versioned the whole tree per
-  change (cascade explosion). Piloted on b-local-privy MODULE-12 (exporter-health CHG).
+  change (cascade explosion). Piloted on a donor project's MODULE-12 (exporter-health CHG).
 - **Decision (F3-only; F1/F2/F4/Emergency/Type-R untouched):** Phase 0 splits into 0a seed_scope
   (record, usually no-change, never rewrite) + 0b module_lifecycle (archive → sync → version,
   affected modules only) + 0c SDD cascade; a review checkpoint gates SDD rewrites and IPLAN
@@ -189,12 +189,12 @@ Newest first. Timestamps are ISO 8601 UTC.
 - **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.3 → 0.54.0` (MINOR),
   change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
   GATE-SPEC.
-- **Context:** A sibling project's governed `.aidoc/` directory (frozen to `/tmp/bprivy-gov/`,
+- **Context:** A sibling project's governed `.aidoc/` directory (frozen to `/tmp/donor-gov/`,
   8 files, 1851 lines — do NOT chase donor HEAD) carried 17 hardening addons the framework
   spec lacked. Ranked P0–P2 in `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md` (FINAL, Pass 3
   clean), implemented under `framework/archive/CHG-03/` (CHG-03 + IPLAN-03, subtype `combined`).
-- **Decision:** Land all 17 addons, genericized (no donor literals — Collector/OTel/Go-service
-  tokens, Atlas/Privy names, mimocode paths, `docs/sdd/` layouts stay donor-local):
+- **Decision:** Land all 17 addons, genericized (no donor literals — collector/telemetry/service
+  tokens, vendor/product names, local tool paths, `docs/sdd/` layouts stay donor-local):
   1. `DOC_GOVERNANCE_CORE.md` gains the SDD-first implementation order table (§3.1.1),
      the §3.13 bootstrap exemption, the IPLAN Lifecycle bundle (status-gate table, failure
      modes, DONE-must-exist, realtime manifest, CHG-tracks-IPLAN, SDD-sync-on-completion

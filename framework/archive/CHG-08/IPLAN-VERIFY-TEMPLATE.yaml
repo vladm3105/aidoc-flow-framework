@@ -167,15 +167,15 @@ cross_iplan_impact:
   impacts:
     - iplan: "IPLAN-09"
       files_affected:
-        - "internal/provider/bridge_client.go"
-        - "internal/provider/sumsub_client.go"
-        - "internal/provider/privy_client.go"
+        - "internal/provider/payment_client.go"
+        - "internal/provider/kyc_client.go"
+        - "internal/provider/auth_client.go"
       nature: "Bug fix (retry logic, body consumption)"
     - iplan: "IPLAN-01"
       files_affected:
         - "internal/platform/webhook_handler.go"
         - "internal/platform/handlers.go"
-      nature: "Bug fix (Svix verification, balance provider)"
+      nature: "Bug fix (webhook-signature verification, balance provider)"
 
 # =============================================================================
 # Section 6: Implementation Commands

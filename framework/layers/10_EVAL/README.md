@@ -34,7 +34,7 @@ IPLAN-01 (Platform Port Boundary)
           ├── EVAL-01-RPT-002.yaml   # cycle 2: FAIL (88.9%)
           └── EVAL-01-RPT-003.yaml   # cycle 3: PASS (100%)
 
-IPLAN-02 (Auth Privy JWT)
+IPLAN-02 (Auth JWT)
   └── EVAL-02/EVAL-02.yaml          # strategy: what to test for IPLAN-02
       └── reports/
           └── EVAL-02-RPT-001.yaml   # cycle 1: PASS (100%)

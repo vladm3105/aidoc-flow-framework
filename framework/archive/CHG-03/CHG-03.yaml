@@ -1,5 +1,5 @@
 # =============================================================================
-#  CHG-03: Framework 0.54.0 donor-hardening addons (b-local-privy → framework)
+#  CHG-03: Framework 0.54.0 donor-hardening addons (donor project → framework)
 # =============================================================================
 #  Plan: plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md (FINAL, Pass 3 clean)
 #  IPLAN: framework/archive/CHG-03/IPLAN-03.yaml (In Progress, authorizing)
@@ -7,7 +7,7 @@
 # =============================================================================
 
 id: CHG-03
-title: "Port 17 donor-hardening addons (b-local-privy governance) into the spec + MINOR bump 0.53.3 → 0.54.0"
+title: "Port 17 donor-hardening addons (donor-project governance) into the spec + MINOR bump 0.53.3 → 0.54.0"
 
 # =============================================================================
 # Metadata
@@ -53,7 +53,7 @@ change_control:
 
 change_description:
   what: |
-    Port the operational hardening learned in b-local-privy
+    Port the operational hardening learned in a donor project
     .aidoc/project/governance/ (8 files, 1851 lines — frozen snapshot, do NOT
     chase donor HEAD) into the engine-agnostic spec as 17 addons:
     §3.1.1 What-Goes-Where table, §3.13 bootstrap exemption, SDD-sync on IPLAN

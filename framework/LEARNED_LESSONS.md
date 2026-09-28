@@ -240,8 +240,9 @@ When modifying existing SDD documents via CHG:
 - Do NOT add `dns` to Docker `daemon.json` — it replaces embedded DNS and breaks Compose
   service discovery. Caused intermittent CI failures.
 - Python 3.12 (not 3.13) — Debian host has 3.12 cached but not 3.13.
-- Atlas declarative mode is canonical: `atlas schema apply --to "file:///migrations/schema.hcl"`.
-  NOT `atlas migrate apply` (versioned SQL).
+- Declarative schema mode is canonical: apply the declared schema file to the database
+  (e.g. `schema apply --to "file:///migrations/schema.hcl"`).
+  NOT versioned-SQL `migrate apply`.
 
 ### 5.9 ID Hash Formula
 
@@ -392,7 +393,7 @@ test case. EVAL captured only 1-2 assertions when the scenarios doc specified 4-
 
 ### Scope
 
-- b-local-privy EVAL-01: ~80 assertion gaps across 83 test cases, 12 missing test cases entirely.
+- Pilot-project EVAL-01: ~80 assertion gaps across 83 test cases, 12 missing test cases entirely.
 
 ### Root Cause
 
@@ -416,10 +417,10 @@ test case. EVAL captured only 1-2 assertions when the scenarios doc specified 4-
 
 ### Evidence
 
-- b-local-privy EVAL-01 `bdd02.int01` only asserted "First login creates users row" but
-  TC-02.6 also requires: email_verified_at set, privy_user_id stored, idempotent on second call.
-- b-local-privy EVAL-02 had fabricated TDD ID `TDD.01.04.f19c` (doesn't exist in any TDD file).
-- b-local-privy EVAL-02 smoke tests referenced non-existent scripts (`build_website.sh`).
+- Pilot-project EVAL-01 `bdd02.int01` only asserted "First login creates users row" but
+  TC-02.6 also requires: email_verified_at set, provider_user_id stored, idempotent on second call.
+- Pilot-project EVAL-02 had fabricated TDD ID `TDD.01.04.f19c` (doesn't exist in any TDD file).
+- Pilot-project EVAL-02 smoke tests referenced non-existent scripts (`build_app.sh`).
 
 ---
 
@@ -450,8 +451,8 @@ incrementally. The summary is not recomputed after the final write.
 
 ### Evidence
 
-- b-local-privy EVAL-01: summary said 77/156 (49%) but actual was 95/156 (61%).
-- b-local-privy EVAL-02: summary said 105 total but parsed count was 104.
+- Pilot-project EVAL-01: summary said 77/156 (49%) but actual was 95/156 (61%).
+- Pilot-project EVAL-02: summary said 105 total but parsed count was 104.
 
 ---
 
@@ -466,7 +467,7 @@ migrations are idempotent. Non-idempotent migrations cause integration test fail
 
 ### Scope
 
-- b-local-privy: 12 auth integration tests skipped due to this migration bug.
+- Pilot project: 12 auth integration tests skipped due to this migration bug.
 
 ### Root Cause
 
@@ -488,5 +489,5 @@ IF NOT EXISTS). No lint rule enforces idempotency.
 
 ### Evidence
 
-- b-local-privy `004_add_audit_log.sql`: `CREATE TABLE audit_log (...)` → error on re-run.
+- Pilot project `004_add_audit_log.sql`: `CREATE TABLE audit_log (...)` → error on re-run.
 - Fixed by adding `IF NOT EXISTS` to all CREATE TABLE and CREATE INDEX statements.

@@ -3,7 +3,7 @@
 # =============================================================================
 #  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
 #  IPLAN: framework/archive/CHG-10/IPLAN-10.yaml (to be authored after approval)
-#  Pilot: /tmp/chg41-pilot/CHG-41_modules_first_exporter_health.yaml (b-local-privy
+#  Pilot: /tmp/chg41-pilot/CHG-41_modules_first_exporter_health.yaml (donor-project
 #  MODULE-12 pilot, F3/midstream/C2 — proves affected-only module_lifecycle +
 #  seed_scope no-change keeps seed → modules → SDD actual without tree-wide versioning)
 #  §3.4 checklist: completed before authoring; app-oriented items N/A with
@@ -76,7 +76,7 @@ change_description:
       - "DECISIONS.md GD-35 entry for the modules-first ruling"
       - "both 09_CHG READMEs: Phase 0 0a/0b pointer to the flows doc (identical)"
     out:
-      - "b-local-privy CHG-41 pilot landing (separate vehicle, separate repo)"
+      - "Donor-project CHG-41 pilot landing (separate vehicle, separate repo)"
       - "Other flows (F1/F2/F4/Emergency/Type-R) — untouched; the extension is F3-only"
       - "CHG template canon decision (edits both copies identically)"
       - "STALE remediation or registry shape changes"
