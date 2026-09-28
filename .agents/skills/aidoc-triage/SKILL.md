@@ -25,6 +25,15 @@ Record: state, current labels, existing comments, every factual claim (file path
 
 If the issue is already CLOSED, stop and report that with evidence — never triage a corpse, never re-triage into a closed thread.
 
+### Review the full comment thread
+
+The body is only the opening claim — read every comment, oldest first:
+
+- Attribute each follow-up claim (correction, reproduction, "+1", proposed fix) to its author and date; verify load-bearing ones under §2 exactly like body claims.
+- Corrections inside the thread supersede the body — triage the corrected claim, and name what it supersedes in the note.
+- A prior triage note changes the job: post a delta per §4, never a duplicate full note. If an earlier verdict's evidence rotted (file moved, rule renumbered, VERSION advanced), say so with the fresh check.
+- Stale or resolved sub-threads get one line in the note ("comment dated YYYY-MM-DD no longer reproduces — <fresh check>"), never an in-thread argument with the commenter.
+
 ## 2. Verify each claim against the tree (the core discipline)
 
 For every claim, run the check; never trust the issue text:
@@ -46,6 +55,8 @@ For every claim, run the check; never trust the issue text:
 **Labels**: list first (`gh label list`), reuse — create only for a genuinely new class (`gh label create <name> --color <hex> --description "<text>"`). Compose triples: priority + area + class, e.g. `P1,linter` or `bug,P2,release`. Discriminators: `bug` = behavior contradicts its contract; `gap` = contract missing, nothing contradicts yet; `stale` = once-true prose/code the tree outgrew; `linter` = `sdd_doc_lint/` behavior, `docs` = prose only. Remove a clearly wrong label rather than stacking around it; when unsure, leave it and note the question in the comment.
 
 **Cluster**: link related issues (`#700` before `#726`'s live subset; catalog `#715` before severity `#716`/`#722`/`#696`; behavior pairs `#713`+`#733`).
+
+**Ownership — transfer when another repo owns it**: the test is ownership, not severity. If the defect lives in another repo (the CI canon `aidoc-flow-ci`, a sibling submodule, an upstream spec), the issue belongs THERE, not here. Record the ownership verdict in the triage note; execution per §8.
 
 ## 4. Post the triage note + label
 
@@ -83,6 +94,16 @@ Triage results must outlive the session: record the ordering decisions (what goe
 ## 7. Handoff to implementation (for later, not triage)
 
 Batch docs-truthfulness separately from enforcement-behavior changes; behavior pairs need fixture matrices + negative controls. Vehicle: docs-only → C1 PATCH; tightened enforcement → C2 PATCH; both cut both CHANGELOGs with a pin sweep. Every PR body carries `Closes #N`; every commit carries the OPS-0065 self-review phrase. Branch protection on `dev` requires six contexts — never add a required check whose workflow can skip a PR.
+
+## 8. Transfer to another repo (forwarding)
+
+Only after §§1–4 are done on the local issue — the triage note carrying the ownership verdict posts here first, so the trail survives the move.
+
+1. Cite the ownership evidence in the note (which repo owns the file/workflow, with `file:line` or workflow path).
+2. Run the `approval-gate` check — transfer is an external action; never self-approve.
+3. Transfer: `gh issue transfer <N> <OWNER/REPO> --repo vladm3105/aidoc-flow-framework`.
+4. Read the transfer back (`gh issue view <N> --repo <OWNER/REPO> --json state,title --jq .`) — a printed URL is not proof it landed.
+5. Record the move in project memory (§6) with the reason. The transfer itself closes out the local item — never close the local issue as completed, and never re-triage into the moved thread.
 
 ## Examples
 
