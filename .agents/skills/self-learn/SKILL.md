@@ -30,7 +30,7 @@ The loop has three modes. Run only the mode the situation calls for.
 
 | Store | Location | Purpose |
 |---|---|---|
-| Learnings | project memory store, consolidated patterns section (resolved per `recall` §1) | this loop's home |
+| Learnings | `.aidoc/learning/learnings.md` (repo-owned system of record, by PR) | this loop's home — harness memory is the scratch inbox, resolved per `recall` §1 |
 | Session state | the harness's session checkpoint / notes (filenames resolved at runtime, never assumed) | extraction sources |
 | Verbatim recovery | the harness's trajectory store, if it exposes one | exact payloads when memory paraphrases |
 | Project learning log | only where the repository declares one (own path, own schema) | repo-owned audit trail |
