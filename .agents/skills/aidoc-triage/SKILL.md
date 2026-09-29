@@ -83,6 +83,8 @@ Then apply labels directly — including priority (`gh issue edit <N> --repo vla
 - **Archive tier**: `framework/archive/**` is frozen history; repairs there carry no VERSION obligation and must not "fix" history.
 - **Path-filtered required gates**: a required check whose workflow has `paths:` filters deadlocks PRs outside those paths — required feeders must trigger unconditionally.
 - **Flaky pool**: `curl: (6) Could not resolve host: github.com` on trivy/dep-scan = DNS flake — `gh run rerun <run-id> --failed`, don't chase.
+- **Outage window**: `error connecting to api.github.com` on `gh` reads — sleep with backoff and re-read fresh before acting; a badge seen in the window may be stale. Read-back discipline: a URL or exit code alone never proves a write — verify the field that matters (body length, labels, state).
+- **Zero-job runs**: workflows failing instantly with zero jobs, no logs, and `gh run rerun` refusing ("cannot be retried") never executed — platform-side scheduling failure, not a code defect. Re-trigger with a fresh head, don't chase the "failure".
 - **`pull_request_target` (ai-review)**: evaluates the BASE file — red on the PR by design; validate the caller contract mechanically instead.
 - **Secrets hook**: `detect-secrets` flags `framework/archive/…` path literals — false positive, use `# pragma: allowlist secret` (repo convention).
 - **Sync collateral**: `sync-version-refs` "files were modified" is its trailing `git add -u` staging earlier work — verify on a clean tree before chasing drift.
