@@ -1,0 +1,126 @@
+# =============================================================================
+#  CHG-21: README Status spec-pin refresh (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (docs-only non-normative C1: point-in-time snapshot prose
+#  in root README.md; no SDD contract at stake, no behavior change) — C1 CHG +
+#  scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-21/IPLAN-21.yaml (authorizing once In Progress)
+#  Trigger: README review 2026-09-29 — Status § pins framework spec 0.62.5
+#  (snapshot 2026-09-28) against live framework/VERSION 0.66.0. No issue filed
+#  (one-fact snapshot refresh found by direct review; no tracker gap).
+#  Requester citation (F2.3, verbatim ask): "review global the readme to check
+#  if it should be updated" + "approved" (implement the one-fact refresh)
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — single-file prose edit, no runtime code, no queries/migrations;
+#  EARS/BDD IDs vacuous (no element IDs cited); coupled-issue scan: none (the
+#  rest of README verified true 2026-09-29). Covering tests: N/A with reason —
+#  no code files touched (prose only); verification commands in IPLAN-21
+#  suffice per F2.3.
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG
+#  (the edit only *reports* the version; CHG-15/CHG-19 precedent).
+# =============================================================================
+
+id: CHG-21
+title: "Refresh README Status spec pin 0.62.5 → 0.66.0 + snapshot date (review 2026-09-29)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-21"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-21 authorizing record (framework/archive/CHG-21/IPLAN-21.yaml)"
+  # README.md is amended in place (snapshot prose, no archive rotation); only
+  # the vehicle record is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Bump README.md Status § spec pin 0.62.5 → 0.66.0 and snapshot date 2026-09-28 → 2026-09-29 (two-line diff). Everything else in README verified true 2026-09-29."
+  why: "The Status § pin trails the live spec by three minor versions and misroutes readers checking which spec the project tracks."
+  trigger: "Root-README review 2026-09-29 + user approval to implement."
+  scope:
+    in:
+      - "README.md:304-313: spec pin + snapshot date only"
+    out:
+      - "All other README sections (verified true — layer table, tooling, tags, links, legacy pointer)"
+      - "Any framework/ normative change (none — version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-21 with the two-line README edit + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-21"
+      status: Completed
+    - step: "Edit README.md Status § + run IPLAN-21 battery"
+      phase: "documentation_sync"
+      artifact: "README.md"
+      status: Completed
+  files_modified:
+    - "README.md"
+
+artifacts_modified:
+  - id: "CHG-21"
+    changes: "Authorizing record for README spec-pin refresh (this file)"
+  - id: "IPLAN-21"
+    changes: "Authorizing IPLAN (framework/archive/CHG-21/IPLAN-21.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-21 (0 errors)"
+    - "grep battery: README carries spec 0.66.0 pin + 2026-09-29 snapshot; no 0.62.5 remnant"

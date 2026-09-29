@@ -1,0 +1,95 @@
+# =============================================================================
+#  IPLAN-21: Refresh README Status spec pin (review 2026-09-29)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-21/CHG-21.yaml (F2 direct, C1, Proposed)
+#  Source: root-README review — prose-only C1, README.md Status § only.
+# =============================================================================
+
+doc_id: IPLAN-21
+title: "Refresh README Status spec pin 0.62.5 → 0.66.0 + snapshot date"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+  source_chg: "CHG-21"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-21"
+  subtype: combined
+  source_spec: "@spec: N/A (snapshot-prose refresh under CHG-21; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 1
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "README.md"
+      description: "Status §: spec pin 0.62.5 → 0.66.0, snapshot date 2026-09-28 → 2026-09-29"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-21/CHG-21.yaml + IPLAN-21.yaml"
+      description: "Authorizing vehicle (this file + CHG-21)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3, prose-only). Verification commands below are the check battery (CHG-15/CHG-19 precedent)."
+  cases:
+    - "chg_lint.py over CHG-21: 0 errors"
+    - "grep battery: spec 0.66.0 pin present, 2026-09-29 snapshot present, no 0.62.5 remnant in Status §"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-21/CHG-21.yaml"
+    - "grep -n '0\\.66\\.0\\|0\\.62\\.5\\|2026-09-2' README.md | head (expect Status § only)"
+    - "git diff --stat dev (expect 3 files: README.md, CHG-21, IPLAN-21)"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Two-line scope: spec pin + snapshot date; no other README prose touched"
+  - "Pin re-verified against framework/VERSION at implementation time"
+  - "No version impact (version_action keep; reporting-only edit)"
+  - "Worktree-only writes; main checkout stays on dev"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Proposed
+      scope: "README Status § refresh + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-21"
+  upstream: ["root-README review 2026-09-29 (user-approved)"]
+  downstream: ["README.md (snapshot prose)"]
