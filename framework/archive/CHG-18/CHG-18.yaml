@@ -1,0 +1,247 @@
+# =============================================================================
+#  CHG-18: self-learn two-tier architecture + vendor-agnostic skill (phase-b)
+#  + MINOR 0.65.2 → 0.66.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, cross-layer + new requirements),
+#  C3 (formal gate + human approver), entry GATE-SPEC; authorizing IPLAN-18
+#  (Draft — authored pre-approval per precedent; NO SDD rewrite and NO
+#  implementation until the C3 gate approver signs and status leaves Proposed).
+#  Issue: #779 phase-b (OPEN, P1). Mode B verdict SCOPED-GO @ f4b5f695 carried
+#  forward; phase-a (loophole closure) merged as CHG-17/PR #791.
+#  Owner decisions (session 2026-09-29, recorded): (1) folder — KEEP
+#  .aidoc/learning/, DECLINE the KNOWLEDGE-GOVERNANCE-DRAFT §3 rename
+#  (live pilot #783, AGENTS.md:179 row, both skill copies, BOOTSTRAP.md
+#  consistency); BOOTSTRAP.md unsanctioned-ruling on knowledge/ CONFIRMED, no
+#  edit owed; (2) scope — framework skill copy + SELF_LEARNING.md only, no
+#  Tier-1 AGENTS.md/rules changes.
+#  §3.4 checklist: completed before authoring. Item 1 — every referenced file
+#  read in full during CHG-17 groundwork (SELF_LEARNING.md v1.1 post-CHG-17,
+#  framework SKILL.md 193 ll. with 6 MiMoCode-coupled lines, .agents SKILL.md
+#  208 ll. hardened port source, AGENTS.md:179, BOOTSTRAP.md ruling,
+#  KNOWLEDGE-GOVERNANCE-DRAFT.md in full, DECISIONS.md GD context).
+#  Items 2/3/4/6/9/10 N/A with reason — docs-only spec change, no runtime
+#  code/structs/queries/handlers/caller/migrations. Item 5 — EARS/BDD IDs
+#  vacuous (#779 cites none). Item 7 — coupled: folder decision resolved above
+#  (no longer pending); universal tier stays OUT (canon #131, other repo);
+#  b-local reference impl stays OUT (external, unverified). Item 8 — covering
+#  tests in IPLAN-18 (decoupling-token absence + Tier markers + folder pins).
+#  Items 11-14 — SDD lifecycle amends with archive → rewrite → supersedes →
+#  bump; sdd_lifecycle before iplan_creation; no code steps (CHG-L003 clean).
+#  Phase 0a seed_scope: NO-CHANGE (no seed/ tier — re-verified at authoring).
+#  Phase 0b module_lifecycle: NO-CHANGE (no docs/modules/ tier — re-verified).
+#  Review checkpoint: PENDING second-opinion judge pass (recorded before any
+#  SDD rewrite per §4 — SDD steps stay Pending until judge + C3 approval).
+#  New governance capability (Tier architecture) → MINOR 0.65.2 → 0.66.0.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose only; removes
+#  harness-specific path/schema names from the shared spec (smaller
+#  misconfiguration surface on non-MiMoCode engines).
+# =============================================================================
+
+id: CHG-18
+title: "Self-learn Two-Tier Project Knowledge Architecture + vendor-agnostic skill (#779 phase-b) + MINOR 0.65.2 → 0.66.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.65.2"
+
+  change_level:
+    value: C3
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-18"
+  status: Proposed
+  change_level: C3
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: null
+  date_implemented: null
+  supersedes:
+    - "SELF_LEARNING.md v1.1 (framework/archive/CHG-18/SELF_LEARNING.md)"
+    - "self-learn SKILL.md unversioned (framework/archive/CHG-18/self-learn-SKILL.md)"
+    - "test_self_learning.py v1.0 (framework/archive/CHG-18/test_self_learning.py)"
+    - "framework/VERSION 0.65.2 (framework/archive/CHG-18/VERSION)"
+    - "IPLAN-18 authorizing record (framework/archive/CHG-18/IPLAN-18.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Rewrite SELF_LEARNING.md (v1.1 → v2.0) around the Two-Tier Project
+    Knowledge Architecture (Tier 1 active invariants by reference, Tier 2
+    on-demand .aidoc/learning knowledge; Tier 3 is the existing §7.4 upstream
+    feedback contract by reference — no Tier-3 storage and no universal.md
+    machinery) with a truthfulness pass over aspirational machinery
+    (session.post / learn-inject / trajectories language becomes
+    harness-optional, portable terms); decouple
+    framework/skills/self-learn/SKILL.md §§1/4.1/Red-flags from MiMoCode
+    paths/schemas (port from the hardened .agents copy, keep the framework
+    adaptation header); record GD-40 (folder decision + architecture adoption);
+    extend test_self_learning.py (decoupling-token absence, Tier markers,
+    learning/-folder pins). Folder: KEEP .aidoc/learning/, draft §3 rename
+    declined. MINOR 0.65.2 → 0.66.0 with sweep + both CHANGELOGs."
+  why: "The framework skill copy breaks on any non-MiMoCode engine (checkpoint §7/§8, history_fts, tool_input are unavailable tools/paths); SELF_LEARNING.md specifies aspirational hooks as live machinery and carries no usable tier model — the remaining ALIVE core of #779 after phase-a."
+  trigger: "Issue #779 phase-b + owner folder/scope decisions 2026-09-29."
+  breaking_change_analysis: "C3 (not C2): cross-layer (governance doc + skill + decisions log + test) with new requirements (Tier model). Additive in effect — no gate/ID/schema/enum removed; engines that ignored the coupled paths lose nothing; previously-green records stay green. Reviewer may still block at the formal gate."
+  enforcement_decision: "Reviewer-lens + conformance pins (not a linter emitter). Rationale: vendor-neutrality and tier-shape are prose properties; the extended test pins them deterministically."
+  scope:
+    in:
+      - "framework/governance/SELF_LEARNING.md v1.1 → v2.0: Tier 1/2/3 section + truthfulness pass (archive → rewrite → supersedes → bump)"
+      - "framework/skills/self-learn/SKILL.md: decouple §§1/4.1/Red-flags (port .agents rows; header untouched)"
+      - "framework/governance/DECISIONS.md: GD-40 folder + architecture decision"
+      - "tests/conformance/test_self_learning.py: decoupling absence + Tier/folder pins"
+      - "framework/VERSION 0.65.2 → 0.66.0 + mechanical pin sweep + both CHANGELOGs"
+    out:
+      - "Tier-1 AGENTS.md/rules changes (declined in scope decision — reference only)"
+      - "Folder rename (declined — keep learning/; no AGENTS.md/BOOTSTRAP.md/skill edits owed)"
+      - "Universal-tier distribution / fetch-vs-vendor (canon #131, other repo)"
+      - "b-local reference port (external, unverified)"
+      - "Archive history rewrites; learnings.md content migration"
+      - ".agents skill copy (already hardened — untouched)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle (ALL PENDING — no rewrite until C3 approval)
+# =============================================================================
+
+sdd_lifecycle:
+  - action: amend
+    archive_path: framework/archive/CHG-18/SELF_LEARNING.md
+    changes: "Tier 1/2/3 architecture section + aspirational-machinery truthfulness pass; doc Version 1.1 → 2.0"
+    document: framework/governance/SELF_LEARNING.md
+    layer: 09_CHG
+    new_version: "2.0"
+  - action: amend
+    archive_path: framework/archive/CHG-18/self-learn-SKILL.md
+    changes: "Decouple §§1/4.1/Red-flags from MiMoCode paths/schemas (port .agents rows); unversioned skill prose"
+    document: framework/skills/self-learn/SKILL.md
+    layer: 09_CHG
+    new_version: "rewritten"
+  - action: amend
+    archive_path: framework/archive/CHG-18/DECISIONS.md
+    changes: "GD-40 entry (folder keep + two-tier adoption)"
+    document: framework/governance/DECISIONS.md
+    layer: 09_CHG
+    new_version: "0.66.0"
+  - action: amend
+    archive_path: framework/archive/CHG-18/test_self_learning.py
+    changes: "Extend pins: decoupling-token absence + Tier markers + learning/-folder pins; v1.0 → v1.1"
+    document: tests/conformance/test_self_learning.py
+    layer: 09_CHG
+    new_version: "1.1"
+  - action: create
+    archive_path: null
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+    document: framework/archive/CHG-18/IPLAN-18.yaml
+    layer: 08_IPLAN
+    new_version: "1.0"
+
+artifacts_modified:
+  - id: "CHG-18"
+    changes: "Authorizing record for phase-b (this file)"
+  - id: "IPLAN-18"
+    changes: "Authorizing IPLAN Draft (framework/archive/CHG-18/IPLAN-18.yaml)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle (F3 Phase 0b — no-change, verified)
+# =============================================================================
+
+module_lifecycle:
+  # No docs/modules/ tier in this repo (re-verified absent at authoring).
+  entries: []
+
+# =============================================================================
+# Section 4B: Seed Scope (F3 Phase 0a — no-change, verified)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tier in this repo (re-verified absent); no seed assumption changes. Review checkpoint: PENDING judge pass — no SDD rewrite and no IPLAN activation until it passes AND the C3 approver signs."
+  checked:
+    - "seed/ absence (re-verified `ls seed` at authoring)"
+    - "docs/modules/ absence (re-verified)"
+
+# =============================================================================
+# Section 5: Implementation (ALL PENDING — gated)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Stage pre-change originals to framework/archive/CHG-18/ as pre-approval review inputs (SELF_LEARNING.md, skill, DECISIONS.md, test, VERSION; gated re-verification post-approval)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, VERSION"
+      archive_path: "framework/archive/CHG-18/"
+      new_version: "0.66.0"
+      current_version: "0.65.2"
+      status: Pending
+    - step: "Second-opinion judge pass on the vehicle (BEFORE any SDD rewrite — review checkpoint)"
+      phase: "sdd_lifecycle"
+      artifact: "CHG-18 vehicle"
+      archive_path: "framework/archive/CHG-18/"
+      new_version: "0.66.0"
+      current_version: "0.65.2"
+      status: Pending
+    - step: "Amend SDD docs per lifecycle above (SELF_LEARNING v2.0, skill decouple, GD-40) — ONLY after C3 approval"
+      phase: "sdd_lifecycle"
+      artifact: "SELF_LEARNING.md (v2.0), SKILL.md, DECISIONS.md (GD-40)"
+      archive_path: "framework/archive/CHG-18/"
+      new_version: "0.66.0"
+      current_version: "0.65.2"
+      status: Pending
+    - step: "MINOR fanout per IPLAN-18 manifest (test pins, VERSION, sweep, both CHANGELOGs) — ONLY after C3 approval"
+      phase: "sdd_lifecycle"
+      artifact: "tests + release"
+      archive_path: "framework/archive/CHG-18/"
+      new_version: "0.66.0"
+      current_version: "0.65.2"
+      status: Pending
+    - step: "Activate IPLAN-18 (Draft → In Progress) with the file_manifest + verification commands — ONLY after C3 approval"
+      phase: "iplan_creation"
+      artifact: "IPLAN-18"
+      status: Pending
+  files_modified:
+    - "framework/governance/SELF_LEARNING.md"
+    - "framework/skills/self-learn/SKILL.md"
+    - "framework/governance/DECISIONS.md"
+    - "tests/conformance/test_self_learning.py"
+    - "framework/VERSION"
+    - "CHANGELOG.md"
+    - "framework/CHANGELOG.md"
+
+# =============================================================================
+# Section 6: Gate Approval (FORMAL C3 GATE — human signature required)
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  conditions:
+    - "Status stays Proposed until a human approver signs here (GATE-SPEC-E004, GD-01)."
+    - "Second-opinion judge pass (revise-or-better folded) before the approval surfacing."
+    - "C3 peer review recorded here before Implemented; scope cuts re-open the gate."
+
+# =============================================================================
+# Section 7: Verification
+# =============================================================================
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-18/CHG-18.yaml: 0 errors"
+  - "test_self_learning.py extended: green — decoupling-token absence + Tier markers + learning/-folder pins (post-approval)"
+  - "Full conformance + sdd_doc_lint suites from root: green unmodified (post-approval)"

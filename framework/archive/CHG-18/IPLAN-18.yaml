@@ -1,0 +1,135 @@
+# =============================================================================
+#  IPLAN-18: Self-learn two-tier architecture (#779 phase-b) — DRAFT
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-18/CHG-18.yaml (F3/spec, C3,
+#  Proposed — ACTIVATION GATED on human C3 approval + judge pass).
+#  DO NOT execute file_manifest until CHG-18 leaves Proposed.
+# =============================================================================
+
+doc_id: IPLAN-18
+title: "Self-learn two-tier architecture + vendor-agnostic skill (DRAFT, gated)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.65.2"
+  source_chg: "CHG-18"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-18"
+  subtype: combined
+  source_spec: "@spec: N/A (governance prose under CHG-18; no SPEC component)"
+  status: Draft
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 3
+  estimated_files: 9
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest (GATED — execute only after C3 approval)
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/SELF_LEARNING.md"
+      description: "Tier 1/2/3 architecture section + aspirational-machinery truthfulness pass (v1.1 → v2.0)"
+      order: 1
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "framework/skills/self-learn/SKILL.md"
+      description: "Decouple §§1/4.1/Red-flags (port .agents rows; header untouched)"
+      order: 1
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-40 folder + architecture decision"
+      order: 2
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_self_learning.py"
+      description: "Extend: decoupling-token absence + Tier markers + learning/-folder pins"
+      order: 2
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "MINOR 0.65.2 → 0.66.0 (pin sweep mechanical)"
+      order: 3
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "0.66.0 project-level entry"
+      order: 3
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "0.66.0 spec entry"
+      order: 3
+      status: NOT_STARTED
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-18/CHG-18.yaml + IPLAN-18.yaml"
+      description: "Authorizing vehicle (this file + CHG-18) — DONE = authored pre-approval, verified = false until the C3 gate signs"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only spec change — covering checks extend test_self_learning.py: (a) decoupling absence (history_fts, tool_input, checkpoint §7/§8, session.post, learn-inject gone from the framework skill copy); (b) Tier 1/2/3 markers present in SELF_LEARNING.md; (c) learning/-folder pins (no knowledge/ migration language). Each pin proven live against the archived originals before merge. No new linter emitter (reviewer-lens)."
+  cases:
+    - "chg_lint.py over CHG-18: 0 errors"
+    - "test_self_learning.py extended: green, pins proven live on archived originals"
+    - "Full conformance + sdd_doc_lint suites from root: green unmodified"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-18/CHG-18.yaml"
+    - "cmp framework/governance/chg/README.md framework/layers/09_CHG/README.md (untouched, still twins)"
+    - "git diff --stat dev (expect the 9 manifest files only)"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "GATED: no manifest file is touched until CHG-18 leaves Proposed (human C3 signature + judge pass)"
+  - "Port, don't paraphrase: skill rows come from the .agents copy verbatim where applicable; framework adaptation header untouched"
+  - "Tier 3 = existing §7.4 feedback-submit contract by reference — no universal.md machinery"
+  - "Folder language: learning/ only; zero knowledge/ migration prose (decision recorded, not relitigated)"
+  - "No weakened checks: test only gains assertions; suites green unmodified otherwise"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Blocked
+      scope: "Vehicle authored; blocked on C3 human approval + judge pass"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-18"
+  upstream: ["#779"]
+  downstream: ["framework/governance/SELF_LEARNING.md", "framework/skills/self-learn/SKILL.md", "framework/governance/DECISIONS.md"]
