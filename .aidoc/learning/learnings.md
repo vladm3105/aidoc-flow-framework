@@ -11,6 +11,7 @@ Contract: entry format and lifecycle follow `.agents/skills/self-learn/`
 `memory-hygiene`. Declared in `AGENTS.md` ("Where state lives").
 
 ## [workflow] Flaky GitHub ops need backoff + re-verification, never a diagnosis
+
 - **First seen**: 2026-09-28
 - **Last seen**: 2026-09-29
 - **Count**: 8
@@ -19,6 +20,7 @@ Contract: entry format and lifecycle follow `.agents/skills/self-learn/`
 - **Governance rule**: aidoc-triage §5 flaky pool (rerun, don't chase)
 
 ## [workflow] Read-back discipline: a URL or exit code alone never proves a write
+
 - **First seen**: 2026-09-28
 - **Last seen**: 2026-09-29
 - **Count**: 4
@@ -27,6 +29,7 @@ Contract: entry format and lifecycle follow `.agents/skills/self-learn/`
 - **Governance rule**: AGENTS.md (verify-what-you-published); submit-feedback §6; ship-it §3
 
 ## [workflow] Re-watch from the new head after every push (stale-SHA trap)
+
 - **First seen**: 2026-09-28
 - **Last seen**: 2026-09-29
 - **Count**: 2
@@ -35,5 +38,6 @@ Contract: entry format and lifecycle follow `.agents/skills/self-learn/`
 - **Governance rule**: AGENTS.md (watching-your-PR, headRefOid); ship-it §1 stale-SHA trap
 
 ## Candidates logged, not promoted (single occurrence)
+
 - Repo-wide zero-match grep before engaging a filed "contradiction" (2026-09-29, #775) — closed as covered by aidoc-triage §2's core discipline; no separate entry.
 - Duplicate-skill check before creating (2026-09-29, two same-session applications) — stays candidate, Count 2; needs one cross-session observation.
