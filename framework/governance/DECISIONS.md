@@ -19,7 +19,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.2 |
+| Framework Version | 0.66.0 |
+
+---
+
+## GD-40 — Self-learn Two-Tier Project Knowledge Architecture; keep `.aidoc/learning/`; vendor-neutral skill (CHG-18, 0.66.0 MINOR)
+
+- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.65.2 → 0.66.0` (MINOR),
+  change-level **C3** (F3/spec; cross-layer governance + skill + decisions + test
+  with new Tier requirements; human C3 gate signature on file in CHG-18).
+  Vehicle: CHG-18 + IPLAN-18 (`framework/archive/CHG-18/`). Issue: #779 phase-b (P1).
+- **Context:** Phase-a (CHG-17) closed the solo direct-write loophole. Remaining:
+  the framework skill copy named MiMoCode-only paths/schemas (session
+  `checkpoint.md` §7/§8, trajectory SQLite `history_fts`/`tool_input`), breaking
+  every other engine; `SELF_LEARNING.md` specified aspirational hooks
+  (`session.post`, `learn-inject`) as live machinery with no usable tier model;
+  the folder name (`learning/` pilot vs `knowledge/` draft preference) was
+  undecided with a fresh CHG-16 ruling in play.
+- **Decision:** (1) Tier model adopted — Tier 1 active invariants by reference,
+  Tier 2 on-demand `.aidoc/learning/` knowledge (~3KB cap), Tier 3 the existing
+  §7.4 upstream-feedback contract by reference (no Tier-3 storage, no universal
+  log). (2) Folder: KEEP `.aidoc/learning/` — live pilot (#783), AGENTS.md row,
+  both skill copies, and BOOTSTRAP.md agree; the draft §3 rename is declined,
+  recorded here so it is not relitigated silently. (3) Skill decoupled by
+  porting the hardened `.agents` rows (harness artifacts best-effort, portable
+  sources as fallback); framework adaptation header untouched. Enforcement is
+  reviewer-lens + conformance pins.
+- **Consequence:** the shared skill runs on any capable engine; harness-specific
+  machinery is illustrative, never load-bearing; the folder question is settled
+  unless a new CHG reopens it with supersede links.
 
 ---
 

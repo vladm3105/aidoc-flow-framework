@@ -31,14 +31,18 @@ The loop has three modes. Run only the mode the situation calls for.
 
 | Store | Location | Purpose |
 |---|---|---|
-| Learnings | project memory store, consolidated patterns section (resolved per `recall` §1) | this loop's home |
-| Session state | session `checkpoint.md` §7/§8, `notes.md` | extraction sources |
-| Verbatim recovery | trajectory SQLite `history_fts` | exact payloads when memory paraphrases |
+| Learnings | `.aidoc/learning/learnings.md` (repo-owned system of record, by PR) | this loop's home — harness memory is the scratch inbox, resolved per `recall` §1 |
+| Session state | the harness's session checkpoint / notes (filenames resolved at runtime, never assumed) | extraction sources |
+| Verbatim recovery | the harness's trajectory store, if it exposes one | exact payloads when memory paraphrases |
 | Project learning log | only where the repository declares one (own path, own schema) | repo-owned audit trail |
 
-Memory summaries keep intent but drop literals. Real evidence lives in
-checkpoint §7 (discovered knowledge) and §8 (errors and fixes), the trajectory
-store's `tool_input` rows, and `git log`.
+Portable sources work everywhere: `git log`, the repo tracker, and the current
+session's own notes. Harness-specific rows above are best-effort — when the
+harness exposes no checkpoint, notes, or trajectory store, run the loop on the
+portable sources alone rather than failing. Memory summaries keep intent but
+drop literals; real evidence lives in the session's discovered-knowledge and
+errors-and-fixes records, the trajectory store's tool-input rows (when one
+exists), and `git log`.
 
 If the store has no consolidated knowledge yet, that is a finding
 (`no learnings yet`), not an error.
@@ -65,7 +69,7 @@ Write the entry where it survives the session, exactly once:
 
 | Fact | Owner |
 |---|---|
-| correction or hard-won gotcha, not yet a pattern | session checkpoint §7/§8 (candidate, not yet learning) |
+| correction or hard-won gotcha, not yet a pattern | harness session checkpoint / notes (candidate, not yet learning) |
 | confirmed pattern | consolidated learnings in the project memory store (entry below) |
 | durable cross-session fact | project memory via the `wrap-session` carrier |
 | actionable defect in owned code/docs | `submit-feedback`, never only a learning entry |
@@ -92,10 +96,12 @@ entry is a defect.
 
 1. Note error-heavy and correction-heavy recent sessions (from the handoff,
    tracker, or `git log`). Skip incomplete trajectories.
-2. For each flagged session, read its checkpoint §7/§8 and `notes.md`. For
-   verbatim payloads (exact IDs, hashes, revision text) query `history_fts` by
-   `session_id` + `kind='tool_input'` — curated memory keeps intent but drops
-   literals.
+2. For each flagged session, read its session checkpoint (discovered knowledge,
+   errors and fixes) and notes using whatever filenames the harness provides.
+   For verbatim payloads (exact IDs, hashes, revision text) query the harness
+   trajectory store when one is exposed — curated memory keeps intent but drops
+   literals. With no trajectory store, reconstruct from `git log` (hashes,
+   files, commands) and the session's own notes.
 3. Verify every candidate against source before writing: `grep` the cited
    `file:line`, re-parse config after quoting the claim, confirm counts from the
    files rather than from prose. Index documents and prior summaries drift;
@@ -184,7 +190,7 @@ Return:
 
 | Thought | Reality |
 |---|---|
-| "The trajectory log shows what happened" | It shows metadata. Evidence is in checkpoint §7/§8, `history_fts`, and git. |
+| "The trajectory log shows what happened" | It shows metadata. Evidence is in the session knowledge/error records, the trajectory store (when one exists), and git. |
 | "I'll write learnings straight from the summary" | Summaries paraphrase; verify every `file:line`, count, and ID against source first. |
 | "The subagent can append its finding directly" | Subagents report; the parent verifies and writes. Direct appends bypass dedupe. |
 | "This rule is documented, so it's enforced" | Documented without lint/validation is advisory. Add the mechanism or say advisory. |

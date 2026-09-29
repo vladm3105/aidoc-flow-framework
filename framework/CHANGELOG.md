@@ -11,9 +11,25 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.2 |
+| Framework Version | 0.66.0 |
 
 ---
+
+## [0.66.0] — 2026-09-29
+
+### Added — self-learn Two-Tier Project Knowledge Architecture + vendor-neutral skill (C3 MINOR, CHG-18 + IPLAN-18, issue #779 phase-b)
+
+- `SELF_LEARNING.md` v1.1 → v2.0: Tier model (Tier 1 invariants by reference,
+  Tier 2 on-demand `.aidoc/learning/` knowledge, Tier 3 the §7.4 upstream
+  feedback contract by reference — no Tier-3 storage, no universal log) plus a
+  truthfulness pass (harness hooks/stores illustrative, portable fallback).
+- `framework/skills/self-learn/` decoupled from MiMoCode-only
+  paths/schemas (ported from the hardened `.agents` copy; header untouched).
+- GD-40: folder decision (KEEP `.aidoc/learning/`, draft rename declined) +
+  architecture adoption.
+- `tests/conformance/test_self_learning.py` extended: decoupling-token absence
+  + Tier markers + learning/-folder pins, each proven live on the originals.
+- `framework/VERSION` bumped from `0.65.2` to `0.66.0` with mechanical pin sweep.
 
 ## [0.65.2] — 2026-09-29
 
