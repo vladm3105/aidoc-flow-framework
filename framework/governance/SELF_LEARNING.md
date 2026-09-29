@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 2.0 |
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.2 |
+| Framework Version | 0.66.0 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -34,21 +34,44 @@ workflows, and builds project-specific institutional knowledge.
 │  {date}-trajectories.jsonl        (persistent)              │
 └─────────────────────────────────────────────────────────────┘
 ```
+(Harness hook and store names in this diagram are illustrative — see
+Knowledge tiers Tier 1 and the harness-optional notes under Capture/Inject.)
+
+## Knowledge tiers
+
+The loop runs on the Two-Tier Project Knowledge Architecture (#779):
+
+| Tier | Home | Content | Cost |
+|------|------|---------|------|
+| **Tier 1 — Active invariants** | `AGENTS.md`, `.agents/rules/`, linters and static checks | Non-negotiable safety rules, enforced mechanically | Zero/minimal context — loaded by the harness or the gate, never pasted in full |
+| **Tier 2 — On-demand knowledge** | `.aidoc/learning/learnings.md` (repo-owned system of record, by PR) | Consolidated lessons with count/evidence; read headings first, open only entries bearing on the task | Small — a ~3KB cap of lesson text per session, highest-count first |
+| **Tier 3 — Upstream feedback** | The framework / project issue trackers (§7.4 feedback-submit contract, by reference) | Tooling and canon defects filed upstream instead of stored locally | One issue per defect, read back to prove publication |
+
+Tier 1 is referenced, never injected. Tier 2 is checked at session start and
+read on demand. Tier 3 is not a knowledge store — it is the feedback contract
+that keeps tooling defects out of project memory. (No Tier-3 storage and no
+universal log ship in this version.)
 
 ## File Locations
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries (auto-captured) |
+| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries (auto-captured where the harness provides them) |
 | Consolidated learnings | `.aidoc/learning/learnings.md` | Extracted patterns and rules |
 | Project memory | `MEMORY.md` | Promoted high-frequency lessons |
 | Governance doc | `docs/governance/SELF_LEARNING.md` | This document |
+
+Trajectory paths are harness-provided examples, resolved at runtime — a
+harness without trajectory capture runs the loop on portable sources
+(`git log`, session notes, the repo tracker).
 
 ## Capture Phase
 
 ### What gets captured
 
-Every session trajectory is logged via the `session.post` hook:
+Where the harness exposes a session-close hook (e.g. `session.post`), every
+session trajectory is logged through it. Harnesses without one capture from
+portable sources instead (`git log`, session notes, the repo tracker):
 
 | Field | Source | Purpose |
 |-------|--------|---------|
@@ -135,7 +158,9 @@ Single-occurrence events are logged but not promoted to learnings.
 
 ### System prompt injection
 
-The `learn-inject` hook appends top lessons to the system prompt:
+Where the harness supports injection hooks (e.g. `learn-inject`), top lessons
+are appended to the system prompt. Otherwise the apply mode reads Tier 2 on
+demand at session start:
 
 - **Cap**: 3KB maximum to avoid context bloat
 - **Priority**: Most recent + highest count lessons first

@@ -9,6 +9,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.66.0] — 2026-09-29
+
+### Added — self-learn two-tier architecture (C3 MINOR → 0.66.0)
+
+- Tier model + vendor-neutral skill (#779 phase-b; CHG-18 + IPLAN-18 in
+  `framework/archive/CHG-18/`); GD-40 records the keep-`learning/` decision
+- `framework/VERSION` bumped from `0.65.2` to `0.66.0` with mechanical pin sweep
+
 ## [0.65.2] — 2026-09-29
 
 ### Fixed — self-learn loophole closure (C2 PATCH → 0.65.2)

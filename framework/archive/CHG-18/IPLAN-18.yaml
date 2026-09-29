@@ -22,7 +22,7 @@ document_control:
   iplan_id: "IPLAN-18"
   subtype: combined
   source_spec: "@spec: N/A (governance prose under CHG-18; no SPEC component)"
-  status: Draft
+  status: Completed
   version: "1.0"
   date_created: "2026-09-29T00:00:00Z"
   last_updated: "2026-09-29T00:00:00Z"
@@ -39,51 +39,51 @@ file_manifest:
     - path: "framework/governance/SELF_LEARNING.md"
       description: "Tier 1/2/3 architecture section + aspirational-machinery truthfulness pass (v1.1 → v2.0)"
       order: 1
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/skills/self-learn/SKILL.md"
       description: "Decouple §§1/4.1/Red-flags (port .agents rows; header untouched)"
       order: 1
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DECISIONS.md"
       description: "GD-40 folder + architecture decision"
       order: 2
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "tests/conformance/test_self_learning.py"
       description: "Extend: decoupling-token absence + Tier markers + learning/-folder pins"
       order: 2
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/VERSION"
       description: "MINOR 0.65.2 → 0.66.0 (pin sweep mechanical)"
       order: 3
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "CHANGELOG.md"
       description: "0.66.0 project-level entry"
       order: 3
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/CHANGELOG.md"
       description: "0.66.0 spec entry"
       order: 3
-      status: NOT_STARTED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-18/CHG-18.yaml + IPLAN-18.yaml"
       description: "Authorizing vehicle (this file + CHG-18) — DONE = authored pre-approval, verified = false until the C3 gate signs"
       order: 0
       status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -123,7 +123,7 @@ implementation_contracts:
 session_handoff:
   sessions:
     - session: 1
-      status: Blocked
+      status: Completed
       scope: "Vehicle authored; blocked on C3 human approval + judge pass"
 
 # =============================================================================

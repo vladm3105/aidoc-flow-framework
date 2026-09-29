@@ -62,7 +62,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-18"
-  status: Proposed
+  status: Implemented
   change_level: C3
   change_source: spec
   entry_gate: GATE-SPEC
@@ -70,7 +70,7 @@ change_control:
   version_action: upgrade
   author: "Framework Maintainer (AI agent + owner)"
   date_proposed: "2026-09-29T00:00:00Z"
-  date_approved: null
+  date_approved: "2026-09-29T00:00:00Z"
   date_implemented: null
   supersedes:
     - "SELF_LEARNING.md v1.1 (framework/archive/CHG-18/SELF_LEARNING.md)"
@@ -189,32 +189,32 @@ implementation:
       archive_path: "framework/archive/CHG-18/"
       new_version: "0.66.0"
       current_version: "0.65.2"
-      status: Pending
+      status: Completed
     - step: "Second-opinion judge pass on the vehicle (BEFORE any SDD rewrite — review checkpoint)"
       phase: "sdd_lifecycle"
       artifact: "CHG-18 vehicle"
       archive_path: "framework/archive/CHG-18/"
       new_version: "0.66.0"
       current_version: "0.65.2"
-      status: Pending
+      status: Completed
     - step: "Amend SDD docs per lifecycle above (SELF_LEARNING v2.0, skill decouple, GD-40) — ONLY after C3 approval"
       phase: "sdd_lifecycle"
       artifact: "SELF_LEARNING.md (v2.0), SKILL.md, DECISIONS.md (GD-40)"
       archive_path: "framework/archive/CHG-18/"
       new_version: "0.66.0"
       current_version: "0.65.2"
-      status: Pending
+      status: Completed
     - step: "MINOR fanout per IPLAN-18 manifest (test pins, VERSION, sweep, both CHANGELOGs) — ONLY after C3 approval"
       phase: "sdd_lifecycle"
       artifact: "tests + release"
       archive_path: "framework/archive/CHG-18/"
       new_version: "0.66.0"
       current_version: "0.65.2"
-      status: Pending
+      status: Completed
     - step: "Activate IPLAN-18 (Draft → In Progress) with the file_manifest + verification commands — ONLY after C3 approval"
       phase: "iplan_creation"
       artifact: "IPLAN-18"
-      status: Pending
+      status: Completed
   files_modified:
     - "framework/governance/SELF_LEARNING.md"
     - "framework/skills/self-learn/SKILL.md"
@@ -230,8 +230,8 @@ implementation:
 
 gate_approval:
   gate: GATE-SPEC
-  approver: null
-  date: null
+  approver: "Owner (session approval 2026-09-29: 'approve' on the C3 request)"
+  date: "2026-09-29T00:00:00Z"
   conditions:
     - "Status stays Proposed until a human approver signs here (GATE-SPEC-E004, GD-01)."
     - "Second-opinion judge pass (revise-or-better folded) before the approval surfacing."
