@@ -1,0 +1,137 @@
+# =============================================================================
+#  IPLAN-16: Implement docs/deploy batch (issues #784/#785/#786/#787)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-16/CHG-16.yaml (C2 spec-source,
+#  PATCH 0.65.0 → 0.65.1, In-Progress)
+#  Source: issues #784, #785, #786, #787 — governance/aidoc prose, all C2.
+# =============================================================================
+
+doc_id: IPLAN-16
+title: "Implement docs/deploy batch: judge-then-human approval, aidoc cp fix, bootstrap checklist, upgrade runbook"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.65.0"
+  source_chg: "CHG-16"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-16"
+  subtype: combined
+  source_spec: "@spec: N/A (governance prose under CHG-16; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 9
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/chg/README.md"
+      description: "#784 judge-then-human C3 rule (v1.2 → v1.3)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Byte-identical twin of the chg README edit (mirror, #700)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/README.md"
+      description: "#785 cp path fix + BOOTSTRAP/UPGRADE-RUNBOOK wiring (v1.0 → v1.1)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/BOOTSTRAP.md"
+      description: "NEW bootstrap checklist (#786)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+      description: "NEW consumer upgrade runbook (#787)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "EXPECTED_FILES + the two new docs (no weakened checks)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION + hooks/sync-version-refs.sh + pin sweep + CHANGELOG.md + framework/CHANGELOG.md"
+      description: "PATCH 0.65.0 → 0.65.1 release cut (OLD_VERSIONS extended with 0.65.0 per #663)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-16/CHG-16.yaml + IPLAN-16.yaml"
+      description: "Authorizing vehicle (this file + CHG-16)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only batch — covering check is the file-presence conformance battery (test_governance.py EXPECTED_FILES extended for the two new docs; test_no_unexpected_files pins the addition). Verification commands below are the check battery. No code files touched; no new linter emitter (reviewer-lens per CHG-16 enforcement_decision)."
+  cases:
+    - "chg_lint.py over CHG-16: 0 errors"
+    - "test_governance.py: green incl. test_no_unexpected_files"
+    - "test_readme_copies_identical + gate-copy tests: green (twin kept)"
+    - "grep battery: framework/-prefixed cp path; judge-then-human markers; runbooks wired from aidoc README + GATE-SPEC re-adoption box"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-16/CHG-16.yaml"
+    - "cmp framework/governance/chg/README.md framework/layers/09_CHG/README.md"
+    - "bash hooks/sync-version-refs.sh"
+    - "git diff --stat dev (expect the 9 manifest files only)"
+  test:
+    - "python3 -m unittest tests.conformance.test_governance -v"
+    - "python3 -m unittest discover -s tests/conformance"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Twin discipline: chg/README.md and layers/09_CHG/README.md stay byte-identical (cmp clean, test_readme_copies_identical green)"
+  - "#784 Option A only: judge-then-human clarification; Option B (bounded AI-approver tier) explicitly declined and named as out-of-scope"
+  - "Runbooks are prose-only: no new scripts ship in this batch (script halves of #786/#787 stay open as follow-ups, named in the PR body)"
+  - "#779 stays out: separate F3/C3 vehicle, ships alone"
+  - "No weakened checks: EXPECTED_FILES only grows; conformance + chg suites green unmodified otherwise"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "Batch doc edits + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-16"
+  upstream: ["#784", "#785", "#786", "#787"]
+  downstream: ["framework/governance/chg/README.md (+ twin)", "framework/governance/aidoc/ (README + 2 new docs)"]

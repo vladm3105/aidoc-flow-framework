@@ -46,6 +46,8 @@ EXPECTED_FILES = [
     "CHG_REQUEST_FLOWS.md",
     "aidoc/AIDOC.md",
     "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",
+    "aidoc/BOOTSTRAP.md",
+    "aidoc/UPGRADE-RUNBOOK.md",
     "aidoc/README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
