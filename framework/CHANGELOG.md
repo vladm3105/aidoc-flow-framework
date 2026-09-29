@@ -11,9 +11,28 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.0 |
+| Framework Version | 0.65.1 |
 
 ---
+
+## [0.65.1] — 2026-09-29
+
+### Fixed — docs/deploy batch: approval rule, aidoc bootstrap, upgrade runbook (C2 PATCH, CHG-16 + IPLAN-16, issues #784/#785/#786/#787)
+
+- C3/spec-gate approval codified as judge-then-human (#784, Option A):
+  mandatory independent `second-opinion` review BEFORE the human surfacing;
+  an AI verdict may satisfy a review gate, never an approval gate. Bounded
+  AI-approver tier (Option B) explicitly declined. `chg/README.md` v1.2 → v1.3
+  (+ byte-identical twin `layers/09_CHG/README.md`).
+- Aidoc scaffold `cp` path fixed from the repo root (#785, `framework/` prefix);
+  `aidoc/README.md` v1.0 → v1.1 wires the two new runbooks.
+- New `aidoc/BOOTSTRAP.md`: ordered bootstrap procedure (scaffold copy,
+  profile knobs, symlink, version pin, smoke-verify) + shape validation (#786).
+- New `aidoc/UPGRADE-RUNBOOK.md`: consumer re-adoption procedure (re-point,
+  override diff, conformance, changelog) behind the GATE-SPEC box (#787).
+  Script halves (shape check, stale detector) stay open as follow-ups.
+- Out of scope: #779 (self-learn two-tier, P1) ships alone in its own vehicle.
+- `framework/VERSION` bumped from `0.65.0` to `0.65.1` with mechanical pin sweep.
 
 ## [0.65.0] — 2026-09-29
 

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-23 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.0 |
+| Framework Version | 0.65.1 |
 
 
 ## Overview
@@ -104,6 +104,23 @@ Phase 2: Code Implementation (driven by IPLAN)
 | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
 
 **Note**: For `change_source: spec` (GATE-SPEC), change_level must be >= C2 (never C1 per GATE-SPEC-E003). Major `semver_impact` requires C3.
+
+### C3 and spec-gate approval: judge first, human signs
+
+At C3 and `framework/**` spec gates the approver is always human
+(GATE-SPEC-E004; `DEFINITION_OF_DONE.md` Human-in-the-loop tier; GD-01): an AI
+verdict — second-opinion, orchestrator, or judge — may satisfy a review gate
+as reviewer, never an approval gate as approver. The wired pattern is
+**judge-then-human**: run an independent `second-opinion` pass (judge ≠
+generator) BEFORE surfacing the item for human approval (the approval-gate
+skill, `framework/skills/approval-gate/`), and record both the judge verdict
+and the human sign-off in `gate_approval`. A bounded AI-approver tier does not
+exist; defining one would be a governance change with cross-gate blast radius,
+not a one-line fix (#784, declined Option B).
+
+Solo-project C3 `Self (C3 — Technical Lead)` is the human owner approving, not
+an AI precedent. Routine-tier and F2 flows carry no human approval gate and
+are unaffected by this rule.
 
 ## Change Source Routing
 
