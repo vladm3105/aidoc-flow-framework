@@ -1,0 +1,240 @@
+# =============================================================================
+#  CHG-17: close the self-learn solo-project direct-write loophole (#779-a)
+#  + PATCH 0.65.1 → 0.65.2
+# =============================================================================
+#  Flow: F3/spec (framework self-change altering governed agent behavior),
+#  C2 (single-doc refinement + covering test; peer review), entry GATE-SPEC;
+#  authorizing IPLAN-17 (In Progress).
+#  Issue: #779 (OPEN, P1 + enhancement + governance). Mode B verdict
+#  SCOPED-GO on dev @ f4b5f695 (2026-09-29): ALIVE — solo direct-write
+#  exemption (SELF_LEARNING.md:154-169, Rule 2 :230-236) contradicts
+#  always-traced (AGENTS.md/CHG-12); MiMoCode coupling in the framework skill
+#  copy; DEAD as local blast radius — the >700-line inflation belongs to
+#  adapting projects (local learnings.md is 43 lines); UNVERIFIED — b-local
+#  reference impl (external). Triage note (owner, 2026-09-29) reviewed verbatim
+#  and followed: split the vehicle — (a) THIS CHG closes the loophole fast,
+#  (b) the two-tier architecture rides a later C3 (CHG-18, scoped below, not
+#  executed here). Triage correction adopted: inflation figure not claimed
+#  locally. Supersede scan: no later CHG/decision/PR fixes the exemption
+#  (DECISIONS.md:316 only added the §7.4 feedback contract); branches
+#  feature/770-readme-twins + feature/batch-759-768-701 touch no self-learn
+#  files; the .agents skill copy is already hardened (no change here).
+#  Requester citation (session direction 2026-09-29, verbatim ask):
+#  "start #779 with CHG + SDD cascade".
+#  §3.4 checklist: completed before authoring. Item 1 — every referenced file
+#  read in full: SELF_LEARNING.md (304 ll.), framework self-learn SKILL.md
+#  (193 ll.), .agents self-learn SKILL.md (208 ll., hardened reference),
+#  AGENTS.md:179, DECISIONS.md GD context, BOOTSTRAP.md ruling,
+#  plans/KNOWLEDGE-GOVERNANCE-DRAFT.md (untracked in-flight draft, reviewed —
+#  see reconciliation item below). Items 2/3/4/6/9/10 N/A with reason —
+#  docs-only spec change, no runtime code, no structs/queries/handlers/caller
+#  semantics/migrations. Item 5 — EARS/BDD IDs vacuous (#779 cites none).
+#  Item 7 — coupled scope: the knowledge/ vs learning/ folder decision
+#  (draft §3 vs live .aidoc/learning/ pilot vs CHG-16 BOOTSTRAP.md ruling
+#  that knowledge/ is unsanctioned) is RECONCILED EXPLICITLY in CHG-18 scope,
+#  not preempted here — this CHG touches no folder language. Item 8 — covering
+#  tests specified in IPLAN-17 (new test_self_learning.py: exemption-absence +
+#  authorization-presence). Items 11-14 — single SDD amend with archive →
+#  rewrite → supersedes → bump; sdd_lifecycle before iplan_creation; no code
+#  steps in this CHG (CHG-L003 clean).
+#  Phase 0a seed_scope: NO-CHANGE — this repo carries no seed/ tier (verified:
+#  `ls seed` → absent); SEED_CONTRACT governs adapting projects; no seed
+#  assumption changes. Phase 0b module_lifecycle: NO-CHANGE — no docs/modules/
+#  tier in this repo (verified absent); MODULE_LAYOUT describes adapting
+#  layouts; no module touched. Review checkpoint: seed→modules chain reviewed
+#  (both no-change, verified) — PASSES; recorded here; second-opinion judge
+#  pass runs before the PR surfacing per the CHG-16 judge-then-human rule.
+#  No framework/ spec behavior addition → PATCH 0.65.1 → 0.65.2.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose only; the change shrinks
+#  the silent-governance-write attack surface (every governance write traced).
+# =============================================================================
+
+id: CHG-17
+title: "Close self-learn solo-project direct-write loophole (#779 phase-a) + PATCH 0.65.1 → 0.65.2"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.65.1"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-17"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "SELF_LEARNING.md v1.0 (framework/archive/CHG-17/SELF_LEARNING.md)"
+    - "framework/VERSION 0.65.1 (framework/archive/CHG-17/VERSION)"
+    - "IPLAN-17 authorizing record (framework/archive/CHG-17/IPLAN-17.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Remove the solo-project direct-write exemption from SELF_LEARNING.md (v1.0 → v1.1): governance-rule promotion and Prevention Rule 2 route EVERY governance write — solo or multi-contributor — through the owning repo's authorizing CHG and an In-Progress IPLAN (always-traced, CHG-12); solo projects use self-approved C3 (owner as Technical Lead, per framework/governance/chg/README.md), never silent direct write. Additive/cited/small constraints kept. Stale direct-write sentences purged (no other sections rewritten). PATCH bump 0.65.1 → 0.65.2 with mechanical pin sweep + both CHANGELOGs."
+  why: "Agents following the skill are misrouted today: SELF_LEARNING.md tells solo projects to skip the CHG record and write governance docs directly, contradicting the always-traced invariant — the highest-value finding in #779 (owner triage, verified live)."
+  trigger: "Issue #779 phase-a per the owner triage split + session direction to start #779 with CHG + SDD cascade."
+  breaking_change_analysis: "C2 (not C3): single-doc refinement — no gate/ID/schema/enum removed; tightens (never loosens) the authorization rule; previously-green records stay green. Solo agents that relied on silent direct-write now file a (possibly self-approved C3) CHG instead. Reviewer may escalate to C3 at PR review."
+  enforcement_decision: "Reviewer-lens + new conformance test (not a linter emitter). Rationale: exemption-absence is a prose property of one doc; the covering test pins it deterministically (IPLAN-17), and chg_lint validates records, not prose."
+  scope:
+    in:
+      - "framework/governance/SELF_LEARNING.md v1.0 → v1.1: promotion section + Rule 2 exemption removal (archive → rewrite → supersedes → bump)"
+      - "tests/conformance/test_self_learning.py (new): exemption-absence + authorization-presence assertions"
+      - "framework/VERSION 0.65.1 → 0.65.2 + mechanical pin sweep + both CHANGELOGs"
+    out:
+      - "Two-tier architecture rewrite (CHG-18 C3 later — see Phase-2 scope below)"
+      - "knowledge/ vs learning/ folder decision + BOOTSTRAP.md ruling reconciliation (CHG-18 — this CHG touches no folder language)"
+      - "MiMoCode decoupling of the framework skill copy (CHG-18; the .agents copy stays as-is)"
+      - "Universal tier / fetch-vs-vendor (canon #131, other repo)"
+      - "Stale docs/governance/* path convention + learn-inject/session.post aspirational machinery (CHG-18 truthfulness pass)"
+      - "Archive history rewrites; learnings.md content migration"
+
+# =============================================================================
+# Phase-2 scope declaration (CHG-18, NOT executed here)
+# =============================================================================
+#  C3 vehicle later: (1) vendor-agnostic rewrite of framework/skills/
+#  self-learn/SKILL.md §§1/4.1/Red-flags (port from the hardened .agents copy);
+#  (2) SELF_LEARNING.md Tier 1/2/3 architecture + truthfulness pass; (3) EXPLICIT
+#  knowledge/ vs learning/ decision reconciling the untracked
+#  plans/KNOWLEDGE-GOVERNANCE-DRAFT.md §3 preference, the live .aidoc/learning/
+#  pilot (#783), and the CHG-16 BOOTSTRAP.md unsanctioned-ruling — one of the
+#  three yields, recorded with supersede links, never silent drift; (4) AGENTS.md
+#  Lessons row + DECISIONS.md GD entry only if the folder decision flips them.
+#  SDD scope then: Seed → Module → SDD cascade over the same files.
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - action: amend
+    archive_path: framework/archive/CHG-17/SELF_LEARNING.md
+    changes: "Remove solo direct-write exemption (promotion section + Prevention Rule 2); every governance write rides authorizing CHG + In-Progress IPLAN; solo uses self-approved C3, never silent write; doc Version 1.0 → 1.1"
+    document: framework/governance/SELF_LEARNING.md
+    layer: 09_CHG
+    new_version: "1.1"
+  - action: create
+    archive_path: null
+    changes: "Covering test: exemption-absence + authorization-presence for SELF_LEARNING.md"
+    document: tests/conformance/test_self_learning.py
+    layer: 09_CHG
+    new_version: "1.0"
+  - action: create
+    archive_path: null
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+    document: framework/archive/CHG-17/IPLAN-17.yaml
+    layer: 08_IPLAN
+    new_version: "1.0"
+
+artifacts_modified:
+  - id: "CHG-17"
+    changes: "Authorizing record for the loophole closure (this file)"
+  - id: "IPLAN-17"
+    changes: "Authorizing IPLAN (framework/archive/CHG-17/IPLAN-17.yaml)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle (F3 Phase 0b — no-change, verified)
+# =============================================================================
+
+module_lifecycle:
+  # No docs/modules/ tier in this repo (verified absent); MODULE_LAYOUT
+  # describes adapting-project layouts; no module touched. Untouched modules
+  # are not listed.
+  entries: []
+
+# =============================================================================
+# Section 4B: Seed Scope (F3 Phase 0a — no-change, verified)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "This repo carries no seed/ tier (verified `ls seed` → absent); SEED_CONTRACT governs adapting projects and no seed assumption changes. Review checkpoint: PASS — seed→modules chain reviewed, every untouched module provably out of scope (tiers absent from this repo); second-opinion judge pass runs before PR surfacing (judge-then-human, CHG-16)."
+  checked:
+    - "seed/ absence (`ls seed` → No such file or directory)"
+    - "docs/modules/ absence (`ls docs/modules` → No such file or directory)"
+    - "framework/governance/SEED_CONTRACT.md scope (adapting projects; untouched)"
+    - "framework/governance/MODULE_LAYOUT.md scope (adapting layouts; untouched)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change SELF_LEARNING.md + VERSION to framework/archive/CHG-17/"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, VERSION"
+      archive_path: "framework/archive/CHG-17/"
+      new_version: "0.65.2"
+      current_version: "0.65.1"
+      status: Completed
+    - step: "Amend SELF_LEARNING.md per lifecycle above (exemption removal, v1.0 → v1.1)"
+      phase: "sdd_lifecycle"
+      artifact: "SELF_LEARNING.md (v1.1)"
+      archive_path: "framework/archive/CHG-17/"
+      new_version: "0.65.2"
+      current_version: "0.65.1"
+      status: Completed
+    - step: "PATCH fanout per IPLAN-17 manifest (new test, VERSION, pin sweep, both CHANGELOGs)"
+      phase: "sdd_lifecycle"
+      artifact: "tests + release"
+      archive_path: "framework/archive/CHG-17/"
+      new_version: "0.65.2"
+      current_version: "0.65.1"
+      status: Completed
+    - step: "Create IPLAN-17 with the file_manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-17"
+      status: Completed
+  files_modified:
+    - "framework/governance/SELF_LEARNING.md"
+    - "tests/conformance/test_self_learning.py"
+    - "framework/VERSION"
+    - "CHANGELOG.md"
+    - "framework/CHANGELOG.md"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: "Owner (session direction 2026-09-29: start #779 with CHG + SDD cascade)"
+  date: "2026-09-29T00:00:00Z"
+  conditions:
+    - "IPLAN-17 authored before approval (authorizing record for the doc steps)."
+    - "C2 peer review (maintainer) recorded here before Implemented; reviewer may escalate to C3."
+    - "Second-opinion judge pass before PR surfacing (judge-then-human, CHG-16)."
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-17/CHG-17.yaml: 0 errors"
+  - "test_self_learning.py (new): green — no exemption language, CHG/IPLAN routing present"
+  - "Full conformance + sdd_doc_lint suites from root: green unmodified, no weakened checks"
+  - "grep battery: no 'writes directly to governance' / 'unnecessary latency' exemption; 'authorizing CHG' routing present"
