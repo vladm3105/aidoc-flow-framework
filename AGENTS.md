@@ -49,6 +49,11 @@ If the defect is owned by **another** repo (the CI canon `aidoc-flow-ci`, a
 sibling submodule, an upstream spec), the issue goes **there**, not here. The
 test is ownership, not severity.
 
+Triage open issues with [`.agents/skills/aidoc-triage/`](.agents/skills/aidoc-triage/SKILL.md):
+validate every claim live against the tree, review the full comment thread,
+set priority + labels, post the note; transfer the issue when another repo
+owns it.
+
 **Verify what you published.** Use `gh issue create --body-file -`; `--body -`
 sets the body to a literal `-`, exits 0, and prints a URL, so it looks like it
 worked. Read it back:
@@ -183,6 +188,10 @@ umbrella — the umbrella holds no development of its own.
   survives.** Commit messages carry no model identifiers.
 - Conventional commit prefixes (`docs:`, `feat:`, `fix:`, `refactor:`,
   `chore:`), one logical change per commit.
+- **Advanced git:** [`.agents/skills/git-techniques/`](.agents/skills/git-techniques/SKILL.md)
+  for reflog recovery, history search, bisect, and worktrees — read-only by
+  default; destructive, remote, and config-changing operations need explicit
+  approval.
 
 Further detail — CI consumption from `aidoc-flow-ci`, governance PR discipline,
 auto-merge defaults, multi-agent review, versioning and tagging — lives in
