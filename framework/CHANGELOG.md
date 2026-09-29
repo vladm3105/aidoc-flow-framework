@@ -11,9 +11,25 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.1 |
+| Framework Version | 0.65.2 |
 
 ---
+
+## [0.65.2] — 2026-09-29
+
+### Fixed — self-learn solo direct-write loophole closed (C2 PATCH, CHG-17 + IPLAN-17, issue #779 phase-a)
+
+- `SELF_LEARNING.md` v1.0 → v1.1: the solo-project direct-write exemption is
+  removed (promotion section + Prevention Rule 2). Every governance write —
+  solo or multi-contributor — rides an authorizing CHG and an In-Progress
+  IPLAN (always-traced); solo projects use self-approved C3 (owner as
+  Technical Lead), never silent direct write. Additive/cited/small kept.
+- New `tests/conformance/test_self_learning.py`: exemption-absence +
+  authorization-presence pins.
+- Out of scope (CHG-18 C3 later): two-tier rewrite, knowledge/ vs learning/
+  folder decision + BOOTSTRAP.md reconciliation, framework skill decoupling,
+  universal tier.
+- `framework/VERSION` bumped from `0.65.1` to `0.65.2` with mechanical pin sweep.
 
 ## [0.65.1] — 2026-09-29
 

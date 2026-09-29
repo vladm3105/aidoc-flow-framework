@@ -1,0 +1,111 @@
+# =============================================================================
+#  IPLAN-17: Close self-learn solo direct-write loophole (#779 phase-a)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-17/CHG-17.yaml (F3/spec, C2, PATCH
+#  0.65.1 → 0.65.2, In-Progress). Review checkpoint PASS (seed/module tiers
+#  absent from this repo — verified, recorded in CHG-17 §4A/4B).
+# =============================================================================
+
+doc_id: IPLAN-17
+title: "Close self-learn solo direct-write loophole (SELF_LEARNING.md v1.0 → v1.1)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.65.1"
+  source_chg: "CHG-17"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-17"
+  subtype: combined
+  source_spec: "@spec: N/A (governance prose under CHG-17; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 5
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/SELF_LEARNING.md"
+      description: "Remove solo exemption (promotion section + Rule 2); route every governance write via authorizing CHG + In-Progress IPLAN; solo uses self-approved C3, never silent write (v1.0 → v1.1)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_self_learning.py"
+      description: "NEW covering test: exemption-absence + authorization-presence"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION + CHANGELOG.md + framework/CHANGELOG.md"
+      description: "PATCH 0.65.1 → 0.65.2 release cut (pin sweep mechanical)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-17/CHG-17.yaml + IPLAN-17.yaml"
+      description: "Authorizing vehicle (this file + CHG-17)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only spec change — covering check is a new file-presence + content conformance test (test_self_learning.py): asserts the exemption sentences are gone and the CHG/IPLAN routing is present. Verification commands below are the check battery. No code files touched; no new linter emitter (reviewer-lens per CHG-17 enforcement_decision)."
+  cases:
+    - "chg_lint.py over CHG-17: 0 errors"
+    - "test_self_learning.py: green (exemption-absence + authorization-presence)"
+    - "Full conformance + sdd_doc_lint suites from root: green unmodified"
+    - "grep battery: no direct-write exemption remnants; authorizing-CHG routing present"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-17/CHG-17.yaml"
+    - "git diff --stat dev (expect the 5 manifest files only)"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Exemption removal only in the two cited sections; additive/cited/small constraints kept; no other SELF_LEARNING.md sections rewritten"
+  - "Solo path routes to self-approved C3 (owner as Technical Lead, chg/README convention) — never a retained silent-write carve-out"
+  - "No folder language touched (knowledge/ vs learning/ stays exactly as-is for CHG-18)"
+  - "No weakened checks: new test only adds assertions; suites green unmodified otherwise"
+  - "Second-opinion judge pass before PR surfacing (judge-then-human, CHG-16)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "SELF_LEARNING.md amend + test + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-17"
+  upstream: ["#779"]
+  downstream: ["framework/governance/SELF_LEARNING.md", "tests/conformance/test_self_learning.py"]
