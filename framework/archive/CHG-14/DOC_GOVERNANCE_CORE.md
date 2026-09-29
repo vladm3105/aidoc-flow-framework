@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.0 |
+| Framework Version | 0.64.0 |
 
 ## Principles
 
@@ -275,11 +275,6 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 7. **Resume via `In-Progress`.** Paused work resumes by returning the CHG to `In-Progress` with a `revision_history` note — never by editing artifacts under a later status.
 8. **Step statuses follow the CHG (step-status invariant).** `implementation.steps[]` statuses MUST be consistent with the CHG status: no step is `Completed` while the CHG is pre-implementation (`Proposed` / `Approved`) — see E28.
 9. **No zero-work `Completed`.** A CHG with zero implementation steps and zero `artifacts_modified` MUST NOT advance beyond `Approved` — nothing was implemented, so there is nothing to complete.
-10. **Phase-3 closeout bifurcates on deployability.** `Completed` means the verification *owed by the change's flow* passed — and what is owed depends on what the change ships:
-    - **Deployable scope** (source code, scripts, runtime config, database migrations — anything the project's deployment procedure installs): closeout is live. The agent MUST deploy the DEV environment, run the smoke suite, and generate an authentic Layer-10 EVAL report *before* advancing to `Completed`. Closing a deployable change on static checks alone is premature completion.
-    - **Non-deployable scope** (documentation-only, governance sync, SDD-only, zero runtime or config artifacts): closeout is static. The change is validated via the linter battery (`chg_lint`), the scoped-IPLAN checks, self-review, and a clean governance PR — then advances to `Completed` with NO deployment and NO EVAL report owed. An empty or fabricated EVAL MUST NEVER be generated to satisfy closeout; the verification record is the static battery.
-    - **Mixed scope follows the deployable path.** The change's own file manifest decides: any deployable artifact in the manifest mandates live closeout. When in doubt, the deployable path governs.
-11. **Development-complete ≠ deployed (companion to rule 10).** A development IPLAN is complete when its artifacts are authored, committed, and green — deployment belongs to a separate deployment plan. Rule 10 governs the *CHG* closeout: a deployable CHG is not `Completed` until the deployment-plan evidence (deploy + smoke + EVAL) it depends on has landed and is cited.
 
 **Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 

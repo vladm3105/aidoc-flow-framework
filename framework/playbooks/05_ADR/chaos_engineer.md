@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: chaos_engineer
 weight: 8
 agent: chaos-engineer
-framework_spec_version: "0.64.0"
+framework_spec_version: "0.65.0"
 ---
 # chaos_engineer lens — ADR layer
 
