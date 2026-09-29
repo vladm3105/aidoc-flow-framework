@@ -1078,5 +1078,19 @@ class UsageExitTests(unittest.TestCase):
             self.assertEqual(chg_lint.main(["--sdd-root", missing, "x.yaml"]), 2)
 
 
+class HelpExitTests(unittest.TestCase):
+    """`-h/--help` exits 0 and unknown flags exit 2 — help is not a usage
+    error (#794; mirrors bugfix_lint HelpExitTests, #717)."""
+
+    def test_short_help_exits_zero(self):
+        self.assertEqual(chg_lint.main(["-h"]), 0)
+
+    def test_long_help_exits_zero(self):
+        self.assertEqual(chg_lint.main(["--help"]), 0)
+
+    def test_unknown_option_still_exits_two(self):
+        self.assertEqual(chg_lint.main(["--bogus"]), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
