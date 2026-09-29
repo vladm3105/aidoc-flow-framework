@@ -77,12 +77,11 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks
   and review gates.
-- **Never hand-edit example artifacts.** Files under `examples/<name>/docs/` and
-  `examples/<name>/.aidoc/` are the system-under-test. Remediate them by
-  dispatching the framework's own skills in `framework/skills/` (see
-  `framework/skills/README.md` + `SKILLS-REGISTRY.yaml`); a class of remediation the skills
-  cannot handle is a **framework workflow gap**, never a reason to edit the
-  artifact.
+- **Example corpus retired.** The plugin-era `examples/<name>/` tree (`docs/` +
+  `.aidoc/` system-under-test) was deliberately removed and must not be
+  resurrected (enforced by `tests/conformance/test_coverage_engine.py`). Do not
+  author new references to it; shared fixtures live under
+  `tests/acceptance/fixtures/`.
 - **Conformance stays green.** Never weaken a check in `tests/conformance/` to
   make it pass — fix the spec or the platform.
 - **The spec is the contract.** `framework/` is engine-agnostic: no platform

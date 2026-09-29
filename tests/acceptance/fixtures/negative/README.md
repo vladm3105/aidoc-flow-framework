@@ -1,13 +1,13 @@
 # Shared negative fixtures
 
-Curated broken artifacts used by `tests/scripts/test-acceptance.sh` Phase 1.2
-to verify the plugin's gating skills detect regressions in audit/lint
-sensitivity.
+Curated broken artifacts retained from the retired
+`tests/scripts/test-acceptance.sh` Phase 1.2 (plugin-era gating-skill
+regression checks; see `plans/ACCEPTANCE-HISTORY.md` §5.2).
 
-These fixtures are **shared across all examples** because they exercise
-structural defects, not domain-specific failure modes. Per-example
-additions (e.g. domain-specific business-rule violations) belong under
-`examples/<NAME>/negative-fixtures/` and are merged on top at run time.
+These fixtures are **shared** because they exercise structural defects, not
+domain-specific failure modes. There is no per-example layer — the
+`examples/` tree was removed, so domain-specific additions belong with the
+consuming project's own fixtures.
 
 See `plans/ACCEPTANCE-HISTORY.md` §5.2 (retired methodology) for the
 detection contract's origin.
@@ -50,8 +50,9 @@ When adding a new fixture:
    detection rule, not multiple.
 3. Add the fixture and its expected detection code (or live skill) to the
    table above.
-4. Add an entry to `test-acceptance.sh`'s Phase 1.2 fixture loop so the
-   assertion is actually checked.
+4. Verify the new fixture locally with `sdd_doc_lint` (deterministic rows)
+   or the named live skill, and record the detection code in the table above —
+   the table entry is the check (the old Phase 1.2 loop no longer exists).
 
 Never edit golden fixtures to create negatives — copy first.
 
