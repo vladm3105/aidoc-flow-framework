@@ -1,0 +1,231 @@
+# =============================================================================
+#  CHG-13: First-class documentation_sync phase — scope CHG-L003 to code steps (issue #775) + MINOR 0.63.0 → 0.64.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-13/IPLAN-13.yaml (to be authored after approval)
+#  Issues: #775 ([Governance][linter] Type-D CHG false-positive on CHG-L003 and IPLAN-Gate contradiction)
+#  §3.4 checklist: completed before authoring (2026-09-29); app-oriented items N/A
+#  with reason — framework linter + doc self-change, no runtime product code (mirrors CHG-12):
+#  items 2/3/4/6/10 N/A (no client/server arch, no structs, no DB, no handlers);
+#  item 5 EARS/BDD IDs vacuous (upstream is issue #775; no element IDs cited, so
+#  D21/D22/B9/B10 vacuous); item 7 #775 rides alone (#776 Phase-3 closeout is a
+#  separate governance-prose change over different files — sequenced follow-up,
+#  not coupled); item 8 test specs named below; item 9 fix location verified:
+#  check_scope (L003, chg_lint.py) + check_sdd_first_order phase sets (L005).
+#  Covering tests: sdd_doc_lint/tests/test_chg_lint.py — documentation_sync passes
+#  L003, does not satisfy L004 alone, orders in the execution zone under L005;
+#  catalog guard unchanged (no new rule IDs); mirror-twin suites (diff -q both pairs).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — narrowed error predicate plus one
+#  new accepted phase string; the linter reads local YAML only (no network, no exec);
+#  phase strings are a closed vocabulary, no prompt-injection surface. The change
+#  shrinks the agent-misroute surface (doc milestones no longer misreported as code steps).
+# =============================================================================
+
+id: CHG-13
+title: "First-class documentation_sync phase — scope CHG-L003 to code steps (issue #775) + MINOR bump 0.63.0 → 0.64.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.63.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-13"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: "2026-09-29T00:00:00Z"
+  supersedes:
+    - "lint rules v0.63.0 (framework/archive/CHG-13/LINT_RULES.md)"
+    - "governance core v0.63.0 (framework/archive/CHG-13/DOC_GOVERNANCE_CORE.md)"
+    - "governance decisions v0.63.0 (framework/archive/CHG-13/DECISIONS.md)"
+    - "CHG template v0.63.0 governance copy (framework/archive/CHG-13/CHG-TEMPLATE.gov.yaml)"
+    - "CHG template v0.63.0 layer copy (framework/archive/CHG-13/CHG-TEMPLATE.layer.yaml)"
+    - "09_CHG README v0.63.0 governance copy (framework/archive/CHG-13/09_CHG-README.gov.md)"
+    - "09_CHG README v0.63.0 layer copy (framework/archive/CHG-13/09_CHG-README.layer.md)"
+    - "framework/VERSION 0.63.0 (framework/archive/CHG-13/VERSION)"
+    - "IPLAN-13 authorizing record (framework/archive/CHG-13/IPLAN-13.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Give documentation-only milestones a legal phase: `documentation_sync` joins the allowed step phases for non-code, non-SDD doc/governance work (the F2 docs-only C1 shape). CHG-L003 keeps erroring on `code` / `implementation` / `code_implementation` and on missing phases, but its message no longer misreports doc milestones as code steps; CHG-L005 orders `documentation_sync` in the execution zone (after all `sdd_lifecycle` steps); CHG-L004 still requires an IPLAN reference (a `documentation_sync` step alone does not satisfy it). Template, both READMEs, LINT_RULES catalog rows (L003, GOV-010), governance core §3.4 items 13–14 + E25 + L003 row, and a GD-38 decision record carry the new vocabulary. The triage verdict stands: no IPLAN exemption (CHG-12 always-traced holds — every C1 still needs a C1 CHG + scoped IPLAN). MINOR bump 0.63.0 → 0.64.0."
+  why: "Issue #775 (verified live): a zero-code change declaring doc-sync milestones as `phase: implementation` trips CHG-L003, whose message reports the doc step as a code step belonging in IPLAN — misrouting agents into mislabeling workarounds. The framework offers no legal phase for doc milestones (`sdd_lifecycle` is for versioned SDD docs, `iplan_creation` for IPLAN authoring), so the contract is missing, not contradicted."
+  trigger: "Issue #775 (consumer Type-D CHG-56) + triage note 2026-09-28 (P1, linter)."
+  breaking_change_analysis: "C2 (not C3): additive — one new allowed phase string; no gate/ID/schema/enum removed, no previously-green CHG turns red (nothing in the wild uses the new phase; the narrowed L003 predicate only removes errors on the new phase). Consumers' previously-failing doc CHGs can now pass by relabeling milestones `documentation_sync`. Existing CHG/IPLAN records unaffected; 0.x line. Reviewer may escalate to C3 at PR review, in which case E004 (human approver) applies before merge."
+  enforcement_decision: "Linter-emitter (CHG-L003/L005 predicate + message update) plus reviewer-lens for the template-guidance half (canonical F2-C1 doc-sync layout). Rationale: the misroute is machine-emitted text, so the machine text is fixed; the prose layout guidance is verified by the PR reviewer against the template example."
+  scope:
+    in:
+      - "sdd_doc_lint/chg_lint.py: L003 accepts `documentation_sync` (message names the legal phases); L005 treats it as execution-zone (after all `sdd_lifecycle`); L004 unchanged (doc-sync alone satisfies nothing)"
+      - "LINT_RULES.md v1.1 → v1.2: L003 + GOV-010 rows gain `documentation_sync`"
+      - "DOC_GOVERNANCE_CORE.md v1.1 → v1.2: §3.4 items 13–14, E25, §3.4 table L003 row"
+      - "CHG-TEMPLATE.yaml both copies 0.63.0 → 0.64.0: `_allowed_phases` + checklist + canonical F2-C1 doc-sync example (identical — no fork widening)"
+      - "both 09_CHG READMEs 0.63.0 → 0.64.0: phase field + Phase 0/1 zone wording (identical per mirror-twin rule)"
+      - "DECISIONS.md: GD-38 entry (doc-sync phase + #775 verdict: no IPLAN exemption)"
+      - "sdd_doc_lint/tests/test_chg_lint.py: L003/L004/L005 doc-sync coverage"
+      - "MINOR bump 0.63.0 → 0.64.0: VERSION + changelogs + machine-pin fanout (sync-version-refs clean)"
+      - "SECURITY_REVIEW W003 assessment recorded in this CHG (verification section)"
+    out:
+      - "IPLAN exemption for doc edits — explicitly NOT granted (CHG-12 always-traced holds)"
+      - "Type-D taxonomy / chg_type field — consumer-side, not adopted"
+      - "Emergency / Type-R paths, seed/module mechanics, bugfix vehicle — untouched"
+      - "EVAL schema, 5-stage lifecycle, other flows (F1/F2/F4 routing) — untouched"
+      - "#776 Phase-3 closeout rule — sequenced follow-up, different files"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-13/LINT_RULES.md"
+    new_version: "1.2"
+    changes: "L003 + GOV-010 rows gain documentation_sync phase; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-13/DOC_GOVERNANCE_CORE.md"
+    new_version: "1.2"
+    changes: "§3.4 items 13–14, E25, §3.4 table L003 row gain documentation_sync; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-13/DECISIONS.md"
+    new_version: "0.64.0"
+    changes: "GD-38 entry (doc-sync phase + #775 verdict)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-13/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.64.0"
+    changes: "_allowed_phases + checklist + canonical F2-C1 doc-sync example (identical to layer copy)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-13/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.64.0"
+    changes: "_allowed_phases + checklist + canonical F2-C1 doc-sync example (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-13/09_CHG-README.gov.md"
+    new_version: "0.64.0"
+    changes: "phase field + Phase 0/1 zone wording (identical to layer copy)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-13/09_CHG-README.layer.md"
+    new_version: "0.64.0"
+    changes: "phase field + Phase 0/1 zone wording (identical to governance copy)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-13/IPLAN-13.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-13/ (excluding the CHG-13 vehicle files themselves — CHG-13.yaml, IPLAN-13.yaml — so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, both 09_CHG READMEs, VERSION"
+      archive_path: "framework/archive/CHG-13/"
+      new_version: "0.64.0"
+      current_version: "0.63.0"
+      status: Completed
+    - step: "Amend SDD docs per lifecycle above (LINT_RULES rows, core §3.4/E25/table, GD-38, both templates, both READMEs)"
+      phase: "sdd_lifecycle"
+      artifact: "LINT_RULES.md (v1.2), DOC_GOVERNANCE_CORE.md (v1.2), DECISIONS.md (GD-38), both CHG-TEMPLATE.yaml, both 09_CHG READMEs"
+      archive_path: "framework/archive/CHG-13/"
+      new_version: "0.64.0"
+      current_version: "0.63.0"
+      status: Completed
+    - step: "Linter + tests + MINOR fanout per IPLAN-13 manifest (non-SDD files ride steps + IPLAN manifest per CHG-10 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, hooks/sync-version-refs.sh + version-pin sweep"
+      archive_path: "framework/archive/CHG-13/"
+      new_version: "0.64.0"
+      current_version: "0.63.0"
+      status: Completed
+    - step: "Create IPLAN-13 with all edit and verification steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-13"
+      status: Completed
+  files_modified:
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/governance/chg/README.md"
+    - "framework/layers/09_CHG/README.md"
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "hooks/sync-version-refs.sh"
+
+artifacts_modified:
+  - id: "CHG-13"
+    changes: "Authorizing record for documentation_sync phase (issue #775) (this file)"
+  - id: "IPLAN-13"
+    changes: "Authorizing IPLAN (framework/archive/CHG-13/IPLAN-13.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: Owner (session direction 2026-09-29, issue #775)
+  date: "2026-09-29T00:00:00Z"
+  conditions:
+    - IPLAN-13 authored as Draft before approval (authorizing record for the edit steps).
+    - C2 peer review (maintainer) recorded here before Implemented; reviewer may escalate to C3 per the breaking-change analysis above.
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level)"
+    - "chg_lint.py over CHG-13 (0 errors)"
+    - "sdd_doc_lint unit suite green incl. new L003/L004/L005 doc-sync coverage"
+    - "conformance green (catalog guard: no new IDs; router-agreement untouched)"
+    - "mirror-twin suites green (diff -q clean on both template and README pairs)"
+    - "E005–E008: VERSION 0.64.0, pins match (sync-version-refs clean), both CHANGELOGs cut"
+    - "W003 SECURITY_REVIEW assessment recorded (this CHG header + verification)"
+    - "gh pr checks green on the PR head before any merge decision"

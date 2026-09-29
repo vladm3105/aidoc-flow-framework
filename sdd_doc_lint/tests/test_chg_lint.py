@@ -990,6 +990,79 @@ class PrematureCompletionTests(unittest.TestCase):
             self.assertTrue(any("CHG-L017" in p for p in passes), passes)
 
 
+class DocumentationSyncPhaseTests(unittest.TestCase):
+    """documentation_sync phase (#775): legal doc milestone, execution zone,
+    confers no IPLAN authority."""
+
+    def _doc_sync_chg(self, steps):
+        chg = _base_chg()
+        chg["implementation"]["steps"] = steps
+        return chg
+
+    def _doc_step(self, phase="documentation_sync"):
+        return {
+            "step": "Sync governance docs",
+            "artifact": "AGENTS.md",
+            "phase": phase,
+            "status": "Completed",
+        }
+
+    def _sdd_step(self):
+        return {
+            "step": "Rewrite lint rules",
+            "artifact": "Governance docs",
+            "phase": "sdd_lifecycle",
+            "status": "Completed",
+            "archive_path": "framework/archive/CHG-99/LINT_RULES.md",
+            "new_version": "0.64.0",
+        }
+
+    def test_doc_sync_passes_l003(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._doc_sync_chg([self._doc_step()])
+            chg["change_control"]["supersedes"] = []
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L003" in e], [])
+
+    def test_implementation_phase_error_names_doc_sync(self):
+        # The #775 misroute: the message must point at the legal doc phase.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._doc_sync_chg([self._doc_step(phase="implementation")])
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            l003 = [e for e in errors if "CHG-L003" in e]
+            self.assertTrue(l003, errors)
+            self.assertTrue(any("documentation_sync" in e for e in l003), l003)
+
+    def test_doc_sync_alone_does_not_satisfy_l004(self):
+        # CHG-12 always-traced holds: a doc milestone is not an IPLAN reference.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["steps"] = [self._doc_step()]
+            chg["implementation"]["artifacts_modified"] = [{"id": "GOV-DOCS", "file": "AGENTS.md"}]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L004" in e for e in errors), errors)
+
+    def test_doc_sync_before_sdd_is_error(self):
+        # Execution zone runs after all sdd_lifecycle steps.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._doc_sync_chg([self._doc_step(), self._sdd_step()])
+            chg["change_control"]["supersedes"] = ["framework/archive/CHG-99/LINT_RULES.md"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(any("CHG-L005" in e for e in errors), errors)
+
+    def test_doc_sync_after_sdd_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._doc_sync_chg([self._sdd_step(), self._doc_step()])
+            chg["change_control"]["supersedes"] = ["framework/archive/CHG-99/LINT_RULES.md"]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L005" in e], [])
+
+
 class UsageExitTests(unittest.TestCase):
     """`main()` returns 2 on usage errors (exit-code contract, #718)."""
 

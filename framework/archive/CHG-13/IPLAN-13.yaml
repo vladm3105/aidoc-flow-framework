@@ -1,0 +1,147 @@
+# =============================================================================
+#  IPLAN-13: Implement documentation_sync phase (issue #775) + MINOR bump 0.63.0 → 0.64.0
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-13/CHG-13.yaml (F3/spec, C2, Proposed)
+#  Issues: #775 ([Governance][linter] Type-D CHG false-positive on CHG-L003)
+#  This IPLAN owns every file edit + verification in manifest order. Linter-engine
+#  change (unlike CHG-12): new unit coverage lands with the predicate change.
+# =============================================================================
+
+doc_id: IPLAN-13
+title: "Implement documentation_sync phase (issue #775) + MINOR bump 0.63.0 → 0.64.0"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.63.0"
+  source_chg: "CHG-13"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-13"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-13; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Framework Maintainer (AI agent + owner)"
+  complexity: 3
+  estimated_files: 13
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-13/ (snapshot)"
+      description: "Pre-change originals of all 7 SDD targets + VERSION (EXCLUDING vehicle files CHG-13.yaml, IPLAN-13.yaml)"
+      order: 1
+      status: DONE
+    - path: "framework/governance/LINT_RULES.md"
+      description: "L003 + GOV-010 rows gain documentation_sync; Version 1.1 → 1.2, Framework Version 0.64.0"
+      order: 2
+      status: DONE
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "§3.4 items 13–14, E25, §3.4 table L003 row gain documentation_sync; Version 1.1 → 1.2, Framework Version 0.64.0"
+      order: 3
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-38 entry (doc-sync phase + #775 verdict: no IPLAN exemption; newest-first)"
+      order: 4
+      status: DONE
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "_allowed_phases + checklist + canonical F2-C1 doc-sync example (identical to layer copy)"
+      order: 5
+      status: DONE
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Byte-identical to governance copy (diff -q clean)"
+      order: 6
+      status: DONE
+    - path: "framework/governance/chg/README.md"
+      description: "phase field + Phase 0/1/2 zone wording (identical to layer copy)"
+      order: 7
+      status: DONE
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Byte-identical to governance copy (diff -q clean)"
+      order: 8
+      status: DONE
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "L003 accepts documentation_sync (message names legal phases); L005 execution-zone ordering"
+      order: 9
+      status: DONE
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Doc-sync coverage: L003 pass, L004 non-satisfaction, L005 execution-zone ordering"
+      order: 10
+      status: DONE
+    - path: "framework/VERSION"
+      description: "MINOR bump 0.63.0 → 0.64.0"
+      order: 11
+      status: DONE
+    - path: "framework/CHANGELOG.md + CHANGELOG.md"
+      description: "0.64.0 entries (both changelogs, E008)"
+      order: 12
+      status: DONE
+    - path: "hooks/sync-version-refs.sh + version-pin sweep"
+      description: "Machine-pin fanout to 0.64.0 (sync-version-refs clean, E006)"
+      order: 13
+      status: DONE
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Linter-engine change with first-class unit coverage: new doc-sync tests are added to sdd_doc_lint/tests/test_chg_lint.py alongside the predicate change (red→green observed on the fixture); conformance catalog guard needs no change (no new rule IDs); mirror-twin diff -q suites stay green; full conformance + sdd_doc_lint suites green with no weakened checks."
+  cases:
+    - "L003 green: documentation_sync step passes; code/implementation/code_implementation still error; missing phase still errors"
+    - "L004 green: documentation_sync step alone does not satisfy the IPLAN reference (still errors without iplan_creation/IPLAN id)"
+    - "L005 green: documentation_sync after sdd_lifecycle passes; before sdd_lifecycle errors (execution zone)"
+    - "Catalog green: CODES registry unchanged; L003/GOV-010 rows still grounded (no new IDs)"
+    - "Mirror-twin identity: diff -q clean on both template and README pairs"
+    - "Full conformance + sdd_doc_lint suites green; no weakened checks"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-13/CHG-13.yaml"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests -p 'test_chg_lint.py'"
+    - "diff -q framework/layers/09_CHG/CHG-TEMPLATE.yaml framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "diff -q framework/layers/09_CHG/README.md framework/governance/chg/README.md"
+    - "bash hooks/sync-version-refs.sh"
+  test:
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Both CHG-TEMPLATE.yaml copies stay IDENTICAL (diff -q clean)"
+  - "Both 09_CHG READMEs stay IDENTICAL (diff -q clean)"
+  - "No new rule IDs: CODES registry unchanged; catalog guard green unmodified"
+  - "No IPLAN exemption: documentation_sync never satisfies CHG-L004"
+  - "Emergency / Type-R / bugfix-vehicle / F2 code-touching paths untouched"
+  - "Archive/CHANGELOG prose history untouched by fanout (machine-pin forms only)"
+  - "Conformance stays a contract on framework/: no weakened checks"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "All 13 manifest orders (snapshot + 7 SDD amends + linter + tests + version + changelogs + sweep + verify)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-13"
+  upstream: ["issue #775", "triage note 2026-09-28 (P1, linter)", "CHG-12 always-traced rule (constraint: no IPLAN exemption)"]
+  downstream: ["framework/VERSION 0.64.0"]

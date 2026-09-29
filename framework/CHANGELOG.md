@@ -7,13 +7,32 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-28 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.63.0 |
+| Framework Version | 0.64.0 |
 
 ---
+
+## [0.64.0] — 2026-09-29
+
+### Added — first-class documentation_sync phase; CHG-L003 scoped to code steps (C2 MINOR, CHG-13 + IPLAN-13, issue #775)
+
+- New legal CHG step phase `documentation_sync` for documentation-only milestones
+  (the F2 docs-only C1 shape): `sdd_lifecycle` stays reserved for versioned SDD
+  rewrites, `iplan_creation` for IPLAN authoring. Canonical layout + `_allowed_phases`
+  in both CHG-TEMPLATE copies; Phase-2 zone in both 09_CHG READMEs; LINT_RULES
+  L003/GOV-010 rows, governance core §3.4 items 13–14 + E25 + L003 row, GD-38.
+- CHG-L003 keeps erroring on `code` / `implementation` / `code_implementation`
+  and on missing phases, but its message now names the legal phases including the
+  doc alternative; CHG-L005 orders `documentation_sync` in the execution zone;
+  CHG-L004 still requires an IPLAN reference (doc-sync alone satisfies nothing).
+- Explicitly NOT shipped: no IPLAN exemption for doc edits (CHG-12 always-traced
+  holds); consumer Type-D taxonomy not adopted.
+- New `DocumentationSyncPhaseTests` unit pins (L003 pass/message, L004
+  non-satisfaction, L005 ordering); mirror twins stay byte-identical.
+- `framework/VERSION` bumped from `0.63.0` to `0.64.0` with mechanical pin sweep.
 
 ## [0.63.0] — 2026-09-28
 

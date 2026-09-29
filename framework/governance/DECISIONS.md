@@ -15,11 +15,42 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-28 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.63.0 |
+| Framework Version | 0.64.0 |
+
+---
+
+## GD-38 — First-class documentation_sync phase; CHG-L003 scoped to code steps, no IPLAN exemption (CHG-13, 0.64.0 MINOR)
+
+- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.63.0 → 0.64.0` (MINOR),
+  change-level **C2** (F3/spec; breaking-change analysis in CHG-13 — additive
+  phase string, no gate/ID/schema removed, no previously-green CHG turns red;
+  reviewer may escalate to C3). Vehicle: CHG-13 + IPLAN-13
+  (`framework/archive/CHG-13/`). Issue: #775 (P1, linter).
+- **Context:** a zero-code change declaring doc-sync milestones as
+  `phase: implementation` tripped CHG-L003, whose message reported the doc step
+  as a code step belonging in IPLAN. The framework offered no legal phase for
+  doc milestones (`sdd_lifecycle` covers versioned SDD docs, `iplan_creation`
+  covers IPLAN authoring) — the contract was missing, not contradicted. The
+  consumer Type-D taxonomy and IPLAN-skip message behind the filing are
+  consumer-side and are NOT adopted.
+- **Decision:** `documentation_sync` joins the legal CHG step phases for
+  non-code, non-SDD documentation/governance milestones (the F2 docs-only C1
+  shape). CHG-L003 keeps erroring on `code` / `implementation` /
+  `code_implementation` and on missing phases, but its message names the legal
+  phases including the doc alternative; CHG-L005 orders `documentation_sync`
+  in the execution zone (after all `sdd_lifecycle` steps); CHG-L004 still
+  requires an IPLAN reference — a `documentation_sync` step alone satisfies
+  nothing. The CHG-12 always-traced rule holds unchanged: every C1 still needs
+  a C1 CHG + scoped IPLAN, every author — NO IPLAN exemption ships here.
+  Enforcement is linter-emitter for the predicate/message half plus
+  reviewer-lens for the template-layout half.
+- **Consequence:** doc-only changes can declare milestones without mislabeling
+  them as SDD or IPLAN work, and the linter points at the legal vocabulary
+  instead of misreporting doc steps as code.
 
 ---
 

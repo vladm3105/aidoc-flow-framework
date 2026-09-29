@@ -182,6 +182,11 @@ def check_chg_scope(
 
     code_step_count = 0
 
+    # Legal CHG phases (§3.4 items 13-14): SDD lifecycle work, IPLAN creation,
+    # and documentation-only milestones (F2 docs-only C1 shape, #775). Code
+    # implementation phases belong exclusively in IPLAN.
+    legal_phases = ("sdd_lifecycle", "iplan_creation", "documentation_sync")
+
     for step in steps:
         if not isinstance(step, dict):
             continue
@@ -191,13 +196,14 @@ def check_chg_scope(
         if not phase:
             code_step_count += 1
             errors.append(
-                f"CHG-L003: step '{step.get('title')}' has no phase — every step MUST declare sdd_lifecycle or iplan_creation"
+                f"CHG-L003: step '{step.get('title')}' has no phase — every step MUST declare {', '.join(legal_phases)}"
             )
         # Check if this looks like a code implementation step
         elif phase in ("code", "implementation", "code_implementation"):
             code_step_count += 1
             errors.append(
-                f"CHG-L003: step '{step.get('title')}' has phase '{phase}' — code steps belong in IPLAN"
+                f"CHG-L003: step '{step.get('title')}' has phase '{phase}' — code steps belong in IPLAN "
+                f"(legal CHG phases: {', '.join(legal_phases)}; documentation-only milestones use documentation_sync)"
             )
 
     if code_step_count == 0:
@@ -282,7 +288,10 @@ def check_sdd_first_order(
     # those shapes instead.
 
     sdd_phases = {"sdd_lifecycle", "sdd", "archive", "rewrite"}
-    iplan_phases = {"iplan_creation", "iplan"}
+    # documentation_sync (#775) lives in the execution zone: doc milestones run
+    # after all sdd_lifecycle steps, alongside iplan_creation. It confers no
+    # IPLAN authority (L004/L013 match iplan_creation/IPLAN ids only).
+    iplan_phases = {"iplan_creation", "iplan", "documentation_sync"}
 
     last_sdd_index = -1
     first_iplan_index = len(steps)

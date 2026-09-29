@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.63.0 |
+| Framework Version | 0.64.0 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -150,7 +150,7 @@ nothing emits it the row says **Reserved**.
 |----|---------|----------|----------|
 | `CHG-L001` | Status lifecycle — status must follow Proposed → Approved → In-Progress → Implemented → Completed. Governance alias: `GOV-011`. | error | `DOC_GOVERNANCE_CORE.md` §3.3 |
 | `CHG-L002` | Gate approval — C3 changes must have `gate_approval.approver`. Governance alias: `GOV-012`. | error | `DOC_GOVERNANCE_CORE.md` §3.1 |
-| `CHG-L003` | CHG scope — every `implementation.steps[]` entry must declare `phase: sdd_lifecycle` or `phase: iplan_creation`; code steps belong in IPLAN. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` |
+| `CHG-L003` | CHG scope — every `implementation.steps[]` entry must declare `phase: sdd_lifecycle`, `phase: iplan_creation`, or `phase: documentation_sync` (doc-only milestones, #775); code steps belong in IPLAN. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` |
 | `CHG-L004` | IPLAN reference — code-touching scope must reference an IPLAN (top-level `sdd_lifecycle` 08_IPLAN entry, `iplan_creation` step, or `artifacts_modified` IPLAN id). Governance alias: `GOV-019`. | error | `DOC_GOVERNANCE_CORE.md` §3.1.1 |
 | `CHG-L005` | SDD-first order — SDD lifecycle steps must appear before IPLAN creation; IPLAN creation with zero SDD steps errors on lifecycle-carrying sources (upstream/midstream/design/spec/reconciliation) — F2-direct and sourceless shapes keep the historic pass. | error | `DOC_GOVERNANCE_CORE.md` §3.1.1 |
 | `CHG-L006` | SDD lifecycle completeness — `implementation.steps` with phase `sdd_lifecycle` must exist when SDD documents are modified. Governance alias: `GOV-014`. | error | `DOC_GOVERNANCE_CORE.md` §3.4.1 C16 |
@@ -166,7 +166,7 @@ nothing emits it the row says **Reserved**.
 | `CHG-L017` | Premature step completion — on a `Proposed` / `Approved` CHG no `implementation.steps[]` entry may be marked `Completed`; `In-Progress` and beyond pass (executor's record). Deterministic half of the step-status invariant; the full code-written-and-verified judgement stays with the reviewer lens. | error | `DOC_GOVERNANCE_CORE.md` §3.4.1 E28 |
 | `GOV-008` | A CHG document was created without completing the creation checklist (§CHG creation checklist). The checklist is a MANDATORY PROCESS GATE — blocking prerequisite, not post-hoc validation. The "write before read" pattern has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). **Reserved** — documented contract, no machine check emits this ID yet. | error | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist MANDATORY PROCESS GATE |
 | `GOV-009` | A CHG document's `traceability.upstream.ears_references` or `bdd_references` is empty when the CHG describes a change that affects authenticated or requirement-traced functionality. Checklist item #5 requires citing specific EARS/BDD IDs. TAG01 covers general traceability but not CHG-specific upstream citation. **Reserved** — documented contract, no machine check emits this ID yet. | warning | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist item #5 |
-| `GOV-010` | A CHG document's `implementation.steps` contains a step without a `phase` field, or a step with `phase: code_implementation`. Every step MUST have `phase: sdd_lifecycle` or `phase: iplan_creation`. Code implementation steps belong exclusively in IPLAN. Added after CHG-04, CHG-06, CHG-08 violated SDD-first ordering. **Reserved** — overlaps `CHG-L003`'s code-step check, but the phase-presence half has no emitter. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` + checklist item #13 |
+| `GOV-010` | A CHG document's `implementation.steps` contains a step without a `phase` field, or a step with `phase: code_implementation`. Every step MUST have `phase: sdd_lifecycle`, `phase: iplan_creation`, or `phase: documentation_sync` (doc-only milestones, #775). Code implementation steps belong exclusively in IPLAN. Added after CHG-04, CHG-06, CHG-08 violated SDD-first ordering. **Reserved** — overlaps `CHG-L003`'s code-step check, but the phase-presence half has no emitter. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` + checklist item #13 |
 | `GOV-011` | A CHG document's `change_control.status` has skipped a lifecycle stage. Status MUST follow: Proposed → Approved → In-Progress → Implemented → Completed. Skipping `Approved` (jumping from `Proposed` to `In-Progress` or later) means implementation started without authorization. `date_approved` must be set before status can be `In-Progress` or later. Added after CHG-10 jumped from `Proposed` to `Implemented` without approval. **Alias of `CHG-L001`** — enforced there. | error | `CHG-TEMPLATE.yaml` §change_control status lifecycle + `DOC_GOVERNANCE_CORE.md` §3.3 |
 | `GOV-012` | A CHG document has `gate_approval.approver: null` or empty when `change_control.status` is not `Proposed` and `change_level` is `C3`. C3 changes require explicit gate approval with a named approver. The approver must be recorded before status can advance beyond `Proposed`. Added after CHG-10 had null approver with `Implemented` status. **Alias of `CHG-L002`** — enforced there. | error | `CHG-TEMPLATE.yaml` §gate_approval + `DOC_GOVERNANCE_CORE.md` §3.1 |
 | `GOV-013` | Code implementation was attempted without an IPLAN. The IPLAN Gate (§3.13) requires an IPLAN with status `In Progress` before any code files may be modified. The IPLAN must reference the authorizing CHG and list the files being modified. Added after CHG-10 had code implemented before IPLAN existed. **Carve-out (0.56.0):** a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`, `In Progress`, repair-scoped manifest, C1 CHG allowed) fully satisfies this gate for post-completion repairs — it is the governed path, not an exemption. No issue-thread citation alone satisfies it. **Reserved** — the IPLAN-gate substance is enforced via `GOV-019` / `CHG-L004`; this ID itself has no emitter. | error | `DOC_GOVERNANCE_CORE.md` §3.13 IPLAN Gate |

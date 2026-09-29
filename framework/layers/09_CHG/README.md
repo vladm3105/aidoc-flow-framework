@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.63.0 |
+| Framework Version | 0.64.0 |
 
 
 ## Overview
@@ -271,7 +271,8 @@ CHG gates are the approval checkpoints for change management:
 ## Implementation Order (CHG → SDD → IPLAN → Code)
 
 The correct flow when a CHG modifies SDD documents. Every step in the CHG MUST
-declare a `phase` field (`sdd_lifecycle` or `iplan_creation`).
+declare a `phase` field (`sdd_lifecycle`, `iplan_creation`, or
+`documentation_sync` for doc-only milestones).
 
 ```
 CHG (authorize)
@@ -282,6 +283,9 @@ CHG (authorize)
     4. Bump document_control.version to 2.0
   → Phase 1: IPLAN Creation/Update (phase: iplan_creation) — AFTER SDD docs exist
     5. Create or update IPLAN with ALL code implementation steps
+  → Phase 2: Documentation Sync (phase: documentation_sync) — execution zone,
+     AFTER all sdd_lifecycle steps; doc-only milestones only, never an IPLAN
+     substitute (CHG-L004 still requires an IPLAN reference)
   → Code implementation (from IPLAN) — NEVER in CHG
 ```
 

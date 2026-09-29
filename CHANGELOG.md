@@ -9,6 +9,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.64.0] — 2026-09-29
+
+### Added — first-class documentation_sync phase; CHG-L003 scoped to code steps (C2 MINOR → 0.64.0)
+
+- Doc-sync vocabulary (#775; CHG-13 + IPLAN-13 in `framework/archive/CHG-13/`):
+  new legal `documentation_sync` step phase for doc-only milestones; L003 message
+  names the legal phases, L005 orders doc-sync in the execution zone, L004 still
+  requires an IPLAN reference — no IPLAN exemption ships (CHG-12 holds)
+- LINT_RULES L003/GOV-010 rows, core §3.4 items 13–14 + E25 + L003 row, both
+  templates (`_allowed_phases` + canonical F2-C1 layout), both READMEs (Phase 2),
+  GD-38; new `DocumentationSyncPhaseTests` unit pins; twins byte-identical
+- `framework/VERSION` bumped from `0.63.0` to `0.64.0` with mechanical pin sweep
+
 ## [0.63.0] — 2026-09-28
 
 ### Changed — mandatory CHG+IPLAN for every post-seed activity (C2 MINOR → 0.63.0)

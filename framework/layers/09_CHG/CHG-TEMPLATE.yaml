@@ -35,7 +35,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.63.0"
+  framework_version: "0.64.0"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -171,7 +171,7 @@ implementation:
 
     The CHG is a governance record, NOT an implementation plan. The IPLAN is the
     execution artifact. Every step MUST have a `phase` field. The CHG's
-    implementation steps should contain ONLY phases 0 and 1:
+    implementation steps should contain ONLY phases 0, 1, and 2:
 
     Phase 0 — sdd_lifecycle (FIRST, MANDATORY, before any code):
       1. Archive current SDD versions to `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/`
@@ -186,10 +186,17 @@ implementation:
          — the IPLAN MUST reference the NEW SDD document versions
          — the IPLAN is what drives code implementation
 
+    Phase 2 — documentation_sync (execution zone, AFTER all sdd_lifecycle steps):
+      6. Documentation-only milestones that are neither versioned SDD rewrites
+         nor IPLAN authoring (the F2 docs-only C1 shape: governance sync,
+         AGENTS.md updates, non-normative clarifications)
+         — NEVER a substitute for an IPLAN reference (CHG-L004 still requires one)
+         — NEVER carries code steps (CHG-L003 still errors on those)
+
     **CRITICAL RULES:**
-    - Every step MUST declare its phase (`sdd_lifecycle` or `iplan_creation`)
+    - Every step MUST declare its phase (`sdd_lifecycle`, `iplan_creation`, or `documentation_sync`)
     - Code implementation steps belong in the IPLAN, NOT in the CHG
-    - SDD updates MUST happen BEFORE IPLAN creation (all `sdd_lifecycle` steps before all `iplan_creation` steps)
+    - SDD updates MUST happen BEFORE IPLAN creation and doc sync (all `sdd_lifecycle` steps before all `iplan_creation` / `documentation_sync` steps)
     - The IPLAN MUST reference the NEW (updated) SDD versions
     - If SDD updates are "deferred", the CHG is INCORRECT
     - NO step with `phase: code_implementation` may appear in a CHG — that phase belongs exclusively in IPLAN
@@ -203,11 +210,12 @@ implementation:
   _allowed_phases:
     sdd_lifecycle: "Phase 0 — Archive, rewrite, supersedes, version bump of SDD documents. MUST appear first."
     iplan_creation: "Phase 1 — Create or update IPLAN with all code steps. MUST appear after all sdd_lifecycle steps."
+    documentation_sync: "Phase 2 — Documentation-only milestones (F2 docs-only C1 shape). Execution zone: after all sdd_lifecycle steps. NEVER satisfies the IPLAN reference (CHG-L004) and NEVER carries code steps."
     code_implementation: "FORBIDDEN in CHG. Belongs exclusively in IPLAN. If present, the CHG is non-compliant."
 
   steps:
     - step: "[Step 1 — what was modified]"
-      phase: "sdd_lifecycle"  # sdd_lifecycle | iplan_creation (code_implementation FORBIDDEN)
+      phase: "sdd_lifecycle"  # sdd_lifecycle | iplan_creation | documentation_sync (code_implementation FORBIDDEN)
       artifact: "[Artifact ID]"
       status: Completed  # Pending | In Progress | Completed
 
@@ -215,6 +223,21 @@ implementation:
     - id: "[Artifact ID]"
       file: "[File path]"
       change_type: "modified"  # created | modified | deleted | superseded
+
+  # Canonical F2 docs-only C1 step layout (documentation_sync, #775). Doc
+  # milestones ride `documentation_sync` — NOT `sdd_lifecycle` (reserved for
+  # versioned SDD rewrites) and NOT `phase: implementation` (a code phase;
+  # CHG-L003 errors). The scoped IPLAN reference below is MANDATORY even for
+  # doc-only scope (CHG-12 always-traced; CHG-L004):
+  #   steps:
+  #     - step: "Create IPLAN-NN (scoped: manifest + verification commands)"
+  #       phase: "iplan_creation"
+  #       artifact: "IPLAN-NN"
+  #       status: Pending
+  #     - step: "Sync governance docs (AGENTS.md, non-normative clarifications)"
+  #       phase: "documentation_sync"
+  #       artifact: "governance docs"
+  #       status: Pending
 
 # =============================================================================
 # Section 4A: Module Lifecycle (F3 brownfield only)
@@ -358,7 +381,7 @@ creation_checklist:
     has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs, CHG-08: incorrect flow).
 
     **CRITICAL: Items 13-14 are the most commonly violated.** They enforce:
-    - Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`)
+    - Every step MUST have a `phase` field (`sdd_lifecycle`, `iplan_creation`, or `documentation_sync`)
     - SDD document updates MUST happen BEFORE IPLAN creation (Phase 0, not deferred)
     - CHG contains governance + SDD lifecycle, NOT code implementation steps
     - NO step with `phase: code_implementation` may appear in a CHG
@@ -431,13 +454,13 @@ creation_checklist:
 
     - id: 13
       check: "SDD-first implementation order"
-      description: "Every step MUST have a `phase` field. All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. Correct flow: CHG → SDD docs → IPLAN → code. VIOLATED IN: CHG-04, CHG-06, CHG-08."
+      description: "Every step MUST have a `phase` field. All `sdd_lifecycle` steps MUST appear before all `iplan_creation` / `documentation_sync` steps (execution zone). NO `code_implementation` phase may appear in a CHG. Correct flow: CHG → SDD docs → IPLAN → code. VIOLATED IN: CHG-04, CHG-06, CHG-08."
       gap_prevented: "Wrong ordering"
       _mandatory: true
 
     - id: 14
       check: "CHG scope: governance, not implementation plan"
-      description: "CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. VIOLATED IN: CHG-04, CHG-06, CHG-08."
+      description: "CHG should contain only `sdd_lifecycle`, `iplan_creation`, and `documentation_sync` (doc-only milestones) phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. VIOLATED IN: CHG-04, CHG-06, CHG-08."
       gap_prevented: "Detailed code steps in CHG"
       _mandatory: true
 
