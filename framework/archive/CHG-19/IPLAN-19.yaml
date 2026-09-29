@@ -1,0 +1,104 @@
+# =============================================================================
+#  IPLAN-19: Remove stale examples/ + deleted-script pointers (#793)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-19/CHG-19.yaml (F2 direct, C1, Proposed)
+#  Source: issue #793 — prose-only C1, AGENTS.md + negative-fixture README.
+# =============================================================================
+
+doc_id: IPLAN-19
+title: "Remove stale examples/ + deleted test-acceptance.sh pointers (issue #793)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+  source_chg: "CHG-19"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-19"
+  subtype: combined
+  source_spec: "@spec: N/A (prose-only cleanup under CHG-19; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 2
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "AGENTS.md"
+      description: "Rewrite :80-85 examples/ bullet to past-tense retired note with tripwire citation"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/acceptance/fixtures/negative/README.md"
+      description: "Past-tense retired-methodology framing (:3-10) + actionable local verification step (:53-54)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-19/CHG-19.yaml + IPLAN-19.yaml"
+      description: "Authorizing vehicle (this file + CHG-19)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3, prose-only). Verification commands below are the check battery (CHG-15 vehicle precedent)."
+  cases:
+    - "chg_lint.py over CHG-19: 0 errors"
+    - "grep battery: AGENTS.md carries no present-tense examples/<NAME>/ remediation pointer; negative/README.md mentions test-acceptance.sh only as retired methodology with a local sdd_doc_lint verification step"
+    - "sdd_doc_lint/tests green (baseline 202 OK pre-change 2026-09-29)"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-19/CHG-19.yaml"
+    - "grep -n 'examples/<' AGENTS.md (expect only retired-note line)"
+    - "grep -n 'test-acceptance.sh' tests/acceptance/fixtures/negative/README.md (expect retired-context lines only)"
+    - "git diff --stat dev (expect 4 files: AGENTS.md, negative README, CHG-19, IPLAN-19)"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Past tense only: no new obligations on artifacts that do not exist"
+  - "Do NOT resurrect examples/ (test_coverage_engine.py:41-47 tripwire)"
+  - "Scope guard: tests/README.md, docs/TAGGING.md, test-acceptance.schema.json untouched"
+  - "No version impact (version_action keep; no pins touched; CHG-15 precedent)"
+  - "Worktree-only writes; main checkout stays on dev"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Two-file prose edit + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-19"
+  upstream: ["#793", "#719"]
+  downstream: ["AGENTS.md (working agreement)", "tests/acceptance/fixtures/negative/README.md (guidance)"]
