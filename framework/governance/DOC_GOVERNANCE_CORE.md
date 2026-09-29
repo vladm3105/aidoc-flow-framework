@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.63.0 |
+| Framework Version | 0.64.0 |
 
 ## Principles
 
@@ -208,8 +208,8 @@ failures).
 | 10 | **Add DB migration + rollback** — if adding columns, provide the full migration SQL, rollback SQL, backfill strategy, and indexes. | Migration without rollback |
 | 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. Rewrites purge stale content (unused sections, duplicate entries, dead references, retired approaches) so the new version reads as written from scratch with current knowledge. | No SDD lifecycle steps |
 | 12 | **Check traceability to SDD lifecycle rules** — verify the SDD lifecycle completeness (§3.4.1 C16) and CHG scope rules (§3.4.1 E25–E27) are satisfied. | Rules not enforced at creation time |
-| 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
-| 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
+| 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle`, `iplan_creation`, or `documentation_sync` for doc-only milestones). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` / `documentation_sync` steps (execution zone). NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
+| 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle`, `iplan_creation`, and `documentation_sync` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 
 ### 3.4.1 CHG Post-Creation Validation (MANDATORY)
 
@@ -242,7 +242,7 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 | D22 | Every BDD ID exists in actual BDD document | Wrong traceability |
 | D23 | No architecture seed docs referenced as SDD docs | Wrong document type |
 | D24 | Upstream requirements cited, not architecture descriptions | Wrong reference level |
-| E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation) | Scope creep |
+| E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation + documentation sync) | Scope creep |
 | E26 | NO code implementation steps in CHG | Code in wrong document |
 | E27 | `implementation.steps` references IPLAN, not code files | Wrong reference |
 | E28 | No `implementation.steps` entry is marked `Completed` before its implementation code is written and verified (pre-implementation CHG statuses `Proposed` / `Approved`: every step is `Pending` or `In Progress`) | Premature step completion |
@@ -386,7 +386,7 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 |----------|------|----------|-------------------|
 | CHG-L001 | §3.3 Status Lifecycle | error | Status follows: Proposed → Approved → In-Progress → Implemented → Completed. No skipping stages. |
 | CHG-L002 | §3.1 Gate Approval | error | C3 changes have `gate_approval.approver` set (not null). |
-| CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle` or `phase: iplan_creation`. |
+| CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle`, `phase: iplan_creation`, or `phase: documentation_sync` (doc-only milestones). |
 | CHG-L004 | §3.1.1 IPLAN Reference | error | CHG references an IPLAN for code changes. |
 | CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps; IPLAN-only with zero SDD steps errors on lifecycle-carrying sources. |
 | CHG-L006 | §3.4.1 C16 SDD lifecycle completeness | error | `implementation.steps` with phase `sdd_lifecycle` exists when SDD documents are modified. |
