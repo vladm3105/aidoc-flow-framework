@@ -1,0 +1,129 @@
+# =============================================================================
+#  CHG-15: aidoc-triage Mode B — pre-implementation validation (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (docs-only non-normative C1: process-skill prose under
+#  .agents/skills/, no SDD contract at stake) — C1 CHG + scoped IPLAN per
+#  F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-15/IPLAN-15.yaml (In Progress, authorizing)
+#  Issue: #788 (triaged 2026-09-29: P2 + gap + governance; all 3 claims verified
+#  live on dev @ 4810eec0; note posted, labels applied, memory recorded)
+#  Requester citation (F2.3, verbatim ask): "do trage on
+#  https://github.com/vladm3105/aidoc-flow-framework/issues/788 only and
+#  start implementation"
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — single skill .md edit, no runtime code, no queries/migrations;
+#  EARS/BDD IDs vacuous (upstream is issue #788; no element IDs cited);
+#  coupled-issue scan: #750/#777 predecessors, #773 mandate source — none share
+#  the fix, #788 ships alone. Covering tests: N/A with reason — no code files
+#  touched (skill prose only); verification commands in IPLAN-15 suffice per F2.3.
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG
+#  (.agents/skills precedent: #781, skill-only, no version impact).
+# =============================================================================
+
+id: CHG-15
+title: "aidoc-triage Mode B: pre-implementation validation as second mode of the same skill (issue #788)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.65.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-15"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-15 authorizing record (framework/archive/CHG-15/IPLAN-15.yaml)"
+  # NOTE: .agents/skills/aidoc-triage/SKILL.md is amended in place (process-skill
+  # prose, no archive rotation); only the vehicle record is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Extend .agents/skills/aidoc-triage/SKILL.md with a Mode B (pre-implementation validation) branch after the shared §§0-2 core: per-claim ALIVE/DEAD/PARTIAL verdicts, supersede scan, implementation vehicle (F1-F4 + C-level per CHG_REQUEST_FLOWS.md), terminal GO/SCOPED-GO/STALE/SUPERSEDED/ALREADY-FIXED verdict with the specified note shape. Additive only — §§0-4, §5, §8 unchanged; no fork of the §§1-2 core."
+  why: "The highest-risk triage decision (authorize build) currently runs on ad-hoc judgment: §§3-4 output labels/priority only, §7 defers handoff, and the AGENTS.md:67 validation mandate has no skill body. Agents can build against superseded issues."
+  trigger: "Issue #788 (triaged 2026-09-29, P2 + gap + governance)."
+  scope:
+    in:
+      - ".agents/skills/aidoc-triage/SKILL.md: Mode B section + mode branch (additive, zero deletions)"
+    out:
+      - "Initial-triage semantics (§§0-4), §5 catalog, §8 transfer (unchanged)"
+      - "Any framework/ normative change (none — skill prose only, version keep)"
+      - "A second skill file / fork of the §§1-2 core (explicitly rejected by #788)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-15 with the SKILL.md Mode B edit + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-15"
+      status: Completed
+    - step: "Edit .agents/skills/aidoc-triage/SKILL.md (Mode B section, additive) + run IPLAN-15 battery"
+      phase: "documentation_sync"
+      artifact: "SKILL.md"
+      status: Pending
+  files_modified:
+    - ".agents/skills/aidoc-triage/SKILL.md"
+
+artifacts_modified:
+  - id: "CHG-15"
+    changes: "Authorizing record for aidoc-triage Mode B (this file)"
+  - id: "IPLAN-15"
+    changes: "Authorizing IPLAN (framework/archive/CHG-15/IPLAN-15.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-15 (0 errors)"
+    - "muse skills validate over .agents/skills/aidoc-triage (clean, zero diagnostics)"
+    - "markdownlint N/A (pre-commit global exclude covers .agents/skills/); diff additive-only (zero deletions)"
+    - "sdd_doc_lint/tests green"

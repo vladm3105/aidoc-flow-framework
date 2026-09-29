@@ -1,0 +1,100 @@
+# =============================================================================
+#  IPLAN-15: Implement aidoc-triage Mode B (pre-implementation validation)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-15/CHG-15.yaml (F2 direct, C1, In-Progress)
+#  Source: issue #788 — skill-prose C1, .agents/skills/aidoc-triage/SKILL.md only.
+# =============================================================================
+
+doc_id: IPLAN-15
+title: "Implement aidoc-triage Mode B (pre-implementation validation, same-file extension)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.65.0"
+  source_chg: "CHG-15"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-15"
+  subtype: combined
+  source_spec: "@spec: N/A (process-skill prose under CHG-15; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 1
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: ".agents/skills/aidoc-triage/SKILL.md"
+      description: "Add Mode B (pre-implementation validation) section after the shared sections; record the mode branch without touching initial-triage semantics"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-15/CHG-15.yaml + IPLAN-15.yaml"
+      description: "Authorizing vehicle (this file + CHG-15)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3, docs-only non-normative skill prose). Verification commands below are the check battery (mirrors CHG-07 vehicle precedent for doc-side verification)."
+  cases:
+    - "chg_lint.py over CHG-15: 0 errors"
+    - "muse skills validate over .agents/skills/aidoc-triage: clean, zero diagnostics"
+    - "markdownlint N/A with reason: pre-commit global exclude covers .agents/skills/ (.pre-commit-config.yaml:37) and no local binary; skills-validate is the prose gate"
+    - "grep battery: Mode B markers present (Pre-implementation verdict, GO / SCOPED-GO / STALE / SUPERSEDED / ALREADY-FIXED, ALIVE / DEAD / PARTIAL); §§0-4/§5/§8 text unchanged"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-15/CHG-15.yaml"
+    - "muse skills validate .agents/skills/aidoc-triage"
+    - "git diff --stat dev -- .agents/skills/aidoc-triage/SKILL.md (expect SKILL.md only)"
+    - "git diff dev -- .agents/skills/aidoc-triage/SKILL.md | grep -c '^[-]' (deletions expect 0 — additive only)"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Same-file extension only: NO fork of §§1-2 verification core into a second copy"
+  - "Additive only: §§0-4 initial-triage semantics, §5 catalog, §8 transfer unchanged (zero deletions)"
+  - "Mode recorded in the note header (initial vs pre-implementation) so later sessions can tell which question was answered"
+  - "Memory write (§6) records Mode-B verdicts with the dev SHA so they rot detectably"
+  - "No normative duplication: Mode B cites CHG_REQUEST_FLOWS.md vehicle taxonomy + AGENTS.md:67 mandate, does not restate them"
+  - "No version impact (version_action keep; no pins touched; .agents/skills precedent #781)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "SKILL.md Mode B edit + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-15"
+  upstream: ["#788"]
+  downstream: [".agents/skills/aidoc-triage/SKILL.md (process skill)"]

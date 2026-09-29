@@ -75,6 +75,51 @@ If a triage note already exists, post a delta (`## Re-triage note (YYYY-MM-DD)` 
 
 Then apply labels directly — including priority (`gh issue edit <N> --repo vladm3105/aidoc-flow-framework --add-label "P1,linter"`). Triage owns the labels; suggesting without applying just moves the work. Do not close, do not implement.
 
+## 4B. Mode B — pre-implementation validation (second mode of this skill)
+
+Mode A (§§3–4) answers "what is this issue worth" (priority, labels). Mode B
+answers a different question: "may I implement now" (go/no-go). Run the shared
+§§0–2 core verbatim first — preconditions, live fetch, full thread review,
+per-claim verification — plus `git log` on every cited file since the issue's
+filing date (claims rot; the filing-date diff is the rot detector). Then branch
+here instead of §§3–4. Mode B NEVER implements either: it authorizes a vehicle
+(§7), it does not write the fix.
+
+- **Per-claim verdicts.** Every body + thread claim gets one: ALIVE (still
+  reproduces on current `dev` — cite the fresh check), DEAD (contradicted by
+  the tree — cite the evidence), or PARTIAL (scoped surviving list — name
+  exactly what survives).
+- **Supersede scan.** Search later CHGs (`framework/archive/CHG-*/`), decisions
+  (`plans/DECISIONS.md`, `framework/governance/DECISIONS.md`), merged PRs, and
+  open branches/attempts for anything that already fixed, scoped, or declined
+  the claim. Name links or record "none found" — never assume.
+- **Implementation vehicle.** Classify per `framework/governance/CHG_REQUEST_FLOWS.md`
+  (F1–F4 in router order + change level C1/C2/C3) and re-check blast radius
+  against the current tree (the filing-time radius may have shifted).
+- **Terminal verdict.** Exactly one: GO (all load-bearing claims ALIVE, no
+  superseder), SCOPED-GO (a PARTIAL subset survives — name the surviving scope;
+  the rest is not authorized), STALE (claims no longer reproduce, no superseder),
+  SUPERSEDED (link the superseding CHG/decision/PR), or ALREADY-FIXED (cite the
+  merged evidence). On STALE / SUPERSEDED / ALREADY-FIXED, report with evidence
+  and stop — do not open a vehicle around the verdict.
+- **Note shape** (a Mode B note is never a duplicate of a Mode A note — the
+  header records which question was answered):
+
+```md
+## Pre-implementation verdict (YYYY-MM-DD, dev @ <sha>)
+- Verdict: GO | SCOPED-GO | STALE | SUPERSEDED | ALREADY-FIXED
+- Claims: <id>: ALIVE | DEAD | PARTIAL — <evidence>
+- Supersede scan: <links or "none found">
+- Vehicle: <F1–F4 + C-level> · Blast radius re-check: <result>
+```
+
+- **Memory.** §6 applies with one addition: record Mode B verdicts with the
+  `dev` SHA they were verified against, so a later session can tell the verdict
+  rotted instead of re-trusting it.
+- **Independence.** When the verdict is GO on a P0/P1 issue or on a contested
+  claim, prefer a fresh-context second opinion (judge ≠ implementer) before
+  opening the vehicle. Low-stakes GO verdicts do not owe one.
+
 ## 5. Known defect classes (check first — they recur)
 
 - **Phantom versions** (D-0078): a version cited but never held by `framework/VERSION`. Correct forward, never retag, never rewrite published records.
