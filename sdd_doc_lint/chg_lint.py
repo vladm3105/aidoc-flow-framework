@@ -1233,6 +1233,22 @@ def check_premature_step_completion(
 def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
+    if any(a in ("-h", "--help") for a in argv):
+        print(
+            "Usage: chg_lint.py [--sdd-root <dir>] <chg-file.yaml> [chg-file2.yaml ...]",
+            file=sys.stderr,
+        )
+        return 0  # #794: help is not a usage error (mirrors bugfix_lint #717)
+    if "--" in argv:
+        argv = argv[argv.index("--") + 1 :]
+    unknown = [a for a in argv if a.startswith("-") and a != "--sdd-root"]
+    if unknown:
+        print(f"Unknown option(s): {' '.join(unknown)}", file=sys.stderr)
+        print(
+            "Usage: chg_lint.py [--sdd-root <dir>] <chg-file.yaml> [chg-file2.yaml ...]",
+            file=sys.stderr,
+        )
+        return 2
 
     sdd_root: Path | None = None
     files: list[str] = []

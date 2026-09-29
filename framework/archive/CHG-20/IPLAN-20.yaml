@@ -1,0 +1,107 @@
+# =============================================================================
+#  IPLAN-20: Mirror -h/--help + unknown-option handling into chg_lint.py (#794)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-20/CHG-20.yaml (F2 direct, C1, Proposed)
+#  Source: issue #794 — code-touching C1, chg_lint CLI prologue only.
+# =============================================================================
+
+doc_id: IPLAN-20
+title: "Mirror -h/--help + unknown-option handling into chg_lint.py (issue #794)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+  source_chg: "CHG-20"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-20"
+  subtype: combined
+  source_spec: "@spec: N/A (CLI-UX mirror under CHG-20; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-29T00:00:00Z"
+  last_updated: "2026-09-29T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 2
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "Add -h/--help (exit 0), -- separator, unknown-flag exit 2 prologue to main(), mirroring bugfix_lint.py:387-403"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Add HelpExitTests (-h/--help exit 0, --bogus exit 2), mirroring test_bugfix_lint.py:327-338"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-20/CHG-20.yaml + IPLAN-20.yaml"
+      description: "Authorizing vehicle (this file + CHG-20)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Code-touching C1 — covering tests REQUIRED (F2.3). HelpExitTests mirror is the covering battery; full sdd_doc_lint suite guards file-linting semantics."
+  cases:
+    - "test_chg_lint.py HelpExitTests.test_short_help_exits_zero: main(['-h']) == 0"
+    - "test_chg_lint.py HelpExitTests.test_long_help_exits_zero: main(['--help']) == 0"
+    - "test_chg_lint.py HelpExitTests.test_unknown_option_still_exits_two: main(['--bogus']) == 2"
+    - "full sdd_doc_lint/tests green (no file-linting regression)"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-20/CHG-20.yaml"
+    - "python3 sdd_doc_lint/chg_lint.py --help; echo exit=$? (expect 0)"
+    - "python3 sdd_doc_lint/chg_lint.py --bogus; echo exit=$? (expect 2)"
+    - "git diff --stat dev (expect 4 files: chg_lint.py, test_chg_lint.py, CHG-20, IPLAN-20)"
+  test:
+    - "python3 -m unittest sdd_doc_lint.tests.test_chg_lint -v"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Mirror only: help/--/unknown-flag prologue before --sdd-root parsing; file loop untouched"
+  - "Usage line names chg_lint.py with [--sdd-root <dir>] form (matches module docstring)"
+  - "--help output to stderr, exit 0 (bugfix precedent, not stdout)"
+  - "Unknown -flags exit 2 even when mixed with valid files (check before file loop)"
+  - "No version impact (version_action keep; tooling only)"
+  - "Worktree-only writes; main checkout stays on dev"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Proposed
+      scope: "chg_lint prologue mirror + covering tests + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-20"
+  upstream: ["#794", "#717"]
+  downstream: ["sdd_doc_lint/chg_lint.py (tooling)", "sdd_doc_lint/tests/test_chg_lint.py (covering)"]
