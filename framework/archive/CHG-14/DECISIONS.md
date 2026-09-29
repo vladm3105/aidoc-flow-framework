@@ -15,39 +15,11 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.1 |
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.65.0 |
-
----
-
-## GD-39 — Per-flow Phase-3 closeout: deployable mandates live deployment + EVAL, non-deployable closes via static battery (CHG-14, 0.65.0 MINOR)
-
-- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.64.0 → 0.65.0` (MINOR),
-  change-level **C2** (F3/spec; breaking-change analysis in CHG-14 — additive
-  clarification, no gate/ID/schema removed, past records unaffected; reviewer may
-  escalate to C3). Vehicle: CHG-14 + IPLAN-14 (`framework/archive/CHG-14/`).
-  Issue: #776 (P2, gap).
-- **Context:** §3.3 defined `Completed` only as "verification passed" with no
-  per-flow closeout rule — agents either prematurely completed code changes
-  without deploying or stalled doc-only changes fabricating empty deployments.
-  The framework already leaned this way (per-flow verification column;
-  dev-complete vs deploy-complete split) — codified, not corrected. Consumer
-  `deploy.sh` / `task smoke` / EVAL-generator names behind the filing are
-  consumer-side and are NOT specified here: the rule names the evidence
-  (deploy + smoke + authentic EVAL vs static battery), not the commands.
-- **Decision:** deployable scope mandates live closeout before `Completed`;
-  non-deployable scope closes via static battery with no deployment and no
-  EVAL owed — fabricated EVALs are forbidden; mixed scope follows the
-  deployable path (manifest decides). Enforcement is reviewer-lens (closeout
-  adequacy is judgement over evidence, not a record property). Also repairs the
-  stale §1-table F2 cell ("docs-only: no CHG/IPLAN"), which contradicted F2.2
-  always-traced — coherence-required for the new rule's readers, not drive-by.
-- **Consequence:** code changes cannot close without deployment evidence;
-  doc-only changes close without empty deployments; no EVAL is ever fabricated
-  for closeout.
+| Framework Version | 0.64.0 |
 
 ---
 

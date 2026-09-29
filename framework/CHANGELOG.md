@@ -7,13 +7,27 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.64.0 |
+| Framework Version | 0.65.0 |
 
 ---
+
+## [0.65.0] — 2026-09-29
+
+### Added — per-flow Phase-3 closeout rule (C2 MINOR, CHG-14 + IPLAN-14, issue #776)
+
+- Deployable scope mandates live closeout (deploy DEV, smoke suite, authentic
+  Layer-10 EVAL) before `Completed`; non-deployable scope (docs-only,
+  governance sync, SDD-only) closes via the static battery with no deployment
+  and no EVAL owed — fabricated EVALs forbidden; mixed scope follows the
+  deployable path (manifest decides). Rule names the evidence, not consumer commands.
+- DOC_GOVERNANCE_CORE §3.3 rules 10–11, flows §1 verification-column closeout
+  pointers per flow, GD-39; stale §1-table F2 cell repaired (always-traced).
+  Enforcement is reviewer-lens (closeout adequacy is judgement over evidence).
+- `framework/VERSION` bumped from `0.64.0` to `0.65.0` with mechanical pin sweep.
 
 ## [0.64.0] — 2026-09-29
 

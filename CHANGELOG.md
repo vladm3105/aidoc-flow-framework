@@ -9,6 +9,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.65.0] — 2026-09-29
+
+### Added — per-flow Phase-3 closeout rule (C2 MINOR → 0.65.0)
+
+- Closeout bifurcation (#776; CHG-14 + IPLAN-14 in `framework/archive/CHG-14/`):
+  deployable changes close live (deploy + smoke + authentic EVAL), non-deployable
+  changes close via static battery with no EVAL owed, mixed scope follows deployable
+- §3.3 rules 10–11, flows verification-column pointers, GD-39, F2-cell stale repair
+- `framework/VERSION` bumped from `0.64.0` to `0.65.0` with mechanical pin sweep
+
 ## [0.64.0] — 2026-09-29
 
 ### Added — first-class documentation_sync phase; CHG-L003 scoped to code steps (C2 MINOR → 0.64.0)
