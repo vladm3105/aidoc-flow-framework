@@ -176,6 +176,7 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 | Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
 | Plans | `plans/<NAME>-PLAN.md` |
 | Changelog | `CHANGELOG.md` (root) + `framework/CHANGELOG.md` — no `ROADMAP.md` exists |
+| Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |
 
 Never put any of these in `tmp/`, and never centralize them in the `aidoc-flow`
 umbrella — the umbrella holds no development of its own.
