@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.1 |
+| Framework Version | 0.68.0 |
 
 ## Principles
 

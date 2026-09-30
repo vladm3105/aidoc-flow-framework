@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.1 |
+| Framework Version | 0.68.0 |
 
 `REVIEW_REMEDIATION_FLOW.md` defines *when* review/remediation fire (the trigger
 points) and *what* an engine must surface (findings, readiness score, remediation

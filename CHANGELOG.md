@@ -11,6 +11,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — engine-agnostic CI standard #815 (C2 MINOR → 0.68.0, CHG-26 + IPLAN-26)
+
+- Framework spec 0.68.0: `CI_AUTONOMOUS_PR_STANDARD.md` (six engine-neutral
+  invariants), GD-42, census + guard test; SDD layer templates and `chg_lint`
+  schemas untouched; detail in `framework/CHANGELOG.md`
+
 ### Fixed — pre-prod-review batch #811–#813 (C1, CHG-25 + IPLAN-25, no version change)
 
 - CI supply-chain hardening (#811): `actions/checkout` / `actions/setup-python`
