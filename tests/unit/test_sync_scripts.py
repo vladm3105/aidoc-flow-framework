@@ -8,6 +8,7 @@ carrying one swept form each), which exercises the real counted-replacement
 machinery without touching the working tree and without any skip.
 """
 
+import os
 import re
 import shutil
 import subprocess
@@ -45,13 +46,14 @@ def _fixture(current: str, stale: str) -> Path:
     return tmp
 
 
-def _run(fixture: Path) -> subprocess.CompletedProcess:
+def _run(fixture: Path, env: dict | None = None) -> subprocess.CompletedProcess:
     return subprocess.run(
         ["bash", str(fixture / "hooks" / "sync-version-refs.sh")],
         cwd=fixture,
         capture_output=True,
         text=True,
         check=False,
+        env=env,
     )
 
 
@@ -68,6 +70,53 @@ class SyncVersionRefsTests(unittest.TestCase):
         )
         self.assertIn(f"| Framework Version | {current} |", md)
         self.assertIn(f'framework_version: "{current}"', yaml_text)
+        # Rename-based write must preserve the target mode (mktemp is 600).
+        probe = fixture / "framework" / "probe.md"
+        self.assertEqual(oct(probe.stat().st_mode & 0o777), "0o644")
+
+    def test_converter_failure_leaves_target_untouched(self):
+        """Fail-closed (#821): a broken converter must not truncate the target.
+
+        A latin-1 byte keeps the swept literal greppable but makes the
+        python3 converter raise UnicodeDecodeError. The hook must refuse
+        loudly (nonzero exit) and leave the target byte-identical.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        target = fixture / "framework" / "probe.md"
+        with target.open("ab") as fh:
+            fh.write(b"\xff")
+        poisoned = target.read_bytes()
+        result = _run(fixture)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("FAILED", result.stderr)
+        self.assertEqual(target.read_bytes(), poisoned)
+
+    def test_write_failure_leaves_target_untouched(self):
+        """Atomic write (#821 review): a failed rename must not touch the target.
+
+        Shadow `mv` with a failing shim: the converter succeeds, the write
+        stage fails. Rename semantics mean the original is still intact —
+        the hook must refuse loudly (nonzero exit) with the target
+        byte-identical (a write-through `cat` could not promise this).
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        target = fixture / "framework" / "probe.md"
+        before = target.read_bytes()
+        shimdir = fixture / "bin"
+        shimdir.mkdir()
+        shim = shimdir / "mv"
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
+        shim.chmod(0o755)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        result = _run(fixture, env)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("FAILED", result.stderr)
+        self.assertEqual(target.read_bytes(), before)
 
     def test_sync_is_idempotent(self):
         """A second consecutive run replaces nothing (no 'replaced' lines)."""

@@ -1,0 +1,111 @@
+# =============================================================================
+#  IPLAN-29: sync-version-refs fail-closed converter (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-29/CHG-29.yaml (F2 direct, C1,
+#  In-Progress). Source: issue #821 + triage note (2026-09-30).
+#  Code-touching C1: covering test REQUIRED (GATE-CODE) — carried in the
+#  manifest below; full suites are the regression battery.
+# =============================================================================
+
+doc_id: IPLAN-29
+title: "sync-version-refs fail-closed converter + CHG-29 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+  source_chg: "CHG-29"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-29"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct fix for #821 under CHG-29; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 4
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-29/CHG-29.yaml + IPLAN-29.yaml"
+      description: "Authorizing vehicle (CHG-29 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "Guard python3 converter exit in replace_in_file_counted (fail-closed)"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/unit/test_sync_scripts.py"
+      description: "Covering test: converter failure leaves target byte-identical + nonzero exit"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Code-touching C1: converter test first-observed failing (truncation on unfixed script), then fixed script green; write-stage test (failing-mv shim) proves rename atomicity. Success-path suites (propagates/idempotent) guard byte-identical behavior + mode preservation. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-29: 0 errors"
+    - "test_converter_failure_leaves_target_untouched: FAILS pre-fix (target zeroed), PASSES post-fix (byte-identical + nonzero exit)"
+    - "test_write_failure_leaves_target_untouched: PASSES (failed rename leaves original intact + nonzero exit)"
+    - "test_sync_propagates_stale_pins + test_sync_is_idempotent still green (success path unchanged, mode 644 preserved)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-29/CHG-29.yaml"
+    - "python3 -m unittest tests.unit.test_sync_scripts -v"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest tests.unit.test_sync_scripts.SyncVersionRefsTests.test_converter_failure_leaves_target_untouched -v"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Fail-closed + atomic: any converter/write failure returns nonzero with target byte-identical (same-dir temp + mode-preserving rename; no write-through cat)"
+  - "Success path byte-identical (existing propagate/idempotent tests stay green)"
+  - "No rename-based write (mktemp 600 mode must not propagate to swept files)"
+  - "No VERSION bump (version_action keep); no framework/ files touched"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + hook fix + covering test + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-29"
+  upstream: ["Issue #821 + triage note (2026-09-30)", "Session goal 'fix all issues'"]
+  downstream: ["PR feature/chg-29-hook-failclosed → dev"]
