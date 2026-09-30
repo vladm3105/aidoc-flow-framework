@@ -11,9 +11,22 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.0 |
+| Framework Version | 0.68.1 |
 
 ---
+
+## [0.68.1] — 2026-09-30
+
+### Fixed — CHG-26 follow-through batch (C1 PATCH → 0.68.1, CHG-27 + IPLAN-27)
+
+- `ADAPTATION_SURFACE.yaml`: new `ci_bindings` knob (6 → 7, default `{}`)
+  binding the `CI_AUTONOMOUS_PR_STANDARD.md` platform mechanics (Invariant 2
+  ceilings, Invariant 3 required checks/branch policy, runners/workflows/
+  integration branch); closed-set semantics kept (#817)
+- `PROFILE-TEMPLATE.yaml`: `ci_bindings` override row + knob-count header
+  (6 → 7); `ADAPTATION.md` §4 title + new §4.7 `ci_bindings` section (#817)
+- Guard: `test_ci_autonomous_pr_standard.py` pins the standard-to-surface
+  pointer (fails before, passes after) (#817)
 
 ## [0.68.0] — 2026-09-30
 

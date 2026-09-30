@@ -11,6 +11,10 @@
 #   3. actionlint on .github/workflows/*.yml (skipped-with-notice if absent)
 #   4. shellcheck (skipped-with-notice if not installed)
 #   5. OPS-0069 audit-trail phrase check (mandatory; scans commit range)
+#   6. Test suites: tests/conformance + tests/unit + sdd_doc_lint/tests
+#      (fail-closed when python3 + suite deps resolve, skipped-with-notice
+#      otherwise — CI_AUTONOMOUS_PR_STANDARD.md Invariant 1 parity: the same
+#      unittest entries CI runs, so local green predicts remote green)
 #
 # Repo-specific extra checks (e.g., verified-planning `check_plan.py`,
 # operations classify-parity) live in a consumer-side wrapper
@@ -247,6 +251,22 @@ if [ "$audit_ok" -ne 1 ]; then
   rc=1
 else
   echo "  ✅ OPS-0069 audit-trail present in push range."
+fi
+
+# --- 6. Test suites (Invariant 1 parity) ---
+# The exact unittest entries CI runs (conformance.yml, doc-review.yml).
+# Fail-closed when python3 + suite deps resolve; skip-with-notice otherwise
+# (same convention as the linters above) — never block a push on a missing
+# local interpreter.
+if have python3 && python3 -c "import yaml, jsonschema" 2>/dev/null; then
+  for suite in tests/conformance tests/unit sdd_doc_lint/tests; do
+    echo "── suites: ${suite} ──"
+    python3 -m unittest discover -s "$suite" -v || { echo "::error::suite ${suite} failed — fix before pushing."; rc=1; }
+  done
+elif have python3; then
+  echo "ℹ️  test suites skipped (suite deps missing — pip install -r tests/conformance/requirements.txt) — CI enforces."
+else
+  echo "ℹ️  test suites skipped (python3 not installed) — CI enforces."
 fi
 
 echo "════════════════════════════════════════════════════════════════════"

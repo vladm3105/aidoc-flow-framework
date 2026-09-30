@@ -23,12 +23,12 @@ metadata:
   schema_version: "1.0.0"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-09-07"
-  framework_version: "0.68.0"
+  framework_version: "0.68.1"
   # project_name: "<your project>"
   framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
 
 # =============================================================================
-#  Adaptation knobs (6 — see ADAPTATION_SURFACE.yaml for the closed set)
+#  Adaptation knobs (7 — see ADAPTATION_SURFACE.yaml for the closed set)
 #  Uncomment and edit any line to override the framework default.
 # =============================================================================
 
@@ -84,3 +84,14 @@ metadata:
 # Default: 3.
 #
 # quality_loop_max_iterations: 3
+
+# ci_bindings pins the platform mechanics CI_AUTONOMOUS_PR_STANDARD.md points
+# at: verification-tier latency ceilings (Invariant 2), required checks and
+# branch policy (Invariant 3), runners, workflows, integration branch. Values
+# are platform-specific and opaque to the framework; unset keys fall through
+# to framework defaults. Ceilings keep static < integration < promotion
+# ordering. Default: {} (no overrides).
+#
+# ci_bindings:
+#   static_ceiling: "<platform duration>"  # illustrative keys — platforms
+#   integration_ceiling: "<platform duration>"  # choose their own names

@@ -33,6 +33,31 @@ def workflow_texts():
 
 
 class HookStageCoverageTests(unittest.TestCase):
+    def test_pre_push_hook_runs_test_suites(self):
+        # #818: the pre-push gate must run the same suites CI runs
+        # (CI_AUTONOMOUS_PR_STANDARD.md Invariant 1) — a linters-only hook
+        # lets suite failures escape to a full CI round-trip. Comments are
+        # stripped first so the test pins executable invocation, not a prose
+        # mention in the scope header.
+        text = (REPO_ROOT / "hooks" / "pre_push_check.sh").read_text(
+            encoding="utf-8"
+        )
+        code = "\n".join(
+            line for line in text.splitlines() if not line.lstrip().startswith("#")
+        )
+        self.assertRegex(
+            code,
+            r"python3\s+-m\s+unittest\s+discover",
+            "pre_push_check.sh never invokes the unittest entry point",
+        )
+        for suite in ("tests/conformance", "tests/unit", "sdd_doc_lint/tests"):
+            with self.subTest(suite=suite):
+                self.assertIn(
+                    suite,
+                    code,
+                    f"pre_push_check.sh never invokes {suite}",
+                )
+
     def test_pre_push_stage_invoked_in_ci(self):
         ids = pre_push_hook_ids()
         self.assertTrue(ids, "no pre-push-stage hook declared")

@@ -24,7 +24,10 @@ instead. (`ADAPTATION.md` §4 instructs adopters to install the script via
 ## Other scripts (no engine event — CI/pre-commit wiring only)
 
 - `check-docs-updated.sh` — document-of-record reminder (pre-commit).
-- `pre_push_check.sh` — canon pre-push validation (`pre-push` stage).
+- `pre_push_check.sh` — canon pre-push validation (`pre-push` stage):
+  linters + audit-trail phrase + the three unittest suites
+  (`tests/conformance`, `tests/unit`, `sdd_doc_lint/tests` — Invariant 1
+  parity with CI; skipped-with-notice when python3 or suite deps are absent).
 - `read-pin-currency-log.sh` / `reconcile-pin-currency-issue.sh` — pin-currency reader.
 - `sync-version-refs.sh` — mechanical version-pin fanout (runs on
   `framework/VERSION` changes; see its header).

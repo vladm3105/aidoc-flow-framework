@@ -14,7 +14,7 @@ metadata:
   description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-09-07"
-  framework_version: "0.68.0"
+  framework_version: "0.68.1"
 
 # The single input an engine reads at runtime. The user-global file is an
 # authoring-time seed only (merged into the project profile, not read at
@@ -32,7 +32,7 @@ consumer_roles:
   scaffolding: "creates the project structure"
 
 # -----------------------------------------------------------------------------
-# Knobs (6). `id_format` is deferred — see ADAPTATION.md §9 (Out of scope).
+# Knobs (7). `id_format` is deferred — see ADAPTATION.md §9 (Out of scope).
 # -----------------------------------------------------------------------------
 knobs:
   - name: active_layers
@@ -87,6 +87,18 @@ knobs:
       `.aidoc/profile.yaml` must handle missing-file / missing-field /
       malformed-value paths by falling back to the default.
     default: 3
+
+  - name: ci_bindings
+    type: "map[string, string]"
+    consumers: [scaffolding]
+    constraint: >
+      Binds CI_AUTONOMOUS_PR_STANDARD.md invariants to platform mechanics:
+      verification-tier latency ceilings (Invariant 2), required checks and
+      branch policy (Invariant 3), runners, workflows, and the integration
+      branch. Values are platform-specific and opaque to the framework;
+      unset keys fall through to framework defaults. Never weakens a gate —
+      ceilings keep the static < integration < promotion ordering.
+    default: "{}"
 
 # -----------------------------------------------------------------------------
 # Layer split — which layers a project may opt out of.

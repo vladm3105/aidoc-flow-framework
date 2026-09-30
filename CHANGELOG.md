@@ -31,6 +31,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   linters alone do not equal governed (18 Reserved rows have no emitter;
   reviewer-lens backstop); no new emitters, no reclassification
 
+## [0.68.1] — 2026-09-30
+
+### Fixed — CHG-26 follow-through batch #817–#818 (C1 PATCH → 0.68.1, CHG-27 + IPLAN-27)
+
+- Adaptation CI bindings (#817): new `ci_bindings` knob in
+  `ADAPTATION_SURFACE.yaml` (6 → 7 knobs) with `PROFILE-TEMPLATE.yaml`
+  override row and `ADAPTATION.md` §4.7 — the ceilings/runners/workflows/
+  branch-policy bindings `CI_AUTONOMOUS_PR_STANDARD.md` requires now have a
+  declared place; six invariants and existing knobs untouched
+- Pre-push suite parity (#818): `hooks/pre_push_check.sh` runs
+  `tests/conformance` + `tests/unit` + `sdd_doc_lint/tests` (fail-closed when
+  python3 + deps resolve, skip-with-notice otherwise) — local green predicts
+  remote green per Invariant 1; no Taskfile/tier scaffolding
+- Pin sweep: `hooks/sync-version-refs.sh` `OLD_VERSIONS` gains 0.68.0
+
 ## [0.67.1] — 2026-09-30
 
 > The two entries after the batch entry were relocated from below `0.62.4`
