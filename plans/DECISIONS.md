@@ -5,6 +5,26 @@ Spec-governance decisions live in `framework/governance/DECISIONS.md` (GD series
 plus the retired D-series annex); this file records repo-process choices that
 do not belong in the spec.
 
+## 2026-09-30 — D-0086: agent auto-merge authorized by default on own green PRs (#812)
+
+- **Decision.** On a PR the agent itself opened, once all required checks
+  pass and the PR is mergeable (`mergeStateStatus` CLEAN on the current
+  head — confirm `headRefOid`), the agent enables auto-merge
+  (`gh pr merge <N> --auto --squash --delete-branch`, the repo's
+  squash-only convention) and reads the merge back. Authorizer: the repo
+  working agreement (`AGENTS.md` "Watching your PR"); this entry is the
+  provenance record #812 found missing.
+- **Carve-outs (unchanged).** Withhold auto-merge when the user said hold,
+  required checks are incomplete or red, a repo rule reserves the merge for
+  a human, or the PR is not the agent's own — tool access is not merge
+  authority.
+- **Why the head re-check.** The green run belongs to a commit, not to the
+  PR: confirming `mergeStateStatus` CLEAN on the current `headRefOid`
+  makes the merge decision atomic against the checked head, so a
+  previous run's green is never this commit's. Branch-protection required
+  checks gate every merge regardless of this default.
+- **Cited by** `AGENTS.md` ("Watching your PR").
+
 ## 2026-09-26 — D-0078: phantom versions are recorded, never tagged (#731)
 
 - **Decision.** A version documented as released that `framework/VERSION`
