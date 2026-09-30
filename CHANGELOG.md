@@ -9,6 +9,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [Unreleased]
+
+> The two entries below were relocated from below `0.62.4` on 2026-09-30
+> (CHG-24 #806) — content unchanged, Keep-a-Changelog order restored.
+
+### Fixed — triage batch #798–#808 (C1, CHG-24 + IPLAN-24)
+
+- Docs-truthfulness (#801, #802, #804, #806, #808): `F2-UNIFY-PLAN.md` marked achieved via CHG-12 (#772/#773 closed); `PROJECT.md` branching + symlink sections annotated as superseded by `AGENTS.md` and the binding symlink convention; frozen-era pins qualified; `SELF_LEARNING.md` store table rewritten to the implemented surface; `README.md` status snapshot refreshed to 0.67.0
+- Template consistency (#805): EVAL schema normalized to 1.0, future date replaced, CHG `framework_version` literal replaced with `[X.Y.Z]` (both mirror twins)
+- Skills registry + engine-neutrality (#807): phantom `DESIGN.md`/`PLAN.md` entries dropped, `AGENTS.md`-chain wording ported from the `.agents` copies
+- CI gate coverage (#798, #799, #803): pre-push CHG gate invoked in CI, `tests/unit` wired into CI, three scanner `fail-on-findings` flipped after a clean window (0 open alerts)
+
+### Fixed — required CI checks vendored locally: canon went private (#746)
+
+- `.github/workflows/pre-commit.yml` + `links.yml` run vendored inline jobs (copied from canon `@ci/v4.0.0`, source tag + date in header comments) — the `uses: ...aidoc-flow-ci...` calls load-fail while canon is private, leaving both required contexts permanently Expected. No framework version change (CI-only, no `framework/` files touched)
+
+### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)
+
+- `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
+- Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
+
 ## [0.67.0] — 2026-09-30
 
 ### Removed — Tier-1 consumer feedback log retired (C2 MINOR → 0.67.0)
@@ -132,17 +153,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - D-series log (#720): retired-ID annex in `governance/DECISIONS.md`; D-0065/D-0070/D-0078/D-0084/D-0085 recorded in `plans/DECISIONS.md`; live pointers repointed
 - New regression test: `test_validator_example_uses_template_keys`
 - `framework/VERSION` bumped from `0.62.3` to `0.62.4` with mechanical pin sweep
-
-## [Unreleased]
-
-### Fixed — required CI checks vendored locally: canon went private (#746)
-
-- `.github/workflows/pre-commit.yml` + `links.yml` run vendored inline jobs (copied from canon `@ci/v4.0.0`, source tag + date in header comments) — the `uses: ...aidoc-flow-ci...` calls load-fail while canon is private, leaving both required contexts permanently Expected. No framework version change (CI-only, no `framework/` files touched)
-
-### Fixed — P0 CI batch: ai-review v4 caller contract + pin-currency reader (#705, #710)
-
-- `ai-review.yml` caller migrated to the canon `ci/v4.0.0` contract (CI-0051): input renamed to `llm_allow_insecure_http`, `secrets:` remapped to `LLM_URL` / `LLM_API_KEY`. The stale map named undeclared inputs/secrets, so GitHub load-rejected the workflow (`startup_failure`, zero jobs). No framework version change (CI-only, no `framework/` files touched)
-- Pin-currency reader restored: `hooks/read-pin-currency-log.sh` + `hooks/reconcile-pin-currency-issue.sh` (were root `scripts/`, archived in `0af49fac`), `pin-currency-reader.yml` repointed, archived plan citation dropped; 18-test unit module restored and re-registered in the conformance suite
 
 ## [0.62.3] — 2026-09-27
 

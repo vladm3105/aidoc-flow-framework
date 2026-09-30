@@ -39,7 +39,7 @@ skills:
     files: ["SKILL.md"]
   - name: verified-planning
     path: framework/skills/verified-planning/SKILL.md
-    files: ["SKILL.md", "check_plan.py", "PLAN-TEMPLATE.snippet.md", "plan-gate.yml", "precommit-hook.snippet.txt", "install.sh", "DESIGN.md", "PLAN.md", "tests/test_check_plan.py", "tests/test_install.sh"]
+    files: ["SKILL.md", "check_plan.py", "PLAN-TEMPLATE.snippet.md", "plan-gate.yml", "precommit-hook.snippet.txt", "install.sh", "tests/test_check_plan.py", "tests/test_install.sh"]
   - name: wrap-session
     path: framework/skills/wrap-session/SKILL.md
     files: ["SKILL.md"]

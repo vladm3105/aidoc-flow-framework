@@ -7,7 +7,8 @@
 > `README.md` + `CHANGELOG.md`; live spec: `framework/`; live process:
 > `AGENTS.md`.
 >
-> Created 2026-05-18. Companion to `ROADMAP.md` and `docs/REPO_STRUCTURE.md`.
+> Created 2026-05-18. Companion to `docs/REPO_STRUCTURE.md` (`ROADMAP.md` was
+> retired; the historical companion reference is kept as history).
 
 ## 1. Overview
 
@@ -28,7 +29,7 @@ Semantic Versioning ([semver.org](https://semver.org)). Four independent streams
 
 | Stream | File | Purpose |
 |--------|------|---------|
-| Project (migration) | `CHANGELOG.md` / `ROADMAP.md` | Tracks migration milestones only |
+| Project (migration) | `CHANGELOG.md` (`ROADMAP.md` retired) | Tracks migration milestones only |
 | Framework spec | `framework/VERSION` | The shared contract |
 | Hermes AI | retired | Platform stream frozen at the 2026-09-07 archive |
 | Claude Code plugin | retired | Platform stream frozen at the 2026-09-07 archive |
@@ -41,6 +42,10 @@ The migration project starts a fresh `0.x` line (it is a separate, independent
 project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
 
 ## 3. Branching & Tagging
+
+> **Superseded (CHG-24 #802):** the live branching model is `AGENTS.md`
+> (`feature/*` → `dev` → `main`). Everything below is the frozen
+> migration-era record — read as history, not instruction.
 
 - **Development:** `main` is the multi-platform project (since the `v1.0.0`
   cutover). Work lands via short-lived `claude/*` feature branches → PR → `main`;
@@ -224,7 +229,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.53.1"  # Must match framework/VERSION
+  framework_version: "0.53.1"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
 ```
 
 ### 7.5 Updating the framework
@@ -236,5 +241,11 @@ cd .aidoc/framework && git pull origin main
 After pulling, verify `framework/VERSION` matches the pin in `.aidoc/profile.yaml`. If a newer version has breaking changes, update project overrides in `.aidoc/project/` before adopting.
 
 ### 7.6 No symlinks
+
+> **Superseded (CHG-24 #801):** the binding rule is
+> `framework/governance/ADAPTATION.md` § "Symlink convention" —
+> `.aidoc/framework/` is a symlink to the shared framework directory
+> (canonical). The MUST-NOT below is the frozen 0.53.x-era rule, kept as
+> history; see `docs/ADAPTATION-GUIDE.md` §2 for the live convention.
 
 Projects MUST NOT use symlinks to external framework directories. The framework must be a real cloned copy to support version pinning, local patches, and clean updates.

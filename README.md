@@ -303,12 +303,13 @@ remains; the framework is the whole product.
 
 ## Status
 
-The migration is complete (cutover shipped as `v1.0.0`); the project is now in
-**post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.66.0`. Platforms (Hermes, Claude Code plugin) have been archived —
-the framework is now self-sufficient for any AI agent.
+The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
+the project is now in **post-cutover development** (latest project release
+`0.67.0`), tracking framework spec `0.67.0`. Platforms (Hermes, Claude Code
+plugin) have been archived — the framework is now self-sufficient for any
+AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-09-29); it is not
+> *This overview is a point-in-time snapshot (as of 2026-09-30); it is not
 > wired into the version-sync hook. For live version state see the per-package
 > `VERSION` files.*
 

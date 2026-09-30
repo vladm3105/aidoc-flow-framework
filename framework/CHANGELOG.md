@@ -15,6 +15,19 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 ---
 
+## [Unreleased]
+
+### Fixed — triage batch spec surface (C1, CHG-24 + IPLAN-24)
+
+- `SELF_LEARNING.md` store table rewritten to the implemented surface
+  (`.aidoc/learning/learnings.md` + harness scratch); unbuilt homes moved
+  to roadmap (#804)
+- EVAL template `schema_version` normalized to 1.0; CHG template
+  `framework_version` literal replaced with `[X.Y.Z]` (both mirror twins,
+  byte-identical) (#805)
+- Skills registry phantom `DESIGN.md`/`PLAN.md` entries dropped;
+  engine-neutrality wording ported from the `.agents` copies (#807)
+
 ## [0.67.0] — 2026-09-30
 
 ### Removed — Tier-1 consumer feedback log retired (C2 MINOR, CHG-23 + IPLAN-23)

@@ -9,8 +9,7 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/recall/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 `MEMORY.md` is auto-loaded, but it is an index and it grows without bound — 127
@@ -49,8 +48,9 @@ In order:
 
 ## 3. Dispatch the triage
 
-One read-only subagent (`Explore`; if that type is unavailable, the `Agent` tool
-with `Read`/`Grep`/`Glob` and an explicit model — never an untier-ed default):
+One read-only subagent (your engine's `Explore` equivalent; if no named
+read-only type exists, a delegate with read-only file tools and an explicit
+model — never an untier-ed default):
 
 ```
 Read every *.md in <MEMDIR>, plus MEMORY.md. For each file, read its frontmatter

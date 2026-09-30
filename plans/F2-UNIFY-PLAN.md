@@ -9,7 +9,8 @@ issue → CHG → IPLAN → code/documentation/governance/AGENTS.md.
 
 ## Status
 
-- Issue: #772 OPEN; issue #773 OPEN (owner-directed mandatory-trackability rule, triaged 2026-09-28).
+- Status update 2026-09-30 (CHG-24): objective ACHIEVED via CHG-12 — issues #772 and #773 are both CLOSED, and the always-traced rule landed (C1 CHG + scoped IPLAN for every author, no direct-commit path surviving; the D2 human-only exception was rejected, not retained). This plan file stays as the design record; no vehicle runs from it.
+- Issue (historical): #772 OPEN; issue #773 OPEN (owner-directed mandatory-trackability rule, triaged 2026-09-28).
 - This plan: ready (pass 3) + D2 AMENDED (see below) — merged vehicle with #773 per triage ordering.
 
 ## Scope
@@ -71,7 +72,7 @@ pure prose).
 ## Decisions
 
 - D1: Default for agents becomes always-traced. No agent exception.
-- D2 (SUPERSEDED by #773, 2026-09-28): was "retain direct commit as an explicit
+- D2 (SUPERSEDED by #773, 2026-09-28; both #772/#773 CLOSED, landed as CHG-12 always-traced, 2026-09-30): was "retain direct commit as an explicit
   human-only exception". The owner-directed #773 rule (mandatory CHG+IPLAN for
   every post-seed activity, seed-phase drafting the sole exception) overrides
   it: NO direct-commit path survives, for any author. The CHG-12 record carries

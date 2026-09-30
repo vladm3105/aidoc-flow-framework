@@ -10,7 +10,9 @@
 # to the `call:` caller then (and restore the required context name, #746).
 #
 # Requires .pre-commit-config.yaml in the repo root. Runs all hooks against
-# all files via `pre-commit run --all-files`.
+# all files via `pre-commit run --all-files`, then runs the pre-push stage
+# explicitly (CHG-24 #798): the bare default-stage run never fires pre-push
+# hooks, so without the second invocation the pre-push gate has no CI invoker.
 
 name: pre-commit
 
@@ -46,6 +48,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # Full history: the pre-push step below needs merge-base + push-range
+          # git reads (a depth-1 checkout would make the audit-trail check
+          # measure nothing rather than fail). CHG-24 #798.
+          fetch-depth: 0
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -96,3 +102,13 @@ jobs:
             echo "pre-commit: ${executed} hook(s) EXECUTED, ${nofiles} with no matching files (D11 post-condition satisfied)."
           fi
           exit "$rc"
+
+      - name: "Run pre-push-stage hooks (CHG-24 #798)"
+        run: |
+          set -euo pipefail
+          # The pre-push gate (OPS-0069 audit-trail + mechanical linters) has no
+          # CI invoker otherwise: bare `pre-commit run --all-files` fires
+          # pre-commit-stage hooks only. Linters missing from the runner skip
+          # with notice inside the script; the audit-trail phrase check is
+          # mandatory (every commit carries the OPS-0065 phrase per repo rule).
+          env -u SKIP timeout 900 pre-commit run --all-files --hook-stage pre-push aidoc-flow-pre-push --color=never --show-diff-on-failure

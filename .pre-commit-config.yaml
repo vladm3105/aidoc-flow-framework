@@ -136,6 +136,15 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # Unit suite (CHG-24 #799): tests/README promises tests/unit on every
+      # PR — CI (conformance.yml) and this hook are the two executors.
+      - id: unit
+        name: unit suite (lint/test helpers)
+        entry: python3 -m unittest discover -s tests/unit
+        language: system
+        pass_filenames: false
+        always_run: true
+
       # Mechanical doc-sync: when framework/VERSION changes, auto-propagate the
       # new version string into all the docs-of-record that quote it.
       # Re-stages on its own; idempotent.
@@ -171,7 +180,7 @@ repos:
     hooks:
       - id: aidoc-flow-pre-push
         name: aidoc-flow canon pre-push validation
-        entry: bash hooks/pre_push_check.sh
+        entry: hooks/pre_push_check.sh
         language: script
         stages:
           - pre-push

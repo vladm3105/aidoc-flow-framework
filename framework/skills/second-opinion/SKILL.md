@@ -9,8 +9,7 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/second-opinion/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 An independent review pass that raises decision **quality** before work leaves
@@ -24,9 +23,9 @@ This is the whole mechanism; everything else is packaging.
 - The reviewer gets the **artifact plus its cited sources** — **not** the
   generator's reasoning or chain-of-thought. Handing over the reasoning invites
   the judge to grade the rationalization instead of the work.
-- **Dispatch the `second-opinion-judge` agent.** Fresh context by construction;
-  the rubric, output format and independence rules are baked into
-  `framework/skills/_shared/agents/second-opinion-judge.md`. **Do not re-author a judge prompt
+- **Dispatch a fresh-context read-only subagent as judge**, prompted by
+  `framework/skills/_shared/agents/second-opinion-judge.md` (rubric, output
+  format, independence rules baked in). **Do not re-author a judge prompt
   ad hoc** — prompt variance silently weakens the judge, and a weakened judge
   still returns confident-looking verdicts.
 - **The rubric lives in the agent file, not here.** One source; duplicated
@@ -49,7 +48,7 @@ what independence means, this file governs.
 
 ## Output
 
-The agent emits a `SECOND-OPINION — <artifact>` block carrying verdict /
+The judge emits a `SECOND-OPINION — <artifact>` block carrying verdict /
 confidence / issues / fix, stamped with its rubric version. The block's
 authoritative shape lives in `agents/second-opinion-judge.md` — do not copy it
 here; the skill's copy would stale on the next rubric bump.
