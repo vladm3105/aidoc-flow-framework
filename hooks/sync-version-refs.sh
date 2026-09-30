@@ -56,15 +56,36 @@ replace_in_file_counted() {
   if [ "$actual" -eq 0 ]; then
     return 0
   fi
+  # Fail closed (#821): every fallible stage is guarded explicitly because
+  # `set -e` stays disabled inside functions invoked from an OR-list
+  # (`sweep … || true` call sites). The pre-fix code ran an unconditional
+  # `cat tmp > path` after the converter, truncating the target on
+  # converter failure while the hook reported success.
+  #
+  # Atomic write: same-dir temp + rename, so a mid-copy failure (ENOSPC,
+  # signal) can never leave a partial target — rename either installs the
+  # complete file or nothing. The temp inherits the target's mode first
+  # (mktemp is 600; a bare rename would propagate that); `stat` tries GNU
+  # then BSD flags, and a failed chmod aborts loud before the rename.
   local tmp
-  tmp="$(mktemp)"
-  python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
+  tmp="$(mktemp "$(dirname "$path")/.sync-XXXXXX")"
+  if ! python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
 import sys
 path, old, new, tmp = sys.argv[1:5]
 text = open(path, encoding="utf-8").read()
 open(tmp, "w", encoding="utf-8").write(text.replace(old, new))
 EOF
-  cat "$tmp" > "$path"
+  then
+    echo "sync-version-refs: FAILED converter for $rel — target untouched" >&2
+    rm -f "$tmp"
+    return 1
+  fi
+  if ! chmod "$(stat -c %a "$path" 2>/dev/null || stat -f %Lp "$path")" "$tmp" \
+    || ! mv "$tmp" "$path"; then
+    echo "sync-version-refs: FAILED write for $rel — target untouched" >&2
+    rm -f "$tmp"
+    return 1
+  fi
   rm -f "$tmp"
   echo "sync-version-refs: $rel — replaced $actual occurrence(s)"
 }
@@ -84,7 +105,7 @@ ARCHIVE_EXCL="archive/CHG-"
 # release on every MINOR bump (#663) — the conformance pin
 # (tests/conformance/test_sync_version_refs.py) fails if a swept-form
 # literal in the tree is missing from this list.
-OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0"
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1"
 
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
 while IFS= read -r f; do

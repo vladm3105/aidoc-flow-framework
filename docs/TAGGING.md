@@ -108,28 +108,26 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > git log --format=%H dev -- framework/VERSION \
 >   | while read -r s; do git show "$s:framework/VERSION" | tr -d '[:space:]'; echo; done \
 >   | sort -u | grep -c .
-> ``` As of **2026-09-26** the cut high-water marks
-> are `v1.1.0` (project), **`framework/v0.53.1`**, `claude-code-plugin/v0.25.0`,
-> and `hermes/v0.1.1`. Framework `0.53.0` and `0.53.2`–`0.61.1` are assigned
-> versions whose tags are not yet cut (#711 — tag plan recorded there, each
-> target verified to read its exact version). Do not assume a row here means
-> the tag exists.
+> ``` As of **2026-09-30** the cut high-water marks
+> are `v1.1.0` (project), **`framework/v0.68.2`**, `claude-code-plugin/v0.25.0`,
+> and `hermes/v0.1.1`. The assigned-but-uncut backlog is closed: #711 is
+> CLOSED and every assigned framework version `0.46.0`–`0.68.2` is now cut
+> (each target verified to read its exact version — 47/47 modern tags).
+> Do not assume a row here means the tag exists.
 >
-> Scale, so the backlog is not mistaken for a defect: **91 of the 106 values
-> `framework/VERSION` has held are untagged** (measured 2026-09-26, after
-> `v0.53.1` was cut; ancient values pre-0.46.0 are the sanctioned backlog).
+> Scale, so the backlog is not mistaken for a defect: **77 of the 132 values
+> `framework/VERSION` has held are untagged** (measured 2026-09-30, after
+> `v0.68.2` was cut; all 77 are pre-0.46.0 — the sanctioned backlog).
 > Platform figures below are frozen at the 2026-09-07 archive: the plugin
 > stream was exactly current (`0.25.0` tagged, `VERSION` = `0.25.0`) while
 > **Hermes had the largest gap** (`hermes/v0.1.1` against `VERSION` = `0.12.1`).
 >
-> **The framework stream's recent run was contiguous through `v0.53.1`, and
-> the gap since is the part worth closing.** `v0.46.0`, `v0.47.0`, `v0.48.0`,
-> `v0.49.0`, `v0.50.0`, `v0.51.0` and `v0.53.1` are each cut on the commit
-> whose `framework/VERSION` reads that exact version (`0.52.0` never held —
-> accepted phantom, see below — and `0.53.0`/`0.53.2` are assigned but uncut).
-> Nothing up to `v0.53.1` is missing; `0.54.0`–`0.61.1` await tags under the
-> same convention (#711). Verify a tag's target rather than assuming it — the
-> check is one command, and a tag is immutable once pushed:
+> **The framework stream is contiguous from `v0.46.0` through `v0.68.2` —
+> the gap is closed.** Every assigned version in the range is cut on the
+> commit whose `framework/VERSION` reads that exact version (`0.52.0` and
+> `0.53.3` never held — accepted phantoms, see below). Nothing from `v0.46.0`
+> on is missing (#711 CLOSED). Verify a tag's target rather than assuming
+> it — the check is one command, and a tag is immutable once pushed:
 >
 > ```sh
 > git show framework/vX.Y.Z:framework/VERSION   # must equal X.Y.Z
@@ -137,8 +135,8 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 >
 > **A cut tag does not imply a published GitHub Release, and here it usually does
 > not.** `framework/v0.44.0` is the newest framework **Release** and therefore
-> still shows as *Latest* on the releases page, while the spec is at `0.51.0`;
-> `v0.46.0`–`v0.51.0` are tags with no Release. Read `git tag -l`, never the
+> still shows as *Latest* on the releases page, while the spec is at `0.68.2`;
+> `v0.46.0`–`v0.68.2` are tags with no Release. Read `git tag -l`, never the
 > releases page, to answer "what is the current spec version".
 >
 > **A missing tag is not the same defect as a phantom version.** A version

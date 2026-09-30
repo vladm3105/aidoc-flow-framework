@@ -134,3 +134,5 @@ Hunt, in your FILE LIST only:
   or shipped work with no plan/decision coverage
 - decision-log coverage: policy choices embedded in workflows (auto-merge
   rules, review gates, skip labels) that no decision record authorizes
+- trace coverage: every commit must ride its authorizing CHG/IPLAN manifest
+  (CHG-12) — untraced commits are invisible to every other gate (#826)

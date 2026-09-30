@@ -1,0 +1,165 @@
+# =============================================================================
+#  CHG-31: Release cut PATCH 0.68.1 → 0.68.2 (hook fix + docs/config batch)
+#  (F2 direct, C1, one PR; tag + promotion follow)
+# =============================================================================
+#  Flow: F2 direct (human request "cut the release and promote to main"
+#  2026-09-30, no prior IPLAN, no product-behavior change — VERSION bump +
+#  changelog entries + pin sweep for already-merged content) — C1: C1 CHG +
+#  scoped IPLAN per F2.2; entry GATE-CODE. Precedent: CHG-27 (PATCH batch
+#  carrying its own bump, version_action keep).
+#  IPLAN: framework/archive/CHG-31/IPLAN-31.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: session goal follow-up "let's cut the release and
+#  promote to main" (2026-09-30); content = CHG-28/29/30 (all merged green).
+#  version_action: keep = no MINOR/MAJOR upgrade story (CHG-27 precedent);
+#  the PATCH bump 0.68.1 → 0.68.2 rides explicitly in scope below.
+#  No normative framework/ change in this release (hook hardening +
+#  record-only config/docs) — disclosed in both CHANGELOG sections; the
+#  spec stays 0.68.1-equivalent in contract terms.
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — release mechanics only (bump + logs + sweep), no app surface,
+#  no contract change.
+#  EARS/BDD IDs vacuous (upstream is the release request + merged CHGs).
+#  SECURITY_REVIEW: assessed — no executable content beyond the swept pins.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: release-mechanics N/A with reason (F2.3) — the battery
+#  (hook suites incl. new fail-closed tests + full suites) is the proof the
+#  shipped content is green; tag-target check runs post-merge, pre-push.
+#  Tag: framework/v0.68.2 cut on the dev merge commit AFTER merge (target
+#  must read 0.68.2 — verified pre-push, never aspirational); named push
+#  only, never --tags/--force (TAGGING.md convention).
+#  TAGGING refresh is NOT in this vehicle (figures re-derived only after
+#  the tag push — separate micro-vehicle, #822 precedent).
+#  Promotion is NOT in this vehicle (release/0.68.2 → main PR opened
+#  after, merged by the founder — #825 precedent).
+#  Out of scope: any MINOR/MAJOR bump, normative spec edits, GitHub Release
+#  object (tags ship without Releases per standing convention), project
+#  stream v-bump (project log mirrors the spec release, same version).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-31
+title: "Release cut PATCH 0.68.1 → 0.68.2 (hook fix + docs/config batch)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-31"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-31 authorizing record (framework/archive/CHG-31/IPLAN-31.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Cut PATCH release 0.68.2: bump framework/VERSION, extend OLD_VERSIONS with 0.68.1, run the pin sweep, cut [0.68.2] sections in both CHANGELOGs (disclosing no normative spec change). Tag + TAGGING refresh + promotion follow as sequenced follow-ups, not this diff."
+  why: "dev holds three merged batches since v0.68.1 (CHG-28 docs move, CHG-29 hook hardening, CHG-30 record-only batch) with zero open issues and green gates; the hook fix is user-facing and worth tagging."
+  trigger: "Human request 'let's cut the release and promote to main' (2026-09-30)."
+  scope:
+    in:
+      - "framework/VERSION: 0.68.1 → 0.68.2"
+      - "hooks/sync-version-refs.sh: OLD_VERSIONS gains 0.68.1 (sweep source for the bump)"
+      - "Swept pins 0.68.1 → 0.68.2 via the hook (mechanically produced, verified by diff)"
+      - "framework/CHANGELOG.md: new [0.68.2] section"
+      - "CHANGELOG.md: new [0.68.2] section mirroring (Scope #687)"
+      - ".aidoc/profile.yaml: declared framework_version follows the bump"
+      - "framework/archive/CHG-31/CHG-31.yaml + IPLAN-31.yaml (this vehicle)"
+    out:
+      - "Tag cut/push (post-merge, pre-push verified — sequenced follow-up)"
+      - "TAGGING.md refresh (post-tag micro-vehicle, #822 precedent)"
+      - "Promotion PR release/0.68.2 → main (founder-merged, #825 precedent)"
+      - "Normative spec edits; MINOR/MAJOR bump; GitHub Release object"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-31 with manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-31"
+      status: Completed
+    - step: "Bump VERSION + OLD_VERSIONS + sweep + both [0.68.2] sections"
+      phase: "release_cut"
+      artifact: "framework/VERSION + changelogs"
+      status: In-Progress
+    - step: "Run IPLAN-31 battery (chg_lint + suites) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-31-release-0682 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-31/CHG-31.yaml"
+    - "framework/archive/CHG-31/IPLAN-31.yaml"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - ".aidoc/profile.yaml"
+
+artifacts_modified:
+  - id: "CHG-31"
+    changes: "Authorizing record for 0.68.2 release cut (this file)"
+  - id: "IPLAN-31"
+    changes: "Authorizing IPLAN (framework/archive/CHG-31/IPLAN-31.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-31 (0 errors)"
+    - "Sweep diff contains only 0.68.1 → 0.68.2 pin moves (no stragglers)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-31-release-0682 → dev"

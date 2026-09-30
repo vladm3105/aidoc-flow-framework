@@ -11,9 +11,22 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.1 |
+| Framework Version | 0.68.2 |
 
 ---
+
+## [0.68.2] — 2026-09-30
+
+### Fixed — hook hardening + docs/config batch (C1 PATCH → 0.68.2, CHG-29/30/31 + IPLAN-29/30/31)
+
+- `hooks/sync-version-refs.sh`: `replace_in_file_counted` is fail-closed
+  and atomic (guarded converter + same-dir-temp mode-preserving rename;
+  #821) with two covering tests in `tests/unit/test_sync_scripts.py`
+- `.aidoc/profile.yaml`: record-only `ci_bindings` declaration dogfooding
+  the CHG-27 knob (#820); `docs/TAGGING.md` inventory re-derived
+  post-tag-push (#822); Lens 5 brief trace-coverage line (#826)
+- No normative spec change in this release: `ADAPTATION_SURFACE.yaml`,
+  templates, and lint rules untouched; detail in the project `CHANGELOG.md`
 
 ## [0.68.1] — 2026-09-30
 

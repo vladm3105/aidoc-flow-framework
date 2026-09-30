@@ -1,0 +1,150 @@
+# =============================================================================
+#  CHG-32: Post-tag docs-truthfulness — TAGGING 0.68.2 refresh + profile clause
+#  (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human release request chain 2026-09-30, no prior IPLAN,
+#  no product-behavior change — prose census refresh + one comment clause)
+#  — docs-only C1: C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-32/IPLAN-32.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: lens 3 F1 on the 0.68.2 review (TAGGING staleness is
+#  triggered by the tag cut — refresh AFTER push, never aspirational, #822
+#  precedent) + lens 3 F2 (profile re-derive clause); tag
+#  framework/v0.68.2 verified pushed 2026-09-30 before authoring.
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — prose/comment only, no code/scripts, no normative text, no
+#  contract change.
+#  EARS/BDD IDs vacuous (upstream is the lens findings + pushed tag).
+#  SECURITY_REVIEW: assessed — no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: pure-prose N/A with reason (F2.3) — figures verified by
+#  live re-derivation (commands in IPLAN-32); full suites run as regression
+#  battery.
+#  Out of scope: tag-convention / phantom-list / disclaimer-posture changes;
+#  per-version table rows; any F3 cascade or SDD rewrite (none — version
+#  keep, no framework/ files touched).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-32
+title: "Post-tag docs: TAGGING 0.68.2 refresh + profile re-derive clause"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.2"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-32"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-32 authorizing record (framework/archive/CHG-32/IPLAN-32.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Re-derive the TAGGING.md inventory snapshot against the pushed framework/v0.68.2 tag (high-water, counts, contiguity, spec number) and add the authenticated-gh prerequisite clause to the profile's re-derive comment."
+  why: "The 0.68.2 tag cut stales the four snapshot figures by construction (lens 3 F1); the profile comment assumes authenticated gh without saying so (lens 3 F2)."
+  trigger: "Preprod-review lens 3 F1/F2 on the 0.68.2 release (2026-09-30); tag verified on origin before authoring."
+  scope:
+    in:
+      - "docs/TAGGING.md: high-water framework/v0.68.2, 77-of-132 recount, contiguity through v0.68.2, spec-number + Release-range touches"
+      - ".aidoc/profile.yaml: re-derive comment gains the authenticated-gh prerequisite clause"
+      - "framework/archive/CHG-32/CHG-32.yaml + IPLAN-32.yaml (this vehicle)"
+    out:
+      - "Tag-convention / phantom-list / disclaimer-posture changes"
+      - "New per-version table rows"
+      - "VERSION bump / CHANGELOGs (version_action keep)"
+      - "Any F3 cascade or SDD rewrite"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-32 with manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-32"
+      status: Completed
+    - step: "Refresh TAGGING.md snapshot (re-derived post-tag figures)"
+      phase: "documentation_sync"
+      artifact: "docs/TAGGING.md"
+      status: In-Progress
+    - step: "Add gh-auth clause to profile re-derive comment"
+      phase: "documentation_sync"
+      artifact: ".aidoc/profile.yaml"
+      status: In-Progress
+    - step: "Run IPLAN-32 battery (chg_lint + suites) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-32-tagging-0682 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-32/CHG-32.yaml"
+    - "framework/archive/CHG-32/IPLAN-32.yaml"
+    - "docs/TAGGING.md"
+    - ".aidoc/profile.yaml"
+
+artifacts_modified:
+  - id: "CHG-32"
+    changes: "Authorizing record for post-tag docs refresh (this file)"
+  - id: "IPLAN-32"
+    changes: "Authorizing IPLAN (framework/archive/CHG-32/IPLAN-32.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-32 (0 errors)"
+    - "Figures re-derived live post-tag (132 held / 55 cut / 77 untagged; 47/47 modern tags exact)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-32-tagging-0682 → dev"

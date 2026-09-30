@@ -1,0 +1,160 @@
+# =============================================================================
+#  CHG-29: sync-version-refs fail-closed converter (fix #821)
+#  (F2 direct, code-touching C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request "fix all issues" 2026-09-30, no prior
+#  IPLAN, hook hardening — no product-behavior change: the hook's success
+#  path is byte-identical, only the converter-failure path changes from
+#  silent truncation to loud refusal) — code-touching C1: C1 CHG + scoped
+#  IPLAN per F2.2; entry GATE-CODE (covering test REQUIRED, carried here).
+#  IPLAN: framework/archive/CHG-29/IPLAN-29.yaml (goes In Progress on
+#  approval; no code before that per §3.13).
+#  Requester citation: triage note on #821 (2026-09-30) — latent truncation
+#  in replace_in_file_counted, verified live against hooks/sync-version-refs.sh.
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — shell-hook hardening only, no app surface, no normative
+#  framework/ text, no contract change (success-path output unchanged).
+#  EARS/BDD IDs vacuous (upstream is issue #821 + its triage note).
+#  SECURITY_REVIEW: assessed — no new input surface; the change only
+#  removes a destructive write on an already-failing path (fail-closed).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: REQUIRED (code-touching C1, GATE-CODE) — two new tests
+#  in tests/unit/test_sync_scripts.py: converter failure (non-UTF-8
+#  fixture; byte-identical + nonzero exit; observed failing pre-fix) and
+#  write-stage failure (failing-mv shim; byte-identical + nonzero exit,
+#  proving rename atomicity).
+#  Write shape: guarded converter + atomic same-dir-temp rename. The temp
+#  inherits the target mode before rename (mktemp is 600; stat tries GNU
+#  then BSD flags; failed chmod aborts loud). Trap-based temp cleanup
+#  declined as minor (explicit rm covers both return paths; OS reaps TMPDIR).
+#  Out of scope: swept patterns, OLD_VERSIONS/expected counts, the #405
+#  counted-substitution + REFUSE guard, the archive/ exclusion, any F3
+#  cascade or SDD rewrite (none — version keep, no framework/ files touched).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-29
+title: "sync-version-refs fail-closed converter (fix #821, code-touching C1)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-29"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-29 authorizing record (framework/archive/CHG-29/IPLAN-29.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Make replace_in_file_counted fail closed and atomic: guard the python3 converter exit and install the result via same-dir-temp rename (mode-preserving), so any converter or write failure leaves the target byte-identical and the hook exits nonzero instead of truncating a spec file and reporting success. Success-path output is byte-identical."
+  why: "Issue #821 (P1): on any converter failure the unconditional cat truncates the target while the script reports success and git add -u stages the damage; set -e cannot save it (OR-list call sites). Latent today, destructive if triggered."
+  trigger: "Triage note on #821 (2026-09-30); session goal 'fix all issues'."
+  scope:
+    in:
+      - "hooks/sync-version-refs.sh: guarded converter in replace_in_file_counted"
+      - "tests/unit/test_sync_scripts.py: converter-failure covering test"
+      - "framework/archive/CHG-29/CHG-29.yaml + IPLAN-29.yaml (this vehicle)"
+    out:
+      - "Swept patterns, OLD_VERSIONS list, expected counts"
+      - "The #405 counted-substitution + REFUSE guard (kept as-is)"
+      - "The archive/ exclusion (kept as-is)"
+      - "Trap-based temp cleanup (declined minor: explicit rm covers both return paths)"
+      - "VERSION bump / CHANGELOGs (version_action keep — hook-only, no framework/ files)"
+      - "Any F3 cascade or SDD rewrite"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-29 with manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-29"
+      status: Completed
+    - step: "Guard converter + atomic rename write in replace_in_file_counted (fail-closed)"
+      phase: "hook_hardening"
+      artifact: "hooks/sync-version-refs.sh"
+      status: In-Progress
+    - step: "Add converter-failure + write-failure covering tests (byte-identical + nonzero exit)"
+      phase: "test_coverage"
+      artifact: "tests/unit/test_sync_scripts.py"
+      status: In-Progress
+    - step: "Run IPLAN-29 battery (chg_lint + suites) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-29-hook-failclosed → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-29/CHG-29.yaml"
+    - "framework/archive/CHG-29/IPLAN-29.yaml"
+    - "hooks/sync-version-refs.sh"
+    - "tests/unit/test_sync_scripts.py"
+
+artifacts_modified:
+  - id: "CHG-29"
+    changes: "Authorizing record for sync-version-refs fail-closed fix (this file)"
+  - id: "IPLAN-29"
+    changes: "Authorizing IPLAN (framework/archive/CHG-29/IPLAN-29.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-29 (0 errors)"
+    - "Converter covering test fails pre-fix (truncation observed), passes post-fix; write-stage test proves rename atomicity"
+    - "OPS-0065 multi-agent self-review folded (silent-failure review drove the rename design)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-29-hook-failclosed → dev"

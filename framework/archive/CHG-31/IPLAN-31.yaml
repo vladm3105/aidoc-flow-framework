@@ -1,0 +1,121 @@
+# =============================================================================
+#  IPLAN-31: Release cut PATCH 0.68.1 → 0.68.2 (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-31/CHG-31.yaml (F2 direct, C1,
+#  In-Progress). Source: human release request (2026-09-30).
+#  Release mechanics: covering tests N/A with reason (F2.3); the suites
+#  plus the sweep-diff review are the verification.
+# =============================================================================
+
+doc_id: IPLAN-31
+title: "Release cut 0.68.2 + CHG-31 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+  source_chg: "CHG-31"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-31"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct release cut under CHG-31; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 7
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-31/CHG-31.yaml + IPLAN-31.yaml"
+      description: "Authorizing vehicle (CHG-31 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "Bump 0.68.1 → 0.68.2"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.1; sweep run produces the pin moves"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md + CHANGELOG.md"
+      description: "New [0.68.2] sections (spec detail + project mirror)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: false
+    - path: ".aidoc/profile.yaml"
+      description: "Declared framework_version 0.68.1 → 0.68.2 (living declaration follows the bump)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Release mechanics C1: tests N/A with reason (F2.3). Verification = sweep-diff review (only 0.68.1 → 0.68.2 moves) + full suites green on the bumped tree (hook fail-closed tests run against the release pins)."
+  cases:
+    - "chg_lint.py over CHG-31: 0 errors"
+    - "framework/VERSION reads 0.68.2; no 0.68.1 pins survive outside archive/ + accepted spots"
+    - "Sweep diff review: only pin moves, no content edits"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-31/CHG-31.yaml"
+    - "cat framework/VERSION"
+    - "git diff --stat dev (expect only manifest files)"
+    - "git grep -n '0\\.68\\.1' -- . ':!framework/archive' ':!CHANGELOG.md' ':!framework/CHANGELOG.md' ':!docs/TAGGING.md' ':!hooks/sync-version-refs.sh' | head"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched (+ mechanical sweep output)"
+  - "No normative spec edits; no MINOR/MAJOR story"
+  - "Sweep output reviewed file-by-file before commit"
+  - "Tag/TAGGING/promotion explicitly sequenced out of this diff"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + bump + sweep + changelogs + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-31"
+  upstream: ["Human release request (2026-09-30)", "Merged CHG-28/29/30"]
+  downstream: ["PR feature/chg-31-release-0682 → dev", "tag framework/v0.68.2", "TAGGING micro-vehicle", "release/0.68.2 → main"]

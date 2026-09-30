@@ -1,0 +1,43 @@
+# =============================================================================
+#  .aidoc/profile.yaml — this repo's own project profile (override-only delta)
+# =============================================================================
+#  Authority: framework/governance/ADAPTATION.md (the prose contract).
+#  Closed knob registry: framework/governance/ADAPTATION_SURFACE.yaml.
+#
+#  RECORD-ONLY DECLARATION (#820): no engine in this repo consumes this
+#  file — CI is wired directly in .github/workflows/ + branch protection,
+#  and the conformance suite enforces everything independently. This file
+#  exists so the reference implementation dogfoods the ci_bindings knob
+#  (CHG-27, 0.68.1) instead of demonstrating defaults-only. Do NOT rewire
+#  CI to read it; do NOT add conformance emitters for it.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  authority: "framework/governance/ADAPTATION.md"
+  last_updated: "2026-09-30"
+  framework_version: "0.68.2"
+  framework_path: ".aidoc/framework"  # no vendored engine here; spec lives at framework/
+
+# This repo overrides exactly one knob (CHG-30): ci_bindings. Every other
+# key falls through to framework defaults (ADAPTATION.md §2).
+ci_bindings:
+  # Tier posture: static = pre-commit + local suites on the contributor box;
+  # integration = the six required PR checks on dev; promotion = human-run
+  # dev → staging → main (WORKTREE_FLOW.md: promotions out of scope here).
+  static_posture: "pre-commit (mechanical linters + OPS-0069 audit-trail) + local unittest batteries"
+  integration_branch: "dev"
+  promotion_posture: "human-executed dev → staging → main; agents never promote"
+  # Required checks on dev (branch protection, read 2026-09-30 — requires
+  # authenticated `gh` (`gh auth login`); re-derive via
+  # `gh api repos/vladm3105/aidoc-flow-framework/branches/dev/protection/required_status_checks`
+  # rather than trusting this list):
+  required_checks:
+    - "Framework-spec change gate"
+    - "Framework + platform conformance"
+    - "Acceptance tier (deterministic)"
+    - "SDD document structural gate"
+    - "internal links (blocking)"
+    - "Lint / format / security hooks"
+  runners: "github-hosted ubuntu-latest (8 runs-on pins across .github/workflows/)"
+  workflows: ".github/workflows/ (20 files; required feeders trigger unconditionally)"
