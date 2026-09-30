@@ -1,0 +1,132 @@
+# =============================================================================
+#  CHG-22: Track KNOWLEDGE-GOVERNANCE-DRAFT.md (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (docs-only non-normative C1: untracked discussion draft
+#  becomes a tracked plans/ document, content UNCHANGED; no SDD contract at
+#  stake, no behavior change) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-22/IPLAN-22.yaml (authorizing once In Progress)
+#  Requester citation (F2.3, verbatim asks, this session): "let's close
+#  plans/KNOWLEDGE-GOVERNANCE-DRAFT.md. Just convert it to a document for
+#  future development to keep tracking" + clarification answer "Tracked plan
+#  doc". The draft declares itself "DRAFT (for discussion, not normative)";
+#  tracking changes no normative text anywhere.
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — single-file git-add, no runtime code, no queries/migrations;
+#  EARS/BDD IDs vacuous (upstream is the user directive; no element IDs cited).
+#  Covering tests: N/A with reason — no code files touched (prose only);
+#  verification commands in IPLAN-22 suffice per F2.3.
+#  Out of scope: any edit to the draft's content (open DISCUSS items, §3
+#  rename decision, canon #131 vehicle all stay open); F3 Tier-1 feedback
+#  retirement rides a separate vehicle (CHG-23).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG
+#  (CHG-15/CHG-19/CHG-21 precedent).
+# =============================================================================
+
+id: CHG-22
+title: "Track plans/KNOWLEDGE-GOVERNANCE-DRAFT.md unchanged (untracked → tracked plans doc)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.66.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-22"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-22 authorizing record (framework/archive/CHG-22/IPLAN-22.yaml)"
+  # The draft is tracked unchanged (git-add only, no archive rotation); only
+  # the vehicle record is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Track the untracked plans/KNOWLEDGE-GOVERNANCE-DRAFT.md (131-line non-normative knowledge-governance discussion draft, 2026-09-29) unchanged as a plans/ document for future development; add the CHG-22 vehicle."
+  why: "An untracked draft is a shadow backlog the retired file-queue rule exists to prevent — invisible to review, CI, and the tracker. Tracking it makes the open DISCUSS items and the canon #131 link visible without ratifying any of them."
+  trigger: "User directive 2026-09-30 (close the draft by tracking it) + clarification answer 'Tracked plan doc'."
+  scope:
+    in:
+      - "plans/KNOWLEDGE-GOVERNANCE-DRAFT.md: git-add unchanged (precedent: plans/CHG-REQUEST-FLOWS-CORE-DRAFT.md keeps DRAFT name)"
+      - "framework/archive/CHG-22/CHG-22.yaml + IPLAN-22.yaml (this vehicle)"
+    out:
+      - "Any edit to the draft's content (DISCUSS items, .aidoc/knowledge/ vs .aidoc/learning/ rename, thresholds, distribution — all stay open)"
+      - "Canon repo #131 vehicle (owned by vladm3105/aidoc-flow-agents-config, not this repo)"
+      - "F3 Tier-1 feedback-loop retirement (separate vehicle, CHG-23)"
+      - "Any framework/ normative change (none — version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-22 with the git-add + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-22"
+      status: Completed
+    - step: "git-add the draft unchanged + run IPLAN-22 battery"
+      phase: "documentation_sync"
+      artifact: "plans/KNOWLEDGE-GOVERNANCE-DRAFT.md"
+      status: In-Progress
+  files_modified:
+    - "plans/KNOWLEDGE-GOVERNANCE-DRAFT.md"
+
+artifacts_modified:
+  - id: "CHG-22"
+    changes: "Authorizing record for draft tracking (this file)"
+  - id: "IPLAN-22"
+    changes: "Authorizing IPLAN (framework/archive/CHG-22/IPLAN-22.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-22 (0 errors)"
+    - "git ls-files plans/KNOWLEDGE-GOVERNANCE-DRAFT.md (tracked); content byte-identical to the 2026-09-29 untracked version"
+    - "git diff --stat dev (expect 3 files: draft + CHG-22 + IPLAN-22)"
