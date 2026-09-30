@@ -44,6 +44,7 @@ EXPECTED_FILES = [
     "WORKTREE_FLOW.md",
     "README.md",
     "CHG_REQUEST_FLOWS.md",
+    "CI_AUTONOMOUS_PR_STANDARD.md",
     "aidoc/AIDOC.md",
     "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",
     "aidoc/BOOTSTRAP.md",

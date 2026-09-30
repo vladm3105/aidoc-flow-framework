@@ -11,9 +11,26 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.1 |
+| Framework Version | 0.68.0 |
 
 ---
+
+## [0.68.0] — 2026-09-30
+
+### Added — engine-agnostic CI & autonomous change-integration standard (C2 MINOR → 0.68.0, CHG-26 + IPLAN-26)
+
+- New `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` (v1.0) upstreaming
+  issue #815: six engine-neutral invariants (unified verification harness,
+  concentric latency tiers, conclusive required checks, two-pass independent
+  review, merge-conflict authority classes, anti-blind closure) with the
+  donor "CHG Step #6" formulation translated (upstream CHG governance has no
+  step numbering) and `REVIEW_TEAM.md` lens-conflict reconciliation
+  disambiguated from merge-conflict authority
+- `DECISIONS.md` GD-42 decision entry (v1.3 → v1.4); governance `README.md`
+  index row (v1.1 → v1.2); `test_governance.py` census entry
+- New `tests/conformance/test_ci_autonomous_pr_standard.py` guard: presence
+  + Document Control + six invariants + forbidden-mechanics battery (donor
+  platform tokens stay in consumer adaptation profiles, never the spec)
 
 ## [0.67.1] — 2026-09-30
 

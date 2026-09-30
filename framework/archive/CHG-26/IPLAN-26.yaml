@@ -1,0 +1,168 @@
+# =============================================================================
+#  IPLAN-26: Codify engine-agnostic CI & autonomous change-integration
+#  standard (F3/spec, C2, MINOR 0.67.1 → 0.68.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-26/CHG-26.yaml (F3/spec, C2,
+#  In-Progress). Source: issue #815 + triage note 2026-09-30 + donor-access
+#  authorization this session + Mode B GO re-validation on dev @ f371493f.
+#  SDD cascade (Phase 0c) lands before verification steps per CHG-26 order.
+#  Covering tests REQUIRED (spec scope with code-touching manifest):
+#  tests/conformance/test_ci_autonomous_pr_standard.py asserts the fixed
+#  invariant (fails before the new doc, passes after); full conformance +
+#  sdd_doc_lint suites are the regression battery. Pure-prose amends
+#  (README row, GD-42 entry, CHANGELOGs) N/A with reason — prose carrying
+#  no executable contract, covered by census/control tests.
+# =============================================================================
+
+doc_id: IPLAN-26
+title: "Codify CI & autonomous change-integration standard (#815) + CHG-26 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.67.1"
+  source_chg: "CHG-26"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-26"
+  subtype: combined
+  source_spec: "@spec: framework/governance/CI_AUTONOMOUS_PR_STANDARD.md v1.0 (NEW — Phase 0c cascade artifact, authored before this IPLAN leaves In Progress)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 3
+  estimated_files: 15
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-26/CHG-26.yaml + IPLAN-26.yaml"
+      description: "Authorizing vehicle (CHG-26 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-26/GOVERNANCE-README.md + DECISIONS.md + test_governance.py + VERSION"
+      description: "Pre-change snapshots (never clobber the vehicle files)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md (NEW)"
+      description: "#815: six engine-neutral invariants + CHG mapping + pre/post-merge discipline, v1.0"
+      order: 2
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/README.md"
+      description: "Index row for the new standard (v1.1 → v1.2)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-42 decision entry (v1.3 → v1.4)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_ci_autonomous_pr_standard.py (NEW)"
+      description: "Durable guard: presence + control + six invariants + neutrality + disambiguation (fails before fix, passes after)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_governance.py"
+      description: "Census: EXPECTED_FILES gains the new doc (exact-set assertion)"
+      order: 6
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "MINOR bump 0.67.1 → 0.68.0 (GATE-SPEC-E005)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.67.1 per #663 (else the fanout no-ops)"
+      order: 10
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "0.68.0 MINOR entry (spec document-of-record, GATE-SPEC-E008)"
+      order: 8
+      status: DONE
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "0.68.0 project-level mirror entry"
+      order: 9
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Spec scope with code-touching manifest: the new conformance test asserts the fixed invariant (fails before the doc exists, passes after); full tests/conformance + sdd_doc_lint/tests runs are the regression battery. Pure-prose amends (README row, GD-42, CHANGELOGs): tests N/A with reason — prose carrying no executable contract, covered by census/control tests."
+  cases:
+    - "chg_lint.py over CHG-26: 0 errors"
+    - "test_ci_autonomous_pr_standard: 5 tests pass (fails before fix — doc absent — passes after)"
+    - "test_governance census green with the new EXPECTED_FILES entry"
+    - "tests/conformance full discover green; sdd_doc_lint/tests green"
+    - "sync-version-refs clean (Framework Version pins = 0.68.0)"
+    - "test_sync_version_refs green (OLD_VERSIONS covers 0.67.1)"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-26/CHG-26.yaml"
+    - "python3 -m unittest tests.conformance.test_ci_autonomous_pr_standard"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "bash hooks/sync-version-refs.sh (expect clean)"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest tests.conformance.test_ci_autonomous_pr_standard -v"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "New standard is engine-neutral: forbidden-mechanics battery green (no donor platform tokens)"
+  - "#815 fix-shape translation (not literal port): no CHG step numbering, no SDD template edits, no lint-schema edits"
+  - "REVIEW_TEAM.md lens-conflict vs Invariant 5 disambiguation stated in the doc and pinned by test"
+  - "New test observed failing before the fix (doc absent), passing after (authentic failure first)"
+  - "MINOR bump 0.67.1 → 0.68.0 (version_action upgrade); CHANGELOG entries in both logs"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + standard doc + census/guard test + MINOR fanout + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-26"
+  upstream: ["issue #815 + triage note 2026-09-30", "donor docs (b-local-privy .aidoc/project/governance, dev) — distilled, never ported", "Mode B GO re-validation dev @ f371493f"]
+  downstream: ["PR feature/815-ci-autonomous-pr-standard → dev (Closes #815)"]

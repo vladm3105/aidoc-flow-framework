@@ -15,11 +15,41 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.1 |
+| Framework Version | 0.68.0 |
+
+---
+
+## GD-42 — Engine-agnostic CI & autonomous change-integration standard (CHG-26, 0.68.0 MINOR)
+
+- **Status:** Accepted — 2026-09-30 · **SemVer:** framework `0.67.1 → 0.68.0` (MINOR),
+  change-level **C2** (F3/spec; new governance doc + census + guard test — no
+  layer template, registry, or API touched; reviewer may escalate to C3).
+  Vehicle: CHG-26 + IPLAN-26 (`framework/archive/CHG-26/`). Trigger: issue
+  #815 (downstream enterprise standard upstreaming; triage 2026-09-30).
+- **Context:** SDD layers specify what to build, not how verification stages
+  between workspace and integration branch — adopters re-derived CI topology
+  ad hoc and repeated three failure modes: disjoint local-vs-submission
+  harnesses (false-green escapes), trigger-scoped required checks that never
+  report (permanent merge deadlock), and human-approval gates no autonomous
+  author can satisfy. The downstream enterprise standard (6 invariants +
+  2-pass review loop + conflict classes) proved the shape, but is written in
+  platform mechanics that cannot land in the engine-agnostic spec (GD-06).
+- **Decision:** codify `CI_AUTONOMOUS_PR_STANDARD.md` stating only the
+  engine-neutral invariants (unified harness, concentric latency tiers,
+  conclusive required checks, two-pass independent review, merge-conflict
+  authority classes, anti-blind closure) with the "CHG Step #6" formulation
+  translated (upstream CHG governance has no step numbering) and
+  `REVIEW_TEAM.md` lens-conflict reconciliation explicitly disambiguated
+  from merge-conflict authority. Pinned by
+  `tests/conformance/test_ci_autonomous_pr_standard.py` (presence +
+  Document Control + six invariants + forbidden-mechanics battery).
+- **Consequence:** framework adopters share one integration contract;
+  platform bindings (runners, workflows, branch policy, ceilings) stay in
+  consumer adaptation profiles per `ADAPTATION.md`.
 
 ---
 

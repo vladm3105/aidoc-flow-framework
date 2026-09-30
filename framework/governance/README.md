@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.1 |
+| Framework Version | 0.68.0 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -60,6 +60,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `NOTICES.md` | Important notices, deprecations, and breaking changes across framework versions. |
 | `SELF_LEARNING.md` | Self-learning governance loop — how the framework captures and applies lessons learned. |
 | `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06) — the classify→route table for change requests (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix) plus Emergency and Type-R yield paths, and the C1/IPLAN-gate ruling. |
+| `CI_AUTONOMOUS_PR_STANDARD.md` | Engine-agnostic CI and autonomous change-integration rules — the unified harness, latency tiers, required-check conclusiveness (anti-deadlock), two-pass independent review, merge-conflict authority classes, and anti-blind closure (GD-42). |
 
 ## CHG Overlay (`chg/`)
 
