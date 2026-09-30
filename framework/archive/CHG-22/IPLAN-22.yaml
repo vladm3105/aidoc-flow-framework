@@ -1,0 +1,97 @@
+# =============================================================================
+#  IPLAN-22: Track KNOWLEDGE-GOVERNANCE-DRAFT.md unchanged (F2 direct, C1)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-22/CHG-22.yaml (F2 direct, C1, In-Progress)
+#  Source: user directive 2026-09-30 — prose-only C1, git-add of the untracked
+#  discussion draft, content UNCHANGED (no code, no normative text).
+# =============================================================================
+
+doc_id: IPLAN-22
+title: "Track plans/KNOWLEDGE-GOVERNANCE-DRAFT.md unchanged + CHG-22 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.66.0"
+  source_chg: "CHG-22"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-22"
+  subtype: combined
+  source_spec: "@spec: N/A (untracked-draft tracking under CHG-22; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 3
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-22/CHG-22.yaml + IPLAN-22.yaml"
+      description: "Authorizing vehicle (CHG-22 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "plans/KNOWLEDGE-GOVERNANCE-DRAFT.md"
+      description: "Discussion draft tracked UNCHANGED (git-add only; 131 lines, non-normative, DISCUSS items stay open)"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3, prose-only). Verification commands below are the check battery (CHG-15/CHG-19/CHG-21 precedent)."
+  cases:
+    - "chg_lint.py over CHG-22: 0 errors"
+    - "Draft tracked and byte-identical to the untracked version (no content edits)"
+    - "git diff --stat dev shows exactly 3 files"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-22/CHG-22.yaml"
+    - "git ls-files plans/KNOWLEDGE-GOVERNANCE-DRAFT.md (expect the path)"
+    - "git diff --stat dev (expect 3 files: draft + CHG-22 + IPLAN-22)"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Draft content UNCHANGED: git-add only, zero edits (re-verify by diff before commit)"
+  - "Three-file scope: draft + CHG-22 + IPLAN-22; no other files touched"
+  - "No version impact (version_action keep; tracking-only change)"
+  - "Quick path (trivial single-shot F2, no subagents); F3 work takes a worktree"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Track draft unchanged + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-22"
+  upstream: ["user directive 2026-09-30 (track-the-draft) + clarification 'Tracked plan doc'"]
+  downstream: ["plans/KNOWLEDGE-GOVERNANCE-DRAFT.md (non-normative discussion doc)"]
