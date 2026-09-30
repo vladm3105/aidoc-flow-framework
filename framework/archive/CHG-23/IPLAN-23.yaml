@@ -28,7 +28,7 @@ document_control:
   last_updated: "2026-09-30T00:00:00Z"
   author: "Muse Code"
   complexity: 3
-  estimated_files: 11
+  estimated_files: 13
   session_count: 1
 
 # =============================================================================
@@ -85,7 +85,7 @@ file_manifest:
       session: 1
       verified: false
     - path: "framework/governance/DECISIONS.md"
-      description: "New GD entry (Tier-1 retirement + worktree-mandate rulings)"
+      description: "New GD-41 entry (Tier-1 retirement + worktree-mandate rulings; doc-control 1.2 → 1.3)"
       order: 2
       status: TODO
       session: 1

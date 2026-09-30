@@ -36,6 +36,15 @@
 #  names FRAMEWORK_FEEDBACK_LOG.md — the doc is REWRITTEN (tracker-only),
 #  never deleted. SELF_LEARNING.md §7.4 steps 3-4 depend on its open-items
 #  surface, which the rewrite retains.
+#  Approval path (GATE-SPEC §4–§5, C2): maintainer + 1 reviewer via PR review
+#  (branch protection is the exit gate; no filed approval form in CHG-10/11
+#  precedent — form template at chg/templates/GATE_APPROVAL_FORM.md available
+#  if the maintainer wants it signed). The validator never marks approved.
+#  Open approval-time decisions: (a) template DELETE vs tombstone-pointer
+#  (CHG-08 precedent cuts toward tombstone; zero in-repo refs cut toward
+#  delete + CHANGELOG note); (b) C2 holding vs C3 (E002 one-directional:
+#  minor may be C2; vehicle holds C2 — no layer template/registry/API
+#  touched).
 #  Out of scope: frozen framework/archive/** snapshots (never rewritten);
 #  historical records (docs/TAGGING.md, framework/CHANGELOG.md past entries,
 #  framework/governance/DECISIONS.md past GD entries, plans/*, CLAUDE.md
@@ -126,14 +135,14 @@ sdd_lifecycle:
     document: "framework/governance/README.md"
     action: amend
     archive_path: "framework/archive/CHG-23/GOVERNANCE-README.md"
-    new_version: "1.0"
+    new_version: "1.1"
     changes: "FRAMEWORK_FEEDBACK_LOG.md index row reword (empirical-feedback register → tracker-only capture + publication discipline)"
   - layer: "09_CHG"
     document: "framework/governance/DECISIONS.md"
     action: amend
     archive_path: "framework/archive/CHG-23/DECISIONS.md"
-    new_version: "0.67.0"
-    changes: "New GD entry: Tier-1 retirement + worktree-mandate rulings with evidence links"
+    new_version: "1.3"
+    changes: "New GD-41 entry: Tier-1 retirement + worktree-mandate rulings with evidence links (live doc-control Version 1.2 → 1.3)"
   - layer: "08_IPLAN"
     document: "framework/archive/CHG-23/IPLAN-23.yaml"
     action: create
