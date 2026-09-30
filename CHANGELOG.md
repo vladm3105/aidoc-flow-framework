@@ -25,6 +25,30 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   linters alone do not equal governed (18 Reserved rows have no emitter;
   reviewer-lens backstop); no new emitters, no reclassification
 
+## [0.68.2] — 2026-09-30
+
+### Fixed — hook hardening + docs/config batch (C1 PATCH → 0.68.2, CHG-29/30/31 + IPLAN-29/30/31)
+
+- Hook fail-closed converter (#821): `hooks/sync-version-refs.sh`
+  `replace_in_file_counted` guards the converter exit and installs via
+  same-dir-temp mode-preserving rename — any converter or write failure
+  leaves the target byte-identical and exits nonzero instead of truncating
+  a spec file and reporting success; two covering tests (converter fault +
+  write fault), success path byte-identical
+- Self profile (#820): new `.aidoc/profile.yaml` declaring this repo's
+  `ci_bindings` (six required checks, ubuntu-latest runners, dev
+  integration branch) — record-only, nothing consumes it
+- Release-inventory refresh (#822): `docs/TAGGING.md` snapshot re-derived
+  after the 25-tag push landed (high-water `framework/v0.68.1`, 77 of 131
+  values untagged, contiguity `0.46.0`–`0.68.1`)
+- Reviewer-lens trace line (#826): Lens 5 brief gains the CHG-12
+  manifest-coverage reminder (untraced commits are invisible to every
+  other gate)
+- Root-log section (CHG-28): stranded 0.68.0 entry relocated from
+  `[Unreleased]` to its `[0.68.0]` section (content unchanged)
+- Pin sweep: `hooks/sync-version-refs.sh` `OLD_VERSIONS` gains 0.68.1
+- No normative framework spec change in this release (tooling + docs/config only)
+
 ## [0.68.1] — 2026-09-30
 
 ### Fixed — CHG-26 follow-through batch #817–#818 (C1 PATCH → 0.68.1, CHG-27 + IPLAN-27)
