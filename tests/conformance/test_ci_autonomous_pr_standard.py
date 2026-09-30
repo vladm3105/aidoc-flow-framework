@@ -18,6 +18,7 @@ enterprise standard. This guard pins:
 import re
 import unittest
 
+import yaml
 from _spec import FRAMEWORK
 
 DOC = FRAMEWORK / "governance" / "CI_AUTONOMOUS_PR_STANDARD.md"
@@ -83,6 +84,36 @@ class CiAutonomousPrStandard(unittest.TestCase):
             hits,
             [],
             f"platform-mechanics tokens leaked into the engine-agnostic spec: {hits}",
+        )
+
+    def test_adaptation_surface_covers_ci_bindings(self):
+        # #817: the standard tells consumers to bind ceilings, runners,
+        # workflows, and branch policies in their adaptation profile. The
+        # closed surface must declare that knob and ADAPTATION.md must
+        # document it — otherwise the pointer names a binding place that
+        # does not exist.
+        with (FRAMEWORK / "governance" / "ADAPTATION_SURFACE.yaml").open(encoding="utf-8") as fh:
+            surface = yaml.safe_load(fh)
+        names = [k["name"] for k in surface["knobs"]]
+        self.assertIn(
+            "ci_bindings",
+            names,
+            "standard points consumers at the adaptation profile, "
+            "but the surface declares no CI-binding knob",
+        )
+        entry = next(k for k in surface["knobs"] if k["name"] == "ci_bindings")
+        self.assertEqual(entry["type"], "map[string, string]", "ci_bindings retyped")
+        self.assertLessEqual(
+            set(entry["consumers"]),
+            set(surface["consumer_roles"]),
+            "ci_bindings points at an undeclared consumer role",
+        )
+        self.assertEqual(entry["default"], "{}", "ci_bindings default drifted")
+        adaptation = (FRAMEWORK / "governance" / "ADAPTATION.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "ci_bindings",
+            adaptation,
+            "surface declares ci_bindings but ADAPTATION.md documents no such knob",
         )
 
     def test_review_team_disambiguation(self):

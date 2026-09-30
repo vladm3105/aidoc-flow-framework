@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.0 |
+| Framework Version | 0.68.1 |
 
 > v2.0 (0.67.0, CHG-23): Tier-1 consumer-project log retired — no operator
 > since the example corpus was removed and consumer platforms archived; the
