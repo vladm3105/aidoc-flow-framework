@@ -9,6 +9,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [0.67.0] — 2026-09-30
+
+### Removed — Tier-1 consumer feedback log retired (C2 MINOR → 0.67.0)
+
+- Tracker-only capture: Tier-1 consumer-project log retired (no operator);
+  `FRAMEWORK_FEEDBACK_LOG.md` v1.0 → v2.0, Principle 9 rewritten, scaffold
+  template deleted (CHG-23 + IPLAN-23 in `framework/archive/CHG-23/`;
+  GD-41 records both rulings)
+
+### Changed — per-task worktree unconditional (C2, CHG-23)
+
+- AGENTS.md quick-path exception removed: every feature/defect change runs
+  in a per-task worktree + branch, post-merge cleanup removes the worktree
+  BEFORE branch delete (WORKTREE_FLOW.md §3.7 order guard)
+
 ## [0.66.0] — 2026-09-29
 
 ### Added — self-learn two-tier architecture (C3 MINOR → 0.66.0)

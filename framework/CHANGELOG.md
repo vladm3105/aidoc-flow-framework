@@ -7,13 +7,33 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.66.0 |
+| Framework Version | 0.67.0 |
 
 ---
+
+## [0.67.0] — 2026-09-30
+
+### Removed — Tier-1 consumer feedback log retired (C2 MINOR, CHG-23 + IPLAN-23)
+
+- `FRAMEWORK_FEEDBACK_LOG.md` v1.0 → v2.0: Tier-1 consumer-project section,
+  consumer template section, examples-corpus Tier-2 bullet, and dead tags
+  (`[harness]`, `[example-corpus]`, `[platform-parity]`) removed. Filing
+  discipline + open-items surface retained (SELF_LEARNING.md §7.4 dependency);
+  doc retained (`test_governance.py` census).
+- `framework/templates/framework-feedback-log.template.md` deleted (no
+  in-repo references; external copiers directed here).
+- `DOC_GOVERNANCE_CORE.md` v1.2 → v1.3: Principle 9 rewritten tracker-only.
+- GD-41 records both rulings.
+
+### Changed — per-task worktree unconditional (C2, CHG-23)
+
+- AGENTS.md quick-path exception removed; post-merge cleanup codified
+  (worktree remove BEFORE branch delete, §3.7 order guard).
+- `framework/VERSION` bumped from `0.66.0` to `0.67.0` with mechanical pin sweep.
 
 ## [0.66.0] — 2026-09-29
 

@@ -77,7 +77,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-23"
-  status: Proposed
+  status: Implemented
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -85,8 +85,8 @@ change_control:
   version_action: upgrade
   author: "Muse Code"
   date_proposed: "2026-09-30T00:00:00Z"
-  date_approved: null
-  date_implemented: null
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: "2026-09-30T00:00:00Z"
   supersedes:
     - "IPLAN-23 authorizing record (framework/archive/CHG-23/IPLAN-23.yaml)"
   # AGENTS.md + root/framework READMEs are amended in place (repo-root and
@@ -177,25 +177,25 @@ implementation:
       archive_path: "framework/archive/CHG-23/"
       new_version: "0.67.0"
       current_version: "0.66.0"
-      status: Pending
+      status: Completed
     - step: "Run Phase 0c SDD amends per lifecycle above (CORE Principle 9 rewrite, FEEDBACK_LOG tracker-only rewrite, gov README row, DECISIONS GD entry)"
       phase: "sdd_lifecycle"
       artifact: "DOC_GOVERNANCE_CORE.md (v1.3), FRAMEWORK_FEEDBACK_LOG.md (v2.0), governance README.md, DECISIONS.md (new GD entry)"
       archive_path: "framework/archive/CHG-23/"
       new_version: "0.67.0"
       current_version: "0.66.0"
-      status: Pending
+      status: Completed
     - step: "Delete retired template + edit repo-root prose + MINOR fanout per IPLAN-23 manifest (template/root-prose/fanout ride steps + IPLAN manifest per CHG-11 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
       phase: "sdd_lifecycle"
       artifact: "framework/templates/framework-feedback-log.template.md (delete), framework/README.md, AGENTS.md, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md + pin fanout"
       archive_path: "framework/archive/CHG-23/"
       new_version: "0.67.0"
       current_version: "0.66.0"
-      status: Pending
+      status: Completed
     - step: "Create IPLAN-23 with all implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-23"
-      status: Pending
+      status: Completed
   files_modified:
     - "framework/governance/DOC_GOVERNANCE_CORE.md"
     - "framework/governance/FRAMEWORK_FEEDBACK_LOG.md"
@@ -207,6 +207,10 @@ implementation:
     - "framework/VERSION"
     - "framework/CHANGELOG.md"
     - "CHANGELOG.md"
+    - "framework/archive/CHG-23/DOC_GOVERNANCE_CORE.md"
+    - "framework/archive/CHG-23/FRAMEWORK_FEEDBACK_LOG.md"
+    - "framework/archive/CHG-23/GOVERNANCE-README.md"
+    - "framework/archive/CHG-23/DECISIONS.md"
 
 artifacts_modified:
   - id: "CHG-23"

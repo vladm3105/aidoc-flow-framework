@@ -132,15 +132,16 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 ### Push Workflow
 
 ```bash
-# CORRECT workflow:
+# CORRECT workflow (per-task worktree — no exceptions):
 git checkout dev
 git pull origin dev
-git checkout -b feat/my-change
+git worktree add ../<project>-<issue> -b feature/<short-name> origin/dev
+cd ../<project>-<issue>
 # ... make changes ...
-git add .
+git add <owned-files-only>
 git commit -m "feat: description"
-git push origin feat/my-change
-# Then open PR: feat/my-change → dev
+git push origin feature/<short-name>
+# Then open PR: feature/<short-name> → dev
 
 # WRONG — never do this:
 git push origin main   # ❌ BLOCKED by this rule
@@ -148,7 +149,7 @@ git push origin main   # ❌ BLOCKED by this rule
 
 Branch promotion: `feature-branch → dev → main`
 
-Trivial single-shot edits may use the quick path above. Multi-step feature work (or any work with running subagents): use `WORKTREE_FLOW.md` §3.2 (`worktree add ../<project>-<issue> -b feature/<short-name> origin/dev`) instead of branch-switching the main checkout.
+All feature/defect work runs in a per-task worktree + branch (`WORKTREE_FLOW.md` §3.2) — the main checkout stays on `dev` and is never branch-switched for feature work. There is no quick-path exception: single-shot edits use the same worktree flow. Post-merge cleanup removes the worktree BEFORE deleting the branch (§3.7 order guard).
 
 ### Watching your PR
 
@@ -162,7 +163,7 @@ gh pr checks <N> --json name,state,bucket,workflow --jq '.[] | select(.bucket!="
 
 Auto-merge is authorized by default: on a PR you opened, once all required checks pass and the PR is mergeable (`mergeStateStatus` CLEAN on the current head — confirm `headRefOid`), enable it (`gh pr merge <N> --auto --squash --delete-branch`, the repo's squash-only convention) and read the merge back. Withhold auto-merge when the user said hold, required checks are incomplete or red, a repo rule reserves the merge for a human, or the PR is not yours — tool access is not merge authority.
 
-Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards switch to `dev`, fast-forward, and delete the local branch (`git branch -d`) once the merge commit is on `dev`. Never delete a branch with unmerged work still on it.
+Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -d`) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.7 order guard). Never delete a branch with unmerged work still on it.
 
 When a required check fails, fix every error: diagnose from the failed logs, fix on the PR branch, push, and re-watch from the new head (confirm `headRefOid` — a previous run's green is not this commit's). Never merge while red. Stop and report to the human when the same check fails twice after a fix attempt, or when the fix reaches beyond the PR's scope.
 

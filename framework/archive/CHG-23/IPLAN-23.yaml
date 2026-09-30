@@ -22,7 +22,7 @@ document_control:
   iplan_id: "IPLAN-23"
   subtype: combined
   source_spec: "@spec: N/A (framework self-change under CHG-23; governance docs are the contract)"
-  status: Draft
+  status: In Progress
   version: "1.0"
   date_created: "2026-09-30T00:00:00Z"
   last_updated: "2026-09-30T00:00:00Z"
@@ -41,79 +41,79 @@ file_manifest:
       order: 0
       status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-23/DOC_GOVERNANCE_CORE.md"
       description: "Pre-change snapshot of Principle-9 original (read-only)"
       order: 1
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-23/FRAMEWORK_FEEDBACK_LOG.md"
       description: "Pre-change snapshot of two-tier original (read-only)"
       order: 1
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-23/GOVERNANCE-README.md"
       description: "Pre-change snapshot of governance index (read-only)"
       order: 1
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/archive/CHG-23/DECISIONS.md"
       description: "Pre-change snapshot of decisions log (read-only)"
       order: 1
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
       description: "Principle 9 rewrite (1.2 → 1.3)"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/FRAMEWORK_FEEDBACK_LOG.md"
       description: "Tracker-only rewrite (1.0 → 2.0; filing discipline + open-items surface retained)"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/README.md"
       description: "Feedback-log index row reword"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DECISIONS.md"
       description: "New GD-41 entry (Tier-1 retirement + worktree-mandate rulings; doc-control 1.2 → 1.3)"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/templates/framework-feedback-log.template.md"
       description: "DELETE (retired scaffold)"
       order: 3
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/README.md"
       description: "Template listing update (~line 91)"
       order: 3
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "AGENTS.md"
       description: "Quick-path exception removed; unconditional worktree + post-merge cleanup pointer"
       order: 3
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/VERSION + pin fanout + changelogs"
       description: "MINOR bump 0.66.0 → 0.67.0 (E005/E008: archive vehicle + spec change)"
       order: 4
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
