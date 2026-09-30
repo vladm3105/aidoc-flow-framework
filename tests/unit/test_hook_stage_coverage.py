@@ -39,12 +39,8 @@ class HookStageCoverageTests(unittest.TestCase):
         # lets suite failures escape to a full CI round-trip. Comments are
         # stripped first so the test pins executable invocation, not a prose
         # mention in the scope header.
-        text = (REPO_ROOT / "hooks" / "pre_push_check.sh").read_text(
-            encoding="utf-8"
-        )
-        code = "\n".join(
-            line for line in text.splitlines() if not line.lstrip().startswith("#")
-        )
+        text = (REPO_ROOT / "hooks" / "pre_push_check.sh").read_text(encoding="utf-8")
+        code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
         self.assertRegex(
             code,
             r"python3\s+-m\s+unittest\s+discover",
