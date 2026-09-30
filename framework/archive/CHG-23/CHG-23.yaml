@@ -1,0 +1,241 @@
+# =============================================================================
+#  CHG-23: Retire Tier-1 consumer feedback log; mandate worktree + cleanup
+#  (F3/spec, C2, MINOR 0.66.0 → 0.67.0)
+# =============================================================================
+#  Flow: F3/spec (framework self-change: governance + template + VERSION,
+#  GATE-SPEC per GATE-SPEC-E003 level >= C2) — C2, minor.
+#  IPLAN: framework/archive/CHG-23/IPLAN-23.yaml (Draft; goes In Progress
+#  after CHG approval + Phase 0 SDD cascade per §3.1.1 — never before).
+#  Requester citation (verbatim asks, this session): "It looks we use stale
+#  rules for the empirical feedback loop. We use GH issues as feedback from
+#  other projects, check it we have many feedback examples already. We can
+#  eliminate the empirical feedback loop" + clarification answer "Surgical
+#  Tier-1 retire" + "yes, create a worktree for these changes and clean up
+#  after merge. This rule should be defined in the governance rules".
+#  No separate issue filed: direct user directive with same-session scope
+#  approval (CHG-21 precedent for directive-driven vehicles).
+#  §3.4 checklist: completed before authoring (2026-09-30); app-oriented
+#  items N/A with reason — framework doc/template self-change, no runtime
+#  code (mirrors CHG-06/CHG-10/CHG-11): no client/server arch, no structs,
+#  no DB, no handlers; EARS/BDD IDs vacuous (upstream is the user directive;
+#  no element IDs cited). SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose
+#  + template-deletion only, no executable content, no prompt-injection
+#  surface.
+#  Phase 0a seed_scope: no-change — this repo carries no seed/ tree (find
+#  verified empty 2026-09-30); SEED_CONTRACT seed paths address consumer
+#  corpora, none present here.
+#  Phase 0b module_lifecycle: OMITTED — this repo carries no docs/modules/
+#  tree, so no module docs are touched (template: "Untouched modules are NOT
+#  listed"); CHG-L014 passes as no module touches. CHG-11 precedent (no
+#  module_lifecycle section on a seed/template/linter vehicle).
+#  SDD-first (§3.1.1): Phase 0c amends below run BEFORE IPLAN-23 leaves Draft
+#  and before any step-phase work. Template deletion + repo-root prose edits
+#  ride steps + IPLAN manifest per CHG-11 precedent (sdd_lifecycle covers
+#  versioned governance docs only).
+#  Test-census guard: tests/conformance/test_governance.py EXPECTED_FILES
+#  names FRAMEWORK_FEEDBACK_LOG.md — the doc is REWRITTEN (tracker-only),
+#  never deleted. SELF_LEARNING.md §7.4 steps 3-4 depend on its open-items
+#  surface, which the rewrite retains.
+#  Approval path (GATE-SPEC §4–§5, C2): maintainer + 1 reviewer via PR review
+#  (branch protection is the exit gate; no filed approval form in CHG-10/11
+#  precedent — form template at chg/templates/GATE_APPROVAL_FORM.md available
+#  if the maintainer wants it signed). The validator never marks approved.
+#  Open approval-time decisions: (a) template DELETE vs tombstone-pointer
+#  (CHG-08 precedent cuts toward tombstone; zero in-repo refs cut toward
+#  delete + CHANGELOG note); (b) C2 holding vs C3 (E002 one-directional:
+#  minor may be C2; vehicle holds C2 — no layer template/registry/API
+#  touched).
+#  Out of scope: frozen framework/archive/** snapshots (never rewritten);
+#  historical records (docs/TAGGING.md, framework/CHANGELOG.md past entries,
+#  framework/governance/DECISIONS.md past GD entries, plans/*, CLAUDE.md
+#  deprecated legacy detail); canon-repo #131 vehicle; the knowledge-draft
+#  DISCUSS items (CHG-22 tracked doc, still open).
+# =============================================================================
+
+id: CHG-23
+title: "Retire Tier-1 consumer feedback log; mandate worktree + post-merge cleanup (MINOR 0.66.0 → 0.67.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.66.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-23"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: "2026-09-30T00:00:00Z"
+  supersedes:
+    - "IPLAN-23 authorizing record (framework/archive/CHG-23/IPLAN-23.yaml)"
+  # AGENTS.md + root/framework READMEs are amended in place (repo-root and
+  # index prose, CHG-09/CHG-21 precedent — no archive rotation); versioned
+  # framework/governance docs rotate snapshots below (Phase 0c).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Retire the Tier-1 consumer-project feedback tier (no operator since platforms archived and examples/ removed; Tier-2 GH-issue capture proven by ~40 closed issues stays as the single surface); delete the unshipped scaffold template; purge examples-corpus language and dead tags; close the AGENTS.md quick-path exception so WORKTREE_FLOW.md §1-§3.7 (per-task worktree, post-merge cleanup) is unconditional. MINOR bump 0.66.0 → 0.67.0."
+  why: "Tier 1 prescribes a log no consumer keeps, Tier-2 sources cite a deleted corpus, three entry tags point at deleted scripts/corpus/archived platforms — and the AGENTS.md quick-path exception contradicts WORKTREE_FLOW.md invariants 1-2 (exercised by CHG-22, which shipped branch-in-main-checkout against the worktree rule). Stale governance that no session follows teaches sessions to ignore governance."
+  trigger: "User directive 2026-09-30 (eliminate the empirical feedback loop; worktree-for-changes + cleanup codified) + live verification 2026-09-30 (Tier-2 healthy, Tier-1 operatorless, examples/ refs stale)."
+  scope:
+    in:
+      - "DOC_GOVERNANCE_CORE.md Principle 9 rewrite (Tier-1 half + examples-as-SUT out; issue-tracker capture stays)"
+      - "FRAMEWORK_FEEDBACK_LOG.md rewrite to tracker-only (filing discipline + open-items surface retained for SELF_LEARNING §7.4)"
+      - "framework/templates/framework-feedback-log.template.md DELETE + framework/README.md + framework/governance/README.md index updates"
+      - "AGENTS.md: quick-path exception removed; unconditional worktree + post-merge cleanup (order guard) pointer"
+      - "framework/governance/DECISIONS.md: new GD entry for both rulings"
+      - "MINOR bump 0.66.0 → 0.67.0 + pin fanout + changelogs (E005/E008)"
+    out:
+      - "Frozen framework/archive/** (never rewritten); historical records (TAGGING, past CHANGELOG/GD entries, plans/*, deprecated CLAUDE.md)"
+      - "SELF_LEARNING.md (no edit — §7.4 surface retained, refs stay valid)"
+      - "Any consumer-artifact layer change (governance-only vehicle)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle (Phase 0c — runs BEFORE IPLAN-23 leaves Draft)
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-23/DOC_GOVERNANCE_CORE.md"
+    new_version: "1.3"
+    changes: "Principle 9 rewrite: Tier-1 consumer-log half removed, examples-as-SUT sentence removed (corpus retired), GH-issue capture + publication surface retained; doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/FRAMEWORK_FEEDBACK_LOG.md"
+    action: amend
+    archive_path: "framework/archive/CHG-23/FRAMEWORK_FEEDBACK_LOG.md"
+    new_version: "2.0"
+    changes: "Tracker-only rewrite: Tier-1 section + consumer template § removed; Tier-2 examples-corpus bullet removed; dead tags ([harness] deleted-script, [example-corpus] deleted-corpus, [platform-parity] archived-platforms) removed; filing discipline + open-items surface retained; doc Version 1.0 → 2.0 (contract change)"
+  - layer: "09_CHG"
+    document: "framework/governance/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-23/GOVERNANCE-README.md"
+    new_version: "1.1"
+    changes: "FRAMEWORK_FEEDBACK_LOG.md index row reword (empirical-feedback register → tracker-only capture + publication discipline)"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-23/DECISIONS.md"
+    new_version: "1.3"
+    changes: "New GD-41 entry: Tier-1 retirement + worktree-mandate rulings with evidence links (live doc-control Version 1.2 → 1.3)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-23/IPLAN-23.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# no module docs touched; CHG-11 precedent)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (find verified empty 2026-09-30); SEED_CONTRACT seed paths (seed/architecture/, seed/agent-surface/) address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (ALL Pending — authorize-only while Proposed)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance originals to framework/archive/CHG-23/ (excluding the CHG-23 vehicle files themselves — CHG-23.yaml, IPLAN-23.yaml — so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md, FRAMEWORK_FEEDBACK_LOG.md, governance README.md, DECISIONS.md"
+      archive_path: "framework/archive/CHG-23/"
+      new_version: "0.67.0"
+      current_version: "0.66.0"
+      status: Completed
+    - step: "Run Phase 0c SDD amends per lifecycle above (CORE Principle 9 rewrite, FEEDBACK_LOG tracker-only rewrite, gov README row, DECISIONS GD entry)"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md (v1.3), FRAMEWORK_FEEDBACK_LOG.md (v2.0), governance README.md, DECISIONS.md (new GD entry)"
+      archive_path: "framework/archive/CHG-23/"
+      new_version: "0.67.0"
+      current_version: "0.66.0"
+      status: Completed
+    - step: "Delete retired template + edit repo-root prose + MINOR fanout per IPLAN-23 manifest (template/root-prose/fanout ride steps + IPLAN manifest per CHG-11 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/templates/framework-feedback-log.template.md (delete), framework/README.md, AGENTS.md, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-23/"
+      new_version: "0.67.0"
+      current_version: "0.66.0"
+      status: Completed
+    - step: "Create IPLAN-23 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-23"
+      status: Completed
+  files_modified:
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/FRAMEWORK_FEEDBACK_LOG.md"
+    - "framework/governance/README.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/templates/framework-feedback-log.template.md"
+    - "framework/README.md"
+    - "AGENTS.md"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "framework/archive/CHG-23/DOC_GOVERNANCE_CORE.md"
+    - "framework/archive/CHG-23/FRAMEWORK_FEEDBACK_LOG.md"
+    - "framework/archive/CHG-23/GOVERNANCE-README.md"
+    - "framework/archive/CHG-23/DECISIONS.md"
+
+artifacts_modified:
+  - id: "CHG-23"
+    changes: "Authorizing record for Tier-1 retirement + worktree-mandate (this file)"
+  - id: "IPLAN-23"
+    changes: "Authorizing IPLAN (framework/archive/CHG-23/IPLAN-23.yaml, Draft)"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only — C2 peer review, null)
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  date: null
+  # C2 spec: peer review (maintainer). No formal approver required.
+
+# =============================================================================
+# Section 7: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-23 (0 errors)"
+    - "SDD-first order: Phase 0c amends land before IPLAN-23 leaves Draft (CHG-L005)"
+    - "No Tier-1/examples-corpus remnant outside archive/history (grep battery)"
+    - "Template file absent; test_governance census still green (doc retained)"
+    - "AGENTS.md carries no quick-path exception; worktree mandate unconditional"

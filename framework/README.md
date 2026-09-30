@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.66.0 |
+| Framework Version | 0.67.0 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -87,8 +87,7 @@ framework/
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL
                          (authoring) and 10_IPVERIFY (execution/verification).
                          A vendored artifact class.
-  templates/             Doc templates that aren't layer artifacts (e.g.
-                         framework-feedback-log.template.md).
+  templates/             Doc templates that aren't layer artifacts.
   registry/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.

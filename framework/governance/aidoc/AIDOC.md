@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.66.0 |
+| Framework Version | 0.67.0 |
 
 `.aidoc/` is the **project customization layer** for every project that uses the
 framework. It holds the project profile (adaptation knobs) and project-specific

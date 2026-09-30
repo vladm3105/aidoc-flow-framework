@@ -15,38 +15,11 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.0 |
-
----
-
-## GD-41 — Tier-1 consumer feedback log retired; per-task worktree unconditional (CHG-23, 0.67.0 MINOR)
-
-- **Status:** Accepted — 2026-09-30 · **SemVer:** framework `0.66.0 → 0.67.0` (MINOR),
-  change-level **C2** (F3/spec; governance-only — no layer template, registry,
-  or API touched; reviewer may escalate to C3). Vehicle: CHG-23 + IPLAN-23
-  (`framework/archive/CHG-23/`). Trigger: user directive 2026-09-30
-  (directive-driven like CHG-21, no separate issue).
-- **Context:** Tier 1 prescribed a per-consumer `framework-feedback-log.md` no
-  consumer keeps (platforms archived, example corpus removed); Tier-2 sources
-  cited the deleted `examples/<NAME>/` corpora; the `[harness]`,
-  `[example-corpus]`, and `[platform-parity]` tags pointed at a deleted
-  script, a deleted corpus, and archived platforms — while ~40 closed GH
-  issues prove the tracker surface healthy. Separately, AGENTS.md's
-  trivial-edit quick path contradicted WORKTREE_FLOW.md invariants 1–2
-  (CHG-22 shipped branch-in-main-checkout against the worktree rule).
-- **Decision:** (1) Tier 1 retired — `FRAMEWORK_FEEDBACK_LOG.md` rewritten
-  tracker-only (v2.0); the doc is retained (`test_governance.py` census +
-  SELF_LEARNING.md §7.4 surface); the scaffold template is deleted;
-  Principle 9 rewritten. (2) Quick-path exception removed — every
-  feature/defect change runs in a per-task worktree + branch with
-  post-merge cleanup per WORKTREE_FLOW.md §3.7 order guard.
-- **Consequence:** single capture surface (the tracker); unconditional
-  worktree discipline; external template copiers directed by the 0.67.0
-  CHANGELOG note.
+| Framework Version | 0.66.0 |
 
 ---
 
