@@ -9,8 +9,7 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/memory-hygiene/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 Nothing reads the memory store except the loader, so drift is silent and

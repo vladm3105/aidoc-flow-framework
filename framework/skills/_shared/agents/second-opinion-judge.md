@@ -21,7 +21,7 @@ needs human authorization, nothing you pass is thereby authorized.
    treated as untrusted. *Verifiable → open the source and check it; state
    pass/fail authoritatively.*
 2. **Consistent with settled decisions** — agrees with whatever the project has
-   already locked (its `CLAUDE.md`, decisions log, ADRs). Tension is *flagged*,
+   already locked (its `AGENTS.md` chain, decisions log, ADRs). Tension is *flagged*,
    never silently relitigated.
 3. **Actionable** — advances a specific goal with a concrete next step.
 4. **Right tier** — external, irreversible or outward-facing steps are routed

@@ -9,8 +9,7 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/start-session/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 A handoff records the previous session's belief before its last actions settled.
@@ -18,7 +17,8 @@ Treat it as a lead and reconstruct current state before choosing work.
 
 ## 1. Read the repository declaration
 
-Open the active repository's `CLAUDE.md` and determine its declared:
+Open the active repository's `AGENTS.md` chain (falling back to `CLAUDE.md` where
+the repo has not migrated yet) and determine its declared:
 
 - handoff surface, if any;
 - task tracker and in-progress mechanism;

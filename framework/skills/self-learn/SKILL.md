@@ -9,15 +9,20 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/self-learn/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 A lesson learned twice and written nowhere will be learned a third time. This
 skill is the shared loop over the repo-declared memory store (project memory,
 session checkpoint, `recall`, `memory-hygiene`): where the active repository
 declares its own learning spec or store, that declaration is authoritative for
-categories, qualification, and file paths, and this skill defers to it.
+categories, qualification, and file paths, and this skill defers to it. The
+loop is engine-agnostic — it must work identically for any capable agent.
+Harness-provided artifacts (session checkpoints, notes files, trajectory
+stores) are optional inputs, resolved at runtime: use them when the harness
+exposes them, fall back to portable sources (`git log`, session notes, the
+repo tracker) when it does not. Never hardcode another harness's paths,
+schemas, or store names.
 
 The loop has three modes. Run only the mode the situation calls for.
 
@@ -52,7 +57,7 @@ If the store has no consolidated knowledge yet, that is a finding
 After `start-session` (the `recall` step with the selected task), add one step:
 check consolidated learnings for the same task. Same query, narrower scope —
 read headings and open only entries whose category or title bears on the task.
-Standing governance (the repository's `CLAUDE.md`, `AGENTS.md`, declared
+Standing governance (the repository's `AGENTS.md` chain, declared
 governance docs) remains the authority; a learning never overrides it.
 
 Report in the same words as `recall`: `N relevant learnings` or `no relevant
@@ -127,7 +132,7 @@ constraint. Rules:
 2. **Cite the learning** in the update.
 3. **Keep updates small** — one rule or sentence per learning.
 4. Critical rules violated 2+ times need multi-location enforcement (learnings
-   + project memory + `AGENTS.md`/`CLAUDE.md` + governance doc) — a single
+   + project memory + the `AGENTS.md` chain + governance doc) — a single
    location does not hold. Rules without an enforcement mechanism (lint,
    validation, pre-commit check) stay advisory.
 5. **Pass the owning repo's authorization gate first.** Governance writes go

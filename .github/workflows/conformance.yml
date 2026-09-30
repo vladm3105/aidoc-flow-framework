@@ -49,3 +49,8 @@ jobs:
 
       - name: Run conformance suite
         run: python -m unittest discover -s tests/conformance -v
+
+      - name: "Run unit suite (CHG-24 #799)"
+        # tests/README promises tests/unit on every PR — this step is what
+        # makes that claim true. Same interpreter + deps as the suite above.
+        run: python -m unittest discover -s tests/unit

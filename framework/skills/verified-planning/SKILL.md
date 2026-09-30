@@ -9,8 +9,7 @@ description: >-
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/verified-planning/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 Plan-review rules get ritualized: the author writes "Pass 1/Pass 2" from memory
@@ -102,12 +101,14 @@ a reviewer a full pass.
 
 ## 3. Mandatory independent review (the part that actually works)
 
-Once the gate is green, dispatch the **`verified-planning-reviewer` agent** (a
-fresh-context subagent). Your own re-read does NOT count. The independence
+Once the gate is green, dispatch a **fresh-context read-only subagent** as
+reviewer, prompted by `framework/skills/_shared/agents/verified-planning-reviewer.md`.
+Your own re-read does NOT count. The independence
 contract this rests on — judge ≠ generator, the reviewer never sees your
 reasoning, never re-author the prompt ad hoc — is owned by the `second-opinion`
-skill; this step applies it to plans. If the agent type is unavailable, fall
-back to the `Agent` tool with an explicit `model` rather than reviewing it
+skill; this step applies it to plans. If no named read-only subagent type
+exists, fall back to a delegate with read-only file tools and an explicit
+`model` rather than reviewing it
 yourself. The gate has already
 proven every citation resolves to a real symbol — the reviewer must **not**
 re-verify existence. Its job is the three things a script cannot do:
@@ -118,8 +119,8 @@ re-verify existence. Its job is the three things a script cannot do:
 3. **Wrong assumptions** — the adversarial hunt for what the author cannot see.
 
 **Define the unit once: a *pass* is a dispatched review** — the
-`verified-planning-reviewer` agent, or the logged fallback (Agent tool + explicit
-`model`) when the agent type was unavailable. Your own re-read is **never** a
+reviewer subagent, or the logged fallback (read-only delegate + explicit
+`model`) when no named type was available. Your own re-read is **never** a
 pass, in either form.
 
 Record the result as `### Pass N - <date> - independent` (`- fallback` when the

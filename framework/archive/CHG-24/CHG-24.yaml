@@ -1,0 +1,198 @@
+# =============================================================================
+#  CHG-24: Triage-batch fixes for issues #798-#808 (F2 direct, C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request, no prior IPLAN, no product-behavior change
+#  — docs edits, normative-template one-liners, hook/workflow tweaks, CI input
+#  flips anticipated by the workflow headers themselves) — C1 CHG + scoped
+#  IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-24/IPLAN-24.yaml (goes In Progress on approval;
+#  no code before that per §3.13).
+#  Requester citation (verbatim session goal, 2026-09-30): "fix all issues,
+#  you can grop several permissions into one PR if needed" (group = one PR).
+#  Issues (all OPEN, triaged 2026-09-30, notes on each thread):
+#  Docs-only C1: #801 (symlink contradiction), #802 (branching model),
+#  #806 (release-record pins), #808 (stale F2 plan), #804 (SELF_LEARNING
+#  rewritten to the implemented surface — normative-text C1, contract text
+#  changes but only to match the built homes).
+#  Normative-text C1: #805 (EVAL schema 2.0→1.0 lone drift, future date,
+#  CHG framework_version literal→[X.Y.Z] both mirror twins), #807 (registry
+#  404s removed, engine-neutrality deltas ported from .agents copies).
+#  Code-touching C1: #798 (CI invokes the pre-push CHG gate), #799 (tests/unit
+#  wired into CI so the every-PR claim holds), #803 (flip three
+#  fail-on-findings to true — headers anticipate it; clean window evidenced:
+#  0 open code-scanning + 0 open dependabot alerts 2026-09-30, dep/sast green
+#  on dev; trivy PR zero-job failures are self-hosted-pool flakes, orthogonal
+#  to the input).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — no runtime code, no client/server, no structs, no DB/migrations,
+#  no queries; new CI job runs the repo's own unittest suite (no new secrets,
+#  no external pulls). EARS/BDD IDs vacuous (upstream is the user goal + ten
+#  issue numbers cited). SECURITY_REVIEW: assessed — flip strengthens gates;
+#  pre-push hook must be re-checked CI-safe (no push, no interactive) before
+#  wiring it into pre-commit.yml.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (find verified
+#  empty 2026-09-30). Phase 0b: F2, omitted (sdd_lifecycle [] — no SDD docs
+#  touched; GOV-014 paired).
+#  Covering tests (GATE-CODE entry): two new tests/unit files (template
+#  conventions; hook-stage CI coverage) + full tests/unit + sdd_doc_lint/tests
+#  runs in IPLAN-24. Pure-prose files N/A with reason (F2.3).
+#  Out of scope: EVAL 2.0 semantics (normalized as drift — no consumer pins
+#  2.0, IPLAN versions are 1.0 everywhere); trivy self-hosted-pool flakes
+#  (aidoc-flow-ci / runner infra, not this repo); any F3 cascade.
+#  PATCH release 0.67.1 + mechanical pin sweep ride this vehicle (GATE-SPEC-E005:
+#  normative framework/** changes require framework/VERSION in the diff).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-24
+title: "Fix triage batch #798-#808 (docs, templates, skills, CI gates — one PR)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.67.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-24"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-24 authorizing record (framework/archive/CHG-24/IPLAN-24.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix all ten open triage-batch issues #798-#808 in one PR: docs-truthfulness prose (#801, #802, #804, #806, #808), normative-template consistency (#805) + skills registry/neutrality (#807), and CI gate coverage (#798, #799, #803)."
+  why: "Each issue misroutes agents or misstates guarantees (phantom every-PR claims, dead spec paths, gates that never fire, report-only scanners). The triage notes (2026-09-30) carry per-issue evidence; this vehicle executes them as one auditable batch."
+  trigger: "Session goal 2026-09-30: 'fix all issues, you can grop several permissions into one PR if needed' + triage notes on #798-#808."
+  scope:
+    in:
+      - "Docs prose fixes per triage notes (#801, #802, #804, #806, #808) + CHANGELOG entries under [Unreleased] (both CHANGELOGs)"
+      - "Template one-liners (#805, both CHG mirror twins kept byte-identical)"
+      - "Skills registry + engine-neutrality deltas (#807, 12 overlapping SKILL.md)"
+      - "CI gate coverage: pre-push invocation (#798), tests/unit wiring (#799), three fail-on-findings flips (#803)"
+      - "Two new tests/unit covering files (template conventions, hook-stage coverage)"
+      - "framework/archive/CHG-24/CHG-24.yaml + IPLAN-24.yaml (this vehicle)"
+    out:
+      - "EVAL 2.0 semantics debate (normalized as drift; no consumer pins 2.0)"
+      - "Trivy self-hosted-pool flakes (runner infra, owned by aidoc-flow-ci)"
+      - "Any F3 cascade or SDD rewrite (none — version keep)"
+      - "VERSION bump (C1, semver_impact null)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-24 with manifest + covering test cases + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-24"
+      status: Completed
+    - step: "Implement docs cluster (#801, #802, #804, #806, #808) + CHANGELOG entries"
+      phase: "documentation_sync"
+      artifact: "docs + plans + changelogs"
+      status: Completed
+    - step: "Implement behavior cluster (#798, #799, #803, #805, #807) + new unit tests"
+      phase: "tooling_fix"
+      artifact: "templates + skills + workflows + tests"
+      status: Completed
+    - step: "Run IPLAN-24 battery (chg_lint, tests/unit, sdd_doc_lint/tests) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-24-triage-batch → dev"
+      status: In-Progress
+  files_modified:
+    - "plans/F2-UNIFY-PLAN.md"
+    - "CHANGELOG.md"
+    - "framework/CHANGELOG.md"
+    - "docs/PROJECT.md"
+    - "README.md"
+    - "framework/governance/SELF_LEARNING.md"
+    - "framework/skills/SKILLS-REGISTRY.yaml"
+    - "framework/skills/_shared/agents/second-opinion-judge.md"
+    - "framework/skills/approval-gate/SKILL.md"
+    - "framework/skills/context-handoff/SKILL.md"
+    - "framework/skills/memory-hygiene/SKILL.md"
+    - "framework/skills/preprod-review/SKILL.md"
+    - "framework/skills/recall/SKILL.md"
+    - "framework/skills/second-opinion/SKILL.md"
+    - "framework/skills/self-learn/SKILL.md"
+    - "framework/skills/ship-it/SKILL.md"
+    - "framework/skills/start-session/SKILL.md"
+    - "framework/skills/submit-feedback/SKILL.md"
+    - "framework/skills/verified-planning/SKILL.md"
+    - "framework/skills/wrap-session/SKILL.md"
+    - "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - ".github/workflows/dep-scan.yml"
+    - ".github/workflows/sast-scan.yml"
+    - ".github/workflows/trivy-scan.yml"
+    - ".github/workflows/pre-commit.yml"
+    - ".github/workflows/conformance.yml"
+    - ".pre-commit-config.yaml"
+    - "hooks/sync-version-refs.sh"
+    - "framework/VERSION"
+    - "framework/** swept pins (135 files, 0.67.0→0.67.1 mechanical; frozen/project pins intact — see sweep verification in PR)"
+    - "tests/unit/test_template_conventions.py"
+    - "tests/unit/test_hook_stage_coverage.py"
+
+artifacts_modified:
+  - id: "CHG-24"
+    changes: "Authorizing record for triage-batch fixes (this file)"
+  - id: "IPLAN-24"
+    changes: "Authorizing IPLAN (framework/archive/CHG-24/IPLAN-24.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-24 (0 errors)"
+    - "python3 -m unittest discover -s tests/unit (all green, incl. 2 new files)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "Mirror twins byte-identical (sha256 both CHG-TEMPLATE.yaml)"
+    - "PR checks green on feature/chg-24-triage-batch → dev"

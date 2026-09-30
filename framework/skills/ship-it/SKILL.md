@@ -2,8 +2,6 @@
 name: ship-it
 description: >-
   Use after a PR you opened is running CI, but only when the repository explicitly authorizes agent auto-merge. Watch required checks, enforce carve-outs, merge when eligible, and clean up the branch; otherwise stop for explicit user direction.
-allowed-tools: >-
-  Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh pr merge:*) Bash(git rev-parse:*) Read
 metadata:
   mined-from: netresearch/git-workflow-skill v1.23.0 (MIT AND CC-BY-SA-4.0), 2026-08-12
 ---
@@ -13,8 +11,7 @@ metadata:
 > Framework adaptation — engine-agnostic copy of the canon global skill.
 > Source: `aidoc-flow-claude-agents-config/skills/ship-it/SKILL.md` (private, 2026-09-27).
 > Paths below use `<skills-root>` = this `framework/skills/` directory.
-> Engine mapping: Claude Code `<skills-root>/<name>/`, Codex `<skills-root>/<name>/`, generic `<skills-root>/<name>/`.
-> Where the canon names a Claude-specific agent type, use your engine's focused read-only subagent equivalent and keep the independence contract.
+> Where the canon names an engine-specific agent type or path, use your engine's equivalent and keep the independence contract.
 
 
 The stretch between "PR is open" and "PR is merged" had no owner: `wrap-session`
@@ -25,11 +22,11 @@ opening it. This is that stretch, and nothing else.
 
 | File | Owns | Beats |
 |---|---|---|
-| `<repo>/CLAUDE.md` | the **authorization and declaration** — whether agents may auto-merge, merge convention, protected branches, who may merge | global defaults |
-| `the owning repo's AGENTS.md/CLAUDE.md` | global safety carve-outs | this skill |
+| the owning repo's `AGENTS.md` chain | the **authorization and declaration** — whether agents may auto-merge, merge convention, protected branches, who may merge | global defaults |
+| the owning repo's `AGENTS.md` chain | global safety carve-outs | this skill |
 | this skill | the **mechanism** — how to watch, what "green" means, how to merge | — |
 
-If this file and `the owning repo's AGENTS.md/CLAUDE.md` disagree, the policy wins and the
+If this file and the owning repo's `AGENTS.md` chain disagree, the policy wins and the
 disagreement is a defect **here**.
 
 **The seam with `superpowers:finishing-a-development-branch`.** That skill's
@@ -78,7 +75,7 @@ Three things that make "green" a claim rather than an observation:
 
 **A zero-length rollup is a case to name, not a silence to fill.** `checks == 0`
 means one of three things — no CI is configured (this repo's own declared
-decision, verified in its `CLAUDE.md`/workflows) · workflows exist but have not
+decision, verified in its `AGENTS.md` chain/workflows) · workflows exist but have not
 fired yet on a fresh head (a race — wait and re-read) · the wrong PR/head was
 queried. Say which one you are in; "nothing to wait for" is a conclusion only
 the first case supports.

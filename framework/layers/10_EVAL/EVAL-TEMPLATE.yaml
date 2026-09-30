@@ -29,13 +29,13 @@ title: "Eval — IPLAN-NN [IPLAN Title]"
 # =============================================================================
 
 metadata:
-  schema_version: "2.0"
+  schema_version: "1.0"
   framework_version: "[X.Y.Z]"
   document_type: "eval-document"
   layer: 10
   lifecycle: iplan-coupled
   total_sections: 6
-  last_updated: "2026-10-27"
+  last_updated: "[YYYY-MM-DD]"
   validation:
     _guidance: |
       Evaluation is performed by the platform's conformance tooling.

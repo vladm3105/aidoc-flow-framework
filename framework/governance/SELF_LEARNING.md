@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.0 |
+| Framework Version | 0.67.1 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -56,10 +56,10 @@ universal log ship in this version.)
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries (auto-captured where the harness provides them) |
-| Consolidated learnings | `.aidoc/learning/learnings.md` | Extracted patterns and rules |
-| Project memory | `MEMORY.md` | Promoted high-frequency lessons |
-| Governance doc | `docs/governance/SELF_LEARNING.md` | This document |
+| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries — roadmap: auto-captured only where the harness provides them; no trajectory files ship in this repo |
+| Consolidated learnings | `.aidoc/learning/learnings.md` | Extracted patterns and rules (the implemented system of record) |
+| Project memory | Project memory convention (e.g. `MEMORY.md` where adopted) | Promoted high-frequency lessons toward Tier 1 (see below) |
+| Governance doc | This document (`framework/governance/SELF_LEARNING.md`) | This document |
 
 Trajectory paths are harness-provided examples, resolved at runtime — a
 harness without trajectory capture runs the loop on portable sources
@@ -109,8 +109,8 @@ A pattern qualifies as a learning when:
 1. **Observed 2+ times** across different sessions, OR
 2. **Caused a user correction** (user explicitly said "don't do X" or "do Y
    instead"), OR
-3. **Required a governance rule** (was formalized into a rule in
-   `docs/governance/`)
+3. **Required a governance rule** (was formalized into a governance rule in
+   the owning repo)
 
 Single-occurrence events are logged but not promoted to learnings.
 
@@ -142,7 +142,7 @@ Single-occurrence events are logged but not promoted to learnings.
 ### Deduplication rules
 
 - **Merge** entries describing the same lesson (update count, keep latest evidence)
-- **Promote** entries with count >= 5 to `MEMORY.md` (project memory)
+- **Promote** entries with count >= 5 toward Tier 1 (`AGENTS.md`, `.agents/rules/`, or a linter/static check); without a Tier-1 surface they stay in `learnings.md`
 - **Age out** entries older than 30 days that haven't been observed recently
 - **Archive** aged-out entries to `.aidoc/learning/archive/{year}-{month}.md`
 
@@ -168,7 +168,8 @@ demand at session start:
 
 ### Memory integration
 
-Lessons with count >= 5 are promoted to `MEMORY.md` under:
+Lessons with count >= 5 are promoted toward Tier 1. Where the project keeps a
+memory file (e.g. `MEMORY.md`), they land under:
 
 ```markdown
 ## Rules
@@ -183,10 +184,12 @@ appropriate governance document — through the owning repo's authorizing CHG
 and an In-Progress IPLAN (always-traced; there is no solo-project exemption).
 The self-learn skill proposes (never lands unilaterally):
 
-- `docs/governance/DOC_GOVERNANCE_CORE.md` — new enforcement rules
-- `docs/governance/DECISION_WORKFLOW.md` — process changes
-- `docs/governance/notices.md` — known issues and prevention rules
-- `docs/governance/SELF_LEARNING.md` — self-learn process changes
+- `framework/governance/DOC_GOVERNANCE_CORE.md` — new enforcement rules
+- `framework/governance/DECISION_WORKFLOW.md` — process changes
+- `framework/governance/NOTICES.md` — known issues and prevention rules
+- `framework/governance/SELF_LEARNING.md` — self-learn process changes
+- (Consumer projects propose against their own governance docs; the
+  `framework/governance/` paths above are the framework repo's.)
 - `AGENTS.md` — agent execution rules
 
 Rules for governance updates: only add (never remove safety invariants),
@@ -202,8 +205,8 @@ tracking issues for auditability:
 
 - **Framework files** (`framework/**`): Submit to framework repo —
   framework-level bugs/improvements found during project work
-- **Project governance files** (`docs/governance/**`): Submit to project repo
-  — governance changes for audit trail
+- **Project governance files** (the project's own governance docs): Submit to
+  project repo — governance changes for audit trail
 
 This ensures governance changes are tracked in issue trackers, not just in
 files. The framework maintainer can see what project-level fixes should be
@@ -234,7 +237,7 @@ After running a learning cycle (`/self-learn`), verify:
 
 - [ ] `learnings.md` has no duplicate entries (same lesson, different wording)
 - [ ] All entries have valid dates (not future, not before project start)
-- [ ] Count >= 5 entries are promoted to `MEMORY.md`
+- [ ] Count >= 5 entries are promoted toward Tier 1
 - [ ] Entries older than 30 days without recent observation are archived
 - [ ] Trajectory files older than 7 days are deleted
 - [ ] System prompt injection stays under 3KB
@@ -243,7 +246,7 @@ After running a learning cycle (`/self-learn`), verify:
 - [ ] Each governance update cites its learning source
 - [ ] Self-learn report lists all governance files modified
 - [ ] Framework changes (`framework/**`) submitted to framework repo
-- [ ] Project governance changes (`docs/governance/**`) submitted to project repo
+- [ ] Project governance changes submitted to project repo
 - [ ] Each feedback issue read back to verify publication
 
 ## Prevention Rules
