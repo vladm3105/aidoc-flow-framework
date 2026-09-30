@@ -25,9 +25,7 @@ SHA_PIN = re.compile(r"^actions/(checkout|setup-python)@[0-9a-f]{40}\s+#\s+v\d+\
 def uses_lines():
     hits = []
     for path in sorted(WORKFLOWS.glob("*.yml")):
-        for lineno, line in enumerate(
-            path.read_text(encoding="utf-8").splitlines(), start=1
-        ):
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
             if not stripped.startswith("uses:"):
                 continue
@@ -42,9 +40,7 @@ class ActionPinShaTests(unittest.TestCase):
         hits = uses_lines()
         self.assertTrue(hits, "no checkout/setup-python pins found at all")
         mutable = [
-            f"{name}:{lineno}: {ref}"
-            for name, lineno, ref in hits
-            if not SHA_PIN.match(ref)
+            f"{name}:{lineno}: {ref}" for name, lineno, ref in hits if not SHA_PIN.match(ref)
         ]
         self.assertFalse(
             mutable,
