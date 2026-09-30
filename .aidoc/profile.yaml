@@ -28,8 +28,9 @@ ci_bindings:
   static_posture: "pre-commit (mechanical linters + OPS-0069 audit-trail) + local unittest batteries"
   integration_branch: "dev"
   promotion_posture: "human-executed dev → staging → main; agents never promote"
-  # Required checks on dev (branch protection, read 2026-09-30 — re-derive
-  # via `gh api repos/vladm3105/aidoc-flow-framework/branches/dev/protection/required_status_checks`
+  # Required checks on dev (branch protection, read 2026-09-30 — requires
+  # authenticated `gh` (`gh auth login`); re-derive via
+  # `gh api repos/vladm3105/aidoc-flow-framework/branches/dev/protection/required_status_checks`
   # rather than trusting this list):
   required_checks:
     - "Framework-spec change gate"

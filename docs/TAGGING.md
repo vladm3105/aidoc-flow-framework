@@ -109,20 +109,20 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 >   | while read -r s; do git show "$s:framework/VERSION" | tr -d '[:space:]'; echo; done \
 >   | sort -u | grep -c .
 > ``` As of **2026-09-30** the cut high-water marks
-> are `v1.1.0` (project), **`framework/v0.68.1`**, `claude-code-plugin/v0.25.0`,
+> are `v1.1.0` (project), **`framework/v0.68.2`**, `claude-code-plugin/v0.25.0`,
 > and `hermes/v0.1.1`. The assigned-but-uncut backlog is closed: #711 is
-> CLOSED and every assigned framework version `0.46.0`–`0.68.1` is now cut
-> (each target verified to read its exact version — 46/46 modern tags).
+> CLOSED and every assigned framework version `0.46.0`–`0.68.2` is now cut
+> (each target verified to read its exact version — 47/47 modern tags).
 > Do not assume a row here means the tag exists.
 >
-> Scale, so the backlog is not mistaken for a defect: **77 of the 131 values
+> Scale, so the backlog is not mistaken for a defect: **77 of the 132 values
 > `framework/VERSION` has held are untagged** (measured 2026-09-30, after
-> `v0.68.1` was cut; all 77 are pre-0.46.0 — the sanctioned backlog).
+> `v0.68.2` was cut; all 77 are pre-0.46.0 — the sanctioned backlog).
 > Platform figures below are frozen at the 2026-09-07 archive: the plugin
 > stream was exactly current (`0.25.0` tagged, `VERSION` = `0.25.0`) while
 > **Hermes had the largest gap** (`hermes/v0.1.1` against `VERSION` = `0.12.1`).
 >
-> **The framework stream is contiguous from `v0.46.0` through `v0.68.1` —
+> **The framework stream is contiguous from `v0.46.0` through `v0.68.2` —
 > the gap is closed.** Every assigned version in the range is cut on the
 > commit whose `framework/VERSION` reads that exact version (`0.52.0` and
 > `0.53.3` never held — accepted phantoms, see below). Nothing from `v0.46.0`
@@ -135,8 +135,8 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 >
 > **A cut tag does not imply a published GitHub Release, and here it usually does
 > not.** `framework/v0.44.0` is the newest framework **Release** and therefore
-> still shows as *Latest* on the releases page, while the spec is at `0.68.1`;
-> `v0.46.0`–`v0.68.1` are tags with no Release. Read `git tag -l`, never the
+> still shows as *Latest* on the releases page, while the spec is at `0.68.2`;
+> `v0.46.0`–`v0.68.2` are tags with no Release. Read `git tag -l`, never the
 > releases page, to answer "what is the current spec version".
 >
 > **A missing tag is not the same defect as a phantom version.** A version
