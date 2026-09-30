@@ -56,15 +56,36 @@ replace_in_file_counted() {
   if [ "$actual" -eq 0 ]; then
     return 0
   fi
+  # Fail closed (#821): every fallible stage is guarded explicitly because
+  # `set -e` stays disabled inside functions invoked from an OR-list
+  # (`sweep … || true` call sites). The pre-fix code ran an unconditional
+  # `cat tmp > path` after the converter, truncating the target on
+  # converter failure while the hook reported success.
+  #
+  # Atomic write: same-dir temp + rename, so a mid-copy failure (ENOSPC,
+  # signal) can never leave a partial target — rename either installs the
+  # complete file or nothing. The temp inherits the target's mode first
+  # (mktemp is 600; a bare rename would propagate that); `stat` tries GNU
+  # then BSD flags, and a failed chmod aborts loud before the rename.
   local tmp
-  tmp="$(mktemp)"
-  python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
+  tmp="$(mktemp "$(dirname "$path")/.sync-XXXXXX")"
+  if ! python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
 import sys
 path, old, new, tmp = sys.argv[1:5]
 text = open(path, encoding="utf-8").read()
 open(tmp, "w", encoding="utf-8").write(text.replace(old, new))
 EOF
-  cat "$tmp" > "$path"
+  then
+    echo "sync-version-refs: FAILED converter for $rel — target untouched" >&2
+    rm -f "$tmp"
+    return 1
+  fi
+  if ! chmod "$(stat -c %a "$path" 2>/dev/null || stat -f %Lp "$path")" "$tmp" \
+    || ! mv "$tmp" "$path"; then
+    echo "sync-version-refs: FAILED write for $rel — target untouched" >&2
+    rm -f "$tmp"
+    return 1
+  fi
   rm -f "$tmp"
   echo "sync-version-refs: $rel — replaced $actual occurrence(s)"
 }
