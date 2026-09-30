@@ -9,6 +9,22 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
+## [Unreleased]
+
+### Fixed — pre-prod-review batch #811–#813 (C1, CHG-25 + IPLAN-25, no version change)
+
+- CI supply-chain hardening (#811): `actions/checkout` / `actions/setup-python`
+  major-tag pins converged to SHA pins with version comments (the
+  `pre-commit.yml` form) in `acceptance.yml`, `chg-gate.yml`,
+  `conformance.yml`, `doc-review.yml`, `pin-currency-reader.yml`; reusable
+  `@ci/v4.0.0` pins and the ai-review trust-gate design untouched
+- Decision record (#812): D-0086 in `plans/DECISIONS.md` authorizes agent
+  auto-merge-by-default on own green PRs (carve-outs + head/`mergeStateStatus`
+  re-check rationale); `AGENTS.md` policy text unchanged
+- Consumer trust calibration (#813): `docs/ADAPTATION-GUIDE.md` §7 notes green
+  linters alone do not equal governed (18 Reserved rows have no emitter;
+  reviewer-lens backstop); no new emitters, no reclassification
+
 ## [0.67.1] — 2026-09-30
 
 > The two entries after the batch entry were relocated from below `0.62.4`

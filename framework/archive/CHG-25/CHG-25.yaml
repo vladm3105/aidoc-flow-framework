@@ -1,0 +1,169 @@
+# =============================================================================
+#  CHG-25: Pre-prod-review batch fixes for issues #811-#813 (F2 direct, C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request, no prior IPLAN, no product-behavior change
+#  — CI workflow pin hardening, repo-process decision record, consumer-guide
+#  calibration note) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-25/IPLAN-25.yaml (goes In Progress on approval;
+#  no code before that per §3.13).
+#  Requester citation (verbatim session goal, 2026-09-30): "fill all issues
+#  https://github.com/vladm3105/aidoc-flow-framework/issues" (group = one PR).
+#  Issues (all OPEN, triaged 2026-09-30, Mode B re-validated GO on current dev
+#  @ 3e712951 this session):
+#  Code-touching C1: #811 (nine mutable major-tag pins → SHA pins with version
+#  comments in five workflows, pre-commit.yml form).
+#  Docs-only C1: #812 (one plans/DECISIONS.md entry authorizing the
+#  auto-merge-by-default standing permission), #813 (one
+#  docs/ADAPTATION-GUIDE.md-visible note: green linters alone do not equal
+#  governed — Reserved rows have no emitter, reviewer-lens backstop).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — no runtime code, no client/server, no structs, no DB/migrations,
+#  no queries; workflow edits change only action pins (same major versions,
+#  no new inputs, no permission changes); prose edits change no contract.
+#  EARS/BDD IDs vacuous (upstream is the user goal + three issue numbers
+#  cited). SECURITY_REVIEW: assessed — SHA pins strengthen supply-chain
+#  integrity; SHAs reuse the pre-commit.yml-verified pins (checkout v7.0.1,
+#  setup-python v7.0.0); no permission-block or trigger edits.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  empty 2026-09-30, same finding as CHG-24). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests (GATE-CODE entry): one new tests/unit file asserting
+#  SHA-pinned first-party actions (fails before fix, passes after) + full
+#  tests/unit + sdd_doc_lint/tests runs in IPLAN-25. Pure-prose files N/A
+#  with reason (F2.3).
+#  Out of scope: reusable @ci/v4.0.0 pins (untouched per #811), ai-review
+#  trust-gate design (untouched per #811), new lint emitters for Reserved
+#  rows (explicitly forbidden per #813), weakening AGENTS.md carve-outs or
+#  re-check discipline (explicitly forbidden per #812), VERSION bump (no
+#  framework/ files touched — CI-only + repo-process + project-docs).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-25
+title: "Fix pre-prod-review batch #811-#813 (CI SHA pins, decision record, guide note — one PR)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.67.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-25"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-25 authorizing record (framework/archive/CHG-25/IPLAN-25.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix all three open pre-prod-review issues #811-#813 in one PR: CI supply-chain SHA-pin hardening (#811), auto-merge-by-default decision record (#812), Reserved-rule coverage calibration note (#813)."
+  why: "Each issue weakens a guarantee agents rely on: mutable major tags let CI execute unaudited code (#811), the highest-consequence standing permission rests on prose alone (#812), green linters read as full governance coverage while 18 Reserved contracts have no emitter (#813). The triage notes (2026-09-30) carry per-issue evidence; this vehicle executes them as one auditable batch."
+  trigger: "Session goal 2026-09-30: 'fill all issues https://github.com/vladm3105/aidoc-flow-framework/issues' + triage notes on #811-#813 + Mode B GO re-validation on dev @ 3e712951."
+  scope:
+    in:
+      - "CI pin hardening (#811): nine uses: pins → SHA pins with version comments in acceptance.yml, chg-gate.yml, conformance.yml, doc-review.yml, pin-currency-reader.yml; CHANGELOG entry under [Unreleased] (root only — no framework/ files touched)"
+      - "Decision record (#812): one plans/DECISIONS.md entry authorizing auto-merge-by-default with carve-outs + head/mergeStateStatus re-check rationale"
+      - "Calibration note (#813): one docs/ADAPTATION-GUIDE.md-visible note — green linters alone do not equal governed; Reserved rows have no emitter; reviewer-lens backstop"
+      - "One new tests/unit covering file (action SHA-pin assertion: fails before fix, passes after)"
+      - "framework/archive/CHG-25/CHG-25.yaml + IPLAN-25.yaml (this vehicle)"
+    out:
+      - "Reusable @ci/v4.0.0 pins (untouched per #811 fix shape)"
+      - "ai-review pull_request_target trust-gate design (untouched per #811 fix shape)"
+      - "New lint emitters or Reserved-row reclassification (forbidden per #813 fix shape)"
+      - "Weakening AGENTS.md carve-outs or re-check discipline (forbidden per #812 fix shape)"
+      - "Any F3 cascade or SDD rewrite (none — version keep)"
+      - "VERSION bump (C1, semver_impact null)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-25 with manifest + covering test cases + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-25"
+      status: Completed
+    - step: "Implement code-touching C1 (#811 SHA pins) + new unit test + CHANGELOG entry"
+      phase: "tooling_fix"
+      artifact: "workflows + tests + changelog"
+      status: In-Progress
+    - step: "Implement docs-only C1s (#812 decision entry, #813 guide note)"
+      phase: "documentation_sync"
+      artifact: "plans/DECISIONS.md + docs/ADAPTATION-GUIDE.md"
+      status: In-Progress
+    - step: "Run IPLAN-25 battery (chg_lint, tests/unit, sdd_doc_lint/tests) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-25-batch-811-813 → dev"
+      status: In-Progress
+  files_modified:
+    - "CHANGELOG.md"
+    - "plans/DECISIONS.md"
+    - "docs/ADAPTATION-GUIDE.md"
+    - ".github/workflows/acceptance.yml"
+    - ".github/workflows/chg-gate.yml"
+    - ".github/workflows/conformance.yml"
+    - ".github/workflows/doc-review.yml"
+    - ".github/workflows/pin-currency-reader.yml"
+    - "tests/unit/test_action_pin_sha.py"
+
+artifacts_modified:
+  - id: "CHG-25"
+    changes: "Authorizing record for pre-prod-review batch fixes (this file)"
+  - id: "IPLAN-25"
+    changes: "Authorizing IPLAN (framework/archive/CHG-25/IPLAN-25.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-25 (0 errors)"
+    - "python3 -m unittest discover -s tests/unit (all green, incl. 1 new file)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "grep: no remaining actions/checkout@v7 or actions/setup-python@v7 in .github/workflows/"
+    - "PR checks green on feature/chg-25-batch-811-813 → dev"

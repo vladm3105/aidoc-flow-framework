@@ -87,3 +87,14 @@ diverges.
 3. Re-diff each `project/` override against its upstream counterpart;
    retire overrides the new framework version made redundant.
 4. Re-run the project's gates before treating the bump as adopted.
+
+## 7. Green linters do not equal governed (#813)
+
+A green lint run means every *emitted* rule passed — not that every
+governance contract holds. `framework/governance/LINT_RULES.md` carries
+Reserved rows (18: EVAL ×6, GOV-008/009/010/013/015 ×5, IPLAN01, REG01,
+TDD-SYNC-A–E ×5) — documented contracts with deliberately no emitting
+code. Checklist-gate or IPLAN-substance violations in that set pass
+silently; the backstop is reviewer judgment (the review crews and lenses),
+not a second lint pass. Do not invent emitters or reclassify Reserved
+rows to close this gap — the reservation is the contract.
