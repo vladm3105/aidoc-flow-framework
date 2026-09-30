@@ -4,10 +4,25 @@ import sys
 import unittest
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _harness import LayerHarness, fixtures_for, load_layer_document
 
-VALID_TYPES = {"unit", "integration", "functional", "e2e", "smoke", "performance", "security"}
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _template_test_types() -> set:
+    """Case-type vocabulary, derived from the template (single source, #670 D5)."""
+    doc = yaml.safe_load(
+        (REPO_ROOT / "framework" / "layers" / "07_TDD" / "TDD-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    return set(doc["test_strategy"]["test_types"])
+
+
+VALID_TYPES = _template_test_types()
 
 
 class LayerTddTests(unittest.TestCase, LayerHarness):

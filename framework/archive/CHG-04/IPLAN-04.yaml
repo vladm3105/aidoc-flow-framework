@@ -1,0 +1,165 @@
+# IPLAN-04 — Implement Type-R reconciliation flow + 0.55.0 bump
+# Authorizing CHG: framework/archive/CHG-04/CHG-04.yaml
+# Plan: plans/TYPE-R-RECONCILIATION-PLAN.md (FINAL, Pass 2 clean)
+
+doc_id: IPLAN-04
+title: "Implement Type-R reconciliation flow + MINOR bump 0.54.0 → 0.55.0"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.55.0"
+  document_type: "iplan-document"
+  layer: 8
+  total_sections: 6
+  last_updated: "2026-09-21"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+
+  c4_level:
+    value: none
+
+  id_standard:
+    state: canonical
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-04"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-04; no SPEC component)"
+  source_chg: "framework/archive/CHG-04/CHG-04.yaml"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-21T00:00:00Z"
+  last_updated: "2026-09-21T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 11
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "New §3.1.2 Type-R section (trigger, Phase 0–3 flow, guardrails incl. Emergency disambiguation)"
+      order: 1
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/governance/chg/README.md"
+      description: "Routing row + Dual Lifecycle section"
+      order: 2
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Routing row + Dual Lifecycle section (twin of order 2)"
+      order: 3
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "change_source reconciliation enum value + guidance row"
+      order: 4
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "change_source reconciliation enum value + guidance row (twin of order 4)"
+      order: 5
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Typical-source + §6.2 reconciliation routing note"
+      order: 6
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Typical-source + §6.2 reconciliation routing note (twin of order 6)"
+      order: 7
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-30 entry"
+      order: 8
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.54.0 → 0.55.0"
+      order: 9
+      status: DONE
+      session: null
+      verified: true
+    - path: "CHANGELOG.md"
+      description: "Root changelog [Unreleased] entry"
+      order: 10
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Spec changelog 0.55.0 entry"
+      order: 11
+      status: DONE
+      session: null
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.54.0 sweep literals + framework/archive/ exclusion (script stale; sweep rewrote CHG-04 originals before exclusion)"
+      order: 12
+      status: DONE
+      session: null
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Order
+# =============================================================================
+execution_order:
+  phases:
+    - phase: "Prose + template + gates (orders 1–7)"
+      steps: ["Land §3.1.2, routing rows, Dual Lifecycle, enum values, gate notes; verify twins byte-identical on hunks"]
+    - phase: "Decision + release (orders 8–12)"
+      steps: ["GD-30 entry", "VERSION bump + script-literal update + hooks/sync-version-refs.sh fanout", "changelog entries"]
+    - phase: "Verify"
+      steps: ["chg_lint CHG-04", "conformance", "acceptance deterministic", "corpus cross-check", "pre-commit --all-files"]
+
+# =============================================================================
+# Section 4: Test Plan
+# =============================================================================
+test_plan:
+  - test: "chg_lint green"
+    command: "python sdd_doc_lint/chg_lint.py framework/archive/CHG-04/CHG-04.yaml"
+  - test: "conformance green"
+    command: "python -m unittest discover -s tests/conformance"
+  - test: "acceptance deterministic green"
+    command: "python -m unittest discover -s tests/acceptance/deterministic"
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions: []
+  seed: "Single-session change; no handoff expected."
+
+# =============================================================================
+# Section 6: Completion Gates
+# =============================================================================
+completion_gates:
+  spec_sync:
+    spec_checked: true
+    tdd_checked: true
+    diverged: false
+    chg_ref: null
+    note: "GATE-SPEC meta change; no SPEC/TDD cascade. Prose + template enum only."
+
+completion_spec_sync:
+  spec_checked: true
+  tdd_checked: true
+  diverged: false
+  chg_ref: null

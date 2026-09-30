@@ -1,10 +1,9 @@
 """sdd_doc_lint — deterministic structural check for SDD instance documents.
 
 CANONICAL SOURCE: sdd_doc_lint/__init__.py (edit here).
-Previously vendored to platforms/ (now archived)
-and sdd_doc_lint/ (archived copies at archive/platforms/) are produced by
-tools/sdd_doc_lint/sync-vendored.sh — DO NOT EDIT the vendored copies; any
-direct edit there is overwritten on the next sync run. (CLEANUP-PR-A item 3.)
+Single copy since CLEANUP-001 retired the platform-vendored duplicates with
+the 2026-09-07 platform archive — there is no `tools/sdd_doc_lint/` tree, no
+`sync-vendored.sh`, and nothing left to sync. Edit this package directly.
 
 The platform-tier implementation of the framework's `on_author` / `pre_merge`
 trigger-point check (see `framework/governance/REVIEW_REMEDIATION_FLOW.md`). It
@@ -101,8 +100,8 @@ except ImportError as exc:
 # Shared @-tag trace primitives (CFB-PR-2 DD-1). The forward coverage engine
 # reuses the SAME token→doc reduction, layer order, and `@`-tag regex as the
 # backward walker so the two directions of the trace graph agree byte-for-byte.
-# Package-relative import → resolves in the canonical tree and in every vendored
-# copy (the submodule is carried by sync-vendored.sh).
+# Package-relative import → resolves in the canonical tree and wherever the
+# package is placed on `sys.path`.
 from .trace_graph import DOC_FORM as _DOC_FORM
 from .trace_graph import ELEM_FORM as _ELEM_FORM
 from .trace_graph import LAYER_INDEX as _LAYER_INDEX
@@ -282,7 +281,9 @@ _FRONTMATTER_FENCE = re.compile(r"^---\s*$")
 _SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
 _HEADING_NUMBER_PREFIX = re.compile(r"^\d+(?:\.\d+)*\.?\s*")
 # Candidate IDs whose prefix is a known artifact (avoids flagging unrelated tokens).
-_KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN"
+# CHG + EVAL joined the set with the triple-lock fill (CHG-08 #671 D5):
+# layer detection and ID patterns must see the artifacts the registry ships.
+_KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN|CHG|EVAL"
 _DOC_ID = re.compile(rf"\b({_KNOWN})-([A-Za-z0-9]+)\b")
 _ELEM_ID = re.compile(rf"\b({_KNOWN})((?:\.[A-Za-z0-9]+)+)\b")
 
@@ -528,7 +529,13 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
         return {}
     out: dict[str, int] = {}
     for key, body in doc.items():
-        if isinstance(body, dict) and isinstance(body.get("_size_target"), int):
+        # Sections without an int `_size_target` (the whole CHG template,
+        # EVAL `traceability`) fall back to the default budget — requiredness
+        # comes from the section's presence as a dict, not from the size
+        # marker (CHG-08 #670 D5: marker-gating left CHG STRUCT01-unenforced).
+        if isinstance(body, dict) and (
+            isinstance(body.get("_size_target"), int) or key != "metadata"
+        ):
             # CLEANUP-PR-D item 15: respect `_required: false` markers
             # (e.g. PRD's component_decomposition is OPTIONAL — present
             # only when downstream cites @threshold). Sections marked
@@ -545,7 +552,8 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
             # `doc-<layer>-audit` SKILL (which does parse the artifact).
             if isinstance(body.get("_required_when_subtype"), list):
                 continue
-            out[key] = body["_size_target"]
+            target = body.get("_size_target")
+            out[key] = target if isinstance(target, int) else _SECTION_TARGET_WORDS
     return out
 
 
@@ -2428,8 +2436,10 @@ _BACKWARD_REALIZED_LAYERS = ("SPEC", "TDD")
 #: passes (one-hop, no transitive traversal). This constant MIRRORS the
 #: normative `realizing_layers` block in `framework/registry/LAYER_REGISTRY.yaml`
 #: (a conformance guard asserts they stay in sync); keep the two aligned.
+#: CLEANUP-001: BDD's set carries EVAL — EVAL cites BDD scenarios element-level
+#: via its bdd_references slot, so an EVAL-only citation realizes (COV02).
 REALIZING_LAYERS: dict[str, tuple[str, ...]] = {
-    "BDD": _BACKWARD_REALIZED_LAYERS,  # ("SPEC", "TDD")
+    "BDD": _BACKWARD_REALIZED_LAYERS + ("EVAL",),  # ("SPEC", "TDD", "EVAL")
     "EARS": ("BDD",) + _BACKWARD_REALIZED_LAYERS,  # ("BDD", "SPEC", "TDD")
     "BRD": ("PRD",),
 }
@@ -2762,19 +2772,64 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     return findings
 
 
-# --- Seed disposition ledger lint (SEED-ABSORPTION-001, GD-08) -----------------
+# --- Seed disposition ledger lint (SEED-ABSORPTION-001, GD-08/GD-36) -----------
+_SEED_VERSION_RE = re.compile(
+    r"document_control\s*:\s*\n(?:.*\n){0,12}?\s*version\s*:\s*[\"']?([0-9][0-9A-Za-z.\-]*)[\"']?"
+)
+
+
+def _seed_document_versions_by_path(corpus: list[tuple[str, str]]) -> dict[str, str]:
+    """Map corpus-relative path → `document_control.version` for seed files.
+
+    Same seed-tier rule as `_seed_document_versions`, but the version stays
+    keyed to its file so a ledger row naming `seed_file:` resolves against
+    the document it was actually absorbed from (#723). First version wins on
+    duplicate paths; files without a parseable control version contribute
+    nothing.
+    """
+    versions: dict[str, str] = {}
+    for rel, text in corpus:
+        if not (
+            rel == "seed"
+            or rel.startswith("seed/")
+            or rel.startswith("docs/seed/")
+            or "/seed/" in rel
+        ):
+            continue
+        match = _SEED_VERSION_RE.search(text)
+        if match:
+            versions.setdefault(rel, match.group(1).strip())
+    return versions
+
+
+def _seed_document_versions(corpus: list[tuple[str, str]]) -> set[str]:
+    """Collect `document_control.version` values from corpus seed files.
+
+    A corpus entry counts as a seed file when its relative path names the
+    seed tier (`seed/...`, `docs/seed/...`, or any `/seed/` segment).
+    Files without a parseable control version contribute nothing — the pin
+    check skips what it cannot judge rather than failing it.
+    """
+    return set(_seed_document_versions_by_path(corpus).values())
+
+
 def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     """SEED01 — structural validation of a BRD's ``seed_disposition:`` ledger
-    (governance/SEED_CONTRACT.md, GD-08).
+    (governance/SEED_CONTRACT.md, GD-08/GD-36).
 
     Deterministic half of the enforcement split: every ledger row must be
-    well-formed, and each ``absorbed`` row's ``brd_elements`` must resolve to a
-    declared element. It CANNOT tell whether the ledger missed a claim the seed
-    prose makes — that is the BRD auditor lens's check C8 (a reading judgement).
+    well-formed, each ``absorbed`` row's ``brd_elements`` must resolve to a
+    declared element, and each ``seed_version`` pin must match a corpus seed
+    file's ``document_control.version`` — the named ``seed_file:`` when the
+    row carries one (#723), else any corpus seed file (legacy set-membership
+    for rows authored before the field existed). It CANNOT tell whether the
+    ledger missed a claim the seed prose makes — that is the BRD auditor
+    lens's check C8 (a reading judgement).
 
     The carrier is optional (``_required: false``): a BRD with no ledger block is
     silently skipped, so the rule fires on nothing in corpora authored before the
-    contract.
+    contract. Rows without a pin pass as before; pinned rows skip when no seed
+    file (or no parseable seed version) is in the corpus.
     """
 
     # Resolve `absorbed` targets against elements declared OUTSIDE the ledger.
@@ -2790,6 +2845,8 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
 
     stripped = [(rel, _YAML_FENCE.sub(_drop_ledger, text)) for rel, text in corpus]
     declared: set[str] = set(build_edge_graph(stripped).element_host)
+    seed_versions = _seed_document_versions(corpus)
+    seed_versions_by_path = _seed_document_versions_by_path(corpus)
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text, rel)
@@ -2900,6 +2957,40 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
                             line,
                             "SEED01",
                             f"deferred seed claim '{label}' must name a 'target_cycle'",
+                        )
+                    )
+            pin = row.get("seed_version")
+            if isinstance(pin, (str, int, float)) and str(pin).strip() and seed_versions:
+                pin_s = str(pin).strip()
+                # #723: a row naming `seed_file:` resolves against THAT file's
+                # version — never the corpus-wide set, which masks stale pins
+                # on multi-seed corpora. A named file absent from the corpus
+                # (or version-less) cannot be judged: skip, like absent seeds.
+                ref = row.get("seed_file")
+                ref_s = ref.strip().lstrip("./") if isinstance(ref, str) and ref.strip() else ""
+                if ref_s:
+                    actual = seed_versions_by_path.get(ref_s)
+                    if actual is not None and pin_s != actual:
+                        findings.append(
+                            Finding(
+                                rel,
+                                line,
+                                "SEED01",
+                                f"seed claim '{label}' pins seed_version '{pin_s}' but "
+                                f"seed file '{ref_s}' is version '{actual}' — "
+                                "re-point or re-dispose the row",
+                            )
+                        )
+                elif pin_s not in seed_versions:
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"seed claim '{label}' pins seed_version '{pin_s}' but no "
+                            "corpus seed file carries that version (corpus seed "
+                            f"versions: {', '.join(sorted(seed_versions))}) — "
+                            "re-point or re-dispose the row",
                         )
                     )
     return findings
@@ -3034,8 +3125,7 @@ def _check_eval_yaml(corpus: list[tuple[str, str]]) -> list[Finding]:
                             rel,
                             line,
                             "EVAL-ID-001",
-                            f"test case id '{tc_id}' does not match "
-                            f"EVAL.NN.SS.xxxx format",
+                            f"test case id '{tc_id}' does not match EVAL.NN.SS.xxxx format",
                             severity="error",
                         )
                     )

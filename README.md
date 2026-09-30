@@ -163,7 +163,10 @@ framework's contract completes the model rather than exposing a weakness.
 5. **Validate the oracle** at EARS/BDD with a PO before building.
 6. **Build test-first** from the IPLANs; sessions hand off via the IPLAN session-handoff.
 7. **Observe reality**, then **adapt** via CHG — the chain is a control loop, not a
-   blueprint.
+   blueprint. Which flow an adaptation takes — F1 greenfield, F2 direct request,
+   F3 brownfield restart, F4 bugfix on an implemented IPLAN, or the Emergency /
+   Type-R yield paths — is routed by
+   `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, CHG-06).
 
 ---
 
@@ -176,8 +179,8 @@ humans — write, ship, and maintain code. Grouped by what they actually break:
 
 - **Silent requirement loss** — an agent produces a clean-looking module that quietly
   omits a requirement nobody noticed was missing. → **Coverage checks** force every EARS
-  requirement and BDD scenario to map to a component or be explicitly deferred. On
-  BeeLocal this literally surfaced two whole missing components (compliance/resilience,
+  requirement and BDD scenario to map to a component or be explicitly deferred. In
+  practice this has surfaced whole missing components (compliance/resilience,
   recipient management) that read as "done" until measured.
 - **No oracle, so "looks right" passes for "is right"** — agents are confident and
   wrong. → **Test-first (BDD→TDD→IPLAN)**: the acceptance test exists before the code,
@@ -232,8 +235,8 @@ humans — write, ship, and maintain code. Grouped by what they actually break:
   (human or agent) becomes "query the chain," not "reverse-engineer the code."
 
 **What it deliberately does *not* solve** — and shouldn't be expected to: it doesn't
-verify that your assumptions are *true about the world* (e.g., "Privy supports custodial
-USDC on Solana"), and it can't make a bad **seed** good. Those stay with the human
+verify that your assumptions are *true about the world* (e.g., "the chosen provider
+supports the required flow on the target platform"), and it can't make a bad **seed** good. Those stay with the human
 (quality of the seed) and the world (the spike/canary/prod signal that tells you an
 assumption is false). The framework's job is to make a wrong idea's consequences
 **visible and cheap to correct** — caught at BDD, fixed via CHG — not to make a wrong
@@ -292,18 +295,21 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 |------|---------|
 | `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against layer templates |
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
+| `hooks/ch-gate-check.sh` | PreCommit advisory hook (also pre-commit) — warns on code without an active CHG |
 
-The former platforms (Hermes MCP server, Claude Code plugin) are archived at
-`archive/platforms/`.
+The former platforms (Hermes MCP server, Claude Code plugin) were archived on
+2026-09-07 and their code has since been removed — no live platform code
+remains; the framework is the whole product.
 
 ## Status
 
-The migration is complete (cutover shipped as `v1.0.0`); the project is now in
-**post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.53.0`. Platforms (Hermes, Claude Code plugin) have been archived —
-the framework is now self-sufficient for any AI agent.
+The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
+the project is now in **post-cutover development** (latest project release
+`0.67.1`), tracking framework spec `0.67.1`. Platforms (Hermes, Claude Code
+plugin) have been archived — the framework is now self-sufficient for any
+AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-09-07); it is not
+> *This overview is a point-in-time snapshot (as of 2026-09-30); it is not
 > wired into the version-sync hook. For live version state see the per-package
 > `VERSION` files.*
 
@@ -327,13 +333,13 @@ for the vulnerability-reporting policy.
 - `CHANGELOG.md` — project-level changelog.
 - `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
+- `docs/ADAPTATION-GUIDE.md` — how a new project adapts the framework (`.aidoc/` layer, profile knobs, overrides).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - `framework/README.md` — the engine-agnostic SDD specification.
-- [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
-- [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).
+- [`framework/governance/aidoc/AIDOC.md`](framework/governance/aidoc/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
+- [`plans/ACCEPTANCE-HISTORY.md`](plans/ACCEPTANCE-HISTORY.md) — retired acceptance-test methodology (moved from `tests/ACCEPTANCE.md`, CHG-08 #670).
 - [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
-- [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md) — per-PR implementation timeline + design evolution + lessons learned for the acceptance suite.
 - [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
 
 ## Pre-migration history

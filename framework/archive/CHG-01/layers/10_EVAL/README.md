@@ -2,7 +2,7 @@
 
 ## Overview
 
-The evaluation layer defines how BeeLocal's test strategy is governed, measured, and reported.
+The evaluation layer defines how the project's test strategy is governed, measured, and reported.
 It bridges the SDD document chain (EARS/BDD/TDD/IPLAN) to concrete testing execution,
 providing a traceable path from requirements through test design to coverage evidence.
 

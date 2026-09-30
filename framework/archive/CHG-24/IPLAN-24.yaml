@@ -1,0 +1,197 @@
+# =============================================================================
+#  IPLAN-24: Fix triage batch #798-#808 (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-24/CHG-24.yaml (F2 direct, C1,
+#  In-Progress). Source: session goal 2026-09-30 + triage notes on #798-#808.
+#  Docs cluster: #801, #802, #804, #806, #808. Behavior cluster: #798, #799,
+#  #803, #805, #807. Covering tests REQUIRED (code-touching C1): two new
+#  tests/unit files below; pure-prose files N/A with reason (F2.3).
+# =============================================================================
+
+doc_id: IPLAN-24
+title: "Fix triage batch #798-#808 + CHG-24 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.67.0"
+  source_chg: "CHG-24"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-24"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-24; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 3
+  estimated_files: 31
+  session_count: 2
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-24/CHG-24.yaml + IPLAN-24.yaml"
+      description: "Authorizing vehicle (CHG-24 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "plans/F2-UNIFY-PLAN.md"
+      description: "#808: stale refs (#772/#773 closed), always-traced CHG-12 reality"
+      order: 1
+      status: DONE
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md + framework/CHANGELOG.md"
+      description: "#806: [Unreleased] to top + entries; batch entries for all ten"
+      order: 2
+      status: DONE
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md"
+      description: "#802 branching model to AGENTS.md flow; #806 version pins (0.53.x→0.67.0, ROADMAP ref)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: false
+    - path: "README.md"
+      description: "#806: v1.x claims only if file confirms them (verify before edit)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md (§7.6 annotation; ADAPTATION-GUIDE.md untouched)"
+      description: "#801: symlink-canonical wins per binding convention; frozen MUST-NOT annotated superseded"
+      order: 5
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/SELF_LEARNING.md"
+      description: "#804: rewrite store table to implemented surface (learnings.md + harness scratch), rest to roadmap"
+      order: 6
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/skills/SKILLS-REGISTRY.yaml"
+      description: "#807: drop DESIGN.md/PLAN.md entries (files do not exist; do not invent docs)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/skills/_shared/agents/second-opinion-judge.md"
+      description: "#807: CLAUDE.md-only ref → AGENTS.md chain (same neutrality class)"
+      order: 8
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/skills/*/SKILL.md (12 overlapping)"
+      description: "#807: port engine-neutrality deltas only (AGENTS.md chain, neutral tool refs); keep Muse-local adaptations"
+      order: 8
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+      description: "#805: schema_version 2.0→1.0 (lone drift), future last_updated→placeholder"
+      order: 9
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml + framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "#805: framework_version literal→[X.Y.Z]; keep twins byte-identical (edit once, copy, sha-check)"
+      order: 10
+      status: DONE
+      session: 2
+      verified: false
+    - path: ".github/workflows/dep-scan.yml + sast-scan.yml + trivy-scan.yml"
+      description: "#803: fail-on-findings false→true (clean window evidenced in CHG-24)"
+      order: 11
+      status: DONE
+      session: 2
+      verified: false
+    - path: ".github/workflows/pre-commit.yml + conformance.yml + .pre-commit-config.yaml"
+      description: "#798: invoke pre-push hook id in CI (hook re-checked CI-safe); #799: run tests/unit in CI workflow + local hook"
+    - path: "framework/VERSION + hooks/sync-version-refs.sh + swept pins"
+      description: "E005 PATCH bump 0.67.0→0.67.1: VERSION file, OLD_VERSIONS +0.67.0, mechanical sweep of swept-form pins"
+      order: 12
+      status: DONE
+      session: 2
+      verified: false
+    - path: "tests/unit/test_template_conventions.py (NEW)"
+      description: "Durable: schema_version uniformity, no hardcoded semver literal, no future dates in templates"
+      order: 13
+      status: DONE
+      session: 2
+      verified: false
+    - path: "tests/unit/test_hook_stage_coverage.py (NEW)"
+      description: "Durable: every pre-push-stage hook has a CI invoker"
+      order: 14
+      status: DONE
+      session: 2
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Code-touching C1: covering test cases REQUIRED (GATE-CODE entry). New unit files assert the fixed invariants; full tests/unit + sdd_doc_lint/tests runs are the regression battery. Pure-prose files: tests N/A with reason (F2.3)."
+  cases:
+    - "chg_lint.py over CHG-24: 0 errors"
+    - "test_template_conventions: EVAL schema 1.0, framework_version placeholder-only, no future dates (fails before fix, passes after)"
+    - "test_hook_stage_coverage: pre-push hooks covered by CI invocation (fails before fix, passes after)"
+    - "tests/unit full discover green; sdd_doc_lint/tests green"
+    - "Mirror twins byte-identical after edit"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-24/CHG-24.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "sha256sum framework/layers/09_CHG/CHG-TEMPLATE.yaml framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest discover -s tests/unit -p 'test_template_conventions.py'"
+    - "python3 -m unittest discover -s tests/unit -p 'test_hook_stage_coverage.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched (README.md only if its v1.x claims verify)"
+  - "Twins stay byte-identical: single edit + copy + sha-check, never parallel edits"
+  - "#807: neutrality deltas only — Muse-local adaptations in .agents copies stay"
+  - "#803: no blind flip — clean window already evidenced (0 open alerts); watch PR checks, revert flip if inherited findings surface"
+  - "#798: hook re-checked CI-safe before wiring (no push, no interactive, no secrets)"
+  - "New tests observed failing before the fix, passing after (authentic failure first)"
+  - "No VERSION bump (version_action keep); CHANGELOG entries under [Unreleased] only"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "Vehicle + docs cluster + skills/templates prose"
+    - session: 2
+      status: In Progress
+      scope: "CI/workflows + new tests + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-24"
+  upstream: ["session goal 2026-09-30 (fix-all, one PR)", "triage notes 2026-09-30 on #798-#808"]
+  downstream: ["PR feature/chg-24-triage-batch → dev (Closes #798, #799, #801, #802, #803, #804, #805, #806, #807, #808)"]

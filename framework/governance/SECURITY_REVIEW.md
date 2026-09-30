@@ -1,5 +1,15 @@
 # Security Review — Agent-Authored Artifacts
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 SDD artifacts and adaptation profiles are produced by AI agents from upstream
 documents, dependency metadata, and human prompts — content the agent does not
 fully control. This standard defines the engine-agnostic security review every

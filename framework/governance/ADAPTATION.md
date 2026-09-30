@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -80,7 +80,7 @@ version-controlled. A project value that overrides the seed for the same knob is
 a deliberate per-project deviation and is recorded as a learning (see the
 knowledge-extraction overlay).
 
-## 4. The surface (v1 — six knobs)
+## 4. The surface (v1 — seven knobs)
 
 The authoritative definitions, types, and consumer roles live in
 `ADAPTATION_SURFACE.yaml`. This section is the rationale.
@@ -156,6 +156,23 @@ missing-file / missing-field / malformed-value by falling back to the default.
 This bounds the loop; it does not weaken any gate.
 
 Honored by: **audit**.
+
+### 4.7 `ci_bindings`
+
+Where a consuming project pins the platform mechanics
+`CI_AUTONOMOUS_PR_STANDARD.md` points at: verification-tier latency ceilings
+(Invariant 2), required checks and branch policy (Invariant 3), runners,
+workflows, and the integration branch. Values are platform-specific and opaque
+to the framework — a ceiling is a duration in whatever form the platform reads,
+a branch policy is the platform's own rule object. Unset keys fall through to
+framework defaults per the precedence chain in §2. **Never weakens a gate** —
+ceilings keep the static < integration < promotion ordering, and required
+checks still report conclusively on every merge request per Invariant 3.
+Projects adopting `CI_AUTONOMOUS_PR_STANDARD.md` populate this knob; without
+it each consumer invents its own profile shape for the same bindings.
+
+Honored by: **scaffolding** (wires the project's CI surface from the pinned
+values).
 
 ## 5. How an engine consults the profile
 
@@ -243,7 +260,7 @@ replaces the framework version. If not, the framework version applies.
 │   └── 06_SPEC/
 │       └── SPEC-TEMPLATE.yaml
 ├── governance/                # rule overrides
-│   ├── GOVERNANCE_RULES.md
+│   ├── DOC_GOVERNANCE_CORE.md
 │   └── ...
 └── playbooks/                 # playbook overrides
     └── 01_BRD/
@@ -287,10 +304,10 @@ When adapting the framework, consuming projects MUST propagate these enforcement
 |------|------|----------|
 | 1 | Add governance gate to project CLAUDE.md (§3.4 — NON-NEGOTIABLE) | Yes |
 | 2 | Add session-start verification checklist (10 items, before any code work) | Yes |
-| 3 | Add §3.4.1 CHG post-creation validation to project GOVERNANCE_RULES.md | Yes |
+| 3 | Add §3.4.1 CHG post-creation validation to project DOC_GOVERNANCE_CORE.md | Yes |
 | 4 | Install framework hooks (ch-gate-check.sh in hooks.json PreCommit) | Yes |
 | 5 | Verify enforcement works (test: say "build" → agent stops at gate) | Yes |
 
 These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
-skills (process-level), and GOVERNANCE_RULES.md (documentation-level) all enforce
+skills (process-level), and DOC_GOVERNANCE_CORE.md (documentation-level) all enforce
 the CHG gate independently.

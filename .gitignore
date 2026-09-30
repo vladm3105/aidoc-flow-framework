@@ -10,6 +10,10 @@ examples/*/logs/
 # Work plans (local planning documents)
 work_plans/
 
+# Agent-session state (per-session scratch: context, plans, learnings).
+# Untracked by design — its presence must never dirty the tree (#688).
+.mimocode/
+
 # BMAD commands (external module)
 .claude/commands/bmad/
 
@@ -46,6 +50,12 @@ coverage.xml
 # Generated publish artifacts — the plugin mirror is a one-way build output
 # (tools/build-plugin-mirror.sh, PLUGIN-MARKETPLACE P2), never committed here.
 dist/
+
+# Governed CHG archives under framework/archive/CHG-*/ must stay tracked
+# (donor §3.6b trap: a blanket archive/ rule would swallow them — never add one).
+# The negation below is a no-op today (no rule ignores them) and guards the
+# governed scope only — never broaden to !archive/**.
+!framework/archive/CHG-*/
 
 # --- aidoc-flow-ci canon baseline (PLAN-002 §10.1) ---
 .claude/

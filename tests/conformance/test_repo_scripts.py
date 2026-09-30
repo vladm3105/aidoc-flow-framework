@@ -2,10 +2,9 @@
 
 WHY THIS FILE EXISTS. `tests/unit/` is executed by no hook and no workflow —
 `.pre-commit-config.yaml` discovers `tests/conformance` only, and the workflows
-run `tests/conformance`, `tests/acceptance/deterministic`,
-`sdd_doc_lint/tests` and Hermes' own suite. `pre_push_check.sh` invokes no
-`unittest` at all. So a test placed under `tests/unit/` proves something once,
-locally, and never again after merge.
+run `tests/conformance`, `tests/acceptance/deterministic` and
+`sdd_doc_lint/tests`. So a test placed under `tests/unit/` proves something
+once, locally, and never again after merge.
 
 `unittest discover -s tests/conformance` walks that directory only, so it cannot
 reach `tests/unit/` by pattern. This module loads the modules it names
@@ -13,12 +12,18 @@ explicitly, via the `load_tests` protocol, so they run wherever the conformance
 suite runs — which includes the `always_run` pre-commit hook and the
 `Framework + platform conformance` required context.
 
-SCOPE, stated honestly: this registers the modules NAMED BELOW, not the
-directory. The other ~30 modules under `tests/unit/` remain unguarded after
-merge. Fixing the class rather than the instance — wiring `tests/unit` into
-`.pre-commit-config.yaml`, or dropping the `|| true` from the two uncalled
-`unittest discover tests/unit` invocations in `tests/scripts/test-plugin.sh` —
-is tracked separately and is the better long-term fix.
+SCOPE (CLEANUP-001): only runnable modules are registered. Modules coupled to
+deleted surfaces (`test_sync_website_badge` → `scripts/sync-version-refs.sh` three-source sweep,
+`test_sdd_coverage` → `tools/sdd_coverage.py`,
+`test_skill_manifests` / `test_nonlayer_skills` /
+`test_provisional_ids` / `test_ref_granularity` / `test_reuse_manifest` →
+`skill_dirs()`/`plugin_bundle_root()`) stay unregistered until their subjects
+return or they are rewritten. Registering an unrunnable module reds the suite,
+not the subject. (`test_pin_currency_reader` re-registered by #710: its
+subjects were restored under `hooks/`. `test_sync_scripts` re-registered by
+#688: rewritten to sweep a fixture tree instead of the live checkout, so tree
+dirtiness can no longer skip it. `test_ch_gate_check` registered by #690: it
+drives the hook in throwaway fixture repos.)
 """
 
 import sys
@@ -31,8 +36,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTERED = (
     "tests.unit.test_pin_currency_reader",
     "tests.unit.test_sdd_doc_lint_trace_resolution",
-    "tests.unit.test_sync_website_badge",
-    "tests.unit.test_tag_quote_termination",
+    "tests.unit.test_spec_helpers",
+    "tests.unit.test_template_yaml",
+    "tests.unit.test_sync_scripts",
+    "tests.unit.test_ch_gate_check",
 )
 
 

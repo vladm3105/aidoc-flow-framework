@@ -1,9 +1,19 @@
 # Traceability — SDD
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 ## Traceability Chain
 
 ```
-BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
+BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → EVAL (L10) → Code
 ```
 
 ## Necessary-upstream tagging
@@ -12,10 +22,10 @@ Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
 layer. Deeper lineage is discoverable transitively (one hop per layer, or a
 one-shot trace-walk query). The `tools/*.py` helpers this document names
-(`trace_walk.py`, `sdd_coverage.py`) are a **reference implementation outside
-the engine-agnostic spec** — the traversal they perform over the `@`-tag graph
-is the normative capability; the scripts themselves are a convenience an engine
-MAY provide.
+(`trace_walk.py`, `sdd_coverage.py`) describe a **reference implementation
+outside the engine-agnostic spec** — no such scripts ship in this repo; the
+traversal they would perform over the `@`-tag graph is the normative
+capability, and the scripts themselves are a convenience an engine MAY provide.
 
 ```
 Layer 1 (BRD):   —
@@ -26,15 +36,16 @@ Layer 5 (ADR):   @ears @bdd
 Layer 6 (SPEC):  @ears @bdd @adr
 Layer 7 (TDD):   @ears @bdd @adr @spec
 Layer 8 (IPLAN): @spec @tdd
+Layer 10 (EVAL): @ears @bdd @tdd @iplan
 ```
 
 `required_tags` is the **minimum trace-resolution set**: a layer MAY
 additionally carry provenance tags (e.g. a platform ADR recording `@brd`/`@prd`
 in its `context`) but is not required to. Reverse lookup ("which BRD does
-SPEC-07 trace to?") walks the chain transitively, not a local tag — run
-`tools/trace_walk.py <ID>` for that one-shot backward query, or consult the
-generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (produced by
-`tools/sdd_coverage.py <docs_root>`; CFB-PR-2) for the forward direction — "which
+SPEC-07 trace to?") walks the chain transitively, not a local tag — query the
+`@`-tag graph directly for that one-shot backward lookup, or consult the
+generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (CFB-PR-2)
+for the forward direction — "which
 SPEC/IPLAN realizes this BRD requirement?". Both read the same `@`-tag graph, so
 the forward matrix and the backward walker never disagree. The matrix is
 **generated/regenerable — never hand-edited.**
@@ -74,15 +85,15 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
   to re-band the FR `P1`/`P2` for the current cycle or confirm the deferral is intentional. A
   `realized_by:` FR is a positive coverage claim, not a leak, and is never flagged. Cross-cycle
   leaks need no gate — later-cycle BRDs are `Planned`/`Sketch` (trace-inert), so their
-  elements are not in the graph. *Origin:* D54-F13 / D-0055.
+  elements are not in the graph. *Origin:* D54-F13 / D-0055 (see the D-series annex in `governance/DECISIONS.md`).
 
 `reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
 realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
 
 ## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
 
-Under Model 2 (D-0061), an element ID's 4-hex hash **is** the mint-time content
-fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
+Under Model 2 (D-0061 — see the D-series annex in `governance/DECISIONS.md`),
+an element ID's 4-hex hash **is** the mint-time content fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
 §7 gated FR elements it recomputes `SHA256("{doc}:{sec}:{norm(title)}:{norm(description)}")[:N]`
 (the normative transform + extraction boundary in `ID_NAMING_STANDARDS.md`) and
 warns when the ID's declared hash no longer matches — a **content drift** since the
@@ -110,7 +121,8 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
 | ADR | @ears, @bdd | SPEC |
 | SPEC | @ears, @bdd, @adr | TDD |
 | TDD | @ears, @bdd, @adr, @spec | IPLAN |
-| IPLAN | @spec, @tdd | Code |
+| IPLAN | @spec, @tdd | EVAL |
+| EVAL | @ears, @bdd, @tdd, @iplan | Code |
 
 ## Layer Readiness Gates
 

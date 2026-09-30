@@ -14,6 +14,16 @@ custom_fields:
 
 # Threshold Naming and Usage Rules
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 ## 1. Overview
 
 This document defines the naming conventions and usage rules for thresholds,

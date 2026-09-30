@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -42,8 +42,10 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | 9 | CHG | Change management overlay — gates, versioning, audit trail |
 | 10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices |
 
-Each layer N may reference only the layers before it; `downstream` and
-`required_tags` in the registry encode the full traceability graph.
+Each layer N may reference only the layers before it; `downstream` names each
+layer's primary successor (the single next step of the authoring chain), while
+`required_tags` plus `realizing_layers` encode the full traceability graph —
+every upstream layer a consumer actually reads (#708).
 
 ## C4 alignment
 
@@ -74,16 +76,18 @@ framework/
   QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
   TESTING_STRATEGY_TDD.md  Test-strategy guidance feeding the TDD layer.
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
+  LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
+                         evidence preserved verbatim; era caveats in header).
   layers/                The 10 layer definitions — one folder per layer, each
                          with a template, a README, and an index template
                          (08_IPLAN also carries PLAN_STANDARD.md and
                          IPLAN-ECOSYSTEM.md).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
-                         checklists the review-team crews apply. 10 folders: one
-                         per layer (01_BRD through 09_CHG) plus 10_IPVERIFY.
+                         checklists the review-team crews apply. 11 folders:
+                         one per layer (01_BRD through 09_CHG) plus 10_EVAL
+                         (authoring) and 10_IPVERIFY (execution/verification).
                          A vendored artifact class.
-  templates/             Doc templates that aren't layer artifacts (e.g.
-                         framework-feedback-log.template.md).
+  templates/             Doc templates that aren't layer artifacts.
   registry/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
@@ -154,16 +158,26 @@ Any change to framework/  →  Classify (C1/C2/C3/Emergency)
 |-------|-------|------|---------|
 | C1 | Typo, formatting | None | Direct commit |
 | **C2** | Section update, new governance rule | Peer review | Full CHG process |
-| **C3** | Cross-layer, breaking changes | Formal gate (GATE-SPEC) | Full CHG + both-platform approval |
+| **C3** | Cross-layer, breaking changes | Formal gate (GATE-SPEC) | Full CHG + maintainer + 2 reviewers |
 | Emergency | Critical production fix | Post-hoc + post-mortem within 48h | Fix first, document after |
 
 Framework-spec changes (edits to `framework/` itself) route through
 **GATE-SPEC** — the meta gate orthogonal to the artifact cascade. GATE-SPEC
 enforces: provenance justification, SemVer classification (≥ C2, never C1),
-`framework/VERSION` bump, both-platform `FRAMEWORK_SPEC_VERSION` re-declaration,
-conformance suite green, and `CHANGELOG.md` update. See
+`framework/VERSION` bump, spec-version pin re-declaration,
+conformance suite green, and `CHANGELOG.md` update. Archive-tier-only repairs
+(`framework/archive/**`) are not spec changes and skip the gate. See
 [`layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`](layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md)
 for the full gate definition.
+
+### Request flows
+
+Classify-then-route detail for the diagram above lives in
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06): **F1** greenfield
+(full chain), **F2** direct request (no SDD cascade), **F3** brownfield behavior change (SDD-first restart),
+**F4** bugfix on an implemented IPLAN (CHG-05 vehicle), plus Emergency and Type-R yield paths.
+C1 note (F2.2, ratified): docs-only C1 stays direct-commit; code- or script-touching C1 requires
+a C1 CHG + scoped IPLAN.
 
 ### Document lifecycle tracking
 

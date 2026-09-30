@@ -1,5 +1,15 @@
 # Review, Remediation & Gate Flow
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
 review, remediation, and gating — and names the **trigger points** where an
@@ -172,6 +182,12 @@ platform's; the properties are not):
   silently passes.
 - **Independent infrastructure.** Any standing reviewer infrastructure holds
   credentials and MUST be isolated and least-privilege.
+
+**Gates must prove they load.** A required gate that never executes is a
+silent pass, not a green build. Every required gate MUST be actively proven
+to load (not merely configured), and the full set of required gates MUST be
+enumerated in one list — so a silently-skipped gate surfaces as a missing
+entry, never as an absent failure.
 
 > **Tiered human-in-loop.** For routine changes the automated gate + escalation
 > is sufficient. For a change to the spec or a governance standard, **human

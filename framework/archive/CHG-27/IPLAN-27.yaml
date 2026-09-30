@@ -1,0 +1,172 @@
+# =============================================================================
+#  IPLAN-27: Fix CHG-26 follow-through batch #817-#818 (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-27/CHG-27.yaml (F2 direct, C1,
+#  In-Progress). Source: session goal 2026-09-30 + triage notes on #817-#818
+#  + Mode B GO validation on dev @ 09d1e688.
+#  Normative cluster: #817 (ci_bindings knob + template + ADAPTATION.md +
+#  pointer guard). Code cluster: #818 (hook suite step + covering unit test).
+#  Covering tests REQUIRED (code-touching C1): two guard additions below, each
+#  observed failing before its fix and passing after; full suites are the
+#  regression battery. Pure-prose files (README bullet, CHANGELOGs): tests N/A
+#  with reason (F2.3) — prose carrying no executable contract.
+# =============================================================================
+
+doc_id: IPLAN-27
+title: "Fix CHG-26 follow-through batch #817-#818 + CHG-27 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.68.0"
+  source_chg: "CHG-27"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-27"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-27; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 13
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-27/CHG-27.yaml + IPLAN-27.yaml"
+      description: "Authorizing vehicle (CHG-27 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/ADAPTATION_SURFACE.yaml"
+      description: "#817: ci_bindings knob (6 → 7), header count, metadata dates"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/PROFILE-TEMPLATE.yaml"
+      description: "#817: ci_bindings override row + knob-count header (6 → 7)"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/ADAPTATION.md"
+      description: "#817: §4 title (six → seven) + §4.7 ci_bindings section"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_ci_autonomous_pr_standard.py"
+      description: "Durable: standard-to-surface pointer pin — ci_bindings declared + documented (fails before fix, passes after)"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/pre_push_check.sh"
+      description: "#818: suite step (three suites, fail-closed/skip-with-notice) + canon scope header"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "PATCH support: OLD_VERSIONS gains 0.68.0 (swept-form literal pin per #663)"
+      order: 6
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/README.md"
+      description: "#818: pre_push_check.sh bullet notes the suite step"
+      order: 7
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/unit/test_hook_stage_coverage.py"
+      description: "Durable: hook invokes all three suites (fails before fix, passes after)"
+      order: 8
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "PATCH 0.68.0 → 0.68.1 (additive knob + additive hook step)"
+      order: 9
+      status: TODO
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "## [0.68.1] batch entry (root log)"
+      order: 10
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "## [0.68.1] batch entry (spec log, document-of-record)"
+      order: 11
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Code-touching C1: covering test cases REQUIRED (GATE-CODE entry). Two guard additions assert the fixed invariants; full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery. Pure-prose files: tests N/A with reason (F2.3)."
+  cases:
+    - "chg_lint.py over CHG-27: 0 errors"
+    - "ci_bindings pointer pin: surface declares ci_bindings and ADAPTATION.md documents it (fails before fix, passes after)"
+    - "hook suite invocation: pre_push_check.sh runs tests/conformance + tests/unit + sdd_doc_lint/tests (fails before fix, passes after)"
+    - "tests/unit full discover green; tests/conformance green; sdd_doc_lint/tests green"
+    - "sync-version-refs.sh clean sweep to 0.68.1; bash -n + shellcheck clean on the hook"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-27/CHG-27.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "bash hooks/sync-version-refs.sh"
+    - "bash -n hooks/pre_push_check.sh"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest discover -s tests/conformance -p 'test_ci_autonomous_pr_standard.py'"
+    - "python3 -m unittest discover -s tests/unit -p 'test_hook_stage_coverage.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "#817: one knob (ci_bindings, default {}), closed-set semantics kept; existing six knobs byte-untouched; six standard invariants untouched; template + ADAPTATION.md §4 move together per test_profile_template_covers_surface_knobs"
+  - "#818: hook step mirrors the exact CI unittest entry (python -m unittest discover -s <suite>); no Taskfile/tier scaffolding; skip-with-notice preserved when python3 is absent"
+  - "New tests observed failing before the fix, passing after (authentic failure first)"
+  - "PATCH 0.68.0 → 0.68.1; pin sweep via hooks/sync-version-refs.sh; both CHANGELOGs cut with ## [0.68.1]"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + #817 knob + #818 hook step + covering tests + PATCH cut + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-27"
+  upstream: ["session goal 2026-09-30 (triage then fix all issues)", "triage notes 2026-09-30 on #817-#818", "Mode B GO validation dev @ 09d1e688"]
+  downstream: ["PR feature/chg-27-batch-817-818 → dev (Closes #817, Closes #818)"]

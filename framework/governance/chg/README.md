@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-23 |
+| Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.2 |
+| Framework Version | 0.68.1 |
 
 
 ## Overview
@@ -20,6 +20,8 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 **Scope**: Gate definitions, the CHG template, approval and post-mortem companions, and the 14-point creation checklist. CHG uses gate approval instead of readiness scores.
 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
+
+**Canonical home**: the canonical CHG template lives at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; the governance copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical` (gates) and `test_readme_copies_identical` (READMEs).
 
 ## What CHG Is and Is Not
 
@@ -43,7 +45,7 @@ When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** b
 ```
 CHG (authorize only)
   ↓
-Phase 0: SDD Document Updates (FIRST — before ANY code work)
+Phase 0: SDD Document Updates (FIRST — before ANY code work; for F3 ordered modules-first: 0a seed_scope (no-change | supersede | create) + ledger re-point, 0b affected-module sync + review checkpoint, then SDD archive → rewrite → bump — see CHG_REQUEST_FLOWS.md §4)
   1. Archive current SDD versions to docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/
   2. Rewrite each SDD document as clean v2 (upper layers first: PRD → SPEC → IPLAN)
   3. Update supersedes field with archive paths
@@ -96,12 +98,29 @@ Phase 2: Code Implementation (driven by IPLAN)
 
 | Level | Scope | Gate Required | Process |
 |-------|-------|---------------|---------|
-| C1 | Typo, formatting, clarification | None — direct commit | Fix → commit → completed |
+| C1 | Typo, formatting, clarification (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE (scoped IPLAN) | Fix → IPLAN → commit |
 | C2 | Section update, requirement refinement | Peer review | Assess impact → update → verify |
 | C3 | Cross-layer change, new requirements | Formal gate | Full CHG process |
 | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
 
 **Note**: For `change_source: spec` (GATE-SPEC), change_level must be >= C2 (never C1 per GATE-SPEC-E003). Major `semver_impact` requires C3.
+
+### C3 and spec-gate approval: judge first, human signs
+
+At C3 and `framework/**` spec gates the approver is always human
+(GATE-SPEC-E004; `DEFINITION_OF_DONE.md` Human-in-the-loop tier; GD-01): an AI
+verdict — second-opinion, orchestrator, or judge — may satisfy a review gate
+as reviewer, never an approval gate as approver. The wired pattern is
+**judge-then-human**: run an independent `second-opinion` pass (judge ≠
+generator) BEFORE surfacing the item for human approval (the approval-gate
+skill, `framework/skills/approval-gate/`), and record both the judge verdict
+and the human sign-off in `gate_approval`. A bounded AI-approver tier does not
+exist; defining one would be a governance change with cross-gate blast radius,
+not a one-line fix (#784, declined Option B).
+
+Solo-project C3 `Self (C3 — Technical Lead)` is the human owner approving, not
+an AI precedent. Routine-tier and F2 flows carry no human approval gate and
+are unaffected by this rule.
 
 ## Change Source Routing
 
@@ -114,7 +133,45 @@ Phase 2: Code Implementation (driven by IPLAN)
 | External (business) | GATE-01 | Regulatory, compliance, partner demands |
 | External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues (bubble-up) |
+| Reconciliation (Backward) | GATE-CODE | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination, Type-R §3.1.2) |
+| Direct | GATE-CODE | Human/AI-agent request, no behavior change (F2 — no SDD cascade) |
 | Spec | GATE-SPEC | Change to the `framework/` spec itself (meta — orthogonal) |
+
+## Request Flows
+
+Classify-then-route detail (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
+paths): `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
+
+---
+
+## Dual Lifecycle: Forward vs. Backward Propagation
+
+The framework governs changes through two complementary lifecycle flows.
+SDD-first (§3.1.1) is the default; Type-R (§3.1.2) is the bounded exception
+for code that verifiably leads docs — never a routine alternative, and never
+a path for Emergency-qualifying work (which keeps its post-mortem).
+
+### 1. Forward Flow (Design-First — Traditional)
+
+```
+BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7) → IPLAN(L8) → Code
+```
+
+Planned features and architecture changes. Requirements originate upstream,
+specs update first, the IPLAN defines execution, code implements the plan.
+
+### 2. Backward Flow (Reconciliation-First — Type-R)
+
+```
+Verified Codebase (gates green) → CHG (reconciliation) → Reverse-Authored IPLAN → Upstream SDD Chain (TDD → SPEC → BDD → EARS)
+```
+
+Non-emergency empirical work (integration discovery, browser-authored suites,
+flakiness remediation). The frozen codebase is ground truth; the
+reverse-authored IPLAN bridges it to the SDD chain; guardrails (freeze, green
+gates first, no new unverified code mid-reconciliation) hold throughout.
+
+---
 
 ## Cascade Chain
 
@@ -173,7 +230,7 @@ When an SDD document needs updating, the CHG record owns the version lifecycle:
 
 ### CHG Archive Convention
 
-Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `06_SPEC`, `07_TDD`, `08_IPLAN`. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
+Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `05_ADR`, `06_SPEC`, `07_TDD`, `08_IPLAN` — any SDD layer the CHG modifies, not only the downstream design layers. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
 
 ### No Stale Context in SDD Docs
 
@@ -231,7 +288,8 @@ CHG gates are the approval checkpoints for change management:
 ## Implementation Order (CHG → SDD → IPLAN → Code)
 
 The correct flow when a CHG modifies SDD documents. Every step in the CHG MUST
-declare a `phase` field (`sdd_lifecycle` or `iplan_creation`).
+declare a `phase` field (`sdd_lifecycle`, `iplan_creation`, or
+`documentation_sync` for doc-only milestones).
 
 ```
 CHG (authorize)
@@ -242,6 +300,9 @@ CHG (authorize)
     4. Bump document_control.version to 2.0
   → Phase 1: IPLAN Creation/Update (phase: iplan_creation) — AFTER SDD docs exist
     5. Create or update IPLAN with ALL code implementation steps
+  → Phase 2: Documentation Sync (phase: documentation_sync) — execution zone,
+     AFTER all sdd_lifecycle steps; doc-only milestones only, never an IPLAN
+     substitute (CHG-L004 still requires an IPLAN reference)
   → Code implementation (from IPLAN) — NEVER in CHG
 ```
 
@@ -269,7 +330,7 @@ of the artifact cascade gates. The workflow:
 4. **Bump VERSION** — `framework/VERSION` follows SemVer
 5. **Update CHANGELOG.md** — document-of-record for spec changes (E008)
 6. **Record decision** — add GD entry to `DECISIONS.md` if significant
-7. **Both platforms re-declare** — `FRAMEWORK_SPEC_VERSION` + conformance green
+7. **Re-declare spec-version pins** — `sync-version-refs` clean + conformance green
 
 CHG records for framework self-changes live in `archive/{CHG-ID}/CHG-{NN}.yaml`
 alongside the archived originals. The CHG `supersedes` field lists every
@@ -280,12 +341,12 @@ modified file with its archive path.
 | Term | Definition |
 |------|-----------|
 | CHG | Change Record — governance document for SDD artifact modifications |
-| C1 | Trivial change — typo, formatting, clarification (no gate) |
+| C1 | Trivial change — typo, formatting, clarification (C1 CHG + scoped IPLAN, GATE-CODE) |
 | C2 | Minor change — section update, refinement (peer review) |
 | C3 | Major change — cross-layer, new requirements (formal gate) |
 | Emergency | Critical production fix — bypass normal process, post-mortem within 48h |
 | Gate | Approval checkpoint — GATE-01 (business), GATE-03 (requirements/architecture), GATE-06 (design/test), GATE-08 (IPLAN), GATE-CODE (implementation), GATE-SPEC (framework-spec change — meta) |
-| Layer L1-L10 | SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL |
+| Layer L1-L8, L10 (+ CHG 09) | Lifecycle layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L10=EVAL. CHG occupies the 09 operational namespace as a governance overlay — not a lifecycle layer (GD-01). |
 
 ## Files
 
@@ -299,6 +360,6 @@ modified file with its archive path.
 
 ## Cross-References
 
-- `framework/governance/DOC_GOVERNANCE_CORE.md` — Core governance including CHG rules (§CHG Rules)
+- `framework/governance/DOC_GOVERNANCE_CORE.md` — Core governance including CHG rules (§3.4 CHG creation checklist)
 - `framework/governance/DECISIONS.md` — Durable governance decisions (GD-01: CHG as overlay)
 - `docs/sdd/09-CHG/` — Project-level CHG instance documents and archive

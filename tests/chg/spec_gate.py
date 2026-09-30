@@ -5,7 +5,14 @@ Enforces the two GATE-SPEC error codes that can only be judged from a change
 set (a PR / push diff), not from a static snapshot:
 
   GATE-SPEC-E005  framework/VERSION must change when any framework/** changes
+                    (outside the frozen archive tier — see below)
   GATE-SPEC-E008  CHANGELOG.md must be updated alongside a framework/** change
+                    (outside the frozen archive tier — see below)
+
+Archive tier: edits confined to ``framework/archive/**`` repair frozen history,
+not the normative spec, so they are not spec changes and carry no
+VERSION/CHANGELOG obligation (#725). A change set that touches normative
+``framework/`` files alongside archive files is still a spec change.
 
 The record-level checks (E001–E004) are the gate-check skill's / a platform's
 record validator's job; the static conformance checks (E006 FRAMEWORK_SPEC_VERSION
@@ -43,6 +50,11 @@ CODES = {
     "GATE-SPEC-E008": "CHANGELOG.md must be updated alongside a framework/** change",
 }
 
+# Frozen history tier: repairing a dangling citation inside an already-archived
+# CHG mints no new framework version (#725). Edits confined here are not spec
+# changes, so they carry no VERSION/CHANGELOG obligation on their own.
+ARCHIVE_PREFIX = "framework/archive/"
+
 
 def _git(*args: str) -> tuple[int, str]:
     proc = subprocess.run(
@@ -75,10 +87,18 @@ def changed_files(base: str) -> list[str]:
     return [line for line in out.splitlines() if line]
 
 
+def is_spec_change(files: list[str]) -> bool:
+    """True when the change set touches normative framework/ files.
+
+    Edits confined to ``framework/archive/**`` repair frozen history, not the
+    normative spec, so they are not spec changes (#725).
+    """
+    return any(f.startswith("framework/") and not f.startswith(ARCHIVE_PREFIX) for f in files)
+
+
 def evaluate(files: list[str]) -> list[str]:
     """Return the list of failing GATE-SPEC codes for this change set."""
-    touched_framework = any(f.startswith("framework/") for f in files)
-    if not touched_framework:
+    if not is_spec_change(files):
         return []
 
     failures = []
@@ -107,8 +127,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"GATE-SPEC: {exc}", file=sys.stderr)
         return 2
 
-    if not any(f.startswith("framework/") for f in files):
-        print(f"GATE-SPEC: no framework/ changes vs {base} — not a spec change, OK.")
+    if not is_spec_change(files):
+        print(f"GATE-SPEC: no normative framework/ changes vs {base} — not a spec change, OK.")
         return 0
 
     failures = evaluate(files)

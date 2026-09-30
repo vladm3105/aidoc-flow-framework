@@ -1,7 +1,7 @@
 """Unit: the pin-currency reader's parse and reconcile scripts.
 
-Covers `scripts/read-pin-currency-log.sh` and
-`scripts/reconcile-pin-currency-issue.sh` (PIN-CURRENCY-NO-READER).
+Covers `hooks/read-pin-currency-log.sh` and
+`hooks/reconcile-pin-currency-issue.sh` (PIN-CURRENCY-NO-READER).
 
 Neither script may need network, `gh` or auth: this module is loaded into the
 conformance suite by `tests/conformance/test_repo_scripts.py`, and that suite
@@ -25,10 +25,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
-READ = REPO_ROOT / "scripts" / "read-pin-currency-log.sh"
-RECONCILE = REPO_ROOT / "scripts" / "reconcile-pin-currency-issue.sh"
+READ = REPO_ROOT / "hooks" / "read-pin-currency-log.sh"
+RECONCILE = REPO_ROOT / "hooks" / "reconcile-pin-currency-issue.sh"
 
 TITLE = "CI canon drift — stale @ci/v* pins"
+
+# Restored under hooks/ by #710 (were root scripts/, deleted in 0af49fac).
+_HAS_PIN_SCRIPTS = READ.exists() and RECONCILE.exists()
+_NEEDS_PIN_SCRIPTS = (
+    "#710: hooks/read-pin-currency-log.sh + hooks/reconcile-pin-currency-issue.sh missing"
+)
 
 # The ten callers the measured run reported stale, in the parser's sorted form.
 STALE_SET = ",".join(
@@ -99,6 +105,7 @@ def parse_kv(stdout: str) -> dict[str, str]:
     return out
 
 
+@unittest.skipIf(not _HAS_PIN_SCRIPTS, _NEEDS_PIN_SCRIPTS)
 class ParseLogTests(unittest.TestCase):
     """Eight cases: four verdicts that exit 0, four shapes that must exit non-zero."""
 
@@ -198,6 +205,7 @@ class ParseLogTests(unittest.TestCase):
         self.assertIn("malformed", result.stderr)
 
 
+@unittest.skipIf(not _HAS_PIN_SCRIPTS, _NEEDS_PIN_SCRIPTS)
 class ReconcileIssueTests(unittest.TestCase):
     """Ten cases: six reconciliation scenarios, the label fallback, and three
     that assert generated body CONTENT rather than the call sequence."""

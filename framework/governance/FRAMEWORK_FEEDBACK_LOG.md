@@ -4,82 +4,37 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 2.0 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
-
-> Codifies the two-tier feedback pipeline introduced by
-> `DOC_GOVERNANCE_CORE.md` Principle 9 (example-driven / project-driven
-> framework improvement).
+> v2.0 (0.67.0, CHG-23): Tier-1 consumer-project log retired — no operator
+> since the example corpus was removed and consumer platforms archived; the
+> issue tracker is the single capture surface. Filing discipline and the
+> open-items surface are unchanged.
 
 ## Why this exists
 
-Examples are the system-under-test (see [`AIDOC.md`](aidoc/AIDOC.md) — the
-seed examples double as acceptance tests). Every consumer
-project applying the framework is an additional empirical test of the
-spec. Friction discovered during use — lint-rule misfires, harness
-flag absences, engine prose that contradicts the spec, sync-script
-gotchas, missing convenience features — is **new knowledge about the
-framework itself**. Without a deliberate capture mechanism, that
-knowledge evaporates between sessions and each new project
-rediscovers the same pain.
+Every project applying the framework is an empirical test of the spec.
+Friction discovered during use — lint-rule misfires, harness flag absences,
+engine prose that contradicts the spec, sync-script gotchas, missing
+convenience features — is **new knowledge about the framework itself**.
+Without a deliberate capture mechanism, that knowledge evaporates between
+sessions and each new project rediscovers the same pain.
 
-## Two-tier pipeline
-
-### Tier 1 — Consumer project: `framework-feedback-log.md`
-
-**Who owns it:** the team building a project that uses the framework.
-
-**Where it lives:** at the consumer project's root (alongside
-`README.md` / `CLAUDE.md` / `plans/`). One log per project.
-
-**What it records:** every framework friction the project hits while
-applying the framework. Examples (non-exhaustive):
-
-- A lint rule fires on an artifact that semantically should pass
-- A harness flag is missing for a workflow the project needed
-- An engine's prose contradicts the current spec
-- A sync script's behavior is unexpected (silent overwrite, wrong
-  direction, missing target)
-- A template field has unclear semantics
-- An auditor playbook lens scores the project's artifact in a way that
-  doesn't reflect the spec's intent
-- A workflow gap (e.g., no fixer for a class of finding) forces the
-  project to either bypass or hand-edit (the latter being forbidden —
-  never hand-edit example artifacts — so the gap itself
-  goes in the feedback log)
-
-**Update cadence:** inline as discovered, the moment friction surfaces.
-No "later PR" — the entry IS the capture moment. Same discipline as
-the framework-side TODO (see Tier 2 below).
-
-**Surfacing upstream:** periodically (per release, per milestone, or on
-demand) the project owner reviews their `framework-feedback-log.md`
-and surfaces actionable entries back to the framework via PR or
-upstream issue on the framework repository's issue tracker. Stale, project-specific, or
-already-resolved entries can be archived locally without surfacing.
-
-### Tier 2 — Framework repo: GitHub issue tracker
+## The surface: GitHub issue tracker
 
 **Who owns it:** the framework maintainer.
 
 **Where it lives:** on the framework repository's issue tracker.
 
-**What it records:** the framework's own backlog, sourced from:
-
-- The framework team's own example-driven testing (cascading against
-  `examples/<NAME>/` corpora — the canonical acceptance tests).
-- Surfaced items from consumer-project `framework-feedback-log.md`
-  files when they bubble up via PR / issue / explicit submission.
-
 **Lifecycle:** issues are triaged → designed in a formal
 `plans/<NAME>-PLAN.md` when large enough to design → shipped as PRs.
 Merged PRs close issues with `Closes #N`.
 
-### Tier 2: capture and publication on the tracker
+### Capture and publication on the tracker
 
 The people and agents a gap affects — consumer projects, other maintainers, a future
 contributor — need visible tracking. Backlog capture and publication are unified
@@ -106,7 +61,7 @@ repo are a separate obligation — they get an issue on the owning repo,
 because the fix belongs in that repo's files and recording it here would
 reach nobody who can act on it.
 
-## Entry format (both tiers)
+## Entry format
 
 One bullet per issue, ≤ 3 lines:
 
@@ -119,14 +74,11 @@ One bullet per issue, ≤ 3 lines:
 Tags (non-exhaustive — use what fits):
 
 - `[lint]` — `sdd_doc_lint` rule misfire / gap
-- `[harness]` — `tests/scripts/test-acceptance.sh` or cascade flow
 - `[skill]` — an engine capability/prompt contradicts the spec
 - `[template]` — a layer template field is wrong / unclear
 - `[sync]` — a sync script behaviour is unexpected
 - `[plan-review]` — plan-review process / verified-planning skill gap
 - `[docs]` — framework documentation gap
-- `[platform-parity]` — parity gap deferred from a change in one platform implementation
-- `[example-corpus]` — issue with an `examples/<NAME>/` corpus
 - `[governance]` — issue with a governance doc / principle
 
 ## Don't double-track / don't gold-plate
@@ -138,22 +90,26 @@ Tags (non-exhaustive — use what fits):
 - An entry without a clear *Context* or *Fix shape* is incomplete and
   will be hard to triage. Spend the 30 seconds to capture both.
 
-## Template for consumer projects
+## Recorded upstream threads
 
-A scaffold for the project-side `framework-feedback-log.md` ships at
-[`../templates/framework-feedback-log.template.md`](../templates/framework-feedback-log.template.md).
-Projects copy that template into their root + start logging.
+Upstream issue references recorded here so a future session finds the
+thread instead of rediscovering the defect as a fresh bug
+(SELF_LEARNING.md §7.4 step 3). Session-start duty: review the open
+threads below before planning work (§7.4 step 4).
+
+| Thread | Status |
+|--------|--------|
+| CHG-23 vehicle (Tier-1 retirement + worktree-mandate, 0.67.0) | In progress |
 
 ## Relationship to other governance docs
 
-- **Principle 8 (Change-of-record discipline):** the feedback log is a
-  *doc-of-record* in any project that maintains one. Updates to it
-  follow the same in-PR discipline.
+- **Principle 8 (Change-of-record discipline):** upstream threads recorded
+  here follow the same in-PR discipline.
 - **`REVIEW_TEAM.md`:** auditor findings that surface framework gaps
-  (vs. artifact gaps) belong in the feedback log, not just the audit
-  report. The audit report flags the artifact; the feedback log flags
+  (vs. artifact gaps) belong on the tracker, not just the audit
+  report. The audit report flags the artifact; the tracker flags
   the framework.
 - **`DECISIONS.md`:** non-obvious decisions made while addressing a
-  feedback entry get an ISO-stamped decision record. The feedback
-  entry references the decision; the decision rationale lives in
+  feedback entry get an ISO-stamped decision record. The tracker entry
+  references the decision; the decision rationale lives in
   `DECISIONS.md`.

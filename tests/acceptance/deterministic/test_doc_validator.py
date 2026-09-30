@@ -10,37 +10,20 @@ therefore the one that demonstrates doc-validator's "find structural breakage"
 surface.
 """
 
-import json
-import subprocess
 import sys
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import FIXTURES_ROOT
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "conformance"))
-from _spec import plugin_bundle_root
+from _harness import FIXTURES_ROOT, run_lint
 
 
 class DocValidatorTests(unittest.TestCase):
     def test_lint_emits_struct01_on_layer_1_broken_fixture(self):
         broken = FIXTURES_ROOT / "layer_01_brd" / "broken"
         self.assertTrue(broken.is_dir(), "layer_01_brd/broken fixture missing")
-        result = subprocess.run(
-            [sys.executable, "-m", "sdd_doc_lint", str(broken), "--format=json"],
-            env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertIn(
-            result.returncode, (0, 1), f"sdd_doc_lint exit {result.returncode}\n{result.stderr}"
-        )
-        try:
-            findings = json.loads(result.stdout or "[]")
-        except json.JSONDecodeError:
-            self.fail(f"sdd_doc_lint did not emit valid JSON:\n{result.stdout}")
+        rc, findings = run_lint(broken)
+        self.assertIn(rc, (0, 1), f"sdd_doc_lint exit {rc}")
         codes = {f["code"] for f in findings}
         self.assertIn(
             "STRUCT01",
@@ -71,19 +54,11 @@ class DocValidatorTests(unittest.TestCase):
         received its `doc_id` and closing fences in `f128af41`, NOT in PR #580 —
         that PR (issue #478) repaired the three per-layer copies and touched no
         `golden_chain` file. PR #579 (issue #577) re-authored §7 on the golden
-        side only. Repairing broken_chain's three fences is tracked on #636;
-        update this docstring when it lands.
+        side only. The three broken_chain fences have since been repaired (#636).
         """
         broken_chain = FIXTURES_ROOT / "fullpath" / "broken_chain"
         if not broken_chain.is_dir():
             self.skipTest("broken_chain fixture not present")
-        result = subprocess.run(
-            [sys.executable, "-m", "sdd_doc_lint", str(broken_chain), "--format=json"],
-            env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        # Should run successfully and produce parseable JSON.
-        self.assertIn(result.returncode, (0, 1))
-        json.loads(result.stdout or "[]")  # must parse
+        rc, _ = run_lint(broken_chain)
+        # Should run successfully and produce parseable findings.
+        self.assertIn(rc, (0, 1))

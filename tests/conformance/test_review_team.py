@@ -25,10 +25,6 @@ CREWS = FRAMEWORK / "governance" / "REVIEW_CREWS.yaml"
 MODES = {"independent", "sequential", "single_pass"}
 
 REPO_ROOT = FRAMEWORK.parent
-PLUGIN_AGENTS = REPO_ROOT / "platforms" / "claude-code-plugin" / "agents"
-REVIEW_TEAM_SKILL = (
-    REPO_ROOT / "platforms" / "claude-code-plugin" / "skills" / "review-team" / "SKILL.md"
-)
 
 
 def _parse_weight_table(path: Path, lens_name: str) -> dict[str, int]:
@@ -139,58 +135,21 @@ class ReviewCrews(unittest.TestCase):
                     )
 
     def test_lens_to_agent_mapping_has_both_new_rows(self):
-        text = REVIEW_TEAM_SKILL.read_text(encoding="utf-8")
-        for row in (
-            # PREPROD-L7-BARE-DISPATCH (#417): dispatch references are scoped.
-            "| `chaos_engineer` | `aidoc-flow:chaos-engineer` |",
-            "| `security_engineer` | `aidoc-flow:security-engineer` |",
-        ):
-            self.assertIn(
-                row,
-                text,
-                f"D-0030: review-team/SKILL.md must declare mapping row: {row}",
-            )
-        self.assertNotIn(
-            "| `adversary` |",
-            text,
-            "D-0030: legacy `adversary` mapping row must be removed",
+        """Retired with the platforms (CLEANUP-001): the skill tree is gone.
+        The crew-shape invariant lives in test_each_crew_is_well_formed above."""
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the mapping-row scan with it",
         )
 
     def test_agent_brief_weights_match_review_crews(self):
-        """Cross-place consistency: agent briefs' per-layer tables match REVIEW_CREWS.yaml.
-
-        This is the load-bearing rationale-propagation check (Pass 4 of the
-        CHAOS-SEC-SPLIT-001 plan). REVIEW_CREWS.yaml is the single source of
-        truth; the briefs read it. If a future edit changes one without the
-        other, this test fails.
-        """
-        chaos_weights = _parse_weight_table(PLUGIN_AGENTS / "chaos-engineer.md", "chaos_engineer")
-        security_weights = _parse_weight_table(
-            PLUGIN_AGENTS / "security-engineer.md", "security_engineer"
+        """Retired with the platforms (CLEANUP-001): the agent briefs are gone.
+        REVIEW_CREWS.yaml remains the single source of truth; the weight-sum
+        invariant lives in test_each_crew_weights_sum_to_100."""
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the brief-weight scan with it",
         )
-        for layer, crew in self.crews.items():
-            review = crew["review"]
-            with self.subTest(layer=layer, lens="chaos_engineer"):
-                expected = review.get("chaos_engineer")
-                self.assertIsNotNone(
-                    expected,
-                    f"{layer}: chaos_engineer weight missing in REVIEW_CREWS.yaml",
-                )
-                self.assertEqual(
-                    chaos_weights.get(layer),
-                    expected,
-                    f"D-0030: chaos-engineer.md {layer} weight ({chaos_weights.get(layer)!r}) "
-                    f"!= REVIEW_CREWS.yaml ({expected})",
-                )
-            if layer != "IPLAN":
-                with self.subTest(layer=layer, lens="security_engineer"):
-                    expected = review.get("security_engineer")
-                    self.assertEqual(
-                        security_weights.get(layer),
-                        expected,
-                        f"D-0030: security-engineer.md {layer} weight "
-                        f"({security_weights.get(layer)!r}) != REVIEW_CREWS.yaml ({expected})",
-                    )
 
 
 if __name__ == "__main__":

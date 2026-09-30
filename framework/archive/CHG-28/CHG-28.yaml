@@ -1,0 +1,146 @@
+# =============================================================================
+#  CHG-28: Root-log [0.68.0] section — relocate stranded 0.68.0 entry
+#  (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request via release review, no prior IPLAN, no
+#  product-behavior change — Keep-a-Changelog section relocation, content
+#  unchanged) — docs-only non-normative C1: C1 CHG + scoped IPLAN per F2.2;
+#  entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-28/IPLAN-28.yaml (goes In Progress on approval;
+#  no code before that per §3.13).
+#  Requester citation: preprod-review lens 3 F2 / lens 5 F4 on the 0.68.1
+#  release review (2026-09-30): project CHANGELOG.md holds the released
+#  0.68.0 entry under [Unreleased] while framework/CHANGELOG.md cuts a
+#  proper [0.68.0] section — the project log must mirror each framework spec
+#  release (Scope #687). Precedent: CHG-24 #806 (stranded-entry relocation,
+#  content unchanged).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — prose relocation only, no code/scripts, no normative text (the
+#  entry wording is byte-untouched), no contract change.
+#  EARS/BDD IDs vacuous (upstream is the lens findings + Scope #687).
+#  SECURITY_REVIEW: assessed — no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: pure-prose files N/A with reason (F2.3) — prose carrying
+#  no executable contract; full suites run as regression battery in IPLAN-28.
+#  Out of scope: entry rewording (byte-untouched move only), framework/
+#  CHANGELOG.md (already correct), TAGGING.md census refresh (filed as #822,
+#  figures re-derived only after the 25-tag push), any F3 cascade or SDD
+#  rewrite (none — version keep, no framework/ files touched).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-28
+title: "Relocate stranded 0.68.0 entry to root-log [0.68.0] section (docs-only C1)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-28"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-28 authorizing record (framework/archive/CHG-28/IPLAN-28.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Give root CHANGELOG.md its missing [0.68.0] section by relocating the stranded 0.68.0 entry out of [Unreleased] (content unchanged); the [Unreleased] pre-prod-review batch entries stay (no version change, per CHG-25)."
+  why: "The project log must mirror each framework spec release (Scope #687); framework/CHANGELOG.md cuts [0.68.0] while the project log strands it under [Unreleased]. Preprod-review lenses 3/5 flagged it on the 0.68.1 release review."
+  trigger: "Preprod-review SHIP-WITH-FIXES (lens 3 F2 / lens 5 F4), 2026-09-30 release thread."
+  scope:
+    in:
+      - "CHANGELOG.md: new ## [0.68.0] section (entry moved byte-untouched from [Unreleased])"
+      - "framework/archive/CHG-28/CHG-28.yaml + IPLAN-28.yaml (this vehicle)"
+    out:
+      - "Entry rewording (move only, CHG-24 #806 precedent)"
+      - "framework/CHANGELOG.md (already correct)"
+      - "TAGGING.md census refresh (filed as #822 — post-tag-cut only)"
+      - "Any F3 cascade or SDD rewrite (none — version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-28 with manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-28"
+      status: Completed
+    - step: "Relocate 0.68.0 entry to new [0.68.0] section (content unchanged)"
+      phase: "documentation_sync"
+      artifact: "CHANGELOG.md"
+      status: In-Progress
+    - step: "Run IPLAN-28 battery (chg_lint + suites) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-28-root-log-0680 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-28/CHG-28.yaml"
+    - "framework/archive/CHG-28/IPLAN-28.yaml"
+    - "CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-28"
+    changes: "Authorizing record for root-log [0.68.0] relocation (this file)"
+  - id: "IPLAN-28"
+    changes: "Authorizing IPLAN (framework/archive/CHG-28/IPLAN-28.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-28 (0 errors)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-28-root-log-0680 → dev"

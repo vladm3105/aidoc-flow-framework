@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "sdd-lifecycle": {
-      "command": "/path/to/python",
-      "args": ["-m", "mcp_server.server"],
-      "cwd": "/path/to/aidoc-flow-framework/platforms/hermes/src"
-    }
-  }
-}

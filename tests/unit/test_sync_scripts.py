@@ -1,85 +1,84 @@
-"""Unit: sync scripts are idempotent and produce byte-identical bundles."""
+"""Unit: hooks/sync-version-refs.sh propagates pins and is idempotent (#688).
 
-import hashlib
+The hook rewrites version strings across the tree and re-stages (`git add
+-u`), so running it against the real checkout is refused on a dirty tree —
+and any agent session dirties the tree by construction. These tests instead
+run a COPY of the script against a fixture tree (VERSION + two probe files
+carrying one swept form each), which exercises the real counted-replacement
+machinery without touching the working tree and without any skip.
+"""
+
+import re
+import shutil
 import subprocess
-import sys
+import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
-from _spec import FRAMEWORK, REPO_ROOT, plugin_bundle_root
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SYNC = REPO_ROOT / "hooks" / "sync-version-refs.sh"
+VERSION_FILE = REPO_ROOT / "framework" / "VERSION"
 
 
-def hash_tree(root: Path) -> dict[str, str]:
-    """Return {relative-path: sha256-hex} for every file under root."""
-    out = {}
-    for path in sorted(root.rglob("*")):
-        if path.is_file():
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
-            out[str(path.relative_to(root))] = digest
-    return out
+def _old_versions() -> list[str]:
+    """The script's OLD_VERSIONS list, in order."""
+    match = re.search(r'^OLD_VERSIONS="([^"]+)"', SYNC.read_text(encoding="utf-8"), re.MULTILINE)
+    assert match, "sync-version-refs.sh carries no OLD_VERSIONS list"
+    return match.group(1).split()
 
 
-class SyncScriptIdempotencyTests(unittest.TestCase):
-    def _find_sync(self, *candidates: Path) -> Path | None:
-        for c in candidates:
-            if c.exists():
-                return c
-        return None
+def _fixture(current: str, stale: str) -> Path:
+    """A mini-tree the hook can sweep: VERSION + one doc-control row + one
+    metadata pin, both stale."""
+    tmp = Path(tempfile.mkdtemp(prefix="syncfix-"))
+    (tmp / "framework").mkdir()
+    (tmp / "framework" / "VERSION").write_text(current + "\n", encoding="utf-8")
+    (tmp / "framework" / "probe.md").write_text(
+        f"| Framework Version | {stale} |\n", encoding="utf-8"
+    )
+    (tmp / "framework" / "governance").mkdir()
+    (tmp / "framework" / "governance" / "probe.yaml").write_text(
+        f'framework_version: "{stale}"\n', encoding="utf-8"
+    )
+    (tmp / "hooks").mkdir()
+    shutil.copy(SYNC, tmp / "hooks" / "sync-version-refs.sh")
+    return tmp
 
-    def test_sync_plugin_framework_is_idempotent(self):
-        sync = self._find_sync(
-            FRAMEWORK / "tools" / "sync-plugin-framework.sh",
-            REPO_ROOT / "tools" / "sync-plugin-framework.sh",
-        )
-        if sync is None:
-            self.skipTest("sync-plugin-framework.sh not present")
 
-        target = plugin_bundle_root() / "framework"
-        before = hash_tree(target)
-        result = subprocess.run(
-            ["bash", str(sync)],
-            cwd=FRAMEWORK,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertEqual(
-            result.returncode,
-            0,
-            f"sync-plugin-framework exited {result.returncode}:\n{result.stderr}",
-        )
-        after = hash_tree(target)
-        diff = {
-            k: (before.get(k), after.get(k))
-            for k in set(before) | set(after)
-            if before.get(k) != after.get(k)
-        }
-        self.assertFalse(
-            diff, f"sync-plugin-framework.sh not idempotent: {len(diff)} file(s) changed"
-        )
+def _run(fixture: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["bash", str(fixture / "hooks" / "sync-version-refs.sh")],
+        cwd=fixture,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
-    def test_sdd_doc_lint_vendored_sync_is_idempotent(self):
-        sync = self._find_sync(
-            FRAMEWORK / "tools" / "sdd_doc_lint" / "sync-vendored.sh",
-            REPO_ROOT / "tools" / "sdd_doc_lint" / "sync-vendored.sh",
+
+class SyncVersionRefsTests(unittest.TestCase):
+    def test_sync_propagates_stale_pins(self):
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        result = _run(fixture)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        md = (fixture / "framework" / "probe.md").read_text(encoding="utf-8")
+        yaml_text = (fixture / "framework" / "governance" / "probe.yaml").read_text(
+            encoding="utf-8"
         )
-        if sync is None:
-            self.skipTest("sdd_doc_lint/sync-vendored.sh not present")
-        bundle_lint = plugin_bundle_root() / "sdd_doc_lint"
-        before = hash_tree(bundle_lint)
-        result = subprocess.run(
-            ["bash", str(sync)],
-            cwd=FRAMEWORK,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertEqual(
-            result.returncode, 0, f"sync-vendored exited {result.returncode}:\n{result.stderr}"
-        )
-        after = hash_tree(bundle_lint)
-        self.assertEqual(before, after, "sdd_doc_lint vendored sync not idempotent")
+        self.assertIn(f"| Framework Version | {current} |", md)
+        self.assertIn(f'framework_version: "{current}"', yaml_text)
+
+    def test_sync_is_idempotent(self):
+        """A second consecutive run replaces nothing (no 'replaced' lines)."""
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        first = _run(fixture)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        second = _run(fixture)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertNotIn("replaced", second.stdout)
 
 
 if __name__ == "__main__":

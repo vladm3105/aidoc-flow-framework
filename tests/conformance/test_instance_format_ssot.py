@@ -66,6 +66,9 @@ def scan_violations(*, exempt_index: bool = True, exempt_decisions: bool = True)
         if not path.is_file() or path.suffix not in (".md", ".yaml"):
             continue
         rel = path.relative_to(FRAMEWORK).as_posix()
+        # Frozen spec-history snapshots are not the live contract (CLEANUP-001).
+        if rel.startswith("archive/"):
+            continue
         if exempt_decisions and rel in _EXEMPT_FILES:
             continue
         for lineno, line in enumerate(path.read_text("utf-8").splitlines(), 1):
@@ -102,15 +105,17 @@ class InstanceFormatSingleSource(unittest.TestCase):
     def test_index_exemption_is_mention_level_not_file_level(self):
         """Mutation guard for exemption 1.
 
-        Removing it must surface the nine sanctioned index mentions. Seven sit inside index
-        files and two do not, so a count of seven would mean a file-level exemption had been
-        substituted -- the defect this test exists to prevent.
+        Removing it must surface the sanctioned index mentions (13 as of
+        CLEANUP-001: seven in index files plus six outside — the count grows
+        with the layer set, so re-measure deliberately rather than copying).
+        A file-level exemption would catch only those inside index files and
+        false-positive on the rest — the defect this test exists to prevent.
         """
         without = scan_violations(exempt_index=False)
         baseline = scan_violations()
         surfaced = len(without) - len(baseline)
         self.assertEqual(
-            9,
+            13,
             surfaced,
             "removing the index exemption should surface exactly 9 sanctioned index mentions "
             f"(7 inside index files + 2 outside); got {surfaced}. A result of 7 means the "

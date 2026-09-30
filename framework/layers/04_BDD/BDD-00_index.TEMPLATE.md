@@ -49,7 +49,7 @@ The authoritative per-layer value is `extensions` in
 normative source (GD-17). This section states the value; it does not re-specify it.
 
 **Template** (default): [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
-**MVP skeleton**: [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) — not standalone
+**MVP skeleton**: retired — [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) is a tombstone pointer to the canonical template (CHG-08 #666)
 
 ---
 
@@ -150,7 +150,7 @@ element-level `@bdd: BDD.NN.SS.xxxx` tags.
 ## Related Documents
 
 - **Template** (default): [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
-- **MVP skeleton**: [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) — not standalone
+- **MVP skeleton**: retired — [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) is a tombstone pointer to the canonical template (CHG-08 #666)
 - **README**: [README.md](./README.md) — BDD purpose, structure, and best practices
 - **Upstream**: [03_EARS](../03_EARS/) — Formal requirements
 - **Downstream**: [05_ADR](../05_ADR/) — Architecture decisions

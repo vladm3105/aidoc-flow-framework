@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 > **Position**: Between execution planning and Code (source code implementation)
@@ -48,6 +48,7 @@ IPLAN (L8) provides the execution plan: file manifest, creation order, session h
 
 - **Implementation**: Code development per IPLAN
 - **Feedback**: Production incidents, user-reported defects, performance issues
+- **Reconciliation (Type-R §3.1.2)**: Verified codebase propagating backward to a reverse-authored IPLAN and upstream SDD layers — entry requires frozen change set with green verification gates; Emergency-qualifying work stays on the Emergency path
 - **Cascade**: Implementation of upstream changes (GATE-01/03/06/08 passed)
 
 ## 2. Entry Criteria
@@ -75,6 +76,8 @@ Before entering GATE-CODE, the change request must satisfy:
 - [ ] If defect: linked to issue tracker
 - [ ] If cascade: upstream gates confirmed
 - [ ] If hotfix: emergency flag set
+- [ ] If migration: fresh-rebuild + live-DB apply dry-run scoped (fmt/lint alone insufficient)
+- [ ] If post-completion defect: scoped bugfix IPLAN parents the repair (never IPLAN/tmp/)
 ```
 
 ## 3. Validation Checklist
@@ -192,6 +195,16 @@ When root cause is upstream:
 4. **Cascade resolution**: Author and approve the upstream fix through the normal cascade down to Code.
 5. **Resume current CHG**: Unblock and verify the implementation change once the upstream CHG is ratified.
 
+### 6.3 Reconciliation (Type-R) Routing
+
+A `change_source: reconciliation` CHG enters here with the codebase as ground
+truth. The flow differs from bubble-up in one respect: the reverse-authored
+IPLAN is created FIRST (Phase 1, from the frozen manifest), and the upstream
+doc updates follow it (Phase 2, TDD → SPEC → BDD → EARS). Guardrails from
+§3.1.2 apply: gates green before propagation, freeze holds, no new
+unverified code mid-reconciliation. Where an upstream layer needs a design
+decision (not just transcription), mint the dependent CHG per §6.2.
+
 ## 7. Error Catalog
 
 ### 7.1 GATE-CODE Error Codes
@@ -242,6 +255,7 @@ When root cause is upstream:
 | BDD doesn't match EARS | Requirements issue | GATE-03 |
 | Business rule is wrong | Business issue | GATE-01 |
 | IPLAN order is wrong | Execution issue | GATE-08 |
+| Closed IPLAN output is defective | Repair vehicle (C1) | Scoped bugfix IPLAN → GATE-08 |
 
 ### 8.2 Performance Fix Checklist
 

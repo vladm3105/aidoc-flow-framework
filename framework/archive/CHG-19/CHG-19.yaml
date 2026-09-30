@@ -1,0 +1,131 @@
+# =============================================================================
+#  CHG-19: stale examples/ + deleted-script references cleanup (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (normative-text C1: AGENTS.md working-agreement bullet +
+#  fixture README authoring guidance; no SDD contract at stake, no behavior
+#  change) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-19/IPLAN-19.yaml (authorizing once In Progress)
+#  Issue: #793 (regression of #719; verified live 2026-09-29 on dev @ d2baff98:
+#  git ls-files examples/ = 0 files, tests/scripts/test-acceptance.sh absent)
+#  Requester citation (F2.3, verbatim ask): "implement the #793
+#  stale-reference cleanup now"
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — prose-only edit, no runtime code, no queries/migrations/structs;
+#  EARS/BDD IDs vacuous (upstream is issue #793; no element IDs cited);
+#  coupled-issue scan: #719 (closed predecessor — recurrence ships as #793),
+#  #794 (chg_lint CLI, separate file, ships alone). Covering tests: N/A with
+#  reason — no code files touched (prose only); verification commands in
+#  IPLAN-19 suffice per F2.3.
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG
+#  (CHG-15 precedent: prose-only vehicle, no version impact).
+# =============================================================================
+
+id: CHG-19
+title: "Remove stale examples/ + deleted test-acceptance.sh pointers from AGENTS.md and negative-fixture README (issue #793)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-19"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-19 authorizing record (framework/archive/CHG-19/IPLAN-19.yaml)"
+  # NOTE: AGENTS.md + fixture README are amended in place (working-agreement
+  # and guidance prose, no archive rotation); only the vehicle record is
+  # superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Rewrite AGENTS.md:80-85 (Never hand-edit example artifacts) to past tense — example corpus retired, tree absent, resurrection forbidden by conformance tripwire — and rewrite tests/acceptance/fixtures/negative/README.md stale pointers (test-acceptance.sh Phase 1.2 present-tense use, examples/<NAME>/negative-fixtures/ path, Phase 1.2 loop step) against the retired methodology."
+  why: "The single working agreement sends every new agent session to remediate files that cannot exist, and the fixture authoring guide carries an unactionable step. #719 reported this class; the pointers survived its closure (#793)."
+  trigger: "Issue #793 (regression of #719), user request 2026-09-29."
+  scope:
+    in:
+      - "AGENTS.md:80-85: examples/ bullet → retired-note (past tense, tripwire citation)"
+      - "tests/acceptance/fixtures/negative/README.md:3-10,53-54: retired-methodology past tense + actionable local verification step"
+    out:
+      - "Resurrecting examples/ (explicitly forbidden — test_coverage_engine.py:41-47 tripwire)"
+      - "tests/README.md (already correct), docs/TAGGING.md (historical log), test-acceptance.schema.json (artifact schema)"
+      - "Any framework/ normative change (none — prose only, version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-19 with the two-file prose edit + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-19"
+      status: Completed
+    - step: "Edit AGENTS.md + negative/README.md per scope + run IPLAN-19 battery"
+      phase: "documentation_sync"
+      artifact: "prose docs"
+      status: Completed
+  files_modified:
+    - "AGENTS.md"
+    - "tests/acceptance/fixtures/negative/README.md"
+
+artifacts_modified:
+  - id: "CHG-19"
+    changes: "Authorizing record for #793 stale-reference cleanup (this file)"
+  - id: "IPLAN-19"
+    changes: "Authorizing IPLAN (framework/archive/CHG-19/IPLAN-19.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-19 (0 errors)"
+    - "grep battery: no present-tense examples/<NAME> pointers in AGENTS.md; test-acceptance.sh in negative/README.md only in retired-methodology context"
+    - "sdd_doc_lint/tests green (baseline 202 OK pre-change)"

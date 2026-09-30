@@ -20,12 +20,10 @@ fixture would have been born untestable and green.
 
 from __future__ import annotations
 
-import sys
 import unittest
 
 from _spec import REPO_ROOT
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import (  # noqa: E402
     FR_CAP,
     _check_fr_cap,

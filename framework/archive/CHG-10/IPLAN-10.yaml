@@ -1,0 +1,139 @@
+# =============================================================================
+#  IPLAN-10: Implement modules-first F3 extension + MINOR bump 0.59.2 → 0.60.0
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-10/CHG-10.yaml (F3/spec, C2, Approved)
+#  Pilot: /tmp/chg41-pilot/CHG-41_modules_first_exporter_health.yaml (F3 shape proven)
+#  Phase-0 docs (flows F3 §4 + table, kernel §3.1.1/row, GOV-020 text, both
+#  templates §4A/4B, both README pointers, GD-35) already landed in the worktree
+#  under CHG-10. This IPLAN owns the tooling + test + fanout remainder.
+# =============================================================================
+
+doc_id: IPLAN-10
+title: "Implement modules-first F3 extension + MINOR bump 0.59.2 → 0.60.0"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-23"
+  framework_version: "0.59.2"
+  source_chg: "CHG-10"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-10"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-10; no SPEC component)"
+  status: Implemented
+  version: "1.0"
+  date_created: "2026-09-23T00:00:00Z"
+  last_updated: "2026-09-23T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 3
+  estimated_files: 8
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "GOV-020 check (CHG-L014): F3 source + seed/module touch without seed_scope/module_lifecycle coverage → error naming Phase 0a/0b; other flows pass through"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "SeedModuleLifecycleTests: green (covered F3), red (uncovered module touch), F3-only boundary (direct source passes)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_chg_flows_router.py"
+      description: "NEW ModulesFirstAgreement class: 0a/0b markers agree across flows doc, kernel, both templates, both READMEs, GOV-020 row, linter"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "0.59.2 → 0.60.0"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "0.60.0 entry (modules-first F3 + GOV-020 + templates)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CHANGELOG.md"
+      description: "Unreleased bullets for the 0.60.0 MINOR (root changelog tracks under Unreleased)"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.59.2 for the pin sweep"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "PIN FANOUT (mechanical 0.59.2 → 0.60.0 sweep)"
+      description: "bash hooks/sync-version-refs.sh; machine-pin forms only, archive/CHANGELOG prose untouched"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Test-first where the suite exists: GOV-020 unit tests + router-matrix class authored against the landed Phase-0 shapes; linter green before fanout; conformance suite is the EVAL equivalent (no product code → no EVAL cycles, per F3/spec vehicle precedent CHG-05/CHG-06)."
+  cases:
+    - "GOV-020 green: F3/midstream CHG touching docs/modules with module_lifecycle + seed_scope passes L014"
+    - "GOV-020 red: F3/midstream CHG touching docs/modules without module_lifecycle → L014 error naming Phase 0b (GOV-020)"
+    - "GOV-020 boundary: direct-source CHG touching docs/modules passes L014 (F3-only rule)"
+    - "Router matrix: 0a/0b markers agree across flows §4, kernel F3 row, both templates §4A/4B, both READMEs, GOV-020 row, CHG-L014"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-10/CHG-10.yaml"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests -p 'test_chg_lint.py'"
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance -p 'test_chg_flows_router.py'"
+    - "bash hooks/sync-version-refs.sh"
+  test:
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Both CHG-TEMPLATE.yaml copies stay IDENTICAL (diff -q clean)"
+  - "New template sections stay _required: false optional — STRUCT01 pins unchanged (12), existing goldens green"
+  - "GOV-020 is F3-sourced only; no other flow's lint posture changes"
+  - "Archive/CHANGELOG prose history untouched by fanout (machine-pin forms only)"
+  - "Conformance stays a contract on framework/: no weakened checks"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "All 8 manifest orders (lint check + unit tests + router matrix + version + changelogs + sweep + verify)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-10"
+  upstream: ["framework/governance/CHG_REQUEST_FLOWS.md §4", "/tmp/chg41-pilot/CHG-41 (F3 pilot shape)"]
+  downstream: ["Code (sdd_doc_lint + tests)", "framework/VERSION 0.60.0"]

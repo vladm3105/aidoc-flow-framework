@@ -3,7 +3,7 @@
 # so mechanical issues don't burn a long-running remote ai-review round.
 # Wired via `.pre-commit-config.yaml` `default_install_hook_types:
 # [pre-commit, pre-push]` per PLAN-002 §4.2; safe to run by hand:
-# `scripts/pre_push_check.sh`
+# `hooks/pre_push_check.sh`
 #
 # CANONICAL SCOPE (per PLAN-002 §4.1):
 #   1. markdownlint (skipped-with-notice if not installed)
@@ -11,6 +11,10 @@
 #   3. actionlint on .github/workflows/*.yml (skipped-with-notice if absent)
 #   4. shellcheck (skipped-with-notice if not installed)
 #   5. OPS-0069 audit-trail phrase check (mandatory; scans commit range)
+#   6. Test suites: tests/conformance + tests/unit + sdd_doc_lint/tests
+#      (fail-closed when python3 + suite deps resolve, skipped-with-notice
+#      otherwise — CI_AUTONOMOUS_PR_STANDARD.md Invariant 1 parity: the same
+#      unittest entries CI runs, so local green predicts remote green)
 #
 # Repo-specific extra checks (e.g., verified-planning `check_plan.py`,
 # operations classify-parity) live in a consumer-side wrapper
@@ -50,9 +54,11 @@ toplevel="$(git rev-parse --show-toplevel 2>/dev/null)" || {
 cd "$toplevel" || exit 2
 
 # --- changed-files calculation ---
-# base = merge-base with origin/main (fall back to local main, then to
-# the empty tree for a fresh repo).
-BASE="$(git merge-base HEAD origin/main 2>/dev/null \
+# base = merge-base with origin/dev (fall back to origin/main, local dev/main,
+# then to the empty tree for a fresh repo). This repo works feat/* → dev.
+BASE="$(git merge-base HEAD origin/dev 2>/dev/null \
+        || git merge-base HEAD origin/main 2>/dev/null \
+        || git merge-base HEAD dev 2>/dev/null \
         || git merge-base HEAD main 2>/dev/null \
         || git rev-list --max-parents=0 HEAD | tail -1)"
 mapfile -t CHANGED < <(git diff --name-only --diff-filter=ACMR "$BASE"...HEAD 2>/dev/null)
@@ -162,8 +168,8 @@ upstream_ref="$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/d
 if [ -n "$upstream_ref" ] && git rev-parse --verify --quiet "$upstream_ref" >/dev/null; then
   commit_range="${upstream_ref}..HEAD"
 else
-  # First push (no upstream yet) — scan since main-divergence.
-  commit_range="origin/main..HEAD"
+  # First push (no upstream yet) — scan since dev-divergence.
+  commit_range="origin/dev..HEAD"
 fi
 push_msgs="$(git log --format=%B "$commit_range" 2>/dev/null || echo '')"
 
@@ -245,6 +251,22 @@ if [ "$audit_ok" -ne 1 ]; then
   rc=1
 else
   echo "  ✅ OPS-0069 audit-trail present in push range."
+fi
+
+# --- 6. Test suites (Invariant 1 parity) ---
+# The exact unittest entries CI runs (conformance.yml, doc-review.yml).
+# Fail-closed when python3 + suite deps resolve; skip-with-notice otherwise
+# (same convention as the linters above) — never block a push on a missing
+# local interpreter.
+if have python3 && python3 -c "import yaml, jsonschema" 2>/dev/null; then
+  for suite in tests/conformance tests/unit sdd_doc_lint/tests; do
+    echo "── suites: ${suite} ──"
+    python3 -m unittest discover -s "$suite" -v || { echo "::error::suite ${suite} failed — fix before pushing."; rc=1; }
+  done
+elif have python3; then
+  echo "ℹ️  test suites skipped (suite deps missing — pip install -r tests/conformance/requirements.txt) — CI enforces."
+else
+  echo "ℹ️  test suites skipped (python3 not installed) — CI enforces."
 fi
 
 echo "════════════════════════════════════════════════════════════════════"

@@ -1,0 +1,205 @@
+# =============================================================================
+#  IPLAN-11: Implement versioned seed tier + GOV-021 AI document-control rule + MINOR bump 0.60.0 → 0.61.0
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-11/CHG-11.yaml (F3/spec, C2, Approved)
+#  Issue: #684 ([Governance] Seed tier has no versioning lifecycle)
+#  Phase-0 docs (SEED_CONTRACT R1, flows F3 §4, kernel §3.1.1/row, GOV-020/SEED01,
+#  GOV-021, both templates §4A/4B + entries, BRD-TEMPLATE pin, READMEs, playbooks
+#  C8, MODULE_LAYOUT §7, GD-36) land in the worktree under CHG-11 steps 1-2.
+#  This IPLAN owns every file edit + verification in manifest order.
+# =============================================================================
+
+doc_id: IPLAN-11
+title: "Implement versioned seed tier + GOV-021 AI document-control rule + MINOR bump 0.60.0 → 0.61.0"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-24"
+  framework_version: "0.60.0"
+  source_chg: "CHG-11"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-11"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-11; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-09-24T00:00:00Z"
+  last_updated: "2026-09-24T00:00:00Z"
+  author: "Framework Maintainer (AI agent + owner)"
+  complexity: 3
+  estimated_files: 24
+  session_count: 2
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-11/ (snapshot)"
+      description: "Pre-change originals of all 15 governance/template/README/playbook targets + linter originals (EXCLUDING vehicle files CHG-11.yaml, IPLAN-11.yaml)"
+      order: 1
+      status: DONE
+    - path: "framework/governance/SEED_CONTRACT.md"
+      description: "R1 frozen-per-version rewording; seed document_control schema; GOV-021 AI-backfill rule; Version 1.0 → 1.1"
+      order: 2
+      status: DONE
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "F3 Phase 0a: no-change | supersede | create + archive → rewrite → bump ordering (affected seed only); Version 1.0 → 1.1"
+      order: 3
+      status: DONE
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "§3.1.1 Phase 0a supersede steps; §3.1.3 kernel F3 row seed-versioning note"
+      order: 4
+      status: DONE
+    - path: "framework/governance/LINT_RULES.md"
+      description: "GOV-020 extended (supersede); SEED01 extended (seed_version pin); GOV-021 new (AI document-control)"
+      order: 5
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-36 entry (GD-08 stays untouched as historical record)"
+      order: 6
+      status: DONE
+    - path: "framework/governance/MODULE_LAYOUT.md"
+      description: "§7 frozen-separate → versioned-separate (frozen-per-version)"
+      order: 7
+      status: DONE
+    - path: "framework/governance/README.md"
+      description: "SEED_CONTRACT row: frozen historical input → versioned input tier"
+      order: 8
+      status: DONE
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "seed_scope enum + entries[] (seed, old_version, new_version, archive_path, changes, author); module_lifecycle author/chg_ref"
+      order: 9
+      status: DONE
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Byte-identical to governance copy (diff -q clean)"
+      order: 10
+      status: DONE
+    - path: "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+      description: "seed_disposition rows gain optional seed_version pin + guidance + example (carrier stays _required: false)"
+      order: 11
+      status: DONE
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Phase 0 0a pointer: seed archive → rewrite → bump"
+      order: 12
+      status: DONE
+    - path: "framework/governance/chg/README.md"
+      description: "Byte-identical pointer to layer copy"
+      order: 13
+      status: DONE
+    - path: "framework/layers/01_BRD/README.md"
+      description: "Seed-input section: frozen → frozen-per-version; ledger re-points on supersede"
+      order: 14
+      status: DONE
+    - path: "framework/playbooks/01_BRD/business_analyst.md"
+      description: "C8 frozen → frozen-per-version (supersede via CHG Phase 0a)"
+      order: 15
+      status: DONE
+    - path: "framework/playbooks/01_BRD/auditor.md"
+      description: "C8 frozen → frozen-per-version + stale-pin reading check"
+      order: 16
+      status: DONE
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "CHG-L014 accepts `supersede` (+ non-empty entries); new CHG-L015 lifecycle-entry attribution presence (GOV-021 deterministic half)"
+      order: 17
+      status: DONE
+    - path: "sdd_doc_lint/__init__.py"
+      description: "SEED01 resolves pinned rows against corpus seed document_control.version (absent/unpinned → skip)"
+      order: 18
+      status: DONE
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Supersede-green, supersede-without-entries red, unattributed-entry red (L015), boundary passthrough"
+      order: 19
+      status: DONE
+    - path: "tests/conformance/test_seed_contract.py"
+      description: "Pin-match green, stale-pin red, unpinned-row green, absent-seed-file green"
+      order: 20
+      status: DONE
+    - path: "tests/conformance/test_chg_flows_router.py"
+      description: "Seed-versioning agreement extension (0a supersede markers agree across flows, kernel, templates, READMEs, GOV-020/021 rows, linter)"
+      order: 21
+      status: DONE
+    - path: "framework/VERSION"
+      description: "0.60.0 → 0.61.0"
+      order: 22
+      status: DONE
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.60.0 for the pin sweep (#663)"
+      order: 23
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "0.61.0 entry (versioned seed tier + GOV-021 + templates + lint)"
+      order: 24
+      status: DONE
+    - path: "CHANGELOG.md"
+      description: "Unreleased bullets for the 0.61.0 MINOR (root changelog tracks under Unreleased)"
+      order: 25
+      status: DONE
+    - path: "PIN FANOUT (mechanical 0.60.0 → 0.61.0 sweep)"
+      description: "bash hooks/sync-version-refs.sh; machine-pin forms only, archive/CHANGELOG prose untouched"
+      order: 26
+      status: DONE
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Test-first where the suite exists: L014-supersede + L015 + SEED01-pin tests authored against the landed Phase-0 shapes; linter green before fanout; conformance suite is the EVAL equivalent (no product code → no EVAL cycles, per F3/spec vehicle precedent CHG-05/CHG-06/CHG-10)."
+  cases:
+    - "L014 supersede-green: F3/midstream CHG touching docs/seed with seed_scope decision supersede + non-empty entries passes"
+    - "L014 supersede-red: decision supersede with empty/missing entries → error naming Phase 0a"
+    - "L014 legacy-green: no-change + create decisions keep passing (backward compatible)"
+    - "L015 red: seed/module lifecycle entry without author/chg_ref → error (GOV-021 deterministic half)"
+    - "L015 boundary: non-F3 source passes through"
+    - "SEED01 pin-match green: absorbed row seed_version equals corpus seed document_control.version"
+    - "SEED01 stale-pin red: absorbed row seed_version differs from corpus seed version"
+    - "SEED01 unpinned green: rows without seed_version pass as before (pre-contract corpora stay green)"
+    - "SEED01 absent-seed green: pinned row with no seed file in corpus skips (cannot judge)"
+    - "Router matrix: 0a-supersede markers agree across flows §4, kernel F3 row, both templates, READMEs, GOV-020/021 rows, linter"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-11/CHG-11.yaml"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests -p 'test_chg_lint.py'"
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance -p 'test_seed_contract.py'"
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance -p 'test_chg_flows_router.py'"
+    - "bash hooks/sync-version-refs.sh"
+  test:
+    - "PYTHONPATH=. python3 -m unittest discover -s tests/conformance"
+    - "PYTHONPATH=. python3 -m unittest discover -s sdd_doc_lint/tests"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Both CHG-TEMPLATE.yaml copies stay IDENTICAL (diff -q clean)"
+  - "Both 09_CHG README pointers stay IDENTICAL (diff of the Phase 0 block clean)"
+  - "New template sections/carriers stay _required: false optional — STRUCT01 pins unchanged, existing goldens green"
+  - "GOV-020/GOV-021/SEED01-pin are F3/spec-scoped; no other flow's lint posture changes"
+  - "Archive/CHANGELOG prose history untouched by fanout (machine-pin forms only)"
+  - "Conformance stays a contract on framework/: no weakened checks"
+  - "GD-08 stays untouched as historical record; GD-36 carries the update"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "All 26 manifest orders (snapshot + 15 governance/template/README/playbook amends + linter L014/L015 + SEED01 pin + unit/conformance tests + version + changelogs + sweep + verify)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-11"
+  upstream: ["framework/governance/SEED_CONTRACT.md R1", "issue #684", "framework/governance/CHG_REQUEST_FLOWS.md §4"]
+  downstream: ["Code (sdd_doc_lint + tests)", "framework/VERSION 0.61.0"]

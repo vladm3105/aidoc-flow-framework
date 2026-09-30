@@ -24,7 +24,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 > **Incident**: {Brief description}
@@ -125,7 +125,7 @@ custom_fields:
 
 **Root Cause**: {Clear, specific statement of the root cause}
 
-**Root Cause Layer**: L{N} - {Layer Name} (SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL, Code; or **Spec** — a `framework/` spec defect, the GATE-SPEC locus)
+**Root Cause Layer**: L{N} - {Layer Name} (lifecycle layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L10=EVAL, Code; CHG = 09-namespace governance overlay; or **Spec** — a `framework/` spec defect, the GATE-SPEC locus)
 
 ### 3.3 Contributing Factors
 

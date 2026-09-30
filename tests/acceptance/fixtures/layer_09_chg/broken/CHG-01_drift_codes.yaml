@@ -1,0 +1,5 @@
+file: CHG-01_missing_section.yaml
+expected_findings:
+  - code: STRUCT01
+    section: implementation
+    message_match: "missing required section: implementation"

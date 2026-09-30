@@ -1,5 +1,15 @@
 # ID Naming Standards — SDD
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 ## Document IDs
 
 Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential number of **two or more digits** (two-digit is the common case; the authoritative pattern is `registry/LAYER_REGISTRY.yaml` `id_patterns.document` = `^[A-Z]+-\d{2,}$`, which the registry README declares wins on any discrepancy).
@@ -14,6 +24,8 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential n
 | SPEC | SPEC | SPEC-01 |
 | TDD | TDD | TDD-01 |
 | IPLAN | IPLAN | IPLAN-01 |
+| CHG | CHG | CHG-01 |
+| EVAL | EVAL | EVAL-01 |
 
 ### Cross-layer cardinality (CLEANUP-PR-F item 18)
 
@@ -188,11 +200,21 @@ confusing `ID03`). Element-ID uniqueness (`HASH01`) applies regardless of
 `id_state`, so distinct ordinals are required. `id_state` governs ID *stability*
 only — provisional elements are still subject to coverage and traceability gates.
 
+> **ID red-flags (manual-authoring checks).** Sections `00`/`01` never exist
+> in EARS/BDD references — any ID citing them is hallucinated, not mistyped
+> (linter: Rule 2 greps in `NOTICES.md`). When creating documents directly,
+> maintain a running set of assigned IDs and run `sort | uniq -d` before
+> finishing (NOTICES Rule 3). Before reusing an SDD ID from a prior session,
+> archive the old document first — never let two scopes share one ID
+> (NOTICES Rule 5).
+
 ### Element-ID exemptions (CLEANUP-PR-C item 13)
 
 Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
 element IDs on every distinct content unit per their template's required
-sections. The remaining two layers carry a documented exemption:
+sections. Of the remaining four layers, two carry a documented MAY exemption
+(SPEC, IPLAN — below), EVAL test cases **MUST** carry IDs, and CHG is
+exempt (governance overlay with no authored content units):
 
 - **SPEC layer:** §5 fail-closed rules, §3 Protocol method specifications,
   and similar policy statements **MAY** carry `SPEC.NN.SS.xxxx` element
@@ -205,6 +227,14 @@ sections. The remaining two layers carry a documented exemption:
   but are not required to. The traceability surface is provided by
   upstream `@spec: SPEC-NN` and `@tdd: TDD.NN.SS.xxxx` citations plus the
   per-step file-path declarations in the manifest table.
+- **EVAL layer:** every test case in `test_design.test_cases` **MUST**
+  carry an `EVAL.NN.SS.xxxx` element ID (format §"Format", independent from
+  source). The ID identifies the test case stably across eval cycles; the
+  coverage matrix (§4) then binds each ID to its upstream source and
+  implementation. Presence is an author/auditor obligation — the linter
+  pins ID *format* (`EVAL-ID-001`), not presence.
+- **CHG layer:** exempt — CHG documents are governance records with no
+  authored content units to identify; no element IDs required.
 
 **Rationale.** SPEC and IPLAN content is overwhelmingly already-bound to
 upstream content via mandatory `@<layer>:` citations. Adding layer-local
@@ -293,9 +323,10 @@ Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 
 The `status:` field appears across different scopes with distinct legal-value enumerations:
 
-- **Document Lifecycle (Layers 1-4, 6-7):** `Draft` | `In Review` | `Approved`
+- **Document Lifecycle (Layers 1-4, 6-7, 10):** `Draft` | `In Review` | `Approved`
 - **ADR Lifecycle (Layer 5):** `Proposed` | `Accepted` | `Deprecated` | `Superseded`
-- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed`
+- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed` | `Verified`
+- **CHG Lifecycle (Layer 9):** `Proposed` | `Approved` | `In-Progress` | `Implemented` | `Completed` (§3.3)
 - **Option / Item Status:** `Selected` | `Pending` | `Rejected`
 
 ## File Naming
@@ -303,10 +334,20 @@ The `status:` field appears across different scopes with distinct legal-value en
 | File | Format | Example |
 |------|--------|---------|
 | Template | `{TYPE}-TEMPLATE.yaml` | `BRD-TEMPLATE.yaml` |
-| Index | `{TYPE}-00_index.md` (Layers 1-7) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
+| Index | `{TYPE}-00_index.md` (Layers 1-7, 9, 10) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
-| Document | `{TYPE}-NN.yaml` (BRD, IPLAN: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
+| Document | `{TYPE}-NN_{slug}.yaml`, with carve-outs below | `BRD-01_kyc_onboarding.yaml` |
+| Bugfix IPLAN | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | `IPLAN-10_bugfix_09_slug.yaml` |
 | README | `README.md` | — |
+
+Document carve-outs (the general slug form holds unless listed here — CHG-08 #669;
+no new PRD/EARS/ADR filename rules are minted: those index templates carry only
+generic slug-allocation bullets, not normative filename rules):
+
+- EVAL strategy: `EVAL-{NN}.yaml` (no slug) — `10_EVAL/README.md` Naming Conventions
+- EVAL report: `EVAL-{NN}-RPT-{NNN}.yaml` (RPT cycle number, no slug)
+- CHG record: `CHG-{NN}.yaml` (no slug; archive originals sit under
+  `framework/archive/{CHG-ID}/`)
 
 > **Extensions are authoritative in `../registry/LAYER_REGISTRY.yaml` `extensions`** — the
 > single normative source (GD-17). The table above states the values; it does not re-specify

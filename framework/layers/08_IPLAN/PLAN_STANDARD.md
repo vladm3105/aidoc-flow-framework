@@ -21,11 +21,14 @@ defines:
 | Concept | Form | Governs |
 | ------- | ---- | ------- |
 | Permanent IPLAN | `IPLAN-NN_{slug}.yaml` | One SPEC component's file-creation order, executable steps, and session handoff. |
-| Temporary IPLAN | `tmp/TMP-IPLAN-*.yaml` | A disposable bugfix/investigation with no SPEC upstream. |
+| Bugfix IPLAN | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | Repair of closed (`Completed`/`Verified`) output: `parent_iplan` + `source_chg`, repair-scoped manifest (BGF-01..07). |
 | **Development/work plan** | **`plans/*.md`** | **The human-and-agent-readable plan-of-record for a change: objective, scope, approach, task sequence, verification, review trail.** |
 
+> Retired: Temporary IPLAN (`tmp/TMP-IPLAN-*.yaml`) — superseded by the
+> bugfix-subtype IPLAN above (CHG-08 #662). The registry retired `tmp/` in 0.56.0.
+
 Neither YAML artifact changes because this standard exists. A development plan
-may *spawn* a Permanent or Temporary IPLAN as one of its tasks, but the two are
+may *spawn* a Permanent or bugfix-subtype IPLAN as one of its tasks, but the two are
 not interchangeable: the YAML IPLAN is an execution manifest consumed by an
 agent step-by-step; the markdown plan is the design-and-review record a reviewer
 reads to approve the change. See [`README.md`](README.md) for the YAML artifacts.

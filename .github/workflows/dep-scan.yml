@@ -4,8 +4,8 @@
 # a no-op). Safe on public because the reusable's scan job is FORK-GUARDED (a fork PR
 # skips → human review; only trusted, non-fork collaborator PRs scan on self-hosted).
 #
-# Ships REPORT-ONLY (`fail-on-findings: false`) per PLAN-014 §5 — flip to `true` to
-# make it a blocking gate after a clean window.
+# Blocking gate (`fail-on-findings: true`) per PLAN-014 §5 — flipped after the
+# 2026-09-30 clean window (CHG-24 #803: 0 open code-scanning + dependabot alerts).
 #
 # Secrets: none required (uses GITHUB_TOKEN). SARIF surfaces in the Security tab on
 # public repos with free GHAS; on private repos the gate still runs, the upload just
@@ -24,9 +24,9 @@ jobs:
   call:
     uses: vladm3105/aidoc-flow-ci/.github/workflows/dep-scan.yml@ci/v4.0.0
     with:
-      # Report-only rollout. Flip to true to block PRs on a known-vulnerable dependency.
-      fail-on-findings: false
+      # Enforcing gate (CHG-24 #803).
+      fail-on-findings: true
       runner_labels: '["self-hosted", "ci-runner", "single-use"]'
-    # No `secrets: inherit` — dep-scan uses only GITHUB_TOKEN (least privilege; the
-    # reusable references no secrets and runs osv-scanner over untrusted-influenced
-    # lockfiles, so it must not be handed the caller's secret set).
+      # No `secrets: inherit` — dep-scan uses only GITHUB_TOKEN (least privilege; the
+      # reusable references no secrets and runs osv-scanner over untrusted-influenced
+      # lockfiles, so it must not be handed the caller's secret set).

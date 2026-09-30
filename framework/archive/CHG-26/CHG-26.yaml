@@ -1,0 +1,240 @@
+# =============================================================================
+#  CHG-26: Codify engine-agnostic CI & autonomous change-integration standard
+#  (F3/spec, C2, MINOR 0.67.1 → 0.68.0)
+# =============================================================================
+#  Flow: F3/spec (framework self-change: new governance doc + census + guard
+#  test + VERSION, GATE-SPEC per GATE-SPEC-E003 level >= C2) — C2, minor.
+#  IPLAN: framework/archive/CHG-26/IPLAN-26.yaml (In Progress, authorizing;
+#  no code before that per §3.13).
+#  Requester citation (verbatim session goal, 2026-09-30): "fix triage
+#  https://github.com/vladm3105/aidoc-flow-framework/issues/815" + follow-up
+#  "you can use any governance docs https://github.com/vladm3105/b-local-privy/
+#  tree/dev/.aidoc/project/governance as needed and if needed" (donor-access
+#  authorization for ENTERPRISE_HYBRID_CI_AND_AUTONOMOUS_PR_STANDARD.md,
+#  CI_SMART_ROUTING.md, CONFLICT_RESOLUTION.md, SELF_REVIEW_LOOP.md).
+#  Issue: #815 OPEN, triaged 2026-09-30 (P2, framework/governance), Mode B
+#  re-validated GO on current dev @ f371493f this session.
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — framework governance self-change, no runtime code (mirrors
+#  CHG-06/CHG-23): no client/server arch, no structs, no DB/migrations, no
+#  queries, no handlers; EARS/BDD IDs vacuous (upstream is issue #815; no
+#  element IDs cited, so D21/D22 vacuous). SECURITY_REVIEW (GATE-SPEC-W003):
+#  assessed — normative prose only, no executable content; the new doc
+#  states verification/closure rules but executes nothing and takes no
+#  untrusted input (requester citation is carried data, never instruction).
+#  Phase 0a seed_scope: no-change — this repo carries no seed/ tree (find
+#  verified empty 2026-09-30, same finding as CHG-23/24/25); SEED_CONTRACT
+#  seed paths address consumer corpora, none present here.
+#  Phase 0b module_lifecycle: OMITTED — this repo carries no docs/modules/
+#  tree, so no module docs are touched (template: "Untouched modules are NOT
+#  listed"); CHG-11/CHG-23 precedent.
+#  SDD-first (§3.1.1): the new governance doc + README/DECISIONS amends ARE
+#  the Phase 0c SDD cascade (framework self-change: the spec docs are the
+#  product); they land before IPLAN-26 leaves In Progress per the step
+#  order below (CHG-L005).
+#  Engine-neutrality constraint (triage contract, GD-06/D-0013): donor docs
+#  are GitHub-Actions/Taskfile/CLI-specific — only engine-neutral
+#  invariants land in framework/; the guard test fails on mechanics tokens.
+#  Census: tests/conformance/test_governance.py EXPECTED_FILES gains the new
+#  doc (test_no_unexpected_files is an exact-set assertion — CHG-23 precedent
+#  for census-coupled changes).
+#  Out of scope: SDD layer templates (01_BRD–10_EVAL untouched per the
+#  issue's own not-broken list), chg_lint schemas/rules (no new IDs; the new
+#  test is conformance, not lint), literal port of donor mechanics (forbidden
+#  by the triage constraint), CHG step numbering (upstream has none — the
+#  standard translates, never numbers), promotion/release gating beyond the
+#  integration branch.
+#  No SDD layer document modified — governance overlay only — but
+#  sdd_lifecycle carries the versioned governance docs per the F3/spec
+#  precedent (CHG-06/CHG-23); test census + guard test ride steps + IPLAN
+#  manifest (code-touching scope, IPLAN reference satisfies CHG-L004).
+# =============================================================================
+
+id: CHG-26
+title: "Codify engine-agnostic CI & autonomous change-integration standard (#815, 0.68.0 MINOR)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.67.1"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-26"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance README v1.1 (framework/archive/CHG-26/GOVERNANCE-README.md)"
+    - "governance DECISIONS v1.3 (framework/archive/CHG-26/DECISIONS.md)"
+    - "governance census v0.67.1 (framework/archive/CHG-26/test_governance.py)"
+    - "framework/VERSION 0.67.1 (framework/archive/CHG-26/VERSION)"
+    - "IPLAN-26 authorizing record (framework/archive/CHG-26/IPLAN-26.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Upstream the downstream enterprise CI/autonomous-PR practice as an engine-agnostic framework standard (#815): new CI_AUTONOMOUS_PR_STANDARD.md stating the six invariants (unified harness, latency tiers, conclusive required checks, two-pass review, conflict classes, anti-blind closure), README index row, GD-42 decision entry, census + engine-neutrality guard test, MINOR bump 0.67.1 → 0.68.0."
+  why: "SDD layers specify what to build, not how verification stages between workspace and integration branch — adopters re-derive CI topology ad hoc and repeat deadlock, false-green, and review-lockout failures. The proven downstream shape exists only as local overrides, so every new adopter repeats the mistakes."
+  trigger: "Issue #815 (feat(governance), P2) + triage note 2026-09-30 + donor-access authorization this session."
+  scope:
+    in:
+      - "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md (NEW, v1.0 — six engine-neutral invariants, CHG mapping, pre/post-merge discipline)"
+      - "framework/governance/README.md index row (v1.1 → v1.2)"
+      - "framework/governance/DECISIONS.md GD-42 entry (v1.3 → v1.4)"
+      - "tests/conformance/test_governance.py EXPECTED_FILES + new test_ci_autonomous_pr_standard.py (presence/control/six-invariants/neutrality/disambiguation)"
+      - "MINOR bump 0.67.1 → 0.68.0: VERSION + both CHANGELOGs + machine-pin fanout (hooks/sync-version-refs.sh OLD_VERSIONS gains 0.67.1 per #663)"
+      - "framework/archive/CHG-26/CHG-26.yaml + IPLAN-26.yaml (this vehicle) + pre-change snapshots"
+    out:
+      - "SDD layer templates 01_BRD–10_EVAL (untouched per issue not-broken list)"
+      - "chg_lint schemas/rules (no new lint IDs)"
+      - "Literal donor-mechanics port (forbidden by triage constraint)"
+      - "CHG step numbering (upstream has none)"
+      - "Promotion/release gating beyond the integration branch"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "New engine-agnostic standard: six invariants + CHG mapping + pre/post-merge discipline (nothing to archive)"
+  - layer: "09_CHG"
+    document: "framework/governance/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-26/GOVERNANCE-README.md"
+    new_version: "1.2"
+    changes: "Index row for CI_AUTONOMOUS_PR_STANDARD.md; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-26/DECISIONS.md"
+    new_version: "1.4"
+    changes: "New GD-42 entry (standard + vehicle + constraint); doc Version 1.3 → 1.4"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-26/IPLAN-26.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# no module docs touched; CHG-11/CHG-23 precedent)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (find verified empty 2026-09-30); SEED_CONTRACT seed paths (seed/architecture/, seed/agent-surface/) address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps run BEFORE iplan_creation — CHG-L005)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-26/ (governance README.md, DECISIONS.md, test_governance.py, VERSION — excluding the CHG-26 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "governance README.md, DECISIONS.md, test_governance.py, VERSION"
+      archive_path: "framework/archive/CHG-26/"
+      new_version: "0.68.0"
+      current_version: "0.67.1"
+      status: Completed
+    - step: "Run Phase 0c SDD cascade per lifecycle above (new standard doc v1.0, README row + v1.2, DECISIONS GD-42 + v1.4)"
+      phase: "sdd_lifecycle"
+      artifact: "CI_AUTONOMOUS_PR_STANDARD.md (v1.0), governance README.md (v1.2), DECISIONS.md (GD-42, v1.4)"
+      archive_path: "framework/archive/CHG-26/"
+      new_version: "0.68.0"
+      current_version: "0.67.1"
+      status: Completed
+    - step: "Census + guard test + MINOR fanout per IPLAN-26 manifest (test_governance.py entry, new conformance test, VERSION + CHANGELOGs + pin sweep — ride steps + IPLAN manifest per CHG-11 precedent)"
+      phase: "sdd_lifecycle"
+      artifact: "test_governance.py, test_ci_autonomous_pr_standard.py, framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-26/"
+      new_version: "0.68.0"
+      current_version: "0.67.1"
+      status: Completed
+    - step: "Create IPLAN-26 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-26"
+      status: Completed
+  files_modified:
+    - "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+    - "framework/governance/README.md"
+    - "framework/governance/DECISIONS.md"
+    - "tests/conformance/test_governance.py"
+    - "tests/conformance/test_ci_autonomous_pr_standard.py"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "framework/archive/CHG-26/CHG-26.yaml"
+    - "framework/archive/CHG-26/IPLAN-26.yaml"
+    - "framework/archive/CHG-26/GOVERNANCE-README.md"
+    - "framework/archive/CHG-26/DECISIONS.md"
+    - "framework/archive/CHG-26/test_governance.py"
+    - "framework/archive/CHG-26/VERSION"
+
+artifacts_modified:
+  - id: "CHG-26"
+    changes: "Authorizing record for engine-agnostic CI standard (this file)"
+  - id: "IPLAN-26"
+    changes: "Authorizing IPLAN (framework/archive/CHG-26/IPLAN-26.yaml, In Progress)"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only — C2 peer review, null)
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  date: null
+  # C2 spec: peer review (maintainer). No formal approver required.
+
+# =============================================================================
+# Section 7: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-26 (0 errors)"
+    - "SDD-first order: Phase 0c cascade lands before IPLAN-26 verification steps (CHG-L005)"
+    - "New conformance test green (presence + control + six invariants + neutrality + disambiguation)"
+    - "tests/conformance green incl. updated census (test_no_unexpected_files)"
+    - "sdd_doc_lint suite green"
+    - "sync-version-refs clean (Framework Version pins = 0.68.0)"
+    - "GATE-SPEC-E005..E008: VERSION bump + pins match + suite green + CHANGELOGs in diff"

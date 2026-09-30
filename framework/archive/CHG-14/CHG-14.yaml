@@ -1,0 +1,191 @@
+# =============================================================================
+#  CHG-14: Per-flow Phase-3 closeout — deployable changes mandate live deployment + EVAL, non-deployable changes close via static battery (issue #776) + MINOR 0.64.0 → 0.65.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-14/IPLAN-14.yaml (to be authored after approval)
+#  Issues: #776 ([Governance][gap] bifurcate Phase 3 closeout)
+#  §3.4 checklist: completed before authoring (2026-09-29); app-oriented items N/A
+#  with reason — governance-prose self-change, no runtime product code, no linter
+#  engine change (mirrors CHG-12/CHG-13): items 2/3/4/6/10 N/A (no client/server
+#  arch, no structs, no DB, no handlers); item 5 EARS/BDD IDs vacuous (upstream
+#  is issue #776; no element IDs cited, so D21/D22/B9/B10 vacuous); item 7 #776
+#  rides alone (#775 merged; different files); item 8 test specs: no new unit
+#  coverage owed (reviewer-lens prose rule) — conformance + sdd_doc_lint suites
+#  must stay green unmodified; item 9 fix location verified: DOC_GOVERNANCE_CORE
+#  §3.3 status table + rules, CHG_REQUEST_FLOWS §1 verification column.
+#  Covering tests: none new (prose rule, reviewer-lens enforcement per CHG-12
+#  precedent); router-agreement + full suites green unmodified; no weakened checks.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose only, no executable content,
+#  no prompt-injection surface; the rule shrinks the premature-completion attack
+#  surface (code changes can no longer close without deployment evidence).
+# =============================================================================
+
+id: CHG-14
+title: "Per-flow Phase-3 closeout — deployable changes mandate live deployment + EVAL, non-deployable changes close via static battery (issue #776) + MINOR bump 0.64.0 → 0.65.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.64.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-14"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: "2026-09-29T00:00:00Z"
+  supersedes:
+    - "governance core v0.64.0 (framework/archive/CHG-14/DOC_GOVERNANCE_CORE.md)"
+    - "request flows v0.64.0 (framework/archive/CHG-14/CHG_REQUEST_FLOWS.md)"
+    - "governance decisions v0.64.0 (framework/archive/CHG-14/DECISIONS.md)"
+    - "framework/VERSION 0.64.0 (framework/archive/CHG-14/VERSION)"
+    - "IPLAN-14 authorizing record (framework/archive/CHG-14/IPLAN-14.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Codify the per-flow Phase-3 closeout rule (§3.3 + flows verification column): deployable scope (code/scripts, runtime config, migrations — anything the project's deployment procedure installs) mandates live closeout (deploy DEV, smoke suite, authentic Layer-10 EVAL, then Completed); non-deployable scope (docs-only, governance sync, SDD-only, zero runtime/config artifacts) closes via the static battery (chg_lint, scoped-IPLAN checks, self-review, governance PR) with NO deployment and NO EVAL report owed — an empty EVAL must never be fabricated. Mixed scope follows the deployable path; the change's own file manifest decides. Also repairs the stale §1-table F2 change_level cell ('docs-only: no CHG/IPLAN'), which contradicts F2.2 always-traced (CHG-12) and would otherwise misroute readers of the new rule. MINOR bump 0.64.0 → 0.65.0."
+  why: "Issue #776 (verified live): §3.3 defines Completed only as 'verification passed' with no per-flow closeout rule, so agents either prematurely complete code changes without deploying or stall doc-only changes fabricating empty deployments/EVALs. The framework already leans this way (per-flow verification column; dev-complete vs deploy-complete split) — the bifurcation needs codifying, not correcting (gap, not bug)."
+  trigger: "Issue #776 (consumer CHG-55/CHG-56 closeout ambiguity) + triage note 2026-09-28 (P2, gap)."
+  breaking_change_analysis: "C2 (not C3): additive clarification — no gate/ID/schema/enum removed; previously-green records stay green (the rule constrains future closeouts, not past ones). Consumers with stricter closeout practices are unaffected; consumers relying on doc-changes-deploying may drop dead deployment steps. Existing CHG/IPLAN records unaffected; 0.x line. Reviewer may escalate to C3 at PR review, in which case E004 (human approver) applies before merge."
+  enforcement_decision: "Reviewer-lens (not a new linter emitter). Rationale: closeout adequacy (was the deploy real? was the EVAL authentic?) is a judgement over evidence, not a syntactic property of the CHG record — chg_lint validates records, and EVAL authenticity already has its own schema/tests. The PR reviewer checks the closeout evidence against the §3.3 rule."
+  scope:
+    in:
+      - "DOC_GOVERNANCE_CORE.md v1.2 → v1.3: §3.3 Phase-3 closeout bifurcation (deployable vs non-deployable, mixed-scope rule, no-fabricated-EVAL)"
+      - "CHG_REQUEST_FLOWS.md v1.2 → v1.3: §1 verification column closeout pointers per flow + F2 change_level cell stale repair (always-traced)"
+      - "DECISIONS.md: GD-39 entry (closeout bifurcation + F2-cell repair)"
+      - "MINOR bump 0.64.0 → 0.65.0: VERSION + changelogs + machine-pin fanout (sync-version-refs clean)"
+      - "SECURITY_REVIEW W003 assessment recorded in this CHG (verification section)"
+    out:
+      - "Linter engine changes — no new emitter (reviewer-lens enforcement decided above)"
+      - "EVAL schema, EVAL generation, 5-stage lifecycle — untouched"
+      - "Emergency / Type-R / seed / bugfix mechanics — untouched"
+      - "Consumer deploy scripts and smoke suites — consumer-side, not specified here (rule names the evidence, not the commands)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-14/DOC_GOVERNANCE_CORE.md"
+    new_version: "1.3"
+    changes: "§3.3 Phase-3 closeout bifurcation rule (deployable vs non-deployable, mixed scope, no fabricated EVAL); doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-14/CHG_REQUEST_FLOWS.md"
+    new_version: "1.3"
+    changes: "§1 verification column closeout pointers + F2 change_level cell stale repair; doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-14/DECISIONS.md"
+    new_version: "0.65.0"
+    changes: "GD-39 entry (closeout bifurcation + F2-cell repair)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-14/IPLAN-14.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-14/ (excluding the CHG-14 vehicle files themselves — CHG-14.yaml, IPLAN-14.yaml — so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, VERSION"
+      archive_path: "framework/archive/CHG-14/"
+      new_version: "0.65.0"
+      current_version: "0.64.0"
+      status: Completed
+    - step: "Amend SDD docs per lifecycle above (§3.3 closeout rule, flows verification column + F2-cell repair, GD-39)"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md (v1.3), CHG_REQUEST_FLOWS.md (v1.3), DECISIONS.md (GD-39)"
+      archive_path: "framework/archive/CHG-14/"
+      new_version: "0.65.0"
+      current_version: "0.64.0"
+      status: Completed
+    - step: "MINOR fanout per IPLAN-14 manifest (non-SDD files ride steps + IPLAN manifest per CHG-10 precedent — not sdd_lifecycle, which covers versioned governance docs only)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, hooks/sync-version-refs.sh + version-pin sweep"
+      archive_path: "framework/archive/CHG-14/"
+      new_version: "0.65.0"
+      current_version: "0.64.0"
+      status: Completed
+    - step: "Create IPLAN-14 with all edit and verification steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-14"
+      status: Completed
+  files_modified:
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/CHG_REQUEST_FLOWS.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - "hooks/sync-version-refs.sh"
+
+artifacts_modified:
+  - id: "CHG-14"
+    changes: "Authorizing record for Phase-3 closeout bifurcation (issue #776) (this file)"
+  - id: "IPLAN-14"
+    changes: "Authorizing IPLAN (framework/archive/CHG-14/IPLAN-14.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: Owner (session direction 2026-09-29, issue #776)
+  date: "2026-09-29T00:00:00Z"
+  conditions:
+    - IPLAN-14 authored as Draft before approval (authorizing record for the edit steps).
+    - C2 peer review (maintainer) recorded here before Implemented; reviewer may escalate to C3 per the breaking-change analysis above.
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level)"
+    - "chg_lint.py over CHG-14 (0 errors)"
+    - "conformance + sdd_doc_lint suites green unmodified (no new coverage owed — prose rule)"
+    - "router-agreement rows untouched (verification-column prose is not pinned)"
+    - "E005–E008: VERSION 0.65.0, pins match (sync-version-refs clean), both CHANGELOGs cut"
+    - "W003 SECURITY_REVIEW assessment recorded (this CHG header + verification)"
+    - "F2-cell repair verified: no live-path 'no CHG/IPLAN' refs remain outside archive/ + supersede records (grep)"
+    - "gh pr checks green on the PR head before any merge decision"

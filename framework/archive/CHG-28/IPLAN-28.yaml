@@ -1,0 +1,100 @@
+# =============================================================================
+#  IPLAN-28: Root-log [0.68.0] relocation (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-28/CHG-28.yaml (F2 direct, C1,
+#  In-Progress). Source: preprod-review lens 3 F2 / lens 5 F4 + Scope #687.
+#  Pure-prose relocation: covering tests N/A with reason (F2.3); full suites
+#  are the regression battery.
+# =============================================================================
+
+doc_id: IPLAN-28
+title: "Root-log [0.68.0] relocation + CHG-28 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+  source_chg: "CHG-28"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-28"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-28; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 3
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-28/CHG-28.yaml + IPLAN-28.yaml"
+      description: "Authorizing vehicle (CHG-28 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "New ## [0.68.0] section; entry moved byte-untouched from [Unreleased]"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only C1: tests N/A with reason (F2.3) — prose relocation carrying no executable contract. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-28: 0 errors"
+    - "Entry byte-identical before/after move (diff shows pure relocation)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-28/CHG-28.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git diff --stat dev (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Move only: entry wording byte-untouched (CHG-24 #806 precedent)"
+  - "[Unreleased] pre-prod-review batch entries stay (no version change, per CHG-25)"
+  - "No VERSION bump (version_action keep); no framework/ files touched"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + relocation + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-28"
+  upstream: ["preprod-review SHIP-WITH-FIXES (lens 3 F2 / lens 5 F4)", "Scope #687 (project log mirrors spec releases)"]
+  downstream: ["PR feature/chg-28-root-log-0680 → dev"]

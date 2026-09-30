@@ -1,5 +1,15 @@
 # Review Team — multi-perspective review, remediation & authoring
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 `REVIEW_REMEDIATION_FLOW.md` defines *when* review/remediation fire (the trigger
 points) and *what* an engine must surface (findings, readiness score, remediation
 path). This document defines the **review team**: the engine-agnostic model for
@@ -228,7 +238,7 @@ are chosen, so future rebalances have a stable framework.
 
 ## Playbooks
 
-Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; ~65 files total across the 10 layers).
+Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; 58 files total across the 10 layers, 53 of them declaring a layer+lens pair).
 
 ### Why
 
@@ -253,7 +263,7 @@ Layer directory is `<NN>_<LAYER>` matching the `framework/layers/` convention. L
 
 ```yaml
 ---
-layer: 02_PRD                          # matches directory name exactly
+layer: 02_PRD                          # matches directory name exactly — except 10_IPVERIFY, which declares layer: 10_EVAL (see test_eval_ipverify_split.py:26)
 lens: chaos_engineer                   # matches filename stem + REVIEW_CREWS.yaml persona name
 weight: 8                              # must match REVIEW_CREWS.yaml weight for this (layer, lens)
 agent: chaos-engineer                  # engine-defined executor for this lens; the engine maps lens → executor (see the platform's own docs). Engine binding — documented exception per GD-06.
@@ -284,7 +294,7 @@ The synthesizer emits `verdict.playbook_coverage` summarizing how many findings 
 
 ## Necessary upstream + transitive trace
 
-A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query (the reference implementation ships `tools/trace_walk.py`, outside the spec).
+A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query over that graph (no such script ships in this repo — the traversal is the normative capability, outside the spec).
 
 The necessary-upstream set per layer:
 
@@ -298,11 +308,13 @@ The necessary-upstream set per layer:
 | SPEC | `[ears, bdd, adr]` | specification grounded in requirements + decisions |
 | TDD | `[ears, bdd, adr, spec]` | tests bind to scenarios + interfaces + reversibility |
 | IPLAN | `[spec, tdd]` | implementation order from components + test sequence |
+| CHG | `[]` | governance overlay reads no layer tags by default |
+| EVAL | `[ears, bdd, tdd, iplan]` | evaluation reads requirements + behaviour + tests + plan |
 
 Enforcement is split:
 
 - **`sdd_doc_lint` rule `TRACE-RES-001`** (deterministic structural floor, runs at every layer including those without an auditor lens) flags any emitted `@<layer>: <ID>` whose target file is missing OR whose element ID is not declared in the host document. Unresolvable tags at any depth are errors.
-- **Auditor C1** (content layer; lives at BRD, PRD, BDD, ADR, TDD where the crew carries the lens) verifies that the resolved element semantically supports the citation — not just that it exists.
+- **Auditor C1** (content layer; lives at BRD, PRD, BDD, ADR, TDD, IPLAN, CHG where the crew carries the lens) verifies that the resolved element semantically supports the citation — not just that it exists.
 
 Tags above the necessary set (decorative lineage carried for human readability — e.g. an ADR that wants to show its `@brd:` origin even though `required_tags=[ears, bdd]`) are permitted; the lint rule still demands they resolve.
 
@@ -355,8 +367,10 @@ the framework formalizes them as optional + non-canonical.
 - A conforming engine maps each persona to its agent mechanism and produces the
   persona-output + report shape above; it declares which trigger points it runs as
   a team vs `single_pass`.
-- The structural contract is checkable: `REVIEW_CREWS.yaml` crews reference only
-  the 10 layers and the defined persona set, and review weights sum to 100.
+- The structural contract is checkable: `REVIEW_CREWS.yaml` defines 9 crews
+  (BRD through CHG — EVAL has no crew; it is verdict-graded by the 10_IPVERIFY
+  playbooks, not crew-scored) referencing only the defined persona set, and
+  review weights sum to 100.
 - The `review_mode` knob (`ADAPTATION_SURFACE.yaml`) lets a consuming project pick
   `team` or `single_pass`; it never weakens the deterministic gate floor.
 

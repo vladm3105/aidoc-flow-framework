@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 ## C4 Model Position
@@ -20,6 +20,8 @@ IPLAN is part of the **Implementation Bridge** (L7-L8, no C4 level). It is the e
 Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per SPEC component. Each IPLAN declares the file creation order (test-first from TDD), provides executable bash commands, tracks session progress across stateless executor calls, and maintains an audit trail from specification to delivered files.
 
 IPLAN is Layer 8 of the unified SDD chain. The chain is initiated by modules/seed for new features, or by CHG requests for all changes. The execution model is the same in both cases.
+
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
 
 ## Index registry vs document schema
 
@@ -49,8 +51,33 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 - **Test-first file order** — file_manifest declares test files before implementation files (TDD principle inherited from L7).
 - **Session handoff protocol** — solves the stateless executor problem: each session reads the previous session's state, identifies the next incomplete step, and continues without regenerating completed work.
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).
-- **Code inventory for audit trail** — every file created/modified is recorded with session attribution and verification status.
+- **Code inventory for audit trail** — one entry per `file_manifest` path, seeded `planned` at Draft, then set to `created` / `modified` with session attribution and verification status.
 - **Verified status is immutable** — once an IPLAN reaches Verified, it cannot be changed. CHG required for modifications.
+
+## IPLAN Subtypes
+
+`document_control.subtype` selects which section set an IPLAN carries
+(`code_build | deploy | combined | audit_fix | bugfix`; default `combined` for
+pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
+breaking instance-format change; a future `devops` direction (infrastructure +
+cutover under one umbrella) is noted but not adopted.
+
+- **code_build** — new features from SPEC/TDD. File order: TDD test-first.
+- **deploy** — cutover with rollback/smoke/canary/observability.
+- **combined** — both sets (default).
+- **audit_fix** — audit-driven fixes, ordered by severity (P0→P1→P2), not by
+  TDD. Upstream is audit findings, so `source_spec` names the findings
+  reference, `file_manifest[].tdd_ref` is not used, each entry carries
+  `severity: P0/P1/P2/P3`, and `traceability.upstream` cites
+  `audit_references`. Use for integration-readiness, security-review, and
+  code-review findings. Do NOT use for new SPEC features (use `code_build`),
+  and do NOT use for post-completion field defects (use `bugfix`).
+- **bugfix** — post-completion defect repair parented on a closed IPLAN
+  (Completed, merged-at-Completed with VERIFY pending, or Verified) via
+  `parent_iplan` + `source_chg`. The manifest is scope-limited to repair
+  files; the parent plan is never touched. See `IPLAN-TEMPLATE.yaml`
+  `document_control` guidance for the normative step order, rollback markers,
+  naming pattern, and no-fix-on-fix rule.
 
 ## IPLAN Baseline
 
@@ -100,6 +127,14 @@ Each AI agent session reads the IPLAN in this order:
 5. **Update file status** after completion or session end
 6. **Append to session_handoff.sessions** with next_session_directive
 
+**A Draft IPLAN carries `sessions: []`** — the trail is retrospective, appended by
+each session as it ends, so at Draft there is nothing to record and step 1 falls
+straight through to step 2. Writing a session entry while authoring asserts work
+that has not happened. This is deliberately *unlike* the code inventory above,
+which **is** seeded at Draft: that seed is derived from a set already known (one
+entry per `file_manifest` path), whereas nobody knows the future sessions.
+(GD-26; regressed and restored by CLEANUP-001.)
+
 ## IPLAN Status Lifecycle
 
 ```
@@ -116,23 +151,35 @@ Draft → Approved → In Progress → Completed → Verified
 | `Draft` | IPLAN created, not yet approved | → Approved |
 | `Approved` | IPLAN authorized to proceed | → In Progress |
 | `In Progress` | Implementation underway | → Completed |
-| `Completed` | Implementation done, awaiting validation | → Verified |
+| `Completed` | Implementation done, awaiting validation (validatable, NOT terminal) | → Verified |
 | `Verified` | Validation passed, **FINAL/FINITE** status | **None** (immutable) |
+
+`Completed` is validatable, not terminal: the VERIFY window is still open (see
+Validation Workflow below). A `Completed` plan merged before VERIFY keeps an
+explicit open VERIFY obligation (index `validated_by` pending). Only `Verified`
+is terminal. **Active** plans are `Draft | Approved | In Progress` — the §3.13
+bug-fix exception covers active plans only. A defect found in closed output
+(`Completed` past its window, or `Verified`) is repaired by a scoped `bugfix`
+IPLAN parented on the closed plan (never by reopening it); recording lands in
+the bugfix IPLAN + the authorizing CHG + the index.
 
 ## Validation Workflow (Completed → Verified)
 
+Validation runs as EVAL cycles (CHG-08 #662 — the legacy create-IPLAN-VERIFY
+flow below is superseded):
+
 1. All `file_manifest` entries reach `DONE` + `verified: true`
 2. Document status flips to `Completed`
-3. Run unit tests from `file_manifest` (tdd_ref cases)
-4. Run integration tests from `execution_commands.validation`
-5. Create validation report using `IPLAN-VERIFY-TEMPLATE`
-6. If findings exist:
-   a. Create IPLAN-VERIFY to fix P0/P1 issues
+3. Author (or reuse) the owning EVAL document (`EVAL-{NN}/EVAL-{NN}.yaml`)
+4. Run eval cycle 1 (`initial_eval`) from `execution_commands.validation`;
+   record `EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` (EVAL-REPORT-TEMPLATE)
+5. If findings exist:
+   a. Repair via a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`)
    b. Fix all critical findings
-   c. Re-run validation
-7. When all findings resolved:
+   c. Re-run the next cycle (`bug_fix_verification`)
+6. When all findings resolved:
    a. Mark original IPLAN as `Verified` (FINAL/FINITE)
-   b. Close validation IPLAN as `Completed`
+   b. Close the bugfix IPLAN per its rollback/resolution markers
 
 ## Verified IPLAN Immutability Rule
 
@@ -151,7 +198,7 @@ To modify a Verified IPLAN:
 | File | Purpose |
 |------|---------|
 | `IPLAN-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `IPLAN-VERIFY-TEMPLATE.yaml` | **Validation/Verification** — use after Completed status to verify implementation correctness. Records findings, severity, fixes. When all P0/P1 resolved, mark original IPLAN as Verified. |
+| `IPLAN-VERIFY-TEMPLATE.yaml` | **Legacy validation** — superseded by the EVAL-RPT flow (CHG-08 #662); retained for existing readers. New validation authors EVAL-RPT reports; repairs use the `bugfix` subtype. |
 
 **Downstream**: [10_EVAL](../10_EVAL/) — Evaluation & QA Governance
 

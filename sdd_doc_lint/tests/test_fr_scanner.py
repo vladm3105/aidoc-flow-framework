@@ -16,7 +16,6 @@ import sys
 import unittest
 from pathlib import Path
 
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sdd_doc_lint import scan_fr_elements  # noqa: E402
 

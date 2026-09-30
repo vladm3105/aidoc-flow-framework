@@ -99,7 +99,7 @@ ADR must achieve **SPEC-Ready score >=90/100** before downstream SPEC generation
 ## Related Documents
 
 - **Template** (default): [ADR-TEMPLATE.yaml](./ADR-TEMPLATE.yaml)
-- **MVP skeleton**: [ADR-MVP-TEMPLATE.yaml](./ADR-MVP-TEMPLATE.yaml) — not standalone
+- **MVP skeleton**: retired — [ADR-MVP-TEMPLATE.yaml](./ADR-MVP-TEMPLATE.yaml) is a tombstone pointer to the canonical template (CHG-08 #666)
 - **README**: [README.md](./README.md) — ADR purpose, structure, and best practices
 - **Upstream**: [04_BDD](../04_BDD/) — Behavior-Driven Development
 - **Downstream**: [06_SPEC](../06_SPEC/) — Technical Specification

@@ -1,9 +1,10 @@
 # AGENTS.md — working agreement for AI coding agents on aidoc-flow-framework
 
 Orients any AI agent (Claude Code, Codex, Gemini CLI, Copilot, Hermes, custom)
-working on this repo. **[`CLAUDE.md`](CLAUDE.md) is the full working agreement**;
-this file is the short orientation plus the rules that are most often missed.
-Where the two disagree, `CLAUDE.md` wins — fix this file.
+working on this repo. **This file is the single working agreement** — the short
+orientation plus the rules that are most often missed.
+[`CLAUDE.md`](CLAUDE.md) is deprecated: legacy detail only, never authority.
+Where the two disagree, this file wins.
 
 ## What this repo is
 
@@ -12,7 +13,7 @@ flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG �
 Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
-(PostToolUse advisory hook) as the only retained tooling.
+(advisory hooks — `PostToolUse` + `PreCommit`, see `hooks/README.md`) as the only retained tooling.
 
 ## Filing gaps — open a GitHub issue
 
@@ -46,7 +47,12 @@ non-zero length is the only proof it published.
 
 If the defect is owned by **another** repo (the CI canon `aidoc-flow-ci`, a
 sibling submodule, an upstream spec), the issue goes **there**, not here. The
-test is ownership, not severity. See `CLAUDE.md` → "Cross-repo feedback".
+test is ownership, not severity.
+
+Triage open issues with [`.agents/skills/aidoc-triage/`](.agents/skills/aidoc-triage/SKILL.md):
+validate every claim live against the tree, review the full comment thread,
+set priority + labels, post the note; transfer the issue when another repo
+owns it.
 
 **Verify what you published.** Use `gh issue create --body-file -`; `--body -`
 sets the body to a literal `-`, exits 0, and prints a URL, so it looks like it
@@ -58,14 +64,24 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 
 ## Non-negotiables
 
+- **Validate the task before implementing.** Re-check a picked-up issue live
+  (`gh issue view` + the target branch): still open, still reproducible,
+  still applicable — not fixed, stale, superseded, or declined. If it is,
+  report that with evidence and stop; do not build around it. See
+  `framework/AI_ASSISTANT_RULES.md` → "Issue Validation Before Work".
+- **Keep changes safe.** No behavior change beyond the issue's scope, no
+  weakened checks, suites green before the PR. Breaking or otherwise
+  significant changes need a CHG first, then the CHG procedure — never code
+  before the cascade (see Governance Gate below).
+
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks
   and review gates.
-- **Never hand-edit example artifacts.** Files under `examples/<name>/docs/` and
-  `examples/<name>/.aidoc/` are the system-under-test. Remediate them by
-  dispatching the framework's own skills; a class of remediation the skills
-  cannot handle is a **framework workflow gap**, never a reason to edit the
-  artifact.
+- **Example corpus retired.** The plugin-era `examples/<name>/` tree (`docs/` +
+  `.aidoc/` system-under-test) was deliberately removed and must not be
+  resurrected (enforced by `tests/conformance/test_coverage_engine.py`). Do not
+  author new references to it; shared fixtures live under
+  `tests/acceptance/fixtures/`.
 - **Conformance stays green.** Never weaken a check in `tests/conformance/` to
   make it pass — fix the spec or the platform.
 - **The spec is the contract.** `framework/` is engine-agnostic: no platform
@@ -74,8 +90,8 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Submit only finalized work.** A PR has already completed its review-and-fix
   cycles locally. Amendment PRs patching a just-merged PR are a smell that the
   original shipped early.
-- **Plans get two review cycles before the plan PR opens** — see `CLAUDE.md`
-  → "Development workflow".
+- **Plans get two review cycles before the plan PR opens.**
+- **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.7 order guard: `worktree remove` BEFORE branch delete, §4).
 
 ## Governance Gate (applies to ALL agents)
 
@@ -84,35 +100,48 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 1. Create a CHG document — do NOT write code first
 2. Complete §3.4 checklist BEFORE writing the CHG
 3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
-4. Update EARS/BDD before code (SDD-first)
+4. Declare SDD scope before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
 5. Create IPLAN with code steps (not in CHG)
 
-If user says "build", "implement", "add feature" → stop, create CHG first.
-The ONLY exception: bug fixes on active IPLANs.
+Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).
 
-**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+If user says "build", "implement", "add feature" → stop, create CHG first.
+Exception (only one): seed-phase drafting before the first BRD is authored against seed vN
+(`SEED_CONTRACT.md` R1) — pre-first-BRD drafting with no other documents in existence. Everything else
+is traced: (i) bug fixes ride their IPLAN's authorizing CHG (active IPLAN) or the bugfix vehicle (C1 CHG +
+bugfix IPLAN, parent immutable, post-completion); (ii) every C1 — docs-only non-normative included —
+requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.13 + `CHG_REQUEST_FLOWS.md` govern.
+
+**Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
 - CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
+- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
+- CHG-L014: Seed/module coverage (§3.1.3) — upstream/midstream/design/spec/reconciliation touches need `seed_scope` / `module_lifecycle` (GOV-020)
+- CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
+- CHG-L017: Premature step completion (§3.4.1 E28) — no `Completed` step on a `Proposed` / `Approved` CHG
+- Full catalog (L006–L017, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
-**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
+**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
-**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Exception: bug fixes on active IPLANs.
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Every post-seed change carries both objects: bug fixes ride their IPLAN's CHG (active IPLAN) or the bugfix vehicle (C1 CHG + bugfix IPLAN); every C1 rides a C1 CHG + scoped IPLAN. The sole change needing neither object is seed-phase drafting pre-first-BRD (CHG-12).
 
 ### Push Workflow
 
 ```bash
-# CORRECT workflow:
+# CORRECT workflow (per-task worktree — no exceptions):
 git checkout dev
 git pull origin dev
-git checkout -b feat/my-change
+git worktree add ../<project>-<issue> -b feature/<short-name> origin/dev
+cd ../<project>-<issue>
 # ... make changes ...
-git add .
+git add <owned-files-only>
 git commit -m "feat: description"
-git push origin feat/my-change
-# Then open PR: feat/my-change → dev
+git push origin feature/<short-name>
+# Then open PR: feature/<short-name> → dev
 
 # WRONG — never do this:
 git push origin main   # ❌ BLOCKED by this rule
@@ -120,15 +149,34 @@ git push origin main   # ❌ BLOCKED by this rule
 
 Branch promotion: `feature-branch → dev → main`
 
+All feature/defect work runs in a per-task worktree + branch (`WORKTREE_FLOW.md` §3.2) — the main checkout stays on `dev` and is never branch-switched for feature work. There is no quick-path exception: single-shot edits use the same worktree flow. Post-merge cleanup removes the worktree BEFORE deleting the branch (§3.7 order guard).
+
+### Watching your PR
+
+After opening a PR you own, poll its status every 15 seconds until required checks settle — never assume a push is green:
+
+```bash
+gh pr checks <N> --json name,state,bucket,workflow --jq '.[] | select(.bucket!="pass")'
+```
+
+`gh pr checks --required --watch` blocks until required checks settle and is preferred for a single wait; poll manually at 15s intervals when you need to interleave other work. Read `mergeStateStatus` before any merge decision (`BLOCKED` ends the question regardless of check colour).
+
+Auto-merge is authorized by default: on a PR you opened, once all required checks pass and the PR is mergeable (`mergeStateStatus` CLEAN on the current head — confirm `headRefOid`), enable it (`gh pr merge <N> --auto --squash --delete-branch`, the repo's squash-only convention) and read the merge back. Withhold auto-merge when the user said hold, required checks are incomplete or red, a repo rule reserves the merge for a human, or the PR is not yours — tool access is not merge authority.
+
+Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -d`) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.7 order guard). Never delete a branch with unmerged work still on it.
+
+When a required check fails, fix every error: diagnose from the failed logs, fix on the PR branch, push, and re-watch from the new head (confirm `headRefOid` — a previous run's green is not this commit's). Never merge while red. Stop and report to the human when the same check fails twice after a fix attempt, or when the fix reaches beyond the PR's scope.
+
 ## Where state lives (this repo owns its own continuity)
 
 | Surface | Path |
 |---|---|
-| Live handoff | `plans/HANDOFF.md` — read it first, every session |
+| Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
 | Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
 | Plans | `plans/<NAME>-PLAN.md` |
-| Changelog / roadmap | `CHANGELOG.md`, `ROADMAP.md` |
+| Changelog | `CHANGELOG.md` (root) + `framework/CHANGELOG.md` — no `ROADMAP.md` exists |
+| Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |
 
 Never put any of these in `tmp/`, and never centralize them in the `aidoc-flow`
 umbrella — the umbrella holds no development of its own.
@@ -141,7 +189,12 @@ umbrella — the umbrella holds no development of its own.
   survives.** Commit messages carry no model identifiers.
 - Conventional commit prefixes (`docs:`, `feat:`, `fix:`, `refactor:`,
   `chore:`), one logical change per commit.
+- **Advanced git:** [`.agents/skills/git-techniques/`](.agents/skills/git-techniques/SKILL.md)
+  for reflog recovery, history search, bisect, and worktrees — read-only by
+  default; destructive, remote, and config-changing operations need explicit
+  approval.
 
-Everything else — CI consumption from `aidoc-flow-ci`, governance PR discipline,
-auto-merge defaults, multi-agent review, versioning and tagging — is in
-[`CLAUDE.md`](CLAUDE.md).
+Further detail — CI consumption from `aidoc-flow-ci`, governance PR discipline,
+auto-merge defaults, multi-agent review, versioning and tagging — lives in
+[`CLAUDE.md`](CLAUDE.md) (deprecated legacy detail, pending migration into this
+file). On any conflict, this file wins.

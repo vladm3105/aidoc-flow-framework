@@ -36,9 +36,9 @@ import unittest
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_PLUGIN = _REPO_ROOT / "platforms" / "claude-code-plugin"
-_HOOK = _PLUGIN / "hooks" / "sdd-doc-review.sh"
-_HOOKS_JSON = _PLUGIN / "hooks" / "hooks.json"
+_HOOKS_DIR = _REPO_ROOT / "hooks"
+_HOOK = _HOOKS_DIR / "sdd-doc-review.sh"
+_HOOKS_JSON = _HOOKS_DIR / "hooks.json"
 _BROKEN_BRD = (
     _REPO_ROOT / "tests" / "acceptance" / "fixtures" / "negative" / "brd-broken-sections.md"
 )
@@ -519,11 +519,13 @@ class TheHookIsBounded(HookHarness):
         manifest = json.loads(_HOOKS_JSON.read_text(encoding="utf-8"))
         entries = [
             hook
-            for group in manifest["hooks"]["PostToolUse"]
+            for groups in manifest["hooks"].values()  # every registered event (#691)
+            for group in groups
             for hook in group["hooks"]
             if hook.get("type") == "command"
         ]
         self.assertTrue(entries, "no command hook declared")
+        self.assertIn("PreCommit", manifest["hooks"], "PreCommit event unregistered")
         for hook in entries:
             self.assertIsInstance(
                 hook.get("timeout"), int, f"no integer timeout declared on {hook.get('command')}"

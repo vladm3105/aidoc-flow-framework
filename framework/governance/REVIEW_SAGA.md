@@ -1,5 +1,15 @@
 # Review Saga — lifecycle contract for the review-team's create→review→revise loop
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
 **lifecycle saga**: the state machine, transition table, journal schema, and
@@ -12,7 +22,7 @@ The contract was generalized from a working reference implementation that
 predated this spec section, then promoted into framework spec so that any
 conforming engine — saga runtime, prompt-orchestration engine, or another
 mechanism — can implement it while exposing the same observable lifecycle. The
-project's parity goal is **lifecycle-behavior parity** (per `docs/PARITY.md`);
+project's parity goal is **lifecycle-behavior parity**;
 this document is its load-bearing definition.
 
 ## States
@@ -60,7 +70,7 @@ before writing the journal).
 
 Each run produces a durable journal file. The journal is the authoritative
 record of the saga's progression and the basis of lifecycle conformance
-verification. Both engines must produce a journal matching `saga.schema.json`
+verification. Every conforming implementation must produce a journal matching `saga.schema.json`
 (this file's companion).
 
 ### Required fields
@@ -69,7 +79,7 @@ verification. Both engines must produce a journal matching `saga.schema.json`
 |---|---|---|
 | `review_run_id` | string | 12-char-or-longer run identifier. Implementations MAY use deterministic IDs derived from the artifact + persona set + time bucket, or UUIDs. |
 | `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `framework/governance/ID_NAMING_STANDARDS.md` §"Format" and the authoritative `registry/LAYER_REGISTRY.yaml` `id_patterns.document` pattern (`^[A-Z]+-\d{2,}$` — two-or-more digits; two-digit is the common case). |
-| `layer` | string | One of the framework layers (`01_BRD`..`08_IPLAN`), plus the `09_CHG` change-management overlay — matching the `layer` enum in `saga.schema.json`. |
+| `layer` | string | One of the framework layers (`01_BRD`..`08_IPLAN`), the `09_CHG` change-management overlay, or `10_EVAL` — matching the `layer` enum in `saga.schema.json`. |
 | `personas_requested` | array of strings | The crew dispatched, drawn from `REVIEW_CREWS.yaml` personas registry. |
 | `status` | string | Current run-level state from the table above. |
 | `iteration` | integer | `1`-based create→review→revise iteration counter. |
@@ -106,8 +116,8 @@ Optional: `started_at`, `ended_at` (ISO 8601 UTC), `error_code` (string).
 
 ### `transitions[]` entry
 
-Required: `ts` (ISO 8601 UTC), `from` (state string or null on initial entry),
-`to` (state string), `scope` (string: `"run"` or `"branch:<persona>"`).
+Required: `ts` (ISO 8601 UTC), `to` (state string), `scope` (string: `"run"` or `"branch:<persona>"`) — matching the schema's required `["ts", "to", "scope"]`.
+Optional: `from` (state string, or null on the initial entry).
 
 ### `compensation_actions[]` entry
 
@@ -160,25 +170,19 @@ appropriate to their runtime. The contract is that SOFT_DEADLINE ≤
 HARD_TIMEOUT − 300s. Per-platform numeric choices are documented in each
 platform's own engineering docs (not in this engine-agnostic spec).
 
-## FRAMEWORK_SPEC_VERSION semantics
+## Framework spec-version declaration
 
-Each platform carries two version files with distinct meanings:
+A consuming implementation records which framework spec version it conforms
+to (the `framework/VERSION` value at the time of adoption) in its own
+engineering docs — a declaration of intent, NOT a claim of complete
+implementation mid-delivery. Implementation completeness against the spec is
+verified by behavior-specific conformance tests (e.g., the
+saga-lifecycle-parity test at
+`tests/conformance/test_saga_lifecycle_parity.py`), not by version-string
+equality.
 
-| File | Meaning |
-|---|---|
-| `framework/VERSION` | The platform's own SemVer (independent stream). |
-| `platforms/<name>/FRAMEWORK_SPEC_VERSION` | The framework spec version the platform **declares intent to conform to** — NOT necessarily the version it has fully implemented mid-delivery. |
-
-The conformance test `test_FRAMEWORK_SPEC_VERSION_matches_framework_VERSION`
-enforces only string equality between `framework/VERSION` and each
-platform's `FRAMEWORK_SPEC_VERSION`. Implementation completeness against the
-spec is verified by behavior-specific tests (e.g., the saga-lifecycle-parity
-conformance test at `tests/conformance/test_saga_lifecycle_parity.py`).
-
-This declaration-vs-implementation distinction allows a multi-phase delivery
-where the spec changes in Phase N and platforms implement in Phases N+1,
-N+2 — both platforms declare matching `FRAMEWORK_SPEC_VERSION` from Phase N
-while their actual implementations land later.
+This declaration-vs-implementation distinction allows a multi-phase adoption
+where the spec changes in one phase and consumer implementations land later.
 
 ## Enforcement asymmetry — honest caveat
 
@@ -194,9 +198,8 @@ Engines MAY enforce this contract via different mechanisms:
 Same observable lifecycle, different enforcement. Conformance tests check
 the observable artifact (the journal file's schema + state machine
 adherence + greppable break-circuit invariant), not the enforcement
-mechanism. Per-platform binding of these enforcement modes is documented
-in `docs/PARITY.md` and the platform's own engineering documentation, not
-in this engine-agnostic spec.
+mechanism. Binding of these enforcement modes is documented in the
+consumer's own engineering documentation, not in this engine-agnostic spec.
 
 ## Cross-references
 
@@ -211,11 +214,8 @@ in this engine-agnostic spec.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the
   blackboard (separate concern from saga state).
 - `saga.schema.json` — formal JSON Schema for the journal.
-- `plans/DECISIONS.md` D-0031 — the supersession decision that brought
-  this contract into the framework spec.
-- `plans/DECISIONS.md` D-0005 — the prior decision that one engine
-  would not port the saga, superseded in scope (its blackboard-for-
-  crew-state reasoning remains authoritative).
-- `docs/PARITY.md` — the per-platform binding of the contract (which
-  engine uses preemptive vs cooperative enforcement, specific numeric
-  soft-deadline values, etc.).
+- D-0031 (see the D-series annex in `governance/DECISIONS.md`) — the
+  supersession decision that brought this contract into the framework spec.
+- D-0005 (see the D-series annex in `governance/DECISIONS.md`) — the prior
+  decision that one engine would not port the saga, superseded in scope
+  (its blackboard-for-crew-state reasoning remains authoritative).

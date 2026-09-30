@@ -8,11 +8,11 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.1 |
+| Framework Version | 0.68.1 |
 
 ## Overview
 
-The evaluation layer defines how BeeLocal's test strategy is governed, measured, and reported.
+The evaluation layer defines how test strategy is governed, measured, and reported.
 It bridges the SDD document chain (EARS/BDD/TDD/IPLAN) to concrete testing execution,
 providing a traceable path from requirements through test design to coverage evidence.
 
@@ -34,7 +34,7 @@ IPLAN-01 (Platform Port Boundary)
           ├── EVAL-01-RPT-002.yaml   # cycle 2: FAIL (88.9%)
           └── EVAL-01-RPT-003.yaml   # cycle 3: PASS (100%)
 
-IPLAN-02 (Auth Privy JWT)
+IPLAN-02 (Auth JWT)
   └── EVAL-02/EVAL-02.yaml          # strategy: what to test for IPLAN-02
       └── reports/
           └── EVAL-02-RPT-001.yaml   # cycle 1: PASS (100%)
@@ -86,8 +86,13 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
 - `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
-- `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report
+- `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
 - `EVAL-00_index.TEMPLATE.md` — master index template
+
+> Canon note: `EVAL-RPT-TEMPLATE.yaml` is tombstoned — it lacked §4
+> `test_results` and carried the banned `EVAL-NN.BDD-NN.TC-NN.NN` ID form.
+> RPT survives only as the report *filename* shorthand
+> (`EVAL-{NN}-RPT-{NNN}.yaml`). Author reports from `EVAL-REPORT-TEMPLATE.yaml`.
 
 ## Layer Position
 
@@ -98,13 +103,13 @@ flowchart LR
     EARS[EARS - L3] --> BDD[BDD - L4]
     BDD --> EVAL
     EVAL --> GATES[CI / Staging / Deploy Gates]
-    CHG[CHG - L9] -->|versions IPLAN| IPLAN
+    CHG[CHG - 09 namespace] -->|versions IPLAN| IPLAN
     CHG -->|versions EVAL| EVAL
     style EVAL fill:#fff3e0,stroke:#e65100,stroke-width:3px
 ```
 
 **Layer**: 10 (Evaluation & QA Governance)
-**Note**: Layer 9 is CHG (Change Record — governance overlay). EVAL is L10.
+**Note**: CHG lives in the 09 operational namespace (governance overlay, not a lifecycle layer). EVAL is L10.
 **Upstream (necessary)**: EARS (L3), BDD (L4), TDD (L7), IPLAN (L8)
 **Downstream**: Code, CI/CD pipelines, deployment gates
 **Traceability**: IPLAN → EVAL → RPT → verdict
@@ -139,6 +144,7 @@ docs/sdd/10_EVAL/
 - `{NN}` is a zero-padded sequential number (01, 02, ... 99)
 - `{hash}` is a 4-character content-derived identifier from the TDD
 - Test case IDs are stable across eval cycles — they identify the test case, not a specific run
+- Every test case **MUST** carry an `EVAL.NN.SS.xxxx` ID — IDs are required, not optional (no exemption; the CHG overlay is the only layer with no element IDs)
 - Report IDs include the cycle number: RPT-001, RPT-002, ...
 - **One source per test case** — each test case maps to exactly one upstream element (one source_type + one source_id). Never mix BDD, TDD, EARS, or other sources in a single test case. Create as many test cases as needed.
 
@@ -209,19 +215,11 @@ Each `EVAL-{NN}-RPT-{NNN}.yaml` contains (self-contained, no external deps):
 9. **Evidence** — CI URLs, artifacts, retention
 10. **Linkage** — eval ID, IPLAN ID, upstream references
 
-## Cross-Cutting Strategy Documents (Deprecated)
+## Cross-Cutting Strategy Documents (Deprecated, removed)
 
-The monolithic strategy documents are **deprecated** as of v2.0. They are retained for
-reference only. Test strategy is now per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
-
-| Document | Track | Purpose | Status |
-|----------|-------|---------|--------|
-| `EVAL-01_functional_strategy.yaml` | Functional | Test type decision tree, staging execution phases, verdict criteria | Deprecated |
-| `EVAL-02_unit_smoke_strategy.yaml` | Unit/Smoke | CI pipeline execution, smoke test definitions, deployment gates | Deprecated |
-
-**Migration**: Each IPLAN now owns its EVAL document. When creating a new EVAL, extract
-relevant test cases from these monolithic files into the per-IPLAN EVAL. The per-IPLAN
-documents define *what* to test for their specific IPLAN scope.
+The monolithic strategy documents (`EVAL-01_functional_strategy.yaml`,
+`EVAL-02_unit_smoke_strategy.yaml`) were deprecated as of v2.0 and have since
+been removed. Test strategy is per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
 
 ## Files
 

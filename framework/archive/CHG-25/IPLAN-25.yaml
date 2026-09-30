@@ -1,0 +1,154 @@
+# =============================================================================
+#  IPLAN-25: Fix pre-prod-review batch #811-#813 (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-25/CHG-25.yaml (F2 direct, C1,
+#  In-Progress). Source: session goal 2026-09-30 + triage notes on #811-#813
+#  + Mode B GO re-validation on dev @ 3e712951.
+#  Behavior cluster: #811 (SHA pins in five workflows). Docs cluster: #812
+#  (DECISIONS entry), #813 (guide note). Covering tests REQUIRED
+#  (code-touching C1): one new tests/unit file below; pure-prose files N/A
+#  with reason (F2.3).
+# =============================================================================
+
+doc_id: IPLAN-25
+title: "Fix pre-prod-review batch #811-#813 + CHG-25 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-30"
+  framework_version: "0.67.1"
+  source_chg: "CHG-25"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-25"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-25; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-30T00:00:00Z"
+  last_updated: "2026-09-30T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 11
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-25/CHG-25.yaml + IPLAN-25.yaml"
+      description: "Authorizing vehicle (CHG-25 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: ".github/workflows/acceptance.yml"
+      description: "#811: checkout@v7 + setup-python@v7 → SHA pins with version comments"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: ".github/workflows/chg-gate.yml"
+      description: "#811: checkout@v7 + setup-python@v7 → SHA pins with version comments"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: ".github/workflows/conformance.yml"
+      description: "#811: checkout@v7 + setup-python@v7 → SHA pins with version comments"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: ".github/workflows/doc-review.yml"
+      description: "#811: checkout@v7 + setup-python@v7 → SHA pins with version comments"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: ".github/workflows/pin-currency-reader.yml"
+      description: "#811: checkout@v7 → SHA pin with version comment (no setup-python here)"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/unit/test_action_pin_sha.py (NEW)"
+      description: "Durable: first-party action pins are SHAs with version comments (fails before fix, passes after)"
+      order: 6
+      status: TODO
+      session: 1
+      verified: false
+    - path: "plans/DECISIONS.md"
+      description: "#812: one entry authorizing auto-merge-by-default (carve-outs + re-check rationale)"
+      order: 7
+      status: TODO
+      session: 1
+      verified: false
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "#813: one calibration note — green linters alone do not equal governed (Reserved rows, reviewer-lens backstop)"
+      order: 8
+      status: TODO
+      session: 1
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "Batch entry under [Unreleased] (root only — no framework/ files touched, version keep)"
+      order: 9
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Code-touching C1: covering test cases REQUIRED (GATE-CODE entry). New unit file asserts the fixed invariant; full tests/unit + sdd_doc_lint/tests runs are the regression battery. Pure-prose files: tests N/A with reason (F2.3)."
+  cases:
+    - "chg_lint.py over CHG-25: 0 errors"
+    - "test_action_pin_sha: no mutable major-tag pins for checkout/setup-python (fails before fix, passes after)"
+    - "tests/unit full discover green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-25/CHG-25.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "grep -rn 'actions/checkout@v7|actions/setup-python@v7' .github/workflows/ (expect no hits)"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest discover -s tests/unit -p 'test_action_pin_sha.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "#811: SHA pins reuse the pre-commit.yml-verified SHAs (checkout v7.0.1, setup-python v7.0.0); no permission-block, trigger, or input edits; reusable @ci/v4.0.0 pins and ai-review design untouched"
+  - "#812: record only — carve-outs and re-check discipline unchanged in AGENTS.md"
+  - "#813: note only — no new emitters, no Reserved-row reclassification"
+  - "New test observed failing before the fix, passing after (authentic failure first)"
+  - "No VERSION bump (version_action keep); CHANGELOG entry under [Unreleased] in root log only"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + #811 pins + covering test + #812/#813 prose + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-25"
+  upstream: ["session goal 2026-09-30 (fill all issues)", "triage notes 2026-09-30 on #811-#813", "Mode B GO re-validation dev @ 3e712951"]
+  downstream: ["PR feature/chg-25-batch-811-813 → dev (Closes #811, Closes #812, Closes #813)"]

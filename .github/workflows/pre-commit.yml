@@ -1,19 +1,25 @@
-# Caller template for aidoc-flow-ci's reusable pre-commit workflow.
+# pre-commit — LOCAL (vendored) runner for the required lint/format/security hooks.
 #
-# Single template (works for both PRIVATE + PUBLIC). The reusable
-# workflow uses ubuntu-latest by default. PRIVATE consumers per
-# OPS-0049 may override runner_labels to '"runner-self"'.
+# VENDORED 2026-09-27 from aidoc-flow-ci/.github/workflows/pre-commit.yml@ci/v4.0.0
+# (job "Lint / format / security hooks") because canon went private (#746) and a
+# public consumer can no longer resolve `uses: ...aidoc-flow-ci...` — every
+# reusable-call workflow load-fails (zero jobs, no logs), leaving the required
+# context permanently Expected. Inputs hardcoded to what the old caller passed:
+# python 3.12, no extra-deps, default stage, ubuntu-latest.
+# RESYNC: diff against the canon source above when canon access returns; revert
+# to the `call:` caller then (and restore the required context name, #746).
 #
-# Requires .pre-commit-config.yaml in the consumer repo root. The
-# workflow runs all hooks against all files via
-# `pre-commit run --all-files`.
+# Requires .pre-commit-config.yaml in the repo root. Runs all hooks against
+# all files via `pre-commit run --all-files`, then runs the pre-push stage
+# explicitly (CHG-24 #798): the bare default-stage run never fires pre-push
+# hooks, so without the second invocation the pre-push gate has no CI invoker.
 
 name: pre-commit
 
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [dev]
 
 permissions:
   contents: read
@@ -21,7 +27,7 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   # CI-0025 / REPO_STANDARDS §23: ALLOWLIST of the code-changing events.
-  # This caller feeds a REQUIRED context. Every event here other than a push or a
+  # This workflow feeds a REQUIRED context. Every event here other than a push or a
   # code-changing PR action fires at the CURRENT head SHA, and a cancelled required
   # check is not success — it is retained alongside any later success from a
   # separate run, so the rollup stays FAILURE and the PR is --admin-only. A label
@@ -33,10 +39,76 @@ concurrency:
       || ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
           && contains(fromJSON('["opened","synchronize"]'), github.event.action)) }}
 jobs:
-  call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/pre-commit.yml@ci/v4.0.0
-    with:
-      python-version: '3.12'
-      # Override examples:
-      # extra-deps: '-r tests/conformance/requirements.txt'
-      # runner_labels: '"runner-self"'   # PRIVATE per OPS-0049
+  hooks:
+    name: Lint / format / security hooks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Full history: the pre-push step below needs merge-base + push-range
+          # git reads (a depth-1 checkout would make the audit-trail check
+          # measure nothing rather than fail). CHG-24 #798.
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Install pre-commit
+        run: |
+          python -m pip install --disable-pip-version-check "pre-commit==4.6.0"
+
+      - name: Run hooks
+        run: |
+          set -euo pipefail
+          # D11 post-condition (verbatim from the canon source above): the run
+          # must observably EXECUTE at least one hook — a green run that
+          # inspected nothing is the exact failure shape this guard prevents.
+          out="$(mktemp)" || { echo "::error::pre-commit: could not allocate a temp file, so the D11 post-condition cannot run. Refusing rather than reporting a result it did not verify."; exit 1; }
+          set +e
+          # `env -u SKIP`: THE GATE DECIDES WHAT RUNS, NOT THE ENVIRONMENT.
+          env -u SKIP timeout 900 pre-commit run --all-files --color=never --show-diff-on-failure 2>&1 | tee "$out"
+          pipes=("${PIPESTATUS[@]}")
+          rc=${pipes[0]}
+          tee_rc=${pipes[1]:-0}
+          set -e
+          if [ "$rc" -eq 124 ]; then
+            rm -f "$out"
+            echo "::error::pre-commit: timed out — infrastructure failure, not hook failures. Re-run."; exit 1
+          fi
+          if [ "$tee_rc" -ne 0 ]; then
+            rm -f "$out"
+            echo "::error::pre-commit: could not capture the run's output (tee exited ${tee_rc}) — infrastructure failure. The D11 post-condition was NOT evaluated. Re-run."; exit 1
+          fi
+          HOOKLINE='\.+(\(no files to check\))?(Passed|Failed|Skipped)$'
+          executed="$(grep -cE "$HOOKLINE" "$out" || true)"
+          nofiles="$(grep -cE '\.+\(no files to check\)Skipped$' "$out" || true)"
+          case "$executed" in ''|*[!0-9]*) executed=0 ;; esac
+          case "$nofiles"  in ''|*[!0-9]*) nofiles=0 ;; esac
+          rm -f "$out"
+          if [ "$rc" -eq 0 ]; then
+            if [ "$executed" -eq 0 ]; then
+              echo "::error::pre-commit: the run exited 0 having executed ZERO hooks — a green required check that inspected nothing (PLAN-025 D11). Pin the stage explicitly in \`.pre-commit-config.yaml\`."
+              exit 1
+            fi
+            if [ "$nofiles" -eq "$executed" ]; then
+              echo "::error::pre-commit: all ${executed} selected hook(s) reported '(no files to check)' — the run inspected NOTHING and exited 0 (PLAN-025 D11). Check the hooks' \`files:\`/\`types:\` patterns, and that the checkout is complete."
+              exit 1
+            fi
+            echo "pre-commit: ${executed} hook(s) EXECUTED, ${nofiles} with no matching files (D11 post-condition satisfied)."
+          fi
+          exit "$rc"
+
+      - name: "Run pre-push-stage hooks (CHG-24 #798)"
+        run: |
+          set -euo pipefail
+          # The pre-push gate (OPS-0069 audit-trail + mechanical linters) has no
+          # CI invoker otherwise: bare `pre-commit run --all-files` fires
+          # pre-commit-stage hooks only. Linters missing from the runner skip
+          # with notice inside the script; the audit-trail phrase check is
+          # mandatory (every commit carries the OPS-0065 phrase per repo rule).
+          env -u SKIP timeout 900 pre-commit run --all-files --hook-stage pre-push aidoc-flow-pre-push --color=never --show-diff-on-failure

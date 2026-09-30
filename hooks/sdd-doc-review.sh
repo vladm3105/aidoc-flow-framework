@@ -39,9 +39,8 @@ start_dir="$(cd "$(dirname "$file_path" 2>/dev/null)" 2>/dev/null && pwd)"
 abs_path="$file_path"
 [ -n "$start_dir" ] && abs_path="${start_dir}/${base}"
 
-# $HOME bounds the ADOPTION scan — a *user-global* `~/.aidoc/profile.yaml` is
-# documented (skills/project-profile/SKILL.md), so accepting a marker at or
-# above $HOME would make every project under it look adopted. Normalize the
+# $HOME bounds the ADOPTION scan — a user-global `~/.aidoc/profile.yaml`
+# would otherwise make every project under $HOME look adopted. Normalize the
 # trailing slash first: a raw string compare against a `$HOME` spelled with one
 # never matches, and the bound silently disappears.
 home_bound="$(printf '%s' "${HOME:-}" | sed 's:/*$::' 2>/dev/null)"
@@ -75,10 +74,10 @@ done
 # are supported, and every value is validated by its caller — anything
 # unrecognized falls through to the documented default.
 #
-# Strip CR before anything else. `docs/CONFIG.md` instructs users to QUOTE these
-# values, so on a CRLF file the closing quote is not at end-of-line and a
-# quote-stripping expression that runs first leaves the quotes on — silently
-# turning the documented `review_hook: "off"` into an unrecognized value.
+# Strip CR before anything else. Config values may be quoted (so on a CRLF
+# file the closing quote is not at end-of-line) and a quote-stripping
+# expression that runs first leaves the quotes on — silently turning the
+# documented `review_hook: "off"` into an unrecognized value.
 config_value() {
   [ -n "$config_file" ] || return 0
   sed -n "s/^$1:[[:space:]]*//p" "$config_file" 2>/dev/null | head -1 2>/dev/null |
@@ -87,7 +86,7 @@ config_value() {
       -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'\$/\1/" 2>/dev/null
 }
 
-# `review_hook` (docs/CONFIG.md): off → emit nothing; on → nudge only;
+# `review_hook`: off → emit nothing; on → nudge only;
 # verbose → nudge plus structural findings. Default "on". The NEAREST config
 # above the edited file wins, mirroring the linter's own `find_profile`.
 review_hook="$(config_value review_hook)"
@@ -97,7 +96,7 @@ case "$review_hook" in
 esac
 [ "$review_hook" = "off" ] && exit 0
 
-# `docs_root` (docs/CONFIG.md) — documented with a trailing slash and may be
+# `docs_root` — documented with a trailing slash and may be
 # multi-segment, so normalize the slashes and escape the regex metacharacters
 # before substituting it into the layer-path test below.
 docs_root="$(config_value docs_root)"
@@ -137,10 +136,10 @@ msg="Edited a ${artifact} document (<untrusted-filename>${safe_base}</untrusted-
 # ── Structural findings (verbose, adopted projects only) ─────────────────────
 # `adopted` is a NOISE gate, not a trust boundary: every signal it reads is
 # ordinary repository content, so a cloned repo can carry them. Its job is to
-# keep the hook quiet in projects that never opted in — the plugin bundles its
-# own registry, so the linter resolves one in any directory and the documented
-# "skip silently when there is no framework/" path is unreachable once
-# installed. Nothing downstream may treat `adopted` as evidence that the
+# keep the hook quiet in projects that never opted in — the linter resolves
+# the nearest registry by walking up from its run directory, so without this
+# gate it would nudge on edits in directories that never adopted the flow.
+# Nothing downstream may treat `adopted` as evidence that the
 # project is trusted.
 #
 # Exit codes: 1 = findings *or* a crash — the two are told apart by the finding

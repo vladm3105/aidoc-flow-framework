@@ -1,16 +1,26 @@
 # Document Governance — SDD
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.3 |
+| Status | Approved |
+| Last Updated | 2026-09-30 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 ## Principles
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
-2. **YAML is the mandatory format and the source of truth** — for **templates and for the instance artifacts authored from them**. Every layer template is `{TYPE}-TEMPLATE.yaml`, and every artifact a layer produces is authored as `.yaml`. **Markdown is optional and descriptive**: a rendering of the YAML, or additional explanatory material around it. Markdown never carries a fact the YAML does not, and a fact that exists only in markdown is a defect of the same class as two records of one count. Where a `.md` file restates YAML content it is **generated, not authored** — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect. Scope note: this principle governs the artifacts of layers 1-8 and their templates; it does not govern repository prose (`README`, `CHANGELOG`, governance surfaces such as this file) or a layer's `<X>-00_index.TEMPLATE.*`, whose extension is fixed per layer by `LAYER_REGISTRY.yaml`. **Authority:** the per-layer value is `LAYER_REGISTRY.yaml` `extensions` — the single normative source (GD-17). This principle states the rule; it does not re-specify the per-layer extensions. **Effective condition:** GD-17 states, once, when the instance-format mandate takes normative effect.
+2. **YAML is the mandatory format and the source of truth** — for **templates and for the instance artifacts authored from them**. Every layer template is `{TYPE}-TEMPLATE.yaml`, and every artifact a layer produces is authored as `.yaml`. **Markdown is optional and descriptive**: a rendering of the YAML, or additional explanatory material around it. Markdown never carries a fact the YAML does not, and a fact that exists only in markdown is a defect of the same class as two records of one count. Where a `.md` file restates YAML content it is **generated, not authored** — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect. Scope note: this principle governs the artifacts of layers 1-10 and their templates; it does not govern repository prose (`README`, `CHANGELOG`, governance surfaces such as this file) or a layer's `<X>-00_index.TEMPLATE.*`, whose extension is fixed per layer by `LAYER_REGISTRY.yaml`. **Authority:** the per-layer value is `LAYER_REGISTRY.yaml` `extensions` — the single normative source (GD-17). This principle states the rule; it does not re-specify the per-layer extensions. **Effective condition:** GD-17 states, once, when the instance-format mandate takes normative effect.
 3. **Necessary-upstream traceability** — Each layer cites only its `required_tags` (`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer; deeper lineage is transitive.
 4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
 6. **Separation of development and deployment** — Development plans produce source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, and shipped through version control. Deployment plans handle operator-only execution of those artifacts. A development plan is complete when its artifacts are authored, committed, and green — it does NOT wait for deployment.
 7. **Token-efficient authoring** — Documents must be **precise and complete**, not **detailed and exhaustive**. Completeness comes from covering every required template section, not from prose volume. Authoring voice, form preferences, and size targets are defined in [`AUTHORING_STYLE.md`](AUTHORING_STYLE.md); every creation and audit engine loads it alongside the layer template.
 8. **Change-of-record discipline** — Every change must keep its documents-of-record in sync within the same PR. A doc-of-record is any document whose content is the durable answer to "what state is the project in" — `CHANGELOG`, `ROADMAP`, `README`, `PARITY`, `TAGGING`, `DECISIONS`, the handoff log, and the project memory (`CLAUDE.md`). No catch-up "doc-refresh" PR may follow a change; the doc updates ship in the change's own PR. Enforcement is two-tier: (a) **mechanical** — version-reference propagation runs automatically on commit (`scripts/sync-version-refs.sh` re-syncs every doc that quotes a `VERSION` file when that file changes); (b) **semantic** — a warning hook (`scripts/check-docs-updated.sh`) flags likely-stale docs when a commit touches code/spec/skills without touching a doc-of-record. The contributor authors the semantic content (changelog entry text, roadmap bullet, decision rationale, handoff narrative); the hook decides whether to remind. See [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md#documentation-discipline--update-docs-of-record-per-pr) §Documentation discipline for the per-change-category matrix.
-9. **Example-driven / project-driven framework improvement** — Examples are the system-under-test, and every consumer project applying the framework is an additional empirical test. Friction discovered during use (lint-rule misfires, harness flag absences, engine prose contradicting the spec, sync-script gotchas, missing convenience features) is **NEW knowledge about the framework itself** and is captured immediately, not held in personal memory. The capture mechanism is a two-tier feedback pipeline defined in [`FRAMEWORK_FEEDBACK_LOG.md`](FRAMEWORK_FEEDBACK_LOG.md): (a) **Tier 1 — consumer project** keeps a `framework-feedback-log.md` at project root recording every framework friction it hits; (b) **Tier 2 — framework repo** aggregates onto the framework repo's issue tracker. Without the pipeline, learning evaporates between sessions and the next project rediscovers the same pain. **Issues are the capture and publication surface:** an entry that is actionable by someone other than its finder, reproducible at `file:line` with a fix shape, or user-visible gets an issue on the framework's tracker, linked both ways and closed on the merge SHA.
+9. **Example-driven / project-driven framework improvement** — Every consumer project applying the framework is an additional empirical test. Friction discovered during use (lint-rule misfires, harness flag absences, engine prose contradicting the spec, sync-script gotchas, missing convenience features) is **NEW knowledge about the framework itself** and is captured immediately, not held in personal memory. The capture surface is the framework repo's issue tracker, per [`FRAMEWORK_FEEDBACK_LOG.md`](FRAMEWORK_FEEDBACK_LOG.md): an entry that is actionable by someone other than its finder, reproducible at `file:line` with a fix shape, or user-visible gets an issue, linked both ways and closed on the merge SHA. Without the discipline, learning evaporates between sessions and the next project rediscovers the same pain. (Tier-1 consumer-project log retired in 0.67.0, CHG-23: no operator — the tracker is the single surface.)
 
 ### Development vs Deployment Plans
 
@@ -44,7 +54,12 @@ Practical effect:
   them. Both mandate YAML — read Principle 2 before concluding that a layer's
   instance format is unconstrained. The per-layer value is `../registry/LAYER_REGISTRY.yaml`
   `extensions` — the single normative source (GD-17); this bullet does not re-specify it.
-- Each layer has exactly one `{TYPE}-TEMPLATE.yaml`.
+- Each layer has exactly one normative `{TYPE}-TEMPLATE.yaml`. EVAL carries
+  one additional normative template (`EVAL-REPORT-TEMPLATE.yaml`);
+  `IPLAN-VERIFY-TEMPLATE.yaml` is a retired tombstone pointer carrying no
+  template content (CHG-08 #662 — validation runs as EVAL cycles, repairs via
+  the `bugfix`-subtype IPLAN). Retired MVP variants survive only as tombstone
+  pointers carrying no template content (CHG-08 #666).
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.
 
@@ -55,7 +70,115 @@ Practical effect:
 - Element IDs must match the 4-segment hash format: `TYPE.NN.SS.xxxx`.
 - Document IDs must match the format: `TYPE-NN`.
 
-## CHG creation checklist
+### SDD-First Implementation Order (§3.1.1)
+
+When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** be SDD document updates. The correct flow is:
+
+```
+CHG (authorize only)
+  ↓
+Phase 0: SDD Document Updates (FIRST — MANDATORY; for F3 ordered modules-first per CHG_REQUEST_FLOWS.md §4)
+  0a. Record seed_scope (F3 only: no-change with checked files cited, create for a new domain, or supersede — archive affected seed vN, author vN+1, link supersedes — never rewrite a published version; re-point vN-pinned ledger rows in the same lifecycle)
+  0b. Archive + sync affected modules only (F3 only), then pass the seed → modules review checkpoint
+  1. Archive current versions to the <CHG-ID> archive path (CHG archive convention)
+  2. Rewrite each SDD document as a clean new version (upper layers first: PRD → SPEC → IPLAN)
+  3. Update supersedes field with archive paths
+  4. Bump document_control.version
+  ↓
+Phase 1: IPLAN Creation/Update (AFTER SDD docs exist)
+  5. Create or update IPLAN with ALL code implementation steps
+     - The IPLAN MUST reference the NEW SDD document versions
+  ↓
+Phase 2: Code Implementation (driven by IPLAN)
+  6. Implement code per IPLAN specifications
+```
+
+**CRITICAL RULES:**
+- Code implementation steps belong in IPLAN, NOT in CHG.
+- SDD updates MUST happen BEFORE IPLAN creation (not "deferred").
+- The IPLAN MUST reference the NEW (updated) SDD versions.
+- If SDD updates are "deferred", the CHG is INCORRECT.
+- **For F3: no SDD rewrite and no IPLAN authoring until the seed → modules review checkpoint passes (flows doc §4).**
+- **No code may be written without an In-Progress IPLAN (IPLAN Gate — see §3.13).**
+
+**What Goes Where:**
+
+| Document | Contains | Does NOT Contain |
+|----------|----------|------------------|
+| **CHG** | Authorization, scope, SDD lifecycle steps (archive/rewrite/version bump), IPLAN creation/update | Detailed code implementation steps |
+| **IPLAN** | All code implementation steps, file manifest, execution commands, test cases | SDD document lifecycle (that's CHG's job) |
+| **SDD Documents** | Current requirements, specs, test definitions | Implementation details (that's IPLAN's job) |
+
+### Backward Propagation / Code-to-Doc Reconciliation Flow (Type-R — §3.1.2)
+
+When a verified working codebase temporarily precedes its specifications —
+empirical integration discovery against a live third-party sandbox,
+interactively authored browser test suites, severe test-flakiness
+remediation — the SDD-first order (§3.1.1) cannot be followed honestly:
+writing the change up as design-first would fabricate chronology, while
+leaving the docs stale rots the source of truth. The framework governs this
+case as **Type-R (Reconciliation)**: the verified codebase is treated as
+ground truth and propagated backward through a reverse-authored IPLAN into
+the upstream SDD layers.
+
+**Not Emergency.** A critical production issue uses the Emergency level
+(fix → deploy → document + post-mortem within 48h), never Type-R. Type-R
+covers non-emergency empirical work where the codebase is green and stable
+enough to serve as ground truth. The Type-R CHG records a one-line
+Emergency-exclusion rationale (why the work does not qualify as Emergency)
+in its change description, so the triage is auditable.
+
+```
+Verified Working Codebase (verification gates green, no secret findings, clean layer boundaries)
+  ↓
+Phase 0: Codebase Freeze & Manifest Extraction
+  1. Freeze the change set; verify all gates pass (unit, integration, and E2E suites; secret scan; boundary checks).
+  2. Extract the exact manifest: modified file paths, interface signatures, data-model deltas, configuration keys, test commands.
+  ↓
+Phase 1: Reverse-Authored IPLAN (ground truth from code)
+  3. Author the IPLAN from the frozen codebase: exact file manifest, empirical findings, test suites run.
+  4. The IPLAN bridges code to SDD — it records what was found, not what was planned.
+  ↓
+Phase 2: Upstream SDD Reconciliation (Code → TDD → SPEC → BDD → EARS)
+  5. Update TDD test suites (new assertions, cases, coverage standards).
+  6. Update SPEC interface signatures, data models, and constraints.
+  7. Update BDD feature behaviors and scenarios.
+  8. Update EARS requirements.
+  9. Refresh the layer index ledgers so they name the new versions.
+  ↓
+Phase 3: Bi-directional Verification Gate
+  10. Re-run the full battery — CHG lint, test suites, boundary checks, secret scan — against the reconciled docs.
+```
+
+**Guardrails for Type-R CHGs:**
+1. `change_source` is `reconciliation` (entry GATE-CODE); where the cascade requires it, the upstream doc fix ships as a dependent CHG (see GATE-CODE §6.2).
+2. Verification gates must be green BEFORE documentation propagation starts.
+3. The freeze holds through reconciliation: no new unverified code mid-phase. A discovery made during reconciliation restarts at Phase 0.
+4. **IPLAN Gate (§3.13) relationship.** The pre-existing verified code is the governed exception, not new implementation: from Phase 1 onward the reverse-authored IPLAN (status `In Progress`, `source_chg` naming the Type-R CHG, manifest covering every file the reconciliation touches) is the authorizing IPLAN for all doc edits and any follow-up code. The §3.13 pre-write verification applies to everything written after the freeze — including the reconciliation edits themselves. GOV-013 remains a forward-flow check; a Type-R CHG carrying `change_source: reconciliation` with a frozen manifest is its documented carve-out, not a violation.
+
+### CHG Request Flows (§3.1.3)
+
+Every artifact change is classified into exactly one flow — or into a governed non-flow path that yields to its
+own section — before its CHG is authored. First match wins, in this order:
+
+| # | Flow | `change_source` | `change_level` | Entry gate | SDD cascade? |
+|---|---|---|---|---|---|
+| F1 | Greenfield development (new chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
+| F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (always C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) |
+| F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — modules-first (0a supersede-capable + checkpoint, §4), affected layers down |
+| F4 | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
+| — | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
+| — | Type-R reconciliation (verified code precedes specs) | `reconciliation` | C2 typical | GATE-CODE | Reverse (§3.1.2) |
+
+Router: Emergency → Type-R → F4 (defect in closed IPLAN?) → F3 (behavior/contract change?) → F2 (no prior IPLAN,
+no SDD contract?) → F1 (default). Misfiled flows are defects: F1/F3 MUST NOT file as F2/F4 to dodge the cascade;
+F3 MUST NOT file as F4 (F4 repairs output to standing SDD; F3 changes the promise).
+Full definitions, the C1/IPLAN-gate ruling (every C1 requires a scoped IPLAN, every author — no
+direct-commit path; sole exception seed-phase drafting pre-first-BRD), the misclassification guard (GOV-018),
+and verification expectations:
+`governance/CHG_REQUEST_FLOWS.md` (canonical — this section is the kernel, not a second source).
+
+## CHG creation checklist (§3.4)
 
 Before writing any CHG document, complete this checklist. Each item maps to a
 gap class found in CHG post-creation reviews. Items 11-12 were added after
@@ -83,10 +206,10 @@ failures).
 | 8 | **Add automated test specifications** — for each implementation step, specify the test file, test name, and assertion method. Manual checks alone are insufficient. | No automated test specs |
 | 9 | **Verify the fix location** — if error handling is needed, check whether the error is thrown in the function or in the caller. | Wrong fix location |
 | 10 | **Add DB migration + rollback** — if adding columns, provide the full migration SQL, rollback SQL, backfill strategy, and indexes. | Migration without rollback |
-| 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. | No SDD lifecycle steps |
-| 12 | **Check traceability to SDD lifecycle rules** — verify this document's §SDD Document Management and §CHG Rules are satisfied. | Rules not enforced at creation time |
-| 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
-| 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
+| 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. Rewrites purge stale content (unused sections, duplicate entries, dead references, retired approaches) so the new version reads as written from scratch with current knowledge. | No SDD lifecycle steps |
+| 12 | **Check traceability to SDD lifecycle rules** — verify the SDD lifecycle completeness (§3.4.1 C16) and CHG scope rules (§3.4.1 E25–E27) are satisfied. | Rules not enforced at creation time |
+| 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle`, `iplan_creation`, or `documentation_sync` for doc-only milestones). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` / `documentation_sync` steps (execution zone). NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
+| 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle`, `iplan_creation`, and `documentation_sync` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 
 ### 3.4.1 CHG Post-Creation Validation (MANDATORY)
 
@@ -112,16 +235,17 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 | B15 | DB migration + rollback included | Migration without rollback |
 | C16 | `sdd_lifecycle` lists EVERY modified SDD document | Incomplete SDD lifecycle |
 | C17 | Each SDD entry has: layer, document, action, archive_path, new_version, changes | Missing SDD metadata |
-| C18 | Archive paths use CHG-ID format, not date-based | Wrong archive convention |
+| C18 | Archive paths use CHG-ID format, not date-based; every cited snapshot must exist on disk and be git-tracked | Wrong archive convention or missing snapshot |
 | C19 | New versions are bumped (not same as current) | Version not bumped |
 | C20 | `supersedes` lists ALL archived documents with full paths | Missing supersedes |
 | D21 | Every EARS ID exists in actual EARS document | Wrong traceability |
 | D22 | Every BDD ID exists in actual BDD document | Wrong traceability |
 | D23 | No architecture seed docs referenced as SDD docs | Wrong document type |
 | D24 | Upstream requirements cited, not architecture descriptions | Wrong reference level |
-| E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation) | Scope creep |
+| E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation + documentation sync) | Scope creep |
 | E26 | NO code implementation steps in CHG | Code in wrong document |
 | E27 | `implementation.steps` references IPLAN, not code files | Wrong reference |
+| E28 | No `implementation.steps` entry is marked `Completed` before its implementation code is written and verified (pre-implementation CHG statuses `Proposed` / `Approved`: every step is `Pending` or `In Progress`) | Premature step completion |
 
 **Gate:** ALL checks pass → commit. ANY check fails → fix, re-validate, then commit.
 
@@ -146,6 +270,16 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 2. **No skipping stages.** A CHG MUST NOT jump from `Proposed` directly to `In-Progress` or `Implemented`. The `Approved` stage is a mandatory gate — it records that the change was authorized before implementation began.
 3. **Gate approval required for C3.** C3 changes MUST have `gate_approval.approver` set before status can advance beyond `Proposed`.
 4. **`Implemented` ≠ `Completed`.** `Implemented` means code is merged. `Completed` means verification passed.
+5. **Issues track the lifecycle (issue-level match).** Every issue the CHG claims MUST carry a `status` that advances with the CHG — no issue left at `Proposed` when the CHG is `Implemented`.
+6. **Ship in the same change.** All issues listed on a CHG ship in that change's diff. An issue that slips scope gets its own CHG; it is not carried silently.
+7. **Resume via `In-Progress`.** Paused work resumes by returning the CHG to `In-Progress` with a `revision_history` note — never by editing artifacts under a later status.
+8. **Step statuses follow the CHG (step-status invariant).** `implementation.steps[]` statuses MUST be consistent with the CHG status: no step is `Completed` while the CHG is pre-implementation (`Proposed` / `Approved`) — see E28.
+9. **No zero-work `Completed`.** A CHG with zero implementation steps and zero `artifacts_modified` MUST NOT advance beyond `Approved` — nothing was implemented, so there is nothing to complete.
+10. **Phase-3 closeout bifurcates on deployability.** `Completed` means the verification *owed by the change's flow* passed — and what is owed depends on what the change ships:
+    - **Deployable scope** (source code, scripts, runtime config, database migrations — anything the project's deployment procedure installs): closeout is live. The agent MUST deploy the DEV environment, run the smoke suite, and generate an authentic Layer-10 EVAL report *before* advancing to `Completed`. Closing a deployable change on static checks alone is premature completion.
+    - **Non-deployable scope** (documentation-only, governance sync, SDD-only, zero runtime or config artifacts): closeout is static. The change is validated via the linter battery (`chg_lint`), the scoped-IPLAN checks, self-review, and a clean governance PR — then advances to `Completed` with NO deployment and NO EVAL report owed. An empty or fabricated EVAL MUST NEVER be generated to satisfy closeout; the verification record is the static battery.
+    - **Mixed scope follows the deployable path.** The change's own file manifest decides: any deployable artifact in the manifest mandates live closeout. When in doubt, the deployable path governs.
+11. **Development-complete ≠ deployed (companion to rule 10).** A development IPLAN is complete when its artifacts are authored, committed, and green — deployment belongs to a separate deployment plan. Rule 10 governs the *CHG* closeout: a deployable CHG is not `Completed` until the deployment-plan evidence (deploy + smoke + EVAL) it depends on has landed and is cited.
 
 **Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 
@@ -154,6 +288,8 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 **No code may be written without an IPLAN authorizing the changes.**
 
 This is a HARD BLOCK that supersedes all other instructions. Before ANY write/edit call to code files or governance files:
+
+**Bootstrap exemption:** Creating or updating the authorizing CHG, SDD, and IPLAN documents themselves on the working branch, in CHG → SDD → IPLAN order, is the exempt path — the gate covers implementation files and non-governance edits.
 
 **Pre-write verification (MANDATORY):**
 
@@ -165,9 +301,55 @@ This is a HARD BLOCK that supersedes all other instructions. Before ANY write/ed
 
 **If ANY check fails: STOP. Do not write code. Fix the governance gap first.**
 
-**Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
+**No bugfix exception (CHG-12):** every bug fix carries a CHG — fixes on an active (`Draft |
+Approved | In Progress`, never `Completed` or `Verified`) IPLAN ride that IPLAN's authorizing CHG, and
+post-completion repairs ride the bugfix vehicle below (C1 CHG + bugfix IPLAN). Skipping CHG creation is
+never permitted post-seed; the only change without a CHG is seed-phase drafting pre-first-BRD (F2.2).
+
+**Post-completion repair (bugfix vehicle).** A defect found in closed output
+(`Completed` past its VERIFY window, or `Verified`) is repaired by a scoped
+`bugfix`-subtype IPLAN parented on the closed plan (`parent_iplan` +
+`source_chg`), never by reopening the closed plan. The bugfix IPLAN satisfies
+this gate like any other: it exists, it is `In Progress`, its `source_chg`
+names the authorizing CHG (C1 allowed for code-only repairs), the repair files
+are the only files in its manifest, and the CHG is `In-Progress`/`Implemented`.
+The closed parent is never touched — recording lands in the bugfix IPLAN +
+the CHG + the index. No issue-thread citation authorizes code on its own
+(#656's `Related-IPLAN` bypass is rejected).
+
+**Direct-request C1 (F2.2).** No direct-commit path survives (CHG-12): every C1 — docs-only,
+non-normative included — requires a C1 CHG + scoped IPLAN for every author (agents and humans). The scoped
+IPLAN is `In Progress`, its `source_chg` names the CHG, its manifest covers every touched file (covering
+test cases for code; N/A-allowed for pure prose) — "small diff" is not an exemption. The sole exception is
+seed-phase drafting before the first BRD is authored against seed vN (SEED_CONTRACT R1). See
+`governance/CHG_REQUEST_FLOWS.md` §3 (F2).
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
+
+### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync)
+
+**Status transitions are mandatory gates.** The IPLAN status lifecycle (`Draft → Approved → In Progress → Completed → Verified`) requires an explicit status update at each phase boundary before work on the next phase begins. `Completed` is validatable, not terminal — the VERIFY window is still open. Only `Verified` is terminal (immutable, no backward transitions ever):
+
+| Transition | Gate | Rule |
+|------------|------|------|
+| `Draft → Approved` | Authorization gate | Must be set before any implementation planning. |
+| `Approved → In Progress` | Implementation gate | MUST be set BEFORE writing any code. |
+| `In Progress → Completed` | Completion gate | Set when all implementation is done and tests pass. |
+| `Completed → Verified` | Validation gate | Set after verification passes. |
+
+**Two failure modes (for reference):** `Draft` does NOT authorize implementation planning — planning on a `Draft` IPLAN skips the authorization gate. `Approved` does NOT authorize code — starting implementation on an `Approved` IPLAN without the `In Progress` transition skips the implementation gate.
+
+**file_manifest accuracy.** When an IPLAN is marked `Completed`, every file in its `file_manifest` with `status: DONE` must actually exist on disk and contain a real implementation (not a stub or mock). Spot-check DONE files for stub markers before flipping status.
+
+**Realtime manifest updates.** After implementing each file, the IPLAN `file_manifest` entry MUST be updated from `PENDING` to `DONE` (or `SKIPPED` with a note) as work progresses — never batch-updated at the end. A manifest that still reads `PENDING` after implementation is complete misstates progress.
+
+**CHG tracks IPLAN completion.** When an IPLAN authorized by a CHG is marked `Completed`, the CHG status MUST also advance to `Completed` (or at least `Implemented`). A CHG stuck at `In-Progress` after all its IPLANs are `Completed` violates the status lifecycle (§3.3).
+
+**SDD sync on IPLAN completion.** When an IPLAN is marked `Completed`, the corresponding SPEC and TDD documents MUST be checked against what was actually built — not what was originally planned. If implementation diverged from the spec, a CHG must be created and the SPEC/TDD rewritten as a new version. The status flip and the SPEC/TDD version check ship in the same change, so the SDD docs stay the current source of truth without requiring codebase comparison. The machine-checkable half of this rule is the `completion_spec_sync:` field on the IPLAN template, validated by CHG-L012 (warning).
+
+**Post-merge VERIFY obligation.** Merging at `Completed` is not forbidden, but the VERIFY window stays explicitly open: the index keeps `validated_by: pending` until the first EVAL cycle lands. A defect surfacing in that window is fixed through a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`) — the 0.56.0 canon — never through a validation IPLAN, and never by reopening the plan. The `bugfix` vehicle owns defect repair in this window and after `Verified` alike.
+
+**Migration VERIFY rule.** For migration IPLANs, fmt/lint/unit green is necessary but NOT sufficient: validation MUST include a fresh-image rebuild plus a live-DB dry-run of the migration apply step. A formatter parsing cleanly does not prove the artefact applies; a stale image does not prove the current tree boots (#656).
 
 ### CHG Linter Usage Rules (§3.14)
 
@@ -209,16 +391,29 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 |----------|------|----------|-------------------|
 | CHG-L001 | §3.3 Status Lifecycle | error | Status follows: Proposed → Approved → In-Progress → Implemented → Completed. No skipping stages. |
 | CHG-L002 | §3.1 Gate Approval | error | C3 changes have `gate_approval.approver` set (not null). |
-| CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle` or `phase: iplan_creation`. |
-| CHG-L004 | §3.1.1 IPLAN Reference | warning | CHG references an IPLAN for code changes. |
-| CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps. |
+| CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle`, `phase: iplan_creation`, or `phase: documentation_sync` (doc-only milestones). |
+| CHG-L004 | §3.1.1 IPLAN Reference | error | CHG references an IPLAN for code changes. |
+| CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps; IPLAN-only with zero SDD steps errors on lifecycle-carrying sources. |
+| CHG-L006 | §3.4.1 C16 SDD lifecycle completeness | error | `implementation.steps` with phase `sdd_lifecycle` exists when SDD documents are modified. |
+| CHG-L007 | §3.4.1 C17 SDD entry metadata | error | Every `sdd_lifecycle` step declares artifact + status; `archive_path`/`new_version` required except IPLAN-create steps. |
+| CHG-L008 | §3.4.1 C18 Archive path convention | error | Archive paths use CHG-ID format, never date-based paths. |
+| CHG-L016 | §3.4.1 C18 Archive snapshots exist | error (ignored) / warning (missing, unstaged) | Every cited snapshot resolves to a file on disk and is git-tracked. |
+| CHG-L009 | §3.4.1 C19 Version bump | error | `new_version` differs from current when stated. |
+| CHG-L010 | §3.4.1 C20 Supersedes completeness | error | `change_control.supersedes` lists every archived document with its full path. |
+| CHG-L011 | §3.4.1 D21/D22 Cited IDs exist | error (exact `--sdd-root`) / warning (heuristic) | Cited EARS/BDD IDs exist in the referenced documents. |
+| CHG-L012 | §IPLAN Lifecycle SDD sync | warning | Completed IPLANs attest SPEC/TDD checks in `completion_spec_sync:`. |
+| CHG-L013 | §3.1.3 Flow misclassification | error | Code manifest + empty lifecycle + wrong source names the suspected flow (F2/F3/F4). |
+| CHG-L014 | §3.1.3 Seed/module coverage | error | Lifecycle-carrying sources (upstream/midstream/design/spec/reconciliation) touching seed/module docs need `seed_scope` / `module_lifecycle`. |
+| CHG-L015 | §4 Lifecycle attribution | error | Lifecycle entries carry `author` (+ `chg_ref` for modules). |
+
+Severities match `sdd_doc_lint/chg_lint.py`'s actual `errors`/`warnings` placement (#716); the full catalog with `GOV-*` aliases lives in `LINT_RULES.md`.
 
 #### Required Workflow
 
 ```
 1. Create CHG (status: Proposed)
    ↓
-2. Run linter: python scripts/chg_lint.py <chg-file.yaml>
+2. Run linter: python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>
    ↓
 3. If errors → fix CHG, re-run linter
    ↓
@@ -255,6 +450,21 @@ The CHG linter works alongside:
 - **IPLAN Gate** (§3.13) — blocks code writes without IPLAN
 
 **Rule:** The linter does NOT replace the manual checklists. Run the linter AND complete the checklists. The linter catches structural violations; the checklists catch content quality.
+
+## Status Propagation (§4.1)
+
+When a downstream SDD layer document is started, the upstream document's status MUST be updated to `Approved`. Do not start the next layer if its upstream is not approved.
+
+**Propagation chain:**
+- Seed doc status → `Approved` when module doc generation starts.
+- Module doc status → `Approved` when its BRD layer starts.
+- BRD doc status → `Approved` when its PRD layer starts.
+
+This ensures the SDD chain reflects authoring progress — a `Draft` upstream means its downstream has not been started yet.
+
+**ADR convention:** ADRs use `Accepted` (not `Approved`) as their terminal status.
+
+**Worktree-based cascade authoring** follows the ordering invariants in [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md) (worktree removal runs before branch deletion).
 
 ## EVAL Layer Governance
 
@@ -303,66 +513,6 @@ docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
 | EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
 | Test case (BDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.03.a7f3` |
 | Test case (TDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.04.4d64` |
-
-**Rule**: One source per test case. Each test case maps to exactly one upstream element via `source_type` + `source_id`. Never mix BDD, TDD, EARS, or other sources in a single test case.
-
-### EVAL Traceability
-
-Each EVAL document traces to its owning IPLAN (1:1). The IPLAN traces to SPEC, TDD,
-BDD, and EARS. EVAL does not need to re-trace the full chain — it follows transitively
-through the IPLAN.
-
-```
-EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
-```
-
-## EVAL Layer Governance
-
-### EVAL-IPLAN 1:1 Mapping Rule
-
-Each IPLAN owns exactly one EVAL document. The EVAL-NN number matches the IPLAN-NN
-number (EVAL-01 owns IPLAN-01, EVAL-02 owns IPLAN-02, etc.).
-
-### EVAL Version Coupling
-
-EVAL documents version with their owning IPLAN. When a CHG bumps the IPLAN version,
-the EVAL versions with it. The `document_control.iplan_version` field records which
-IPLAN version the EVAL covers.
-
-| What changes | What happens to EVAL |
-|---|---|
-| IPLAN code changes (same scope) | EVAL stays same version, new RPT cycle |
-| IPLAN scope changes (new files/features) | EVAL bumps version, archive old |
-| BDD/TDD upstream changes | EVAL bumps version if test cases change |
-
-### EVAL-RPT Immutability
-
-Evaluation reports (EVAL-RPT files) are immutable once written. They are snapshots
-of test execution — never modified after creation. If new tests are run, a new RPT
-file is created with an incremented cycle number.
-
-### EVAL Archival
-
-When a CHG bumps an EVAL version, the old EVAL document and its reports are archived
-to the CHG archive directory:
-
-```
-docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
-  EVAL-{NN}/
-    EVAL-{NN}.yaml                    # archived old version
-    reports/
-      EVAL-{NN}-RPT-*.yaml            # archived reports
-```
-
-### EVAL Naming Standards
-
-| Element | Format | Example |
-|---------|--------|---------|
-| EVAL directory | `EVAL-{NN}/` | `EVAL-01/` |
-| EVAL document | `EVAL-{NN}.yaml` | `EVAL-01.yaml` |
-| EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
-| Test case (BDD) | `EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}` | `EVAL-01.BDD-01.TC-01.3` |
-| Test case (TDD) | `EVAL-{NN}.TDD-{NN}.{hash}` | `EVAL-01.TDD-01.4d64` |
 
 ### EVAL Traceability
 

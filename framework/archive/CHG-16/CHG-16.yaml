@@ -1,0 +1,204 @@
+# =============================================================================
+#  CHG-16: docs/deploy batch — judge-then-human approval (#784), aidoc cp fix
+#  (#785), bootstrap checklist (#786), upgrade runbook (#787) + PATCH 0.65.1
+# =============================================================================
+#  Flow: C2 spec-source (governance prose clarification + two additive docs;
+#  no gate/ID/schema/enum removed; previously-green records stay green) —
+#  entry GATE-SPEC; authorizing IPLAN-16 (In Progress).
+#  Issues: #784 (P2 gap governance), #785 (P3 docs), #786 (P2 gap docs),
+#  #787 (P2 gap governance). All four verified OPEN + ALIVE on dev @ 2c0505da
+#  (2026-09-29): #785 cp path fails as written; #784 human-only C3 approval
+#  with no codified judge-before-approval step; #786 no bootstrap procedure;
+#  #787 no upgrade runbook. Related history, not duplicates: #434 (closed),
+#  PR #158 (merged, GD-02).
+#  Requester citation (session direction 2026-09-29, verbatim ask): "fix
+#  https://github.com/vladm3105/aidoc-flow-framework/issues . You can group
+#  several issues into one PR".
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — docs-only batch, no runtime code, no new scripts, no
+#  queries/migrations; EARS/BDD IDs vacuous (upstream is issues
+#  #784/#785/#786/#787; no element IDs cited); coupled-issue scan: #779
+#  (self-learn two-tier, P1 enhancement) explicitly OUT — cross-cutting spec
+#  change needing its own F3/C3 vehicle, ships alone later; #434/#158 share
+#  no fix with this batch. Covering tests: tests/conformance/test_governance.py
+#  EXPECTED_FILES extended for the two new docs (no weakened checks).
+#  No code steps in this CHG (CHG-L003 clean — implementation lives in
+#  IPLAN-16). No SDD document modified outside the lifecycle below.
+#  No framework/ spec behavior change → PATCH 0.65.0 → 0.65.1.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose only, no executable
+#  content, no prompt-injection surface; the #784 clarification shrinks the
+#  approval-spoofing surface (AI verdict can never satisfy a C3/spec gate).
+# =============================================================================
+
+id: CHG-16
+title: "Docs/deploy batch: judge-then-human C3 approval (#784), aidoc cp fix (#785), bootstrap checklist (#786), upgrade runbook (#787) + PATCH 0.65.0 → 0.65.1"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.65.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-16"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: upgrade
+  author: "Framework Maintainer (AI agent + owner)"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "aidoc README v1.0 (framework/archive/CHG-16/aidoc-README.md)"
+    - "09_CHG README v1.2 (framework/archive/CHG-16/chg-README.md)"
+    - "framework/VERSION 0.65.0 (framework/archive/CHG-16/VERSION)"
+    - "IPLAN-16 authorizing record (framework/archive/CHG-16/IPLAN-16.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Batch four docs/deploy gaps in one C2 vehicle: (#784) codify the already-wired judge-then-human pattern at C3/spec gates — mandatory independent second-opinion review BEFORE the human approval surfacing, AI verdict never satisfies the gate (Option A of the issue; Option B bounded AI-approver tier explicitly declined); (#785) fix the root-relative aidoc scaffold cp path (prefix framework/); (#786) add BOOTSTRAP.md checklist (profile copy + knob fill, symlink create, version pin, smoke-verify) wired from the aidoc README; (#787) add UPGRADE-RUNBOOK.md (re-point framework_path, diff project/ overrides, re-run conformance, changelog) wired from GATE-SPEC re-adoption box. PATCH bump 0.65.0 → 0.65.1 with mechanical pin sweep + both CHANGELOGs."
+  why: "Each gap verified live on dev: the #785 command fails as written; #784 leaves Step-4 approval ambiguous between judge-as-reviewer and judge-as-approver; #786/#787 state obligations (deploy contract, re-adoption box) with no procedure behind them, proven by silent consumer drift."
+  trigger: "Issues #784, #785, #786, #787 (all OPEN, all claims ALIVE 2026-09-29) + owner session direction to fix and group into one PR."
+  breaking_change_analysis: "C2 (not C3): additive clarification — no gate/ID/schema/enum removed; #784 narrows nothing previously permitted (human-only C3 approval already the rule; the judge step was already wired in approval-gate); previously-green records stay green. Reviewer may escalate to C3 at PR review."
+  enforcement_decision: "Reviewer-lens (not a new linter emitter). Rationale: approval adequacy and runbook completeness are judgement over prose, not syntactic properties of a record; the #785 path is covered by the existing file-presence conformance battery."
+  scope:
+    in:
+      - "framework/governance/chg/README.md v1.2 → v1.3 (+ byte-identical twin framework/layers/09_CHG/README.md): judge-then-human C3 approval rule (#784)"
+      - "framework/governance/aidoc/README.md v1.0 → v1.1: cp path fix (#785) + BOOTSTRAP/UPGRADE-RUNBOOK rows"
+      - "framework/governance/aidoc/BOOTSTRAP.md v1.0 (new): bootstrap checklist (#786)"
+      - "framework/governance/aidoc/UPGRADE-RUNBOOK.md v1.0 (new): consumer upgrade runbook (#787)"
+      - "tests/conformance/test_governance.py: EXPECTED_FILES + the two new docs"
+      - "framework/VERSION 0.65.0 → 0.65.1 + mechanical pin sweep + both CHANGELOGs"
+    out:
+      - " bounded AI-approver tier (#784 Option B — explicitly declined, needs SDD scope + IPLAN of its own)"
+      - "Upgrade/stale-detector scripts (#786/#787 script halves — not shipped; runbooks are prose-only)"
+      - "Issue #779 (self-learn two-tier, P1) — separate F3/C3 vehicle, ships alone"
+      - "Any gate/ID/schema/enum change (none)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - action: amend
+    archive_path: framework/archive/CHG-16/chg-README.md
+    changes: "§Change Levels + solo-C3 note: judge-then-human rule at C3/spec gates (independent second-opinion review BEFORE human surfacing; AI verdict never satisfies the gate); doc Version 1.2 → 1.3 (twin layers/09_CHG/README.md kept byte-identical)"
+    document: framework/governance/chg/README.md
+    layer: 09_CHG
+    new_version: "1.3"
+  - action: amend
+    archive_path: framework/archive/CHG-16/aidoc-README.md
+    changes: "cp source prefixed with framework/ (#785); Documents table + consume section wired to BOOTSTRAP.md / UPGRADE-RUNBOOK.md; doc Version 1.0 → 1.1"
+    document: framework/governance/aidoc/README.md
+    layer: 09_CHG
+    new_version: "1.1"
+  - action: create
+    archive_path: null
+    changes: "Bootstrap checklist: profile copy + knob fill, symlink create, version pin, smoke-verify (#786)"
+    document: framework/governance/aidoc/BOOTSTRAP.md
+    layer: 09_CHG
+    new_version: "1.0"
+  - action: create
+    archive_path: null
+    changes: "Consumer upgrade runbook: re-point framework_path, diff project/ overrides, re-run conformance, changelog (#787)"
+    document: framework/governance/aidoc/UPGRADE-RUNBOOK.md
+    layer: 09_CHG
+    new_version: "1.0"
+  - action: create
+    archive_path: null
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+    document: framework/archive/CHG-16/IPLAN-16.yaml
+    layer: 08_IPLAN
+    new_version: "1.0"
+
+artifacts_modified:
+  - id: "CHG-16"
+    changes: "Authorizing record for the docs/deploy batch (this file)"
+  - id: "IPLAN-16"
+    changes: "Authorizing IPLAN (framework/archive/CHG-16/IPLAN-16.yaml)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-16/ (excluding the CHG-16 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, VERSION"
+      archive_path: "framework/archive/CHG-16/"
+      new_version: "0.65.1"
+      current_version: "0.65.0"
+      status: Completed
+    - step: "Amend SDD docs per lifecycle above: chg/README.md + byte-identical twin (#784); aidoc/README.md (#785); create BOOTSTRAP.md (#786) + UPGRADE-RUNBOOK.md (#787)"
+      phase: "sdd_lifecycle"
+      artifact: "chg/README.md (v1.3), aidoc/README.md (v1.1), BOOTSTRAP.md (v1.0), UPGRADE-RUNBOOK.md (v1.0)"
+      archive_path: "framework/archive/CHG-16/"
+      new_version: "0.65.1"
+      current_version: "0.65.0"
+      status: Completed
+    - step: "PATCH fanout per IPLAN-16 manifest (non-SDD files ride steps + IPLAN manifest per CHG-10 precedent: test_governance.py, VERSION, pin sweep, both CHANGELOGs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md, version-pin sweep"
+      archive_path: "framework/archive/CHG-16/"
+      new_version: "0.65.1"
+      current_version: "0.65.0"
+      status: Completed
+    - step: "Create IPLAN-16 with the batch file_manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-16"
+      status: Completed
+  files_modified:
+    - "framework/governance/chg/README.md"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/aidoc/README.md"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    - "tests/conformance/test_governance.py"
+    - "hooks/sync-version-refs.sh"
+    - "framework/VERSION"
+    - "CHANGELOG.md"
+    - "framework/CHANGELOG.md"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: "Owner (session direction 2026-09-29: fix the issues, group into one PR)"
+  date: "2026-09-29T00:00:00Z"
+  conditions:
+    - "IPLAN-16 authored before approval (authorizing record for the doc steps)."
+    - "C2 peer review (maintainer) recorded here before Implemented; reviewer may escalate to C3."
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-16/CHG-16.yaml: 0 errors"
+  - "test_governance.py (incl. test_no_unexpected_files with the two new docs): green"
+  - "test_readme_copies_identical + test_gate_copies_identical: green (twin kept)"
+  - "Full conformance + chg suites: green unmodified, no weakened checks"
+  - "grep battery: framework/-prefixed cp path; judge-then-human markers; BOOTSTRAP/UPGRADE-RUNBOOK wired from aidoc README + GATE-SPEC re-adoption box"

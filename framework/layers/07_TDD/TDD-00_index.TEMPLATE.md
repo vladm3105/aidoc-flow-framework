@@ -21,6 +21,11 @@ custom_fields:
 
 Central registry for all TDD documents. Each TDD document defines test cases, maps BDD acceptance scenarios to test implementation, and declares quality thresholds for a SPEC component.
 
+> **Index-sync rule (TDD-SYNC-E):** the IPLAN index is the source of truth
+> for IPLAN statuses. When an IPLAN status changes, both this index and
+> `IPLAN-00_index` must be updated in the same change — never let the two
+> indexes disagree about an IPLAN's status.
+
 ## Position in Document Workflow
 
 ```
@@ -46,7 +51,7 @@ SPEC (L6)  ──►  TDD (L7)  ──►  IPLAN (L8)  ──►  Code
 ## Templates
 
 - [TDD-TEMPLATE.yaml](TDD-TEMPLATE.yaml) — **Default** — full template with embedded authoring guidance
-- [TDD-MVP-TEMPLATE.yaml](TDD-MVP-TEMPLATE.yaml) — Skeleton — not standalone; must also read the full template
+- [TDD-MVP-TEMPLATE.yaml](TDD-MVP-TEMPLATE.yaml) — retired tombstone pointer to the canonical template (CHG-08 #666)
 
 ## Quality Gate
 

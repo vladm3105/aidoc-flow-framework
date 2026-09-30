@@ -129,7 +129,15 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
         elif not findings:
-            print("sdd-doc-lint: no structural findings.")
+            # §3.6c: a file without an NN_LAYER segment or ARTIFACT-NN prefix
+            # is SKIPPED by layer detection, not linted — so "no findings" may
+            # mean "nothing was checked". Say so, so a clean-looking run over
+            # non-layer paths is never mistaken for a clean baseline.
+            print(
+                "sdd-doc-lint: no structural findings "
+                "(paths without a layer pattern were skipped, not checked — "
+                "pass layer-pattern paths to lint real documents)."
+            )
 
     if any(f.severity == "error" for f in findings):
         return 1

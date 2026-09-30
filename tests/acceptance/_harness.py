@@ -118,6 +118,9 @@ def expected_warnings(target: Path) -> dict[tuple[str, str, str], int]:
 
     No manifest → empty multiset, which reproduces the historical
     "zero findings" contract exactly for every target that has none.
+    (Asymmetry, documented not fixed: layers 01–05 carry no manifest and
+    assert implicit-empty, while 06–08 pin explicit multisets — both shapes
+    are intentional; a manifest appears the moment a target emits a warning.)
     """
     path = _manifest_path(target)
     if not path.exists():

@@ -1,0 +1,126 @@
+# =============================================================================
+#  CHG-20: chg_lint.py -h/--help + unknown-option handling (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (code-touching C1: *.py CLI-UX only, no lint-semantics or
+#  SDD contract change) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  Covering tests REQUIRED (F2.3, code-touching): HelpExitTests mirror in
+#  sdd_doc_lint/tests/test_chg_lint.py (#717 bugfix precedent).
+#  IPLAN: framework/archive/CHG-20/IPLAN-20.yaml (authorizing once In Progress)
+#  Issue: #794 (triaged 2026-09-29: P2 + bug + linter; all claims verified
+#  live on dev @ 6564a1eb; note posted, labels applied)
+#  Requester citation (F2.3, verbatim ask): "do triage
+#  https://github.com/vladm3105/aidoc-flow-framework/issues/794 and fix it"
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — single-file CLI arg parsing, no structs/queries/migrations;
+#  EARS/BDD IDs vacuous (upstream is issue #794; no element IDs cited);
+#  coupled-issue scan: #717 (closed companion — sibling already fixed, this
+#  ships the chg mirror alone), #793 (prose, separate files, ships alone).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG.
+# =============================================================================
+
+id: CHG-20
+title: "Mirror bugfix_lint -h/--help + unknown-option handling into chg_lint.py (issue #794)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-29"
+  framework_version: "0.66.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-20"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-29T00:00:00Z"
+  date_approved: "2026-09-29T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-20 authorizing record (framework/archive/CHG-20/IPLAN-20.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Add -h/--help (usage to stderr, exit 0), -- separator, and unknown-flag rejection (exit 2) to chg_lint.py:main(), mirroring bugfix_lint.py:387-403 (#717), plus HelpExitTests covering cases in test_chg_lint.py. No change to file-linting behavior; CI passes paths only."
+  why: "chg_lint.py --help reports 'File not found: --help' (exit 1), contradicting the exit-code contract both linters document; operators probing the AGENTS.md-advertised gate get a misleading error."
+  trigger: "Issue #794 (triaged 2026-09-29, P2 + bug + linter)."
+  scope:
+    in:
+      - "sdd_doc_lint/chg_lint.py:main(): help/--/unknown-flag prologue (mirror only)"
+      - "sdd_doc_lint/tests/test_chg_lint.py: HelpExitTests (-h/--help → 0, --bogus → 2)"
+    out:
+      - "File-linting semantics (untouched — flags handled before file loop)"
+      - "bugfix_lint.py, __main__.py, chg-gate.yml (unaffected)"
+      - "Any framework/ normative change (none — version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-20 with the chg_lint mirror edit + covering tests + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-20"
+      status: Completed
+    - step: "Mirror help/unknown-flag handling into chg_lint.py + HelpExitTests + run IPLAN-20 battery"
+      phase: "documentation_sync"
+      artifact: "chg_lint tooling"
+      status: Completed
+  files_modified:
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+
+artifacts_modified:
+  - id: "CHG-20"
+    changes: "Authorizing record for #794 chg_lint --help fix (this file)"
+  - id: "IPLAN-20"
+    changes: "Authorizing IPLAN (framework/archive/CHG-20/IPLAN-20.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-20 (0 errors)"
+    - "new HelpExitTests green (3 cases)"
+    - "sdd_doc_lint/tests full suite green"

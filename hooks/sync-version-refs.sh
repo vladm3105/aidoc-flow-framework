@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
-# Mechanical doc-sync: propagate framework/VERSION into documents-of-record.
+# Mechanical doc-sync: propagate framework/VERSION into framework/ version pins.
 # Idempotent; safe to run repeatedly.
 #
 # Wired into .pre-commit-config.yaml so it runs automatically when
 # framework/VERSION changes. Also safe to invoke manually:
 #   bash hooks/sync-version-refs.sh
 #
-# What it propagates:
-#   - framework/VERSION → docs quoted in CLAUDE.md, README.md, CHANGELOG.md
+# Single source: framework/VERSION. There are no platform VERSION files in the
+# framework-only repo (CLEANUP-001 retired the three-source sweep; see
+# tests/conformance/test_sync_version_refs_counts.py, also retired).
+#
+# What it propagates (mechanical only — semantic content like changelog entries
+# and decision rationale is authored by the contributor):
+#   - `framework_spec_version: "X.Y.Z"` frontmatter in framework/playbooks/**.md
+#   - `framework_version: "X.Y.Z"` metadata in framework/**/*.yaml
+#   - `| Framework Version | X.Y.Z |` document-control rows in framework/**/*.md
+#
+# Guard against vacuity (#405): every substitution is counted and the script
+# fails if a file holds MORE occurrences of the old literal than expected — a
+# surplus is a historical mention that must be reworded out of the swept form,
+# not silently skipped. Expected counts live beside each call site below.
 
 set -euo pipefail
 
@@ -19,10 +31,91 @@ if [ -z "$FRAMEWORK_VERSION" ]; then
   exit 1
 fi
 
+if [[ ! "$FRAMEWORK_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "sync-version-refs: malformed version '$FRAMEWORK_VERSION'" >&2
+  exit 1
+fi
+
 echo "sync-version-refs: framework/VERSION = $FRAMEWORK_VERSION"
 
-# Propagate to docs that quote the version (no-op if already current)
-# This is a lightweight sync — full version propagation is handled by
-# the framework governance process.
+replace_in_file_counted() {
+  # $1 = repo-relative path, $2 = old literal, $3 = new literal, $4 = expected count
+  local rel="$1" old="$2" new="$3" expected="$4"
+  local path="$REPO_ROOT/$rel"
+  if [ ! -f "$path" ]; then
+    echo "sync-version-refs: skip (absent): $rel" >&2
+    return 0
+  fi
+  local actual
+  actual="$(grep -cF -- "$old" "$path" || true)"
+  if [ "$actual" -gt "$expected" ]; then
+    echo "sync-version-refs: REFUSING $rel — holds $actual occurrence(s) of '$old', expected $expected." >&2
+    echo "sync-version-refs: reword the historical mention out of the swept literal form, then re-run." >&2
+    return 1
+  fi
+  if [ "$actual" -eq 0 ]; then
+    return 0
+  fi
+  local tmp
+  tmp="$(mktemp)"
+  python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
+import sys
+path, old, new, tmp = sys.argv[1:5]
+text = open(path, encoding="utf-8").read()
+open(tmp, "w", encoding="utf-8").write(text.replace(old, new))
+EOF
+  cat "$tmp" > "$path"
+  rm -f "$tmp"
+  echo "sync-version-refs: $rel — replaced $actual occurrence(s)"
+}
+
+rc=0
+sweep() {
+  replace_in_file_counted "$@" || rc=1
+}
+
+# Frozen records must never be rewritten: framework/archive/ holds the
+# pre-change originals each CHG cites in `supersedes`. Sweeping them would
+# destroy the audit trail (measured 2026-09-21: the 0.54.0 pass rewrote
+# framework/archive/CHG-04/ originals before this exclusion landed).
+ARCHIVE_EXCL="archive/CHG-"
+
+# Old version literals swept to $FRAMEWORK_VERSION. Extend with the previous
+# release on every MINOR bump (#663) — the conformance pin
+# (tests/conformance/test_sync_version_refs.py) fails if a swept-form
+# literal in the tree is missing from this list.
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0"
+
+# --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
+while IFS= read -r f; do
+  rel="${f#"$REPO_ROOT"/}"
+  for old in $OLD_VERSIONS; do
+    sweep "$rel" "framework_spec_version: \"$old\"" "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
+  done
+done < <(grep -rl 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbooks/" 2>/dev/null || true)
+
+# --- framework metadata + document-control rows (archive excluded — see above) ---
+_meta_pat=""
+for old in $OLD_VERSIONS; do
+  [ -n "$_meta_pat" ] && _meta_pat="${_meta_pat}\\|"
+  _meta_pat="${_meta_pat}framework_version: \"${old}\"\\|| Framework Version | ${old} |"
+done
+while IFS= read -r f; do
+  rel="${f#"$REPO_ROOT"/}"
+  for old in $OLD_VERSIONS; do
+    sweep "$rel" "framework_version: \"$old\"" "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
+    sweep "$rel" "| Framework Version | $old |" "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
+  done
+done < <(grep -rl "$_meta_pat" "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
+
+if [ "$rc" -ne 0 ]; then
+  echo "sync-version-refs: one or more files refused (see above)" >&2
+  exit 1
+fi
+
+# Re-stage what the bump touched when run as a pre-commit hook.
+if git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git -C "$REPO_ROOT" add -u 2>/dev/null || true
+fi
 
 echo "sync-version-refs: done (framework version propagated)"

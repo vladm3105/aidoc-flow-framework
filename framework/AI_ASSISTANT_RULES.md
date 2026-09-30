@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 ## Template Usage
@@ -35,7 +35,7 @@
 6.  SPEC — component interfaces, data models, behavior contracts (from EARS + BDD + ADR)
 7.  TDD  — test case definitions with inputs/outputs/edge cases (from EARS + BDD + ADR + SPEC)
 8.  IPLAN — file manifest, bash commands, session handoff (from SPEC + TDD)
-9.  CHG  — change management overlay: gates, versioning, audit trail (governance overlay, outside layer numbering)
+9.  CHG  — change management overlay: gates, versioning, audit trail (governance overlay, operational namespace 09 — outside the sequential lifecycle, not outside the numbering)
 10. EVAL — evaluation & QA governance: test strategy, coverage matrices (from EARS + BDD + TDD + IPLAN)
 11. Code — implementation from IPLAN
 ```
@@ -63,6 +63,16 @@ A development IPLAN is **NOT** blocked by:
 - Image not yet built or deployed to a registry
 
 These operator-only execution steps belong to a separate deployment plan. When closing a development IPLAN, register any deployment-handoff obligations in the IPLAN registry's `deferred_items` before flipping `Completed`.
+
+## Hook and Verification-Bypass Prohibition
+
+AI agents MUST NOT bypass verification gates:
+
+- Never pass `--no-verify` (or any equivalent skip flag) on any `git` invocation (`commit`, `push`, `merge`, rebase).
+- Never disable, uninstall, or route around configured hooks (`pre-commit`, `pre-push`, `hooks/`), and never document a bypass path as a recommended workflow.
+- Auto-merge only when every required check is green. Boundary detection (`REVIEW_REMEDIATION_FLOW.md` audit-trail check) is the backstop, not the permission.
+
+If a hook blocks legitimate work, fix the underlying cause or escalate to the human — the hook is never the problem to route around.
 
 ## IPLAN Status Lifecycle
 
@@ -97,18 +107,19 @@ To modify a Verified IPLAN:
 
 ## Validation Workflow (Completed → Verified)
 
+Validation runs as EVAL cycles (canon: `layers/08_IPLAN/README.md`):
+
 1. All `file_manifest` entries reach `DONE` + `verified: true`
 2. Document status flips to `Completed`
-3. Run unit tests from `file_manifest` (tdd_ref cases)
-4. Run integration tests from `execution_commands.validation`
-5. Create validation report using `IPLAN-VERIFY-TEMPLATE`
-6. If findings exist:
-   a. Create IPLAN-VERIFY to fix P0/P1 issues
+3. Author (or reuse) the owning EVAL document (`EVAL-{NN}/EVAL-{NN}.yaml`)
+4. Run eval cycle 1 (`initial_eval`); record `EVAL-{NN}-RPT-001.yaml` (`EVAL-REPORT-TEMPLATE.yaml`)
+5. If findings exist:
+   a. Repair via a scoped `bugfix`-subtype IPLAN (`parent_iplan` + `source_chg`)
    b. Fix all critical findings
-   c. Re-run validation
-7. When all findings resolved:
+   c. Re-run the next cycle (`bug_fix_verification`)
+6. When all findings resolved:
    a. Mark original IPLAN as `Verified` (FINAL/FINITE)
-   b. Close validation IPLAN as `Completed`
+   b. Close the bugfix IPLAN per its rollback/resolution markers
 
 ## IPLAN Session Handoff
 
@@ -119,6 +130,24 @@ Each AI agent session follows this protocol:
 4. Continue from that point — do NOT regenerate completed work
 5. Update file status after completion or session end
 6. Append to `session_handoff.sessions` with next_session_directive
+
+## Issue Validation Before Work
+
+Re-validate any picked-up issue live before acting on it — an issue may
+already be fixed, stale, inapplicable, or declined since it was filed:
+
+1. Read it back (`gh issue view`): still OPEN, and nothing in the comments,
+   linked PRs, or newer issues supersedes, declines, or already resolves it.
+2. Check the target branch: the defect is still reproducible (or the gap
+   still present) there — not fixed by an intervening change.
+3. If it is fixed, stale, inapplicable, or declined: report that with
+   evidence and stop. Do not implement, do not "improve around" it.
+
+Keep every change safe for the existing code: no behavior change beyond the
+issue's scope, no weakened checks, suites green before the PR. A change that
+breaks compatibility or is otherwise significant needs a CHG first — create
+it and follow the CHG procedure (`framework/governance/CHG_REQUEST_FLOWS.md`,
+`framework/governance/chg/`) before any implementation, not alongside it.
 
 ## What NOT to Reference
 
@@ -135,5 +164,19 @@ you do NOT need to reference CHG gates.
 contract: `CHG-TEMPLATE.yaml` is the primary artifact, `templates/GATE_APPROVAL_FORM.md`
 its companion, and `gates/GATE-*.md` define the checks. See especially
 `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
-checklist (§3.4 of `GOVERNANCE_RULES.md`) is a MANDATORY PROCESS GATE —
+checklist (§3.4 of `DOC_GOVERNANCE_CORE.md`) is a MANDATORY PROCESS GATE —
 complete it BEFORE writing any CHG document.
+
+## Delegation and concurrency pointers
+
+- **Delegation integrity** (`NOTICES.md` Rule 1–2 harden): pass real upstream
+  IDs in delegation prompts; after landing, re-validate every cited ID with a
+  `grep -F` against its source file plus a `sort | uniq -d` duplicate check.
+- **Concurrency traps** (`NOTICES.md` §Concurrency traps): verify-3 on
+  subagent landings, no whole-tree git operations with live agents, confirm
+  layer detection before trusting a clean lint, force-verify governed
+  archives with `git ls-files` / `git check-ignore -v`.
+- **§3.13 gate restatement:** the IPLAN Gate requires an `In Progress` IPLAN
+  (referencing the authorizing CHG, files listed in its manifest) BEFORE any
+  code file is written. The only exempt path is CHG→SDD→IPLAN bootstrap
+  authoring itself — creating the governance records is not "code".

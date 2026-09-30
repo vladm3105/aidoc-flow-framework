@@ -1,0 +1,343 @@
+# IPLAN-03 — Implement framework 0.54.0 donor-hardening addons
+# Authorizing CHG: framework/archive/CHG-03/CHG-03.yaml
+# Plan: plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md (FINAL, Pass 3 clean)
+
+doc_id: IPLAN-03
+title: "Implement 17 donor-hardening addons + MINOR bump 0.53.3 → 0.54.0"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.53.3"
+  document_type: "iplan-document"
+  layer: 8
+  total_sections: 6
+  last_updated: "2026-09-20"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+
+  c4_level:
+    value: none
+
+  id_standard:
+    state: canonical
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-03"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-03; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-20T00:00:00Z"
+  last_updated: "2026-09-20T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 4
+  estimated_files: 21
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "EVAL dedup + §3.1.1 table + §3.13 exemption + IPLAN lifecycle + §4.1 + WORKTREE pointer"
+      order: 1
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/LINT_RULES.md"
+      description: "CHG-L012 + REG01 + TDD-SYNC A–E + IPLAN01 advisory catalog entries + #653 GOV-014..017 rows"
+      order: 2
+      status: DONE
+      session: null
+      verified: true
+    - path: "framework/governance/NOTICES.md"
+      description: "Delegation greps + ID red-flags + concurrency traps + donor deltas"
+      order: 3
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/SELF_LEARNING.md"
+      description: "Feedback-submit contract + checklist hardening + feedback-log cross-ref"
+      order: 4
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/TRACEABILITY.md"
+      description: "§4.1 cross-ref appended OUTSIDE digest-pinned bullet (never edit anchor)"
+      order: 5
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/ID_NAMING_STANDARDS.md"
+      description: "ID red-flag box appended OUTSIDE digest-pinned lines; no re-pin"
+      order: 6
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/WORKTREE_FLOW.md"
+      description: "NEW v1.0 doc — generic git/gh halves only"
+      order: 7
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-29 entry for the 0.54.0 addon bundle"
+      order: 8
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/AI_ASSISTANT_RULES.md"
+      description: "§3.13 gate restatement + delegation pointer + concurrency pointer"
+      order: 9
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/registry/LAYER_REGISTRY.yaml"
+      description: "§2.7 registration checklist header comment + framework_version 0.54.0"
+      order: 10
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/registry/README.md"
+      description: "Registration checklist prose"
+      order: 11
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+      description: "completion_spec_sync + completion_gates + breaking_change + audit_fix + schema guidance"
+      order: 12
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "audit_fix subtype documentation"
+      order: 13
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/layers/03_EARS/README.md"
+      description: "EARS pattern decision-tree appendix"
+      order: 14
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/playbooks/03_EARS/requirements_specialist.md"
+      description: "Pattern-tree lens note"
+      order: 15
+      status: DONE
+      session: null
+      verified: false
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "New CHG-L012 warning check (completion sync) + #653 traceability port (L011 --sdd-root)"
+      order: 16
+      status: DONE
+      session: null
+      verified: true
+    - path: "sdd_doc_lint/__main__.py"
+      description: "SKIPPED-vs-clean warning"
+      order: 17
+      status: DONE
+      session: null
+      verified: false
+    - path: ".gitignore"
+      description: "Scoped negation for governed archives only (never broad !archive/**)"
+      order: 18
+      status: DONE
+      session: null
+      verified: false
+    - path: "tests/conformance/test_registry.py"
+      description: "REG01 registration-checklist assertion"
+      order: 19
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/VERSION"
+      description: "Bump 0.53.3 → 0.54.0"
+      order: 20
+      status: DONE
+      session: null
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "Root ## [0.54.0] entry"
+      order: 21
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/layers/07_TDD/TDD-00_index.TEMPLATE.md"
+      description: "TDD-SYNC-E index-sync source-of-truth note"
+      order: 23
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+      description: "TDD-SYNC-E source-of-truth note"
+      order: 24
+      status: DONE
+      session: null
+      verified: false
+    - path: "tests/conformance/test_governance.py"
+      description: "Register WORKTREE_FLOW.md in EXPECTED_FILES (suite reds on any new governance file)"
+      order: 25
+      status: DONE
+      session: null
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "Framework ## [0.54.0] entry"
+      order: 22
+      status: DONE
+      session: null
+      verified: false
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "NEW — CHG-L006..L011 regression tests adapted from #653 (canonical implementation.steps schema)"
+      order: 26
+      status: DONE
+      session: null
+      verified: true
+
+# =============================================================================
+# Section 2b: TDD↔IPLAN Consistency Tracking
+# =============================================================================
+tdd_consistency:
+  status: not_started
+  last_verified: null
+  verification_results:
+    function_name_match: null
+    file_ownership_complete: null
+    language_consistent: null
+    index_synchronized: null
+  issues: []
+
+# =============================================================================
+# Section 3: Execution Commands
+# =============================================================================
+execution_commands:
+  setup:
+    - "git checkout feat/clean-up && git pull --ff-only origin feat/clean-up"
+  implementation:
+    - "Implement plan Steps 1–7 in file_manifest order (governance → registry → IPLAN template → lint/tooling → EARS → NOTICES/SELF_LEARNING → WORKTREE_FLOW)"
+    - "Run hooks/sync-version-refs.sh after the VERSION bump (plan Step 8)"
+  validation:
+    - "python sdd_doc_lint/chg_lint.py framework/archive/CHG-03/CHG-03.yaml"
+    - "python -m unittest discover -s tests/conformance"
+    - "python -m unittest discover -s sdd_doc_lint/tests"
+    - "python -m unittest discover -s tests/acceptance/deterministic"
+    - "grep -riE 'hermes|mcp|plugin|\\.claude/|Atlas|Privy|mimocode|192\\.168\\.' framework/ on every touched file — expect empty"
+
+# =============================================================================
+# Section 4: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  provided:
+    contracts: []
+  consumed:
+    dependencies: []
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - date: "2026-09-20"
+      agent: "implementing session (CHG-03 + IPLAN-03 authoring)"
+      files_touched:
+        - path: "framework/archive/CHG-03/CHG-03.yaml"
+          action: created
+          status: DONE
+        - path: "framework/archive/CHG-03/IPLAN-03.yaml"
+          action: created
+          status: IN_PROGRESS
+      partial_work: "IPLAN-03 authoring in progress; addon implementation (plan Steps 1–8) not yet started"
+      blockers: "None"
+      next_session_directive: "Run chg_lint on CHG-03.yaml, then implement plan Step 1 (DOC_GOVERNANCE_CORE EVAL dedup first)"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  upstream:
+    spec_references:
+      - "@spec: N/A (framework self-change; authorizing plan is plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md)"
+    tdd_references: []
+  downstream:
+    code_paths:
+      - "@code: sdd_doc_lint/chg_lint.py, sdd_doc_lint/__main__.py"
+    test_paths:
+      - "@tests: tests/conformance/test_registry.py, sdd_doc_lint/tests, tests/acceptance/deterministic"
+    eval_references: []
+  cross_links:
+    depends: []
+    discoverability:
+      - "@discoverability: IPLAN-03 (authorizes the 0.54.0 donor-addon bundle)"
+    chg:
+      - "@chg: CHG-03"
+  code_inventory:
+    files:
+      - path: "framework/archive/CHG-03/CHG-03.yaml"
+        status: created
+        session: 1
+        verified: false
+      - path: "framework/archive/CHG-03/IPLAN-03.yaml"
+        status: created
+        session: 1
+        verified: false
+
+# =============================================================================
+# Section 8: Rollback Procedure
+# =============================================================================
+rollback_procedure:
+  steps:
+    - step: "Revert the 0.54.0 commit(s) on the feature branch before PR merge"
+      forward_action: "Commits land on feat/clean-up"
+      reverse_action: "git revert in reverse order"
+      verification: "git status clean; conformance suite at 0.53.3 baseline (354 OK skipped=1)"
+      reversible: true
+
+# =============================================================================
+# Section 9: Smoke Tests
+# =============================================================================
+smoke_tests:
+  tests:
+    - name: "conformance suite green"
+      runs_after: "all addon edits"
+      pass_criterion: "354+ tests OK (new REG01 assertions included), zero weakened guards"
+      timeout_seconds: 300
+    - name: "chg_lint green on CHG-03"
+      runs_after: "CHG authoring"
+      pass_criterion: "exit 0, zero errors"
+      timeout_seconds: 60
+
+# =============================================================================
+# Section 10: Canary Metrics
+# =============================================================================
+canary_metrics:
+  metrics:
+    - name: "acceptance deterministic pass rate"
+      threshold: "100% (no silent golden churn)"
+      window_minutes: 10
+      action_on_breach: "Alert"
+
+# =============================================================================
+# Section 11: Observability Hooks
+# =============================================================================
+observability_hooks:
+  hooks:
+    - event: "0.54.0 addon implementation complete"
+      signal_type: log
+      signal_name: "conformance + acceptance suite results"
+      dashboard_url: "N/A (local run)"
+
+# =============================================================================
+# Section 12: Runbook Reference
+# =============================================================================
+runbook_reference:
+  runbook_url: "plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md"
+  new_failure_modes:
+    - mode: "Golden churn from IPLAN subtype addition"
+      detection: "acceptance deterministic failures in fullpath/iplan fixtures"
+      response: "Update goldens explicitly in the impl PR (no silent regeneration)"

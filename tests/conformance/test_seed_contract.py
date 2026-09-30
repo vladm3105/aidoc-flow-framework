@@ -10,13 +10,11 @@ Part A of SEED-ABSORPTION-001. Guards two surfaces:
   use only the three legal dispositions.
 """
 
-import sys
 import unittest
 
 import yaml
-from _spec import FRAMEWORK, REPO_ROOT
+from _spec import FRAMEWORK
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _check_seed_disposition  # noqa: E402
 
 GOVERNANCE = FRAMEWORK / "governance"
@@ -102,13 +100,12 @@ class BrdSeedDispositionCarrier(unittest.TestCase):
                     f"_example absorbed row must cite a real BRD element id, got {elem!r}",
                 )
 
-    def test_mvp_skeleton_has_seed_disposition_row(self):
-        mvp = BRD_MVP_TEMPLATE.read_text(encoding="utf-8")
-        self.assertIn(
-            "seed_disposition",
-            mvp,
-            "BRD-MVP-TEMPLATE.yaml is missing the seed_disposition skeleton row",
-        )
+    def test_mvp_skeleton_is_tombstone(self):
+        """The retired MVP file is a tombstone pointer, not a template (#666)."""
+        doc = yaml.safe_load(BRD_MVP_TEMPLATE.read_text(encoding="utf-8")) or {}
+        self.assertEqual(set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}")
+        self.assertEqual(doc["tombstone"]["status"], "retired")
+        self.assertEqual(doc["tombstone"]["canonical_template"], "./BRD-TEMPLATE.yaml")
 
 
 _BRD_HEAD = (
@@ -119,6 +116,109 @@ _BRD_HEAD = (
 
 def _brd_with_ledger(ledger_yaml: str) -> list[tuple[str, str]]:
     return [("01_BRD/BRD-01.md", f"{_BRD_HEAD}\n```yaml\n{ledger_yaml}\n```\n")]
+
+
+_SEED_V2 = 'document_control:\n  document_id: SEED-auth\n  version: "2.0"\n  status: Approved\n'
+
+
+def _pinned_row(version: str) -> str:
+    return (
+        "seed_disposition:\n"
+        "  - claim: uniqueness\n"
+        "    disposition: absorbed\n"
+        "    brd_elements: [BRD.01.07.be48]\n"
+        f'    seed_version: "{version}"\n'
+    )
+
+
+class Seed01VersionPin(unittest.TestCase):
+    """GD-36: `absorbed` rows pin the seed version they were absorbed from."""
+
+    def _codes(self, corpus):
+        return [f.code for f in _check_seed_disposition(corpus)]
+
+    def test_pin_match_passes(self):
+        corpus = _brd_with_ledger(_pinned_row("2.0"))
+        corpus.append(("seed/architecture/auth.md", _SEED_V2))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_stale_pin_is_error(self):
+        """A row pinned to an archived seed version fails until re-pointed."""
+        corpus = _brd_with_ledger(_pinned_row("2.0"))
+        corpus.append(("seed/architecture/auth.md", _SEED_V2.replace('"2.0"', '"1.0"')))
+        self.assertEqual(self._codes(corpus), ["SEED01"])
+
+    def test_unpinned_row_passes_as_before(self):
+        """Pre-pin corpora stay green — pins are required only for rows
+        authored or re-pointed after a supersede."""
+        corpus = _brd_with_ledger(
+            "seed_disposition:\n"
+            "  - claim: uniqueness\n"
+            "    disposition: absorbed\n"
+            "    brd_elements: [BRD.01.07.be48]\n"
+        )
+        corpus.append(("seed/architecture/auth.md", _SEED_V2))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_absent_seed_file_skips(self):
+        """A pinned row with no seed file in the corpus cannot be judged —
+        skip, never fail."""
+        self.assertEqual(self._codes(_brd_with_ledger(_pinned_row("2.0"))), [])
+
+
+class Seed01PerFileResolution(unittest.TestCase):
+    """#723: rows naming `seed_file:` resolve against THAT file, not the set."""
+
+    def _codes(self, corpus):
+        return [f.code for f in _check_seed_disposition(corpus)]
+
+    def _two_seed_corpus(self, ledger_yaml: str):
+        corpus = _brd_with_ledger(ledger_yaml)
+        corpus.append(("seed/architecture/auth.md", _SEED_V2.replace('"2.0"', '"1.0"')))
+        corpus.append(("seed/architecture/billing.md", _SEED_V2))
+        return corpus
+
+    def _file_row(self, seed_file: str, version: str) -> str:
+        return (
+            "seed_disposition:\n"
+            "  - claim: uniqueness\n"
+            "    disposition: absorbed\n"
+            "    brd_elements: [BRD.01.07.be48]\n"
+            f"    seed_file: {seed_file}\n"
+            f'    seed_version: "{version}"\n'
+        )
+
+    def test_stale_pin_against_named_file_is_error(self):
+        """A row pinned to the archived version fails even though ANOTHER
+        seed file in the corpus carries the pinned version — the mask #723
+        reports."""
+        corpus = self._two_seed_corpus(self._file_row("seed/architecture/billing.md", "1.0"))
+        self.assertEqual(self._codes(corpus), ["SEED01"])
+
+    def test_current_pin_against_named_file_passes(self):
+        corpus = self._two_seed_corpus(self._file_row("seed/architecture/billing.md", "2.0"))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_row_without_seed_file_keeps_set_membership(self):
+        """Rows authored before the field keep the legacy behavior: any
+        corpus seed carrying the pin satisfies it."""
+        corpus = self._two_seed_corpus(_pinned_row("2.0"))
+        self.assertEqual(self._codes(corpus), [])
+
+    def test_legacy_message_names_no_single_version(self):
+        """The set-membership diagnostic reports the whole corpus set instead
+        of an arbitrary `sorted(...)[0]` that may belong to another file."""
+        corpus = self._two_seed_corpus(_pinned_row("9.9"))
+        findings = _check_seed_disposition(corpus)
+        self.assertEqual([f.code for f in findings], ["SEED01"])
+        self.assertIn("1.0", findings[0].message)
+        self.assertIn("2.0", findings[0].message)
+
+    def test_named_but_absent_file_skips(self):
+        """A `seed_file:` naming no corpus file cannot be judged — skip."""
+        corpus = _brd_with_ledger(self._file_row("seed/architecture/gone.md", "1.0"))
+        corpus.append(("seed/architecture/auth.md", _SEED_V2))
+        self.assertEqual(self._codes(corpus), [])
 
 
 class Seed01Lint(unittest.TestCase):

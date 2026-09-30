@@ -13,12 +13,11 @@ from __future__ import annotations
 
 import hashlib
 import re
-import sys
 import textwrap
 import unittest
 from pathlib import Path
 
-from _spec import ARTIFACTS, FRAMEWORK, REPO_ROOT
+from _spec import ARTIFACTS, FRAMEWORK
 
 # The linter constant is the authority, so it is imported rather than parsed out
 # of the source: an import has no ``Unparseable`` failure mode, and it survives
@@ -26,7 +25,6 @@ from _spec import ARTIFACTS, FRAMEWORK, REPO_ROOT
 # assignment. Established pattern — see
 # ``tests/conformance/platforms/test_realizing_layers_registry.py`` and
 # ``tests/conformance/test_acceptance_pairing.py``.
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _REFGRAN_ELEMENT_DECLARING  # noqa: E402
 
 GOVERNANCE = FRAMEWORK / "governance"
@@ -571,7 +569,7 @@ class DocumentLevelPermittedParity(unittest.TestCase):
 
     Four surfaces carry the proposition and only one is executable:
 
-    * ``tools/sdd_doc_lint/__init__.py`` ``_REFGRAN_ELEMENT_DECLARING`` — the
+    * ``sdd_doc_lint/__init__.py`` ``_REFGRAN_ELEMENT_DECLARING`` — the
       authority, imported not parsed
     * ``framework/governance/ID_NAMING_STANDARDS.md`` §"Reference granularity" —
       GD-03's *named* authority
@@ -694,7 +692,7 @@ class DocumentLevelPermittedParity(unittest.TestCase):
                     got,
                     set(EXPECTED_PERMITTED),
                     f"{name} states a document-level-permitted set that disagrees with "
-                    f"GD-03 and with tools/sdd_doc_lint _REFGRAN_ELEMENT_DECLARING",
+                    f"GD-03 and with sdd_doc_lint _REFGRAN_ELEMENT_DECLARING",
                 )
 
     def test_id_naming_bullet_shape_is_locked(self):

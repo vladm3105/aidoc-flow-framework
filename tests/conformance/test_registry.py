@@ -29,11 +29,11 @@ class RegistryStructure(unittest.TestCase):
         for key in ("metadata", "layers", "layer_groups", "c4_mapping", "id_patterns"):
             self.assertIn(key, REGISTRY)
 
-    def test_exactly_eight_layers(self):
-        self.assertEqual(len(LAYERS), 8)
+    def test_exactly_ten_layers(self):
+        self.assertEqual(len(LAYERS), 10)
 
-    def test_layer_numbers_are_dense_one_to_eight(self):
-        self.assertEqual([layer["number"] for layer in LAYERS], list(range(1, 9)))
+    def test_layer_numbers_are_dense_one_to_ten(self):
+        self.assertEqual([layer["number"] for layer in LAYERS], list(range(1, 11)))
 
     def test_total_layers_metadata_matches(self):
         self.assertEqual(REGISTRY["metadata"]["total_layers"], len(LAYERS))
@@ -44,8 +44,32 @@ class RegistryStructure(unittest.TestCase):
                 missing = REQUIRED_LAYER_KEYS - set(layer)
                 self.assertEqual(missing, set(), f"missing keys: {missing}")
 
+    def test_registration_checklist_header_present(self):
+        """REG01 companion: the registry carries its own new-layer checklist.
+
+        The header comment names every mandatory entry key plus the
+        total_layers / layer_groups / realizing_layers / c4_mapping /
+        downstream / LINT_RULES follow-ups, so a layer added without
+        registration has no excuse. Advisory prose — this test pins its
+        presence, not a lint verdict.
+        """
+        text = (FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml").read_text(encoding="utf-8")
+        for token in (
+            "REGISTRATION CHECKLIST",
+            "total_layers",
+            "layer_groups",
+            "realizing_layers",
+            "c4_mapping",
+            "downstream",
+            "LINT_RULES.md",
+        ):
+            self.assertIn(token, text)
+
     def test_artifacts_in_canonical_order(self):
-        self.assertEqual([layer["artifact"] for layer in LAYERS], ARTIFACTS)
+        self.assertEqual(
+            [layer["artifact"] for layer in LAYERS],
+            ARTIFACTS + ["CHG", "EVAL"],
+        )
 
     def test_error_prefix_matches_artifact(self):
         for layer in LAYERS:
@@ -55,10 +79,39 @@ class RegistryStructure(unittest.TestCase):
 
 class RegistryTraceability(unittest.TestCase):
     def test_downstream_chain(self):
-        for i, layer in enumerate(LAYERS):
-            expected = [LAYERS[i + 1]["artifact"]] if i + 1 < len(LAYERS) else ["CODE"]
+        # IPLAN fans out to CODE + EVAL; CHG/EVAL are terminal overlays.
+        # `downstream` is the PRIMARY-SUCCESSOR chain, not the inverse of
+        # `required_tags` — see test_downstream_is_primary_successor_not_inverse
+        # (#708). CODE is a terminal sink, not a registered SDD layer.
+        expected_downstream = {
+            "BRD": ["PRD"],
+            "PRD": ["EARS"],
+            "EARS": ["BDD"],
+            "BDD": ["ADR"],
+            "ADR": ["SPEC"],
+            "SPEC": ["TDD"],
+            "TDD": ["IPLAN"],
+            "IPLAN": ["CODE", "EVAL"],
+            "CHG": [],
+            "EVAL": [],
+        }
+        for layer in LAYERS:
             with self.subTest(layer=layer["number"]):
-                self.assertEqual(layer["downstream"], expected)
+                self.assertEqual(layer["downstream"], expected_downstream[layer["artifact"]])
+
+    def test_downstream_is_primary_successor_not_inverse(self):
+        """`downstream` is deliberately NOT the inverse of `required_tags` (#708).
+
+        EARS is required by BDD, ADR, SPEC, and TDD, yet EARS.downstream is
+        [BDD] only — the next authoring step. This asymmetry is the decided
+        semantics (primary-successor chain), not drift: impact analysis MUST
+        use `required_tags`/`realizing_layers`, never `downstream`.
+        """
+        by_artifact = {layer["artifact"]: layer for layer in LAYERS}
+        self.assertEqual(by_artifact["EARS"]["downstream"], ["BDD"])
+        for consumer in ("BDD", "ADR", "SPEC", "TDD"):
+            self.assertIn("ears", by_artifact[consumer]["required_tags"])
+        self.assertNotIn("ADR", by_artifact["EARS"]["downstream"])
 
     def test_required_tags_match_necessary_upstream_table(self):
         """Each layer declares ONLY the upstream layers its evaluation reads.
@@ -76,6 +129,8 @@ class RegistryTraceability(unittest.TestCase):
             "SPEC": ["ears", "bdd", "adr"],
             "TDD": ["ears", "bdd", "adr", "spec"],
             "IPLAN": ["spec", "tdd"],
+            "CHG": [],
+            "EVAL": ["ears", "bdd", "tdd", "iplan"],
         }
         for layer in LAYERS:
             artifact = layer["artifact"]
@@ -121,12 +176,12 @@ class RegistryLayerGroups(unittest.TestCase):
         for group in REGISTRY["layer_groups"].values():
             grouped.extend(group["layers"])
         self.assertEqual(len(grouped), len(set(grouped)), "a layer is in two groups")
-        self.assertEqual(sorted(grouped), list(range(1, 9)))
+        self.assertEqual(sorted(grouped), list(range(1, 11)))
 
 
 class RegistryC4Mapping(unittest.TestCase):
     def test_c4_artifacts_are_known(self):
-        known = set(ARTIFACTS) | {"CODE"}
+        known = set(ARTIFACTS) | {"CHG", "EVAL", "CODE"}
         for name, entry in REGISTRY["c4_mapping"].items():
             artifacts = []
             if "artifact" in entry:

@@ -35,14 +35,6 @@ ADR_TEMPLATE = FRAMEWORK / "layers" / "05_ADR" / "ADR-TEMPLATE.yaml"
 ARCHITECT_LENS = FRAMEWORK / "playbooks" / "05_ADR" / "architect.md"
 TAG_SYNTAX = FRAMEWORK / "governance" / "TAG_SYNTAX.md"
 GOVERNANCE_DECISIONS = FRAMEWORK / "governance" / "DECISIONS.md"
-PLUGIN_SKILLS = REPO_ROOT / "platforms" / "claude-code-plugin" / "skills"
-
-#: Every plugin skill that authors, drives or audits an ADR. Globbed rather than
-#: listed: a new ``doc-adr-*`` skill inherits the rule instead of silently
-#: escaping it, which is how ``doc-adr-fixer`` — the surface that writes patches
-#: *into* ADRs — was outside the first draft's hardcoded roster.
-ADR_SKILL_GLOB = "doc-adr*/SKILL.md"
-EXPECTED_ADR_SKILLS = 4
 
 #: The retired template antipattern. Restoring it verbatim re-opens #602; the
 #: sentence rule below catches the reworded restorations it cannot.
@@ -97,32 +89,47 @@ def _alternatives():
 
 
 class AlternativesTemplate(unittest.TestCase):
+    """The `considered` block cites the seed and records a decision per option.
+
+    Rewritten CLEANUP-001: the section stopped re-surveying (`options` with
+    `pros`/`cons`/`estimated_cost`/`fit`/`rejection_reason`/`prior_analysis`)
+    and now cites the seed (`considered` with `source: @seed:` + `decision:`).
+    The #602-era assertions (per-option cost mandate, prior_analysis affordance)
+    test a shape the template no longer has; what remains is the C2 agreement:
+    ≥2 rejected alternatives, each with a decision rationale, a seed source,
+    and guidance that defers analysis to the seed.
+    """
+
     def setUp(self):
         self.alternatives = _alternatives()
-        self.options = self.alternatives["options"]
+        # Template key renamed `options` → `considered` when the section stopped
+        # re-surveying and started citing the seed (CLEANUP-001: the rename
+        # shipped without updating this guard).
+        self.options = self.alternatives.get("options", self.alternatives.get("considered"))
         for opt in self.options:
             self.assertIsInstance(opt, dict, f"alternatives option is not a mapping: {opt!r}")
 
-    def test_every_rejected_option_carries_a_rejection_reason(self):
-        """architect.md C2 — the one thing the section genuinely requires."""
+    def test_every_rejected_option_carries_a_decision(self):
+        """architect.md C2 — each alternative names its fate and reason."""
         for opt in self.options:
             if opt.get("selected"):
                 continue
             with self.subTest(option=opt.get("name")):
-                reason = opt.get("rejection_reason") or ""
+                decision = opt.get("decision") or opt.get("rejection_reason") or ""
                 self.assertTrue(
-                    reason,
-                    f"non-selected option {opt.get('name')!r} carries no rejection_reason "
-                    "— architect.md C2 grades exactly this",
+                    decision,
+                    f"non-selected option {opt.get('name')!r} carries no decision — "
+                    "architect.md C2 grades exactly this",
                 )
-                # The placeholder must keep *saying* what C2 grades. A revert to a
-                # bare "[Why not selected]" is the stub rationale C2 fails, and the
-                # template would be teaching it.
-                self.assertIn(
-                    "concrete disqualifying factor",
-                    reason,
-                    f"the rejection_reason placeholder on {opt.get('name')!r} no longer tells "
-                    "the author to name the concrete disqualifying factor",
+
+    def test_every_option_cites_its_source(self):
+        """The seed-citation shape: no option without a source."""
+        for opt in self.options:
+            with self.subTest(option=opt.get("name")):
+                self.assertTrue(
+                    opt.get("source"),
+                    f"option {opt.get('name')!r} carries no source — the section "
+                    "cites the seed instead of re-surveying it",
                 )
 
     def test_option_count_matches_what_the_lens_grades(self):
@@ -144,59 +151,57 @@ class AlternativesTemplate(unittest.TestCase):
         )
 
     def test_one_option_demonstrates_the_whole_shape(self):
-        """The load-bearing assertion: optionality has to be *shown*, on one option.
+        """The load-bearing assertion: seed-citation has to be *shown*, on one option.
 
-        Prose calling a field optional beside three examples that all carry it
-        teaches the mandate. Requiring the demonstration to be a rejected option
-        that also cites ``prior_analysis`` stops it decomposing into two half
-        examples, or being satisfied by an appended filler entry.
+        A rejected option carrying both `source` and `decision` is the worked
+        example that teaches the shape. (Supersedes the #602-era demonstration
+        of omitted cost/fit + prior_analysis, which tested the retired shape.)
         """
         demo = [
             o
             for o in self.options
-            if not o.get("selected")
-            and "estimated_cost" not in o
-            and "fit" not in o
-            and o.get("rejection_reason")
-            and o.get("prior_analysis")
+            if not o.get("selected") and o.get("source") and o.get("decision")
         ]
         self.assertTrue(
             demo,
-            "no option demonstrates the complete GD-24 shape (rejected, estimated_cost and fit "
-            "both omitted, an existing survey cited in prior_analysis rather than restated) — "
-            "without one worked example the template teaches the mandate #602 removed",
+            "no rejected option demonstrates the seed-citation shape (source + decision) — "
+            "without one worked example the template teaches nothing",
         )
 
-    def test_guidance_never_mandates_a_per_option_dimension(self):
-        """The regression vector the original defect actually used.
+    def test_guidance_defers_analysis_to_the_seed(self):
+        """The regression vector the original defect actually used, re-aimed.
 
-        ``_guidance`` is where "Each must have pros, cons, estimated cost, and fit
-        rating" lived. A token check ("does OPTIONAL appear anywhere?") cannot tell
-        a block that grants the option from one that revokes it.
+        `_guidance` once mandated per-option cost/fit; now it must keep saying
+        the full analysis lives in the seed. A token check cannot tell a block
+        that grants the deferral from one that revokes it.
         """
-        for sentence in _mandating(self.alternatives["_guidance"]):
+        guidance = self.alternatives["_guidance"]
+        self.assertIn(
+            "seed",
+            guidance.lower(),
+            "alternatives._guidance no longer defers analysis to the seed",
+        )
+        for sentence in _mandating(guidance):
             self.fail(
                 f"alternatives._guidance re-mandates a per-option dimension: {sentence!r} "
                 "— #602 / GD-24 make estimated_cost and fit optional"
             )
 
-    def test_guidance_grants_the_optionality_by_name(self):
+    def test_guidance_names_the_seed_source(self):
         guidance = self.alternatives["_guidance"]
-        for field in ("estimated_cost", "fit"):
-            with self.subTest(field=field):
-                granted = [s for s in _sentences(guidance) if field in s and _EXEMPT.search(s)]
-                self.assertTrue(
-                    granted,
-                    f"alternatives._guidance never says {field!r} may be omitted",
-                )
+        self.assertIn(
+            "source",
+            guidance.lower(),
+            "alternatives._guidance never tells options to cite their source",
+        )
 
-    def test_antipatterns_grade_the_named_factor_not_the_cost_field(self):
+    def test_antipatterns_forbid_duplicating_seed_analysis(self):
         joined = " ".join(self.alternatives["_antipatterns"])
         self.assertIn(
-            "concrete disqualifying factor",
+            "seed",
             joined.lower(),
-            "_antipatterns does not flag a rejection reason that names no concrete "
-            "factor — the failure architect.md C2 actually grades",
+            "_antipatterns no longer flags duplicating seed analysis — the failure "
+            "the section exists to prevent",
         )
         for sentence in _mandating(joined):
             self.fail(
@@ -209,35 +214,27 @@ class AlternativesTemplate(unittest.TestCase):
             f"({RETIRED_TEMPLATE_ANTIPATTERN!r}) — see #602 / GD-24",
         )
 
-    def test_prior_analysis_is_offered_and_bounded(self):
-        """The affordance that lets an author cite an existing survey, not restate it."""
-        self.assertTrue(
-            any("prior_analysis" in opt for opt in self.options),
-            "no option demonstrates prior_analysis — authors have no worked example",
-        )
-        guidance = self.alternatives["_guidance"]
-        self.assertIn("prior_analysis", guidance, "prior_analysis is undocumented")
-        self.assertRegex(
-            re.sub(r"\s+", " ", guidance),
-            r"prior_analysis[^.]{0,120}(PROSE|prose)",
-            "the guidance no longer says prior_analysis is prose",
-        )
-        self.assertRegex(
-            re.sub(r"\s+", " ", guidance),
-            r"NO `@`-tag|no `@`-tag|carries NO @-tag",
-            "the guidance no longer forbids an @-tag inside prior_analysis — the linter's tag "
-            "scanner is document-global, so one written there becomes a real trace edge",
-        )
-
-    def test_no_option_writes_a_trace_tag_in_prior_analysis(self):
-        """Guard the template's own example against the leak it warns about."""
+    def test_no_option_re_surveys_with_pros_cons(self):
+        """The new shape forbids what the old shape required."""
         for opt in self.options:
             with self.subTest(option=opt.get("name")):
-                self.assertNotRegex(
-                    str(opt.get("prior_analysis", "")),
-                    r"@(brd|prd|ears|bdd|adr|spec|tdd|iplan)\s*:",
-                    "prior_analysis carries an @-tag; the linter reads it as lineage",
-                )
+                for field in ("pros", "cons", "estimated_cost", "fit"):
+                    self.assertNotIn(
+                        field,
+                        opt,
+                        f"option {opt.get('name')!r} carries {field!r} — analysis "
+                        "belongs in the seed, not the ADR",
+                    )
+
+    def test_seed_source_is_cited_not_resurveyed(self):
+        """The affordance that lets an author cite the seed, not restate it."""
+        guidance = self.alternatives["_guidance"]
+        self.assertIn("seed", guidance.lower(), "the seed is undocumented")
+        self.assertNotRegex(
+            re.sub(r"\s+", " ", guidance),
+            r"pros.*cons.*estimated cost.*fit rating",
+            "the guidance reinstates the retired re-survey mandate",
+        )
 
 
 class SeedTagPremise(unittest.TestCase):
@@ -277,24 +274,25 @@ class ArchitectLensAgreement(unittest.TestCase):
             "disqualified the option — ADR-TEMPLATE.yaml's alternatives guidance cites it",
         )
 
-    def test_c2_admits_a_cited_survey_without_opening_a_loophole(self):
+    def test_c2_grades_a_named_disqualifying_factor(self):
         """Both halves, or the template and the lens disagree.
 
-        Without the first, an author who follows the template — compress the
-        rationale, cite the survey — takes a P1 for doing so. Without the second,
-        the compression becomes a way to say nothing.
+        C2 grades a rationale naming the concrete disqualifying factor; the
+        template's `decision: "Rejected — [one-line reason]"` is that rationale
+        in seed-citation form. Without the factor requirement, the citation
+        becomes a way to say nothing.
         """
         self.assertIn(
-            "prior_analysis",
+            "disqualified it",
             self.c2,
-            "architect.md C2 does not admit the template's prior_analysis citation — "
-            "an ADR authored to the template would take a P1 for doing so",
+            "architect.md C2 no longer requires a rationale naming the factor that "
+            "disqualified the option — ADR-TEMPLATE.yaml's alternatives guidance cites it",
         )
         self.assertRegex(
             re.sub(r"\s+", " ", self.c2),
-            r"citation[^.]{0,80}named factor[^.]{0,40}stub",
-            "architect.md C2 no longer closes the citation loophole (a citation naming no "
-            "factor is still a stub) — the compression becomes a way to say nothing",
+            r"stub rationale",
+            "architect.md C2 no longer fails a stub rationale — the citation becomes "
+            "a way to say nothing",
         )
 
     def test_c2_does_not_reinstate_cost_as_a_required_field(self):
@@ -303,34 +301,12 @@ class ArchitectLensAgreement(unittest.TestCase):
 
 
 class PluginSkillAgreement(unittest.TestCase):
-    def setUp(self):
-        self.skills = sorted(PLUGIN_SKILLS.glob(ADR_SKILL_GLOB))
+    """Retired with the platforms (CLEANUP-001): no doc-adr* skills exist."""
 
-    def test_roster_is_complete(self):
-        self.assertEqual(
-            len(self.skills),
-            EXPECTED_ADR_SKILLS,
-            f"the doc-adr* skill roster changed ({[s.parent.name for s in self.skills]}) — "
-            "review the per-option mandate rule against the new surface, then update the count",
-        )
-
-    def test_no_adr_skill_mandates_a_per_option_dimension(self):
-        for skill in self.skills:
-            text = skill.read_text(encoding="utf-8")
-            for sentence in _mandating(text):
-                with self.subTest(skill=skill.parent.name):
-                    self.fail(
-                        f"{skill.relative_to(REPO_ROOT)} mandates a per-option dimension: "
-                        f"{sentence!r} — it contradicts ADR-TEMPLATE.yaml (#602 / GD-24)"
-                    )
-
-    def test_audit_skill_grades_the_named_factor(self):
-        text = (PLUGIN_SKILLS / "doc-adr-audit" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn(
-            "disqualifying factor",
-            text,
-            "doc-adr-audit no longer grades the named disqualifying factor — an ADR "
-            "authored to the current template would fail an audit it should pass",
+    def test_platform_skills_are_gone(self):
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the per-option mandate scan with it",
         )
 
 

@@ -18,7 +18,7 @@ The former platforms (Hermes MCP server, Claude Code plugin) are archived at
 `archive/platforms/`. The 10-layer SDD flow (BRD → PRD → EARS → BDD → ADR →
 SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framework/`.
 
-**Current state (as of 2026-09-07):** framework spec `0.53.0`. **YAML-BDD arc complete** (BDD authored as structured `scenarios:` YAML, not Gherkin-in-markdown) and the **CONSUMER-FEEDBACK P1 wave shipped**: element-level COV01/COV02 coverage (D-0039 — `REALIZING_LAYERS` map; catches orphaned requirement elements), manual-mode provisional IDs + normative SHA-256 algorithm (D-0040 — `id_state`/`PROV01`; element IDs are LLM-generated stable strings, NOT verified content-hashes), and first-class reuse / satisfied-by-reference (D-0041 — `reuse:` frontmatter; `REUSE01`/`REUSE02`). **PROVISIONAL-IDS-002 Phase 1 shipped** (D-0061/D-0062, spec `0.35.0`): the element-ID hash-input contract (normalization transform + BRD §7 extraction boundary) is formalized in `ID_NAMING_STANDARDS.md`, and `python -m sdd_doc_lint.rehash --check` verifies a canonical BRD's §7 FR IDs against it on demand (`IDDRIFT01` — advisory, opt-in, NOT in the default lint). Scoped "verifiable on demand," not "verified"; `rehash --fix` + all-layer extraction + corpus reconciliation are founder-decided Phase 2+. **ELEMENT-ID-LAYER-CONTRACT-001 shipped** (GD-09/D-0067, spec `0.39.0`): that transform had reached only `BRD-TEMPLATE.yaml`, so the re-specified algorithm is now **deleted** from the other four layer templates + three layer READMEs in favour of a cross-reference to `ID_NAMING_STANDARDS.md`; TDD gains the element-ID contract it never had; the inert `placeholder: "0000"` key is removed; `tests/conformance/test_element_id_layer_contract.py` locks all of it over `framework/layers/**` — **spec only** at the time, leaving the 19 plugin/Hermes authoring surfaces ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)) and the acceptance harness's second hash implementation ([#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)) open. **Both have since closed** (2026-07-26/27): the element-ID generator shipped as `python -m sdd_doc_lint.rehash --compute` (PR #363, D-0068), and the acceptance harness now delegates to that one implementation (PR #366). The guard that locks the negative property (`tests/conformance/platforms/test_no_inprompt_hashing.py`) scans less than its name implies and one unscanned surface still hashes — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) closed the plugin-SKILL and Hermes-reference halves, but `agent-skills/**/SKILL.md` is still reached by no root — so a green run of it is not evidence that no surface hashes. Plugin also ships full 8-layer playbook injection + preemptive saga driver across all 8 autopilots (SAGA-PARITY-001) + per-layer model-recommendation precheck (MODEL-PRECHECK-ROLLOUT) + review-quality calibration + necessary-upstream contract (NECESSARY-UPSTREAM-001) + threshold-resolution gate (TH-RES-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8). 8-layer development sequence complete. **Hermes has since advanced substantially** (from `0.7.3`): the `audit_threshold` raise-only gate (HERMES-ADAPT-ENFORCE-001), `.aidoc/profile.yaml` runtime consumption, and the opt-in bounded review→remediate→re-review **quality loop** (HERMES-REVIEW-LOOP-001 Phase 1, D-0063). **Residual arc: Hermes parity** — remaining plugin-vs-Hermes deltas + quality-loop Phase 2 (cross-invocation resume / G-R1, parallel-review lock fix), tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). The example corpus is regenerated wholesale after framework changes (so corpus-remediation findings are deferred to that regen). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+**Current state (as of 2026-09-07):** framework spec `0.53.0`. **YAML-BDD arc complete** (BDD authored as structured `scenarios:` YAML, not Gherkin-in-markdown) and the **CONSUMER-FEEDBACK P1 wave shipped**: element-level COV01/COV02 coverage (D-0039 — `REALIZING_LAYERS` map; catches orphaned requirement elements), manual-mode provisional IDs + normative SHA-256 algorithm (D-0040 — `id_state`/`PROV01`; element IDs are LLM-generated stable strings, NOT verified content-hashes), and first-class reuse / satisfied-by-reference (D-0041 — `reuse:` frontmatter; `REUSE01`/`REUSE02`). **PROVISIONAL-IDS-002 Phase 1 shipped** (D-0061/D-0062, spec `0.35.0`): the element-ID hash-input contract (normalization transform + BRD §7 extraction boundary) is formalized in `ID_NAMING_STANDARDS.md`, and `python -m sdd_doc_lint.rehash --check` verifies a canonical BRD's §7 FR IDs against it on demand (`IDDRIFT01` — advisory, opt-in, NOT in the default lint). Scoped "verifiable on demand," not "verified"; `rehash --fix` + all-layer extraction + corpus reconciliation are founder-decided Phase 2+. **ELEMENT-ID-LAYER-CONTRACT-001 shipped** (GD-09/D-0067, spec `0.39.0`): that transform had reached only `BRD-TEMPLATE.yaml`, so the re-specified algorithm is now **deleted** from the other four layer templates + three layer READMEs in favour of a cross-reference to `ID_NAMING_STANDARDS.md`; TDD gains the element-ID contract it never had; the inert `placeholder: "0000"` key is removed; `tests/conformance/test_element_id_layer_contract.py` locks all of it over `framework/layers/**` — **spec only** at the time, leaving the 19 plugin/Hermes authoring surfaces ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)) and the acceptance harness's second hash implementation ([#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)) open. **Both have since closed** (2026-07-26/27): the element-ID generator shipped as `python -m sdd_doc_lint.rehash --compute` (PR #363, D-0068), and the acceptance harness now delegates to that one implementation (PR #366). The guard that locks the negative property (`tests/conformance/platforms/test_no_inprompt_hashing.py`) scans less than its name implies and one unscanned surface still hashes — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) closed the plugin-SKILL and Hermes-reference halves, but `agent-skills/**/SKILL.md` is still reached by no root — so a green run of it is not evidence that no surface hashes. Plugin also ships full 8-layer playbook injection + preemptive saga driver across all 8 autopilots (SAGA-PARITY-001) + per-layer model-recommendation precheck (MODEL-PRECHECK-ROLLOUT) + review-quality calibration + necessary-upstream contract (NECESSARY-UPSTREAM-001) + threshold-resolution gate (TH-RES-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8). 8-layer development sequence complete. **Hermes has since advanced substantially** (from `0.7.3`): the `audit_threshold` raise-only gate (HERMES-ADAPT-ENFORCE-001), `.aidoc/profile.yaml` runtime consumption, and the opt-in bounded review→remediate→re-review **quality loop** (HERMES-REVIEW-LOOP-001 Phase 1, D-0063). **Residual arc: Hermes parity** — remaining plugin-vs-Hermes deltas + quality-loop Phase 2 (cross-invocation resume / G-R1, parallel-review lock fix), tracked in `plans/HERMES-BACKLOG.md` (archived to `archive/plans/` in #638, purged with the top-level `archive/` in #655 on 2026-09-21; listed in [`plans/STALE-REVIEW-REPORT.md`](plans/STALE-REVIEW-REPORT.md) §D2). The example corpus is regenerated wholesale after framework changes (so corpus-remediation findings are deferred to that regen). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md` (likewise missing; §D2 records both).
 
 ## Durable conventions
 
@@ -135,7 +135,8 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 
 After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
 
-**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` or `python scripts/chg_lint.py <chg-file.yaml>` to check:
+**Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
@@ -143,6 +144,7 @@ After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
 
 **When to run the linter:**
+
 1. **Pre-commit** — After creating/updating a CHG, before `git commit`
 2. **Pre-implementation** — Before writing ANY code for a CHG
 3. **Pre-merge** — Before merging a PR that modifies CHG files
@@ -173,7 +175,7 @@ Before ANY write/edit call to code files or governance files:
 Recommended flow for non-trivial changes — plan → review → implement →
 verify → land:
 
-1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
+1. **Plan** into `plans/` (a `plans/<NAME>-PLAN.md` plan) before touching
    code.
 2. **Two-cycle gap review (mandatory, BEFORE the plan PR opens)** —
    once a plan draft exists, it MUST complete at least **two full review
@@ -627,7 +629,7 @@ The `aidoc-flow-ci/sync/check-drift.sh` script (run as a pre-commit
 hook or periodic GitHub Action) compares each workflow file against
 the canonical template at the pinned `ci/vX.Y.Z` tag and reports any
 diff as a warning. **Never blocks the commit or the PR.** Same shape
-as the existing `scripts/check-docs-updated.sh` doc-currency
+as the existing `hooks/check-docs-updated.sh` doc-currency
 reminder — see "## Durable conventions" item 3 above. Contributor
 decides: bring back to canonical, intentionally keep, or push the
 divergence upstream as a new shared default.
@@ -825,9 +827,8 @@ fresh to have settled, and never repeats one that is already here.
   **not** `archived (archive/tools/)` (which vendors `framework/` subtrees plus
   three named tools files and does not touch `sdd_doc_lint`).
 - **Propagation order for a framework version bump is load-bearing:**
-  `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
-  `archived (archive/tools/)`. Reversing it lands 51 drifted bundled playbooks
-  and a red bundle guard.
+  `framework/VERSION` → `hooks/sync-version-refs.sh` → **then** the rest of
+  the change (`framework/archive/` excluded — audit trail, never swept).
 - **The plugin and Hermes `CLAUDE.md` current-state tokens self-heal; the
   framework-spec token does not.** Since #389, `sync-version-refs.sh` detects the
   previous plugin and Hermes values **from `CLAUDE.md` itself**, so a stale token is

@@ -19,10 +19,6 @@ tier. Maps to the plan's verification matrix:
 import sys
 import unittest
 
-from _spec import REPO_ROOT
-
-sys.path.insert(0, str(REPO_ROOT / "tools"))
-
 from sdd_doc_lint import (  # noqa: E402
     _normalize_hash_field,
     compute_element_hash,

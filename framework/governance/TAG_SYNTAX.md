@@ -1,5 +1,15 @@
 # `@`-Tag Syntax Reference
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.68.1 |
+
 Per-layer punctuation, cardinality, and worked examples for the `@<layer>:`
 trace tags. This is the **form** reference; the normative rules live elsewhere
 and are cross-referenced, not duplicated:
@@ -93,3 +103,4 @@ the element form when the target is element-declaring:
 | SPEC | `@ears @bdd @adr` | `@adr: ADR.01.03.e5b1` |
 | TDD | `@ears @bdd @adr @spec` | `@spec: SPEC-01` (doc-level — SPEC exempt) |
 | IPLAN | `@spec @tdd` | `@tdd: TDD.01.04.a3c1`; `@spec: SPEC-01` (doc-level) |
+| EVAL | `@ears @bdd @tdd @iplan` | `@iplan: IPLAN-01` (doc-level — IPLAN exempt) |

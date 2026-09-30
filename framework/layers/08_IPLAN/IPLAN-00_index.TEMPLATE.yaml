@@ -5,6 +5,10 @@
 # Dynamic registry — updated every time an IPLAN is created, versioned,
 # moved between statuses, deferred, or completed.
 #
+# Index-sync rule (TDD-SYNC-E): this index is the SOURCE OF TRUTH for IPLAN
+# statuses. When an IPLAN status changes, TDD-00_index must be updated in the
+# same change — the two indexes must never disagree about an IPLAN's status.
+#
 # For rules governing this directory (naming, status semantics, update triggers),
 # see 08_IPLAN/README.md — the authoritative rule source.
 
@@ -46,6 +50,11 @@ registry:
   #   validated_by: "IPLAN-NN"  # Reference to validation IPLAN (if applicable)
   #   validation_date: "YYYY-MM-DD"  # Date when Verified status was set
   #   findings_resolved: 0  # Number of findings fixed during validation
+  #   # A Completed plan merged before VERIFY keeps validated_by: "pending"
+  #   # until the validation IPLAN lands — an open VERIFY obligation, not a
+  #   # clean bill of health. Bugfix IPLANs additionally record their closed
+  #   # parent here:
+  #   parent_iplan: null  # bugfix only: "IPLAN-NN" of the closed plan under repair
 
 # =============================================================================
 # Backlog

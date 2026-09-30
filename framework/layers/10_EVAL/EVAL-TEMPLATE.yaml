@@ -29,13 +29,13 @@ title: "Eval — IPLAN-NN [IPLAN Title]"
 # =============================================================================
 
 metadata:
-  schema_version: "2.0"
+  schema_version: "1.0"
   framework_version: "[X.Y.Z]"
   document_type: "eval-document"
   layer: 10
   lifecycle: iplan-coupled
   total_sections: 6
-  last_updated: "2026-10-27"
+  last_updated: "[YYYY-MM-DD]"
   validation:
     _guidance: |
       Evaluation is performed by the platform's conformance tooling.
@@ -156,6 +156,10 @@ test_design:
 
     ID format: EVAL.{NN}.{SS}.{hash}  (standard element ID, independent from source)
 
+    RULE: Every test case MUST carry an EVAL.NN.SS.xxxx ID — IDs are required,
+    not optional (no exemption; see governance/ID_NAMING_STANDARDS.md
+    §"Element-ID exemptions").
+
     RULE: One source per test case. Each test case must reference exactly
     one upstream element via source_type + source_id. Never combine
     multiple sources (BDD + TDD, etc.) in a single test case.
@@ -200,7 +204,7 @@ coverage_matrix:
     Every scenario/case in this IPLAN's scope MUST appear in this matrix.
 
   entries:
-    - source_id: "BDD.NN.TC-NN.NN"
+    - source_id: "BDD.NN.SS.xxxx"
       source_type: bdd_scenario
       test_case_id: "EVAL.NN.SS.xxxx"
       test_file: "[path/to/test_file]"
@@ -278,11 +282,14 @@ execution_plan:
 
 traceability:
   upstream:
-    iplan: "IPLAN-NN"
-    spec: "SPEC-NN"
-    tdd: ["TDD-NN"]
-    bdd: ["BDD-NN"]
-    ears: ["EARS-NN"]
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    tdd_references:
+      - "@tdd: TDD.NN.SS.xxxx"  # element-level (GD-03); pipe-delimit several
+    iplan_references:
+      - "@iplan: IPLAN-NN"  # document-level (SPEC/IPLAN exempt, GD-03)
   downstream:
     - type: EVAL-RPT
       description: "Evaluation reports in EVAL-{NN}/reports/"

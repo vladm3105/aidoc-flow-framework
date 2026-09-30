@@ -1,0 +1,183 @@
+# =============================================================================
+#  CHG-27: CHG-26 follow-through batch for issues #817-#818 (F2 direct, C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request, no prior IPLAN, no product-behavior change
+#  — adaptation-surface knob addition, hook parity step, guard tests, PATCH
+#  release) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-27/IPLAN-27.yaml (goes In Progress on approval;
+#  no code before that per §3.13).
+#  Requester citation (verbatim session goal, 2026-09-30): "to triagr
+#  https://github.com/vladm3105/aidoc-flow-framework/issues then fix them".
+#  Issues (both OPEN, triaged + Mode B GO 2026-09-30 on dev @ 09d1e688):
+#  Code-touching C1: #818 (test-suite step in hooks/pre_push_check.sh +
+#  covering unit test).
+#  Normative-text C1: #817 (ci_bindings knob in ADAPTATION_SURFACE.yaml +
+#  PROFILE-TEMPLATE.yaml coverage + ADAPTATION.md §4.7 + guard test; the
+#  closed registry is a contract, so the addition is normative).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — no runtime code, no client/server, no structs, no DB/migrations,
+#  no queries; hook edit adds one suite step (same unittest entry CI already
+#  runs, no new inputs, no permission changes); surface edit adds one knob
+#  with default {} (existing six knobs untouched, closed-set semantics kept).
+#  EARS/BDD IDs vacuous (upstream is the user goal + two issue numbers
+#  cited). SECURITY_REVIEW: assessed — hook runs the repo's own suites via
+#  the local interpreter (no new trust boundary; skip-with-notice when
+#  python3 is absent); knob values are consumer-authored profile data, never
+#  executed by the framework.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  empty 2026-09-30, same finding as CHG-23/24/25). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests (GATE-CODE entry): two guard additions, each observed
+#  failing before its fix and passing after — ci_bindings pointer pin in
+#  tests/conformance/test_ci_autonomous_pr_standard.py (#817), hook-invokes-
+#  suites assertion in tests/unit/test_hook_stage_coverage.py (#818) — plus
+#  full tests/unit + tests/conformance + sdd_doc_lint/tests runs in IPLAN-27.
+#  Out of scope: the standard's six invariants (untouched per #817),
+#  test_phantom_paths.py scope (filename-level by design, per #817),
+#  Taskfile/go-task harness or tier scaffolding (forbidden per #818 — pure
+#  overhead with no build matrix here), README snapshot (explicitly unwired
+#  from sync, stale 0.67.1 left alone), new GD entries (C1, no new decision),
+#  reusable @ci/v4.0.0 pins and ai-review design (untouched).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  PATCH: additive knob (default {}) + additive hook step → 0.68.0 → 0.68.1
+#  with pin sweep (hooks/sync-version-refs.sh) + both CHANGELOGs cut.
+# =============================================================================
+
+id: CHG-27
+title: "Fix CHG-26 follow-through batch #817-#818 (adaptation CI bindings, pre-push suite parity — one PR)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-27"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-27 authorizing record (framework/archive/CHG-27/IPLAN-27.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix both open CHG-26 follow-through issues in one PR: CI-binding knob for the adaptation surface (#817) and test-suite parity in the pre-push gate (#818), released as C1 PATCH 0.68.1."
+  why: "Each issue leaves a CHG-26 guarantee unimplementable or unenforced: consumers adopting the CI standard have no declared place to pin the bindings it requires (#817), and the local half of the verification harness is a different program than the remote half, so mechanical defects cost a full CI round-trip (#818). The triage notes (2026-09-30) carry per-issue evidence; this vehicle executes them as one auditable batch."
+  trigger: "Session goal 2026-09-30: 'to triagr https://github.com/vladm3105/aidoc-flow-framework/issues then fix them' + triage notes on #817-#818 + Mode B GO validation on dev @ 09d1e688."
+  scope:
+    in:
+      - "#817: ci_bindings knob in ADAPTATION_SURFACE.yaml (6 → 7 knobs) + PROFILE-TEMPLATE.yaml override row + knob-count header + ADAPTATION.md §4 title + §4.7 section + pointer guard test"
+      - "#818: test-suite step in hooks/pre_push_check.sh (three suites, fail-closed when python3 resolves, skip-with-notice otherwise) + canon scope header + hooks/README.md bullet + covering unit test"
+      - "PATCH release 0.68.0 → 0.68.1: framework/VERSION + pin sweep + both CHANGELOGs cut"
+      - "framework/archive/CHG-27/CHG-27.yaml + IPLAN-27.yaml (this vehicle)"
+    out:
+      - "The standard's six invariants (untouched per #817 not-broken list)"
+      - "The existing six adaptation knobs (untouched; closed-set semantics kept)"
+      - "test_phantom_paths.py scope (filename-level by design, per #817)"
+      - "Taskfile/go-task harness or tier scaffolding (forbidden per #818 fix shape)"
+      - "README snapshot refresh (explicitly unwired from sync; stale 0.67.1 left alone)"
+      - "New GD entries (C1, no new decision)"
+      - "Any F3 cascade or SDD rewrite (none — F2 direct batch)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-27 with manifest + covering test cases + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-27"
+      status: Completed
+    - step: "Implement normative-text C1 (#817 ci_bindings knob + template + ADAPTATION.md + guard test)"
+      phase: "surface_fix"
+      artifact: "governance + tests"
+      status: In-Progress
+    - step: "Implement code-touching C1 (#818 hook suite step + covering unit test)"
+      phase: "tooling_fix"
+      artifact: "hooks + tests"
+      status: In-Progress
+    - step: "Cut PATCH 0.68.1 (VERSION + pin sweep + both CHANGELOGs)"
+      phase: "release"
+      artifact: "VERSION + changelogs"
+      status: In-Progress
+    - step: "Run IPLAN-27 battery (chg_lint, tests/unit, tests/conformance, sdd_doc_lint/tests) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-27-batch-817-818 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-27/CHG-27.yaml"
+    - "framework/archive/CHG-27/IPLAN-27.yaml"
+    - "framework/governance/ADAPTATION_SURFACE.yaml"
+    - "framework/governance/PROFILE-TEMPLATE.yaml"
+    - "framework/governance/ADAPTATION.md"
+    - "tests/conformance/test_ci_autonomous_pr_standard.py"
+    - "hooks/pre_push_check.sh"
+    - "hooks/sync-version-refs.sh"
+    - "hooks/README.md"
+    - "tests/unit/test_hook_stage_coverage.py"
+    - "framework/VERSION"
+    - "CHANGELOG.md"
+    - "framework/CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-27"
+    changes: "Authorizing record for CHG-26 follow-through batch fixes (this file)"
+  - id: "IPLAN-27"
+    changes: "Authorizing IPLAN (framework/archive/CHG-27/IPLAN-27.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-27 (0 errors)"
+    - "python3 -m unittest discover -s tests/unit (all green, incl. extended hook coverage)"
+    - "python3 -m unittest discover -s tests/conformance (all green, incl. ci_bindings pointer pin)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "bash hooks/sync-version-refs.sh (clean sweep to 0.68.1)"
+    - "bash -n + shellcheck on hooks/pre_push_check.sh"
+    - "PR checks green on feature/chg-27-batch-817-818 → dev"

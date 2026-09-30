@@ -13,18 +13,435 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 
 ## Document Control
-
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.52.0 |
+| Framework Version | 0.68.1 |
 
 ---
 
-## GD-25 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
+## GD-42 — Engine-agnostic CI & autonomous change-integration standard (CHG-26, 0.68.0 MINOR)
+
+- **Status:** Accepted — 2026-09-30 · **SemVer:** framework `0.67.1 → 0.68.0` (MINOR),
+  change-level **C2** (F3/spec; new governance doc + census + guard test — no
+  layer template, registry, or API touched; reviewer may escalate to C3).
+  Vehicle: CHG-26 + IPLAN-26 (`framework/archive/CHG-26/`). Trigger: issue
+  #815 (downstream enterprise standard upstreaming; triage 2026-09-30).
+- **Context:** SDD layers specify what to build, not how verification stages
+  between workspace and integration branch — adopters re-derived CI topology
+  ad hoc and repeated three failure modes: disjoint local-vs-submission
+  harnesses (false-green escapes), trigger-scoped required checks that never
+  report (permanent merge deadlock), and human-approval gates no autonomous
+  author can satisfy. The downstream enterprise standard (6 invariants +
+  2-pass review loop + conflict classes) proved the shape, but is written in
+  platform mechanics that cannot land in the engine-agnostic spec (GD-06).
+- **Decision:** codify `CI_AUTONOMOUS_PR_STANDARD.md` stating only the
+  engine-neutral invariants (unified harness, concentric latency tiers,
+  conclusive required checks, two-pass independent review, merge-conflict
+  authority classes, anti-blind closure) with the "CHG Step #6" formulation
+  translated (upstream CHG governance has no step numbering) and
+  `REVIEW_TEAM.md` lens-conflict reconciliation explicitly disambiguated
+  from merge-conflict authority. Pinned by
+  `tests/conformance/test_ci_autonomous_pr_standard.py` (presence +
+  Document Control + six invariants + forbidden-mechanics battery).
+- **Consequence:** framework adopters share one integration contract;
+  platform bindings (runners, workflows, branch policy, ceilings) stay in
+  consumer adaptation profiles per `ADAPTATION.md`.
+
+---
+
+## GD-41 — Tier-1 consumer feedback log retired; per-task worktree unconditional (CHG-23, 0.67.0 MINOR)
+
+- **Status:** Accepted — 2026-09-30 · **SemVer:** framework `0.66.0 → 0.67.0` (MINOR),
+  change-level **C2** (F3/spec; governance-only — no layer template, registry,
+  or API touched; reviewer may escalate to C3). Vehicle: CHG-23 + IPLAN-23
+  (`framework/archive/CHG-23/`). Trigger: user directive 2026-09-30
+  (directive-driven like CHG-21, no separate issue).
+- **Context:** Tier 1 prescribed a per-consumer `framework-feedback-log.md` no
+  consumer keeps (platforms archived, example corpus removed); Tier-2 sources
+  cited the deleted `examples/<NAME>/` corpora; the `[harness]`,
+  `[example-corpus]`, and `[platform-parity]` tags pointed at a deleted
+  script, a deleted corpus, and archived platforms — while ~40 closed GH
+  issues prove the tracker surface healthy. Separately, AGENTS.md's
+  trivial-edit quick path contradicted WORKTREE_FLOW.md invariants 1–2
+  (CHG-22 shipped branch-in-main-checkout against the worktree rule).
+- **Decision:** (1) Tier 1 retired — `FRAMEWORK_FEEDBACK_LOG.md` rewritten
+  tracker-only (v2.0); the doc is retained (`test_governance.py` census +
+  SELF_LEARNING.md §7.4 surface); the scaffold template is deleted;
+  Principle 9 rewritten. (2) Quick-path exception removed — every
+  feature/defect change runs in a per-task worktree + branch with
+  post-merge cleanup per WORKTREE_FLOW.md §3.7 order guard.
+- **Consequence:** single capture surface (the tracker); unconditional
+  worktree discipline; external template copiers directed by the 0.67.0
+  CHANGELOG note.
+
+---
+
+## GD-40 — Self-learn Two-Tier Project Knowledge Architecture; keep `.aidoc/learning/`; vendor-neutral skill (CHG-18, 0.66.0 MINOR)
+
+- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.65.2 → 0.66.0` (MINOR),
+  change-level **C3** (F3/spec; cross-layer governance + skill + decisions + test
+  with new Tier requirements; human C3 gate signature on file in CHG-18).
+  Vehicle: CHG-18 + IPLAN-18 (`framework/archive/CHG-18/`). Issue: #779 phase-b (P1).
+- **Context:** Phase-a (CHG-17) closed the solo direct-write loophole. Remaining:
+  the framework skill copy named MiMoCode-only paths/schemas (session
+  `checkpoint.md` §7/§8, trajectory SQLite `history_fts`/`tool_input`), breaking
+  every other engine; `SELF_LEARNING.md` specified aspirational hooks
+  (`session.post`, `learn-inject`) as live machinery with no usable tier model;
+  the folder name (`learning/` pilot vs `knowledge/` draft preference) was
+  undecided with a fresh CHG-16 ruling in play.
+- **Decision:** (1) Tier model adopted — Tier 1 active invariants by reference,
+  Tier 2 on-demand `.aidoc/learning/` knowledge (~3KB cap), Tier 3 the existing
+  §7.4 upstream-feedback contract by reference (no Tier-3 storage, no universal
+  log). (2) Folder: KEEP `.aidoc/learning/` — live pilot (#783), AGENTS.md row,
+  both skill copies, and BOOTSTRAP.md agree; the draft §3 rename is declined,
+  recorded here so it is not relitigated silently. (3) Skill decoupled by
+  porting the hardened `.agents` rows (harness artifacts best-effort, portable
+  sources as fallback); framework adaptation header untouched. Enforcement is
+  reviewer-lens + conformance pins.
+- **Consequence:** the shared skill runs on any capable engine; harness-specific
+  machinery is illustrative, never load-bearing; the folder question is settled
+  unless a new CHG reopens it with supersede links.
+
+---
+
+## GD-39 — Per-flow Phase-3 closeout: deployable mandates live deployment + EVAL, non-deployable closes via static battery (CHG-14, 0.65.0 MINOR)
+
+- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.64.0 → 0.65.0` (MINOR),
+  change-level **C2** (F3/spec; breaking-change analysis in CHG-14 — additive
+  clarification, no gate/ID/schema removed, past records unaffected; reviewer may
+  escalate to C3). Vehicle: CHG-14 + IPLAN-14 (`framework/archive/CHG-14/`).
+  Issue: #776 (P2, gap).
+- **Context:** §3.3 defined `Completed` only as "verification passed" with no
+  per-flow closeout rule — agents either prematurely completed code changes
+  without deploying or stalled doc-only changes fabricating empty deployments.
+  The framework already leaned this way (per-flow verification column;
+  dev-complete vs deploy-complete split) — codified, not corrected. Consumer
+  `deploy.sh` / `task smoke` / EVAL-generator names behind the filing are
+  consumer-side and are NOT specified here: the rule names the evidence
+  (deploy + smoke + authentic EVAL vs static battery), not the commands.
+- **Decision:** deployable scope mandates live closeout before `Completed`;
+  non-deployable scope closes via static battery with no deployment and no
+  EVAL owed — fabricated EVALs are forbidden; mixed scope follows the
+  deployable path (manifest decides). Enforcement is reviewer-lens (closeout
+  adequacy is judgement over evidence, not a record property). Also repairs the
+  stale §1-table F2 cell ("docs-only: no CHG/IPLAN"), which contradicted F2.2
+  always-traced — coherence-required for the new rule's readers, not drive-by.
+- **Consequence:** code changes cannot close without deployment evidence;
+  doc-only changes close without empty deployments; no EVAL is ever fabricated
+  for closeout.
+
+---
+
+## GD-38 — First-class documentation_sync phase; CHG-L003 scoped to code steps, no IPLAN exemption (CHG-13, 0.64.0 MINOR)
+
+- **Status:** Accepted — 2026-09-29 · **SemVer:** framework `0.63.0 → 0.64.0` (MINOR),
+  change-level **C2** (F3/spec; breaking-change analysis in CHG-13 — additive
+  phase string, no gate/ID/schema removed, no previously-green CHG turns red;
+  reviewer may escalate to C3). Vehicle: CHG-13 + IPLAN-13
+  (`framework/archive/CHG-13/`). Issue: #775 (P1, linter).
+- **Context:** a zero-code change declaring doc-sync milestones as
+  `phase: implementation` tripped CHG-L003, whose message reported the doc step
+  as a code step belonging in IPLAN. The framework offered no legal phase for
+  doc milestones (`sdd_lifecycle` covers versioned SDD docs, `iplan_creation`
+  covers IPLAN authoring) — the contract was missing, not contradicted. The
+  consumer Type-D taxonomy and IPLAN-skip message behind the filing are
+  consumer-side and are NOT adopted.
+- **Decision:** `documentation_sync` joins the legal CHG step phases for
+  non-code, non-SDD documentation/governance milestones (the F2 docs-only C1
+  shape). CHG-L003 keeps erroring on `code` / `implementation` /
+  `code_implementation` and on missing phases, but its message names the legal
+  phases including the doc alternative; CHG-L005 orders `documentation_sync`
+  in the execution zone (after all `sdd_lifecycle` steps); CHG-L004 still
+  requires an IPLAN reference — a `documentation_sync` step alone satisfies
+  nothing. The CHG-12 always-traced rule holds unchanged: every C1 still needs
+  a C1 CHG + scoped IPLAN, every author — NO IPLAN exemption ships here.
+  Enforcement is linter-emitter for the predicate/message half plus
+  reviewer-lens for the template-layout half.
+- **Consequence:** doc-only changes can declare milestones without mislabeling
+  them as SDD or IPLAN work, and the linter points at the legal vocabulary
+  instead of misreporting doc steps as code.
+
+---
+
+## GD-37 — Mandatory CHG+IPLAN for every post-seed activity; seed-drafting phase the sole exception (CHG-12, 0.63.0 MINOR)
+
+- **Status:** Accepted — 2026-09-28 · **SemVer:** framework `0.62.7 → 0.63.0` (MINOR),
+  change-level **C2** (F3/spec; breaking-change analysis in CHG-12 — additive
+  tracking obligation, no gate/ID/schema removed; reviewer may escalate to C3).
+  Vehicle: CHG-12 + IPLAN-12 (`framework/archive/CHG-12/`).
+  Issues: #772 (gap) + #773 (owner-directed rule).
+- **Context:** The framework permitted untracked changes through no-CHG/no-IPLAN
+  paths (F2.2 docs-only direct commit; AGENTS.md exceptions for bug fixes on
+  active IPLANs and docs-only non-normative C1; router step 5; template C1
+  rows). Untracked changes succeed silently — exit 0, no lint tripwire
+  (GOV-018 fires only on code/script manifests) — so the absence of a record
+  is the defect (same class as #772).
+- **Decision:** every post-seed activity carries a CHG request and an IPLAN —
+  every C1 (docs-only included) requires a C1 CHG + scoped IPLAN for every
+  author (agents and humans). Minimal shape keeps trivial edits cheap but
+  traced (requester citation, manifest, steps/commands, verification; covering
+  tests N/A-allowed for pure prose). Sole exception: seed-phase drafting
+  before the first BRD is authored against seed vN (SEED_CONTRACT R1), when no
+  other documents exist yet. This SUPERSEDES the F2-UNIFY-PLAN D2 decision
+  (human-only direct-commit exception retained); rejected candidate
+  retain-human-exception recorded in CHG-12 with rationale. Enforcement is
+  reviewer-lens (PR reviewer verifies every commit rides the CHG/IPLAN
+  manifest), backstopped by branch protection — GOV-018 stays syntactic by
+  design. The §3.13 bootstrap exemption (authoring the CHG/IPLAN vehicle docs
+  themselves) is kept: it covers record creation, not change shipping.
+- **Consequence:** no post-seed change ships without a requester citation,
+  file manifest, verification record, and status lifecycle.
+
+---
+
+## GD-36 — Versioned seed tier (frozen-per-version) + mandatory AI document-control rule (CHG-11, 0.61.0 MINOR)
+
+- **Status:** Accepted — 2026-09-24 · **SemVer:** framework `0.60.0 → 0.61.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-11 + IPLAN-11 (`framework/archive/CHG-11/`).
+  Issue: #684.
+- **Context:** The seed was the only tier that could not version (GD-08 froze it
+  outright), so the living chain (modules → SDD → code) slowly cited a stale v1
+  seed while every F3 re-verified `seed_scope: no-change` with no lint signal.
+- **Decision (F3-only; F1/F2/F4/Emergency/Type-R untouched):** the seed tier
+  versions via archive → rewrite → bump + `supersedes`, affected files only —
+  frozen **per version** instead of frozen forever (GD-08 stays untouched as the
+  historical record; this entry carries the update). `seed_scope` gains the
+  `supersede` decision with non-empty `entries`; BRD ledger rows pin
+  `seed_version` with `SEED01` failing stale pins (unpinned rows pass as
+  before); new rule GOV-021 requires every AI-created/modified versioned
+  document to carry `document_control` + metadata, backfilled by the agent when
+  missing (carriers verified present in all ten layer templates + governance
+  docs; the seed carrier ships here). Deterministic halves enforced as
+  CHG-L014 (extended) + CHG-L015 (new); reading judgements stay with the
+  auditor lens.
+- **Consequence:** the full chain seed → modules → SDD → code stays actual
+  under one lifecycle, and every AI-touched version says which agent, under
+  which CHG, changed what.
+
+---
+
+## GD-35 — Modules-first F3: seed_scope + module_lifecycle + review checkpoint (CHG-10, 0.60.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.59.2 → 0.60.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-10 + IPLAN-10 (`framework/archive/CHG-10/`).
+- **Context:** F3 had no legal shape for keeping seed → modules → SDD actual — authors either
+  rewrote frozen seed in place (SEED_CONTRACT R1 violation) or versioned the whole tree per
+  change (cascade explosion). Piloted on a donor project's MODULE-12 (exporter-health CHG).
+- **Decision (F3-only; F1/F2/F4/Emergency/Type-R untouched):** Phase 0 splits into 0a seed_scope
+  (record, usually no-change, never rewrite) + 0b module_lifecycle (archive → sync → version,
+  affected modules only) + 0c SDD cascade; a review checkpoint gates SDD rewrites and IPLAN
+  authoring; GOV-020 enforces lifecycle coverage; both CHG templates carry §4A/§4B sections.
+- **Consequence:** affected-only chain stays actual without tree-wide versioning; seed stays
+  historical input, modules stay the living source of truth.
+
+---
+
+## GD-34 — STALE P1 canons: one canonical surface per fork (CHG-08, 0.59.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.58.0 → 0.59.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-08 + IPLAN-08 (`framework/archive/CHG-08/`).
+- **Context:** STALE P1 items #664, #667, #672, #666, #662, #671, #669 — seven live
+  forks/duplications with no canonical side, each forcing authors to pick at random.
+- **Decision (content-first, then canon; tombstone-with-pointer, never silent delete):**
+  EVAL report = REPORT template, RPT tombstoned (RPT survives as filename shorthand);
+  CHG template = KEEP §7 + 8-layer enumeration, home `governance/chg/`, layer copy
+  byte-identical; playbooks = split (10_EVAL authoring, 10_IPVERIFY execution),
+  `validator.md` retargeted to EVAL-RPT; MVP = 8 tombstones + 7 index-link retargets;
+  verification vehicle = EVAL-RPT flow + bugfix-subtype repairs, `tmp/` retired,
+  scripts deprecated; triple-lock = one-pass EVAL/CHG rows (schema, naming,
+  scope, traceability) with `acceptance_layers` deliberately unchanged
+  (`{BDD: [TDD]}` is case-scoped pairing by design; EVAL rides `realizing_layers`
+  + EVAL-COV rules, pinned by sync test); File Naming = general slug form +
+  EVAL/RPT/CHG carve-outs + bugfix row, no new PRD/EARS/ADR filename rules.
+- **Consequence:** every fork has exactly one canon path; conformance pins each
+  (REPORT shape, CHG identity, split layers, tombstone-only MVPs, lock rows).
+
+---
+
+## GD-33 — STALE T2/T3 remediation: linter-vs-governance contradictions fixed, GOV-019 mints the IPLAN-reference rule, hooks rewired (CHG-08, 0.58.0 MINOR)
+
+- **Status:** Accepted — 2026-09-23 · **SemVer:** framework `0.57.1 → 0.58.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-08 + IPLAN-08 (`framework/archive/CHG-08/`).
+- **Context:** STALE issues #668 (T2) and #663 (T3). `chg_lint.py` contradicted governance
+  (false positives on Proposed C3 drafts, double-reported approver, heuristic L003 warnings,
+  L004 hunting the wrong schema location, a dead L005 arm, shadowed imports) and five hooks
+  carried stale paths, blind spots, and hardcoded version literals.
+- **Decision:** L002 early-passes Proposed C3 drafts (GOV-012); L001 drops its C3-approver copy
+  (L002 is sole owner); L003 errors on missing `phase` and drops the keyword heuristic (GOV-010
+  already states the phase contract); L004 scans canon `implementation.steps[]`
+  (`phase: iplan_creation`) and escalates to error under newly minted **GOV-019** (GOV-013
+  deliberately not cited — it governs code-without-IPLAN, a different defect); L005 drops the
+  code-phase arm (code steps are L003 errors, not ordering inputs); shared PyYAML-guard/loader
+  extracted to `sdd_doc_lint/_common.py` with dual script/package import. Hooks: CHG gate watches
+  `*.sh`, skips `*TEMPLATE*`, reads the commit message, and is wired into pre-commit (warn-only);
+  docs list resynced (AGENTS.md replaces deprecated CLAUDE.md, plus versioned changelogs);
+  sync-version-refs refactored to one `OLD_VERSIONS` list + conformance pin; pre-push paths fixed;
+  sdd-doc-review repointed off archived surfaces.
+- **Consequence:** `chg_lint` agrees with governance on all five contradiction points; the next
+  version bump extends one list instead of N literals; pre-commit contributors get the CHG gate.
+
+---
+
+## GD-32 — CHG request flows ratified: F1–F4 router + F2 direct + GOV-018 (CHG-06, 0.57.0 MINOR)
+
+- **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.56.0 → 0.57.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-06 + IPLAN-06 (`framework/archive/CHG-06/`).
+- **Context:** Small code changes had no legal shape (C1 direct-commit violates §3.13; `External`
+  mandates phantom cascades) — issue #673. Pass-1 review (G1–G10) added Emergency/Type-R yields,
+  rerouted F2 to GATE-CODE, resolved the GOV-017 collision; pass 2 confirmed all §8 verdicts.
+- **Decision:** Four named flows (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix vehicle) with an
+  ordered router (Emergency → Type-R → F4 → F3 → F2 → F1); mint `change_source: direct` (GATE-CODE);
+  bound C1 (docs-only direct-commit; code-touching C1 CHG + scoped IPLAN with covering tests);
+  GOV-018 misclassification guard (syntactic — semantic cases rely on review, documented in F2.4).
+  Structural choice: `DOC_GOVERNANCE_CORE.md` §3.1.3 carries the router kernel + pointer (not a full
+  fold — avoids a second normative source); `governance/CHG_REQUEST_FLOWS.md` is canonical.
+- **Consequence:** `direct` is valid from 0.57.0; F2.2 sentence governs §3.13; 116 machine pins swept.
+
+---
+
+## GD-31 — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, 0.56.0 MINOR)
+
+- **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.55.0 → 0.56.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** #656 reported a real-but-narrow gap: a code-only repair to closed IPLAN output
+  had no proportionate ceremony (full CHG cascade vs. edit-without-authorisation), the
+  `LAYER_REGISTRY`/`GATE-08` promise of temporary `IPLAN/tmp/` bugfix plans pointed at
+  nothing on disk, and migration VERIFY could go green on a broken artefact (`fmt` clean,
+  `apply` failing, stale image masking). #657 proposed the vehicle; maintainer direction
+  (new `bugfix` subtype, fields-in-existing-template, directory-listing minter, IPLAN-side
+  linter) was posted on #657 and the triage verdict on #656 before implementation.
+- **Decision:** Land the `bugfix` subtype (option A over extending `audit_fix`, which stays
+  audit-scoped): `parent_iplan` + `source_chg` homes, scope-limited manifest, normative
+  order fix → regression test → rollback → parent revision entry last, mandatory rollback
+  with PENDING→DONE/SKIPPED markers, no-fix-on-fix (sibling + `prior_attempts`), parent
+  never touched. Terminal semantics fixed canon-wide: `Completed` is validatable (VERIFY
+  window open, `validated_by: pending` after a pre-VERIFY merge), only `Verified` is
+  terminal. **Active** is defined as `Draft | Approved | In Progress`; the §3.13 bug-fix
+  exception covers active plans only. Migration VERIFY requires fresh-rebuild + live-DB
+  dry-run. Rejected: both-terminal, mandatory `detection_gap`, `Related-IPLAN` bypass,
+  `revision_history`-on-IPLAN, blame-chain prescription, new layer/registry/template fork.
+- **Consequences.** `framework/VERSION` `0.55.0 → 0.56.0`; mechanical pin sweep;
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.56.0]` entries; GOV-013 carve-out +
+  `BGF-01..07` catalog rows; `sdd_doc_lint/bugfix_lint.py` + `test_iplan_bugfix_lifecycle.py`
+  (incl. BGF catalog-agreement guard).
+- **Authority:** `plans/IPLAN-TERMINAL-DEFECT-PLAN.md`; `framework/archive/CHG-05/CHG-05.yaml`;
+  `framework/archive/CHG-05/IPLAN-05.yaml`; issues #656/#657.
+
+---
+
+## GD-30 — Formalize Type-R code-to-doc reconciliation flow (CHG-04, 0.55.0 MINOR)
+
+- **Status:** Accepted — 2026-09-21 · **SemVer:** framework `0.54.0 → 0.55.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** PR #654 carried a consumer project's `GOVERNANCE_RULES.md` (575 lines) plus a
+  Type-R (Reconciliation / Backward Propagation) proposal. Triage found exactly one migratable
+  kernel: the framework defined only the forward flow plus Emergency, leaving non-emergency
+  empirical work (integration discovery, browser-authored suites, flakiness remediation) with
+  two dishonest options — backdated design history or doc drift. The project manual itself was
+  rejected as a framework file (engine-agnostic violation, `EXPECTED_FILES` pin).
+- **Decision:** Land Type-R as a bounded exception to SDD-first (§3.1.1 stays the default):
+  `DOC_GOVERNANCE_CORE.md` §3.1.2 (trigger, Phase 0–3 flow, three guardrails, Emergency
+  disambiguation — Emergency-qualifying work never uses Type-R), one closed `change_source`
+  value (`reconciliation`, entry GATE-CODE) in both CHG-TEMPLATE twins, Dual Lifecycle +
+  routing rows in both README twins, GATE-CODE §1.3/§6.3 routing notes in both gate twins.
+  Docs + template enum only — no new lint rules (`change_source` is not enum-validated), no
+  error-catalog codes.
+- **Consequences.** `framework/VERSION` `0.54.0 → 0.55.0`; mechanical pin sweep;
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.55.0]` entries.
+- **Authority:** `plans/TYPE-R-RECONCILIATION-PLAN.md`; `framework/archive/CHG-04/CHG-04.yaml`;
+  `framework/governance/DOC_GOVERNANCE_CORE.md` §3.1.2.
+
+---
+
+## GD-29 — Port 17 donor-hardening addons into the spec (CHG-03, 0.54.0 MINOR)
+
+- **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.3 → 0.54.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** A sibling project's governed `.aidoc/` directory (frozen to `/tmp/donor-gov/`,
+  8 files, 1851 lines — do NOT chase donor HEAD) carried 17 hardening addons the framework
+  spec lacked. Ranked P0–P2 in `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md` (FINAL, Pass 3
+  clean), implemented under `framework/archive/CHG-03/` (CHG-03 + IPLAN-03, subtype `combined`).
+- **Decision:** Land all 17 addons, genericized (no donor literals — collector/telemetry/service
+  tokens, vendor/product names, local tool paths, `docs/sdd/` layouts stay donor-local):
+  1. `DOC_GOVERNANCE_CORE.md` gains the SDD-first implementation order table (§3.1.1),
+     the §3.13 bootstrap exemption, the IPLAN Lifecycle bundle (status-gate table, failure
+     modes, DONE-must-exist, realtime manifest, CHG-tracks-IPLAN, SDD-sync-on-completion
+     with `completion_spec_sync` + CHG-L012 pointer), `## Status Propagation (§4.1)`, and the
+     `WORKTREE_FLOW.md` pointer — after deduping the twin EVAL blocks (canonical
+     `EVAL.NN.SS.xxxx` survives).
+  2. `IPLAN-TEMPLATE.yaml` gains `completion_gates` + `completion_spec_sync` blocks
+     (`spec_checked`/`tdd_checked`/`diverged`/`chg_ref`), `breaking_change` block, realtime
+     manifest update + DONE-must-exist rules, `audit_fix` as a fourth subtype (`combined`
+     stays the backward-compat default per Decision F), and schema-artifact guidance;
+     `08_IPLAN/README.md` gains `## IPLAN Subtypes`.
+  3. `LAYER_REGISTRY.yaml` + `registry/README.md` gain the new-layer registration checklist;
+     `LINT_RULES.md` gains `REG01` (warning-advisory), `CHG-L012` (completion-sync warning),
+     `IPLAN01` (breaking-change advisory), and `TDD-SYNC-A..E` (bidirectional status sync,
+     all warning-advisory); `tests/conformance/test_registry.py` pins the checklist header.
+  4. `sdd_doc_lint/chg_lint.py` gains CHG-L012 (warns on Completed IPLANs whose
+     `completion_spec_sync` does not attest `spec_checked`/`tdd_checked`, or whose `diverged`
+     lacks `chg_ref`; resolves CHG `file:` paths CWD-first); `sdd_doc_lint/__main__.py`
+     warns that SKIPPED paths were not checked; `.gitignore` gains the scoped
+     governed-archive negation (never broad `!archive/**`).
+  5. `03_EARS/README.md` gains the pattern decision tree (WHILE→WHEN→IF→THE-SHALL→WHERE,
+     first-match-wins); `requirements_specialist.md` gains the pattern-tree lens note;
+     `TDD-00_index.TEMPLATE.md` + `IPLAN-00_index.TEMPLATE.yaml` gain the TDD-SYNC-E
+     index-sync source-of-truth notes.
+  6. `NOTICES.md` gains post-delegation grep validation (Rule 1–2 harden), the genericized
+     Rule 5 (`<project>/sdd/`, `<CHG-ID>`), `## Concurrency traps`, the advisory
+     `TDD-SYNC-A..E` enforcement rename, and Issue 5–6 grep one-liners;
+     `ID_NAMING_STANDARDS.md` gains the manual-authoring red-flag box (appended OUTSIDE the
+     digest-pinned lines — no re-pin); `SELF_LEARNING.md` gains the §7.4 feedback-submit
+     contract (issue-per-scope, read-back verification, full-path
+     `framework/governance/FRAMEWORK_FEEDBACK_LOG.md`); `AI_ASSISTANT_RULES.md` gains the
+     delegation/concurrency pointers + §3.13 restatement.
+  7. NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (generic git/gh halves only; the
+     worktree-remove-before-branch-delete order guard is load-bearing); `TRACEABILITY.md`
+     §4.1 cross-ref appended OUTSIDE the digest-pinned bullet (anchor never edited).
+- **Consequences.** `framework/VERSION` `0.53.3 → 0.54.0`; mechanical pin sweep
+  (`framework_spec_version`, `framework_version`, `| Framework Version |` rows);
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.54.0]` entries.
+- **Authority:** `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md`; `framework/archive/CHG-03/CHG-03.yaml`;
+  `framework/governance/DOC_GOVERNANCE_CORE.md` §3.1.1/§3.13/§4.1.
+
+---
+
+## GD-27 — CHG archive lifecycle is lint-enforced; archive scope covers every modified SDD layer (#652)
+
+- **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.2 → 0.53.3` (PATCH),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** #652 proved `chg_lint.py` (L001–L005 only) green-lighted a CHG with 20× null
+  `archive_path` / null `new_version`, empty `supersedes`, and no `archive/CHG-XX/` directory.
+  The §3.4.1 C16–C20/D21/D22 rules existed in prose only. Separately, `09_CHG/README.md`
+  limited the archive convention to `06_SPEC` / `07_TDD` / `08_IPLAN`, while real CHGs also
+  modify `03_EARS` / `04_BDD`.
+- **Decision:**
+  1. `sdd_doc_lint/chg_lint.py` gains CHG-L006–L011 (sdd_lifecycle completeness, entry
+     metadata with null-archive rejection on non-IPLAN-create steps, CHG-ID archive-path
+     convention, version-bump check, supersedes completeness, cited EARS/BDD ID existence
+     at warning level). The former `scripts/chg_lint.py` duplicate is removed; the canonical
+     copy is `sdd_doc_lint/chg_lint.py` (`python -m sdd_doc_lint.chg_lint`).
+  2. The archive convention covers every modified SDD layer
+     (`01_BRD`–`08_IPLAN`), not only the downstream design layers.
+  3. Grandfathering: CHGs merged before this decision (e.g. CHG-22/23/24-style docs with null
+     lifecycle metadata) are historical record and are not re-linted; every new CHG must pass
+     L006–L011.
+- **Consequences.** `framework/VERSION` `0.53.2 → 0.53.3`; `09_CHG/README.md` archive scope
+  widened; `DOC_GOVERNANCE_CORE.md` §3.14 documents L006–L011 and the canonical linter path.
+- **Authority:** `framework/governance/DOC_GOVERNANCE_CORE.md` §3.4.1 C16–C20/D21–D22;
+  `framework/layers/09_CHG/README.md` CHG Archive Convention.
+
+---
+
+## GD-28 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
 
 - **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.52.0 → 0.53.0` (MINOR),
   change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
@@ -48,6 +465,295 @@ Newest first. Timestamps are ISO 8601 UTC.
   reference fixed. The empty provenance subdirectories (`audit/`, `review/`, etc.) are no
   longer part of the `.aidoc/` contract.
 - **Authority:** `governance/aidoc/AIDOC.md`; `governance/ADAPTATION.md` §10; `README.md` §Project layout.
+
+---
+
+## GD-26 — A Draft IPLAN's §5 `session_handoff.sessions` is EMPTY; the §6 seed is derived, a session seed would be fabricated
+
+- **Status:** Accepted — 2026-09-04 · **SemVer:** framework `0.50.0 → 0.51.0` (MINOR),
+  change-level **C2**. One motion: the shipped §5 value becomes `sessions: []` and the worked
+  entry moves into `_guidance` as an append example. **No key is added and none is removed**,
+  so an IPLAN already carrying sessions stays valid; `major ⇒ C3` is one-directional per
+  GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC.
+- **Issues:** #621 (`Origin: review`) · discharges the §5 analogue GD-25 deferred by name
+- **GATE-SPEC-W002 (parity):** both platforms track `0.51.0`, and **both move**. Platform B's
+  `doc-iplan` instructed seeding the handoff at Draft; Platform A's IPLAN creation prompt was
+  already right about the Draft shape, **but its orchestrator skill was not** — under "For
+  IPLAN creation, enforce:" it required carrying *previous session state*, which is this
+  defect on the other engine. Ten surfaces across six files.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 / GD-25 precedent for
+  advisory-W003 agent-instruction text. The change removes an authoring instruction and adds
+  guidance; it grants no capability and names no external resource.
+
+`IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying a date, an agent and
+`action: created` on a file not on disk, while `doc-iplan/SKILL.md` step 9 instructed seeding
+that block **at Draft**. An authoring agent copying the example produced a Draft IPLAN
+recording a session that never ran — GD-25/#601 one section up, on the section a stateless
+executor reads *first*.
+
+**Decision: a Draft IPLAN carries `session_handoff.sessions: []`.** An entry is APPENDED by a
+session as that session ends. No entry is written while authoring.
+
+**Why §6 is seeded and §5 is not — the asymmetry is the load-bearing part.** GD-25 seeded §6
+`code_inventory` at Draft and argued an empty block is the weaker artifact. That argument does
+not transfer, and the template and layer README both state why, because otherwise the next
+reader "repairs" §5 into §6's shape:
+
+1. **§6's seed is DERIVED; a §5 seed would be FABRICATED.** §6 seeds one entry per §2
+   `file_manifest` path — a set already known when the IPLAN is written, which is exactly what
+   makes an empty §6 indistinguishable from an executor that never wrote its entries back.
+   Nobody knows the future *sessions*, so a seeded session has no source.
+2. **It would contradict `document_control.session_count: 0`.** A seeded session-zero makes
+   `len(sessions) == 1` against a count of `0` — a fresh internal contradiction of the class
+   GD-25 was repairing.
+
+The empty list also preserves the reading that matters: `sessions: []` beside an
+all-`NOT_STARTED` §2 is coherent, while `sessions: []` beside a `DONE` §2 is a *detectable*
+executor failure.
+
+**No Draft-level `next_session_directive` key, and that is a decision rather than an
+omission.** #621 offered relocating it to the section level so a Draft keeps a forward
+pointer. Rejected: the first file to build is startup-protocol step 2 (the lowest-`order`
+`NOT_STARTED` entry in §2), environment preconditions belong in §3 `execution_commands.setup`,
+and `next_session_directive` is what ONE session hands the NEXT — a Draft has none to write.
+Relocating it would also mean either two carriers of one string (the sync obligation that is
+the next stale-marker defect) or removing a per-session key, which is breaking and would owe
+the C3 gate.
+
+**`files_touched[].action` is still NOT extended**, per GD-25. Moving the worked entry into
+`_guidance` keeps its `# created | modified` comment, so
+`test_iplan_code_inventory_lifecycle`'s one-match assertion stays green — but **the enum it
+pins now lives only inside a block scalar**, which is the live-value/quoted-shape distinction
+that guard's own `_entry_status_lines` is scoped for. Recorded because the guard's subject
+changed character even though its result did not.
+
+**The "non-empty required section" rule had THREE statements and the repair reached one.**
+Two Platform-B skills and the other engine's IPLAN creation prompt each demand
+every required section be non-empty or "populated" — the last already contradicted its own
+empty-array instruction before this change. With `sessions: []` now the correct Draft value of
+a required section, all three carry the carve-out; without it an auditor fails an IPLAN the
+author was told to write, which is the failure GD-25 explicitly designed against.
+
+**Guard.** `tests/conformance/test_iplan_session_handoff_draft.py` (15 tests). The Draft rule
+reads the **parsed YAML value**, inheriting GD-25's lesson unchanged. Three of its rules exist
+because the first draft got them wrong, and each wrong version would have forced correct prose
+to be mangled for green:
+
+- It flagged the other engine's *correct* retrospective sentence ("populated during implementation
+  sessions"), so an exemption for retrospective attribution is required. That exemption then
+  had to require **adjacency** — allowing 40 characters between the preposition and the noun
+  let step 9 escape through ``per `file_manifest` path (`session: null``, a YAML key rather
+  than a session doing work.
+- It flagged `` `code_inventory` seeded `planned` … (`session: null`) ``, a **correct GD-25
+  instruction**, because the pattern matched §6's singular per-entry key. The carrier is now
+  scoped to plural `sessions` or the section name.
+- Seeding the **empty** list is the ratified rule, so it needs its own exemption — without it
+  the guard forbids the sentence the fix must write, which would push the prohibition wording
+  into `doc-iplan-fixer`'s Fix-Phases table and disarm GD-25 over all ~1,900 characters of it.
+
+**`GD25GuardIsNotDisarmed` pins an invariant, and it caught this change's own edit.**
+GD-25's two negative rules apply `_PROHIBITION` per **sentence**, and its `_normalize`
+collapses a markdown table with no `.`+whitespace into one — `doc-iplan-fixer`'s Fix-Phases
+table is a single ~1,900-character "sentence" carrying `code_inventory` twice. One exemption
+word anywhere in it exempts the whole table, and the suite stays green *because nothing
+happened*. Measured before any edit: **7 `code_inventory`-bearing sentences across the four
+IPLAN skills, 0 exempt.** The first draft of the audit carve-out ended "…the correct Draft
+state, not a missing section" and took that to **1**; the guard failed, the clause was cut,
+and it is back to 0. Every new prohibition clause must be its own sentence.
+
+**Mutation testing rewrote the guard, and its measured limits are stated rather than
+implied.** Forty-two runs over the first draft killed 25 and left 17 alive, and the survivors
+fell into one class: the negative prose rule's exemptions were applied to a whole *sentence*,
+while whitespace normalization collapses a markdown table into one — 1,922 characters for the
+fixer's Fix-Phases table. Seven distinct reintroductions of this defect survived by borrowing
+an exemption token up to 1,500 characters away, and **the worst was self-inflicted**: putting
+`sessions: []` into that table row, as this change did, made the whole table exempt. The
+repair splits table rows and list items into their own scan units before normalizing, so a row
+cannot borrow its neighbour's exemption, and `GD26GuardIsNotDisarmed` pins the number of
+exempted carrier units to a measured **5**. Four further survivors closed with it: a
+section-level key set (asserted as a set, since "no key is added" is an allowlist claim), the
+`derived` assertion being satisfied by GD-26's own *heading*, a `code_inventory`-sentence
+count that was a floor of 4 rather than the measured 7, and the verb set missing
+`initiali[sz]e` — the verb **both** of the other engine's surfaces already use.
+
+**Two limits are stated, not closed.** The negative prose rule still fires on correct
+*descriptive* sentences — "a populated `sessions` array in a Draft is a finding", or a future
+audit rule phrased as detection rather than instruction — because it cannot distinguish an
+instruction from a description. It also cannot see a seed instruction split across two units.
+The structural rules (parsed YAML, the key set, the positive per-surface assertions and the
+disarm baselines) carry the weight; the prose rule is a tripwire, not a proof. Filed rather
+than waved away.
+
+- **Consequences.** IPLANs already carrying sessions stay valid and need no migration. A Draft
+  that still carries a seeded session is now wrong rather than merely odd, but the audit's
+  Tier-1 row accepts `[]` and requires a directive only on *appended* entries, so no
+  previously-passing artifact starts failing. The example corpus is regenerated wholesale
+  after framework changes and is untouched here. `IPLAN-MVP-TEMPLATE.yaml` carries a different
+  `session_handoff` key set entirely and is **not** brought into line — it fabricates no
+  session, so #621 does not reach it; the divergence is evidence on #438, which owns the MVP
+  template class.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§5 `session_handoff`),
+  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an example
+  overrides the prose beside it), **GD-25** (the §6 seed this one deliberately does not
+  mirror), `tests/conformance/test_iplan_session_handoff_draft.py`.
+
+---
+
+## GD-25 — IPLAN `code_inventory` is a three-value lifecycle seeded `planned` at Draft, and every statement of that vocabulary must agree
+
+- **Status:** Accepted — 2026-09-02 · **SemVer:** framework `0.49.0 → 0.50.0` (MINOR),
+  change-level **C2**. Two motions: an additive third enum value with its transition rule,
+  and a Draft-seed rule that replaces an empty block. Neither is breaking — an IPLAN already
+  carrying `created` / `modified` entries stays valid — and `major ⇒ C3` is one-directional
+  per GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human
+  sign-off per GATE-SPEC.
+- **Issues:** #601 (`Origin: real-use`) · answers all **three** questions #609 held open
+  (below) · defers the §5 `session_handoff` analogue to #621
+- **GATE-SPEC-W002 (parity):** both platforms track `0.50.0`. Four plugin skills move with
+  the template (below). **The other engine is left unchanged, and that is a judgement, not
+  an absence.** It carries no `code_inventory` surface of its own — zero occurrences in its
+  tree — and reaches this carrier only through
+  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, which it references by path. So it
+  inherits the rule and regresses on nothing. What it does *not* gain is an authoring
+  instruction: its own IPLAN prompt enumerates the traceability section without naming the
+  block, so the seed reaches one platform's authoring path and not the other's. Tracked with
+  the §5 split in **#621**, on which the two engines already contradict each other.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
+  agent-instruction text. The change adds authoring guidance and a status value; it grants no
+  capability, names no external resource, and introduces no instruction an agent could follow
+  to reach outside the artifact.
+
+`IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
+`2943bf3b` — `created` and `modified` — and demonstrated them with one worked entry reading
+`status: created`, `session: 1`. Both values assert that the file exists. A Draft IPLAN has
+no files, so an authoring agent generating one from the template had no correct value to
+write and copied the example — producing a Draft whose audit trail claims work that has not
+happened.
+
+**The defect is in the example, not only in the enum.** The `_guidance` said "Populated by
+each session", which is the correct retrospective reading and is exactly why the block was
+never meant to be filled at Draft. The example beside it said otherwise, and **an example
+overrides the prose beside it** — GD-24 recorded that lesson one release earlier. This is
+why `2943bf3b`'s repair did not close #601: it appended `planned` to a YAML `#` comment
+that nothing parses, and left the surface agents actually copy unchanged.
+
+**Decision: `planned | created | modified`, and a Draft IPLAN of subtype `code_build` or
+`combined` seeds ONE ENTRY PER §2 `file_manifest` PATH, in manifest order, all `planned`,
+`session: null`, `verified: false`.** Each session sets the entries it touched to `created`
+or `modified`, records its session number, and appends an entry for any file it touches that
+§2 does not declare. `planned` MUST NOT survive a session that touched the file — without
+that clause the new value simply becomes the next permanent stale marker, which is the
+defect one step removed. A `deploy` IPLAN requires no `file_manifest`
+(`document_control._guidance`), so it seeds no entries and records a file here only when a
+cutover step creates or modifies one; without that carve-out the rule is unsatisfiable for a
+whole subtype.
+
+**The empty block is retired, and that is a platform-visible change.** `doc-iplan` and
+`doc-iplan-autopilot` both instructed an authoring agent to ship an *empty*
+`code_inventory`, so Platform B and the spec had already disagreed about what a Draft
+carries. An empty block is also the weaker artifact on its own terms: it is
+indistinguishable from an executor that never wrote its entries back, whereas a fully
+`planned` block states the expected set and makes the gap between plan and reality visible
+to the next stateless session. `doc-iplan-audit`'s advisory row and `doc-iplan-fixer`'s
+phase-5 repair action move with them, so the auditor cannot fail an IPLAN the author was
+told to write, and the fixer seeds the state the template now specifies. The fixer's first
+draft of that action carved out "unless the file is already on disk" — review killed it:
+phase 1 creates stub files at every declared manifest path *before* phase 5 runs, so the
+carve-out always fired, named no alternative status, and left `created` as the agent's only
+reading. The fixer would have written #601 into every Draft it repaired.
+
+**The redundancy with §2 `file_manifest` is accepted.** The two carriers now share a path
+list, and §2's note says explicitly that they are *not* reconciled: §2 is the executor's
+build order over four values (`NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`), §6 is the audit
+trail over three, and each carries its own `verified:` — §6's is the stricter claim
+(tests pass + lint clean), §2's tracks the same file through a different question. Collapsing
+them is a larger redesign of the layer than a `real-use` status-value report warrants, and it
+would change the meaning of every IPLAN already authored. Not adopted here; deliberately left
+as two carriers. **The redundancy creates a detection gap this change does not close:**
+nothing validates the §2 ↔ §6 correspondence on an *authored* artifact — `sdd_doc_lint`
+carries no `code_inventory` rule, and the conformance guard below reaches the template only.
+A Draft whose §6 still holds the template's placeholder paths while §2 carries real ones is
+silently conforming.
+
+**Every in-file statement of the vocabulary must agree, and there are three.** §2's
+explanatory passage restated it as `created | modified`, and after `2943bf3b` it contradicted
+the `status:` key ~140 lines below (`:163` against `:300`) for two days — the second of the
+three questions #609 held open. The third statement is `_guidance`'s own lifecycle list,
+which sits directly above the entries and is the copy a reader meets first; the first draft
+of the guard tied only two of the three together, and mutation testing showed the list could
+lose `planned` while every test stayed green. All three are now held to one value set.
+
+**`session_handoff.sessions[].files_touched[].action` is NOT extended.** It records what a
+session did to a file, and a session that touched a file created or modified it. `planned`
+there would be a contradiction in terms, and the guard now holds that enum to two values so
+the non-decision is not merely stated.
+
+**What #609 asked, and the answers.** #609 held three questions, closed by hand on
+2026-09-01 with no recorded disposition; this entry supplies them. **(1) Did `2943bf3b` owe
+a version bump?** Yes. The vocabulary is normative — it is the only place the carrier's
+allowed values are stated, so the comment *is* the contract by default — which makes the
+edit a `framework/**` spec change owing a bump and a GD entry. It bypassed `GATE-SPEC`
+because a direct push to `main` runs no PR checks. This release pays that debt and this
+entry is that record. **(2) Is `:163` reconciled with `:300`?** Yes, and a third copy nobody
+had counted is reconciled with them. **(3) Is #601 satisfied by a comment-only edit?** No —
+that is the finding above, and it is why this change rewrites the worked entries.
+
+**The §5 analogue is real and is filed, not waved away.** §5 `session_handoff.sessions[]`
+ships a worked example carrying `action: created` and `status: IN_PROGRESS`, and
+`doc-iplan/SKILL.md` instructs seeding it at Draft — the identical defect shape one section
+up, on which the two engines already disagree — one initializes an empty `sessions` array.
+It is **#621**, not silence: a documentation-only closure needs a named owner for the
+mechanism, and scoping this release to the reported carrier is the minimal-and-realistic
+convention, not a judgement that §5 is fine.
+
+**Guard.** `tests/conformance/test_iplan_code_inventory_lifecycle.py` (15 tests). The Draft
+rule reads the **parsed YAML entries**, not the enum comment: a guard checking only the
+comment would have passed `2943bf3b`, the change that shipped the defect. Expected fragments
+are built from the module's `LIFECYCLE` tuple rather than hardcoded, so a meaning-preserving
+reword of the punctuation around them cannot red a required context. Mutation testing over
+the first draft killed four platform-side rules and drove the shape of what replaced them:
+the retired instruction re-entered by **word order** ("leave `code_inventory` empty"), which
+is verbatim the order-directionality bug GD-24's guard records as review-killed; a *correct*
+prohibition ("Reject an empty `code_inventory`") reddened the check, so a negation exemption
+is required rather than optional; a skill could instruct `status: created` in a Draft seed
+and stay green, because the rule banned the previous wrong instruction and not the class; and
+deleting a skill's seed instruction outright stayed green, because a negative can only prove
+a surface stopped saying the old thing. Every claim this entry makes about the four skills
+now has a **positive** assertion behind it. The scan globs `doc-iplan*/**/*.md` rather than
+top-level `SKILL.md`, after `test_no_inprompt_hashing.py`, and normalizes whitespace, because
+the live instruction in `doc-iplan/SKILL.md` was split across a line break. Expected fragments
+carry no pinned punctuation: an earlier draft anchored the em-dashes around §2's vocabulary,
+so rewriting `(a different vocabulary — X —` as `(a different vocabulary: X,` reddened a
+required context for no semantic change.
+
+**Nineteen mutations, eighteen behaving as specified, and the nineteenth is a stated limit.**
+Killed: the original #601 defect; `2943bf3b` exactly; the enum comment alone; §2's passage
+alone; `_guidance`'s list alone; the retired instruction in either word order and in its
+`files: []` form; a `created` Draft seed; deletion of the audit row, the fixer action, or the
+autopilot seed; `action` extended with `planned`; the README's seed sentence; a gutted GD-25;
+a `doc-iplan*/reference.md` and a nested fifth-skill `SKILL.md` carrying the instruction; and
+`verified: 0` for `false`. Deliberately green: a correct prohibition, a meaning-preserving
+reword of the guidance, and the punctuation swap above. **Not killed:** reverting
+`doc-iplan`'s validation-checklist line alone, because step 9 of the same file still states
+the seed — the skill stays correct, so this is a weakening the positive rule tolerates by
+design, not a reintroduction. The vendored-bundle assertion **adds no coverage** —
+`test_plugin_framework_bundle.py` already byte-compares every bundled file and did catch
+`2943bf3b`'s drift; it is kept only so a failure names this carrier.
+
+- **Consequences.** IPLANs already carrying `created` / `modified` entries stay valid and
+  need no migration; `planned` is additive. A Draft IPLAN with an empty `code_inventory` is
+  now incomplete rather than correct — but the template states the seed as a MUST while
+  `doc-iplan-audit` grades it **Tier 2 (advisory)**, so it warns rather than blocks and
+  `doc-iplan-fixer` phase 5 repairs it. That asymmetry is deliberate: a Draft missing the
+  seed is under-specified, not wrong, and blocking on it would fail every IPLAN authored
+  before this release. The example corpus is regenerated wholesale after framework changes
+  and is untouched here.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§2 carrier note,
+  `document_control` subtype table, `traceability.code_inventory`),
+  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an
+  example overrides the prose beside it),
+  `tests/conformance/test_iplan_code_inventory_lifecycle.py`.
 
 ---
 
@@ -1489,3 +2195,31 @@ candidates to graduate into this register as it matures:
 - **Project adaptation surface.** A closed, declarative knob set lets a project
   adapt the flow without forking — `ADAPTATION.md` + `ADAPTATION_SURFACE.yaml`
   (migration D-0019).
+
+---
+
+## D-series (retired) — cited IDs and where they resolve (#720)
+
+The `D-00xx` migration-decision series has no live log: it was recorded across
+the May–June migration session (notably `docs/STARTUP_HANDOFF.md`, 2026-05-20)
+and never graduated entry-by-entry. Live files still cite these IDs. This annex
+is the resolution hop — every cited ID below names its substance, its commit
+evidence, and its live equivalent (a GD entry, a plans-log entry, or
+"historical only"). `git log --all --grep="<ID>"` re-derives each row.
+
+| ID | Substance | Commit evidence | Live equivalent |
+|----|-----------|-----------------|-----------------|
+| D-0005 | One engine would not port the saga; its blackboard-for-crew-state reasoning remains authoritative (per `REVIEW_SAGA.md`) | Origin commit unverified — saga-parity era, June 2026 | Historical only; nearest principle GD-06 (engine-agnosticism) |
+| D-0007 | Review gate (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0009 | Versioning (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0011 | Tagging (migration session) | `docs/STARTUP_HANDOFF.md` (2026-05-20) | Historical only — see the handoff |
+| D-0012 (+R1/R2) | IPLAN is the terminal product; planned/executed states; curated IPLAN corpus as unit of value | `docs/STARTUP_HANDOFF.md` §3.1–§3.2 (2026-05-20) | Historical only — no GD equivalent |
+| D-0013 | Templates are the single source of truth | Migration session; substance survives above under Pending graduation | Pending graduation bullet (this file) |
+| D-0031 | Saga lifecycle promoted into the framework spec (SAGA-PARITY-001 Phase 1) | `d5cdb5bc` (2026-06-05) | Historical only — the saga contract itself is the live record |
+| D-0055 | COV03 phase-leak advisory, deferred-band over-realization (D54-F13) | `d593316b` (2026-07-06) | Historical only — the COV03 rule in `TRACEABILITY.md` is the live record |
+| D-0061 | SHA-256 element-ID guarantee scoped to reality | `19e0c27e` (2026-07-07) | GD-02…GD-05 (ratified by that change); Model 2 in `ID_NAMING_STANDARDS.md` |
+| D-0065 | CI PRs get CHANGELOG entries | `ce953f09` (2026-07-25) | `plans/DECISIONS.md` 2026-07-25 entry |
+| D-0070 | Concurrency rationale recorded where sweeps grep | `d3d7f845` / `7cfcf4a0` (2026-07-30) | `plans/DECISIONS.md` 2026-07-30 entry |
+| D-0078 | Phantom versions recorded, never tagged | `0d588c7c` (2026-09-26) | `plans/DECISIONS.md` 2026-09-26 entry |
+| D-0084 | ai-review and composition stop gating merges | `e2a10ef5` (2026-08-31) | `plans/DECISIONS.md` 2026-08-31 entry |
+| D-0085 | Canon pin census correction + semver-major hold | `794aa573` / `fecb4595` (2026-08-31) | `plans/DECISIONS.md` 2026-08-31 entry |

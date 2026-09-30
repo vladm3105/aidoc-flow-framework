@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/sdd-doc-review.sh",
+            "command": "${AIDOC_ROOT:-.}/hooks/sdd-doc-review.sh",
             "timeout": 15
           }
         ]
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/ch-gate-check.sh",
+            "command": "${AIDOC_ROOT:-.}/hooks/ch-gate-check.sh",
             "timeout": 10
           }
         ]

@@ -1,41 +1,28 @@
-"""Parity: both runners' review sagas conform to the one spec state machine.
+"""Parity: the committed saga fixtures conform to the one spec state machine (FRAMEWORK-ONLY).
 
-`framework/governance/REVIEW_SAGA.md` is the transition-table authority and
-`framework/governance/saga.schema.json` is the journal schema. This test enforces
-what `docs/PARITY.md` describes (previously an over-claim — the test + fixtures did
-not exist):
-
-  * both platforms' `_ALLOWED_TRANSITIONS` equal the spec transition table
-    (incl. the `PARTIAL_TIMEOUT` break-circuit state), and
-  * a committed sample journal from each runner validates against the shared
-    `saga.schema.json`.
-
-The spec transition table is markdown prose (terminal rows read `(terminal)`), so
-it is HARD-CODED here as `SPEC_TRANSITIONS` — a deliberate second source of truth,
-exactly as `test_saga_driver_invariants.py` already does for the plugin. That
-sibling test carries the detailed plugin-driver invariants; this test's net-new job
-is the *Hermes* table + the cross-platform fixture parity.
-
-HERMES-PARITY-PHASE-1 (D-0045).
+CLEANUP-001 Decisions 5/6: ``tools/saga_driver.py`` and ``platforms/hermes``
+were deleted with their trees (deliberate — both runners are gone). The
+four platform-table classes below (``SagaTransitionTableParity`` cross-check,
+``SagaRealJournalConformance`` live-journal drive, ``SagaTransitionInvariant``
+Hermes edge guard) tested driver code, not framework data, so they retire with
+their subjects — their tripwires fail if ``tools/`` or ``platforms/`` returns
+without them. What stays is the framework-side contract: the ``SPEC_TRANSITIONS``
+pin (hard-coded from ``REVIEW_SAGA.md`` prose, exactly as before), the committed
+sample journals validating against ``saga.schema.json``, and the schema-vs-
+registry ``artifact_id`` pattern lockstep (#444). Per R4 no guard is weakened —
+driver guards retire with drivers, data guards stay on data.
 """
 
 from __future__ import annotations
 
 import json
 import re
-import sys
 import unittest
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _FIXTURES = Path(__file__).resolve().parent / "fixtures" / "saga"
 _SCHEMA_PATH = _REPO_ROOT / "framework" / "governance" / "saga.schema.json"
-
-# --- import both platforms' transition tables (module-level constants) ---
-sys.path.insert(0, str(_REPO_ROOT / "tools"))
-sys.path.insert(0, str(_REPO_ROOT / "platforms" / "hermes" / "src" / "mcp_server" / "review"))
-import saga_driver  # noqa: E402  (plugin reference; path injection intentional)
-import saga_models  # noqa: E402  (Hermes; imports only stdlib)
 
 # The REVIEW_SAGA.md transition table, hard-coded (the markdown is prose, not
 # machine-parseable). Source authority: framework/governance/REVIEW_SAGA.md.
@@ -118,35 +105,34 @@ def validate(instance: object, schema: dict, path: str = "$") -> list[str]:
     return errors
 
 
-class SagaTransitionTableParity(unittest.TestCase):
-    """Both platforms' `_ALLOWED_TRANSITIONS` must equal the spec table."""
+class RetiredPlatformTransitionTableParity(unittest.TestCase):
+    """Retired with the runners (CLEANUP-001): both transition tables are gone.
 
-    def test_hermes_table_matches_spec(self):
+    The ``SPEC_TRANSITIONS`` pin above stays as the hard-coded mirror of
+    ``REVIEW_SAGA.md`` prose; the driver-vs-spec comparisons move with the
+    drivers. ``test_spec_table_matches_schema_enum`` keeps the framework-side
+    half live: the pin and the schema must agree on the eleven states."""
+
+    def test_spec_table_matches_schema_enum(self) -> None:
+        schema = json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))
         self.assertEqual(
-            saga_models._ALLOWED_TRANSITIONS,
-            SPEC_TRANSITIONS,
-            "Hermes saga_models._ALLOWED_TRANSITIONS diverges from REVIEW_SAGA.md "
-            "(missing PARTIAL_TIMEOUT?).",
+            set(SPEC_TRANSITIONS),
+            set(schema["properties"]["status"]["enum"]),
+            "SPEC_TRANSITIONS pin diverged from saga.schema.json status enum — "
+            "one of the two framework-side saga surfaces drifted",
         )
 
-    def test_plugin_table_matches_spec(self):
-        self.assertEqual(
-            saga_driver._ALLOWED_TRANSITIONS,
-            SPEC_TRANSITIONS,
-            "plugin saga_driver._ALLOWED_TRANSITIONS diverges from REVIEW_SAGA.md.",
+    def test_tools_are_gone(self) -> None:
+        self.assertFalse(
+            (_REPO_ROOT / "tools").exists(),
+            "tools/ is back — resurrect the plugin table half with saga_driver",
         )
 
-    def test_both_platforms_agree(self):
-        self.assertEqual(
-            saga_models._ALLOWED_TRANSITIONS,
-            saga_driver._ALLOWED_TRANSITIONS,
-            "Hermes and plugin saga transition tables disagree.",
+    def test_platforms_are_gone(self) -> None:
+        self.assertFalse(
+            (_REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the Hermes table half with saga_models",
         )
-
-    def test_partial_timeout_terminal_both(self):
-        # G-R1: PARTIAL_TIMEOUT is terminal-this-process on both platforms.
-        self.assertEqual(saga_models._ALLOWED_TRANSITIONS.get("PARTIAL_TIMEOUT"), set())
-        self.assertEqual(saga_driver._ALLOWED_TRANSITIONS.get("PARTIAL_TIMEOUT"), set())
 
 
 class SagaJournalFixtureParity(unittest.TestCase):
@@ -184,204 +170,20 @@ class SagaJournalFixtureParity(unittest.TestCase):
         self.assertEqual(plugin["artifact_id"], hermes["artifact_id"])
 
 
-class SagaRealJournalConformance(unittest.TestCase):
-    """A **real** Hermes saga journal — written by the actual journal code
-    (`create_saga_journal`/`update_run_status`/`set_branch_state` serializing
-    `asdict(SagaRunState)`), with `artifact_id`/`layer` derived by the actual
-    orchestrator helpers (`_extract_doc_id`/`normalize_layer`) — validates against
-    `saga.schema.json`.
+class RetiredSagaRealJournalConformance(unittest.TestCase):
+    """Retired with Hermes (CLEANUP-001): the journal writer code is gone.
 
-    This is the guard that would have caught H-12: the Phase-1 fixture tests above
-    validate hand-authored journals, which carried the 4 required fields the real
-    `SagaRunState` was missing. This drives the real serialization + transition
-    recording, so on pre-fix `main` it fails (`artifact_id`/`layer`/`iteration`/
-    `transitions` absent). HERMES-SAGA-JOURNAL-CONFORMANCE (H-12).
-    """
+    This class drove the REAL ``mcp_server.review`` journal functions
+    (``create_saga_journal``/``update_run_status``/``set_branch_state``) — not
+    hand-authored fixtures — so it tested platform code. The committed-fixture
+    parity above stays; this tripwire fails if ``platforms/`` returns without
+    the live-journal guard."""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.schema = json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))
-        sys.path.insert(0, str(_REPO_ROOT / "platforms" / "hermes" / "src"))
-        from mcp_server.review.playbook_loader import normalize_layer
-        from mcp_server.review.saga_journal import (
-            create_saga_journal,
-            load_saga_journal,
-            set_branch_state,
-            update_run_status,
+    def test_platforms_are_gone(self) -> None:
+        self.assertFalse(
+            (_REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect SagaRealJournalConformance with the journal code",
         )
-        from mcp_server.review.saga_models import (
-            SagaBranchState,
-            SagaRunState,
-            deterministic_review_run_id,
-        )
-        from mcp_server.review.saga_orchestrator import _extract_doc_id
-
-        cls._normalize_layer = staticmethod(normalize_layer)
-        cls._extract_doc_id = staticmethod(_extract_doc_id)
-        cls._SagaRunState = SagaRunState
-        cls._SagaBranchState = SagaBranchState
-        cls._run_id = staticmethod(deterministic_review_run_id)
-        cls._create = staticmethod(create_saga_journal)
-        cls._update = staticmethod(update_run_status)
-        cls._set_branch = staticmethod(set_branch_state)
-        cls._load = staticmethod(load_saga_journal)
-
-    def _drive_real_journal(
-        self,
-        *,
-        out_dir: Path,
-        doc_type: str,
-        layer,
-        doc_dir: str,
-        iteration: int = 1,
-        review_run_id: str = "realrun000001",  # 13 chars ≥ minLength 12
-    ):
-        """Build a SagaRunState exactly as the orchestrator does, then walk a full
-        lifecycle through the real journal functions. Returns the on-disk journal."""
-        from pathlib import Path as _P
-
-        document_path = _P(doc_dir)
-        artifact_id = self._extract_doc_id(document_path=document_path, doc_type=doc_type)
-        # F1: layer derives from the (required) doc_type when --layer is omitted.
-        _, layer_dir = self._normalize_layer(layer or doc_type)
-        run = self._SagaRunState(
-            review_run_id=review_run_id,
-            document_path=str(document_path),
-            document_fingerprint=f"{doc_type}:3:1",
-            personas_requested=["architect", "auditor"],
-            artifact_id=artifact_id,
-            layer=layer_dir,
-            iteration=iteration,
-        )
-        journal_path = self._create(output_dir=out_dir, run=run)
-        # Run-scope walk (each step is an allowed transition).
-        for target in ("FANOUT_STARTED", "BRANCH_RUNNING"):
-            self._update(journal_path=journal_path, target=target)
-        # Branch-scope transitions: a branch runs then completes.
-        for status in ("BRANCH_RUNNING", "BRANCH_COMPLETED"):
-            self._set_branch(
-                journal_path=journal_path,
-                branch=self._SagaBranchState(
-                    branch_id="b0000000abcd", persona="architect", status=status
-                ),
-            )
-        for target in ("BRANCH_COMPLETED", "FANIN_REDUCED", "SYNTHESIZED", "CLOSED"):
-            self._update(journal_path=journal_path, target=target)
-        return json.loads(journal_path.read_text(encoding="utf-8")), journal_path
-
-    def _assert_conforms(self, data: dict, ctx: str):
-        errors = validate(data, self.schema)
-        self.assertEqual(errors, [], f"{ctx}: real journal fails saga.schema.json: {errors}")
-        # transitions replay the state machine; each `scope` matches the schema pattern.
-        scope_re = re.compile(r"^(run|branch:[a-z_]+)$")
-        self.assertTrue(data["transitions"], f"{ctx}: no transitions recorded")
-        for tr in data["transitions"]:
-            self.assertTrue(scope_re.match(str(tr["scope"])), f"{ctx}: bad scope {tr['scope']!r}")
-            self.assertEqual(
-                set(tr.keys()), {"ts", "from", "to", "scope"}, f"{ctx}: extra transition keys"
-            )
-
-    def test_real_lifecycle_journal_validates(self):
-        import tempfile
-
-        with tempfile.TemporaryDirectory() as td:
-            data, _ = self._drive_real_journal(
-                out_dir=Path(td),
-                doc_type="brd",
-                layer="01_BRD",
-                doc_dir="/p/docs/01_BRD/BRD-01/",
-            )
-        self._assert_conforms(data, "lifecycle")
-        self.assertEqual(data["artifact_id"], "BRD-01")
-        self.assertEqual(data["layer"], "01_BRD")
-        # the seed + run + branch transitions are all present
-        self.assertEqual(
-            data["transitions"][0],
-            {"ts": data["transitions"][0]["ts"], "from": None, "to": "PREPARED", "scope": "run"},
-        )
-        self.assertTrue(any(t["scope"] == "branch:architect" for t in data["transitions"]))
-
-    def test_layer_omitted_derives_from_doc_type(self):
-        # V2b / F1: --layer omitted (None) → layer still enum-valid via doc_type.
-        import tempfile
-
-        with tempfile.TemporaryDirectory() as td:
-            data, _ = self._drive_real_journal(
-                out_dir=Path(td),
-                doc_type="brd",
-                layer=None,
-                doc_dir="/p/docs/01_BRD/BRD-01/",
-            )
-        self.assertEqual(data["layer"], "01_BRD")
-        self.assertIn(data["layer"], self.schema["properties"]["layer"]["enum"])
-        self._assert_conforms(data, "layer-omitted")
-
-    def test_chg_review_journal_validates(self):
-        # V4: a real CHG-review journal (layer 09_CHG) validates (enum extended).
-        import tempfile
-
-        with tempfile.TemporaryDirectory() as td:
-            data, _ = self._drive_real_journal(
-                out_dir=Path(td),
-                doc_type="chg",
-                layer=None,
-                doc_dir="/p/docs/09_CHG/CHG-01/",
-            )
-        self.assertEqual(data["layer"], "09_CHG")
-        self.assertEqual(data["artifact_id"], "CHG-01")
-        self._assert_conforms(data, "chg")
-
-    def test_iteration_discriminator_yields_distinct_run_ids(self):
-        # LB-7: the run id is stable for iteration 1 (byte-identical to pre-loop) and
-        # distinct for each later pass, so a same-clock-hour re-review does not collide.
-        kw = dict(
-            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
-            document_fingerprint="brd:3:1",
-            personas=["architect", "auditor"],
-            time_bucket="2026071012",
-        )
-        base = self._run_id(**kw)
-        self.assertEqual(base, self._run_id(**kw, iteration=1))
-        ids = {self._run_id(**kw, iteration=n) for n in (1, 2, 3)}
-        self.assertEqual(len(ids), 3)
-
-    def test_multi_iteration_journals_coexist_and_validate(self):
-        # HERMES-REVIEW-LOOP-001: a real iteration>1 journal validates against the
-        # schema AND lands in a distinct file (the run id carries the iteration
-        # discriminator), so the multi-iteration audit trail is preserved, not clobbered.
-        import tempfile
-
-        kw = dict(
-            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
-            document_fingerprint="brd:3:1",
-            personas=["architect", "auditor"],
-            time_bucket="2026071012",
-        )
-        with tempfile.TemporaryDirectory() as td:
-            out = Path(td)
-            data1, path1 = self._drive_real_journal(
-                out_dir=out,
-                doc_type="brd",
-                layer="01_BRD",
-                doc_dir="/p/docs/01_BRD/BRD-01/",
-                iteration=1,
-                review_run_id=self._run_id(**kw, iteration=1),
-            )
-            data2, path2 = self._drive_real_journal(
-                out_dir=out,
-                doc_type="brd",
-                layer="01_BRD",
-                doc_dir="/p/docs/01_BRD/BRD-01/",
-                iteration=2,
-                review_run_id=self._run_id(**kw, iteration=2),
-            )
-            # both journals survive on disk — iteration 2 did not overwrite iteration 1
-            self.assertNotEqual(path1, path2)
-            self.assertTrue(path1.exists() and path2.exists())
-        self._assert_conforms(data1, "iter1")
-        self._assert_conforms(data2, "iter2")
-        self.assertEqual(data1["iteration"], 1)
-        self.assertEqual(data2["iteration"], 2)
 
 
 class SagaIdPatternLockstep(unittest.TestCase):
@@ -411,42 +213,19 @@ class SagaIdPatternLockstep(unittest.TestCase):
         )
 
 
-class SagaTransitionInvariant(unittest.TestCase):
-    """The Hermes mirror of `test_saga_driver_invariants.test_invalid_transition_raises`
-    (the D-0050 residual): `transition_run_status` enforces the spec table — an illegal
-    edge raises, a legal edge succeeds. Guards against a quality-loop change silently
-    loosening the state machine."""
+class RetiredSagaTransitionInvariant(unittest.TestCase):
+    """Retired with Hermes (CLEANUP-001): ``saga_models.transition_run_status`` is gone.
 
-    def test_hermes_invalid_transition_raises(self):
-        run = saga_models.SagaRunState(
-            review_run_id="invalidrun01",
-            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
-            document_fingerprint="brd:3:1",
-            personas_requested=["architect"],
-            status="SYNTHESIZED",
-        )
-        # SYNTHESIZED -> PARTIAL_TIMEOUT is not in the table (only SYNTHESIZED -> CLOSED).
-        with self.assertRaises(ValueError):
-            saga_models.transition_run_status(run, target="PARTIAL_TIMEOUT")
-        # A run just prepared cannot jump straight to CLOSED.
-        prepared = saga_models.SagaRunState(
-            review_run_id="invalidrun02",
-            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
-            document_fingerprint="brd:3:1",
-            personas_requested=["architect"],
-        )
-        with self.assertRaises(ValueError):
-            saga_models.transition_run_status(prepared, target="CLOSED")
+    The D-0050 residual (illegal edge raises, legal edge succeeds) tested the
+    Hermes state-machine enforcement, not framework data. Resurrect with the
+    Hermes mirror; the framework-side table pin lives in
+    ``RetiredPlatformTransitionTableParity`` above."""
 
-    def test_hermes_valid_transition_succeeds(self):
-        prepared = saga_models.SagaRunState(
-            review_run_id="validrun0001",
-            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
-            document_fingerprint="brd:3:1",
-            personas_requested=["architect"],
+    def test_platforms_are_gone(self) -> None:
+        self.assertFalse(
+            (_REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect SagaTransitionInvariant with saga_models",
         )
-        moved = saga_models.transition_run_status(prepared, target="FANOUT_STARTED")
-        self.assertEqual(moved.status, "FANOUT_STARTED")
 
 
 if __name__ == "__main__":

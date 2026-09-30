@@ -16,12 +16,10 @@ This test PASSES today (the prevention holds); it goes red only if the preventio
 is ever removed.
 """
 
-import sys
 import unittest
 
 from _spec import REPO_ROOT
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import lint_path  # noqa: E402
 
 FIXTURE = REPO_ROOT / "tests" / "acceptance" / "fixtures" / "negative" / "brd-templated-ids.md"

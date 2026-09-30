@@ -89,41 +89,34 @@ class PreCommitTriggersAreReachable(unittest.TestCase):
     def test_sync_version_refs_can_fire_on_a_framework_bump(self):
         """#574 named, so a failure says *what* broke rather than *which hook*.
 
-        Asserted on both halves of the trigger. The platform half never broke,
-        and including it is the point: it is why the defect survived — a bump
-        that moves both files fires the hook for the wrong reason.
+        Framework-only repo (CLEANUP-001): the single trigger is
+        framework/VERSION. The platform half is gone with the platforms.
         """
         hooks = [h for r in self.config.get("repos", []) for h in r.get("hooks", [])]
         hook = next((h for h in hooks if h.get("id") == "sync-version-refs"), None)
         self.assertIsNotNone(hook, "sync-version-refs hook not found")
         matcher = re.compile(hook["files"])
 
-        # The second path trips detect-secrets as "Base64 High Entropy String". It is a
-        # repository path, not a credential; the pragma must sit on the flagged line.
-        for path in (
-            "framework/VERSION",
-            "archive/platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
-        ):
-            with self.subTest(path=path):
-                self.assertTrue(matcher.search(path), f"{path} is not in the hook's files:")
-                self.assertFalse(
-                    self.exclude.match(path),
-                    f"{path} matches the hook's files: but is removed by the global "
-                    "exclude:, so bumping it cannot trigger the version-reference fanout",
-                )
+        path = "framework/VERSION"
+        self.assertTrue(matcher.search(path), f"{path} is not in the hook's files:")
+        self.assertFalse(
+            self.exclude.match(path),
+            f"{path} matches the hook's files: but is removed by the global "
+            "exclude:, so bumping it cannot trigger the version-reference fanout",
+        )
 
     def test_the_spec_tree_is_still_excluded(self):
         """The carve-out spares one path — not the tree it sits in.
 
         Without this, widening the exclude to fix #574 would silently expose the
-        GATE-SPEC-governed spec and its byte-identical plugin mirror to the
-        autofixing hooks, which is the reason the exclude exists.
+        GATE-SPEC-governed spec to the autofixing hooks, which is the reason
+        the exclude exists. (The byte-identical plugin mirror is gone with the
+        platforms — CLEANUP-001.)
         """
         for path in (
             "framework/governance/DECISIONS.md",
             "framework/layers/01_BRD/BRD-TEMPLATE.yaml",
             "framework/registry/LAYER_REGISTRY.yaml",
-            "archive/platforms/claude-code-plugin/framework/governance/DECISIONS.md",
         ):
             with self.subTest(path=path):
                 self.assertTrue(

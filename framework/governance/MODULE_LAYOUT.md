@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.68.1 |
 
 
 Defines the project module directory structure and naming conventions.
@@ -32,7 +32,7 @@ docs/
 │   ├── MODULE-12_observability/      # Complex module (6+ files)
 │   │   ├── README.md                 # Overview, principles, invariants
 │   │   ├── architecture.svg
-│   │   ├── log_export.md             # Log export plugin interface
+│   │   ├── log_export.md             # Log export extension interface
 │   │   ├── metrics.md                # Business metrics catalog (40+)
 │   │   ├── dashboards_alerts.md      # Dashboards, alerts, SLOs
 │   │   └── agent_surface.md          # Future LLM/agent instrumentation
@@ -121,9 +121,14 @@ MODULE-NN_slug/
 - `agent_surface.md` — LLM/agent specific content
 - `<topic>.md` — any distinct subsystem
 
-### 7. Seed stays frozen, separate
-Seed docs (`docs/seed/`) are frozen input to the BRD. They are not part of
-the module. Modules reference seed docs but do not duplicate them.
+### 7. Seed versions beside modules, never duplicated
+
+Seed docs (`docs/seed/`) are versioned input to the BRD: each file carries a
+`document_control` block and versions via archive → rewrite → bump +
+`supersedes` (SEED_CONTRACT.md), frozen per version. Seed docs are not part of
+the module. Modules reference the **current** seed version but do not duplicate
+seed content; a seed supersede re-points the referencing module in the same CHG
+lifecycle.
 
 ### 8. SDD stays separate
 SDD docs (`docs/sdd/`) are the formal chain. Modules are source material for

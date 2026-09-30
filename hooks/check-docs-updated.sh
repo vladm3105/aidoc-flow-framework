@@ -16,11 +16,13 @@ cd "$REPO_ROOT"
 STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
 [ -z "$STAGED" ] && exit 0
 
-# Documents of record
+# Documents of record (resynced #663: AGENTS.md is the working agreement,
+# CLAUDE.md deprecated; versioned changelogs included)
 DOCS_OF_RECORD=(
   "CHANGELOG.md"
   "README.md"
-  "CLAUDE.md"
+  "AGENTS.md"
+  "framework/CHANGELOG.md"
   "framework/governance/DECISIONS.md"
 )
 
@@ -41,7 +43,7 @@ fi
 code_changed=0
 while IFS= read -r f; do
   case "$f" in
-    framework/*|sdd_doc_lint/*|hooks/*|tests/*|examples/*)
+    framework/*|sdd_doc_lint/*|hooks/*|tests/*)
       code_changed=1
       break
       ;;

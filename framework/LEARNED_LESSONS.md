@@ -1,11 +1,20 @@
 ---
 title: Learned Lessons & Project Knowledge
 version: 1.0
-source: trading project sessions (tradegent_hermes, b-local-privy)
+source: trading project sessions (consumer project A, consumer project B)
 last_updated: 2026-10-06
 ---
 
 # Learned Lessons & Project Knowledge
+
+> ID vintage note (CHG-08 #670): rule IDs below are quoted as minted
+> (`TDD-SYNC-001`…); the live catalog is `TDD-SYNC-A`…`E`
+> (`LINT_RULES.md`). Script paths below name their era (`./scripts/…`,
+> `tools/…`); live paths are `framework/scripts/…`, `sdd_doc_lint/…`.
+> Section citations likewise name their era: `§3.7` below was never a numbered
+> heading — the IPLAN completion gate lives in `DOC_GOVERNANCE_CORE.md`
+> §"IPLAN Lifecycle".
+> Incident evidence is preserved verbatim — do not "fix" it into current IDs.
 
 Institutional knowledge extracted from live project sessions. Every rule in this file was
 earned the hard way — through bugs, broken governance, or SDD chain failures. Reference this
@@ -23,7 +32,7 @@ no tests implemented.
 
 ### Scope
 
-- All 9 TDDs, 177 test cases across the tradegent_hermes project.
+- All 9 TDDs, 177 test cases across the consumer trading project.
 - 62 status mismatches, 53 missing Go unit tests, 13 missing Python tests.
 
 ### Root Cause
@@ -231,8 +240,9 @@ When modifying existing SDD documents via CHG:
 - Do NOT add `dns` to Docker `daemon.json` — it replaces embedded DNS and breaks Compose
   service discovery. Caused intermittent CI failures.
 - Python 3.12 (not 3.13) — Debian host has 3.12 cached but not 3.13.
-- Atlas declarative mode is canonical: `atlas schema apply --to "file:///migrations/schema.hcl"`.
-  NOT `atlas migrate apply` (versioned SQL).
+- Declarative schema mode is canonical: apply the declared schema file to the database
+  (e.g. `schema apply --to "file:///migrations/schema.hcl"`).
+  NOT versioned-SQL `migrate apply`.
 
 ### 5.9 ID Hash Formula
 
@@ -383,7 +393,7 @@ test case. EVAL captured only 1-2 assertions when the scenarios doc specified 4-
 
 ### Scope
 
-- b-local-privy EVAL-01: ~80 assertion gaps across 83 test cases, 12 missing test cases entirely.
+- Pilot-project EVAL-01: ~80 assertion gaps across 83 test cases, 12 missing test cases entirely.
 
 ### Root Cause
 
@@ -407,10 +417,10 @@ test case. EVAL captured only 1-2 assertions when the scenarios doc specified 4-
 
 ### Evidence
 
-- b-local-privy EVAL-01 `bdd02.int01` only asserted "First login creates users row" but
-  TC-02.6 also requires: email_verified_at set, privy_user_id stored, idempotent on second call.
-- b-local-privy EVAL-02 had fabricated TDD ID `TDD.01.04.f19c` (doesn't exist in any TDD file).
-- b-local-privy EVAL-02 smoke tests referenced non-existent scripts (`build_website.sh`).
+- Pilot-project EVAL-01 `bdd02.int01` only asserted "First login creates users row" but
+  TC-02.6 also requires: email_verified_at set, provider_user_id stored, idempotent on second call.
+- Pilot-project EVAL-02 had fabricated TDD ID `TDD.01.04.f19c` (doesn't exist in any TDD file).
+- Pilot-project EVAL-02 smoke tests referenced non-existent scripts (`build_app.sh`).
 
 ---
 
@@ -441,8 +451,8 @@ incrementally. The summary is not recomputed after the final write.
 
 ### Evidence
 
-- b-local-privy EVAL-01: summary said 77/156 (49%) but actual was 95/156 (61%).
-- b-local-privy EVAL-02: summary said 105 total but parsed count was 104.
+- Pilot-project EVAL-01: summary said 77/156 (49%) but actual was 95/156 (61%).
+- Pilot-project EVAL-02: summary said 105 total but parsed count was 104.
 
 ---
 
@@ -457,7 +467,7 @@ migrations are idempotent. Non-idempotent migrations cause integration test fail
 
 ### Scope
 
-- b-local-privy: 12 auth integration tests skipped due to this migration bug.
+- Pilot project: 12 auth integration tests skipped due to this migration bug.
 
 ### Root Cause
 
@@ -479,5 +489,5 @@ IF NOT EXISTS). No lint rule enforces idempotency.
 
 ### Evidence
 
-- b-local-privy `004_add_audit_log.sql`: `CREATE TABLE audit_log (...)` → error on re-run.
+- Pilot project `004_add_audit_log.sql`: `CREATE TABLE audit_log (...)` → error on re-run.
 - Fixed by adding `IF NOT EXISTS` to all CREATE TABLE and CREATE INDEX statements.

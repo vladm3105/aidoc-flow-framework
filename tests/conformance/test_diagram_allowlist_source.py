@@ -17,13 +17,11 @@ empty allowlist makes `DG02` **reject** rather than accept.
 
 from __future__ import annotations
 
-import sys
 import unittest
 
 import yaml
-from _spec import FRAMEWORK, REGISTRY_PATH, REPO_ROOT
+from _spec import FRAMEWORK, REGISTRY_PATH
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
 from sdd_doc_lint import _DIAGRAM_ALLOWED, _check_diagram_level, _diagram_allowed  # noqa: E402
 
 LAYERS = ("BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN")

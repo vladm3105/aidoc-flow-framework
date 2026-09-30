@@ -80,7 +80,7 @@ cycle's BRD(s) in full, and leave the rest as planned/sketch rows. See
 
 - **PRD Layer**: [02_PRD](../02_PRD/)
 - **Template** (default): [BRD-TEMPLATE.yaml](BRD-TEMPLATE.yaml)
-- **MVP skeleton**: [BRD-MVP-TEMPLATE.yaml](BRD-MVP-TEMPLATE.yaml) — not standalone; must also read the full template
+- **MVP skeleton**: retired — [BRD-MVP-TEMPLATE.yaml](BRD-MVP-TEMPLATE.yaml) is a tombstone pointer to the canonical template (CHG-08 #666)
 - **README**: [README.md](README.md)
 
 ---

@@ -5,16 +5,13 @@ it means to conform to the engine-agnostic spec in [`framework/`](../../framewor
 
 The suite has two halves:
 
-1. **Framework self-consistency** (implemented here) — checks that the
-   `framework/` spec is internally coherent: the registry agrees with itself
+1. **Framework self-consistency** (implemented here, ~49 modules) — checks that
+   the `framework/` spec is internally coherent: the registry agrees with itself
    and with the files on disk, layer templates match the registry, governance
    files are present, and no engine-specific tokens have leaked in.
-2. **Platform conformance** (`tests/conformance/ (platform tests archived)`) — checks that a
-   *platform* implementation honours the spec. **Implemented and running**: 16
-   modules covering the Claude Code plugin (framework-bundle drift guard,
-   `sdd_doc_lint` vendoring identity, version/spec-version declarations, plugin
-   manifest + release metadata + config schema, autopilot saga parity, model
-   precheck, engine isolation, adaptation surface, skill-template alignment).
+2. **Platform conformance** (archived with the platforms) — checked that a
+   *platform* implementation honoured the spec. Retired with the Hermes/plugin
+   archival; the contract shape is preserved in the framework half.
 
 ## Running it
 
@@ -37,7 +34,7 @@ prefer that runner.
 
 | Module | Checks |
 |--------|--------|
-| `test_registry.py` | registry structure; 8 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; cumulative `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
+| `test_registry.py` | registry structure; 10 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; exact `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
 | `test_layers.py` | each layer folder has template + README + index template; templates parse; `metadata.layer` matches the registry; `metadata.document_type` present |
 | `test_governance.py` | the governance + CHG files listed in `EXPECTED_FILES` are present (and only those — any new `framework/governance/` file must be registered); `CHG-TEMPLATE.yaml` parses |
 | `test_version.py` | `framework/VERSION` is present and a bare `X.Y.Z` SemVer string |
@@ -57,7 +54,6 @@ A platform (Hermes, the Claude Code plugin) conforms to the framework when:
   `can_reference`, `downstream`);
 - it carries no expectation of the other platform's engine.
 
-The `tests/conformance/ (platform tests archived)` modules exercise this contract against the
-Claude Code plugin (see the second suite half above). The plugin ships a
-byte-identical vendored copy of the spec subtrees it consumes (D-0022); a drift
-guard fails CI if the bundle and the canonical spec diverge.
+The plugin-era drift-guard methodology (byte-identical vendored spec copies,
+D-0022) is retired with the platforms; its record lives in
+`plans/ACCEPTANCE-HISTORY.md`.

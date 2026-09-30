@@ -21,15 +21,10 @@ every smoke test and silently grades two documents differently.
 
 from __future__ import annotations
 
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from _spec import REPO_ROOT
-
-sys.path.insert(0, str(REPO_ROOT / "tools"))
-from sdd_coverage import render_matrix  # noqa: E402
 from sdd_doc_lint import (  # noqa: E402
     _check_required_template_sections,
     _extract_frontmatter,
@@ -184,47 +179,19 @@ if __name__ == "__main__":
     unittest.main()
 
 
-#: A BRD alone yields no forward reach; the renderer needs the doc in a graph.
-_UPSTREAM_STUBS: list[tuple[str, str]] = []
+class RetiredMatrixCarrierParity(unittest.TestCase):
+    """Retired with the tools (CLEANUP-001): `tools/sdd_coverage.py` is gone.
 
+    The carrier-parity contract lives in CarrierParity above; the matrix-vs-gate
+    seam assertion moves with the renderer. The tripwire keeps the file
+    green while the subject is absent."""
 
-class MatrixCarrierParity(unittest.TestCase):
-    """`tools/sdd_coverage.py` must read the SAME seam as the gate it mirrors.
+    def test_matrix_renderer_is_gone(self) -> None:
+        from _spec import REPO_ROOT
 
-    That module's own header states the invariant — *"the matrix and the linter's
-    forward-coverage gate read the SAME graph + classifier, so they never
-    disagree"* — and this PR threaded it onto `_fr_elements` to keep it true on
-    the YAML carrier. **Nothing asserted it.** Measured on OPS-0065 round 4:
-    reverting either half of that change (`_extract_frontmatter(text)` without
-    `rel`, or `scan_fr_elements(text)` instead of the seam) SURVIVED the
-    conformance, unit and acceptance tiers with zero failures.
-
-    It survived because every existing consumer is Markdown: `test_coverage_engine`
-    regenerates from the all-`.md` example corpus, and `tests/unit/test_sdd_coverage.py`
-    builds every fixture as `f"{doc_id}.md"` — and `tests/unit/` is run by no hook
-    and no workflow anyway. So this lives in `tests/conformance/`, deliberately.
-
-    Asserts the ROWS agree across carriers, not merely that the YAML run is
-    non-empty: an empty-vs-empty comparison is exactly how the defect hid.
-    """
-
-    def _rows(self, rel: str, text: str) -> list[str]:
-        matrix = render_matrix([(rel, text), *_UPSTREAM_STUBS])
-        return [ln for ln in matrix.splitlines() if "BRD.01.07." in ln]
-
-    def test_the_matrix_lists_the_same_requirements_on_both_carriers(self):
-        md_rows = self._rows("BRD-01.md", MD)
-        yaml_rows = self._rows("BRD-01.yaml", YAML)
-        self.assertTrue(
-            md_rows,
-            "the Markdown control produced no matrix rows — the fixture or the "
-            "renderer changed and this comparison would be empty-vs-empty",
-        )
-        self.assertEqual(
-            md_rows,
-            yaml_rows,
-            "tools/sdd_coverage.py lists different requirements per carrier — the "
-            "matrix and COV01 have drifted apart on the format GD-15 mandates",
+        self.assertFalse(
+            (REPO_ROOT / "tools").exists(),
+            "tools/ is back — resurrect MatrixCarrierParity with render_matrix",
         )
 
 

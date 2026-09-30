@@ -37,7 +37,19 @@ EXPECTED_FILES = [
     "LINT_RULES.md",
     "SEED_CONTRACT.md",
     "DECISIONS.md",
+    "DECISION_WORKFLOW.md",
+    "MODULE_LAYOUT.md",
+    "NOTICES.md",
+    "SELF_LEARNING.md",
+    "WORKTREE_FLOW.md",
     "README.md",
+    "CHG_REQUEST_FLOWS.md",
+    "CI_AUTONOMOUS_PR_STANDARD.md",
+    "aidoc/AIDOC.md",
+    "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",
+    "aidoc/BOOTSTRAP.md",
+    "aidoc/UPGRADE-RUNBOOK.md",
+    "aidoc/README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
     "chg/CHG-00_index.TEMPLATE.md",
@@ -114,6 +126,43 @@ class GovernanceFiles(unittest.TestCase):
             mandatory | skippable,
             set(ARTIFACTS),
             "adaptation layer split references an unknown artifact",
+        )
+
+    def test_profile_template_covers_surface_knobs(self):
+        """Every surface knob is documented in PROFILE-TEMPLATE.yaml (#704).
+
+        The template is the copy-paste surface an adapter starts from; a knob
+        missing there silently loses its override capability while
+        template-vs-surface parity still reads as a false pass.
+        """
+        with (GOVERNANCE / "ADAPTATION_SURFACE.yaml").open(encoding="utf-8") as fh:
+            surface = yaml.safe_load(fh)
+        knob_names = [k["name"] for k in surface["knobs"]]
+
+        template = (GOVERNANCE / "PROFILE-TEMPLATE.yaml").read_text(encoding="utf-8")
+        documented = set(re.findall(r"^# ([a-z][a-z0-9_]*):", template, re.MULTILINE))
+        documented |= set(re.findall(r"^([a-z][a-z0-9_]*):", template, re.MULTILINE))
+        for name in knob_names:
+            self.assertIn(
+                name,
+                documented,
+                f"surface knob '{name}' has no override row in PROFILE-TEMPLATE.yaml",
+            )
+
+        header = re.search(r"Adaptation knobs \((\d+)", template)
+        self.assertIsNotNone(header, "template knob-count header is missing")
+        self.assertEqual(
+            int(header.group(1)),
+            len(knob_names),
+            "template knob count disagrees with ADAPTATION_SURFACE.yaml",
+        )
+
+        adaptation = (GOVERNANCE / "ADAPTATION.md").read_text(encoding="utf-8")
+        sections = re.findall(r"^### 4\.\d+ `([a-z][a-z0-9_]*)`", adaptation, re.MULTILINE)
+        self.assertEqual(
+            sorted(sections),
+            sorted(knob_names),
+            "ADAPTATION.md §4 knob sections disagree with ADAPTATION_SURFACE.yaml",
         )
 
 

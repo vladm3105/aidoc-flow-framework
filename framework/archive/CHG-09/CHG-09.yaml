@@ -1,0 +1,122 @@
+# =============================================================================
+#  CHG-09: AGENTS.md authority-flip (F2 direct, C1, PATCH bump to 0.59.2)
+# =============================================================================
+#  Flow: F2 direct (normative-text C1: repo-root working agreement, no SDD
+#  contract at stake) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-09/IPLAN-09.yaml (In Progress, authorizing)
+#  Requester citation (F2.3, verbatim asks, this session): "check AGENTS.md.
+#  are these stale changes or should be applied" + "continue" — verdict:
+#  apply (implements the ratified 2026-09-22 user directive: AGENTS.md is the
+#  single working agreement, CLAUDE.md deprecated, never authority).
+#  The edited lines were authored by another session and sat uncommitted on
+#  dev; this vehicle lands them unchanged (verified identical to the stash).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — single root .md edit, no runtime code, no queries/migrations;
+#  EARS/BDD IDs vacuous (upstream is the user directive; no element IDs cited).
+#  Covering tests: N/A with reason — no code files touched (AGENTS.md only);
+#  verification commands in IPLAN-09 suffice per F2.3.
+#  Out of scope: migrating CLAUDE.md §§171-245/361-416/417-656 detail into
+#  AGENTS.md or tombstoning the file (recorded open since 2026-09-22).
+# =============================================================================
+
+id: CHG-09
+title: "AGENTS.md authority-flip (single working agreement, CLAUDE.md deprecated)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-23"
+  framework_version: "0.59.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-09"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-23T00:00:00Z"
+  date_approved: "2026-09-23T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-09 authorizing record (framework/archive/CHG-09/IPLAN-09.yaml)"
+  # NOTE: AGENTS.md is amended in place (repo-root working agreement, no archive
+  # rotation); only the vehicle record is superseded-tracked. sdd_lifecycle is
+  # EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Land the AGENTS.md authority-flip: header declares the single working agreement, CLAUDE.md deprecated/never-authority/this-file-wins, the two self-contained CLAUDE.md pointers dropped, closing reframed as deprecated legacy detail, worktree pointer added."
+  why: "Committed AGENTS.md still says CLAUDE.md wins, contradicting the ratified 2026-09-22 directive — every agent session starts from the wrong authority."
+  trigger: "User asks in-session (apply the unmerged flip) + 2026-09-22 unification directive."
+  scope:
+    in:
+      - "AGENTS.md: authority-flip lines (13 insertions, 9 deletions, unchanged from the stashed session)"
+      - "PATCH bump 0.59.1 → 0.59.2 + pin fanout + changelogs (E005/E008: the archive vehicle counts as framework change)"
+    out:
+      - "CLAUDE.md detail migration or tombstoning (recorded open)"
+      - "Any framework/ normative change (none — pointers only, version keep)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-09 with the AGENTS.md flip + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-09"
+      status: Completed
+  files_modified:
+    - "AGENTS.md"
+
+artifacts_modified:
+  - id: "CHG-09"
+    changes: "Authorizing record for AGENTS.md authority-flip (this file)"
+  - id: "IPLAN-09"
+    changes: "Authorizing IPLAN (framework/archive/CHG-09/IPLAN-09.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-09 (0 errors)"
+    - "grep battery: single-agreement + deprecated + this-file-wins present; 'CLAUDE.md wins' absent"
+    - "sdd_doc_lint/tests green; conformance governance/spec_hygiene green"

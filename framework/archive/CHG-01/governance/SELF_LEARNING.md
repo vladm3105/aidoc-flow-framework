@@ -28,8 +28,8 @@ workflows, and builds project-specific institutional knowledge.
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| Trajectory logs | `.mimocode/learning/{date}-trajectories.jsonl` | Raw session summaries (auto-captured) |
-| Consolidated learnings | `.mimocode/learning/learnings.md` | Extracted patterns and rules |
+| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries (auto-captured) |
+| Consolidated learnings | `.aidoc/learning/learnings.md` | Extracted patterns and rules |
 | Project memory | `MEMORY.md` | Promoted high-frequency lessons |
 | Governance doc | `docs/governance/SELF_LEARNING.md` | This document |
 
@@ -84,7 +84,7 @@ Single-occurrence events are logged but not promoted to learnings.
 
 ### Learnings file format
 
-`.mimocode/learning/learnings.md` uses this structure:
+`.aidoc/learning/learnings.md` uses this structure:
 
 ```markdown
 # Consolidated Learnings
@@ -110,7 +110,7 @@ Single-occurrence events are logged but not promoted to learnings.
 - **Merge** entries describing the same lesson (update count, keep latest evidence)
 - **Promote** entries with count >= 5 to `MEMORY.md` (project memory)
 - **Age out** entries older than 30 days that haven't been observed recently
-- **Archive** aged-out entries to `.mimocode/learning/archive/{year}-{month}.md`
+- **Archive** aged-out entries to `.aidoc/learning/archive/{year}-{month}.md`
 
 ### Consolidation schedule
 

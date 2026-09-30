@@ -84,19 +84,45 @@ class EngineTokenHygiene(unittest.TestCase):
                             if rel == allow_path and allow_token.lower() in line.lower():
                                 allowlisted = True
                                 break
+                        # Owned skills surface (0.62.0): framework/skills/ ships
+                        # the skill contract itself, so the SKILL filename token
+                        # is the contract, not engine leakage. Other engine
+                        # tokens remain banned there.
+                        if not allowlisted and rel.startswith("skills/"):
+                            if pattern.pattern.startswith(r"\bSKILL"):
+                                allowlisted = True
                         if not allowlisted:
                             violations.append(f"{rel}:{lineno}: {line.strip()}")
         self.assertEqual(violations, [], f"engine tokens in framework/: {violations}")
 
 
 class VersionStringHygiene(unittest.TestCase):
-    def test_no_framework_version_field(self):
-        violations = []
+    def test_all_version_pins_equal_framework_version(self):
+        """Every swept-form pin equals `framework/VERSION` exactly (#689).
+
+        Replaces the retired skip-stub: `test_sync_version_refs.py` only
+        asserts membership in OLD_VERSIONS (weaker), so a stale pin sails
+        through. Scope mirrors `hooks/sync-version-refs.sh` (live tree only —
+        `framework_files()` already excludes the frozen `archive/` snapshots).
+        """
+        current = (FRAMEWORK / "VERSION").read_text(encoding="utf-8").strip()
+        forms = (
+            re.compile(r'framework_spec_version: "(\d+\.\d+\.\d+)"'),
+            re.compile(r'framework_version: "(\d+\.\d+\.\d+)"'),
+            re.compile(r"\| Framework Version \| (\d+\.\d+\.\d+) \|"),
+        )
+        stale = []
         for path in framework_files():
-            for lineno, line in _lines(path):
-                if FRAMEWORK_VERSION.search(line):
-                    violations.append(f"{path.relative_to(FRAMEWORK)}:{lineno}")
-        self.assertEqual(violations, [], f"framework_version in framework/: {violations}")
+            try:
+                text = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            rel = path.relative_to(FRAMEWORK)
+            for pattern in forms:
+                for version in pattern.findall(text):
+                    if version != current:
+                        stale.append(f"{rel}: {version} != {current}")
+        self.assertEqual(stale, [], f"stale version pins: {stale}")
 
     def test_no_stale_sdd_v3_strings(self):
         violations = []

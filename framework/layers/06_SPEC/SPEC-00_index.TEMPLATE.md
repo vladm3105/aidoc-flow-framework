@@ -37,7 +37,7 @@ Central registry for all SPEC documents. Each SPEC defines the implementation co
 ## Templates
 
 - [SPEC-TEMPLATE.yaml](SPEC-TEMPLATE.yaml) — **Default** — full template with embedded authoring guidance
-- [SPEC-MVP-TEMPLATE.yaml](SPEC-MVP-TEMPLATE.yaml) — Skeleton — not standalone; must also read the full template
+- [SPEC-MVP-TEMPLATE.yaml](SPEC-MVP-TEMPLATE.yaml) — retired tombstone pointer to the canonical template (CHG-08 #666)
 
 ## Quality Gate
 
@@ -86,7 +86,8 @@ dual of the BRD forward-coverage rule (the BRD-template `_authored_form` rule;
 - The matching forward direction (BRD FR → SPEC/IPLAN) is `COV01`, also
   element-level: each AUTHORED FR element must be cited by a **PRD** (then the
   host BRD's SPEC + IPLAN reach is retained). Both read the same `@`-tag graph
-  (the reference-implementation `tools/sdd_coverage.py`, outside the spec; see
+  (the in-tree coverage gate `sdd_doc_lint._check_forward_coverage` (COV01);
+  the `tools/*.py` scripts were a non-shipped reference implementation — see
   `governance/TRACEABILITY.md`).
 
 ## Maintenance Notes

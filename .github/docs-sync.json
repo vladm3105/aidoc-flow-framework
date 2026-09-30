@@ -8,7 +8,7 @@
   "changelog_stub": {
     "_comment": "Stub-entry inserter — when merged commit touches trigger_paths AND CHANGELOG wasn't touched, append a stub entry under section_header. Stub is intentionally low-quality so contributors rewrite on next PR (currency, not polish).",
     "enabled": true,
-    "trigger_paths": [".github/workflows/*.yml", "scripts/**"],
+    "trigger_paths": [".github/workflows/*.yml", "hooks/**"],
     "destination": "CHANGELOG.md",
     "section_header": "## [Unreleased]"
   },
@@ -17,7 +17,7 @@
     "_comment": "Version-string propagation — read each version_file; propagate into target files via per-consumer regex map (full regex-map design in alpha.2; alpha.1 stub does detection only).",
     "enabled": true,
     "sources": [
-      { "version_file": "VERSION", "targets": ["README.md"] }
+      { "version_file": "framework/VERSION", "targets": ["README.md"] }
     ]
   },
 

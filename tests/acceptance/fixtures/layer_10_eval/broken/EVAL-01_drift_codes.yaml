@@ -1,0 +1,5 @@
+file: EVAL-01_missing_section.yaml
+expected_findings:
+  - code: STRUCT01
+    section: coverage_matrix
+    message_match: "missing required section: coverage_matrix"

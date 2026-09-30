@@ -2,6 +2,27 @@
 # Single source of truth for all layer definitions.
 # Authoritative machine-readable core — templates, READMEs, and the
 # conformance suite defer to this file.
+#
+# NEW-LAYER REGISTRATION CHECKLIST (mandatory before any document of a new
+# layer is authored). A layer entry MUST carry: number, artifact, name,
+# folder, extensions, required_tags, can_reference, error_prefix, optional,
+# description, template, downstream. Additionally:
+#   - bump metadata.total_layers and keep layer numbers dense 1..N;
+#   - add the layer to layer_groups (exactly one group per layer);
+#   - add to realizing_layers when the layer realizes upstream elements;
+#   - extend c4_mapping when applicable;
+#   - update upstream layers' downstream fields to include the new layer;
+#   - document new lint rule IDs in governance/LINT_RULES.md when the
+#     layer's template references them.
+# (Enforced by REG01, advisory; asserted in tests/conformance/test_registry.py.)
+#
+# DOWNSTREAM SEMANTICS (#708): `downstream` names each layer's PRIMARY SUCCESSOR
+# (the single next step of the authoring chain), NOT the inverse of
+# `required_tags`. A layer may be read by several downstream layers (e.g. EARS is
+# required by BDD, ADR, SPEC, and TDD) while `downstream` lists only the next
+# step (EARS → BDD). Consumers answering "what must I re-check when X changes"
+# MUST use `required_tags` (fan-in) and `realizing_layers` (realization
+# fan-out), never `downstream`.
 
 metadata:
   framework: "Specification-Driven Development (SDD)"
@@ -12,7 +33,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
-  framework_version: "0.53.0"  # synced from framework/VERSION
+  framework_version: "0.68.1"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this
@@ -139,9 +160,11 @@ layers:
     can_reference: [SPEC, TDD]
     error_prefix: IPLAN
     optional: false
-    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in layers/08_IPLAN/tmp/."
+    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Post-completion repairs use the bugfix subtype (parent_iplan + source_chg); layers/08_IPLAN/tmp/ was retired in 0.56.0."
     template: "IPLAN-TEMPLATE.yaml"
-    downstream: [CODE, EVAL]
+    downstream: [CODE, EVAL] # CODE is a legitimate terminal sink but NOT a
+                             # registered SDD document layer (see `code.note`
+                             # below); EVAL is the governance terminal (#708).
 
   - number: 9
     artifact: CHG
@@ -152,7 +175,7 @@ layers:
     can_reference: []
     error_prefix: CHG
     optional: false
-    description: "Layer 9 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
+    description: "Namespace 09 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
     template: "CHG-TEMPLATE.yaml"
     downstream: []
     notes: "Operational namespace, not a sequential lifecycle layer. The 09_CHG prefix is reserved for playbook definitions, example artifacts, and saga review dispatch."
