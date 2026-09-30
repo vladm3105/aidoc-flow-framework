@@ -38,8 +38,9 @@
 #  runs in IPLAN-24. Pure-prose files N/A with reason (F2.3).
 #  Out of scope: EVAL 2.0 semantics (normalized as drift — no consumer pins
 #  2.0, IPLAN versions are 1.0 everywhere); trivy self-hosted-pool flakes
-#  (aidoc-flow-ci / runner infra, not this repo); any F3 cascade; VERSION bump
-#  (C1, version_action keep).
+#  (aidoc-flow-ci / runner infra, not this repo); any F3 cascade.
+#  PATCH release 0.67.1 + mechanical pin sweep ride this vehicle (GATE-SPEC-E005:
+#  normative framework/** changes require framework/VERSION in the diff).
 #  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
 # =============================================================================
 
@@ -72,7 +73,7 @@ change_control:
   change_level: C1
   change_source: direct
   entry_gate: GATE-CODE
-  semver_impact: null
+  semver_impact: patch
   version_action: keep
   author: "Muse Code"
   date_proposed: "2026-09-30T00:00:00Z"
@@ -162,6 +163,9 @@ implementation:
     - ".github/workflows/pre-commit.yml"
     - ".github/workflows/conformance.yml"
     - ".pre-commit-config.yaml"
+    - "hooks/sync-version-refs.sh"
+    - "framework/VERSION"
+    - "framework/** swept pins (135 files, 0.67.0→0.67.1 mechanical; frozen/project pins intact — see sweep verification in PR)"
     - "tests/unit/test_template_conventions.py"
     - "tests/unit/test_hook_stage_coverage.py"
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.0 |
+| Framework Version | 0.67.1 |
 
 Engine-agnostic completion criteria for an SDD **artifact** and for a **change**
 to the spec. This is a *light contract*: it names *what must be true* before work

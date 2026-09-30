@@ -5,7 +5,6 @@ against nine 1.0 siblings, a future-dated last_updated, and CHG-TEMPLATE
 hardcoded a framework_version literal that rots on every VERSION bump.
 """
 
-import sys
 import unittest
 from datetime import date
 from pathlib import Path
@@ -67,9 +66,7 @@ class TemplateConventionTests(unittest.TestCase):
             for keys, value in walk(load(path)):
                 if keys and keys[-1] == "framework_version" and isinstance(value, str):
                     if value.strip() != "[X.Y.Z]":
-                        offenders.append(
-                            f"{path.relative_to(REPO_ROOT)}: {value!r}"
-                        )
+                        offenders.append(f"{path.relative_to(REPO_ROOT)}: {value!r}")
         self.assertFalse(
             offenders,
             f"hardcoded framework_version literals (want [X.Y.Z]): {offenders}",
@@ -92,9 +89,7 @@ class TemplateConventionTests(unittest.TestCase):
                         except TypeError:
                             continue
                         if is_future:
-                            offenders.append(
-                                f"{path.relative_to(REPO_ROOT)}:{keys[-1]}={value!r}"
-                            )
+                            offenders.append(f"{path.relative_to(REPO_ROOT)}:{keys[-1]}={value!r}")
         self.assertFalse(offenders, f"future dates in templates: {offenders}")
 
 

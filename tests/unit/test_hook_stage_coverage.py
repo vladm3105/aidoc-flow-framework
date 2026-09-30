@@ -29,10 +29,7 @@ def pre_push_hook_ids():
 
 
 def workflow_texts():
-    return {
-        path.name: path.read_text(encoding="utf-8")
-        for path in WORKFLOWS.glob("*.yml")
-    }
+    return {path.name: path.read_text(encoding="utf-8") for path in WORKFLOWS.glob("*.yml")}
 
 
 class HookStageCoverageTests(unittest.TestCase):
@@ -41,9 +38,7 @@ class HookStageCoverageTests(unittest.TestCase):
         self.assertTrue(ids, "no pre-push-stage hook declared")
         texts = workflow_texts()
         invokers = [
-            name
-            for name, text in texts.items()
-            if "--hook-stage" in text and "pre-push" in text
+            name for name, text in texts.items() if "--hook-stage" in text and "pre-push" in text
         ]
         self.assertTrue(
             invokers,

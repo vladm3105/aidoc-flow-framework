@@ -9,12 +9,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 > Spec-level detail lives in `framework/CHANGELOG.md`; this file carries the
 > project-level entry.
 
-## [Unreleased]
+## [0.67.1] — 2026-09-30
 
-> The two entries below were relocated from below `0.62.4` on 2026-09-30
+> The two entries after the batch entry were relocated from below `0.62.4`
 > (CHG-24 #806) — content unchanged, Keep-a-Changelog order restored.
 
-### Fixed — triage batch #798–#808 (C1, CHG-24 + IPLAN-24)
+### Fixed — triage batch #798–#808 (C1 PATCH → 0.67.1, CHG-24 + IPLAN-24)
 
 - Docs-truthfulness (#801, #802, #804, #806, #808): `F2-UNIFY-PLAN.md` marked achieved via CHG-12 (#772/#773 closed); `PROJECT.md` branching + symlink sections annotated as superseded by `AGENTS.md` and the binding symlink convention; frozen-era pins qualified; `SELF_LEARNING.md` store table rewritten to the implemented surface; `README.md` status snapshot refreshed to 0.67.0
 - Template consistency (#805): EVAL schema normalized to 1.0, future date replaced, CHG `framework_version` literal replaced with `[X.Y.Z]` (both mirror twins)

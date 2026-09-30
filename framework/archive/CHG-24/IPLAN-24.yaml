@@ -118,6 +118,8 @@ file_manifest:
       verified: false
     - path: ".github/workflows/pre-commit.yml + conformance.yml + .pre-commit-config.yaml"
       description: "#798: invoke pre-push hook id in CI (hook re-checked CI-safe); #799: run tests/unit in CI workflow + local hook"
+    - path: "framework/VERSION + hooks/sync-version-refs.sh + swept pins"
+      description: "E005 PATCH bump 0.67.0→0.67.1: VERSION file, OLD_VERSIONS +0.67.0, mechanical sweep of swept-form pins"
       order: 12
       status: DONE
       session: 2

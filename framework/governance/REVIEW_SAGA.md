@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.0 |
+| Framework Version | 0.67.1 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the

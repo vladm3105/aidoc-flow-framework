@@ -11,13 +11,13 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.67.0 |
+| Framework Version | 0.67.1 |
 
 ---
 
-## [Unreleased]
+## [0.67.1] — 2026-09-30
 
-### Fixed — triage batch spec surface (C1, CHG-24 + IPLAN-24)
+### Fixed — triage batch spec surface (C1 PATCH → 0.67.1, CHG-24 + IPLAN-24)
 
 - `SELF_LEARNING.md` store table rewritten to the implemented surface
   (`.aidoc/learning/learnings.md` + harness scratch); unbuilt homes moved
