@@ -1,0 +1,162 @@
+# =============================================================================
+#  CHG-30: Docs/config batch — profile.yaml + TAGGING refresh + lens line
+#  (fixes #820, #822, #826) (F2 direct, docs/config C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human request "fix all issues" 2026-09-30, no prior
+#  IPLAN, no product-behavior change — a record-only config declaration,
+#  a prose census refresh, and a one-line reviewer-reminder) — docs/config
+#  C1: C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  IPLAN: framework/archive/CHG-30/IPLAN-30.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: triage notes on #820/#822/#826 (2026-09-30), all
+#  verified live (profile absence + zero ci_bindings hits; TAGGING figures
+#  vs remote tags; four PR bodies vehicled-less vs #789 citing CHG-15).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — no code/scripts, no normative framework/ text (profile.yaml is
+#  a declarative record no engine consumes; TAGGING prose carries the
+#  re-derive disclaimer; the brief line restates the CHG-12 decision).
+#  EARS/BDD IDs vacuous (upstream is the three issues + triage notes).
+#  SECURITY_REVIEW: assessed — no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: pure prose/config N/A with reason (F2.3) — prose and a
+#  record-only declaration carrying no executable contract; no test asserts
+#  on this repo's own .aidoc/ contents (verified 2026-09-30: only
+#  consumer-fixture references); full suites run as regression battery.
+#  Out of scope (#820): CI workflow edits, engine consumption of the
+#  profile, new conformance emitters. (#822): tag-convention, phantom
+#  list, disclaimer posture changes; per-version table rows (modern-stream
+#  mapping lives in prose + #711, not the table). (#826): commit-scanning
+#  linter, manifest amendments, PR content re-litigation.
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-30
+title: "Docs/config batch: self profile.yaml + TAGGING refresh + lens line (#820/#822/#826)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-30"
+  framework_version: "0.68.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-30"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-09-30T00:00:00Z"
+  date_approved: "2026-09-30T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-30 authorizing record (framework/archive/CHG-30/IPLAN-30.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Three record-only closes in one batch: add .aidoc/profile.yaml declaring this repo's ci_bindings (#820); re-derive the TAGGING.md release-inventory snapshot against the landed 25-tag backlog (#822); add the CHG-12 reviewer-lens reminder line to the Lens 5 governance brief (#826)."
+  why: "All three triaged P3/P2 with ready fix shapes: the repo does not dogfood its own ci_bindings knob (#820); the inventory snapshot is two figures behind a now-landed tag push (#822, gate satisfied); untraced commits are invisible to every emitter except the reviewer lens (#826)."
+  trigger: "Triage notes on #820/#822/#826 (2026-09-30); session goal 'fix all issues'."
+  scope:
+    in:
+      - ".aidoc/profile.yaml: schema 1.0.0, framework 0.68.1, ci_bindings record (six required checks, ubuntu-latest runners, integration branch dev)"
+      - "docs/TAGGING.md: high-water framework/v0.68.1, 77-of-131 untagged recount, contiguity through v0.68.1, spec-number touch (0.51.0 → 0.68.1)"
+      - ".agents/skills/preprod-review/references/lens-briefs.md: one CHG-12 manifest-coverage line in Lens 5"
+      - "framework/archive/CHG-30/CHG-30.yaml + IPLAN-30.yaml (this vehicle)"
+    out:
+      - "CI workflow edits, engine consumption of the profile, new conformance emitters (#820)"
+      - "Tag-convention / phantom-list / disclaimer-posture changes; new per-version table rows (#822)"
+      - "Commit-scanning linter, manifest amendments, PR content re-litigation (#826)"
+      - "VERSION bump / CHANGELOGs (version_action keep — no framework/ files)"
+      - "Any F3 cascade or SDD rewrite"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-30 with manifest + verification commands"
+      phase: "iplan_creation"
+      artifact: "IPLAN-30"
+      status: Completed
+    - step: "Add .aidoc/profile.yaml (ci_bindings record-only)"
+      phase: "configuration"
+      artifact: ".aidoc/profile.yaml"
+      status: In-Progress
+    - step: "Refresh TAGGING.md inventory snapshot (re-derived figures)"
+      phase: "documentation_sync"
+      artifact: "docs/TAGGING.md"
+      status: In-Progress
+    - step: "Add CHG-12 manifest-coverage line to Lens 5 brief"
+      phase: "documentation_sync"
+      artifact: "lens-briefs.md"
+      status: In-Progress
+    - step: "Run IPLAN-30 battery (chg_lint + suites) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-30-docs-batch → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-30/CHG-30.yaml"
+    - "framework/archive/CHG-30/IPLAN-30.yaml"
+    - ".aidoc/profile.yaml"
+    - "docs/TAGGING.md"
+    - ".agents/skills/preprod-review/references/lens-briefs.md"
+
+artifacts_modified:
+  - id: "CHG-30"
+    changes: "Authorizing record for docs/config batch (this file)"
+  - id: "IPLAN-30"
+    changes: "Authorizing IPLAN (framework/archive/CHG-30/IPLAN-30.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-30 (0 errors)"
+    - "profile.yaml parses as YAML; ci_bindings keys within the declared surface"
+    - "TAGGING figures re-derived live (131 held / 54 cut / 77 untagged; 46/46 modern tags read exact version)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-30-docs-batch → dev"
