@@ -19,7 +19,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.68.4 |
 
 ---
 
@@ -74,6 +74,13 @@ Newest first. Timestamps are ISO 8601 UTC.
   Principle 9 rewritten. (2) Quick-path exception removed — every
   feature/defect change runs in a per-task worktree + branch with
   post-merge cleanup per WORKTREE_FLOW.md §3.7 order guard.
+- **Supersession (CHG-35, 2026-10-01):** the retained doc is eliminated
+  outright (title + thread table misled live sessions into logging
+  findings in-file; skill + tracker were already the single surface).
+  Filing discipline re-homed to Principle 9 via
+  `framework/skills/submit-feedback/`; `test_governance.py` pin removed
+  with justification. GD-41's Tier-1 retirement and worktree ruling
+  stand unchanged.
 - **Consequence:** single capture surface (the tracker); unconditional
   worktree discipline; external template copiers directed by the 0.67.0
   CHANGELOG note.

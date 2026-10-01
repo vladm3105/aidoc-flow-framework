@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.68.4 |
 
 ---
+
+## [0.68.4] — 2026-10-01
+
+### Fixed — eliminate feedback-log file; re-home discipline (C1 PATCH → 0.68.4, CHG-35 + IPLAN-35)
+
+- DELETE `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` (no history migrated — the tracker holds the threads). Principle 9 self-contained via `framework/skills/submit-feedback/` (search-before-file, `real-use`/`review` origins, body contract, read-back rule); `SELF_LEARNING.md` §7.4 + Cross-References and governance `README.md` row repointed; GD-41 supersession appended (Tier-1 retirement + worktree ruling stand).
+- Covering guard: `tests/conformance/test_governance.py` pin removed with justification (intentional spec change — guard stands for all remaining files).
+- Sweep 0.68.3 → 0.68.4 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.3] — 2026-10-01
 

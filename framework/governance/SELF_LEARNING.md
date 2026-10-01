@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.68.4 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -224,12 +224,12 @@ consumer outside this session:
 2. Modified a project governance file? File the audit-trail issue on the
    project repo.
 3. Read the published artifact back (non-zero body length is the only proof
-   it published) and record the issue number in
-   `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` — full path, never a bare
-   filename — so a future session finds the upstream thread instead of
-   rediscovering the defect as a fresh bug.
-4. Session-start duty: review injected learnings AND the open feedback items
-   in `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` before planning work.
+   it published) and record the issue number in the cycle report, so a
+   future session finds the upstream thread instead of rediscovering the
+   defect as a fresh bug. There is no file log to update — the tracker
+   issue is the record.
+4. Session-start duty: review injected learnings AND the open feedback
+   issues on the tracker before planning work.
 
 ## Verification Checklist
 
@@ -331,7 +331,7 @@ Self-learning feeds into notices.md by:
 
 ## Cross-References
 
-- `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` — Framework-level feedback pipeline (full path — never a bare filename)
+- `framework/skills/submit-feedback/` — Framework-level feedback filing workflow
 - `DOC_GOVERNANCE_CORE.md` — Governance principles
 - `NOTICES.md` — Issue registry and prevention rules
 - `DECISION_WORKFLOW.md` — Authorship boundaries

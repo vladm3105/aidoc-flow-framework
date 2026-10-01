@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.68.4 |
 
 This is the ordered procedure for deploying `.aidoc/` on a new project
 (#786). The contract lives in `AIDOC.md`; the profile semantics in
