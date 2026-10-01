@@ -1,8 +1,8 @@
 # Changelog — FROZEN (tombstone)
 
-This log is no longer maintained per-PR (frozen 2026-10-01 by CHG-40, issue
-#836, founder decision: hand-maintaining it costs tokens and time while
-GitHub issues already track almost every change). Do not add entries here.
+This log is no longer maintained per-PR (frozen 2026-10-01 by CHG-40 for
+issue #836 by founder decision: hand-maintaining it costs tokens and time
+while GitHub issues already track almost every change). Do not add entries here.
 
 > Supersedes the #687 scope note: this file no longer records project
 > releases and no longer mirrors `framework/CHANGELOG.md`.
