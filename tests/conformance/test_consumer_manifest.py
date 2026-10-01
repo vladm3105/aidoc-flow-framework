@@ -36,9 +36,7 @@ def _doc_text():
 
 
 def _ship_from_doc(text):
-    match = re.search(
-        r"cp -r /tmp/aidoc-framework/\{([^}]*)\} \.aidoc/framework/", text
-    )
+    match = re.search(r"cp -r /tmp/aidoc-framework/\{([^}]*)\} \.aidoc/framework/", text)
     assert match is not None, (
         "docs/PROJECT.md §7.1 must carry the allowlist copy line "
         "`cp -r /tmp/aidoc-framework/{...} .aidoc/framework/`"
@@ -54,9 +52,7 @@ class ConsumerManifest(unittest.TestCase):
     def test_ship_paths_exist(self):
         """Every allowlisted path exists at the repo root."""
         for name in EXPECTED_SHIP:
-            self.assertTrue(
-                (REPO_ROOT / name).is_dir(), f"allowlisted path missing: {name}"
-            )
+            self.assertTrue((REPO_ROOT / name).is_dir(), f"allowlisted path missing: {name}")
 
     def test_internal_paths_not_shipped(self):
         """Known canon-dev internals stay out of the copy set (#834)."""
