@@ -2,9 +2,10 @@
 
 Orients any AI agent (Claude Code, Codex, Gemini CLI, Copilot, Hermes, custom)
 working on this repo. **This file is the single working agreement** — the short
-orientation plus the rules that are most often missed.
-[`CLAUDE.md`](CLAUDE.md) is deprecated: legacy detail only, never authority.
-Where the two disagree, this file wins.
+orientation plus the rules that are most often missed. There is no second
+agreement: the former `CLAUDE.md` was retired and its live rules folded in
+below (conflicting clauses resolved in this file's favour); git history
+preserves the old file.
 
 ## What this repo is
 
@@ -14,6 +15,8 @@ Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable 
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
 (advisory hooks — `PostToolUse` + `PreCommit`, see `hooks/README.md`) as the only retained tooling.
+The pristine pre-migration project is preserved on the protected, read-only
+`legacy-ucx-v3.2-read-only` branch.
 
 ## Filing gaps — open a GitHub issue
 
@@ -90,7 +93,24 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Submit only finalized work.** A PR has already completed its review-and-fix
   cycles locally. Amendment PRs patching a just-merged PR are a smell that the
   original shipped early.
-- **Plans get two review cycles before the plan PR opens.**
+- **Plans get two review cycles before the plan PR opens.** Record every
+  cycle in the plan's `## Review log` as an ISO-stamped `Pass N` entry (gaps
+  found + how each was resolved); each pass re-validates the previous pass's
+  patches. Implementation begins only after the plan PR is merged.
+- **Minimal-and-realistic plans.** Size the plan to the problem (~N fixes for
+  N substantive issues, not speculative features). Park deferred ideas as a
+  one-line backlog enumeration in the plan's "Out of scope" section — do not
+  draft them there.
+- **Docs of record per PR.** Every PR keeps the documents-of-record in sync
+  in the change's own PR — changelog entry, decisions, touched plans — never
+  via a catch-up doc-refresh follow-up. The per-category matrix lives in
+  `CONTRIBUTING.md` §Documentation discipline. Mechanical version fanout
+  (`hooks/sync-version-refs.sh`) and the semantic reminder
+  (`hooks/check-docs-updated.sh`, warning-only) run automatically on commit.
+- **Versioning and tagging.** Project and framework spec version
+  independently (`docs/PROJECT.md` §2; platform streams retired); tag rules
+  in `docs/TAGGING.md` — `vX.Y.Z` (project), `framework/vX.Y.Z`; `VERSION`
+  files hold bare SemVer.
 - **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.7 order guard: `worktree remove` BEFORE branch delete, §4).
 
 ## Governance Gate (applies to ALL agents)
@@ -127,7 +147,7 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
-**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Every post-seed change carries both objects: bug fixes ride their IPLAN's CHG (active IPLAN) or the bugfix vehicle (C1 CHG + bugfix IPLAN); every C1 rides a C1 CHG + scoped IPLAN. The sole change needing neither object is seed-phase drafting pre-first-BRD (CHG-12).
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress`, reference the authorizing CHG, and list the files being modified in its `file_manifest`. Every post-seed change carries both objects: bug fixes ride their IPLAN's CHG (active IPLAN) or the bugfix vehicle (C1 CHG + bugfix IPLAN); every C1 rides a C1 CHG + scoped IPLAN. The sole change needing neither object is seed-phase drafting pre-first-BRD (CHG-12).
 
 ### Push Workflow
 
@@ -148,6 +168,36 @@ git push origin main   # ❌ BLOCKED by this rule
 ```
 
 Branch promotion: `feature-branch → dev → main`
+
+### Commit audit-trail phrase
+
+Every push must carry one literal phrase in a commit-message body in the push
+range (`grep -qF`; CI `call / verify` is a required context, so a missing
+phrase blocks the merge):
+
+- `Multi-agent self-review per OPS-0065 (<agents>): <verdict>` — run the
+  review first, then write the phrase. The gate checks the string, not the
+  review: the skip form asserts a founder OK it never verifies, so never
+  write it without one.
+- `Self-review skipped per founder OK — <reason>` — only with in-session
+  founder authorization.
+
+Exempt: bot-authored ranges and revert-only ranges. Enforced pre-push by
+`hooks/pre_push_check.sh` (via pre-commit) and restated in
+`.github/PULL_REQUEST_TEMPLATE.md`.
+
+### Governance PRs
+
+A PR touching the working agreement (`AGENTS.md`), `plans/*-PLAN.md` and
+their `plans/*-DESIGN.md` companions, `plans/DECISIONS.md`,
+`framework/governance/DECISIONS.md`, `.github/ai-review/`,
+`.github/workflows/ai-review.yml`, or a change superseding a locked decision
+is a governance PR: cap it at ≤3 doc surfaces — split into sequential PRs
+beyond that, or record a founder OK in the PR plus an audit-trail line in the
+commit message (splitting is the default, carve-out the exception) — and
+self-review it adversarially before every push. Non-governance PRs (code,
+tests, docs-only) have no surface cap. The definition lives here;
+`.github/PULL_REQUEST_TEMPLATE.md` carries a copy.
 
 All feature/defect work runs in a per-task worktree + branch (`WORKTREE_FLOW.md` §3.2) — the main checkout stays on `dev` and is never branch-switched for feature work. There is no quick-path exception: single-shot edits use the same worktree flow. Post-merge cleanup removes the worktree BEFORE deleting the branch (§3.7 order guard).
 
@@ -194,7 +244,20 @@ umbrella — the umbrella holds no development of its own.
   default; destructive, remote, and config-changing operations need explicit
   approval.
 
-Further detail — CI consumption from `aidoc-flow-ci`, governance PR discipline,
-auto-merge defaults, multi-agent review, versioning and tagging — lives in
-[`CLAUDE.md`](CLAUDE.md) (deprecated legacy detail, pending migration into this
-file). On any conflict, this file wins.
+## Unified CI — consume from `aidoc-flow-ci`
+
+This repo's CI workflows call reusable workflows from
+`vladm3105/aidoc-flow-ci`, the source of truth for shared CI logic. Local
+always wins — GitHub runs this repo's `.github/workflows/*.yml`, and a shared
+workflow runs only when called via `uses:`. Three override modes, preferred
+order: parameter override (`with:` knob, keep the `uses:` call) → full
+replacement (drop `uses:`, write local jobs) → new custom workflow file.
+
+- A canon bump is a migration, not a dependency update: re-pin tags only
+  (`--repin`), never `--update` — full-body replacement clobbers local
+  customizations (self-hosted runner labels, secret-scan config, docs-sync
+  permissions). Dependabot carries a `semver-major` hold on canon
+  (`.github/dependabot.yml`), so majors arrive as deliberate PRs.
+- Drift detection is warning-only, never blocking: re-baseline to canonical,
+  keep intentionally, or push the divergence upstream as a new shared default
+  (broadly useful changes go to `aidoc-flow-ci` first, then re-pin here).

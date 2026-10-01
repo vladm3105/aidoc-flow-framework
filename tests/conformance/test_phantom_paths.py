@@ -23,7 +23,6 @@ SCANNED_ROOTS = (
     REPO_ROOT / "AGENTS.md",
     REPO_ROOT / "GOVERNANCE.md",
     REPO_ROOT / "README.md",
-    REPO_ROOT / "CLAUDE.md",
 )
 
 # History keeps its mentions: frozen archive, decision/changelog records,
