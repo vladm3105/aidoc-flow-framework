@@ -61,7 +61,7 @@ metadata:
   document_type: "chg-document"
   purpose: governance
   last_updated: "2026-10-01"
-  framework_version: "0.68.4"
+  framework_version: "0.68.5"
 
   change_level:
     value: C1
@@ -94,7 +94,7 @@ change_control:
 # =============================================================================
 
 change_description:
-  summary: "Two doc defects, one vehicle. (#835) Correct docs/ADAPTATION-GUIDE.md §4 mirror list to the shipped framework/ shape (governance/, layers/, playbooks/, registry/, skills/ — no scripts/, no templates/); discovery rule untouched. (#836) Freeze root CHANGELOG.md as a tombstone carrying the documented gh query for on-the-fly generation (founder decision 2026-10-01); repoint GATE-SPEC-E008 at framework/CHANGELOG.md in tests/chg/spec_gate.py with test_spec_gate.py expectations updated in the same diff; update AGENTS.md state table, hooks/check-docs-updated.sh DOCS_OF_RECORD, CONTRIBUTING.md matrix, DOC_GOVERNANCE_CORE.md Principle 8. PATCH cut 0.68.5 (VERSION bump + sweep + framework/CHANGELOG.md entry; root tombstone replaces its own entry) per GATE-SPEC E005/E008."
+  summary: "Two doc defects, one vehicle. (#835) Correct docs/ADAPTATION-GUIDE.md §4 mirror list to the shipped framework/ shape (governance/, layers/, playbooks/, registry/, skills/ — no scripts/, no templates/); discovery rule untouched. (#836) Freeze root CHANGELOG.md as a tombstone carrying the documented gh query for on-the-fly generation (founder decision 2026-10-01); repoint GATE-SPEC-E008 at framework/CHANGELOG.md in tests/chg/spec_gate.py with test_spec_gate.py expectations updated in the same diff; update AGENTS.md state table, hooks/check-docs-updated.sh DOCS_OF_RECORD, CONTRIBUTING.md matrix, DOC_GOVERNANCE_CORE.md Principle 8. PATCH cut 0.68.6 (VERSION bump + sweep + framework/CHANGELOG.md entry; root tombstone replaces its own entry) per GATE-SPEC E005/E008."
   why: "#835: consumers following §4 create project/scripts/ and project/templates/ overrides that shadow nothing upstream while the discovery rule silently falls through. #836: hand-maintaining the root log per-PR costs tokens and time while GitHub issues already track almost every change (founder decision 2026-10-01, scope root log only)."
   trigger: "Delegated workflow request 2026-10-01 citing issues #835 (found fixing #834) + #836 (park condition CLEARED: framework/CHANGELOG.md shows 0.68.4 shipped, 0.68.3 landed — verified live)."
   scope:
@@ -108,8 +108,8 @@ change_description:
       - "CONTRIBUTING.md: matrix Framework-spec row + warning-hook doc list repointed at framework/CHANGELOG.md"
       - "framework/governance/DOC_GOVERNANCE_CORE.md: Principle 8 doc-of-record list (framework/ edit — carries this vehicle's bump)"
       - "framework/archive/CHG-40/CHG-40.yaml + IPLAN-40.yaml (this vehicle)"
-      - "framework/VERSION 0.68.4 → 0.68.5 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
-      - "framework/CHANGELOG.md [0.68.5] section (new-E008 driver; stays the live record)"
+      - "framework/VERSION 0.68.5 → 0.68.6 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "framework/CHANGELOG.md [0.68.6] section (new-E008 driver; stays the live record)"
     out:
       - "GATE_ERROR_CATALOG + GATE-SPEC_FRAMEWORK.md E008 rows (basename-generic, still satisfied — considered, untouched)"
       - "docs/PROJECT.md E008 prose (basename-generic, untouched)"
@@ -137,7 +137,7 @@ implementation:
       phase: "documentation_sync"
       artifact: "9 edits"
       status: In-Progress
-    - step: "PATCH cut 0.68.5: VERSION bump + sync sweep (pin moves only) + framework/CHANGELOG.md entry"
+    - step: "PATCH cut 0.68.6: VERSION bump + sync sweep (pin moves only) + framework/CHANGELOG.md entry"
       phase: "documentation_sync"
       artifact: "framework/VERSION, hooks/sync-version-refs.sh, framework/CHANGELOG.md, CHANGELOG.md (tombstone)"
       status: In-Progress
@@ -156,10 +156,10 @@ implementation:
     - "hooks/check-docs-updated.sh (DOCS_OF_RECORD)"
     - "CONTRIBUTING.md (matrix row + warning-hook doc list)"
     - "framework/governance/DOC_GOVERNANCE_CORE.md (Principle 8)"
-    - "framework/VERSION (0.68.4 → 0.68.5)"
-    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.4)"
-    - "framework/CHANGELOG.md ([0.68.5] section)"
-    - "Sweep fallout: mechanical 0.68.4 → 0.68.5 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+    - "framework/VERSION (0.68.5 → 0.68.6)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.5)"
+    - "framework/CHANGELOG.md ([0.68.6] section)"
+    - "Sweep fallout: mechanical 0.68.5 → 0.68.6 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
 
 artifacts_modified:
   - id: "CHG-40"
@@ -184,7 +184,7 @@ gate_approval:
 verification:
   gates:
     - "chg_lint.py over CHG-40 (0 errors)"
-    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.5, framework/CHANGELOG.md carries [0.68.5], root CHANGELOG.md tombstoned (in-diff, satisfying pre-merge E008)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.6, framework/CHANGELOG.md carries [0.68.6], root CHANGELOG.md tombstoned (in-diff, satisfying pre-merge E008)"
     - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
     - "Zero dangling E008 references to the root path: grep '\"CHANGELOG.md\"' over tests/chg + conformance (history-only hits allowed)"
     - "tests/conformance/test_spec_gate.py passes with repointed expectations"

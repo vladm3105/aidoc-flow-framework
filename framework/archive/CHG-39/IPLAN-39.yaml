@@ -1,0 +1,128 @@
+# =============================================================================
+#  IPLAN-39: Declare runtime sandbox/egress/secrets engine-local (#847)
+#  (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-39/CHG-39.yaml (F2 direct, C1,
+#  In-Progress; entry GATE-SPEC). Source: issue #847 triage note
+#  2026-10-01 (decide spec subsection vs engine-local declaration; do not
+#  touch artifact-hygiene rules).
+#  Docs-only C1, no test-file edits: covering test is the conformance
+#  suite itself (no content pins on SECURITY_REVIEW.md — verified by
+#  grep; paragraph is additive prose); full suites are the regression
+#  battery.
+# =============================================================================
+
+doc_id: IPLAN-39
+title: "Declare runtime sandbox/egress/secrets engine-local (#847)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+  source_chg: "CHG-39"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-39"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-39; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 6
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-39/CHG-39.yaml + IPLAN-39.yaml"
+      description: "Authorizing vehicle (CHG-39 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/SECURITY_REVIEW.md"
+      description: "'Runtime boundary — engine-local' paragraph under Scope; rules/checklist/threats byte-identical"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.68.4 → 0.68.5 (E005 driver)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.4; sweep run produces the pin moves"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CHANGELOG.md + framework/CHANGELOG.md"
+      description: "New [0.68.5] sections (E008 driver)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only C1 with no test-file edits (F2.2): the change's cover is the conformance suite itself — no test pins SECURITY_REVIEW.md content (verified by grep over tests/, sdd_doc_lint/, hooks/), so the additive paragraph cannot green-shift a content check. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-39: 0 errors"
+    - "framework/VERSION reads 0.68.5; both changelogs carry [0.68.5]; sweep pin-only"
+    - "SECURITY_REVIEW.md diff is paragraph-only (rules 1-5, T1-T4, checklist identical)"
+    - "test_governance passes unmodified; tests/unit, tests/conformance, sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-39/CHG-39.yaml"
+    - "git diff -- framework/governance/SECURITY_REVIEW.md (expect paragraph-only addition)"
+    - "grep -n -i 'egress|allowlist|secret.*store' framework/governance/SECURITY_REVIEW.md (expect the new paragraph only)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git status --short (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Artifact-hygiene rules byte-identical (issue constraint)"
+  - "No normative runtime language (no formats, mechanisms, or interfaces prescribed)"
+  - "Frozen history intact (DECISIONS, TAGGING, archive/**)"
+  - "PATCH cut 0.68.5 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change"
+  - "Closes #847 on merge (PR body carries the keyword)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + paragraph + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-39"
+  upstream: ["Issue #847 triage note 2026-10-01"]
+  downstream: ["PR feature/847-runtime-security → dev"]

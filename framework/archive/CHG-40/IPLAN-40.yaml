@@ -19,7 +19,7 @@ metadata:
   document_type: "iplan-document"
   purpose: implementation
   last_updated: "2026-10-01"
-  framework_version: "0.68.4"
+  framework_version: "0.68.5"
   source_chg: "CHG-40"
 
 # =============================================================================
@@ -92,25 +92,25 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
-      description: "Principle 8 doc-of-record list (carries the 0.68.5 bump)"
+      description: "Principle 8 doc-of-record list (carries the 0.68.6 bump)"
       order: 8
       status: DONE
       session: 1
       verified: true
     - path: "framework/VERSION"
-      description: "Bump 0.68.4 → 0.68.5 (E005 driver)"
+      description: "Bump 0.68.5 → 0.68.6 (E005 driver)"
       order: 9
       status: DONE
       session: 1
       verified: true
     - path: "hooks/sync-version-refs.sh"
-      description: "OLD_VERSIONS gains 0.68.4; sweep run produces the pin moves"
+      description: "OLD_VERSIONS gains 0.68.5; sweep run produces the pin moves"
       order: 10
       status: DONE
       session: 1
       verified: true
     - path: "framework/CHANGELOG.md"
-      description: "New [0.68.5] section (new-E008 driver; stays live)"
+      description: "New [0.68.6] section (new-E008 driver; stays live)"
       order: 11
       status: DONE
       session: 1
@@ -123,7 +123,7 @@ tdd_consistency:
   strategy: "Docs batch with two test-file edits (F2.2): the edits' cover is the conformance suite itself — test_spec_gate passes with the intentional path repoint (spec-change-must-carry-a-changelog-entry obligation stands, only the path moves). Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
   cases:
     - "chg_lint.py over CHG-40: 0 errors"
-    - "framework/VERSION reads 0.68.5; framework/CHANGELOG.md carries [0.68.5]; root CHANGELOG.md is a tombstone; sweep pin-only"
+    - "framework/VERSION reads 0.68.6; framework/CHANGELOG.md carries [0.68.6]; root CHANGELOG.md is a tombstone; sweep pin-only"
     - "ls framework/ has no scripts/ or templates/; §4 list matches shipped shape"
     - "spec_gate.evaluate requires framework/CHANGELOG.md (root path alone fails)"
     - "test_spec_gate, tests/unit, tests/conformance, sdd_doc_lint/tests green"
@@ -152,7 +152,7 @@ implementation_contracts:
   - "Root log frozen as tombstone with documented query (founder scope: root only); framework/CHANGELOG.md stays live"
   - "E008 obligation stands — only the path moves (not a weakened check)"
   - "Frozen history intact (DECISIONS, TAGGING, archive/**, framework/CHANGELOG.md history)"
-  - "PATCH cut 0.68.5 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change"
+  - "PATCH cut 0.68.6 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change"
   - "Closes #835 and #836 on merge (PR body carries one keyword per issue)"
 
 # =============================================================================

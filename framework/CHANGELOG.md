@@ -11,16 +11,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.5 |
+| Framework Version | 0.68.6 |
 
 ---
 
-## [0.68.5] — 2026-10-01
+## [0.68.6] — 2026-10-01
 
-### Fixed — adaptation mirror-list fix + root-log tombstone with E008 repoint (C1 PATCH → 0.68.5, CHG-40 + IPLAN-40)
+### Fixed — adaptation mirror-list fix + root-log tombstone with E008 repoint (C1 PATCH → 0.68.6, CHG-40 + IPLAN-40)
 
 - `docs/ADAPTATION-GUIDE.md` §4: mirror list corrected to the shipped `framework/` shape (`governance/`, `layers/`, `playbooks/`, `registry/`, `skills/` — no `scripts/`, no `templates/`); consumers no longer author overrides shadowing nothing upstream (#835). Discovery rule untouched.
 - Root `CHANGELOG.md` frozen as a tombstone carrying the documented `gh` query for on-the-fly generation (founder scope: root log only); GATE-SPEC-E008 repointed at this file in `tests/chg/spec_gate.py` with `test_spec_gate.py` expectations updated in the same diff (obligation stands, only the path moves); `AGENTS.md` state table, `hooks/check-docs-updated.sh` `DOCS_OF_RECORD`, `CONTRIBUTING.md` matrix, and Principle 8 repointed with it (#836).
+- Sweep 0.68.5 → 0.68.6 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph (#847): LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are engine-local — each consuming platform declares and enforces its own; the spec sets no allowlist format, sandbox mechanism, or store interface, and conformance does not check them. Worktree isolation declared git-separation-only (no network/secret property implied).
+- Covering guard: no test pins `SECURITY_REVIEW.md` content (verified by grep over `tests/`, `sdd_doc_lint/`, `hooks/`); artifact rules 1–5, threats T1–T4, and the review checklist are byte-identical.
 - Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.4] — 2026-10-01

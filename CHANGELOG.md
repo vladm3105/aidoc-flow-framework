@@ -34,7 +34,7 @@ gh pr list -R vladm3105/aidoc-flow-framework --state merged --limit 100 \
 
 ## Last maintained state
 
-Final maintained release: `[0.68.4]` — 2026-10-01. Entries up to and
-including 0.68.4 are in git history (commit range ending at the CHG-40
-tombstone commit). For 0.68.5 onward, see `framework/CHANGELOG.md` for
+Final maintained release: `[0.68.5]` — 2026-10-01. Entries up to and
+including 0.68.5 are in git history (commit range ending at the CHG-40
+tombstone commit). For 0.68.6 onward, see `framework/CHANGELOG.md` for
 spec detail and the tracker queries above for project-level changes.

@@ -9,7 +9,7 @@ set (a PR / push diff), not from a static snapshot:
   GATE-SPEC-E008  framework/CHANGELOG.md must be updated alongside a
                     framework/** change (outside the frozen archive tier —
                     see below; the root log is a frozen tombstone since
-                    0.68.5/CHG-40, issue #836)
+                    CHG-40, issue #836)
 
 Archive tier: edits confined to ``framework/archive/**`` repair frozen history,
 not the normative spec, so they are not spec changes and carry no
