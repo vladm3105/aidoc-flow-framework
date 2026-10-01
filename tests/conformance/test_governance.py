@@ -36,6 +36,10 @@ EXPECTED_FILES = [
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
     "PROFILE-TEMPLATE.yaml",
+    # ENGINE_TELEMETRY.md added intentionally (CHG-38): vendor-neutral
+    # SHOULD telemetry guidance closing #845. Guard stands for it with
+    # all remaining files.
+    "ENGINE_TELEMETRY.md",
     "AUTHORING_STYLE.md",
     "LINT_RULES.md",
     "SEED_CONTRACT.md",

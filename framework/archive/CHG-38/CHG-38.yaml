@@ -1,0 +1,181 @@
+# =============================================================================
+#  CHG-38: Engine guidance gaps — vendor-neutral telemetry + live policy-update
+#  discipline (F2 direct, docs-only C1, one PR; closes #845 and #846)
+# =============================================================================
+#  Flow: F2 direct (issues #845 + #846, review-origin engine-guidance gaps;
+#  no prior IPLAN, no product-behavior change — two normative guidance
+#  paragraphs in framework/governance, no contract change to existing
+#  mechanics) — docs-only C1: C1 CHG + scoped IPLAN per F2.2; entry
+#  GATE-SPEC (touches framework/ itself per governance/README "Framework
+#  self-changes"). One vehicle: both fixes are governance-guidance
+#  paragraphs in the same area, same flow/level/gate, one PR.
+#  IPLAN: framework/archive/CHG-38/IPLAN-38.yaml (In Progress; no writes
+#  before that per §3.13 — vehicle authored first, guidance edits after).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (ADAPTATION.md §§5-6, ADAPTATION_SURFACE.yaml
+#  fallback lines, EVAL README, test_governance.py, test_spec_hygiene.py
+#  ENGINE_TOKENS, README table, GATE-SPEC E005/E008); exhaustive grep
+#  sweeps for opentelemetry/OTLP/gen_ai (zero live hits — archive-only)
+#  and live-update terms (no live discipline — "atomicity" hits unrelated);
+#  (2-4,6,10) N/A prose-only; (5) EARS/BDD IDs vacuous (no SDD contract
+#  at stake); (7) coupled issues: #845 + #846 ride this one vehicle;
+#  siblings #842 (DEFINITION_OF_DONE), #843/#844 (surface knobs) touch
+#  different files except a possible ADAPTATION.md merge overlap with
+#  #843 — noted as a merge-order risk, not a scope change; (8) covering
+#  tests: conformance suite itself is the cover (EXPECTED_FILES gains
+#  the new doc; parity/hygiene tests hold) plus full-suite regression
+#  battery; (9) fix located: 1 new doc + 1 ADAPTATION.md subsection +
+#  2 pin edits + version/changelog cut; (11) no SDD versioning —
+#  sdd_lifecycle []; (12) GOV-014 paired — artifacts_modified carries
+#  no SDD layer artifact (governance/*.md and the conformance test are
+#  not SDD layer artifacts); (13) SDD-first vacuous; (14) no code steps
+#  in CHG (legal phases only).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — normative prose only,
+#  no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  in worktree 2026-10-01; CHG-23/24/25/27/28 finding stands). Phase 0b:
+#  F2, omitted (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Out of scope: saga journaling (untouched per #845), load-time fallback
+#  semantics (untouched per #846), new surface knobs (sibling #843 owns
+#  the registry — this CHG adds no knob), EVAL verdict mechanics, any
+#  vendor SDK or backend mandate, DECISIONS/CHANGELOG/TAGGING history
+#  (frozen record, left intact), archive/** snapshots (immutable).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-38
+title: "Engine guidance: vendor-neutral telemetry + live policy-update discipline"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.70.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-38"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-38 authorizing record (framework/archive/CHG-38/IPLAN-38.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Close two engine-guidance gaps with normative SHOULD prose (one vehicle, one PR). #845: new framework/governance/ENGINE_TELEMETRY.md — vendor-neutral telemetry guidance (standard span/attribute names for attempt, usage, cost, gate verdict + CHG/IPLAN correlation IDs; backend-agnostic; no vendor SDK mandated; saga journaling untouched). #846: new ADAPTATION.md §5.1 — live policy-update discipline (validate-then-atomically-swap on profile change, schema-versioned policy via the existing schema_version field, never run on a half-parsed policy; engines MAY poll/watch, MUST keep last-good on invalid input; load-time fallback semantics untouched). Pins: test_governance EXPECTED_FILES gains the new doc (intentional spec change, justified here), governance README table gains its row. PATCH cut 0.70.1 (VERSION bump + sweep + framework changelog; root log frozen per CHG-40) per GATE-SPEC E005/E008."
+  why: "Engines emitting spans (attempts, token usage, cost, gate verdicts) cannot be mutually intelligible and traces cannot join CHG/IPLAN IDs across engines (#845); a hot-reloading long-lived engine has no live-update contract to conform to — load-time fallback reads as complete config governance while the live dimension is absent (#846)."
+  trigger: "Issues #845 and #846 (review origin, Rust harness spike, 2026-10-01)."
+  scope:
+    in:
+      - "NEW framework/governance/ENGINE_TELEMETRY.md (vendor-neutral SHOULD telemetry guidance; no SDK mandated; saga journaling untouched)"
+      - "framework/governance/ADAPTATION.md: new §5.1 live policy-update discipline (validate-then-swap, schema-versioned, keep-last-good; load-time fallback untouched; no new knob, no §4 section — knob parity holds)"
+      - "framework/governance/README.md: table row for ENGINE_TELEMETRY.md"
+      - "tests/conformance/test_governance.py: EXPECTED_FILES gains ENGINE_TELEMETRY.md (intentional spec change, justified here)"
+      - "framework/archive/CHG-38/CHG-38.yaml + IPLAN-38.yaml (this vehicle)"
+      - "framework/VERSION 0.70.0 → 0.70.1 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "framework/CHANGELOG.md [0.70.1] section (E008 driver; root CHANGELOG.md frozen per CHG-40)"
+    out:
+      - "Saga journaling (REVIEW_SAGA.md, saga.schema.json untouched)"
+      - "Load-time fallback semantics (ADAPTATION_SURFACE.yaml fallback lines + PROFILE-TEMPLATE untouched)"
+      - "New adaptation knobs (sibling #843 owns the registry)"
+      - "EVAL verdict mechanics, DEFINITION_OF_DONE.md (sibling #842 owns it)"
+      - "Any vendor SDK, backend, or platform mandate"
+      - "DECISIONS/TAGGING/plans/archive history (frozen record, intact)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-38 + IPLAN-38 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-38 + IPLAN-38"
+      status: Completed
+    - step: "Author ENGINE_TELEMETRY.md; add ADAPTATION.md §5.1; update README row + EXPECTED_FILES pin"
+      phase: "documentation_sync"
+      artifact: "1 new doc + 3 edits"
+      status: Completed
+    - step: "PATCH cut 0.70.1: VERSION bump + sync sweep (pin moves only) + framework changelog"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, CHANGELOG.md, framework/CHANGELOG.md"
+      status: Completed
+    - step: "Run IPLAN-38 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/845-846-engine-guidance → dev"
+      status: Not-Started
+  files_modified:
+    - "framework/archive/CHG-38/CHG-38.yaml"
+    - "framework/archive/CHG-38/IPLAN-38.yaml"
+    - "framework/governance/ENGINE_TELEMETRY.md (NEW)"
+    - "framework/governance/ADAPTATION.md"
+    - "framework/governance/README.md"
+    - "tests/conformance/test_governance.py"
+    - "framework/VERSION (0.70.0 → 0.70.1)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.70.0)"
+    - "framework/CHANGELOG.md ([0.70.1] section; root log frozen per CHG-40)"
+    - "Sweep fallout: mechanical 0.70.0 → 0.70.1 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-38"
+    changes: "Authorizing record for engine-guidance additions (this file)"
+  - id: "IPLAN-38"
+    changes: "Authorizing IPLAN (framework/archive/CHG-38/IPLAN-38.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-38 (0 errors)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.70.1, framework changelog carries [0.70.1]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "ADAPTATION.md §4 knob-section parity holds (no new §4 section, no new knob)"
+    - "No engine-specific tokens in new prose (test_spec_hygiene green)"
+    - "tests/conformance/test_governance.py passes with EXPECTED_FILES pin added"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/845-846-engine-guidance → dev"

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.0 |
+| Framework Version | 0.70.1 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -51,6 +51,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |
+| `ENGINE_TELEMETRY.md` | Vendor-neutral engine-telemetry guidance — standard span/attribute names (attempt, usage, cost, gate verdict + CHG/IPLAN correlation IDs), backend-agnostic, no SDK mandated. |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |

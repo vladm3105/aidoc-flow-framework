@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.0 |
+| Framework Version | 0.70.1 |
 
 ---
+
+## [0.70.1] — 2026-10-01
+
+### Added — engine guidance gaps: telemetry + live policy-update discipline (C1 PATCH → 0.70.1, CHG-38 + IPLAN-38)
+
+- NEW `framework/governance/ENGINE_TELEMETRY.md` (#845): vendor-neutral SHOULD telemetry guidance — `aidoc.attempt` / `aidoc.gate_verdict` spans, `gen_ai.*` usage attributes + `aidoc.*` cost/correlation attributes (`chg_id`, `iplan_id`, `eval_id`), backend-agnostic, no SDK mandated, no PII. Saga journaling and EVAL verdict mechanics untouched.
+- `framework/governance/ADAPTATION.md` §5.1 (#846): live policy-update discipline — validate-then-atomically-swap, schema-versioned active policy, keep-last-good on invalid input. Load-time fallback semantics and the closed knob registry untouched (no new knob, no new §4 section).
+- Covering guard: `tests/conformance/test_governance.py` EXPECTED_FILES gains the new doc (intentional spec change, justified in CHG-38); governance `README.md` table row added.
+- Sweep 0.70.0 → 0.70.1 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.70.0] — 2026-10-01
 
