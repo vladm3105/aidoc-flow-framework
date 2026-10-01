@@ -1,0 +1,100 @@
+# =============================================================================
+#  IPLAN-34: Post-tag docs refresh (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-34/CHG-34.yaml (F2 direct, C1,
+#  In-Progress). Source: founder release chain + pushed framework/v0.68.3.
+#  Docs-only C1: covering tests N/A with reason (F2.3); re-derivation
+#  commands are the verification; full suites are the regression battery.
+# =============================================================================
+
+doc_id: IPLAN-34
+title: "Post-tag docs refresh (TAGGING 0.68.3)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.3"
+  source_chg: "CHG-34"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-34"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-34; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 3
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-34/CHG-34.yaml + IPLAN-34.yaml"
+      description: "Authorizing vehicle (CHG-34 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "docs/TAGGING.md"
+      description: "Snapshot re-derived post-tag: v0.68.3 high-water, 77-of-133, 48/48 reads"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only C1: tests N/A with reason (F2.3). Every figure re-derived live against origin post-tag: held/tagged/untagged census, 48/48 exact-version tag reads, high-water + contiguity checks. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-34: 0 errors"
+    - "TAGGING figures match live re-derivation (133 / 77 / 48; contiguity through v0.68.3)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-34/CHG-34.yaml"
+    - "git ls-remote --tags origin | grep -o 'framework/v[0-9.]*' | sort -Vu | tail -2"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git diff --stat dev (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Re-derive discipline kept: one-liner + disclaimer intact, figures dated 2026-10-01"
+  - "No VERSION bump (version_action keep); no framework/ files touched"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + TAGGING refresh + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-34"
+  upstream: ["Founder release chain 2026-10-01", "Pushed framework/v0.68.3"]
+  downstream: ["PR feature/chg-34-tagging-0683 → dev", "release/0.68.3 → main"]
