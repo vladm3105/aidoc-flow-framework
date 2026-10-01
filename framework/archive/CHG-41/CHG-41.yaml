@@ -92,7 +92,7 @@ change_description:
       - "hooks/sync-version-refs.sh: four hardenings only (touched-list re-stage, -E discovery, -Z/NUL reads, EXIT trap)"
       - "tests/unit/test_sync_scripts.py: 4 new tests + umask + playbook-probe fixes"
       - "framework/archive/CHG-41/CHG-41.yaml + IPLAN-41.yaml (this vehicle)"
-      - "framework/CHANGELOG.md [Unreleased] entry (doc-of-record; root CHANGELOG.md frozen per CHG-40)"
+      - "No changelog entry: hooks-only change is not a spec change (GATE-SPEC not-a-spec-change path); root log frozen per CHG-40; record lives in this CHG + covering tests"
     out:
       - "Converter/write-path redesign (CHG-29 stands)"
       - "Swept patterns, expected counts, archive exclusion semantics"
@@ -131,7 +131,6 @@ implementation:
     - "framework/archive/CHG-41/IPLAN-41.yaml"
     - "hooks/sync-version-refs.sh"
     - "tests/unit/test_sync_scripts.py"
-    - "framework/CHANGELOG.md"
 
 artifacts_modified:
   - id: "CHG-41"

@@ -57,12 +57,12 @@ file_manifest:
       status: TODO
       session: 1
       verified: false
-    - path: "framework/CHANGELOG.md"
-      description: "Doc-of-record entry under Unreleased (no version change; root log frozen per CHG-40)"
+    - path: "framework/archive/CHG-41/CHG-41.yaml"
+      description: "Record the no-changelog-entry rationale (hooks-only, not-a-spec-change; root log frozen per CHG-40)"
       order: 3
-      status: TODO
+      status: done
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency

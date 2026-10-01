@@ -97,9 +97,7 @@ class SyncVersionRefsTests(unittest.TestCase):
         fixture = _fixture(current, stale)
         result = _run(fixture)
         self.assertEqual(result.returncode, 0, result.stderr)
-        pb = (fixture / "framework" / "playbooks" / "probe.md").read_text(
-            encoding="utf-8"
-        )
+        pb = (fixture / "framework" / "playbooks" / "probe.md").read_text(encoding="utf-8")
         self.assertIn(f'framework_spec_version: "{current}"', pb)
         self.assertNotIn(stale, pb)
 
@@ -116,17 +114,19 @@ class SyncVersionRefsTests(unittest.TestCase):
         fixture = _fixture(current, stale)
         unrelated = fixture / "framework" / "unrelated.md"
         unrelated.write_text("# Unrelated\n", encoding="utf-8")
-        git = lambda *args: subprocess.run(
-            ["git", *args],
-            cwd=fixture,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+
+        def git(*args):
+            return subprocess.run(
+                ["git", *args],
+                cwd=fixture,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
         git("init")
         git("add", "-A")
-        git("-c", "user.name=sync-test", "-c", "user.email=t@example.com",
-            "commit", "-qm", "init")
+        git("-c", "user.name=sync-test", "-c", "user.email=t@example.com", "commit", "-qm", "init")
         unrelated.write_text("# Unrelated\n# dirty hunk\n", encoding="utf-8")
         result = _run(fixture)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -158,8 +158,8 @@ class SyncVersionRefsTests(unittest.TestCase):
             "# BSD mimic: GNU BRE \\| alternation matches nothing without -E.\n"
             "hasE=0\ngnu=0\n"
             'for a in "$@"; do\n'
-            "  case \"$a\" in\n"
-            "    -*) case \"$a\" in *E*) hasE=1 ;; esac ;;\n"
+            '  case "$a" in\n'
+            '    -*) case "$a" in *E*) hasE=1 ;; esac ;;\n'
             "    *) case \"$a\" in *'\\|'*) gnu=1 ;; esac ;;\n"
             "  esac\n"
             "done\n"
@@ -226,11 +226,7 @@ class SyncVersionRefsTests(unittest.TestCase):
         try:
             deadline = time.time() + 20
             while time.time() < deadline:
-                litter = [
-                    p
-                    for p in fixture.rglob(".sync-*")
-                    if p.is_file()
-                ]
+                litter = [p for p in fixture.rglob(".sync-*") if p.is_file()]
                 if litter:
                     break
                 time.sleep(0.2)
@@ -247,9 +243,7 @@ class SyncVersionRefsTests(unittest.TestCase):
                 os.killpg(proc.pid, signal.SIGKILL)
                 proc.wait()
             proc.communicate()
-        self.assertEqual(
-            [p for p in fixture.rglob(".sync-*") if p.is_file()], []
-        )
+        self.assertEqual([p for p in fixture.rglob(".sync-*") if p.is_file()], [])
 
     def test_converter_failure_leaves_target_untouched(self):
         """Fail-closed (#821): a broken converter must not truncate the target.
