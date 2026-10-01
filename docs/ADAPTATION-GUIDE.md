@@ -64,12 +64,13 @@ authoring-time only) < project profile.
 ## 4. Add overrides that mirror the framework
 
 `project/` MUST mirror the framework's directory structure (`governance/`,
-`layers/`, `playbooks/`, `scripts/`, `templates/`, `registry/`) so the
+`layers/`, `playbooks/`, `registry/`, `skills/`) so the
 discovery rule resolves: when an agent reads a template, rule, or
 playbook, it checks `.aidoc/project/{same-path}` first and falls back to
 `.aidoc/framework/{same-path}`. Override only what the project genuinely
 changes; each override should cite the upstream file and the reason it
-diverges.
+diverges. (`framework/` ships no `scripts/` or `templates/` directories —
+do not create `project/` overrides for paths with no upstream counterpart.)
 
 ## 5. What never goes where
 

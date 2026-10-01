@@ -6,8 +6,10 @@ set (a PR / push diff), not from a static snapshot:
 
   GATE-SPEC-E005  framework/VERSION must change when any framework/** changes
                     (outside the frozen archive tier — see below)
-  GATE-SPEC-E008  CHANGELOG.md must be updated alongside a framework/** change
-                    (outside the frozen archive tier — see below)
+  GATE-SPEC-E008  framework/CHANGELOG.md must be updated alongside a
+                    framework/** change (outside the frozen archive tier —
+                    see below; the root log is a frozen tombstone since
+                    CHG-40, issue #836)
 
 Archive tier: edits confined to ``framework/archive/**`` repair frozen history,
 not the normative spec, so they are not spec changes and carry no
@@ -47,7 +49,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # conformance guard so the script can't drift out of sync with the gate def.
 CODES = {
     "GATE-SPEC-E005": "framework/VERSION must bump when framework/** changes",
-    "GATE-SPEC-E008": "CHANGELOG.md must be updated alongside a framework/** change",
+    "GATE-SPEC-E008": "framework/CHANGELOG.md must be updated alongside a framework/** change",
 }
 
 # Frozen history tier: repairing a dangling citation inside an already-archived
@@ -104,7 +106,7 @@ def evaluate(files: list[str]) -> list[str]:
     failures = []
     if "framework/VERSION" not in files:
         failures.append("GATE-SPEC-E005")
-    if "CHANGELOG.md" not in files:
+    if "framework/CHANGELOG.md" not in files:
         failures.append("GATE-SPEC-E008")
     return failures
 

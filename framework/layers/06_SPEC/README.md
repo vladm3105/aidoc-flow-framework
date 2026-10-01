@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.5 |
+| Framework Version | 0.68.6 |
 
 
 ## C4 Model Position
