@@ -86,7 +86,7 @@ change_control:
 # =============================================================================
 
 change_description:
-  summary: "Delete framework/governance/FRAMEWORK_FEEDBACK_LOG.md outright (title + thread table mislead sessions into logging findings in-file; stale references cause agent errors). Re-home the discipline inline: DOC_GOVERNANCE_CORE Principle 9 carries the tracker rule without pointer, SELF_LEARNING §7.4 drops the file round-trip, README table row removed, test_governance EXPECTED_FILES pin removed with justification."
+  summary: "Delete framework/governance/FRAMEWORK_FEEDBACK_LOG.md outright (title + thread table mislead sessions into logging findings in-file; stale references cause agent errors). Re-home the discipline with no contract change: Principle 9 self-contained via framework/skills/submit-feedback/, SELF_LEARNING §7.4 + README row repointed, GD-41 supersession appended, test_governance pin removed with justification. PATCH cut 0.68.4 (VERSION bump + sweep + both changelogs) per GATE-SPEC E005/E008."
   why: "Rewording keeps a misleading surface alive; every remaining reference is a future agent error (issue #840). The tracker is already the single surface since v2.0/CHG-23 — the file adds nothing but confusion."
   trigger: "User deletion request 2026-10-01 + issue #840 rescoped by comment."
   scope:
@@ -98,10 +98,12 @@ change_description:
       - "framework/governance/DECISIONS.md: one-line CHG-35 supersession appended to GD-41 (history intact)"
       - "tests/conformance/test_governance.py: EXPECTED_FILES pin removed (intentional spec change, justified here)"
       - "framework/archive/CHG-35/CHG-35.yaml + IPLAN-35.yaml (this vehicle)"
+      - "framework/VERSION 0.68.3 → 0.68.4 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "CHANGELOG.md + framework/CHANGELOG.md [0.68.4] sections (E008 driver)"
     out:
-      - "DECISIONS GD-41 history + CHANGELOG/TAGGING/plans history (frozen record, intact — GD-41 carries a CHG-35 supersession line)"
+      - "DECISIONS GD-41 history + TAGGING/plans/archive history (frozen record, intact — GD-41 carries a CHG-35 supersession line)"
       - "archive/** snapshots (immutable); thread-table content migration (dropped per requester)"
-      - "VERSION bump; any contract/behavior change"
+      - "Any contract/behavior change"
 
 # =============================================================================
 # Section 3: SDD Lifecycle
@@ -119,10 +121,14 @@ implementation:
       phase: "iplan_creation"
       artifact: "CHG-35 + IPLAN-35"
       status: Completed
-    - step: "Delete the file; re-home discipline in P9/SELF_LEARNING/README; update test pin"
+    - step: "Delete the file; re-home discipline in P9/SELF_LEARNING/README/DECISIONS; update test pin"
       phase: "documentation_sync"
-      artifact: "1 deletion + 4 edits"
-      status: In-Progress
+      artifact: "1 deletion + 5 edits"
+      status: Completed
+    - step: "PATCH cut 0.68.4: VERSION bump + sync sweep (pin moves only) + both changelogs"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, CHANGELOG.md, framework/CHANGELOG.md"
+      status: Completed
     - step: "Run IPLAN-35 battery + open PR to dev"
       phase: "documentation_sync"
       artifact: "PR feature/840-feedback-log-discipline → dev"
@@ -136,6 +142,10 @@ implementation:
     - "framework/governance/README.md"
     - "framework/governance/DECISIONS.md (append-only amendment)"
     - "tests/conformance/test_governance.py"
+    - "framework/VERSION (0.68.3 → 0.68.4)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.3)"
+    - "CHANGELOG.md + framework/CHANGELOG.md ([0.68.4] sections)"
+    - "Sweep fallout: mechanical 0.68.3 → 0.68.4 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
 
 artifacts_modified:
   - id: "CHG-35"
@@ -160,6 +170,8 @@ gate_approval:
 verification:
   gates:
     - "chg_lint.py over CHG-35 (0 errors)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.4, both changelogs carry [0.68.4]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
     - "Zero dangling references: grep FRAMEWORK_FEEDBACK_LOG over live tree (history-only hits allowed)"
     - "tests/conformance/test_governance.py passes with pin removed"
     - "python3 -m unittest discover -s tests/unit (green)"

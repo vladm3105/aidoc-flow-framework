@@ -25,6 +25,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   linters alone do not equal governed (18 Reserved rows have no emitter;
   reviewer-lens backstop); no new emitters, no reclassification
 
+## [0.68.4] — 2026-10-01
+
+### Fixed — eliminate feedback-log file; re-home discipline (C1 PATCH → 0.68.4, CHG-35 + IPLAN-35)
+
+- `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` deleted outright: its title + thread table misled live sessions into logging findings in-file (#840, real-use). Filing discipline re-homed with no contract change — Principle 9 self-contained via `framework/skills/submit-feedback/`, `SELF_LEARNING.md` §7.4 + governance `README.md` row repointed, GD-41 supersession appended, `test_governance.py` pin removed with justification.
+- Sweep 0.68.3 → 0.68.4 is pin moves only (verified zero non-pin lines outside the manifest).
+- Spec detail in `framework/CHANGELOG.md`; Closes #840.
+
 ## [0.68.3] — 2026-10-01
 
 ### Fixed — consumer copy-set + upgrade-path repair (C1 PATCH → 0.68.3, CHG-33 + IPLAN-33)

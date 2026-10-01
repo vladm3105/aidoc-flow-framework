@@ -31,7 +31,7 @@ document_control:
   last_updated: "2026-10-01T00:00:00Z"
   author: "Muse Code"
   complexity: 1
-  estimated_files: 7
+  estimated_files: 11
   session_count: 1
 
 # =============================================================================
@@ -81,6 +81,24 @@ file_manifest:
       status: DONE
       session: 1
       verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.68.3 → 0.68.4 (E005 driver)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.3; sweep run produces the pin moves"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CHANGELOG.md + framework/CHANGELOG.md"
+      description: "New [0.68.4] sections (E008 driver)"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -89,6 +107,7 @@ tdd_consistency:
   strategy: "Docs-only C1 with one test-file edit (F2.2): the edit's cover is the conformance suite itself — test_governance passes with the pin intentionally removed, guard standing for all remaining files. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
   cases:
     - "chg_lint.py over CHG-35: 0 errors"
+    - "framework/VERSION reads 0.68.4; both changelogs carry [0.68.4]; sweep pin-only"
     - "Zero dangling references: grep FRAMEWORK_FEEDBACK_LOG over live tree (history-only hits)"
     - "test_governance passes with pin removed; tests/unit, tests/conformance, sdd_doc_lint/tests green"
     - "PR checks green on the branch"
@@ -113,7 +132,7 @@ implementation_contracts:
   - "Manifest-closed: only listed files touched"
   - "No thread-table history migrated (per requester); tracker holds the threads"
   - "Frozen history intact (DECISIONS GD-41, CHANGELOG, TAGGING, archive/**)"
-  - "No VERSION bump (version_action keep); no contract/behavior change"
+  - "PATCH cut 0.68.4 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change"
   - "Closes #840 on merge (PR body carries the keyword)"
 
 # =============================================================================
