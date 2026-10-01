@@ -67,25 +67,25 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/governance/DECISIONS.md"
-      description: "GD-43 entry (newest-first, before GD-42) + Document Control refresh"
+      description: "GD-44 entry (newest-first, before GD-43) + Document Control refresh"
       order: 4
       status: DONE
       session: 1
       verified: true
     - path: "framework/VERSION"
-      description: "Bump 0.68.6 → 0.69.0 (MINOR driver)"
+      description: "Bump 0.69.0 → 0.70.0 (MINOR driver)"
       order: 5
       status: DONE
       session: 1
       verified: true
     - path: "hooks/sync-version-refs.sh"
-      description: "OLD_VERSIONS gains 0.68.6; sweep run produces the pin moves"
+      description: "OLD_VERSIONS gains 0.69.0; sweep run produces the pin moves"
       order: 6
       status: DONE
       session: 1
       verified: true
     - path: "framework/CHANGELOG.md"
-      description: "New [0.69.0] section (E008 driver; root log tombstoned per CHG-40)"
+      description: "New [0.70.0] section (E008 driver; root log tombstoned per CHG-40)"
       order: 7
       status: DONE
       session: 1
@@ -101,7 +101,7 @@ tdd_consistency:
     - "ADAPTATION_SURFACE.yaml parses; 15 unique knob names; closed-set prose intact"
     - "PROFILE-TEMPLATE.yaml documents all 15 knobs; header count reads 15"
     - "ADAPTATION.md carries ### 4.1–4.15 sections matching the 15 knob names"
-    - "framework/VERSION reads 0.69.0; framework/CHANGELOG.md carries [0.69.0]; sweep pin-only"
+    - "framework/VERSION reads 0.70.0; framework/CHANGELOG.md carries [0.70.0]; sweep pin-only"
     - "tests/conformance (incl. test_governance.py) green; tests/unit green; sdd_doc_lint/tests green"
     - "PR checks green on the branch"
 
@@ -126,7 +126,7 @@ implementation_contracts:
   - "Closed registry preserved: no existing knob renamed, retyped, or loosened; unknown-key ignore rule intact"
   - "Every new knob optional + bounded (type, range, default) with missing/malformed → default fallback"
   - "New knobs are caps/restrictions only — none weakens an existing gate (audit_threshold raise-only untouched)"
-  - "MINOR cut 0.69.0 (version_action keep: schema-compatible additive change); sweep fallout covered by sync-script entry; pin moves only"
+  - "MINOR cut 0.70.0 (version_action keep: schema-compatible additive change); sweep fallout covered by sync-script entry; pin moves only"
   - "Closes #843 and Closes #844 on merge (one keyword per issue in the PR body)"
 
 # =============================================================================
@@ -136,7 +136,7 @@ session_handoff:
   sessions:
     - session: 1
       status: In Progress
-      scope: "Vehicle + 8 knobs + 3-way parity + GD-43 + MINOR cut + battery + PR"
+      scope: "Vehicle + 8 knobs + 3-way parity + GD-44 + MINOR cut + battery + PR"
 
 # =============================================================================
 # Section 7: Traceability

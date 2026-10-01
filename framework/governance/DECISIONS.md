@@ -15,17 +15,17 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Last Updated | 2026-10-01 |
 | Author | Framework Maintainer |
-| Framework Version | 0.69.0 |
+| Framework Version | 0.70.0 |
 
 ---
 
-## GD-43 — Standard execution-policy + execution-attempt-budget knobs (CHG-37, 0.69.0 MINOR)
+## GD-44 — Standard execution-policy + execution-attempt-budget knobs (CHG-37, 0.70.0 MINOR)
 
-- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.68.6 → 0.69.0` (MINOR),
+- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.69.0 → 0.70.0` (MINOR),
   change-level **C2** (spec; additive optional knobs — no existing knob,
   registry rule, or gate touched; reviewer may escalate to C3).
   Vehicle: CHG-37 + IPLAN-37 (`framework/archive/CHG-37/`). Trigger: issues
@@ -55,6 +55,31 @@ Newest first. Timestamps are ISO 8601 UTC.
 - **Consequence:** execution limits and retry budgets become portable
   profile config; engines that cannot find a profile proceed on framework
   defaults per `ADAPTATION.md` §5.
+## GD-43 — EVAL verdicts bound to artifact bytes: the verification-binding contract (CHG-36, 0.69.0 MINOR)
+
+- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.68.6 → 0.69.0` (MINOR),
+  change-level **C2** (spec; one contract paragraph + this entry — no layer
+  template, registry, or API touched; reviewer may escalate to C3).
+  Vehicle: CHG-36 + IPLAN-36 (`framework/archive/CHG-36/`). Trigger: issue
+  #842 (P1 gap; EVAL verdicts not bound to artifact bytes).
+- **Context:** the EVAL gate records verdict + artifacts but never requires
+  the verdict to be bound to the exact artifact bytes evaluated, so any
+  conforming engine may legally pair a PASS with unexamined code. The gap is
+  an absence — all existing checks pass while the guarantee is missing — and
+  it surfaced only when an engine's safety case needed a spec rule to conform
+  to and none existed.
+- **Decision:** adopt the verification-binding contract as one engine-agnostic
+  paragraph in `DEFINITION_OF_DONE.md` (`Verification binding (EVAL
+  verdicts)`): every EVAL verdict MUST reference the content hash of the
+  artifact revision evaluated, and the engine trust boundary MUST make
+  forging that binding impossible without modifying the engine itself. The
+  mechanism (hash function, token shape, check location) stays engine-local;
+  no new layer; the verdict enum, the `Completed → Verified` flow, and
+  GATE-08 are unchanged.
+- **Consequence:** every current and future engine carries the same binding
+  rule; engines prove conformance with their own mechanism, and a future
+  linter check (EVAL reports carry artifact hashes) remains conceivable but
+  is not required by this decision.
 
 ---
 

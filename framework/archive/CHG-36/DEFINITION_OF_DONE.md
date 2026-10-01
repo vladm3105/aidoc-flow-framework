@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-10-01 |
+| Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.0 |
+| Framework Version | 0.68.6 |
 
 Engine-agnostic completion criteria for an SDD **artifact** and for a **change**
 to the spec. This is a *light contract*: it names *what must be true* before work
@@ -43,19 +43,6 @@ provenance + SemVer impact recorded (`major ⇒ C3`; additive may be C2; never C
 re-declared to match, the **conformance suite green**, and **human approval**
 obtained (a validator never grants approval — only a human signs; per GD-01).
 
-## Verification binding (EVAL verdicts)
-
-A verification verdict is **bound** to the exact artifact bytes evaluated:
-every EVAL report verdict (`PASS` / `PASS-WITH-NOTES` / `FAIL` / `BLOCKED`)
-MUST reference the content hash of the artifact revision the evaluation
-executed against, so a verdict can never legally pair with bytes it did not
-examine. The engine's trust boundary MUST make forging that binding —
-minting a verdict for unexamined bytes — impossible without modifying the
-engine itself. *How* the binding is constructed and enforced (hash function,
-token shape, where the check runs) is an engine-local mechanism, not part of
-this contract. No new SDD layer is introduced, and the verdict enum, the
-`Completed → Verified` flow, and GATE-08 are unchanged by this rule.
-
 ## Human-in-the-loop tier
 
 The level of required human sign-off scales with risk:
@@ -77,6 +64,3 @@ part of this contract.)*
 - `DOC_GOVERNANCE_CORE.md` — governance principles + the readiness-gate baseline.
 - `chg/gates/GATE-SPEC_FRAMEWORK.md` + `DECISIONS.md` (GD-01) — the spec-change gate.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
-- `../layers/10_EVAL/README.md` + `EVAL-REPORT-TEMPLATE.yaml` (§9 `verdict`,
-  §10 `evidence`, §11 `linkage`) — the verdict pipeline this binding rule
-  constrains; the binding itself is stated here, not in the templates.

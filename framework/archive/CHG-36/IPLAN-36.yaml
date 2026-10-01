@@ -1,0 +1,151 @@
+# =============================================================================
+#  IPLAN-36: Bind EVAL verdicts to artifact bytes (spec C2, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-36/CHG-36.yaml (spec source, C2,
+#  In-Progress; entry GATE-SPEC). Source: issue #842 (P1, gap; read back:
+#  issue body + comment thread state OPEN).
+#  Spec-additive C2 with no file-set change: covering test is the
+#  conformance suite itself (EXPECTED_FILES unchanged — no pin to move) plus
+#  a content assertion on the new contract paragraph; full suites are the
+#  regression battery.
+# =============================================================================
+
+doc_id: IPLAN-36
+title: "Bind EVAL verdicts to artifact bytes"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.6"
+  source_chg: "CHG-36"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-36"
+  subtype: combined
+  source_spec: "@spec: N/A (spec-source governance amendment under CHG-36; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 10
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-36/CHG-36.yaml + IPLAN-36.yaml"
+      description: "Authorizing vehicle (CHG-36 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-36/DEFINITION_OF_DONE.md"
+      description: "Pre-change snapshot of DEFINITION_OF_DONE v1.0 (CHG-L010 archive)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-36/DECISIONS.md"
+      description: "Pre-change snapshot of DECISIONS v1.4 (CHG-L010 archive)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-36/VERSION"
+      description: "Pre-change snapshot of framework/VERSION 0.68.6 (CHG-L010 archive)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DEFINITION_OF_DONE.md"
+      description: "New Verification binding section (v1.0 → v1.1) + cross-reference row"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "New GD-43 entry (v1.4 → v1.5)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.68.6 → 0.69.0 (E005 driver)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.6; sweep run produces the pin moves"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "New [0.69.0] section (E008 driver; root log tombstoned by CHG-40)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Spec-additive C2 with no file-set change (F2.2 analogue for spec source): the cover is the conformance suite itself — EXPECTED_FILES unchanged, guard standing for all files — plus a live content assertion that the binding paragraph exists and the untouched surfaces (verdict enum, Completed→Verified, GATE-08) are byte-identical. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-36: 0 errors"
+    - "framework/VERSION reads 0.69.0; framework/CHANGELOG.md carries [0.69.0]; sweep pin-only"
+    - "Binding paragraph present in DEFINITION_OF_DONE.md (artifact-hash reference + engine-trust-boundary rule)"
+    - "Untouched surfaces byte-identical: EVAL-REPORT-TEMPLATE.yaml verdict §9, 10_EVAL README workflow, GATE-08 gate file"
+    - "test_governance passes unchanged; tests/unit, tests/conformance, sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-36/CHG-36.yaml"
+    - "grep -n -i 'artifact hash' framework/governance/DEFINITION_OF_DONE.md"
+    - "git diff --stat (expect only manifest files)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git status --short (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Engine-agnostic: no hash function, token shape, or enforcement location prescribed"
+  - "No new SDD layer; no verdict-enum / Completed→Verified / GATE-08 change"
+  - "Frozen history intact (CHANGELOG entries appended, archive/** snapshots immutable)"
+  - "MINOR cut 0.69.0 (version_action upgrade: additive contract); sweep fallout covered by sync-script entry; pin moves only"
+  - "Closes #842 on merge (PR body carries the keyword)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + DoD binding section + GD-43 + version cut + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-36"
+  upstream: ["Issue #842 (P1, gap; real-use origin)"]
+  downstream: ["PR feature/842-eval-binding → dev"]
