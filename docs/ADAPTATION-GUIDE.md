@@ -37,8 +37,11 @@ follow it. The resulting shape:
 
 Canonical form: `.aidoc/framework/` is a symlink to the shared framework
 checkout (`AIDOC.md` § "Symlink convention"). One project in the wild
-instead keeps a version-pinned clone and updates it with
-`git pull origin main` inside `.aidoc/framework/`. Either form works if
+instead keeps a version-pinned copy. A pinned copy carries only the consumer
+allowlist (`docs/PROJECT.md` §7.1: `framework/`, `docs/`, `hooks/`,
+`sdd_doc_lint/`, `tests/`, minus `framework/archive/`) — never the whole
+canon tree — and is refreshed by repeating that copy, never by pulling
+inside `.aidoc/framework/`. Either form works if
 you keep these invariants:
 
 - Exactly one framework source per project; never copy framework files

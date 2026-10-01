@@ -41,6 +41,6 @@ jobs:
       # safe_to_replace:false — `--update` must never overwrite it.
       languages: '["actions","python"]'
       # No runner_labels override: this is a PUBLIC repo, so CI stays GitHub-hosted
-      # per CLAUDE.md's runner split (free minutes; a fork PR must not reach the host).
+      # (free minutes; a fork PR must not reach the host).
       # PRIVATE consumers override:
       # runner_labels: '["self-hosted", "ci-runner", "single-use"]'

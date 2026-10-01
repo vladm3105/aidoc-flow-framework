@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.2 |
+| Framework Version | 0.68.3 |
 
 ---
+
+## [0.68.3] — 2026-10-01
+
+### Fixed — consumer copy-set + upgrade-path repair (C1 PATCH → 0.68.3, CHG-33 + IPLAN-33)
+
+- `framework/governance/aidoc/UPGRADE-RUNBOOK.md` §2: pinned-copy consumers repeat the `docs/PROJECT.md` §7.1 allowlist copy at the new canon tree (never the whole tree) — the one normative change in this cut. Previously "replace the copy with the new canon tree" reintroduced the #834 leak on every upgrade.
+- Riding docs, no bump on their own (#834): `docs/PROJECT.md` §7 allowlist procedure + corrected trees; `docs/ADAPTATION-GUIDE.md` §2 pinned-copy pointer; `AGENTS.md` absorbs the retired `CLAUDE.md` as the sole working agreement with pointer sync (CODEOWNERS, labeler, PR template, workflow comments, hooks, phantom guard).
+- Covering guard: `tests/conformance/test_consumer_manifest.py` locks the documented copy set (red pre-fix, green post-fix) plus an end-to-end /tmp proof of the §7.1 procedure.
+- Sweep 0.68.2 → 0.68.3 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.2] — 2026-09-30
 

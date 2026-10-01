@@ -15,8 +15,8 @@
 metadata:
   schema_version: "1.0.0"
   authority: "framework/governance/ADAPTATION.md"
-  last_updated: "2026-09-30"
-  framework_version: "0.68.2"
+  last_updated: "2026-10-01"
+  framework_version: "0.68.3"
   framework_path: ".aidoc/framework"  # no vendored engine here; spec lives at framework/
 
 # This repo overrides exactly one knob (CHG-30): ci_bindings. Every other

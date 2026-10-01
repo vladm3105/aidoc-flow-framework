@@ -1,0 +1,195 @@
+# =============================================================================
+#  CHG-33: PATCH 0.68.2 → 0.68.3 (consumer copy-set repair + upgrade-path repair)
+#  (F2 direct, C1, one PR; tag + promotion follow)
+# =============================================================================
+#  Flow: F2 direct (human requests "fix the new-project file leak" (#834),
+#  "check UPGRADE-RUNBOOK" for the same leak, and "commit and push, create
+#  a PR" (2026-10-01); one normative repair — UPGRADE-RUNBOOK.md §2 pinned-copy
+#  bullet pointed consumers at "the new canon tree" whole, reintroducing the
+#  #834 leak on every upgrade — plus riding docs/test content, no
+#  product-behavior change) — C1: C1 CHG + scoped IPLAN per F2.2; entry
+#  GATE-CODE. Precedent: CHG-31 (PATCH release cut carrying its own bump).
+#  IPLAN: framework/archive/CHG-33/IPLAN-33.yaml (In Progress; no writes
+#  outside its file_manifest per §3.13).
+#  Requester citation: user turns 2026-10-01 — real-use bug report (new
+#  project shipped .agents/.aidoc/.github/framework-archive/CONTRIBUTING/
+#  CHANGELOG) → issue #834 (filed, read back); follow-up "check
+#  UPGRADE-RUNBOOK.md also avoiding copy of the framework internal files";
+#  then "commit and push, create a PR".
+#  version_action: keep = no MINOR/MAJOR upgrade story (CHG-27/31 precedent);
+#  the PATCH bump 0.68.2 → 0.68.3 rides explicitly in scope below, driven by
+#  the single normative repair (E005).
+#  Riding content (disclosed, no bump on their own): #834 docs repair
+#  (docs/PROJECT.md §7 allowlist + §7.2 tree, docs/ADAPTATION-GUIDE.md §2
+#  pointer) + new tests/conformance/test_consumer_manifest.py guard +
+#  CLAUDE.md retirement into AGENTS.md with pointer sync (CODEOWNERS,
+#  labeler, PR template, two workflow comments, check-docs-updated.sh,
+#  test_phantom_paths.py).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — release mechanics + docs/test only (bump + logs + sweep +
+#  contract prose), no app surface. Cross-referenced: UPGRADE-RUNBOOK.md §2
+#  against PROJECT.md §7 (the divergence being repaired); EARS/BDD IDs
+#  vacuous (upstream is the user request + #834).
+#  SECURITY_REVIEW: assessed — no executable content beyond the swept pins
+#  and the new conformance guard (assertions only).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: new test_consumer_manifest.py (red pre-fix, green
+#  post-fix) + end-to-end /tmp proof of §7.1; release mechanics covered by
+#  the battery (sweep-diff review + full suites).
+#  Tag: framework/v0.68.3 cut on the dev merge commit AFTER merge (target
+#  must read 0.68.3 — verified pre-push, never aspirational); named push
+#  only, never --tags/--force (TAGGING.md convention).
+#  TAGGING refresh is NOT in this vehicle (figures re-derived only after
+#  the tag push — separate micro-vehicle, #822 precedent).
+#  Promotion is NOT in this vehicle (release/0.68.3 → main PR opened
+#  after, merged by the founder — #825 precedent).
+#  Out of scope: #835 (§4 mirror-list staleness — separate issue, separate
+#  fix); any MINOR/MAJOR bump; GitHub Release object (tags ship without
+#  Releases per standing convention); project stream v-bump (project log
+#  mirrors the spec release, same version).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-33
+title: "PATCH 0.68.2 → 0.68.3 (consumer copy-set + upgrade-path repair, #834)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.2"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-33"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-33 authorizing record (framework/archive/CHG-33/IPLAN-33.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Cut PATCH release 0.68.3: repair UPGRADE-RUNBOOK.md §2 pinned-copy bullet to the §7.1 allowlist (the E005 driver); bump framework/VERSION, extend OLD_VERSIONS with 0.68.2, run the pin sweep, cut [0.68.3] sections in both CHANGELOGs. Rides #834 docs repair + manifest guard + CLAUDE.md retirement (disclosed, no bump on their own). Tag + TAGGING refresh + promotion follow as sequenced follow-ups, not this diff."
+  why: "Issue #834 (real-use): new projects ship canon-dev internals through the §7.1 denylist, and the upgrade runbook would reintroduce them on every re-adoption. The runbook repair is normative, so it must ride a versioned cut."
+  trigger: "Human requests 2026-10-01: fix the new-project file leak (#834), check UPGRADE-RUNBOOK for the same leak, commit and push with a PR."
+  scope:
+    in:
+      - "framework/governance/aidoc/UPGRADE-RUNBOOK.md: §2 pinned-copy bullet → §7.1 allowlist reference (normative repair, E005 driver)"
+      - "framework/VERSION: 0.68.2 → 0.68.3"
+      - "hooks/sync-version-refs.sh: OLD_VERSIONS gains 0.68.2 (sweep source for the bump)"
+      - "Swept pins 0.68.2 → 0.68.3 via the hook (mechanically produced, verified by diff)"
+      - "framework/CHANGELOG.md: new [0.68.3] section"
+      - "CHANGELOG.md: new [0.68.3] section mirroring (Scope #687)"
+      - ".aidoc/profile.yaml: declared framework_version follows the bump"
+      - "Riding (disclosed): docs/PROJECT.md §7 + §7.2, docs/ADAPTATION-GUIDE.md §2, tests/conformance/test_consumer_manifest.py (#834)"
+      - "Riding (disclosed): CLAUDE.md retirement into AGENTS.md + pointer sync (CODEOWNERS, labeler, PR template, codeql/pin-currency comments, check-docs-updated.sh, test_phantom_paths.py)"
+      - "framework/archive/CHG-33/CHG-33.yaml + IPLAN-33.yaml (this vehicle)"
+    out:
+      - "Tag cut/push (post-merge, pre-push verified — sequenced follow-up)"
+      - "TAGGING.md refresh (post-tag micro-vehicle, #822 precedent)"
+      - "Promotion PR release/0.68.3 → main (founder-merged, #825 precedent)"
+      - "#835 (§4 mirror-list staleness — separate issue, separate fix)"
+      - "Normative spec edits beyond the runbook bullet; MINOR/MAJOR bump; GitHub Release object"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-33 + IPLAN-33 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-33 + IPLAN-33"
+      status: Completed
+    - step: "Repair runbook §2 + bump VERSION + OLD_VERSIONS + sweep + both [0.68.3] sections + profile follow"
+      phase: "release_cut"
+      artifact: "framework/ tree + changelogs"
+      status: In-Progress
+    - step: "Run IPLAN-33 battery (manifest guard + suites + sweep review) + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/834-consumer-copy-guard → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-33/CHG-33.yaml"
+    - "framework/archive/CHG-33/IPLAN-33.yaml"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+    - "framework/CHANGELOG.md"
+    - "CHANGELOG.md"
+    - ".aidoc/profile.yaml"
+    - "docs/PROJECT.md"
+    - "docs/ADAPTATION-GUIDE.md"
+    - "tests/conformance/test_consumer_manifest.py"
+    - "AGENTS.md"
+    - "CLAUDE.md"
+    - ".github/CODEOWNERS"
+    - ".github/PULL_REQUEST_TEMPLATE.md"
+    - ".github/labeler.yml"
+    - ".github/workflows/codeql.yml"
+    - ".github/workflows/pin-currency-reader.yml"
+    - "hooks/check-docs-updated.sh"
+    - "tests/conformance/test_phantom_paths.py"
+
+artifacts_modified:
+  - id: "CHG-33"
+    changes: "Authorizing record for 0.68.3 cut (this file)"
+  - id: "IPLAN-33"
+    changes: "Authorizing IPLAN (framework/archive/CHG-33/IPLAN-33.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-33 (0 errors)"
+    - "test_consumer_manifest.py green (was red pre-fix) + /tmp end-to-end proof of §7.1"
+    - "Sweep diff contains only 0.68.2 → 0.68.3 pin moves (no stragglers)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/834-consumer-copy-guard → dev"
