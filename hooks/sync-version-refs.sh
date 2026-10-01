@@ -69,6 +69,8 @@ replace_in_file_counted() {
   # then BSD flags, and a failed chmod aborts loud before the rename.
   local tmp
   tmp="$(mktemp "$(dirname "$path")/.sync-XXXXXX")"
+  # Track every same-dir temp for the EXIT trap below (kill-safe cleanup).
+  _sync_tmps+=("$tmp")
   if ! python3 - "$path" "$old" "$new" "$tmp" <<'EOF'
 import sys
 path, old, new, tmp = sys.argv[1:5]
@@ -87,10 +89,28 @@ EOF
     return 1
   fi
   rm -f "$tmp"
+  # Record the rewrite for the scoped re-stage below (#830-1): only paths
+  # reaching this line were byte-changed by this run.
+  touched+=("$rel")
   echo "sync-version-refs: $rel — replaced $actual occurrence(s)"
 }
 
 rc=0
+
+# Same-dir temps must never litter the tree on a killed run (#830-4): a
+# function-scoped `rm -f` covers every coded return, and this EXIT trap
+# covers death by signal (TERM/INT) mid-conversion. `rm -f` tolerates temps
+# the success path already removed or renamed away; the guard preserves the
+# script exit status.
+_sync_tmps=()
+_sync_cleanup() {
+  [ "${#_sync_tmps[@]}" -gt 0 ] && rm -f -- "${_sync_tmps[@]}" || true
+}
+trap _sync_cleanup EXIT
+
+# Repo-relative paths this run actually rewrote — the re-stage below is
+# scoped to exactly these (#830-1), never `git add -u`.
+touched=()
 sweep() {
   replace_in_file_counted "$@" || rc=1
 }
@@ -108,35 +128,48 @@ ARCHIVE_EXCL="archive/CHG-"
 OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1 0.68.2 0.68.3 0.68.4 0.68.5 0.68.6 0.69.0 0.70.0"
 
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
-while IFS= read -r f; do
+# NUL-delimited throughout (#830-3): a newline in a filename must not split
+# one path into two bogus `$rel` values hitting the `skip (absent)` branch.
+while IFS= read -r -d '' f; do
   rel="${f#"$REPO_ROOT"/}"
   for old in $OLD_VERSIONS; do
     sweep "$rel" "framework_spec_version: \"$old\"" "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
   done
-done < <(grep -rl 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbooks/" 2>/dev/null || true)
+done < <(grep -rlZ 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbooks/" 2>/dev/null || true)
 
 # --- framework metadata + document-control rows (archive excluded — see above) ---
+# Portable ERE alternation (#830-2): the old BRE `\|` join matched nothing
+# under BSD grep (no `-E` on the call), a silent local no-op on macOS.
+# `grep -rlE` with `|` matches the same language on GNU and BSD.
 _meta_pat=""
 for old in $OLD_VERSIONS; do
-  [ -n "$_meta_pat" ] && _meta_pat="${_meta_pat}\\|"
-  _meta_pat="${_meta_pat}framework_version: \"${old}\"\\|| Framework Version | ${old} |"
+  [ -n "$_meta_pat" ] && _meta_pat="${_meta_pat}|"
+  _meta_pat="${_meta_pat}framework_version: \"${old}\"|| Framework Version | ${old} |"
 done
-while IFS= read -r f; do
+while IFS= read -r -d '' f; do
   rel="${f#"$REPO_ROOT"/}"
+  # Archive exclusion lives here rather than in a `grep -v` stage: a
+  # line-oriented filter cannot sift NUL-delimited bytes (one match would
+  # drop the whole stream). Same semantics — archive/ paths are skipped.
+  case "$rel" in *"$ARCHIVE_EXCL"*) continue;; esac
   for old in $OLD_VERSIONS; do
     sweep "$rel" "framework_version: \"$old\"" "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
     sweep "$rel" "| Framework Version | $old |" "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
   done
-done < <(grep -rl "$_meta_pat" "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
+done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" 2>/dev/null || true)
 
 if [ "$rc" -ne 0 ]; then
   echo "sync-version-refs: one or more files refused (see above)" >&2
   exit 1
 fi
 
-# Re-stage what the bump touched when run as a pre-commit hook.
+# Re-stage exactly what the bump touched when run as a pre-commit hook
+# (#830-1): `git add -u` staged every unstaged tracked modification
+# repo-wide, silently folding unauthorized hunks into the VERSION commit.
 if git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  git -C "$REPO_ROOT" add -u 2>/dev/null || true
+  if [ "${#touched[@]}" -gt 0 ]; then
+    git -C "$REPO_ROOT" add -- "${touched[@]}" 2>/dev/null || true
+  fi
 fi
 
 echo "sync-version-refs: done (framework version propagated)"
