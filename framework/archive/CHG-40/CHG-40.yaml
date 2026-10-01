@@ -1,0 +1,194 @@
+# =============================================================================
+#  CHG-40: Fix ADAPTATION-GUIDE §4 mirror list (#835) + tombstone root
+#  CHANGELOG with documented gh query and repoint E008 (#836)
+#  (F2 direct, docs-only C1 batch, one PR)
+# =============================================================================
+#  Flow: F2 direct (delegated workflow request 2026-10-01 citing issues
+#  #835 + #836; no prior IPLAN, no product-behavior change — docs/governance
+#  prose + CI-gate path repoint + hook list, no contract change to any SDD
+#  layer) — docs batch C1: C1 CHG + scoped IPLAN per F2.2; entry GATE-SPEC
+#  (touches framework/ itself per governance/README "Framework self-changes":
+#  DOC_GOVERNANCE_CORE.md Principle 8).
+#  IPLAN: framework/archive/CHG-40/IPLAN-40.yaml (In Progress; no writes
+#  before that per §3.13 — vehicle authored first, edits after).
+#  Requester citation: workflow child request "Fix issues #835 (P3 docs-only)
+#  + #836 (park condition CLEARED ...)" (2026-10-01); both issues OPEN,
+#  both claims re-verified live on origin/dev 2026-10-01 before authoring.
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (ADAPTATION-GUIDE §4, framework/ listing,
+#  spec_gate.py E008, test_spec_gate.py, AGENTS.md state table,
+#  check-docs-updated.sh DOCS_OF_RECORD, CONTRIBUTING.md matrix,
+#  DOC_GOVERNANCE_CORE Principle 8, both changelogs, GATE_ERROR_CATALOG +
+#  GATE-SPEC_FRAMEWORK.md E008 rows, chg-gate.yml, docs/PROJECT.md E008
+#  prose, all tests referencing CHANGELOG); (2-4,6,10) N/A prose-only;
+#  (5) EARS/BDD IDs vacuous (no SDD contract at stake); (7) coupled issues:
+#  #835 + #836 only — no second vehicle; (8) covering tests: conformance
+#  suite itself is the cover — test_spec_gate expectations updated in the
+#  same diff (intentional gate-path change, not a weakened check: the
+#  spec-change-must-carry-a-changelog-entry obligation stands, only the
+#  path moves); (9) fix located: 1 ADAPTATION-GUIDE edit + 1 tombstone +
+#  1 gate repoint + 1 gate-test update + 4 prose updates + PATCH cut;
+#  (11) no SDD versioning — sdd_lifecycle []; (12) GOV-014 paired —
+#  artifacts_modified carries no SDD layer artifact (governance/*.md,
+#  docs/, root files, hook, and conformance tests are not SDD layer
+#  artifacts); (13) SDD-first vacuous; (14) no code steps in CHG (legal
+#  phases only).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose edits + a filename
+#  string in a CI gate script + hook list membership only, no executable
+#  content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  in worktree 2026-10-01; CHG-23/24/25/27/28 finding stands). Phase 0b:
+#  F2, omitted (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Out of scope: GATE_ERROR_CATALOG + GATE-SPEC_FRAMEWORK.md E008 rows
+#  (basename-generic "`CHANGELOG.md`", still satisfied by
+#  framework/CHANGELOG.md — considered, deliberately untouched);
+#  docs/PROJECT.md E008 prose (basename-generic, untouched);
+#  ADAPTATION-GUIDE §1 scaffold tree (same phantom class as §4 —
+#  deliberately left for a follow-up; §4-only fix per issue fix shape);
+#  DOC_GOVERNANCE_CORE Principle 8 scripts/ paths (stale vs hooks/ —
+#  unrelated defect, untouched); archive/** snapshots (immutable).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-40
+title: "ADAPTATION-GUIDE §4 mirror-list fix + root CHANGELOG tombstone and E008 repoint"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.5"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-40"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-40 authorizing record (framework/archive/CHG-40/IPLAN-40.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Two doc defects, one vehicle. (#835) Correct docs/ADAPTATION-GUIDE.md §4 mirror list to the shipped framework/ shape (governance/, layers/, playbooks/, registry/, skills/ — no scripts/, no templates/); discovery rule untouched. (#836) Freeze root CHANGELOG.md as a tombstone carrying the documented gh query for on-the-fly generation (founder decision 2026-10-01); repoint GATE-SPEC-E008 at framework/CHANGELOG.md in tests/chg/spec_gate.py with test_spec_gate.py expectations updated in the same diff; update AGENTS.md state table, hooks/check-docs-updated.sh DOCS_OF_RECORD, CONTRIBUTING.md matrix, DOC_GOVERNANCE_CORE.md Principle 8. PATCH cut 0.68.6 (VERSION bump + sweep + framework/CHANGELOG.md entry; root tombstone replaces its own entry) per GATE-SPEC E005/E008."
+  why: "#835: consumers following §4 create project/scripts/ and project/templates/ overrides that shadow nothing upstream while the discovery rule silently falls through. #836: hand-maintaining the root log per-PR costs tokens and time while GitHub issues already track almost every change (founder decision 2026-10-01, scope root log only)."
+  trigger: "Delegated workflow request 2026-10-01 citing issues #835 (found fixing #834) + #836 (park condition CLEARED: framework/CHANGELOG.md shows 0.68.4 shipped, 0.68.3 landed — verified live)."
+  scope:
+    in:
+      - "docs/ADAPTATION-GUIDE.md §4: mirror list corrected to shipped shape (discovery rule untouched)"
+      - "CHANGELOG.md: frozen tombstone (title + superseded #687 scope note + documented gh query + pointer to framework/CHANGELOG.md); no further per-PR entries"
+      - "tests/chg/spec_gate.py: E008 repointed at framework/CHANGELOG.md (docstrings + CODES + evaluate)"
+      - "tests/conformance/test_spec_gate.py: expectations updated to the repointed path (intentional gate-path change, obligation stands)"
+      - "AGENTS.md: state-table Changelog row (root tombstone + live framework log)"
+      - "hooks/check-docs-updated.sh: DOCS_OF_RECORD drops frozen root log"
+      - "CONTRIBUTING.md: matrix Framework-spec row + warning-hook doc list repointed at framework/CHANGELOG.md"
+      - "framework/governance/DOC_GOVERNANCE_CORE.md: Principle 8 doc-of-record list (framework/ edit — carries this vehicle's bump)"
+      - "framework/archive/CHG-40/CHG-40.yaml + IPLAN-40.yaml (this vehicle)"
+      - "framework/VERSION 0.68.5 → 0.68.6 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "framework/CHANGELOG.md [0.68.6] section (new-E008 driver; stays the live record)"
+    out:
+      - "GATE_ERROR_CATALOG + GATE-SPEC_FRAMEWORK.md E008 rows (basename-generic, still satisfied — considered, untouched)"
+      - "docs/PROJECT.md E008 prose (basename-generic, untouched)"
+      - "ADAPTATION-GUIDE §1 scaffold tree (same phantom class — follow-up, not this vehicle)"
+      - "Principle 8 scripts/ paths (unrelated staleness, untouched)"
+      - "archive/** snapshots (immutable); framework/CHANGELOG.md history (live, appended not rewritten)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-40 + IPLAN-40 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-40 + IPLAN-40"
+      status: Completed
+    - step: "Apply §4 mirror-list fix, root tombstone, E008 repoint + gate-test update, 4 prose updates"
+      phase: "documentation_sync"
+      artifact: "9 edits"
+      status: In-Progress
+    - step: "PATCH cut 0.68.6: VERSION bump + sync sweep (pin moves only) + framework/CHANGELOG.md entry"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, framework/CHANGELOG.md, CHANGELOG.md (tombstone)"
+      status: In-Progress
+    - step: "Run IPLAN-40 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/835-836-docs → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-40/CHG-40.yaml"
+    - "framework/archive/CHG-40/IPLAN-40.yaml"
+    - "docs/ADAPTATION-GUIDE.md (§4 mirror list)"
+    - "CHANGELOG.md (tombstone)"
+    - "tests/chg/spec_gate.py (E008 repoint)"
+    - "tests/conformance/test_spec_gate.py (repointed expectations)"
+    - "AGENTS.md (state-table Changelog row)"
+    - "hooks/check-docs-updated.sh (DOCS_OF_RECORD)"
+    - "CONTRIBUTING.md (matrix row + warning-hook doc list)"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md (Principle 8)"
+    - "framework/VERSION (0.68.5 → 0.68.6)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.5)"
+    - "framework/CHANGELOG.md ([0.68.6] section)"
+    - "Sweep fallout: mechanical 0.68.5 → 0.68.6 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-40"
+    changes: "Authorizing record for §4 fix + changelog tombstone/E008 repoint (this file)"
+  - id: "IPLAN-40"
+    changes: "Authorizing IPLAN (framework/archive/CHG-40/IPLAN-40.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-40 (0 errors)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.6, framework/CHANGELOG.md carries [0.68.6], root CHANGELOG.md tombstoned (in-diff, satisfying pre-merge E008)"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "Zero dangling E008 references to the root path: grep '\"CHANGELOG.md\"' over tests/chg + conformance (history-only hits allowed)"
+    - "tests/conformance/test_spec_gate.py passes with repointed expectations"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/835-836-docs → dev"

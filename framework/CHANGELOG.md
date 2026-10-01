@@ -24,7 +24,15 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 - `ADAPTATION.md`: §4 header count 7 → 15; new §§4.8–4.15 rationale (one per knob).
 - `DECISIONS.md`: GD-43 entry (bounds + vehicle + caps-only rationale); doc Version 1.4 → 1.5.
 - Covering guard: `tests/conformance/test_governance.py` parity tests (`well_formed` + `covers_surface_knobs`) pass with the 8 intentional additions — the tests enforce the three-way sync, so a missed row fails loudly.
-- Sweep 0.68.5 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+- Sweep 0.68.6 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.6] — 2026-10-01
+
+### Fixed — adaptation mirror-list fix + root-log tombstone with E008 repoint (C1 PATCH → 0.68.6, CHG-40 + IPLAN-40)
+
+- `docs/ADAPTATION-GUIDE.md` §4: mirror list corrected to the shipped `framework/` shape (`governance/`, `layers/`, `playbooks/`, `registry/`, `skills/` — no `scripts/`, no `templates/`); consumers no longer author overrides shadowing nothing upstream (#835). Discovery rule untouched.
+- Root `CHANGELOG.md` frozen as a tombstone carrying the documented `gh` query for on-the-fly generation (founder scope: root log only); GATE-SPEC-E008 repointed at this file in `tests/chg/spec_gate.py` with `test_spec_gate.py` expectations updated in the same diff (obligation stands, only the path moves); `AGENTS.md` state table, `hooks/check-docs-updated.sh` `DOCS_OF_RECORD`, `CONTRIBUTING.md` matrix, and Principle 8 repointed with it (#836).
+- Sweep 0.68.5 → 0.68.6 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.5] — 2026-10-01
 

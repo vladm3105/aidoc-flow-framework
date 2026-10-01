@@ -73,19 +73,19 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/VERSION"
-      description: "Bump 0.68.5 → 0.69.0 (MINOR driver)"
+      description: "Bump 0.68.6 → 0.69.0 (MINOR driver)"
       order: 5
       status: DONE
       session: 1
       verified: true
     - path: "hooks/sync-version-refs.sh"
-      description: "OLD_VERSIONS gains 0.68.5; sweep run produces the pin moves"
+      description: "OLD_VERSIONS gains 0.68.6; sweep run produces the pin moves"
       order: 6
       status: DONE
       session: 1
       verified: true
-    - path: "CHANGELOG.md + framework/CHANGELOG.md"
-      description: "New [0.69.0] sections (E008 driver)"
+    - path: "framework/CHANGELOG.md"
+      description: "New [0.69.0] section (E008 driver; root log tombstoned per CHG-40)"
       order: 7
       status: DONE
       session: 1
@@ -101,7 +101,7 @@ tdd_consistency:
     - "ADAPTATION_SURFACE.yaml parses; 15 unique knob names; closed-set prose intact"
     - "PROFILE-TEMPLATE.yaml documents all 15 knobs; header count reads 15"
     - "ADAPTATION.md carries ### 4.1–4.15 sections matching the 15 knob names"
-    - "framework/VERSION reads 0.69.0; both changelogs carry [0.69.0]; sweep pin-only"
+    - "framework/VERSION reads 0.69.0; framework/CHANGELOG.md carries [0.69.0]; sweep pin-only"
     - "tests/conformance (incl. test_governance.py) green; tests/unit green; sdd_doc_lint/tests green"
     - "PR checks green on the branch"
 

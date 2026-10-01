@@ -44,8 +44,9 @@
 #  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
 #  in worktree 2026-10-01; CHG-23/24/25/27/28 finding stands). Phase 0b:
 #  not F3, omitted (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
-#  Rebase note 2026-10-01: CHG-39 (0.68.5 PATCH) merged underneath this branch;
-#  pre-change base moved 0.68.4 → 0.68.5 (lifecycle current_version, supersedes,
+#  Rebase notes 2026-10-01: CHG-39 (0.68.5 PATCH) then CHG-40 (0.68.6 PATCH)
+#  merged underneath this branch; pre-change base moved 0.68.4 → 0.68.5 → 0.68.6
+#  (lifecycle current_version, supersedes,
 #  snapshots, and sweep base re-pointed; metadata framework_version keeps the
 #  0.68.4 creation record). Vehicle intent unchanged.
 #  Out of scope: REVIEW_SAGA.md/EVAL machinery (review-loop budgets stand
@@ -90,11 +91,11 @@ change_control:
   date_approved: "2026-10-01T00:00:00Z"
   date_implemented: null
   supersedes:
-    - "adaptation surface v0.68.5 (framework/archive/CHG-37/ADAPTATION_SURFACE.yaml)"
-    - "profile template v0.68.5 (framework/archive/CHG-37/PROFILE-TEMPLATE.yaml)"
-    - "adaptation prose v0.68.5 (framework/archive/CHG-37/ADAPTATION.md)"
+    - "adaptation surface v0.68.6 (framework/archive/CHG-37/ADAPTATION_SURFACE.yaml)"
+    - "profile template v0.68.6 (framework/archive/CHG-37/PROFILE-TEMPLATE.yaml)"
+    - "adaptation prose v0.68.6 (framework/archive/CHG-37/ADAPTATION.md)"
     - "governance DECISIONS v1.4 (framework/archive/CHG-37/DECISIONS.md)"
-    - "framework/VERSION 0.68.5 (framework/archive/CHG-37/VERSION)"
+    - "framework/VERSION 0.68.6 (framework/archive/CHG-37/VERSION)"
     - "IPLAN-37 authorizing record (framework/archive/CHG-37/IPLAN-37.yaml)"
   # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
 
@@ -103,7 +104,7 @@ change_control:
 # =============================================================================
 
 change_description:
-  summary: "Add 8 optional, bounded exec_* knobs to the closed adaptation registry (7 → 15 knobs): blast-radius limits exec_max_files / exec_max_diff_lines / exec_protected_paths / exec_test_timeout_s (#843) plus execution-attempt budgets exec_max_attempts / exec_token_budget / exec_wall_clock_budget_s with fixed-size exec_failure_summary_lines (#844). Each follows the quality_loop_max_iterations pattern (type, range, default, missing/malformed → default fallback). Three-way parity kept: PROFILE-TEMPLATE.yaml override rows + ADAPTATION.md §§4.8–4.15 rationale (enforced by test_profile_template_covers_surface_knobs). MINOR cut 0.69.0 (VERSION bump + sweep + both changelogs) + GD-43 per GATE-SPEC E005/E008."
+  summary: "Add 8 optional, bounded exec_* knobs to the closed adaptation registry (7 → 15 knobs): blast-radius limits exec_max_files / exec_max_diff_lines / exec_protected_paths / exec_test_timeout_s (#843) plus execution-attempt budgets exec_max_attempts / exec_token_budget / exec_wall_clock_budget_s with fixed-size exec_failure_summary_lines (#844). Each follows the quality_loop_max_iterations pattern (type, range, default, missing/malformed → default fallback). Three-way parity kept: PROFILE-TEMPLATE.yaml override rows + ADAPTATION.md §§4.8–4.15 rationale (enforced by test_profile_template_covers_surface_knobs). MINOR cut 0.69.0 (VERSION bump + sweep + framework/CHANGELOG.md) + GD-43 per GATE-SPEC E005/E008."
   why: "Without standard knobs each engine invents its own blast-radius limits and profiles are not portable (#843); a conforming engine may retry patch→verify loops unboundedly, blowing up cost/latency/context (#844). The closed registry otherwise reads complete — the gap is an absence."
   trigger: "Issues #843 + #844 (2026-10-01 review findings, Rust harness spike)."
   scope:
@@ -113,8 +114,8 @@ change_description:
       - "framework/governance/ADAPTATION.md: §4 header count + §§4.8–4.15 rationale"
       - "framework/governance/DECISIONS.md: GD-43 entry (append newest-first) + Document Control refresh"
       - "framework/archive/CHG-37/CHG-37.yaml + IPLAN-37.yaml (this vehicle)"
-      - "framework/VERSION 0.68.5 → 0.69.0 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
-      - "CHANGELOG.md + framework/CHANGELOG.md [0.69.0] sections (E008 driver)"
+      - "framework/VERSION 0.68.6 → 0.69.0 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "framework/CHANGELOG.md [0.69.0] section (E008 driver; root CHANGELOG.md frozen tombstone per CHG-40 — untouched)"
     out:
       - "REVIEW_SAGA.md / EVAL machinery (review-loop budgets stand unchanged)"
       - "Closed-registry relaxation (unknown keys stay ignored) and existing knob defaults/ranges (frozen)"
@@ -130,21 +131,21 @@ sdd_lifecycle:
     action: amend
     archive_path: "framework/archive/CHG-37/ADAPTATION_SURFACE.yaml"
     new_version: "0.69.0"
-    current_version: "0.68.5"
+    current_version: "0.68.6"
     changes: "8 new exec_* knobs (7 → 15); closed-set prose + existing knobs untouched"
   - layer: "09_CHG"
     document: "framework/governance/PROFILE-TEMPLATE.yaml"
     action: amend
     archive_path: "framework/archive/CHG-37/PROFILE-TEMPLATE.yaml"
     new_version: "0.69.0"
-    current_version: "0.68.5"
+    current_version: "0.68.6"
     changes: "8 commented exec_* override rows; knob-count header 7 → 15"
   - layer: "09_CHG"
     document: "framework/governance/ADAPTATION.md"
     action: amend
     archive_path: "framework/archive/CHG-37/ADAPTATION.md"
     new_version: "0.69.0"
-    current_version: "0.68.5"
+    current_version: "0.68.6"
     changes: "§4 header count 7 → 15; new §§4.8–4.15 rationale (one per exec_* knob)"
   - layer: "09_CHG"
     document: "framework/governance/DECISIONS.md"
@@ -186,21 +187,21 @@ implementation:
       artifact: "ADAPTATION_SURFACE.yaml, PROFILE-TEMPLATE.yaml, ADAPTATION.md, DECISIONS.md, VERSION"
       archive_path: "framework/archive/CHG-37/"
       new_version: "0.69.0"
-      current_version: "0.68.5"
+      current_version: "0.68.6"
       status: Completed
     - step: "Run SDD cascade per lifecycle above (8 exec_* knobs + template rows + §§4.8–4.15 + GD-43 v1.5)"
       phase: "sdd_lifecycle"
       artifact: "ADAPTATION_SURFACE.yaml, PROFILE-TEMPLATE.yaml, ADAPTATION.md, DECISIONS.md (GD-43, v1.5)"
       archive_path: "framework/archive/CHG-37/"
       new_version: "0.69.0"
-      current_version: "0.68.5"
+      current_version: "0.68.6"
       status: Completed
     - step: "MINOR fanout per IPLAN-37 manifest (framework/VERSION, both CHANGELOGs [0.69.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
       phase: "sdd_lifecycle"
       artifact: "framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md + pin fanout"
       archive_path: "framework/archive/CHG-37/"
       new_version: "0.69.0"
-      current_version: "0.68.5"
+      current_version: "0.68.6"
       status: Completed
     - step: "Create IPLAN-37 with all implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
@@ -218,9 +219,9 @@ implementation:
     - "framework/governance/ADAPTATION.md"
     - "framework/governance/DECISIONS.md (GD-43 newest-first + Document Control refresh)"
     - "framework/VERSION (0.68.5 → 0.69.0)"
-    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.5)"
-    - "CHANGELOG.md + framework/CHANGELOG.md ([0.69.0] sections)"
-    - "Sweep fallout: mechanical 0.68.5 → 0.69.0 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.6)"
+    - "framework/CHANGELOG.md ([0.69.0] section)"
+    - "Sweep fallout: mechanical 0.68.6 → 0.69.0 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
 
 artifacts_modified:
   - id: "CHG-37"
@@ -248,7 +249,7 @@ verification:
     - "Surface parses: 15 unique knobs; closed-set prose intact"
     - "PROFILE-TEMPLATE.yaml documents all 15 knobs; header count reads 15"
     - "ADAPTATION.md carries ### 4.1–4.15 sections matching the 15 knob names"
-    - "GATE-SPEC E005/E008: framework/VERSION at 0.69.0, both changelogs carry [0.69.0]"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.69.0, framework/CHANGELOG.md carries [0.69.0]"
     - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
     - "tests/conformance/test_governance.py parity tests pass with 8 intentional additions"
     - "python3 -m unittest discover -s tests/unit (green)"
