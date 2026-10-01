@@ -1,0 +1,147 @@
+# =============================================================================
+#  IPLAN-37: Execution-policy + execution-attempt-budget knobs (spec C2 MINOR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-37/CHG-37.yaml (change_source spec,
+#  C2, semver minor, entry GATE-SPEC, status In-Progress). Source: issues
+#  #843 (blast-radius knobs) + #844 (attempt/token/wall-clock budgets),
+#  both read live 2026-10-01 (OPEN; claims verified on current dev —
+#  ADAPTATION_SURFACE.yaml carries 7 knobs, none covering execution).
+#  Covering tests: the conformance suite itself is the cover —
+#  test_adaptation_surface_is_well_formed (closed unique set) +
+#  test_profile_template_covers_surface_knobs (template parity + §4 parity,
+#  #704) pass with the 8 intentional additions; full suites are regression.
+# =============================================================================
+
+doc_id: IPLAN-37
+title: "Execution-policy + execution-attempt-budget knobs"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+  source_chg: "CHG-37"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-37"
+  subtype: combined
+  source_spec: "@spec: N/A (spec-source framework self-change under CHG-37; no project SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 9
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-37/CHG-37.yaml + IPLAN-37.yaml"
+      description: "Authorizing vehicle (CHG-37 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ADAPTATION_SURFACE.yaml"
+      description: "8 new exec_* knobs (Knobs (7) → (15)); closed-registry rule + existing knobs untouched"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/PROFILE-TEMPLATE.yaml"
+      description: "8 commented override rows; knob-count header 7 → 15"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ADAPTATION.md"
+      description: "§4 header count + §§4.8–4.15 rationale (one per new knob)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-44 entry (newest-first, before GD-43) + Document Control refresh"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.69.0 → 0.70.0 (MINOR driver)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.69.0; sweep run produces the pin moves"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "New [0.70.0] section (E008 driver; root log tombstoned per CHG-40)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Spec-source additive change: the cover is the conformance suite itself — test_adaptation_surface_is_well_formed passes with 15 unique knobs, test_profile_template_covers_surface_knobs passes with template + ADAPTATION.md §4 in parity (the test enforces the three-way sync, so a missed row fails loudly). Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-37: 0 errors"
+    - "ADAPTATION_SURFACE.yaml parses; 15 unique knob names; closed-set prose intact"
+    - "PROFILE-TEMPLATE.yaml documents all 15 knobs; header count reads 15"
+    - "ADAPTATION.md carries ### 4.1–4.15 sections matching the 15 knob names"
+    - "framework/VERSION reads 0.70.0; framework/CHANGELOG.md carries [0.70.0]; sweep pin-only"
+    - "tests/conformance (incl. test_governance.py) green; tests/unit green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-37/CHG-37.yaml"
+    - "python3 -c \"import yaml; s=yaml.safe_load(open('framework/governance/ADAPTATION_SURFACE.yaml')); print(len(s['knobs']), len({k['name'] for k in s['knobs']}))\" (expect 15 15)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git status --short (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Closed registry preserved: no existing knob renamed, retyped, or loosened; unknown-key ignore rule intact"
+  - "Every new knob optional + bounded (type, range, default) with missing/malformed → default fallback"
+  - "New knobs are caps/restrictions only — none weakens an existing gate (audit_threshold raise-only untouched)"
+  - "MINOR cut 0.70.0 (version_action keep: schema-compatible additive change); sweep fallout covered by sync-script entry; pin moves only"
+  - "Closes #843 and Closes #844 on merge (one keyword per issue in the PR body)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + 8 knobs + 3-way parity + GD-44 + MINOR cut + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-37"
+  upstream: ["Issue #843 (execution-policy knobs)", "Issue #844 (execution-attempt budgets)"]
+  downstream: ["PR feature/843-844-exec-policy → dev"]

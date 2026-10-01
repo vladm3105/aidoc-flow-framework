@@ -15,14 +15,46 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Last Updated | 2026-10-01 |
 | Author | Framework Maintainer |
-| Framework Version | 0.69.0 |
+| Framework Version | 0.70.0 |
 
 ---
 
+## GD-44 — Standard execution-policy + execution-attempt-budget knobs (CHG-37, 0.70.0 MINOR)
+
+- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.69.0 → 0.70.0` (MINOR),
+  change-level **C2** (spec; additive optional knobs — no existing knob,
+  registry rule, or gate touched; reviewer may escalate to C3).
+  Vehicle: CHG-37 + IPLAN-37 (`framework/archive/CHG-37/`). Trigger: issues
+  #843 (blast-radius limits) + #844 (attempt/token/wall-clock budgets).
+- **Context:** the closed adaptation registry read complete until an engine
+  tried to configure execution limits — blast-radius caps (max files, max
+  diff, protected paths, test timeout) had no portable expression, so each
+  engine invented its own and profiles did not port (#843). Separately, the
+  saga lifecycle bounds *review* loops (`quality_loop_max_iterations` →
+  `PARTIAL_TIMEOUT`) but nothing bounded *execution* patch→verify retries:
+  no attempt, token, or wall-clock budget, and no fixed-size failure-summary
+  rule, so a conforming engine could retry unboundedly while context
+  compacted monotonically (#844).
+- **Decision:** add 8 optional, bounded `exec_*` knobs (surface 7 → 15),
+  each with type, range, default, and missing/malformed → default fallback
+  after `quality_loop_max_iterations`: `exec_max_files` (1–100, default 8),
+  `exec_max_diff_lines` (1–10000, default 600), `exec_protected_paths`
+  (list, default []; additive to engine built-ins, never subtractive),
+  `exec_test_timeout_s` (30–3600, default 300), `exec_max_attempts` (1–10,
+  default 3), `exec_token_budget` (10000–2000000, default 200000),
+  `exec_wall_clock_budget_s` (60–14400, default 1800),
+  `exec_failure_summary_lines` (5–200, default 30). Three-way parity kept
+  (`PROFILE-TEMPLATE.yaml` rows + `ADAPTATION.md` §§4.8–4.15), enforced by
+  `test_profile_template_covers_surface_knobs`. All eight are caps or
+  restrictions — none weakens any gate; the closed-registry rule
+  (unknown keys ignored) and every existing knob stand unchanged.
+- **Consequence:** execution limits and retry budgets become portable
+  profile config; engines that cannot find a profile proceed on framework
+  defaults per `ADAPTATION.md` §5.
 ## GD-43 — EVAL verdicts bound to artifact bytes: the verification-binding contract (CHG-36, 0.69.0 MINOR)
 
 - **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.68.6 → 0.69.0` (MINOR),
