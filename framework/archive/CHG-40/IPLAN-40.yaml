@@ -1,0 +1,173 @@
+# =============================================================================
+#  IPLAN-40: ADAPTATION-GUIDE §4 fix + root CHANGELOG tombstone / E008 repoint
+#  (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-40/CHG-40.yaml (F2 direct, C1,
+#  In-Progress; entry GATE-SPEC). Source: delegated workflow request
+#  2026-10-01 citing issues #835 (OPEN, P3 docs-only) + #836 (OPEN, P2,
+#  park condition CLEARED — 0.68.4 shipped, 0.68.3 landed, verified live).
+#  Docs batch with two test-file edits (spec_gate.py is CI tooling under
+#  tests/; test_spec_gate.py is its conformance guard): covering test is
+#  the conformance suite itself (test_spec_gate passes with the intentional
+#  path repoint, obligation standing); full suites are the regression
+#  battery.
+# =============================================================================
+
+doc_id: IPLAN-40
+title: "ADAPTATION-GUIDE §4 fix + root CHANGELOG tombstone and E008 repoint"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+  source_chg: "CHG-40"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-40"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-40; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 14
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-40/CHG-40.yaml + IPLAN-40.yaml"
+      description: "Authorizing vehicle (CHG-40 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "§4 mirror list corrected to shipped shape (discovery rule untouched)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CHANGELOG.md"
+      description: "Frozen tombstone with documented gh query + live-log pointer"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/chg/spec_gate.py"
+      description: "E008 repointed at framework/CHANGELOG.md"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_spec_gate.py"
+      description: "Expectations updated to repointed path (obligation stands)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "AGENTS.md"
+      description: "State-table Changelog row: root tombstone + live framework log"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/check-docs-updated.sh"
+      description: "DOCS_OF_RECORD drops frozen root log"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CONTRIBUTING.md"
+      description: "Matrix Framework-spec row + warning-hook doc list repointed"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "Principle 8 doc-of-record list (carries the 0.68.5 bump)"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.68.4 → 0.68.5 (E005 driver)"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.4; sweep run produces the pin moves"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "New [0.68.5] section (new-E008 driver; stays live)"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs batch with two test-file edits (F2.2): the edits' cover is the conformance suite itself — test_spec_gate passes with the intentional path repoint (spec-change-must-carry-a-changelog-entry obligation stands, only the path moves). Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-40: 0 errors"
+    - "framework/VERSION reads 0.68.5; framework/CHANGELOG.md carries [0.68.5]; root CHANGELOG.md is a tombstone; sweep pin-only"
+    - "ls framework/ has no scripts/ or templates/; §4 list matches shipped shape"
+    - "spec_gate.evaluate requires framework/CHANGELOG.md (root path alone fails)"
+    - "test_spec_gate, tests/unit, tests/conformance, sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-40/CHG-40.yaml"
+    - "ls framework/ (expect no scripts/, no templates/)"
+    - "grep -rn '\"CHANGELOG.md\"' tests/chg/ tests/conformance/ (expect history-only hits)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git status --short (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Discovery rule untouched (#835); §1 scaffold tree left for follow-up"
+  - "Root log frozen as tombstone with documented query (founder scope: root only); framework/CHANGELOG.md stays live"
+  - "E008 obligation stands — only the path moves (not a weakened check)"
+  - "Frozen history intact (DECISIONS, TAGGING, archive/**, framework/CHANGELOG.md history)"
+  - "PATCH cut 0.68.5 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change"
+  - "Closes #835 and #836 on merge (PR body carries one keyword per issue)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + §4 fix + tombstone + repoint + prose + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-40"
+  upstream: ["Delegated workflow request 2026-10-01", "Issue #835 (OPEN, verified)", "Issue #836 (OPEN, park CLEARED, verified)"]
+  downstream: ["PR feature/835-836-docs → dev"]
