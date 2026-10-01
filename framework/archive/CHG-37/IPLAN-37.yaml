@@ -73,13 +73,13 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/VERSION"
-      description: "Bump 0.68.4 → 0.69.0 (MINOR driver)"
+      description: "Bump 0.68.5 → 0.69.0 (MINOR driver)"
       order: 5
       status: DONE
       session: 1
       verified: true
     - path: "hooks/sync-version-refs.sh"
-      description: "OLD_VERSIONS gains 0.68.4; sweep run produces the pin moves"
+      description: "OLD_VERSIONS gains 0.68.5; sweep run produces the pin moves"
       order: 6
       status: DONE
       session: 1

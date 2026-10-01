@@ -11,6 +11,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.69.0] — 2026-10-01
+
+### Added — standard execution-policy + execution-attempt-budget knobs (C2 MINOR → 0.69.0, CHG-37 + IPLAN-37)
+
+- `framework/governance/ADAPTATION_SURFACE.yaml` gains 8 optional, bounded `exec_*` knobs (surface 7 → 15): blast-radius limits `exec_max_files` (1–100, default 8), `exec_max_diff_lines` (1–10000, default 600), `exec_protected_paths` (list, default []; additive only), `exec_test_timeout_s` (30–3600, default 300) (#843); execution-attempt budgets `exec_max_attempts` (1–10, default 3), `exec_token_budget` (10000–2000000, default 200000), `exec_wall_clock_budget_s` (60–14400, default 1800) with fixed-size `exec_failure_summary_lines` (5–200, default 30) (#844). Every knob follows the `quality_loop_max_iterations` pattern (type, range, default, missing/malformed → default fallback); all eight are caps/restrictions — no gate weakened, closed registry and existing knobs untouched.
+- Three-way parity: `PROFILE-TEMPLATE.yaml` override rows + `ADAPTATION.md` §§4.8–4.15, enforced by `test_profile_template_covers_surface_knobs`; GD-43 recorded.
+- Sweep 0.68.5 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+- Spec detail in `framework/CHANGELOG.md`; Closes #843 and Closes #844.
+
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph: LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are each platform's own to declare and enforce; the spec sets no formats and conformance does not check them (#847). Artifact-hygiene rules (T1, rule 2, checklist) byte-identical.
+- Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
+- Spec detail in `framework/CHANGELOG.md`; Closes #847.
+
 ### Fixed — pre-prod-review batch #811–#813 (C1, CHG-25 + IPLAN-25, no version change)
 
 - CI supply-chain hardening (#811): `actions/checkout` / `actions/setup-python`
@@ -24,15 +41,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Consumer trust calibration (#813): `docs/ADAPTATION-GUIDE.md` §7 notes green
   linters alone do not equal governed (18 Reserved rows have no emitter;
   reviewer-lens backstop); no new emitters, no reclassification
-
-## [0.69.0] — 2026-10-01
-
-### Added — standard execution-policy + execution-attempt-budget knobs (C2 MINOR → 0.69.0, CHG-37 + IPLAN-37)
-
-- `framework/governance/ADAPTATION_SURFACE.yaml` gains 8 optional, bounded `exec_*` knobs (surface 7 → 15): blast-radius limits `exec_max_files` (1–100, default 8), `exec_max_diff_lines` (1–10000, default 600), `exec_protected_paths` (list, default []; additive only), `exec_test_timeout_s` (30–3600, default 300) (#843); execution-attempt budgets `exec_max_attempts` (1–10, default 3), `exec_token_budget` (10000–2000000, default 200000), `exec_wall_clock_budget_s` (60–14400, default 1800) with fixed-size `exec_failure_summary_lines` (5–200, default 30) (#844). Every knob follows the `quality_loop_max_iterations` pattern (type, range, default, missing/malformed → default fallback); all eight are caps/restrictions — no gate weakened, closed registry and existing knobs untouched.
-- Three-way parity: `PROFILE-TEMPLATE.yaml` override rows + `ADAPTATION.md` §§4.8–4.15, enforced by `test_profile_template_covers_surface_knobs`; GD-43 recorded.
-- Sweep 0.68.4 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
-- Spec detail in `framework/CHANGELOG.md`; Closes #843 and Closes #844.
 
 ## [0.68.4] — 2026-10-01
 

@@ -25,7 +25,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-43 — Standard execution-policy + execution-attempt-budget knobs (CHG-37, 0.69.0 MINOR)
 
-- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.68.4 → 0.69.0` (MINOR),
+- **Status:** Accepted — 2026-10-01 · **SemVer:** framework `0.68.5 → 0.69.0` (MINOR),
   change-level **C2** (spec; additive optional knobs — no existing knob,
   registry rule, or gate touched; reviewer may escalate to C3).
   Vehicle: CHG-37 + IPLAN-37 (`framework/archive/CHG-37/`). Trigger: issues

@@ -24,7 +24,15 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 - `ADAPTATION.md`: §4 header count 7 → 15; new §§4.8–4.15 rationale (one per knob).
 - `DECISIONS.md`: GD-43 entry (bounds + vehicle + caps-only rationale); doc Version 1.4 → 1.5.
 - Covering guard: `tests/conformance/test_governance.py` parity tests (`well_formed` + `covers_surface_knobs`) pass with the 8 intentional additions — the tests enforce the three-way sync, so a missed row fails loudly.
-- Sweep 0.68.4 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+- Sweep 0.68.5 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph (#847): LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are engine-local — each consuming platform declares and enforces its own; the spec sets no allowlist format, sandbox mechanism, or store interface, and conformance does not check them. Worktree isolation declared git-separation-only (no network/secret property implied).
+- Covering guard: no test pins `SECURITY_REVIEW.md` content (verified by grep over `tests/`, `sdd_doc_lint/`, `hooks/`); artifact rules 1–5, threats T1–T4, and the review checklist are byte-identical.
+- Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.4] — 2026-10-01
 
