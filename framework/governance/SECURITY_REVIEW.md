@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.4 |
+| Framework Version | 0.68.5 |
 
 SDD artifacts and adaptation profiles are produced by AI agents from upstream
 documents, dependency metadata, and human prompts — content the agent does not
@@ -29,6 +29,25 @@ repository:
 
 It does **not** cover a platform's own runtime code (that is ordinary
 application security, owned by the platform).
+
+### Runtime boundary — engine-local
+
+The three runtime dimensions below are **engine-local**: each consuming
+platform declares and enforces them in its own deployment. This spec sets
+no allowlist format, no sandbox mechanism, and no store interface for
+them, and conformance does not check them.
+
+- **LLM egress allowlists** — which network endpoints (provider APIs and
+  any other remote service) the engine may call at runtime.
+- **Network-sandbox expectations** — how the engine isolates runtime
+  execution (for example, sandboxing tool-execution traffic while
+  permitting declared provider calls).
+- **Runtime secret-store interface** — where the engine keeps credentials
+  at runtime and how it injects them without embedding them in artifacts
+  (artifact-side rule 2 still applies: no secrets in artifacts).
+
+Worktree isolation (`WORKTREE_FLOW.md`) covers git working-tree separation
+only; it implies no network or secret-handling property.
 
 ## Threats
 

@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.4 |
+| Framework Version | 0.68.5 |
 
 ---
+
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph (#847): LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are engine-local — each consuming platform declares and enforces its own; the spec sets no allowlist format, sandbox mechanism, or store interface, and conformance does not check them. Worktree isolation declared git-separation-only (no network/secret property implied).
+- Covering guard: no test pins `SECURITY_REVIEW.md` content (verified by grep over `tests/`, `sdd_doc_lint/`, `hooks/`); artifact rules 1–5, threats T1–T4, and the review checklist are byte-identical.
+- Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.4] — 2026-10-01
 

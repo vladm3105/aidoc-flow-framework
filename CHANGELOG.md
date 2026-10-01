@@ -11,6 +11,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph: LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are each platform's own to declare and enforce; the spec sets no formats and conformance does not check them (#847). Artifact-hygiene rules (T1, rule 2, checklist) byte-identical.
+- Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
+- Spec detail in `framework/CHANGELOG.md`; Closes #847.
+
 ### Fixed — pre-prod-review batch #811–#813 (C1, CHG-25 + IPLAN-25, no version change)
 
 - CI supply-chain hardening (#811): `actions/checkout` / `actions/setup-python`

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.4 |
+| Framework Version | 0.68.5 |
 
 Engine-agnostic rules for continuous integration and autonomous merging of
 reviewed changes. This standard fixes the integration topology the SDD layers
