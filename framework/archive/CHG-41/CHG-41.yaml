@@ -1,0 +1,164 @@
+# =============================================================================
+#  CHG-41: sync-version-refs latent hardening + sync-scripts unit gaps
+#  (F2 direct, hook+tests C1, one PR — issues #830 + #831)
+# =============================================================================
+#  Flow: F2 direct (review follow-up batch; no prior IPLAN, no product-behavior
+#  change — hook-only hardening plus covering tests) — hook+tests C1: C1 CHG +
+#  scoped IPLAN per F2.2; entry GATE-CODE. Precedent: CHG-29 (0.68.2 hook
+#  fail-closed + fault-injection covering tests).
+#  IPLAN: framework/archive/CHG-41/IPLAN-41.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: delegated workflow batch "Fix issues #830 (P2 hooks) +
+#  #831 (P3 tests), same hook family, one vehicle" (2026-10-01); issues
+#  validated live OPEN on dev before authoring (Mode-B: every #830 claim
+#  confirmed at hooks/sync-version-refs.sh:71,111-130,139; every #831 claim
+#  confirmed at tests/unit/test_sync_scripts.py:75 + fixture with no
+#  playbooks probe).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — bash hook + unittest only, no structs/queries/handlers/migrations.
+#  Checklist item 7 (couple): #830 + #831 share this vehicle. Item 5
+#  (EARS/BDD IDs): vacuous — F2 direct hook hardening, no requirement trace
+#  at stake (CHG-29 precedent).
+#  EARS/BDD IDs vacuous (no requirement-traced functionality affected).
+#  SECURITY_REVIEW: assessed — hook already quotes/argv-passes every path;
+#  the re-stage switches from `git add -u` to an explicit argv list with
+#  `--` termination (strictly narrower blast radius, no untrusted input
+#  interpreted).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: required for code (F2.3) and shipped in this vehicle —
+#  tests/unit/test_sync_scripts.py gains 4 tests (scoped re-stage, portable
+#  ERE discovery via BSD-mimic grep shim, newline-filename sweep, SIGTERM
+#  temp-trap) plus 2 #831 fixes (umask-independent mode assertion,
+#  playbook-frontmatter probe).
+#  Out of scope: converter/write-path redesign (CHG-29 stands), swept
+#  patterns, expected counts, archive exclusion semantics (behavior
+#  preserved; exclusion moves from `grep -v` to an equivalent in-loop
+#  case-match only because NUL-delimited bytes cannot pass a
+#  line-oriented filter).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-41
+title: "sync-version-refs latent hardening + sync-scripts unit gaps (#830 + #831)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-41"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-41 authorizing record (framework/archive/CHG-41/IPLAN-41.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Harden hooks/sync-version-refs.sh (#830: scoped re-stage of touched paths only, portable grep -rlE discovery, NUL-delimited filenames, EXIT-trap temp cleanup) and close the sync-scripts unit gaps (#831: umask-independent mode assertion, playbook-frontmatter sweep probe). No VERSION bump (version_action keep); no framework/ files touched."
+  why: "Preprod-review lenses 1+2 (0.68.2, SHIP-WITH-FIXES) surfaced four latent hook paths that all report success by construction; the sharpest (#830-1) silently folds unauthorized hunks into a VERSION commit. The unit gaps (#831) let a correct script go red under umask 027 and leave the playbook-sweep loop to the conformance pin test."
+  trigger: "Delegated workflow batch 2026-10-01: issues #830 (P2 hooks) + #831 (P3 tests), one vehicle."
+  scope:
+    in:
+      - "hooks/sync-version-refs.sh: four hardenings only (touched-list re-stage, -E discovery, -Z/NUL reads, EXIT trap)"
+      - "tests/unit/test_sync_scripts.py: 4 new tests + umask + playbook-probe fixes"
+      - "framework/archive/CHG-41/CHG-41.yaml + IPLAN-41.yaml (this vehicle)"
+      - "framework/CHANGELOG.md [Unreleased] entry (doc-of-record; root CHANGELOG.md frozen per CHG-40)"
+    out:
+      - "Converter/write-path redesign (CHG-29 stands)"
+      - "Swept patterns, expected counts, archive exclusion semantics"
+      - "VERSION bump; framework/ edits"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-41 + IPLAN-41 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-41 + IPLAN-41"
+      status: Completed
+    - step: "Harden hooks/sync-version-refs.sh per IPLAN-41 contracts"
+      phase: "iplan_creation"
+      artifact: "hooks/sync-version-refs.sh"
+      status: In-Progress
+    - step: "Extend tests/unit/test_sync_scripts.py per IPLAN-41 contracts"
+      phase: "iplan_creation"
+      artifact: "tests/unit/test_sync_scripts.py"
+      status: In-Progress
+    - step: "Run IPLAN-41 battery + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/830-831-hook-hardening → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-41/CHG-41.yaml"
+    - "framework/archive/CHG-41/IPLAN-41.yaml"
+    - "hooks/sync-version-refs.sh"
+    - "tests/unit/test_sync_scripts.py"
+    - "framework/CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-41"
+    changes: "Authorizing record for #830+#831 hook hardening (this file)"
+  - id: "IPLAN-41"
+    changes: "Authorizing IPLAN (framework/archive/CHG-41/IPLAN-41.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-41 (0 errors)"
+    - "python3 -m unittest tests.unit.test_sync_scripts (green, 9 tests)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "bash -n hooks/sync-version-refs.sh (syntax clean)"
+    - "PR checks green on feature/830-831-hook-hardening → dev"

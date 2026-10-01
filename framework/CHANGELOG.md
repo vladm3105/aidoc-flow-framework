@@ -15,6 +15,16 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 ---
 
+## [Unreleased]
+
+### Fixed — sync-version-refs latent hardening + unit gaps (C1, CHG-41 + IPLAN-41, no version change)
+
+- `hooks/sync-version-refs.sh`: scoped re-stage, portable ERE discovery,
+  NUL-delimited reads, EXIT-trap temp cleanup (#830); covering tests +
+  umask-independent mode assertion + playbook-sweep probe in
+  `tests/unit/test_sync_scripts.py` (#831). No root `CHANGELOG.md` entry
+  (frozen tombstone per CHG-40); Closes #830 and #831.
+
 ## [0.70.1] — 2026-10-01
 
 ### Added — engine guidance gaps: telemetry + live policy-update discipline (C1 PATCH → 0.70.1, CHG-38 + IPLAN-38)

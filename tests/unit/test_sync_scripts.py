@@ -1,18 +1,21 @@
 """Unit: hooks/sync-version-refs.sh propagates pins and is idempotent (#688).
 
-The hook rewrites version strings across the tree and re-stages (`git add
--u`), so running it against the real checkout is refused on a dirty tree —
-and any agent session dirties the tree by construction. These tests instead
-run a COPY of the script against a fixture tree (VERSION + two probe files
-carrying one swept form each), which exercises the real counted-replacement
-machinery without touching the working tree and without any skip.
+The hook rewrites version strings across the tree and re-stages (scoped to
+the touched paths, #830), so running it against the real checkout is refused
+on a dirty tree — and any agent session dirties the tree by construction.
+These tests instead run a COPY of the script against a fixture tree (VERSION
++ doc-control row + metadata pin + playbook frontmatter probe, each carrying
+one swept form), which exercises the real counted-replacement machinery
+without touching the working tree and without any skip.
 """
 
 import os
 import re
 import shutil
+import signal
 import subprocess
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -30,7 +33,7 @@ def _old_versions() -> list[str]:
 
 def _fixture(current: str, stale: str) -> Path:
     """A mini-tree the hook can sweep: VERSION + one doc-control row + one
-    metadata pin, both stale."""
+    metadata pin + one playbook frontmatter pin, all stale."""
     tmp = Path(tempfile.mkdtemp(prefix="syncfix-"))
     (tmp / "framework").mkdir()
     (tmp / "framework" / "VERSION").write_text(current + "\n", encoding="utf-8")
@@ -40,6 +43,11 @@ def _fixture(current: str, stale: str) -> Path:
     (tmp / "framework" / "governance").mkdir()
     (tmp / "framework" / "governance" / "probe.yaml").write_text(
         f'framework_version: "{stale}"\n', encoding="utf-8"
+    )
+    (tmp / "framework" / "playbooks").mkdir()
+    (tmp / "framework" / "playbooks" / "probe.md").write_text(
+        f'---\nframework_spec_version: "{stale}"\n---\n# Probe playbook\n',
+        encoding="utf-8",
     )
     (tmp / "hooks").mkdir()
     shutil.copy(SYNC, tmp / "hooks" / "sync-version-refs.sh")
@@ -62,6 +70,7 @@ class SyncVersionRefsTests(unittest.TestCase):
         current = VERSION_FILE.read_text(encoding="utf-8").strip()
         stale = next(v for v in reversed(_old_versions()) if v != current)
         fixture = _fixture(current, stale)
+        (fixture / "framework" / "probe.md").chmod(0o640)
         result = _run(fixture)
         self.assertEqual(result.returncode, 0, result.stderr)
         md = (fixture / "framework" / "probe.md").read_text(encoding="utf-8")
@@ -71,8 +80,176 @@ class SyncVersionRefsTests(unittest.TestCase):
         self.assertIn(f"| Framework Version | {current} |", md)
         self.assertIn(f'framework_version: "{current}"', yaml_text)
         # Rename-based write must preserve the target mode (mktemp is 600).
+        # The probe carries a non-default mode so the assertion holds under
+        # any umask (#831): it pins preservation, not an absolute 0o644.
         probe = fixture / "framework" / "probe.md"
-        self.assertEqual(oct(probe.stat().st_mode & 0o777), "0o644")
+        self.assertEqual(oct(probe.stat().st_mode & 0o777), "0o640")
+
+    def test_playbook_frontmatter_swept(self):
+        """The framework_spec_version loop has direct coverage (#831).
+
+        Previously exercised only incidentally; a regression there was
+        caught only by the conformance pin test, not the unit file that
+        owns the hook contract.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        result = _run(fixture)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        pb = (fixture / "framework" / "playbooks" / "probe.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(f'framework_spec_version: "{current}"', pb)
+        self.assertNotIn(stale, pb)
+
+    @unittest.skipUnless(shutil.which("git"), "git not available")
+    def test_restage_scoped_to_touched(self):
+        """The re-stage covers exactly the rewritten paths (#830).
+
+        Pre-fix `git add -u` staged every unstaged tracked modification
+        repo-wide; an unrelated dirty file must stay unstaged while the
+        swept probes are staged.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        unrelated = fixture / "framework" / "unrelated.md"
+        unrelated.write_text("# Unrelated\n", encoding="utf-8")
+        git = lambda *args: subprocess.run(
+            ["git", *args],
+            cwd=fixture,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        git("init")
+        git("add", "-A")
+        git("-c", "user.name=sync-test", "-c", "user.email=t@example.com",
+            "commit", "-qm", "init")
+        unrelated.write_text("# Unrelated\n# dirty hunk\n", encoding="utf-8")
+        result = _run(fixture)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        staged = git("--no-pager", "diff", "--cached", "--name-only").stdout.split()
+        self.assertIn("framework/probe.md", staged)
+        self.assertIn("framework/governance/probe.yaml", staged)
+        self.assertIn("framework/playbooks/probe.md", staged)
+        self.assertNotIn("framework/unrelated.md", staged)
+        status = git("status", "--porcelain").stdout
+        self.assertIn(" M framework/unrelated.md", status)
+
+    @unittest.skipUnless(shutil.which("grep"), "grep not available")
+    def test_discovery_portable_ere(self):
+        """Metadata discovery works without GNU BRE alternation (#830).
+
+        A BSD-mimic grep shim rejects the GNU-only `\\|` join (BSD grep
+        matches zero files without `-E`); the hook must still sweep via
+        portable `grep -rlE` with `|` alternation.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        real_grep = shutil.which("grep")
+        shimdir = fixture / "bin"
+        shimdir.mkdir()
+        shim = shimdir / "grep"
+        shim.write_text(
+            "#!/bin/sh\n"
+            "# BSD mimic: GNU BRE \\| alternation matches nothing without -E.\n"
+            "hasE=0\ngnu=0\n"
+            'for a in "$@"; do\n'
+            "  case \"$a\" in\n"
+            "    -*) case \"$a\" in *E*) hasE=1 ;; esac ;;\n"
+            "    *) case \"$a\" in *'\\|'*) gnu=1 ;; esac ;;\n"
+            "  esac\n"
+            "done\n"
+            'if [ "$gnu" = 1 ] && [ "$hasE" = 0 ]; then exit 1; fi\n'
+            f'exec "{real_grep}" "$@"\n',
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        result = _run(fixture, env)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        md = (fixture / "framework" / "probe.md").read_text(encoding="utf-8")
+        yaml_text = (fixture / "framework" / "governance" / "probe.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(f"| Framework Version | {current} |", md)
+        self.assertIn(f'framework_version: "{current}"', yaml_text)
+
+    def test_newline_filename_swept(self):
+        """A newline in a filename must not desync discovery (#830).
+
+        Pre-fix newline-delimited `read` split one path into bogus `$rel`
+        values hitting the `skip (absent)` branch; NUL-delimited reads
+        sweep the real file.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        weird = fixture / "framework" / "weird\nname.md"
+        weird.write_text(f"| Framework Version | {stale} |\n", encoding="utf-8")
+        result = _run(fixture)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            f"| Framework Version | {current} |",
+            weird.read_text(encoding="utf-8"),
+        )
+
+    def test_no_temp_litter_after_kill(self):
+        """A killed run leaves no `.sync-*` temps behind (#830).
+
+        The converter is shimmed with a stall; SIGTERM lands mid-conversion
+        and the EXIT trap must remove the same-dir temp.
+        """
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        shimdir = fixture / "bin"
+        shimdir.mkdir()
+        shim = shimdir / "python3"
+        shim.write_text("#!/bin/sh\nsleep 30\n", encoding="utf-8")
+        shim.chmod(0o755)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        proc = subprocess.Popen(
+            ["bash", str(fixture / "hooks" / "sync-version-refs.sh")],
+            cwd=fixture,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env,
+            start_new_session=True,
+        )
+        try:
+            deadline = time.time() + 20
+            while time.time() < deadline:
+                litter = [
+                    p
+                    for p in fixture.rglob(".sync-*")
+                    if p.is_file()
+                ]
+                if litter:
+                    break
+                time.sleep(0.2)
+            else:
+                self.fail("converter stall never produced a .sync-* temp")
+            os.killpg(proc.pid, signal.SIGTERM)
+            try:
+                proc.wait(timeout=20)
+            except subprocess.TimeoutExpired:
+                os.killpg(proc.pid, signal.SIGKILL)
+                self.fail("script did not exit after SIGTERM")
+        finally:
+            if proc.poll() is None:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait()
+            proc.communicate()
+        self.assertEqual(
+            [p for p in fixture.rglob(".sync-*") if p.is_file()], []
+        )
 
     def test_converter_failure_leaves_target_untouched(self):
         """Fail-closed (#821): a broken converter must not truncate the target.
