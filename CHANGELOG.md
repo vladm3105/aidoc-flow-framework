@@ -25,6 +25,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   linters alone do not equal governed (18 Reserved rows have no emitter;
   reviewer-lens backstop); no new emitters, no reclassification
 
+## [0.68.3] — 2026-10-01
+
+### Fixed — consumer copy-set + upgrade-path repair (C1 PATCH → 0.68.3, CHG-33 + IPLAN-33)
+
+- Upgrade path no longer reintroduces canon-dev files: pinned-copy consumers repeat the `docs/PROJECT.md` §7.1 allowlist copy (the single normative repair, in `framework/governance/aidoc/UPGRADE-RUNBOOK.md` §2); new-project initiation copies only `framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/` minus `framework/archive/` (#834, real-use).
+- New conformance guard `tests/conformance/test_consumer_manifest.py` locks the copy set; end-to-end /tmp proof ships exactly the allowlist.
+- Working agreement consolidated: `CLAUDE.md` retired into `AGENTS.md` with all live functional pointers repointed.
+- Spec detail in `framework/CHANGELOG.md`; sweep is pin moves only.
+
 ## [0.68.2] — 2026-09-30
 
 ### Fixed — hook hardening + docs/config batch (C1 PATCH → 0.68.2, CHG-29/30/31 + IPLAN-29/30/31)
