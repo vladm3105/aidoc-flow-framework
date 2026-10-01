@@ -11,9 +11,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.4 |
+| Framework Version | 0.69.0 |
 
 ---
+
+## [0.69.0] — 2026-10-01
+
+### Added — standard execution-policy + execution-attempt-budget knobs (C2 MINOR → 0.69.0, CHG-37 + IPLAN-37)
+
+- `ADAPTATION_SURFACE.yaml`: 8 new optional, bounded `exec_*` knob entries (Knobs (7) → (15)) — `exec_max_files`, `exec_max_diff_lines`, `exec_protected_paths`, `exec_test_timeout_s` (#843); `exec_max_attempts`, `exec_token_budget`, `exec_wall_clock_budget_s`, `exec_failure_summary_lines` (#844). Closed-set prose and all 7 existing knobs byte-untouched.
+- `PROFILE-TEMPLATE.yaml`: 8 commented `exec_*` override rows (header 7 → 15).
+- `ADAPTATION.md`: §4 header count 7 → 15; new §§4.8–4.15 rationale (one per knob).
+- `DECISIONS.md`: GD-43 entry (bounds + vehicle + caps-only rationale); doc Version 1.4 → 1.5.
+- Covering guard: `tests/conformance/test_governance.py` parity tests (`well_formed` + `covers_surface_knobs`) pass with the 8 intentional additions — the tests enforce the three-way sync, so a missed row fails loudly.
+- Sweep 0.68.4 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.4] — 2026-10-01
 

@@ -1,0 +1,253 @@
+# =============================================================================
+#  CHG-37: Execution-policy + execution-attempt-budget knobs (spec C2 MINOR)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (orthogonal to the F1–F4
+#  artifact cascade: it changes the shared framework/ contract, not a
+#  project's artifacts). Not F1 (no new product/layer chain), not F3 (no
+#  implemented-product behavior change — the spec has no modules/seed
+#  runtime), not F4 (no parent-IPLAN defect), not Emergency/Type-R. Vehicle
+#  follows the spec-shape precedent (CHG-26: sdd_lifecycle entries for the
+#  touched governance docs + pre-change snapshots under
+#  framework/archive/CHG-37/ + seed_scope no-change + SDD-first steps).
+#  C2 per GATE-SPEC-E003 (spec is never C1); MINOR per E002 mapping (new
+#  optional knobs, non-breaking — reviewer may escalate to C3).
+#  IPLAN: framework/archive/CHG-37/IPLAN-37.yaml (In Progress; no spec edits
+#  before that per §3.13 — vehicle authored first, knob edits after).
+#  Requester citation: issues #843 (blast-radius knobs) + #844
+#  (attempt/token/wall-clock budgets), both read live 2026-10-01 (OPEN) and
+#  claim-verified on current dev (surface carries 7 knobs, none covering
+#  execution; REVIEW_SAGA.md budgets the review loop only).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (ADAPTATION_SURFACE.yaml:79-89 fallback pattern,
+#  PROFILE-TEMPLATE.yaml:31 header + override rows, ADAPTATION.md §§4.1–4.7 +
+#  §6 + §8, test_governance.py:115-168 parity tests, GATE-SPEC gate def E002
+#  mapping, CHG_REQUEST_FLOWS.md F-table, TAGGING.md framework stream,
+#  DECISIONS.md GD-42 head, both changelogs [0.68.4] sections); (2) no
+#  client/server claim — engine-agnostic YAML registry, enforcement surface
+#  is the existing conformance parity tests; (3) knob schema mirrors the
+#  existing entries verbatim (name/type/consumers/constraint/default);
+#  (4) N/A no queries; (5) EARS/BDD IDs vacuous (no SDD contract at stake);
+#  (6) N/A no handlers; (7) coupled issues #843+#844 implemented together —
+#  one knob set, one vehicle, separate Closes keywords; (8) covering tests:
+#  the conformance suite itself (well_formed + covers_surface_knobs) plus
+#  full unit/conformance/lint suites as regression; (9) fix located: 3 spec
+#  files + GD-43 + MINOR cut + changelogs; (10) N/A no migrations;
+#  (11) SDD versioning planned — sdd_lifecycle entries for the 4 touched
+#  governance docs (09_CHG amend + snapshots) + IPLAN-37 (08_IPLAN create);
+#  (12) GOV-014 paired — artifacts_modified carries no unlisted SDD-layer
+#  rewrite (CHANGELOGs/VERSION/sync-script ride the fanout step per CHG-11
+#  precedent); (13) SDD-first ordered — sdd_lifecycle steps before
+#  iplan_creation; (14) no code steps in CHG (legal phases only).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — declarative bounded knobs,
+#  no executable content, no untrusted input; new knobs are caps/restrictions
+#  only (never weaken a gate; audit_threshold raise-only untouched).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  in worktree 2026-10-01; CHG-23/24/25/27/28 finding stands). Phase 0b:
+#  not F3, omitted (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Out of scope: REVIEW_SAGA.md/EVAL machinery (review-loop budgets stand
+#  unchanged); closed-registry relaxation (unknown keys stay ignored);
+#  existing knob defaults/ranges (frozen); archive/** snapshots (immutable).
+#  No SDD document modified → sdd_lifecycle: [] (GOV-014 paired).
+# =============================================================================
+
+id: CHG-37
+title: "Execution-policy + execution-attempt-budget knobs"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-37"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "adaptation surface v0.68.4 (framework/archive/CHG-37/ADAPTATION_SURFACE.yaml)"
+    - "profile template v0.68.4 (framework/archive/CHG-37/PROFILE-TEMPLATE.yaml)"
+    - "adaptation prose v0.68.4 (framework/archive/CHG-37/ADAPTATION.md)"
+    - "governance DECISIONS v1.4 (framework/archive/CHG-37/DECISIONS.md)"
+    - "framework/VERSION 0.68.4 (framework/archive/CHG-37/VERSION)"
+    - "IPLAN-37 authorizing record (framework/archive/CHG-37/IPLAN-37.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Add 8 optional, bounded exec_* knobs to the closed adaptation registry (7 → 15 knobs): blast-radius limits exec_max_files / exec_max_diff_lines / exec_protected_paths / exec_test_timeout_s (#843) plus execution-attempt budgets exec_max_attempts / exec_token_budget / exec_wall_clock_budget_s with fixed-size exec_failure_summary_lines (#844). Each follows the quality_loop_max_iterations pattern (type, range, default, missing/malformed → default fallback). Three-way parity kept: PROFILE-TEMPLATE.yaml override rows + ADAPTATION.md §§4.8–4.15 rationale (enforced by test_profile_template_covers_surface_knobs). MINOR cut 0.69.0 (VERSION bump + sweep + both changelogs) + GD-43 per GATE-SPEC E005/E008."
+  why: "Without standard knobs each engine invents its own blast-radius limits and profiles are not portable (#843); a conforming engine may retry patch→verify loops unboundedly, blowing up cost/latency/context (#844). The closed registry otherwise reads complete — the gap is an absence."
+  trigger: "Issues #843 + #844 (2026-10-01 review findings, Rust harness spike)."
+  scope:
+    in:
+      - "framework/governance/ADAPTATION_SURFACE.yaml: 8 new exec_* knob entries (Knobs (7) → (15))"
+      - "framework/governance/PROFILE-TEMPLATE.yaml: 8 commented override rows (header 7 → 15)"
+      - "framework/governance/ADAPTATION.md: §4 header count + §§4.8–4.15 rationale"
+      - "framework/governance/DECISIONS.md: GD-43 entry (append newest-first) + Document Control refresh"
+      - "framework/archive/CHG-37/CHG-37.yaml + IPLAN-37.yaml (this vehicle)"
+      - "framework/VERSION 0.68.4 → 0.69.0 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "CHANGELOG.md + framework/CHANGELOG.md [0.69.0] sections (E008 driver)"
+    out:
+      - "REVIEW_SAGA.md / EVAL machinery (review-loop budgets stand unchanged)"
+      - "Closed-registry relaxation (unknown keys stay ignored) and existing knob defaults/ranges (frozen)"
+      - "archive/** snapshots (immutable); any contract/behavior change beyond additive optional knobs"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/ADAPTATION_SURFACE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-37/ADAPTATION_SURFACE.yaml"
+    new_version: "0.69.0"
+    current_version: "0.68.4"
+    changes: "8 new exec_* knobs (7 → 15); closed-set prose + existing knobs untouched"
+  - layer: "09_CHG"
+    document: "framework/governance/PROFILE-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-37/PROFILE-TEMPLATE.yaml"
+    new_version: "0.69.0"
+    current_version: "0.68.4"
+    changes: "8 commented exec_* override rows; knob-count header 7 → 15"
+  - layer: "09_CHG"
+    document: "framework/governance/ADAPTATION.md"
+    action: amend
+    archive_path: "framework/archive/CHG-37/ADAPTATION.md"
+    new_version: "0.69.0"
+    current_version: "0.68.4"
+    changes: "§4 header count 7 → 15; new §§4.8–4.15 rationale (one per exec_* knob)"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-37/DECISIONS.md"
+    new_version: "1.5"
+    current_version: "1.4"
+    changes: "New GD-43 entry (knob set + bounds + vehicle); doc Version 1.4 → 1.5"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-37/IPLAN-37.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# no module docs touched; CHG-11/CHG-23 precedent)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified empty 2026-10-01; CHG-23/24/25/27/28 finding stands); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps run BEFORE iplan_creation — CHG-L005)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-37/ (surface, template, ADAPTATION.md, DECISIONS.md, VERSION — excluding the CHG-37 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "ADAPTATION_SURFACE.yaml, PROFILE-TEMPLATE.yaml, ADAPTATION.md, DECISIONS.md, VERSION"
+      archive_path: "framework/archive/CHG-37/"
+      new_version: "0.69.0"
+      current_version: "0.68.4"
+      status: Completed
+    - step: "Run SDD cascade per lifecycle above (8 exec_* knobs + template rows + §§4.8–4.15 + GD-43 v1.5)"
+      phase: "sdd_lifecycle"
+      artifact: "ADAPTATION_SURFACE.yaml, PROFILE-TEMPLATE.yaml, ADAPTATION.md, DECISIONS.md (GD-43, v1.5)"
+      archive_path: "framework/archive/CHG-37/"
+      new_version: "0.69.0"
+      current_version: "0.68.4"
+      status: Completed
+    - step: "MINOR fanout per IPLAN-37 manifest (framework/VERSION, both CHANGELOGs [0.69.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md, CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-37/"
+      new_version: "0.69.0"
+      current_version: "0.68.4"
+      status: Completed
+    - step: "Create IPLAN-37 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-37"
+      status: Completed
+    - step: "Run IPLAN-37 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/843-844-exec-policy → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-37/CHG-37.yaml"
+    - "framework/archive/CHG-37/IPLAN-37.yaml"
+    - "framework/governance/ADAPTATION_SURFACE.yaml"
+    - "framework/governance/PROFILE-TEMPLATE.yaml"
+    - "framework/governance/ADAPTATION.md"
+    - "framework/governance/DECISIONS.md (GD-43 newest-first + Document Control refresh)"
+    - "framework/VERSION (0.68.4 → 0.69.0)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.4)"
+    - "CHANGELOG.md + framework/CHANGELOG.md ([0.69.0] sections)"
+    - "Sweep fallout: mechanical 0.68.4 → 0.69.0 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-37"
+    changes: "Authorizing record for execution-policy knob addition (this file)"
+  - id: "IPLAN-37"
+    changes: "Authorizing IPLAN (framework/archive/CHG-37/IPLAN-37.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec: framework maintainer + 1 reviewer via protected-branch review. Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-37 (0 errors)"
+    - "Surface parses: 15 unique knobs; closed-set prose intact"
+    - "PROFILE-TEMPLATE.yaml documents all 15 knobs; header count reads 15"
+    - "ADAPTATION.md carries ### 4.1–4.15 sections matching the 15 knob names"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.69.0, both changelogs carry [0.69.0]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "tests/conformance/test_governance.py parity tests pass with 8 intentional additions"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/843-844-exec-policy → dev"

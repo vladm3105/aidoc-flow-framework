@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.4 |
+| Framework Version | 0.69.0 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -80,7 +80,7 @@ version-controlled. A project value that overrides the seed for the same knob is
 a deliberate per-project deviation and is recorded as a learning (see the
 knowledge-extraction overlay).
 
-## 4. The surface (v1 — seven knobs)
+## 4. The surface (v1 — fifteen knobs)
 
 The authoritative definitions, types, and consumer roles live in
 `ADAPTATION_SURFACE.yaml`. This section is the rationale.
@@ -173,6 +173,80 @@ it each consumer invents its own profile shape for the same bindings.
 
 Honored by: **scaffolding** (wires the project's CI surface from the pinned
 values).
+
+### 4.8 `exec_max_files`
+
+How many distinct files one execution task may create or modify. Without a
+standard knob each engine invents its own blast-radius limit and profiles are
+not portable. Range 1–100 (`8` default); out-of-range values are malformed
+and fall back to the default. A cap only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.9 `exec_max_diff_lines`
+
+How large one execution task's diff may grow (added-plus-removed lines).
+Range 1–10000 (`600` default); out-of-range values are malformed and fall
+back to the default. A cap only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.10 `exec_protected_paths`
+
+Repository-relative path prefixes an execution task must never write (e.g.
+`framework/archive/`, `.git/`). Non-string or blank entries are ignored; the
+list is **additive to engine built-ins only** — listing a path never
+unprotects anything. Default `[]` (no project-level additions). This bounds
+the blast radius; it does not weaken any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.11 `exec_test_timeout_s`
+
+Per-test-command wall-clock ceiling in seconds. Range 30–3600 (`300`
+default); out-of-range values are malformed and fall back to the default.
+A ceiling only — it never weakens any gate.
+
+Honored by: **audit**.
+
+### 4.12 `exec_max_attempts`
+
+How many patch→verify cycles an execution task runs before it stops
+retrying. The saga lifecycle already bounds *review* loops
+(`quality_loop_max_iterations` → `PARTIAL_TIMEOUT`); this is the matching
+bound for *execution* attempts, which otherwise retry unboundedly. Range
+1–10 (`3` default, mirroring the review-loop cap); out-of-range values are
+malformed and fall back to the default. This bounds the loop; it does not
+weaken any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.13 `exec_token_budget`
+
+Total model-token budget per execution task, retries included — without it
+cyclic retry compacts context monotonically across attempts and cost is
+unbounded. Range 10000–2000000 (`200000` default); out-of-range values are
+malformed and fall back to the default. A budget only — it never widens any
+gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.14 `exec_wall_clock_budget_s`
+
+Total wall-clock budget in seconds per execution task, retries included.
+Range 60–14400 (`1800` default); out-of-range values are malformed and fall
+back to the default. A budget only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.15 `exec_failure_summary_lines`
+
+Fixed size in lines of the failure summary carried across retries, so
+retried context stays compact instead of accumulating full logs. Range
+5–200 (`30` default); out-of-range values are malformed and fall back to the
+default.
+
+Honored by: **authoring** and **audit**.
 
 ## 5. How an engine consults the profile
 
