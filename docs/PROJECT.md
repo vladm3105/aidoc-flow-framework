@@ -153,33 +153,47 @@ were retired with the 2026-09-07 platform archive — no re-sync obligation rema
 
 Projects consume the framework by cloning it into their `.aidoc/framework/` directory. This section defines the integration contract.
 
-### 7.1 Sparse checkout (recommended)
+### 7.1 Consumer copy (allowlist)
 
-Projects should clone the framework and keep only the directories needed for project work, excluding framework development files (CI configs, root docs, tooling):
+A new project ships a *pinned copy* of exactly the directories below —
+nothing else. Clone the canon to scratch, copy the allowlist out, then prune
+the frozen history inside the copy. Never clone the canon tree whole into the
+project, and never maintain the set as a post-clone denylist (`rm` after a
+full clone): a denylist rots on every new top-level directory, which is how
+`.agents/`, `.aidoc/`, `plans/`, and 4.2 MB of `framework/archive/` leaked
+into consumer trees (#834).
 
 ```bash
-# Clone the framework into .aidoc/framework/
-git clone https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
+# Clone the canon to scratch (never into the project tree)
+git clone --depth 1 https://github.com/vladm3105/aidoc-flow-framework.git /tmp/aidoc-framework
 
-# Remove framework development files (keep only what projects need)
-cd .aidoc/framework
-rm -rf AGENTS.md CHANGELOG.md CLAUDE.md CONTRIBUTING.md GOVERNANCE.md \
-       LICENSE README.md SECURITY.md archive tmp .github .vscode \
-       .pre-commit-config.yaml .secrets.baseline .gitleaks.toml \
-       .lychee.toml .markdownlint.json .markdownlintignore \
-       .yamllint .yamllint.yaml ruff.toml
+# Copy ONLY the consumer allowlist into the fresh project tree
+# (new adoption; refreshes go through UPGRADE-RUNBOOK.md, which removes first)
+mkdir -p .aidoc/framework
+cp -r /tmp/aidoc-framework/{framework,docs,hooks,sdd_doc_lint,tests} .aidoc/framework/
+
+# Prune canon-dev history inside the copy (frozen CHG archive)
+rm -rf .aidoc/framework/framework/archive
 ```
 
-**Included directories:**
+**Shipped directories (the allowlist):**
 
 | Directory | Purpose |
 |-----------|---------|
-| `framework/` | Core spec — governance, layers, playbooks, scripts, templates, registry |
-| `docs/` | Framework documentation |
-| `examples/` | Reference examples (url-shortener) |
+| `framework/` | Core spec — governance, layers, playbooks, registry, skills, orientation guides, `VERSION`, `CHANGELOG.md` (minus `archive/`, pruned above) |
+| `docs/` | Framework documentation (including this contract and the adaptation guide) |
 | `hooks/` | Advisory hooks (`PostToolUse` + `PreCommit` — see `hooks/README.md`) |
 | `sdd_doc_lint/` | Structural linter (296+ checks) |
-| `tests/` | Conformance and unit tests |
+| `tests/` | Shared suites (conformance, acceptance, unit) — re-pass on upgrade |
+
+**Deliberately NOT shipped (stays in canon):** `.agents/` (repo skills),
+`.aidoc/` (canon's own learning log), `.github/` (canon CI), `plans/`
+(working plans), root dev docs (`AGENTS.md`, `CONTRIBUTING.md`,
+`GOVERNANCE.md`, `README.md`, `SECURITY.md`, `CHANGELOG.md`, `LICENSE`),
+tooling dotfiles (`.pre-commit-config.yaml`, `.gitleaks.toml`, linter
+configs), and the canon `.git` history. Refresh a pinned copy by repeating
+the copy above per `framework/governance/aidoc/UPGRADE-RUNBOOK.md` — never by
+pulling inside `.aidoc/framework/`.
 
 ### 7.2 Directory structure contract
 
@@ -188,17 +202,17 @@ Projects maintain a `.aidoc/` directory with this structure:
 ```
 .aidoc/
 ├── profile.yaml             # Project adaptation knobs
-├── framework/               # Cloned framework (version-pinned)
-│   ├── framework/           # Core spec
+├── framework/               # Pinned allowlist copy (§7.1, version-pinned)
+│   ├── framework/           # Core spec (WITHOUT archive/ — pruned, §7.1)
 │   │   ├── governance/
 │   │   ├── layers/
 │   │   ├── playbooks/
-│   │   ├── scripts/
-│   │   ├── templates/
 │   │   ├── registry/
-│   │   └── VERSION
+│   │   ├── skills/
+│   │   ├── *.md guides      # orientation docs, ship with the copy
+│   │   ├── CHANGELOG.md     # upgrade input (per-version migration notes)
+│   │   └── VERSION          # pinned-version source of truth
 │   ├── docs/
-│   ├── examples/
 │   ├── hooks/
 │   ├── sdd_doc_lint/
 │   └── tests/
