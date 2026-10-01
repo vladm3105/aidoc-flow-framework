@@ -54,7 +54,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
-| `FRAMEWORK_FEEDBACK_LOG.md` | The tracker-only capture + publication discipline for framework friction found while applying the spec (the canonical reference of DOC_GOVERNANCE_CORE Principle 9). |
+| `submit-feedback` skill (`framework/skills/submit-feedback/`) | The filing workflow for framework friction found while applying the spec (the canonical reference of DOC_GOVERNANCE_CORE Principle 9). |
 | `DECISION_WORKFLOW.md` | The decision-making workflow — how governance decisions are proposed, reviewed, and ratified. |
 | `MODULE_LAYOUT.md` | The module structure and organization conventions for the framework. |
 | `NOTICES.md` | Important notices, deprecations, and breaking changes across framework versions. |
