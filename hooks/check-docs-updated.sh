@@ -17,7 +17,7 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
 [ -z "$STAGED" ] && exit 0
 
 # Documents of record (resynced #663: AGENTS.md is the working agreement,
-# CLAUDE.md deprecated; versioned changelogs included)
+# CLAUDE.md retired (removed); versioned changelogs included)
 DOCS_OF_RECORD=(
   "CHANGELOG.md"
   "README.md"

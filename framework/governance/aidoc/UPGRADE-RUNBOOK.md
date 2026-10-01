@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.2 |
+| Framework Version | 0.68.3 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -32,8 +32,15 @@ procedure below clears.
 - **Symlink consumers:** retarget `.aidoc/framework` at the new canon
   location and update `framework_version` in `.aidoc/profile.yaml` to the new
   `X.Y.Z`.
-- **Pinned-copy consumers:** replace the copy with the new canon tree, then
-  update `framework_version`. Never leave a half-copied tree.
+- **Pinned-copy consumers:** remove the old copy first
+  (`rm -rf .aidoc/framework` — `cp -r` never deletes, so refreshing over
+  the existing tree would let upstream-removed files linger), then replace
+  it by repeating the `docs/PROJECT.md` §7.1 allowlist copy at the new
+  canon tree (`framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/`,
+  then prune `framework/archive/` inside the copy), then update
+  `framework_version`. Never leave a half-copied tree, and never refresh
+  by copying the canon tree whole — that reintroduces the canon-dev
+  internals §7.1 excludes (#834).
 
 ### 3. Diff each `project/` override against its new upstream shadow
 

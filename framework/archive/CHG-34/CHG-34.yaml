@@ -1,0 +1,144 @@
+# =============================================================================
+#  CHG-34: Post-tag docs-truthfulness — TAGGING 0.68.3 refresh
+#  (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (human release chain 2026-10-01 "complete all tasks and
+#  promote to main"; no prior IPLAN, no product-behavior change — prose
+#  census refresh after the tag cut) — docs-only C1: C1 CHG + scoped IPLAN
+#  per F2.2; entry GATE-CODE. Precedent: CHG-32 (0.68.2 refresh).
+#  IPLAN: framework/archive/CHG-34/IPLAN-34.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: founder "complete all tasks and promote to main"
+#  (2026-10-01); tag framework/v0.68.3 verified pushed before authoring
+#  (target reads 0.68.3).
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — prose figures only, no code/scripts, no normative text, no
+#  contract change.
+#  EARS/BDD IDs vacuous (upstream is the pushed tag + live re-derivation).
+#  SECURITY_REVIEW: assessed — no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Covering tests: pure-prose N/A with reason (F2.3) — figures verified by
+#  live re-derivation (commands in IPLAN-34: 133 values, 77 untagged,
+#  48/48 exact-version tag reads, contiguity 0.46.0–0.68.3); full suites
+#  run as regression battery.
+#  Out of scope: tag-convention / phantom-list / disclaimer-posture changes;
+#  per-version table rows; project/plugin/hermes high-waters (unchanged);
+#  promotion itself (separate release/X → main PR after this merges).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-34
+title: "Post-tag TAGGING 0.68.3 refresh (docs-only)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.3"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-34"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-34 authorizing record (framework/archive/CHG-34/IPLAN-34.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Re-derive docs/TAGGING.md inventory figures post-tag (high-water v0.68.3, 77-of-133 census, 48/48 exact reads, contiguity through 0.68.3). No VERSION bump (version_action keep); no framework/ files touched."
+  why: "Tag figures are a dated snapshot that rots on every cut; the refresh keeps the inventory truthful (CHG-32 precedent)."
+  trigger: "Human release chain 2026-10-01; tag framework/v0.68.3 pushed before authoring."
+  scope:
+    in:
+      - "docs/TAGGING.md: figure refresh only (dates, high-water, census, contiguity range, spec-at)"
+      - "framework/archive/CHG-34/CHG-34.yaml + IPLAN-34.yaml (this vehicle)"
+    out:
+      - "VERSION bump; framework/ edits; per-version table rows"
+      - "Project/plugin/hermes high-waters (unchanged)"
+      - "Promotion to main (separate release/0.68.3 → main PR)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-34 + IPLAN-34 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-34 + IPLAN-34"
+      status: Completed
+    - step: "Re-derive figures live and refresh docs/TAGGING.md"
+      phase: "release_cut"
+      artifact: "docs/TAGGING.md"
+      status: In-Progress
+    - step: "Run IPLAN-34 battery + open PR to dev"
+      phase: "verification"
+      artifact: "PR feature/chg-34-tagging-0683 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-34/CHG-34.yaml"
+    - "framework/archive/CHG-34/IPLAN-34.yaml"
+    - "docs/TAGGING.md"
+
+artifacts_modified:
+  - id: "CHG-34"
+    changes: "Authorizing record for 0.68.3 TAGGING refresh (this file)"
+  - id: "IPLAN-34"
+    changes: "Authorizing IPLAN (framework/archive/CHG-34/IPLAN-34.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-34 (0 errors)"
+    - "TAGGING figures match live re-derivation (133 / 77 / 48; contiguity through v0.68.3)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/chg-34-tagging-0683 → dev"

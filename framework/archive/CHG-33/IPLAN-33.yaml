@@ -1,0 +1,146 @@
+# =============================================================================
+#  IPLAN-33: PATCH 0.68.2 → 0.68.3 (F2 direct, C1, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-33/CHG-33.yaml (F2 direct, C1,
+#  In-Progress). Source: human requests 2026-10-01 (#834 fix, runbook check,
+#  PR). Release mechanics + disclosed riding docs/test/retirement content.
+# =============================================================================
+
+doc_id: IPLAN-33
+title: "Release cut 0.68.3 + CHG-33 vehicle"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.2"
+  source_chg: "CHG-33"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-33"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct cut under CHG-33; runbook §2 repair + riding docs/test/retirement, no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 22
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-33/CHG-33.yaml + IPLAN-33.yaml"
+      description: "Authorizing vehicle (CHG-33 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+      description: "§2 pinned-copy bullet → §7.1 allowlist reference (E005 driver)"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "Bump 0.68.2 → 0.68.3"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.68.2; sweep run produces the pin moves"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md + CHANGELOG.md"
+      description: "New [0.68.3] sections (spec detail + project mirror)"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: ".aidoc/profile.yaml"
+      description: "Declared framework_version 0.68.2 → 0.68.3 (living declaration follows the bump)"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md + docs/ADAPTATION-GUIDE.md"
+      description: "#834 riding docs: §7 allowlist + trees, §2 pinned-copy pointer (already in tree)"
+      order: 6
+      status: DONE
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_consumer_manifest.py"
+      description: "New #834 guard (red pre-fix observed, green post-fix)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: false
+    - path: "AGENTS.md + CLAUDE.md (deleted) + pointer sync (.github/*, hooks/check-docs-updated.sh, test_phantom_paths.py)"
+      description: "Riding retirement: single working agreement, no dangling refs (already in tree)"
+      order: 8
+      status: DONE
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Consumer copy-set: new test_consumer_manifest (red pre-fix, green post-fix) + end-to-end /tmp proof of §7.1. Release mechanics: sweep-diff review (only 0.68.2 → 0.68.3 moves) + full suites green on the bumped tree."
+  cases:
+    - "chg_lint.py over CHG-33: 0 errors"
+    - "test_consumer_manifest green; /tmp §7.1 proof ships exactly the allowlist"
+    - "framework/VERSION reads 0.68.3; no 0.68.2 pins survive outside archive/ + accepted spots"
+    - "Sweep diff review: only pin moves, no content edits"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-33/CHG-33.yaml"
+    - "cat framework/VERSION"
+    - "cd tests/conformance && python3 -m unittest test_consumer_manifest test_phantom_paths test_sync_version_refs"
+    - "git diff --stat dev (expect only manifest files + mechanical sweep output)"
+    - "git grep -n '0\\.68\\.2' -- . ':!framework/archive' ':!CHANGELOG.md' ':!framework/CHANGELOG.md' ':!docs/TAGGING.md' ':!hooks/sync-version-refs.sh' | head"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched (+ mechanical sweep output)"
+  - "Runbook bullet is the only normative edit; no MINOR/MAJOR story"
+  - "Sweep output reviewed file-by-file before commit"
+  - "Tag/TAGGING/promotion explicitly sequenced out of this diff"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + runbook repair + bump + sweep + changelogs + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-33"
+  upstream: ["Human requests 2026-10-01 (#834 fix, runbook check, PR)", "Issue #834 (real-use); #835 noted out of scope"]
+  downstream: ["PR feature/834-consumer-copy-guard → dev", "tag framework/v0.68.3", "TAGGING micro-vehicle", "release/0.68.3 → main"]
