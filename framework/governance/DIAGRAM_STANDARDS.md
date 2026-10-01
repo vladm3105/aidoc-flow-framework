@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.6 |
+| Framework Version | 0.69.0 |
 
 ## Mandatory Format: Mermaid Only
 

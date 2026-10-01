@@ -1,0 +1,208 @@
+# =============================================================================
+#  CHG-36: Bind EVAL verdicts to artifact bytes (verification-binding contract)
+#  (spec source, C2, GATE-SPEC, MINOR 0.68.6 → 0.69.0, one PR)
+# =============================================================================
+#  Flow: change_source spec (touches framework/ spec: governance
+#  DEFINITION_OF_DONE.md + DECISIONS.md) — entry GATE-SPEC per the template
+#  source table; change_level C2 (additive: one contract paragraph + one GD
+#  entry; no layer template, registry, or API touched; reviewer may escalate
+#  to C3). GATE-SPEC-E003 satisfied (never C1). SemVer minor (additive).
+#  IPLAN: framework/archive/CHG-36/IPLAN-36.yaml (In Progress; no writes
+#  before that per §3.13 — vehicle authored first, spec edits after).
+#  Requester: issue #842 (P1, gap; real-use origin: Rust harness spike
+#  verifier-contract investigation, 2026-10-01). Mode-B validated live on
+#  current dev: #842 OPEN; DEFINITION_OF_DONE.md + layers/10_EVAL/ carry
+#  verdict enum + evidence artifacts with no artifact-hash binding; LINT_RULES
+#  catalog, sdd_doc_lint/, and tests/conformance/ pin nothing of this class —
+#  every claim reproduces, none stale/superseded.
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (DEFINITION_OF_DONE.md full read; 10_EVAL README
+#  full read; EVAL-TEMPLATE.yaml full read; EVAL-REPORT-TEMPLATE.yaml
+#  verdict §9 + evidence §10 read; GATE-SPEC_FRAMEWORK.md E003/E005/E008
+#  rows read; CHANGELOG heads + sync-version-refs.sh OLD_VERSIONS read);
+#  (2-4,6,10) N/A prose-only; (5) EARS/BDD IDs vacuous (no SDD layer
+#  contract at stake — governance overlay only); (7) coupled issues: none
+#  (#842 stands alone); (8) covering tests: conformance suite is the cover
+#  (no file-set change, no pin to move) + full unit/conformance/lint-test
+#  battery as regression; (9) fix located: 1 paragraph in DoD + GD-43 +
+#  version cut + changelogs; (11) sdd_lifecycle carries the versioned
+#  governance docs amended in place (CHG-23/CHG-26 precedent: governance
+#  *.md are not SDD layer artifacts — GOV-014 paired — but rotate archive
+#  snapshots in the same lifecycle); (12) GOV-014 paired; (13) SDD-first:
+#  sdd_lifecycle steps before iplan_creation/documentation_sync, legal
+#  phases only; (14) no code steps in CHG.
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — normative prose only, no
+#  executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (CHG-35
+#  finding 2026-10-01 stands). Phase 0b: not F3, omitted.
+#  Out of scope (per #842 fix shape + not-broken list): verdict enum,
+#  Completed → Verified flow, GATE-08, review-remediation loop (all
+#  untouched); EVAL layer templates (no schema change — binding is prose
+#  contract, mechanism stays engine-local); chg_lint rules (no new lint
+#  IDs); Rust typestate specifics (engine repo owns the mechanism).
+# =============================================================================
+
+id: CHG-36
+title: "Bind EVAL verdicts to artifact bytes (verification-binding contract, #842, 0.69.0 MINOR)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.6"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-36"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance DEFINITION_OF_DONE v1.0 (framework/archive/CHG-36/DEFINITION_OF_DONE.md)"
+    - "governance DECISIONS v1.4 (framework/archive/CHG-36/DECISIONS.md)"
+    - "framework/VERSION 0.68.6 (framework/archive/CHG-36/VERSION)"
+    - "IPLAN-36 authorizing record (framework/archive/CHG-36/IPLAN-36.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Adopt the verification-binding contract (#842): one engine-agnostic paragraph in DEFINITION_OF_DONE.md — every EVAL verdict MUST reference the content hash of the exact artifact revision evaluated, and the engine trust boundary MUST make forging that binding impossible without modifying the engine itself. Mechanism stays engine-local; no new layer; verdict enum, Completed → Verified flow, and GATE-08 untouched. GD-43 decision entry; MINOR bump 0.68.6 → 0.69.0."
+  why: "The EVAL gate records verdict + artifacts but never requires the verdict to be bound to the exact artifact bytes evaluated — any conforming engine may legally pair a PASS with unexamined code. The gap is an absence, so all existing checks pass while the guarantee is missing; it surfaced when an engine's safety case needed a spec rule to conform to and none existed."
+  trigger: "Issue #842 (P1, gap; real-use origin: Rust harness spike verifier-contract investigation, 2026-10-01)."
+  scope:
+    in:
+      - "framework/governance/DEFINITION_OF_DONE.md: new `Verification binding (EVAL verdicts)` section (v1.0 → v1.1) + cross-reference row"
+      - "framework/governance/DECISIONS.md: new GD-43 entry (v1.4 → v1.5)"
+      - "framework/archive/CHG-36/CHG-36.yaml + IPLAN-36.yaml (this vehicle) + pre-change snapshots"
+      - "MINOR bump 0.68.6 → 0.69.0: VERSION + framework/CHANGELOG.md + machine-pin fanout (hooks/sync-version-refs.sh OLD_VERSIONS gains 0.68.6)"
+    out:
+      - "EVAL layer templates 01_BRD–10_EVAL (untouched per issue not-broken list — no schema change)"
+      - "Verdict enum, Completed → Verified flow, GATE-08, review-remediation loop (untouched)"
+      - "chg_lint schemas/rules (no new lint IDs)"
+      - "Engine mechanism specifics (engine-local by contract)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/DEFINITION_OF_DONE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-36/DEFINITION_OF_DONE.md"
+    new_version: "1.1"
+    changes: "New Verification binding section (EVAL verdicts bound to artifact hash; engine trust boundary); doc Version 1.0 → 1.1"
+    author: "Muse Code"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-36/DECISIONS.md"
+    new_version: "1.5"
+    changes: "New GD-43 entry (binding contract + vehicle + constraint); doc Version 1.4 → 1.5"
+    author: "Muse Code"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-36/IPLAN-36.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-36 (scoped: manifest + verification battery)"
+    author: "Muse Code"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-36/ (DEFINITION_OF_DONE.md, DECISIONS.md, VERSION — excluding the CHG-36 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "DEFINITION_OF_DONE.md, DECISIONS.md, VERSION"
+      archive_path: "framework/archive/CHG-36/"
+      new_version: "0.69.0"
+      current_version: "0.68.6"
+      status: Completed
+    - step: "Run SDD amendments per lifecycle above (DoD binding section + v1.1, DECISIONS GD-43 + v1.5)"
+      phase: "sdd_lifecycle"
+      artifact: "DEFINITION_OF_DONE.md (v1.1), DECISIONS.md (GD-43, v1.5)"
+      archive_path: "framework/archive/CHG-36/"
+      new_version: "0.69.0"
+      current_version: "0.68.6"
+      status: In-Progress
+    - step: "Create IPLAN-36 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-36"
+      status: Completed
+    - step: "MINOR cut 0.69.0: VERSION bump + sync sweep (pin moves only) + both changelogs"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, framework/CHANGELOG.md"
+      status: Pending
+    - step: "Run IPLAN-36 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/842-eval-binding → dev"
+      status: Pending
+  files_modified:
+    - "framework/archive/CHG-36/CHG-36.yaml"
+    - "framework/archive/CHG-36/IPLAN-36.yaml"
+    - "framework/archive/CHG-36/DEFINITION_OF_DONE.md (pre-change snapshot)"
+    - "framework/archive/CHG-36/DECISIONS.md (pre-change snapshot)"
+    - "framework/archive/CHG-36/VERSION (pre-change snapshot)"
+    - "framework/governance/DEFINITION_OF_DONE.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/VERSION (0.68.6 → 0.69.0)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.6)"
+    - "framework/CHANGELOG.md ([0.69.0] section; root CHANGELOG.md is a frozen tombstone since CHG-40 — untouched)"
+    - "Sweep fallout: mechanical 0.68.6 → 0.69.0 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-36"
+    changes: "Authorizing record for the verification-binding contract (this file)"
+  - id: "IPLAN-36"
+    changes: "Authorizing IPLAN (framework/archive/CHG-36/IPLAN-36.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  date: null
+  # C2 spec: peer review (maintainer). No formal approver required.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-36 (0 errors)"
+    - "GATE-SPEC E003/E005/E008: C2 (never C1), framework/VERSION at 0.69.0, framework/CHANGELOG.md carries [0.69.0]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "Binding paragraph present and engine-agnostic (no engine mechanism prescribed; no new layer; verdict enum / Completed→Verified / GATE-08 untouched)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/842-eval-binding → dev"

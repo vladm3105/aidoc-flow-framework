@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.6 |
+| Framework Version | 0.69.0 |
 
 ---
+
+## [0.69.0] — 2026-10-01
+
+### Added — verification-binding contract: EVAL verdicts bound to artifact bytes (C2 MINOR → 0.69.0, CHG-36 + IPLAN-36)
+
+- `framework/governance/DEFINITION_OF_DONE.md` v1.0 → v1.1: new `Verification binding (EVAL verdicts)` section — every EVAL verdict (`PASS` / `PASS-WITH-NOTES` / `FAIL` / `BLOCKED`) MUST reference the content hash of the artifact revision evaluated, and the engine trust boundary MUST make forging that binding impossible without modifying the engine itself. Engine-agnostic: no hash function, token shape, or enforcement location prescribed; mechanism stays engine-local.
+- `framework/governance/DECISIONS.md` v1.4 → v1.5: new GD-43 entry (contract + vehicle + constraint).
+- Unchanged by design (#842 not-broken list): verdict enum, `Completed → Verified` flow, GATE-08, review-remediation loop, EVAL layer templates (no schema change), `chg_lint` rules (no new lint IDs).
+- Sweep 0.68.6 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.6] — 2026-10-01
 
