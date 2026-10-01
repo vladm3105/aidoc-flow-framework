@@ -1,0 +1,148 @@
+# =============================================================================
+#  IPLAN-38: Engine guidance — telemetry doc + live policy-update discipline
+#  (F2 direct, C1, one PR; closes #845 and #846)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-38/CHG-38.yaml (F2 direct, C1,
+#  In-Progress; entry GATE-SPEC). Sources: issues #845 (telemetry) + #846
+#  (live policy-update), both review-origin, both Mode-B validated live on
+#  dev 2026-10-01 (zero telemetry hits outside archive snapshots; no
+#  live-update discipline — only unrelated "atomicity" prose hits).
+#  Docs-only C1 with one test-file edit: covering test is the conformance
+#  suite itself (test_governance passes with the intentional pin added);
+#  full suites are the regression battery.
+# =============================================================================
+
+doc_id: IPLAN-38
+title: "Engine guidance: vendor-neutral telemetry + live policy-update discipline"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.70.0"
+  source_chg: "CHG-38"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-38"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-38; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 9
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-38/CHG-38.yaml + IPLAN-38.yaml"
+      description: "Authorizing vehicle (CHG-38 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ENGINE_TELEMETRY.md"
+      description: "NEW: vendor-neutral SHOULD telemetry guidance (#845); saga journaling untouched"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ADAPTATION.md"
+      description: "New §5.1 live policy-update discipline (#846); no new knob, no §4 section, fallback lines untouched"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/README.md"
+      description: "Documents-table row for ENGINE_TELEMETRY.md"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "EXPECTED_FILES gains ENGINE_TELEMETRY.md (intentional spec change, justified in CHG-38)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.70.0 → 0.70.1 (E005 driver)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.70.0; sweep run produces the pin moves"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "CHANGELOG.md + framework/CHANGELOG.md"
+      description: "New [0.70.1] section in framework changelog (E008 driver; root log frozen per CHG-40)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Docs-only C1 with one test-file edit (F2.2): the edit's cover is the conformance suite itself — test_governance passes with the pin intentionally added, guard standing for all files including the new doc. Full tests/unit + tests/conformance + sdd_doc_lint/tests runs are the regression battery."
+  cases:
+    - "chg_lint.py over CHG-38: 0 errors"
+    - "framework/VERSION reads 0.70.1; framework changelog carries [0.70.1]; sweep pin-only"
+    - "ADAPTATION.md §4 knob-section parity holds (no new knob, no new §4 section)"
+    - "No engine-specific tokens in new prose (ENGINE_TOKENS sweep clean)"
+    - "test_governance passes with pin added; tests/unit, tests/conformance, sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-38/CHG-38.yaml"
+    - "grep -rin 'opentelemetry|OTLP|gen_ai' framework/governance/ENGINE_TELEMETRY.md (expect guidance hits only in the new doc)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git status --short (expect only manifest files)"
+  test: []
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Saga journaling untouched (REVIEW_SAGA.md, saga.schema.json)"
+  - "Load-time fallback semantics untouched (surface YAML fallback lines, PROFILE-TEMPLATE)"
+  - "No new adaptation knob, no new ADAPTATION.md §4 section (sibling #843 owns the registry)"
+  - "No vendor SDK, backend, or platform mandate in telemetry prose"
+  - "Frozen history intact (DECISIONS, TAGGING, archive/**)"
+  - "PATCH cut 0.70.1 (version_action keep: schema-compatible); sweep fallout covered by sync-script entry; no contract/behavior change to existing mechanics"
+  - "Closes #845 and #846 on merge (PR body carries one keyword per issue)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + new doc + ADAPTATION §5.1 + pins + version cut + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-38"
+  upstream: ["Issue #845 (telemetry guidance gap)", "Issue #846 (live policy-update gap)"]
+  downstream: ["PR feature/845-846-engine-guidance → dev"]

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.0 |
+| Framework Version | 0.70.1 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -261,6 +261,33 @@ knobs. The canonical instruction:
 > `audit_threshold`).
 
 An engine that cannot find a profile proceeds with framework defaults.
+
+### 5.1 Live policy updates (validate-then-swap)
+
+§5 and §6 describe the profile at a single instant. A long-lived engine
+(agent runtimes, daemon-backed authoring loops) MAY additionally pick up
+profile edits without a restart — by polling or by watching the profile
+file — under this discipline:
+
+- **Validate, then atomically swap.** On observing a change, parse and
+  validate the candidate profile *off to the side* (known knobs only,
+  constraints hold, `schema_version` matches a surface the engine
+  understands). Only a fully valid candidate replaces the active
+  policy, in one atomic swap. The engine never runs on a half-parsed
+  policy.
+- **Schema-versioned policy.** The active policy always records the
+  `schema_version` it was validated against (the same field §6
+  describes). A candidate targeting a surface version the engine does
+  not understand is rejected as invalid input.
+- **Keep last-good.** Any invalid candidate — missing file mid-write,
+  malformed value, unrecognized `schema_version` — is discarded and
+  the engine keeps serving the last-good policy. Load-time fallback
+  (§4 knob constraints, `ADAPTATION_SURFACE.yaml` defaults) is
+  unchanged: this section adds the live-update dimension only and
+  alters no load-time semantics.
+
+Polling/watching is engine-local and out of framework scope; the
+contract above governs only what an engine does with what it reads.
 
 ## 6. Versioning
 
