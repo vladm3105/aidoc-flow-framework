@@ -23,12 +23,12 @@ metadata:
   schema_version: "1.0.0"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-09-07"
-  framework_version: "0.68.3"
+  framework_version: "0.70.3"
   # project_name: "<your project>"
   framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
 
 # =============================================================================
-#  Adaptation knobs (7 — see ADAPTATION_SURFACE.yaml for the closed set)
+#  Adaptation knobs (15 — see ADAPTATION_SURFACE.yaml for the closed set)
 #  Uncomment and edit any line to override the framework default.
 # =============================================================================
 
@@ -95,3 +95,52 @@ metadata:
 # ci_bindings:
 #   static_ceiling: "<platform duration>"  # illustrative keys — platforms
 #   integration_ceiling: "<platform duration>"  # choose their own names
+
+# exec_max_files caps how many distinct files one execution task may
+# create or modify. Range 1-100; out-of-range values fall back to default.
+# Default: 8.
+#
+# exec_max_files: 8
+
+# exec_max_diff_lines caps the added-plus-removed lines in one task's diff.
+# Range 1-10000; out-of-range values fall back to default. Default: 600.
+#
+# exec_max_diff_lines: 600
+
+# exec_protected_paths lists repository-relative path prefixes an
+# execution task must never write. Additive to engine built-ins only —
+# listing a path never unprotects anything. Default: [] (no additions).
+#
+# exec_protected_paths:
+#   - "framework/archive/"
+#   - ".git/"
+
+# exec_test_timeout_s is the per-test-command wall-clock ceiling in
+# seconds. Range 30-3600; out-of-range values fall back to default.
+# Default: 300.
+#
+# exec_test_timeout_s: 300
+
+# exec_max_attempts caps patch→verify cycles before an execution task
+# stops retrying. Range 1-10; out-of-range values fall back to default.
+# Default: 3.
+#
+# exec_max_attempts: 3
+
+# exec_token_budget is the total model-token budget per execution task,
+# retries included. Range 10000-2000000; out-of-range values fall back
+# to default. Default: 200000.
+#
+# exec_token_budget: 200000
+
+# exec_wall_clock_budget_s is the total wall-clock budget in seconds per
+# execution task, retries included. Range 60-14400; out-of-range values
+# fall back to default. Default: 1800.
+#
+# exec_wall_clock_budget_s: 1800
+
+# exec_failure_summary_lines is the fixed size in lines of the failure
+# summary carried across retries, keeping retried context compact.
+# Range 5-200; out-of-range values fall back to default. Default: 30.
+#
+# exec_failure_summary_lines: 30

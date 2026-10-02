@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.70.3 |
 
 
 ## Overview
@@ -90,7 +90,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 
 - **Overlay, not lifecycle layer** — CHG triggers on-demand when modifying existing artifacts; it does not participate in the readiness score chain or the BRD→IPLAN authoring workflow. This is recorded as GD-01 in `framework/governance/DECISIONS.md`.
 - **Gate approval replaces readiness scores** — Lifecycle layers use readiness gates (≥90/100); CHG uses explicit gate approval (GATE-01/03/06/08/CODE/SPEC) with human sign-off.
-- **SDD-first implementation order** — When a CHG modifies SDD documents, the SDD updates ship BEFORE any code changes: CHG → SDD docs → IPLAN → code.
+- **SDD-first implementation order** — When a CHG modifies SDD documents, the SDD updates ship BEFORE any code changes: CHG → SDD docs → IPLAN → code → EVAL → Verified.
 - **No circular dependencies** — CHG references upstream artifacts to record what changed, but no lifecycle layer references CHG.
 - **Archive-not-append** — Superseded SDD versions are archived to `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/`, never appended. The current docs directory always reflects the latest truth.
 

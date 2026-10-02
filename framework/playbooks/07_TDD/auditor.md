@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.68.3"
+framework_spec_version: "0.70.3"
 ---
 # auditor lens — TDD layer
 

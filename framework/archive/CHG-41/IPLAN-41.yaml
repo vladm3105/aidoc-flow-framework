@@ -1,0 +1,124 @@
+# =============================================================================
+#  IPLAN-41: sync-version-refs hardening + sync-scripts unit gaps
+#  (F2 direct, C1, one PR — issues #830 + #831)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-41/CHG-41.yaml (F2 direct, C1,
+#  In-Progress). Source: delegated workflow batch 2026-10-01 (#830 + #831).
+#  Hook hardening is behavior-preserving (same matched language, same swept
+#  content, same archive exclusion, same idempotence); covering tests ride
+#  in the same vehicle per F2.2.
+# =============================================================================
+
+doc_id: IPLAN-41
+title: "Hook hardening + unit gaps (#830 + #831)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+  source_chg: "CHG-41"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-41"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-41; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 6
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-41/CHG-41.yaml + IPLAN-41.yaml"
+      description: "Authorizing vehicle (CHG-41 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "Four hardenings: touched-list re-stage, -E discovery, -Z/NUL reads, EXIT trap"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/unit/test_sync_scripts.py"
+      description: "4 new tests + umask-independent mode assertion + playbook probe"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/archive/CHG-41/CHG-41.yaml"
+      description: "Record the no-changelog-entry rationale (hooks-only, not-a-spec-change; root log frozen per CHG-40)"
+      order: 3
+      status: done
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Every hardening carries a covering test in tests/unit/test_sync_scripts.py (fault-injection shims per stage, CHG-29 precedent). Pre-fix the new tests fail for the right reason (verified by stashing the hook fix); post-fix the full battery is green."
+  cases:
+    - "chg_lint.py over CHG-41: 0 errors"
+    - "test_restage_scoped_to_touched (#830-1): unrelated dirty tracked file stays unstaged, swept probes staged"
+    - "test_discovery_portable_ere (#830-2): BSD-mimic grep shim (GNU BRE \\| rejected) still sweeps"
+    - "test_newline_filename_swept (#830-3): probe with newline in name is swept, not split"
+    - "test_no_temp_litter_after_kill (#830-4): SIGTERM mid-conversion leaves zero .sync-* files"
+    - "umask-independent mode assertion (#831-1): probe chmod 0o640 pre-run, assert 0o640 post-run"
+    - "test_playbook_frontmatter_swept (#831-2): stale framework_spec_version probe propagates"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-41/CHG-41.yaml"
+    - "bash -n hooks/sync-version-refs.sh"
+    - "python3 -m unittest tests.unit.test_sync_scripts -v"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git diff --stat dev (expect only manifest files)"
+  test:
+    - "python3 -m unittest tests.unit.test_sync_scripts -v"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Hook diff limited to the four hardenings: no OLD_VERSIONS change, no pattern-language change (ERE | matches the old BRE \\| language), no expected-count change, archive/ still excluded, #405 REFUSE guard untouched, converter/write fail-closed paths untouched"
+  - "Quoting discipline kept: every path expansion quoted or -- -terminated; NUL reads use IFS= read -r -d ''"
+  - "Idempotence preserved: second run emits no 'replaced' lines"
+  - "No VERSION bump (version_action keep); no framework/ files touched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + hook hardening + tests + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-41"
+  upstream: ["Issue #830 (P2 hooks)", "Issue #831 (P3 tests)"]
+  downstream: ["PR feature/830-831-hook-hardening → dev"]

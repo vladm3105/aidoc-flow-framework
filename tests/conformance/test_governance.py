@@ -17,7 +17,10 @@ _CODE = re.compile(r"\b(GATE-[A-Z0-9]+)-([EW])(\d{3})\b")
 
 EXPECTED_FILES = [
     "DOC_GOVERNANCE_CORE.md",
-    "FRAMEWORK_FEEDBACK_LOG.md",
+    # FRAMEWORK_FEEDBACK_LOG.md removed intentionally (CHG-35): the file
+    # misled sessions into logging findings in-file; the tracker (via the
+    # submit-feedback skill) is the single surface. Guard stands for all
+    # remaining files.
     "ID_NAMING_STANDARDS.md",
     "TRACEABILITY.md",
     "TAG_SYNTAX.md",
@@ -33,6 +36,10 @@ EXPECTED_FILES = [
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
     "PROFILE-TEMPLATE.yaml",
+    # ENGINE_TELEMETRY.md added intentionally (CHG-38): vendor-neutral
+    # SHOULD telemetry guidance closing #845. Guard stands for it with
+    # all remaining files.
+    "ENGINE_TELEMETRY.md",
     "AUTHORING_STYLE.md",
     "LINT_RULES.md",
     "SEED_CONTRACT.md",

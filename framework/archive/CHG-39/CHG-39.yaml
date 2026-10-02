@@ -1,0 +1,187 @@
+# =============================================================================
+#  CHG-39: Declare runtime sandbox/egress/secrets engine-local (issue #847)
+#  (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (issue #847 triage note 2026-10-01; no prior IPLAN, no
+#  product-behavior change — one scope-clarifying paragraph in
+#  SECURITY_REVIEW.md, artifact-hygiene rules untouched) — docs-only C1:
+#  C1 CHG + scoped IPLAN per F2.2 (normative-text C1: a short
+#  governance boundary clarification shipping in the same diff); entry
+#  GATE-SPEC (touches framework/governance itself per governance/README
+#  "Framework self-changes").
+#  Decision (the triage's open question): engine-local declaration
+#  paragraph, NOT a runtime subsection. Rationale: the framework is
+#  engine-agnostic (D-0013) — it cannot name allowlist formats, sandbox
+#  mechanisms, or store interfaces without prescribing engine internals;
+#  the Scope clause already excludes "a platform's own runtime code", so
+#  the paragraph closes the worktree-isolation-reads-as-full-isolation
+#  confusion at the point of confusion with zero new consumer obligations
+#  and no conformance surface. A normative runtime subsection would reach
+#  every consumer (allowlist/sandbox/store requirements) with no
+#  verifiable check behind it — wider blast radius for no gain.
+#  IPLAN: framework/archive/CHG-39/IPLAN-39.yaml (In Progress; no writes
+#  before that per §3.13 — vehicle authored first, paragraph + patch cut
+#  after).
+#  Requester citation: issue #847 (triage note 2026-10-01: "decide spec
+#  subsection in SECURITY_REVIEW.md ... vs explicit engine-local
+#  declaration. Do NOT implement yet; do not touch artifact-hygiene
+#  rules") + workflow parent task (implement the smaller defensible
+#  shape, CHG-39 vehicle).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (SECURITY_REVIEW.md:37 T1, :48-51 rule 2,
+#  Scope :30-31 runtime-code exclusion; WORKTREE_FLOW.md git-only
+#  isolation; GATE-SPEC E003-E008 read); exhaustive grep for
+#  egress/unshare/sandbox/store over framework/governance (zero
+#  runtime hits — gap confirmed live 2026-10-01); (2-4,6,10) N/A
+#  prose-only; (5) EARS/BDD IDs vacuous (no SDD contract at stake);
+#  (7) coupled issues: cluster #842-#846 noted, no shared files (each
+#  owns its governance target; CHG numbers 36-38 left for siblings,
+#  CHG-39 verified free — archive holds CHG-01..CHG-35 only);
+#  (8) covering tests: conformance suite is the cover (no content pins
+#  on SECURITY_REVIEW.md — verified by grep over tests/, sdd_doc_lint/,
+#  hooks/); (9) fix located: 1 paragraph + patch cut + changelogs;
+#  (11) no SDD versioning — sdd_lifecycle []; (12) GOV-014 paired —
+#  artifacts_modified carries no SDD layer artifact (governance/*.md,
+#  VERSION, changelogs, sync script are not SDD layer artifacts);
+#  (13) SDD-first vacuous; (14) no code steps in CHG (legal phases only).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — the edit IS to
+#  SECURITY_REVIEW.md itself; artifact rules 1-5, threats T1-T4, and the
+#  review checklist are byte-identical (verified by diff); the paragraph
+#  adds no executable content and acts on no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding stands). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Out of scope: normative runtime subsection (egress-allowlist formats,
+#  sandbox mechanisms, store interfaces — rejected, see Decision above);
+#  artifact-hygiene rules (untouched per issue constraint); DECISIONS.md
+#  (no prior decision to supersede); TAGGING.md (post-tag refresh is a
+#  separate vehicle).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-39
+title: "Declare runtime sandbox/egress/secrets engine-local (issue #847)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.4"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-39"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-39 authorizing record (framework/archive/CHG-39/IPLAN-39.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Add a 'Runtime boundary — engine-local' paragraph under the Scope section of framework/governance/SECURITY_REVIEW.md declaring LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface engine-local (each platform declares and enforces its own; the spec sets no formats and conformance does not check them). Artifact-hygiene rules byte-identical. PATCH cut 0.68.5 (VERSION bump + sweep + both changelogs) per GATE-SPEC E005/E008."
+  why: "Issue #847 confirmed live: the framework governs artifact secret hygiene but names no runtime dimension, and worktree isolation reads as isolation full-stop. The smaller defensible close is an explicit engine-local declaration at the point of confusion — a normative runtime subsection would prescribe engine internals the engine-agnostic spec cannot verify."
+  trigger: "Issue #847 triage note 2026-10-01 + workflow parent task (smaller defensible shape, CHG-39 vehicle)."
+  scope:
+    in:
+      - "framework/governance/SECURITY_REVIEW.md: one paragraph under Scope (engine-local declaration; rules/checklist/threats untouched)"
+      - "framework/archive/CHG-39/CHG-39.yaml + IPLAN-39.yaml (this vehicle)"
+      - "framework/VERSION 0.68.4 → 0.68.5 + hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.4) + sweep (E005/E006 driver; pin moves only)"
+      - "CHANGELOG.md + framework/CHANGELOG.md [0.68.5] sections (E008 driver)"
+    out:
+      - "Normative runtime subsection (rejected — see header Decision)"
+      - "Artifact-hygiene rules, threats T1-T4, review checklist (frozen — byte-identical)"
+      - "DECISIONS.md (no prior decision to supersede); TAGGING.md (separate vehicle)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-39 + IPLAN-39 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-39 + IPLAN-39"
+      status: Completed
+    - step: "Add the engine-local paragraph to SECURITY_REVIEW.md Scope; verify artifact rules byte-identical"
+      phase: "documentation_sync"
+      artifact: "1 paragraph"
+      status: In-Progress
+    - step: "PATCH cut 0.68.5: VERSION bump + sync sweep (pin moves only) + both changelogs"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, CHANGELOG.md, framework/CHANGELOG.md"
+      status: In-Progress
+    - step: "Run IPLAN-39 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/847-runtime-security → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-39/CHG-39.yaml"
+    - "framework/archive/CHG-39/IPLAN-39.yaml"
+    - "framework/governance/SECURITY_REVIEW.md (one paragraph under Scope; rules/checklist/threats untouched)"
+    - "framework/VERSION (0.68.4 → 0.68.5)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.4)"
+    - "CHANGELOG.md + framework/CHANGELOG.md ([0.68.5] sections)"
+    - "Sweep fallout: mechanical 0.68.4 → 0.68.5 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-39"
+    changes: "Authorizing record for the engine-local declaration (this file)"
+  - id: "IPLAN-39"
+    changes: "Authorizing IPLAN (framework/archive/CHG-39/IPLAN-39.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-39 (0 errors)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.5, both changelogs carry [0.68.5]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "Artifact hygiene byte-identical: diff of SECURITY_REVIEW.md shows only the added paragraph (rules 1-5, T1-T4, checklist untouched)"
+    - "Zero runtime-normative language: paragraph sets no allowlist format, sandbox mechanism, or store interface"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/847-runtime-security → dev"

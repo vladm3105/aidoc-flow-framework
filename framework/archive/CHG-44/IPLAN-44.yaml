@@ -1,0 +1,113 @@
+# =============================================================================
+#  IPLAN-44: 0.70.3 post-tag docs (TAGGING snapshot + §7.5)
+#  (F2 direct, C1, one PR — no VERSION bump)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-44/CHG-44.yaml (F2 direct, C1,
+#  In-Progress). Source: preprod-review 0.70.3 SHIP-WITH-FIXES + issue
+#  #866 (P2 docs).
+#  Pure prose: covering tests N/A-allowed per F2.2. Figures re-derived
+#  from git; full battery guards regressions.
+# =============================================================================
+
+doc_id: IPLAN-44
+title: "Post-tag docs: TAGGING snapshot + §7.5 (#866)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.70.3"
+  source_chg: "CHG-44"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-44"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-44; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 4
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-44/CHG-44.yaml + IPLAN-44.yaml"
+      description: "Authorizing vehicle (CHG-44 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/TAGGING.md"
+      description: "Inventory snapshot → 0.70.3 (re-derived figures)"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md"
+      description: "§7.5 remove-first rewrite (#866)"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Pure prose — covering tests N/A-allowed per F2.2. Snapshot figures re-derived from git (held/tagged/tag-target reads); §7.5 pinned by grep; full battery guards regressions."
+  cases:
+    - "chg_lint.py over CHG-44: 0 errors"
+    - "High-water framework/v0.70.3 exists on remote; 56/56 contiguity re-verified"
+    - "§7.5: 'git pull' zero hits; runbook delegation present; VERSION-verification kept"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-44/CHG-44.yaml"
+    - "git ls-remote --tags origin | grep -c 'framework/v0.\\(68\\.[4-6]\\|69\\.0\\|70\\.[0-3]\\)' (expect 8 refs + 8 peeled = 16, or 8 without peeled)"
+    - "rg -n 'git pull' docs/PROJECT.md (expect zero in §7.5; §7.1 clone-to-scratch untouched)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Every snapshot figure re-derived from git on the day of edit, never copied"
+  - "Historical changelog entries and the phantom ledger untouched (forward-correction only)"
+  - "§7.5 keeps the VERSION-verification + breaking-change sentences; runbook + §7.1 untouched"
+  - "No VERSION bump (docs/ only); root CHANGELOG.md frozen, untouched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + snapshot + §7.5 + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-44"
+  upstream: ["Preprod-review 0.70.3 (lens-3 HIGHs)", "Issue #866 (P2 §7.5)"]
+  downstream: ["PR feature/44-release-docs-0703 → dev", "Promotion release/0.70.3 → main (founder)"]

@@ -53,9 +53,25 @@ class SpecGateGuard(unittest.TestCase):
     def test_compliant_spec_change_passes(self):
         module = _load_spec_gate()
         failures = module.evaluate(
-            ["framework/VERSION", "framework/governance/ADAPTATION.md", "CHANGELOG.md"]
+            [
+                "framework/VERSION",
+                "framework/governance/ADAPTATION.md",
+                "framework/CHANGELOG.md",
+            ]
         )
         self.assertEqual(failures, [])
+
+    def test_root_changelog_alone_does_not_satisfy_e008(self):
+        """The root log is a frozen tombstone (#836): only the framework log counts."""
+        module = _load_spec_gate()
+        failures = module.evaluate(
+            [
+                "framework/VERSION",
+                "framework/governance/ADAPTATION.md",
+                "CHANGELOG.md",
+            ]
+        )
+        self.assertEqual(failures, ["GATE-SPEC-E008"])
 
     def test_archive_only_change_is_not_a_spec_change(self):
         """Edits confined to framework/archive/** carry no VERSION obligation (#725)."""

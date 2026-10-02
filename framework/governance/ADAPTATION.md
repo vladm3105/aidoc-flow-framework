@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.70.3 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -80,7 +80,7 @@ version-controlled. A project value that overrides the seed for the same knob is
 a deliberate per-project deviation and is recorded as a learning (see the
 knowledge-extraction overlay).
 
-## 4. The surface (v1 — seven knobs)
+## 4. The surface (v1 — fifteen knobs)
 
 The authoritative definitions, types, and consumer roles live in
 `ADAPTATION_SURFACE.yaml`. This section is the rationale.
@@ -174,6 +174,80 @@ it each consumer invents its own profile shape for the same bindings.
 Honored by: **scaffolding** (wires the project's CI surface from the pinned
 values).
 
+### 4.8 `exec_max_files`
+
+How many distinct files one execution task may create or modify. Without a
+standard knob each engine invents its own blast-radius limit and profiles are
+not portable. Range 1–100 (`8` default); out-of-range values are malformed
+and fall back to the default. A cap only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.9 `exec_max_diff_lines`
+
+How large one execution task's diff may grow (added-plus-removed lines).
+Range 1–10000 (`600` default); out-of-range values are malformed and fall
+back to the default. A cap only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.10 `exec_protected_paths`
+
+Repository-relative path prefixes an execution task must never write (e.g.
+`framework/archive/`, `.git/`). Non-string or blank entries are ignored; the
+list is **additive to engine built-ins only** — listing a path never
+unprotects anything. Default `[]` (no project-level additions). This bounds
+the blast radius; it does not weaken any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.11 `exec_test_timeout_s`
+
+Per-test-command wall-clock ceiling in seconds. Range 30–3600 (`300`
+default); out-of-range values are malformed and fall back to the default.
+A ceiling only — it never weakens any gate.
+
+Honored by: **audit**.
+
+### 4.12 `exec_max_attempts`
+
+How many patch→verify cycles an execution task runs before it stops
+retrying. The saga lifecycle already bounds *review* loops
+(`quality_loop_max_iterations` → `PARTIAL_TIMEOUT`); this is the matching
+bound for *execution* attempts, which otherwise retry unboundedly. Range
+1–10 (`3` default, mirroring the review-loop cap); out-of-range values are
+malformed and fall back to the default. This bounds the loop; it does not
+weaken any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.13 `exec_token_budget`
+
+Total model-token budget per execution task, retries included — without it
+cyclic retry compacts context monotonically across attempts and cost is
+unbounded. Range 10000–2000000 (`200000` default); out-of-range values are
+malformed and fall back to the default. A budget only — it never widens any
+gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.14 `exec_wall_clock_budget_s`
+
+Total wall-clock budget in seconds per execution task, retries included.
+Range 60–14400 (`1800` default); out-of-range values are malformed and fall
+back to the default. A budget only — it never widens any gate.
+
+Honored by: **authoring** and **audit**.
+
+### 4.15 `exec_failure_summary_lines`
+
+Fixed size in lines of the failure summary carried across retries, so
+retried context stays compact instead of accumulating full logs. Range
+5–200 (`30` default); out-of-range values are malformed and fall back to the
+default.
+
+Honored by: **authoring** and **audit**.
+
 ## 5. How an engine consults the profile
 
 The framework ships no runtime code; an engine honors the profile by
@@ -187,6 +261,33 @@ knobs. The canonical instruction:
 > `audit_threshold`).
 
 An engine that cannot find a profile proceeds with framework defaults.
+
+### 5.1 Live policy updates (validate-then-swap)
+
+§5 and §6 describe the profile at a single instant. A long-lived engine
+(agent runtimes, daemon-backed authoring loops) MAY additionally pick up
+profile edits without a restart — by polling or by watching the profile
+file — under this discipline:
+
+- **Validate, then atomically swap.** On observing a change, parse and
+  validate the candidate profile *off to the side* (known knobs only,
+  constraints hold, `schema_version` matches a surface the engine
+  understands). Only a fully valid candidate replaces the active
+  policy, in one atomic swap. The engine never runs on a half-parsed
+  policy.
+- **Schema-versioned policy.** The active policy always records the
+  `schema_version` it was validated against (the same field §6
+  describes). A candidate targeting a surface version the engine does
+  not understand is rejected as invalid input.
+- **Keep last-good.** Any invalid candidate — missing file mid-write,
+  malformed value, unrecognized `schema_version` — is discarded and
+  the engine keeps serving the last-good policy. Load-time fallback
+  (§4 knob constraints, `ADAPTATION_SURFACE.yaml` defaults) is
+  unchanged: this section adds the live-update dimension only and
+  alters no load-time semantics.
+
+Polling/watching is engine-local and out of framework scope; the
+contract above governs only what an engine does with what it reads.
 
 ## 6. Versioning
 

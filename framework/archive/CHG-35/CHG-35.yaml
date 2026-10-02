@@ -1,0 +1,180 @@
+# =============================================================================
+#  CHG-35: Eliminate FRAMEWORK_FEEDBACK_LOG.md; re-home discipline inline
+#  (F2 direct, docs-only C1, one PR)
+# =============================================================================
+#  Flow: F2 direct (user 2026-10-01 "let's eliminate
+#  governance/FRAMEWORK_FEEDBACK_LOG.md at all" + "we do not need to have a
+#  history for it" + issue #840; no prior IPLAN, no product-behavior
+#  change — governance-prose removal + re-home, no contract change) —
+#  docs-only C1: C1 CHG + scoped IPLAN per F2.2; entry GATE-SPEC (touches
+#  framework/ itself per governance/README "Framework self-changes").
+#  Supersedes the CHG-35 retitle approach drafted earlier this session
+#  (never committed): deletion removes the misleading surface entirely
+#  instead of rewording it.
+#  IPLAN: framework/archive/CHG-35/IPLAN-35.yaml (In Progress; no writes
+#  before that per §3.13 — vehicle authored first, deletion/edits after).
+#  Requester citation: user "let's eliminate the changelog file and update
+#  the core documentation. We do not need to have a history for the
+#  FRAMEWORK_FEEDBACK_LOG.md" (2026-10-01); issue #840 scope updated by
+#  comment before authoring.
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified, exhaustive grep sweep for the filename
+#  (tests/sdd_doc_lint/hooks/.github/.agents + framework + root docs);
+#  (2-4,6,10) N/A prose-only; (5) EARS/BDD IDs vacuous (no SDD contract
+#  at stake); (7) coupled issues: none — #840 rescoped by comment, no
+#  second issue; (8) covering tests: conformance suite itself is the
+#  cover — test_governance EXPECTED_FILES edit ships in the same diff
+#  with justification (intentional spec change, not a weakened check:
+#  the accidental-deletion guard stands for all remaining files);
+#  (9) fix located: 1 deletion + 3 governance re-homes + 1 test pin;
+#  (11) no SDD versioning — sdd_lifecycle []; (12) GOV-014 paired —
+#  artifacts_modified carries no SDD layer artifact (governance/*.md
+#  and the conformance test are not SDD layer artifacts); (13) SDD-first
+#  vacuous; (14) no code steps in CHG (legal phases only).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose removal/re-home
+#  only, no executable content, no untrusted input.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  in worktree 2026-10-01; CHG-23/24/25/27/28 finding stands). Phase 0b:
+#  F2, omitted (sdd_lifecycle [] — no SDD docs touched; GOV-014 paired).
+#  Out of scope: DECISIONS GD-41 + CHANGELOG/TAGGING history (frozen
+#  record, left intact); archive/** snapshots (immutable); thread-table
+#  content migration (per requester: no history kept — tracker holds it).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-35
+title: "Eliminate FRAMEWORK_FEEDBACK_LOG.md; re-home discipline"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.68.3"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-35"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-35 authorizing record (framework/archive/CHG-35/IPLAN-35.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Delete framework/governance/FRAMEWORK_FEEDBACK_LOG.md outright (title + thread table mislead sessions into logging findings in-file; stale references cause agent errors). Re-home the discipline with no contract change: Principle 9 self-contained via framework/skills/submit-feedback/, SELF_LEARNING §7.4 + README row repointed, GD-41 supersession appended, test_governance pin removed with justification. PATCH cut 0.68.4 (VERSION bump + sweep + both changelogs) per GATE-SPEC E005/E008."
+  why: "Rewording keeps a misleading surface alive; every remaining reference is a future agent error (issue #840). The tracker is already the single surface since v2.0/CHG-23 — the file adds nothing but confusion."
+  trigger: "User deletion request 2026-10-01 + issue #840 rescoped by comment."
+  scope:
+    in:
+      - "DELETE framework/governance/FRAMEWORK_FEEDBACK_LOG.md (git rm; no history migrated per requester)"
+      - "framework/governance/DOC_GOVERNANCE_CORE.md: Principle 9 self-contained (tracker rule inline, no pointer)"
+      - "framework/governance/SELF_LEARNING.md: §7.4 steps 3-4 + §references rewritten (no file round-trip)"
+      - "framework/governance/README.md: table row repointed to the submit-feedback skill"
+      - "framework/governance/DECISIONS.md: one-line CHG-35 supersession appended to GD-41 (history intact)"
+      - "tests/conformance/test_governance.py: EXPECTED_FILES pin removed (intentional spec change, justified here)"
+      - "framework/archive/CHG-35/CHG-35.yaml + IPLAN-35.yaml (this vehicle)"
+      - "framework/VERSION 0.68.3 → 0.68.4 + hooks/sync-version-refs.sh OLD_VERSIONS + sweep (E005 driver; pin moves only)"
+      - "CHANGELOG.md + framework/CHANGELOG.md [0.68.4] sections (E008 driver)"
+    out:
+      - "DECISIONS GD-41 history + TAGGING/plans/archive history (frozen record, intact — GD-41 carries a CHG-35 supersession line)"
+      - "archive/** snapshots (immutable); thread-table content migration (dropped per requester)"
+      - "Any contract/behavior change"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-35 + IPLAN-35 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-35 + IPLAN-35"
+      status: Completed
+    - step: "Delete the file; re-home discipline in P9/SELF_LEARNING/README/DECISIONS; update test pin"
+      phase: "documentation_sync"
+      artifact: "1 deletion + 5 edits"
+      status: Completed
+    - step: "PATCH cut 0.68.4: VERSION bump + sync sweep (pin moves only) + both changelogs"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, CHANGELOG.md, framework/CHANGELOG.md"
+      status: Completed
+    - step: "Run IPLAN-35 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/840-feedback-log-discipline → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-35/CHG-35.yaml"
+    - "framework/archive/CHG-35/IPLAN-35.yaml"
+    - "framework/governance/FRAMEWORK_FEEDBACK_LOG.md (DELETED)"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/SELF_LEARNING.md"
+    - "framework/governance/README.md"
+    - "framework/governance/DECISIONS.md (append-only amendment)"
+    - "tests/conformance/test_governance.py"
+    - "framework/VERSION (0.68.3 → 0.68.4)"
+    - "hooks/sync-version-refs.sh (OLD_VERSIONS gains 0.68.3)"
+    - "CHANGELOG.md + framework/CHANGELOG.md ([0.68.4] sections)"
+    - "Sweep fallout: mechanical 0.68.3 → 0.68.4 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-35"
+    changes: "Authorizing record for feedback-log elimination (this file)"
+  - id: "IPLAN-35"
+    changes: "Authorizing IPLAN (framework/archive/CHG-35/IPLAN-35.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-35 (0 errors)"
+    - "GATE-SPEC E005/E008: framework/VERSION at 0.68.4, both changelogs carry [0.68.4]"
+    - "Sweep is pin moves only: zero non-pin changed lines outside the manifest"
+    - "Zero dangling references: grep FRAMEWORK_FEEDBACK_LOG over live tree (history-only hits allowed)"
+    - "tests/conformance/test_governance.py passes with pin removed"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/840-feedback-log-discipline → dev"

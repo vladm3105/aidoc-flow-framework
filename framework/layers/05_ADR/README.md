@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.70.3 |
 
 
 ## Overview
@@ -16,7 +16,7 @@
 ADRs document architecture decisions using the Context-Decision-Consequences
 pattern. Each ADR addresses ONE decision, synthesizing inputs from EARS and BDD (which transitively carry PRD context).
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## C4 Model Position
 

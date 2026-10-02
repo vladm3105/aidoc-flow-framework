@@ -10,7 +10,7 @@ preserves the old file.
 ## What this repo is
 
 One engine-agnostic specification (`framework/`) defining the 10-layer SDD
-flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code).
+flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified).
 Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
@@ -225,7 +225,7 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
 | Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
 | Plans | `plans/<NAME>-PLAN.md` |
-| Changelog | `CHANGELOG.md` (root) + `framework/CHANGELOG.md` — no `ROADMAP.md` exists |
+| Changelog | `framework/CHANGELOG.md` (live record, GATE-SPEC-E008) — root `CHANGELOG.md` is a frozen tombstone carrying the documented `gh` query, not maintained per-PR — no `ROADMAP.md` exists |
 | Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |
 
 Never put any of these in `tmp/`, and never centralize them in the `aidoc-flow`

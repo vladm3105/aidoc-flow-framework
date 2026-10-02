@@ -11,9 +11,82 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.70.3 |
 
 ---
+
+## [0.70.3] — 2026-10-02
+
+### Fixed — core-README freshness batch (C1 PATCH → 0.70.3, CHG-43 + IPLAN-43)
+
+- Retired-platform framing (#862): consumer nouns `platform` → `engine` throughout `framework/README.md` (§How engines consume it, intro, guide/vendor line, conformance line, versioning line — `platform` now zero hits); dead "for the platforms" pointer repointed at the root README Tooling section. Mechanical consumer content (VERSION declaration, template validation) preserved.
+- Layout tree vs disk (#863): dropped the phantom `templates/` line (removed #809), added the `skills/` owned-surface line (shipped #742), reworded the no-runtime-code sentence to admit the skills tooling, relaxed the archive shape to `archive/{CHG-ID}/` with the flat vehicle as the current form.
+- Sweep 0.70.2 → 0.70.3 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.70.2] — 2026-10-01
+
+### Fixed — staleness-review docs-truthfulness batch (C1 PATCH → 0.70.2, CHG-42 + IPLAN-42)
+
+- EVAL ordering canon (#854): authoring flows `… → IPLAN → Code`, validation flows `Code-complete → Completed → EVAL cycles → Verified`; the one-line chain now reads `… → IPLAN → Code → EVAL → Verified` in all 8 layer `**Workflow**` lines, `framework/README.md` (CHG noted as the on-demand overlay, GD-01), the 09_CHG cascade, `TRACEABILITY.md:16`, `CHG_REQUEST_FLOWS.md` §2, `docs/PROJECT.md`, and `AGENTS.md`. CHG drops out of the linear chain (overlay, never a chain step). EVAL-internal `IPLAN → EVAL → RPT → verdict` lines untouched (correct as written).
+- README C1 row + F2.2 note (#855): both now state the ratified always-traced rule (C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) — `direct commit` zero hits in the file.
+- README C3 gate cell (#856): formal gate per layer (GATE-01/03/06/08/CODE); GATE-SPEC only for `framework/` self-edits.
+- SDD guide BDD row (#857): annotated as the documented `@`-tag exception (structured `ears:` list per scenario; emits no `@`-tag). Registry `required_tags: [ears]` untouched (semantically correct).
+- EVAL parenthetical (#858): `only layer with no element IDs` → exemption list (CHG overlay none, SPEC optional per ID_NAMING_STANDARDS). EVAL ID mandate untouched.
+- EVAL diagram label (#859): `(bug_fix_verify)` → `(bug_fix_verification)`, box widened, connectors realigned.
+- Sweep 0.70.1 → 0.70.2 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.70.1] — 2026-10-01
+
+### Added — engine guidance gaps: telemetry + live policy-update discipline (C1 PATCH → 0.70.1, CHG-38 + IPLAN-38)
+
+- NEW `framework/governance/ENGINE_TELEMETRY.md` (#845): vendor-neutral SHOULD telemetry guidance — `aidoc.attempt` / `aidoc.gate_verdict` spans, `gen_ai.*` usage attributes + `aidoc.*` cost/correlation attributes (`chg_id`, `iplan_id`, `eval_id`), backend-agnostic, no SDK mandated, no PII. Saga journaling and EVAL verdict mechanics untouched.
+- `framework/governance/ADAPTATION.md` §5.1 (#846): live policy-update discipline — validate-then-atomically-swap, schema-versioned active policy, keep-last-good on invalid input. Load-time fallback semantics and the closed knob registry untouched (no new knob, no new §4 section).
+- Covering guard: `tests/conformance/test_governance.py` EXPECTED_FILES gains the new doc (intentional spec change, justified in CHG-38); governance `README.md` table row added.
+- Sweep 0.70.0 → 0.70.1 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.70.0] — 2026-10-01
+
+### Added — standard execution-policy + execution-attempt-budget knobs (C2 MINOR → 0.70.0, CHG-37 + IPLAN-37)
+
+- `ADAPTATION_SURFACE.yaml`: 8 new optional, bounded `exec_*` knob entries (Knobs (7) → (15)) — `exec_max_files`, `exec_max_diff_lines`, `exec_protected_paths`, `exec_test_timeout_s` (#843); `exec_max_attempts`, `exec_token_budget`, `exec_wall_clock_budget_s`, `exec_failure_summary_lines` (#844). Closed-set prose and all 7 existing knobs byte-untouched.
+- `PROFILE-TEMPLATE.yaml`: 8 commented `exec_*` override rows (header 7 → 15).
+- `ADAPTATION.md`: §4 header count 7 → 15; new §§4.8–4.15 rationale (one per knob).
+- `DECISIONS.md`: GD-44 entry (bounds + vehicle + caps-only rationale); doc Version 1.5 → 1.6.
+- Covering guard: `tests/conformance/test_governance.py` parity tests (`well_formed` + `covers_surface_knobs`) pass with the 8 intentional additions — the tests enforce the three-way sync, so a missed row fails loudly.
+- Sweep 0.69.0 → 0.70.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.69.0] — 2026-10-01
+
+### Added — verification-binding contract: EVAL verdicts bound to artifact bytes (C2 MINOR → 0.69.0, CHG-36 + IPLAN-36)
+
+- `framework/governance/DEFINITION_OF_DONE.md` v1.0 → v1.1: new `Verification binding (EVAL verdicts)` section — every EVAL verdict (`PASS` / `PASS-WITH-NOTES` / `FAIL` / `BLOCKED`) MUST reference the content hash of the artifact revision evaluated, and the engine trust boundary MUST make forging that binding impossible without modifying the engine itself. Engine-agnostic: no hash function, token shape, or enforcement location prescribed; mechanism stays engine-local.
+- `framework/governance/DECISIONS.md` v1.4 → v1.5: new GD-43 entry (contract + vehicle + constraint).
+- Unchanged by design (#842 not-broken list): verdict enum, `Completed → Verified` flow, GATE-08, review-remediation loop, EVAL layer templates (no schema change), `chg_lint` rules (no new lint IDs).
+- Sweep 0.68.6 → 0.69.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.6] — 2026-10-01
+
+### Fixed — adaptation mirror-list fix + root-log tombstone with E008 repoint (C1 PATCH → 0.68.6, CHG-40 + IPLAN-40)
+
+- `docs/ADAPTATION-GUIDE.md` §4: mirror list corrected to the shipped `framework/` shape (`governance/`, `layers/`, `playbooks/`, `registry/`, `skills/` — no `scripts/`, no `templates/`); consumers no longer author overrides shadowing nothing upstream (#835). Discovery rule untouched.
+- Root `CHANGELOG.md` frozen as a tombstone carrying the documented `gh` query for on-the-fly generation (founder scope: root log only); GATE-SPEC-E008 repointed at this file in `tests/chg/spec_gate.py` with `test_spec_gate.py` expectations updated in the same diff (obligation stands, only the path moves); `AGENTS.md` state table, `hooks/check-docs-updated.sh` `DOCS_OF_RECORD`, `CONTRIBUTING.md` matrix, and Principle 8 repointed with it (#836).
+- Sweep 0.68.5 → 0.68.6 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.5] — 2026-10-01
+
+### Fixed — declare runtime sandbox/egress/secrets engine-local (C1 PATCH → 0.68.5, CHG-39 + IPLAN-39)
+
+- `framework/governance/SECURITY_REVIEW.md` Scope gains a `Runtime boundary — engine-local` paragraph (#847): LLM egress allowlists, network-sandbox expectations, and the runtime secret-store interface are engine-local — each consuming platform declares and enforces its own; the spec sets no allowlist format, sandbox mechanism, or store interface, and conformance does not check them. Worktree isolation declared git-separation-only (no network/secret property implied).
+- Covering guard: no test pins `SECURITY_REVIEW.md` content (verified by grep over `tests/`, `sdd_doc_lint/`, `hooks/`); artifact rules 1–5, threats T1–T4, and the review checklist are byte-identical.
+- Sweep 0.68.4 → 0.68.5 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.68.4] — 2026-10-01
+
+### Fixed — eliminate feedback-log file; re-home discipline (C1 PATCH → 0.68.4, CHG-35 + IPLAN-35)
+
+- DELETE `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` (no history migrated — the tracker holds the threads). Principle 9 self-contained via `framework/skills/submit-feedback/` (search-before-file, `real-use`/`review` origins, body contract, read-back rule); `SELF_LEARNING.md` §7.4 + Cross-References and governance `README.md` row repointed; GD-41 supersession appended (Tier-1 retirement + worktree ruling stand).
+- Covering guard: `tests/conformance/test_governance.py` pin removed with justification (intentional spec change — guard stands for all remaining files).
+- Sweep 0.68.3 → 0.68.4 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.68.3] — 2026-10-01
 

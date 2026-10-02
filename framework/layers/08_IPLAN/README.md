@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.68.3 |
+| Framework Version | 0.70.3 |
 
 
 ## C4 Model Position
@@ -21,7 +21,7 @@ Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per SPEC c
 
 IPLAN is Layer 8 of the unified SDD chain. The chain is initiated by modules/seed for new features, or by CHG requests for all changes. The execution model is the same in both cases.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## Index registry vs document schema
 
