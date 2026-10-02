@@ -1,0 +1,140 @@
+# =============================================================================
+#  CHG-51: 0.73.0 post-tag docs — TAGGING inventory refresh (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (docs/ release-inventory refresh after the 0.73.0 tag
+#  cut — point-in-time prose, no normative change) — C1 CHG + scoped IPLAN
+#  per F2.2; entry GATE-CODE (CHG-44 precedent: post-tag docs vehicle).
+#  Router record (§6): F4 rejected — no Completed/Verified parent IPLAN owns
+#  the inventory block (CHG-44's vehicle covered the 0.70.3 refresh and stands
+#  without sentence-level ownership of this block); F2 applies.
+#  IPLAN: framework/archive/CHG-51/IPLAN-51.yaml (Completed, authorizing)
+#  Requester citation (F2.3, verbatim ask): "do release cut off and promote
+#  to main" (release procedure owns the high-water refresh — TAGGING.md
+#  declares its figures a snapshot to re-derive, and the preprod L3 finding
+#  was disposed as release-procedure, not a defect issue).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (TAGGING.md inventory block :108-140, tag targets
+#  verified pre-push, distinct-value count re-derived = 146); (2) no
+#  client/server — prose-only docs/ file; enforcement surface is the
+#  release-record conformance test + full battery + PR checks; (3) N/A no
+#  structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous (release-record
+#  prose, no SDD contract at stake — CHG-44 F2 precedent); (6) N/A no
+#  handlers; (7) no issue (release-procedure step, preprod-disposed);
+#  (8) covering tests N/A with reason — figure refresh, verified by
+#  re-derivation commands in IPLAN-51; (9) fix located: inventory block
+#  figures; (10) N/A no migrations; (11) no SDD document modified →
+#  sdd_lifecycle: [] per F2.3 (GOV-014 paired); (12) artifacts_modified
+#  carries the vehicle only; (13) SDD-first vacuous for F2 (empty
+#  lifecycle, CHG-L005); (14) no code steps in CHG (legal phases).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  docs/ refresh → semver patch, version_action keep (CHG-44 precedent:
+#  inventory prose rides no cut; no VERSION/CHANGELOG).
+# =============================================================================
+
+id: CHG-51
+title: "0.73.0 post-tag docs: TAGGING inventory refresh"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.73.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-51"
+  status: Implemented
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: "2026-10-02T00:00:00Z"
+  supersedes:
+    - "IPLAN-51 authorizing record (framework/archive/CHG-51/IPLAN-51.yaml)"
+  # NOTE: docs/TAGGING.md is amended in place (inventory refresh, no archive
+  # rotation — CHG-44 precedent); only the vehicle record is
+  # superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Refresh the TAGGING.md release-inventory figures after the 0.73.0 tag cut: high-water framework/v0.70.3 → v0.73.0, range through 0.73.0, 61/61 modern tags, 77-of-146 scale figure, spec-at 0.73.0."
+  why: "The inventory block declares itself a snapshot to re-derive; the five new tags (v0.71.0–v0.73.0) moved every figure. The promotion must not ship a stale release record."
+  trigger: "Release cut 0.73.0 (tags pushed; preprod L3 finding disposed as release-procedure)."
+  scope:
+    in:
+      - "docs/TAGGING.md: inventory-block figure refresh (6 edits)"
+    out:
+      - "Any version cut (version keep — prose refresh rides no release line)"
+      - "Phantom-version list (unchanged — no new phantoms)"
+      - "GitHub Releases (tags only, per standing policy)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-51 with the inventory refresh + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-51"
+      status: Completed
+    - step: "Refresh TAGGING.md inventory figures + run IPLAN-51 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "docs/TAGGING.md"
+      status: Implemented
+  files_modified:
+    - "docs/TAGGING.md"
+
+artifacts_modified:
+  - id: "CHG-51"
+    changes: "Authorizing record for TAGGING refresh (this file)"
+  - id: "IPLAN-51"
+    changes: "Authorizing IPLAN (framework/archive/CHG-51/IPLAN-51.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer) via the PR; no named gate approver required (CHG-L002 applies to C3 only).
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-51 (0 errors)"
+    - "Every figure re-derived live (tag targets, distinct-value count, contiguity range)"
+    - "Full battery: tests/unit + tests/conformance + sdd_doc_lint/tests green"
+    - "PR checks green on feature/51-tagging-refresh → dev"
