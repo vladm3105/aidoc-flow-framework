@@ -1,5 +1,5 @@
 # =============================================================================
-#  IPLAN-49: ENGINE_TELEMETRY §1 sentence fix (#875, version keep)
+#  IPLAN-49: ENGINE_TELEMETRY §1 sentence fix (#875, PATCH 0.72.2)
 # =============================================================================
 #  Authorizing CHG: framework/archive/CHG-49/CHG-49.yaml (F2 direct, C1,
 #  In-Progress). Source: issue #875 (P3 docs, GO 2026-10-02).
@@ -10,7 +10,7 @@
 # =============================================================================
 
 doc_id: IPLAN-49
-title: "ENGINE_TELEMETRY §1 sentence fix (#875, version keep)"
+title: "ENGINE_TELEMETRY §1 sentence fix (#875, PATCH 0.72.2)"
 metadata:
   document_type: "iplan-document"
   purpose: implementation
@@ -51,6 +51,12 @@ file_manifest:
       status: DONE
       session: 1
       verified: true
+    - path: "framework/VERSION + hooks/sync-version-refs.sh + framework/CHANGELOG.md + sweep fallout"
+      description: "PATCH cut 0.72.2 (E005/E008) + pin moves only"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -74,7 +80,7 @@ tdd_consistency:
 implementation_contracts:
   - "Manifest-closed: only the listed file touched"
   - "MUST NOTs :75/:82 byte-identical; §1 conformance grant untouched"
-  - "No version cut (version keep); no CHANGELOG entry (sentence fix rides no release line)"
+  - "PATCH cut 0.72.2 (E005/E008); sweep is pin moves only outside the manifest"
   - "Never weaken tests/conformance to pass"
 
 # =============================================================================

@@ -29,9 +29,10 @@
 #  carries the vehicle only; (13) SDD-first vacuous for F2 (empty
 #  lifecycle, CHG-L005); (14) no code steps in CHG (legal phases).
 #  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
-#  Guidance-doc sentence fix → semver patch, version_action keep (CHG-38
-#  precedent: this file rides patch-line without a cut; no VERSION/
-#  CHANGELOG — the sentence narrows an overclaim, adds no duty).
+#  Guidance-doc sentence fix → PATCH cut 0.72.2 (GATE-SPEC-E005/E008: any
+#  non-archive framework/ change bumps VERSION + CHANGELOG — the CHG-38
+#  "keep" note misled; CHG-38 actually cut 0.70.1. The sentence narrows an
+#  overclaim and adds no duty, so it rides the patch line per GD-47).
 # =============================================================================
 
 id: CHG-49
@@ -81,16 +82,17 @@ change_control:
 # =============================================================================
 
 change_description:
-  summary: "Reword the ENGINE_TELEMETRY §1 sentence so it no longer claims every statement in §§2–4 is a SHOULD: the doc carries two MUST NOTs (:75/:82), conditional on the opt-in activity of emitting telemetry. Doc-control v1.0 → v1.1."
+  summary: "Reword the ENGINE_TELEMETRY §1 sentence so it no longer claims every statement in §§2–4 is a SHOULD: the doc carries two MUST NOTs (:75/:82), conditional on the opt-in activity of emitting telemetry. Doc-control v1.0 → v1.1. PATCH cut 0.72.2."
   why: "The universal claim is false — the two prohibitions are neither SHOULDs nor MUSTs — and it gets repeated as fact whenever the 0.70.1 precedent is cited (as in #867's review). The MUST NOTs themselves are correctly scoped; only the sentence overclaims."
   trigger: "Issue #875 (filed + Mode B GO 2026-10-02, P3 + docs)."
   scope:
     in:
       - "framework/governance/ENGINE_TELEMETRY.md: §1 sentence reword + doc-control v1.0 → v1.1"
+      - "PATCH cut 0.72.2: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.72.2]"
     out:
       - "The :75/:82 MUST NOTs (correctly scoped guardrails — untouched)"
       - "§1 conformance grant to non-emitting engines (true and load-bearing — untouched)"
-      - "Any version cut (version keep — the fix narrows an overclaim, adds no duty)"
+      - "Any MINOR/MAJOR cut (the fix narrows an overclaim, adds no duty — patch line per GD-47)"
 
 # =============================================================================
 # Section 3: SDD Lifecycle
@@ -108,12 +110,14 @@ implementation:
       phase: "iplan_creation"
       artifact: "IPLAN-49"
       status: Completed
-    - step: "Reword §1 sentence + bump doc-control to v1.1 + run IPLAN-49 battery + open PR to dev"
+    - step: "Reword §1 sentence + bump doc-control to v1.1 + PATCH cut 0.72.2 + run IPLAN-49 battery + open PR to dev"
       phase: "documentation_sync"
       artifact: "ENGINE_TELEMETRY.md"
       status: Implemented
   files_modified:
     - "framework/governance/ENGINE_TELEMETRY.md"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.72.1 → 0.72.2 pin moves (verified zero non-pin lines)"
 
 artifacts_modified:
   - id: "CHG-49"
