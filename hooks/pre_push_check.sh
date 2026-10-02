@@ -173,6 +173,16 @@ else
 fi
 push_msgs="$(git log --format=%B "$commit_range" 2>/dev/null || echo '')"
 
+# Empty range (HEAD == range base, e.g. the post-merge dev push in CI where
+# HEAD == origin/dev): zero commits to audit. Skip with notice instead of
+# failing on an absent phrase (#865). Fires ONLY on zero-commit ranges —
+# every non-empty range scans exactly as before.
+range_empty=0
+range_count="$(git rev-list --count "$commit_range" 2>/dev/null || echo unknown)"
+if [ "$range_count" = "0" ]; then
+  range_empty=1
+fi
+
 # --- Exemption logic (mirrors PLAN-002 §4.6; CI side implements the same +
 # the two-signal skip-audit-trail label which needs PR context) ---
 #
@@ -220,7 +230,9 @@ else
     done
   fi
 fi
-if [ "$audit_ok" -ne 1 ]; then
+if [ "$range_empty" = 1 ]; then
+  echo "  ℹ️  OPS-0069 audit-trail check SKIPPED (empty push range $commit_range — nothing new to audit)."
+elif [ "$audit_ok" -ne 1 ]; then
   echo "::error::no OPS-0069 audit-trail phrase found in any commit in the push range ($commit_range)."
   echo
   echo "Every push MUST carry one of these phrases in a commit message body:"

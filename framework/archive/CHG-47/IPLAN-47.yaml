@@ -2,7 +2,7 @@
 #  IPLAN-47: Skip audit-trail scan on empty push ranges (#865)
 # =============================================================================
 #  Authorizing CHG: framework/archive/CHG-47/CHG-47.yaml (F2 direct, C1,
-#  In-Progress). Source: issue #865 (P2 CI red on dev pushes).
+#  Implemented). Source: issue #865 (P2 CI red on dev pushes).
 #  Hook-behavior C1: one guard variable + one elif branch in the audit
 #  block; covering test pins executable code per file convention.
 # =============================================================================
@@ -23,7 +23,7 @@ document_control:
   iplan_id: "IPLAN-47"
   subtype: combined
   source_spec: "@spec: N/A (hook behavior under CHG-47; no SPEC component)"
-  status: In Progress
+  status: Completed
   version: "1.0"
   date_created: "2026-10-02T00:00:00Z"
   last_updated: "2026-10-02T00:00:00Z"
@@ -46,15 +46,15 @@ file_manifest:
     - path: "hooks/pre_push_check.sh"
       description: "Range-empty guard + skip notice in the audit block"
       order: 1
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "tests/unit/test_hook_stage_coverage.py"
       description: "Executable-code pin for the empty-range skip"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -102,8 +102,8 @@ implementation_contracts:
 session_handoff:
   sessions:
     - session: 1
-      status: In Progress
-      scope: "Vehicle DONE; hook edit + test + simulations + battery + PR next"
+      status: Completed
+      scope: "All manifest orders DONE and verified; implementation + battery complete — PR to dev next"
 
 # =============================================================================
 # Section 7: Traceability

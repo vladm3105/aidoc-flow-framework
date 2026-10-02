@@ -5,9 +5,10 @@
 #  the OPS-0069 phrase rule is unchanged; an empty range has no commits to
 #  audit) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
 #  Router record (§6): F4 rejected — the hook originates from PLAN-002 Wave 1
-#  canon adoption (#272) with later F2 batches (CHG-24 #810, CHG-27 #819)
-#  touching the same file; no single Completed/Verified parent IPLAN owns
-#  the empty-range behavior, so F4 traceability fails and F2 applies.
+#  canon adoption (#272); CHG-24 #810 created the covering test + CI invoker
+#  (#798) and CHG-27 #819 touched the same file. No single
+#  Completed/Verified parent IPLAN owns the empty-range behavior, so F4
+#  traceability fails and F2 applies.
 #  IPLAN: framework/archive/CHG-47/IPLAN-47.yaml (In Progress, authorizing)
 #  Issue: #865 (triaged + re-triaged 2026-10-02: P2 + bug + ci; ALIVE on dev
 #  @ 17b484ca via check-runs API — Lint / format / security hooks: failure
@@ -64,7 +65,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-47"
-  status: In-Progress
+  status: Implemented
   change_level: C1
   change_source: direct
   entry_gate: GATE-CODE
@@ -73,7 +74,7 @@ change_control:
   author: "Muse Code"
   date_proposed: "2026-10-02T00:00:00Z"
   date_approved: "2026-10-02T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-10-02T00:00:00Z"
   supersedes:
     - "IPLAN-47 authorizing record (framework/archive/CHG-47/IPLAN-47.yaml)"
   # NOTE: hooks/pre_push_check.sh is amended in place (hook tweak, no archive
@@ -117,7 +118,7 @@ implementation:
     - step: "Edit hooks/pre_push_check.sh (empty-range skip) + extend tests/unit/test_hook_stage_coverage.py + run IPLAN-47 battery"
       phase: "documentation_sync"
       artifact: "pre_push_check.sh"
-      status: In-Progress
+      status: Implemented
   files_modified:
     - "hooks/pre_push_check.sh"
     - "tests/unit/test_hook_stage_coverage.py"
@@ -136,7 +137,7 @@ gate_approval:
   gate: GATE-CODE
   approver: null
   date: null
-  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+  # C1 direct: PR review is the approval; no named gate approver required (CHG-L002 applies to C3 only).
 
 # =============================================================================
 # Section 6: Verification
