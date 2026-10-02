@@ -221,13 +221,13 @@ else
     audit_ok=1
   else
     audit_ok=0
-    for phrase in "Multi-agent self-review per OPS-0065" \
-                  "Self-review skipped per founder OK"; do
-      if echo "$push_msgs" | grep -qF "$phrase"; then
-        audit_ok=1
-        break
-      fi
-    done
+    # Full verdict-bearing shape required — a bare stem with no agents or
+    # verdict must not pass (#885). One line must carry stem + suffix.
+    if echo "$push_msgs" | grep -qE "Multi-agent self-review per OPS-0065 \([^)]+\): [^ ]"; then
+      audit_ok=1
+    elif echo "$push_msgs" | grep -qE "Self-review skipped per founder OK — [^ ]"; then
+      audit_ok=1
+    fi
   fi
 fi
 if [ "$range_empty" = 1 ]; then

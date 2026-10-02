@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.2 |
+| Framework Version | 0.73.0 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -103,7 +103,8 @@ framework/
   archive/               Archived originals from CHG-modified documents.
                          Structure: archive/{CHG-ID}/ (vehicle files at
                          top; legacy dirs add a {category}/ tier).
-  governance/aidoc/      .aidoc/ contract: AIDOC.md, scaffold template.
+  governance/aidoc/      .aidoc/ contract: AIDOC.md, scaffold template,
+                         BOOTSTRAP.md, UPGRADE-RUNBOOK.md.
 ```
 
 ## Conformance
