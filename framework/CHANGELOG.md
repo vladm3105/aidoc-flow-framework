@@ -11,9 +11,16 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.1 |
+| Framework Version | 0.72.2 |
 
 ---
+
+## [0.72.2] — 2026-10-02
+
+### Fixed — ENGINE_TELEMETRY §1 SHOULD-only overclaim (C1 PATCH → 0.72.2, CHG-49 + IPLAN-49)
+
+- The §1 sentence claimed every statement in §§2–4 is a SHOULD, but the doc carries two MUST NOTs conditional on the opt-in activity of emitting telemetry (#875). Reworded to SHOULD-or-conditional-guardrail; the MUST NOTs and the conformance grant are untouched. Doc-control v1.0 → v1.1.
+- Sweep 0.72.1 → 0.72.2 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.72.1] — 2026-10-02
 

@@ -1,0 +1,148 @@
+# =============================================================================
+#  CHG-49: ENGINE_TELEMETRY §1 SHOULD-only overclaim fix (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (guidance-doc prose truthfulness, no normative change —
+#  the two MUST NOTs are correctly scoped already; only the §1 universal
+#  sentence overclaims) — C1 CHG + scoped IPLAN per F2.2; entry GATE-SPEC
+#  (framework/ governance doc; CHG-38 precedent carried this exact file).
+#  Router record (§6): F4 rejected — no Completed/Verified parent IPLAN owns
+#  the §1 sentence (authored under CHG-38, whose vehicle stands Implemented/
+#  In-Progress without sentence-level ownership); F2 applies.
+#  IPLAN: framework/archive/CHG-49/IPLAN-49.yaml (In Progress, authorizing)
+#  Issue: #875 (filed + Mode B GO 2026-10-02: P3 + docs; ALIVE on dev
+#  @ 09ce7a90 — :23 universal claim verbatim, MUST NOTs at :75/:82)
+#  Requester citation (F2.3, verbatim ask): session goal "fix all issues
+#  https://github.com/vladm3105/aidoc-flow-framework/issues" (narrows to #875
+#  after #867 merged; filing-origin P3 from the #867 rule review)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (ENGINE_TELEMETRY.md :23/:75/:82 + doc-control
+#  v1.0, GD-47 accurate citation of the MUST NOTs, CHG-38 vehicle shape);
+#  (2) no client/server — prose-only guidance doc; enforcement surface is
+#  conformance (version-pin test) + full battery + PR checks; (3) N/A no
+#  structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous (guidance prose,
+#  no SDD contract at stake — CHG-38 F2 precedent); (6) N/A no handlers;
+#  (7) single issue #875; (8) covering tests N/A with reason — one-sentence
+#  prose fix, no behavior; verification commands in IPLAN-49 suffice per
+#  F2.3 prose treatment; (9) fix located: §1 sentence + doc-control v1.1;
+#  (10) N/A no migrations; (11) no SDD document modified →
+#  sdd_lifecycle: [] per F2.3 (GOV-014 paired); (12) artifacts_modified
+#  carries the vehicle only; (13) SDD-first vacuous for F2 (empty
+#  lifecycle, CHG-L005); (14) no code steps in CHG (legal phases).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  Guidance-doc sentence fix → PATCH cut 0.72.2 (GATE-SPEC-E005/E008: any
+#  non-archive framework/ change bumps VERSION + CHANGELOG — the CHG-38
+#  "keep" note misled; CHG-38 actually cut 0.70.1. The sentence narrows an
+#  overclaim and adds no duty, so it rides the patch line per GD-47).
+# =============================================================================
+
+id: CHG-49
+title: "ENGINE_TELEMETRY §1 SHOULD-only overclaim fix (issue #875)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.72.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-49"
+  status: Implemented
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: "2026-10-02T00:00:00Z"
+  supersedes:
+    - "IPLAN-49 authorizing record (framework/archive/CHG-49/IPLAN-49.yaml)"
+  # NOTE: ENGINE_TELEMETRY.md is amended in place (guidance-doc sentence
+  # fix, no archive rotation — CHG-38 precedent); only the vehicle record
+  # is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Reword the ENGINE_TELEMETRY §1 sentence so it no longer claims every statement in §§2–4 is a SHOULD: the doc carries two MUST NOTs (:75/:82), conditional on the opt-in activity of emitting telemetry. Doc-control v1.0 → v1.1. PATCH cut 0.72.2."
+  why: "The universal claim is false — the two prohibitions are neither SHOULDs nor MUSTs — and it gets repeated as fact whenever the 0.70.1 precedent is cited (as in #867's review). The MUST NOTs themselves are correctly scoped; only the sentence overclaims."
+  trigger: "Issue #875 (filed + Mode B GO 2026-10-02, P3 + docs)."
+  scope:
+    in:
+      - "framework/governance/ENGINE_TELEMETRY.md: §1 sentence reword + doc-control v1.0 → v1.1"
+      - "PATCH cut 0.72.2: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.72.2]"
+    out:
+      - "The :75/:82 MUST NOTs (correctly scoped guardrails — untouched)"
+      - "§1 conformance grant to non-emitting engines (true and load-bearing — untouched)"
+      - "Any MINOR/MAJOR cut (the fix narrows an overclaim, adds no duty — patch line per GD-47)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-49 with the sentence fix + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-49"
+      status: Completed
+    - step: "Reword §1 sentence + bump doc-control to v1.1 + PATCH cut 0.72.2 + run IPLAN-49 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "ENGINE_TELEMETRY.md"
+      status: Implemented
+  files_modified:
+    - "framework/governance/ENGINE_TELEMETRY.md"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.72.1 → 0.72.2 pin moves (verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-49"
+    changes: "Authorizing record for §1 sentence fix (this file)"
+  - id: "IPLAN-49"
+    changes: "Authorizing IPLAN (framework/archive/CHG-49/IPLAN-49.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer) via the PR; no named gate approver required (CHG-L002 applies to C3 only).
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-49 (0 errors)"
+    - "§1 sentence no longer universal-SHOULD; MUST NOTs :75/:82 byte-identical"
+    - "Doc-control v1.1 + Last Updated 2026-10-02"
+    - "Full battery: tests/unit + tests/conformance + sdd_doc_lint/tests green"
+    - "PR checks green on feature/49-telemetry-s1-fix → dev"
