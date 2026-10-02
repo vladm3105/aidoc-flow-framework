@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -103,7 +103,8 @@ framework/
   archive/               Archived originals from CHG-modified documents.
                          Structure: archive/{CHG-ID}/ (vehicle files at
                          top; legacy dirs add a {category}/ tier).
-  governance/aidoc/      .aidoc/ contract: AIDOC.md, scaffold template.
+  governance/aidoc/      .aidoc/ contract: AIDOC.md, scaffold template,
+                         BOOTSTRAP.md, UPGRADE-RUNBOOK.md.
 ```
 
 ## Conformance
@@ -133,8 +134,11 @@ traceability rules the registry encodes. See [`../README.md`](../README.md)
 
 `framework/VERSION` carries the spec version as SemVer. A breaking change to a
 layer schema, the registry model, or a governance rule is a major bump;
-backward-compatible additions are minor; clarifications are patch. Engines
-pin the spec version they implement.
+backward-compatible additions are minor; clarifications are patch. Guidance-only
+additions — no new unconditional consumer duty, affirmative or prohibitive, and
+no template/registry/API/lint change — ride patch (GD-47). A duty is
+unconditional when it binds a consumer that ignores the guidance, outside its
+opt-in activity. Engines pin the spec version they implement.
 
 ## Change Management
 

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -19,6 +19,11 @@ W001, for breaking changes) are inputs, and adoption drift (W002) is what the
 procedure below clears.
 
 ## Procedure
+
+The mechanical half (step-2 re-point + drift report) is automated by
+`framework/scripts/upgrade.sh` — the steps below are the procedure it
+performs. Conflict resolution (step 3), conformance (step 4), and recording
+(step 5) stay manual.
 
 ### 1. Read the canon-side inputs
 
@@ -32,15 +37,22 @@ procedure below clears.
 - **Symlink consumers:** retarget `.aidoc/framework` at the new canon
   location and update `framework_version` in `.aidoc/profile.yaml` to the new
   `X.Y.Z`.
-- **Pinned-copy consumers:** remove the old copy first
-  (`rm -rf .aidoc/framework` — `cp -r` never deletes, so refreshing over
-  the existing tree would let upstream-removed files linger), then replace
-  it by repeating the `docs/PROJECT.md` §7.1 allowlist copy at the new
-  canon tree (`framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/`,
-  then prune `framework/archive/` inside the copy), then update
-  `framework_version`. Never leave a half-copied tree, and never refresh
+- **Pinned-copy consumers:** stage the new tree aside first (repeat the
+  `docs/PROJECT.md` §7.1 allowlist copy at the new canon tree —
+  `framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/`, then prune
+  `framework/archive/` inside the copy), verify the staged copy is complete,
+  then swap it over the old tree via backup rename (`mv .aidoc/framework
+  .aidoc/framework.prev && mv <stage> .aidoc/framework`, removing the backup
+  only after the swap succeeds). Never `rm` the live tree before the
+  replacement is verified, never leave a half-copied tree, and never refresh
   by copying the canon tree whole — that reintroduces the canon-dev
-  internals §7.1 excludes (#834).
+  internals §7.1 excludes (#834). (`cp -r` never deletes, so refreshing over
+  the existing tree would let upstream-removed files linger.)
+
+> **Supply-chain note:** a release tag is mutable transport. When the canon
+> is cloned by tag, pin the tag's commit SHA as well (`upgrade.sh
+> --canon-sha <40-hex>` / `install.sh --canon-sha <40-hex>`) — the scripts
+> refuse a canon whose `HEAD` differs.
 
 ### 3. Diff each `project/` override against its new upstream shadow
 
@@ -58,8 +70,15 @@ duplicate upstream verbatim.
 
 ### 4. Re-run conformance
 
-Re-pass the shared conformance suite against the re-pointed tree. The upgrade
-is not done until the suite is green on the new version.
+Re-pass the shared conformance suite against the re-pointed tree (from the
+consumer repo root, Python 3.12 per canon CI):
+
+```bash
+python -m unittest discover -s tests/conformance -v
+python -m unittest discover -s tests/unit
+```
+
+The upgrade is not done until the suite is green on the new version.
 
 ### 5. Record it
 
@@ -74,15 +93,18 @@ table: "Consumer must adapt" rows are ordinary consumer PRs, not canon CHGs).
 The canon owes only the inputs: versioned releases, W001 migration notes for
 breaking changes, and drift tracking (W002).
 
-## Minimal automation (open follow-up)
+## Minimal automation (shipped: CHG-45)
 
-No shipped script performs any part of this yet. The smallest useful one is a
-`stale` detector: read each override's authored-against `framework_version`
-pin, compare against the canon `VERSION`, and report drift — making W002
-measurable. Kept out of this batch on purpose (prose-only vehicle, CHG-16).
+`framework/scripts/upgrade.sh` performs the mechanical half: the step-2
+re-point for both consumer kinds plus the `stale` detector — each override's
+authored-against `framework_version` pin compared against the canon
+`VERSION`, reported as `DRIFT:`/`OK:`/`UNPINNED:` lines, making W002
+measurable. `framework/scripts/install.sh` is the `BOOTSTRAP.md` companion
+for new projects. Steps 3–5 stay manual by design. (Kept out of CHG-16 on
+purpose — prose-only vehicle; the follow-up is now closed.)
 
 ## See also
 
 - `BOOTSTRAP.md` — the initial-deploy procedure this runbook extends
 - `AIDOC.md` — the contract (structure, discovery rule, symlink convention)
-- `chg/gates/GATE-SPEC_FRAMEWORK.md` — the spec gate (W001/W002, re-adoption box)
+- `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` — the spec gate (W001/W002, re-adoption box)

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 This is the ordered procedure for deploying `.aidoc/` on a new project
 (#786). The contract lives in `AIDOC.md`; the profile semantics in
@@ -17,9 +17,28 @@ each step's check must pass before moving on.
 
 ## Procedure
 
+Steps 1–5 are automated by `framework/scripts/install.sh` (pinned copy or
+symlink) — the steps below are the procedure it performs.
+
+Prerequisites: `git`, `bash` 4+, `python3` (for the step-5 closed-key check —
+without it the check stays manual), and a POSIX `sed` (any flavor; the
+installer avoids GNU-only flags).
+
+### 0. Clone the canon
+
+```bash
+git clone --depth 1 --branch framework/vX.Y.Z \
+  https://github.com/vladm3105/aidoc-flow-framework.git canon
+```
+
+Use the adopted release tag (`docs/PROJECT.md` §7.1); the `AIDOC_CANON_URL`
+env var overrides the URL in air-gapped setups. Verify the clone against the
+tag's commit SHA when supply-chain matters (`install.sh --canon-sha <40-hex>`
+refuses a mismatch). Run steps 1–5 from the clone root.
+
 ### 1. Copy the scaffold README
 
-Run from the framework repository root:
+Run from the framework repository root (the step-0 clone):
 
 ```bash
 mkdir -p <project>/.aidoc
@@ -35,13 +54,16 @@ cp framework/governance/PROFILE-TEMPLATE.yaml <project>/.aidoc/profile.yaml
 ```
 
 Uncomment and fill only the knobs the project overrides. Keys must come from
-the closed set in `ADAPTATION_SURFACE.yaml` (`active_layers`,
-`section_toggles`, `audit_threshold`, `glossary`, `review_mode`,
-`quality_loop_max_iterations`) — engines IGNORE any other key. Per-layer
+the closed set in `ADAPTATION_SURFACE.yaml` (see its `knobs:` list — the
+single author; no enumeration here) — engines IGNORE any other key. Per-layer
 review crews and persona weights are framework-defined (`REVIEW_CREWS.yaml`)
 and are not project-overridable through this surface.
 
-### 3. Create the framework symlink
+### 3. Attach the framework (pinned copy or symlink)
+
+Default: a pinned copy of the §7.1 allowlist (self-contained; what
+`install.sh` does without `--kind`). Alternatively, symlink a persistent
+shared checkout where one exists:
 
 ```bash
 ln -s <shared-framework-location> <project>/.aidoc/framework
@@ -49,9 +71,8 @@ ln -s <shared-framework-location> <project>/.aidoc/framework
 
 `.aidoc/framework` is the canonical path engines resolve (via
 `readlink -f`); `framework_path: .aidoc/framework` in `profile.yaml` declares
-it. Pinned-copy checkouts are allowed where symlinks are unavailable, but the
-copy MUST be refreshed on every upgrade (see `UPGRADE-RUNBOOK.md`) — a stale
-copy is silent drift.
+it. A pinned copy MUST be refreshed on every upgrade (see
+`UPGRADE-RUNBOOK.md`) — a stale copy is silent drift.
 
 ### 4. Pin the framework version
 

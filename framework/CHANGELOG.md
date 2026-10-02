@@ -9,11 +9,51 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 |-------|-------|
 | Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 ---
+
+## [0.73.0] — 2026-10-02
+
+### Added — Preprod-findings batch (C2 MINOR → 0.73.0, CHG-50 + IPLAN-50)
+
+- New `--canon-sha` pin on `install.sh` + `upgrade.sh` (#879): tags are mutable transport, so the canon `HEAD` can now be pinned to a full 40-hex SHA, verified post-clone. New API surface → the batch rides MINOR per GD-47's own test (GD-48).
+- Consumer-script robustness: portable tmpfile fill replaces GNU `sed -i` (macOS-safe, #878); install pre-validates canon templates before `--force` delete (#880); upgrade swaps via backup rename with a pre-swap smoke assert (#881); AUTHOR newlines refused (#884). Scripts gain `# Version: 1.1` markers.
+- Hook hardening: the pre-push audit grep now demands the full verdict-bearing phrase, bare stems rejected (#885); the version sweep uses a clean single-`|` ERE join and warns loudly on re-stage failure (#886).
+- Runbook + governance truthfulness: BOOTSTRAP knob list → SURFACE pointer, step-0 clone, pin/symlink reconcile, prereqs (#882, #887); UPGRADE-RUNBOOK dead gate ref + step-4 invocation cite (#888); GD-47 F2.2 qualification (#883); README aidoc listing (#889); PROJECT platform tense (#890).
+- Sweep 0.72.2 → 0.73.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.72.2] — 2026-10-02
+
+### Fixed — ENGINE_TELEMETRY §1 SHOULD-only overclaim (C1 PATCH → 0.72.2, CHG-49 + IPLAN-49)
+
+- The §1 sentence claimed every statement in §§2–4 is a SHOULD, but the doc carries two MUST NOTs conditional on the opt-in activity of emitting telemetry (#875). Reworded to SHOULD-or-conditional-guardrail; the MUST NOTs and the conformance grant are untouched. Doc-control v1.0 → v1.1.
+- Sweep 0.72.1 → 0.72.2 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.72.1] — 2026-10-02
+
+### Fixed — SemVer guidance-only PATCH carve-out (C2 PATCH → 0.72.1, CHG-48 + IPLAN-48)
+
+- The versioning rule now states the citable test (#867): guidance-only additions — no new unconditional consumer duty, affirmative or prohibitive, and no template/registry/API/lint change — ride PATCH; everything with unconditional surface still rides MINOR. Written in `framework/README.md` Versioning and the E002 mapping (both gate twins); GD-47 records the decision and the rejected reaffirm-MINOR. Shipped 0.70.1 stands correct under the clarified rule (its two MUST NOTs are conditional on the opt-in activity of emitting telemetry); no version re-cut.
+- Sweep 0.72.0 → 0.72.1 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.72.0] — 2026-10-02
+
+### Added — TAG01 docs-only N/A model (C2 MINOR → 0.72.0, CHG-46 + IPLAN-46)
+
+- Docs-only IPLANs get an honest green (#872): `tdd_consistency.status` gains `not-applicable` (with a one-line reason), TAG01 lifts the `tdd` tag for N/A IPLANs keyed on that single signal, and IPLAN `subtype` gains `docs` (code_build minus `execution_commands`). `@spec:` stays required everywhere; code-IPLAN enforcement byte-identical. The pre-0.72.0 borrow-a-real-`@tdd`-tag workaround is retired.
+- Sweep 0.71.0 → 0.72.0 is pin moves only (verified zero non-pin lines outside the manifest).
+
+## [0.71.0] — 2026-10-02
+
+### Added — consumer install + upgrade scripts (C2 MINOR → 0.71.0, CHG-45 + IPLAN-45)
+
+- Shipped executable consumer tooling (#870): `framework/scripts/install.sh` (BOOTSTRAP steps 1–5: scaffold, profile, attach, pin, smoke-verify) and `framework/scripts/upgrade.sh` (runbook step-2 re-point for both consumer kinds + the `stale` detector as `DRIFT:`/`OK:`/`UNPINNED:` lines, making W002 measurable). Both kinds first-class: pinned allowlist copy (default) and symlink (`--kind symlink` + `--shared`); `--dry-run` previews, `--force`/`--yes` confirm destructive ops, exit 0/1/2 (ok/failed/usage-or-refused).
+- The copy set is read from `framework/scripts/allowlist.txt`, a machine-readable mirror of the §7.1 allowlist — conformance pins entry-parity with the prose, so the set keeps exactly one author (#741 lesson; the #834 leak shape stays excluded).
+- `UPGRADE-RUNBOOK.md` + `BOOTSTRAP.md` v1.0 → v1.1 (one-line script pointers; the runbook's "Minimal automation" follow-up closed — CHG-16's deferred item); GD-45 recorded; `docs/PROJECT.md` §7 points at the scripts. Runbook/BOOTSTRAP procedure steps untouched; conflict resolution, conformance, and recording stay manual.
+- Sweep 0.70.3 → 0.71.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.70.3] — 2026-10-02
 

@@ -15,11 +15,137 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.6 |
+| Version | 1.10 |
 | Status | Approved |
-| Last Updated | 2026-10-01 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
+
+---
+
+## GD-48 — Preprod batch rides MINOR: --canon-sha is new API surface (CHG-50, 0.73.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.72.2 → 0.73.0` (MINOR),
+  change-level **C2** (spec; script behavior + rule prose — reviewer may escalate to C3).
+  Vehicle: CHG-50 + IPLAN-50 (`framework/archive/CHG-50/`). Trigger: preprod
+  review of the 0.70.3→0.72.2 promotion (five lenses, SHIP-WITH-FIXES — 13
+  surviving findings filed as #878–#890).
+- **Context:** the batch mixes pure robustness/docs fixes (portable sed fill,
+  rm-before-validate, atomic swap, runbook pointers — PATCH-riding alone)
+  with one additive item: the `--canon-sha` pin flag on both consumer
+  scripts, plus a tightened audit-trail grep.
+- **Decision:** the batch rides MINOR. GD-47's test decides it: a new CLI flag
+  is new API surface, so the PATCH line is closed — the first self-application
+  of the GD-47 rule to a later change. The tightened hook grep rides along
+  (hooks carry no SemVer line of their own). Rejected: splitting the flag
+  into its own vehicle (a second cut + sweep for one flag; the batch is one
+  promotion gate).
+- **Consequence:** a batch rides the highest line any member needs. GD-47's
+  Consequence is qualified by the same vehicle (#883): E003 bars C1 for
+  normative-surface spec changes; F2.2 non-normative C1 (CHG-38/CHG-49
+  precedent) stands.
+
+---
+
+## GD-47 — Guidance-only additions ride PATCH: the SemVer carve-out test (CHG-48, 0.72.1 PATCH)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.72.0 → 0.72.1` (PATCH),
+  change-level **C2** (spec rule clarification; reviewer may escalate to C3).
+  Vehicle: CHG-48 + IPLAN-48 (`framework/archive/CHG-48/`). Trigger: issue
+  #867 (the written rule said "additions are minor" while shipped 0.70.1 carried
+  a new guidance doc as PATCH — that doc's normative surface is two MUST NOTs
+  conditional on the opt-in activity of emitting telemetry, vacuous for
+  non-emitting engines, which §1 declares conforming).
+- **Context:** the SemVer rule named only major/minor/patch for breaking,
+  additive, and clarification changes. A guidance-only addition — new prose, at
+  most duties conditional on the guidance's own opt-in activity, zero
+  unconditional surface — sat between "addition" and "clarification" with no
+  citable bucket, so the next author had to guess. A token test ("no new MUST")
+  cannot decide the bucket: prohibitions (MUST NOT / SHALL NOT) and synonyms
+  (SHALL / REQUIRED) evade it, and the 0.70.1 precedent itself carries two
+  MUST NOTs — so the test is duty-based, not token-based.
+- **Decision:** guidance-only additions ride PATCH. The test: the addition
+  introduces no new unconditional consumer duty — affirmative (MUST / SHALL /
+  REQUIRED) or prohibitive (MUST NOT / SHALL NOT) — and no
+  template/registry/API/lint change. A duty is unconditional when it binds a
+  consumer that ignores the guidance; prohibitions vacuous outside the
+  guidance's own opt-in activity don't count. Everything with unconditional
+  surface still rides MINOR. This keeps shipped 0.70.1 correct (published
+  versions are corrected forward, never rewritten) and aligns with the existing
+  normative/non-normative split (F2.2). Rejected: reaffirm-all-additions-MINOR —
+  it would declare a shipped version misclassified and strand future guidance
+  between a wrong PATCH precedent and a strict MINOR rule. Self-application:
+  this rule prose itself rides PATCH under its own test — it binds the release
+  process, not implementations, and adds no template/registry/API/lint surface.
+- **Consequence:** authors cite the README Versioning sentence; reviewers check
+  the unconditional-duty + surface test. Rule written in `framework/README.md`
+  Versioning and the E002 mapping (both gate twins). Which line a change rides
+  is orthogonal to its change level: E003 still bars C1 for normative-surface
+  spec changes — other than F2.2 non-normative C1 (CHG-38/CHG-49 precedent),
+  a PATCH-riding spec fix still needs its C2+ vehicle.
+
+---
+
+## GD-46 — Docs-only IPLANs get an honest green: N/A consistency status, TAG01 tdd exemption, docs subtype (CHG-46, 0.72.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.71.0 → 0.72.0` (MINOR),
+  change-level **C2** (spec; additive template values + exemption path — code-IPLAN
+  enforcement byte-identical; reviewer may escalate to C3).
+  Vehicle: CHG-46 + IPLAN-46 (`framework/archive/CHG-46/`). Trigger: issue
+  #872 (docs-only C1s forced to borrow a real `@tdd` tag and assert `verified`
+  coverage they do not have — lint-forced theater, proven by a live downstream record).
+- **Context:** TAG01 requires `@tdd:` on every IPLAN (registry `required_tags`),
+  and `tdd_consistency.status` admitted only `not_started | in_progress | verified`.
+  A prose-only manifest was ungreenable except by borrowing a real case ID plus a
+  disclaimer — every `verified` in the corpus became discountable.
+- **Decision:** `tdd_consistency.status` gains `not-applicable` (with a one-line
+  reason in `issues[]`); TAG01 lifts the `tdd` tag for N/A IPLANs keyed on that
+  ONE signal (subtype plays no role in the guard — the waived contract is named
+  at its own point); IPLAN `subtype` gains `docs` (code_build minus
+  `execution_commands); `@spec:` stays required everywhere. Trust model unchanged:
+  statuses are author-asserted today (`verified` is equally unverified — TDD-SYNC
+  rules are Reserved), and an N/A dodge is no cheaper than the borrowed-tag dodge
+  it replaces while being more visible.
+- **Consequence:** docs-only authors declare N/A and drop the borrowed tag; the
+  pre-0.72.0 borrow-plus-disclaimer workaround is retired. Template schema_version
+  stays uniform 1.0 (CHG-24 #805 guard) — the change rides the framework version.
+
+---
+
+## GD-45 — Shipped consumer install + upgrade scripts; runbook automation follow-up closed (CHG-45, 0.71.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.70.3 → 0.71.0` (MINOR),
+  change-level **C2** (spec; additive `framework/scripts/` surface — no
+  existing procedure step, gate, or knob changed meaning; reviewer may
+  escalate to C3).
+  Vehicle: CHG-45 + IPLAN-45 (`framework/archive/CHG-45/`). Trigger: issue
+  #870 (no script installed or upgraded a consumer tree; the runbook's
+  "Minimal automation" follow-up stood open since CHG-16).
+- **Context:** adopting the framework meant hand-running the `BOOTSTRAP.md`
+  steps (scaffold, profile, link-or-copy, pin, smoke checks) and upgrading
+  meant hand-running the runbook's remove-then-re-copy — every manual
+  re-point a chance to copy the canon tree whole (the #834 leak shape) or
+  to refresh over the old tree and let upstream-removed files linger.
+- **Decision:** ship `framework/scripts/install.sh` (BOOTSTRAP steps 1–5)
+  and `framework/scripts/upgrade.sh` (runbook step-2 re-point for both
+  consumer kinds + the `stale` detector as `DRIFT:`/`OK:`/`UNPINNED:`
+  lines, making W002 measurable). Both kinds are first-class: pinned
+  allowlist copy (default) and symlink (`--kind symlink` + `--shared`).
+  The copy set is read from `allowlist.txt`, a machine-readable mirror of
+  the §7.1 allowlist — conformance pins entry-parity with the prose, so the
+  set still has exactly one author (#741 lesson). Deliberately manual:
+  override conflict resolution (step 3), conformance re-pass (step 4 —
+  `--conformance-cmd` runs it but the operator owns green), and changelog
+  recording (step 5); kind conversion (reinstall instead). Confirm gates:
+  install refuses an existing `.aidoc/` by default and replaces it wholesale
+  only under `--force` + (`--yes` or a TTY confirm); upgrade's destructive
+  re-point needs `--yes` or a TTY confirm while its `--force` only
+  re-installs the same version. `UPGRADE-RUNBOOK.md` + `BOOTSTRAP.md` carry
+  one-line script pointers (v1.1); the runbook's "Minimal automation"
+  follow-up is closed.
+- **Consequence:** new adoptions and re-adoptions run one command with
+  dry-run preview; the §7.1 allowlist can no longer drift from what the
+  scripts copy — the suite fails first.
 
 ---
 

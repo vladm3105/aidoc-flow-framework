@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-01 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 Engine-agnostic recommendations for **how a conforming engine emits
 observability telemetry** so that traces from different engines are mutually
@@ -20,7 +20,8 @@ to emit traces. It mandates no vendor, no backend, and no SDK.
 
 ## 1. Status of this guidance
 
-Every statement in §§2–4 is a **SHOULD**, not a MUST. An engine that emits
+Every statement in §§2–4 is a **SHOULD** or a guardrail **MUST NOT**
+conditional on emitting — not an unconditional MUST. An engine that emits
 no telemetry still conforms. An engine that emits telemetry SHOULD follow
 this document so its traces compare with other engines' traces.
 

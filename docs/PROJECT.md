@@ -90,8 +90,10 @@ tags, never move a release tag, disposable bookmarks).
 The `framework/` spec is the contract. A shared suite under
 `tests/conformance/` validates that a platform correctly implements the
 10-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code→EVAL→Verified), schemas,
-templates, and traceability rules. Both platforms run the **same** suite —
-this is what keeps two independent engines behaviourally equivalent.
+templates, and traceability rules. Both platforms ran the **same** suite —
+this is what kept two independent engines behaviourally equivalent (platform
+streams frozen since the 2026-09-07 archive: `hermes/v0.1.1`,
+`claude-code-plugin/v0.25.0`; see `docs/TAGGING.md`).
 
 ## 6. Change Management
 
@@ -193,7 +195,11 @@ rm -rf .aidoc/framework/framework/archive
 tooling dotfiles (`.pre-commit-config.yaml`, `.gitleaks.toml`, linter
 configs), and the canon `.git` history. Refresh a pinned copy by repeating
 the copy above per `framework/governance/aidoc/UPGRADE-RUNBOOK.md` — never by
-pulling inside `.aidoc/framework/`.
+pulling inside `.aidoc/framework/`. Both directions are scripted:
+`framework/scripts/install.sh` performs new adoptions, and
+`framework/scripts/upgrade.sh` performs re-adoptions; both read the copy set
+from `framework/scripts/allowlist.txt` (a machine-readable mirror of this
+section — the suite pins the parity).
 
 ### 7.2 Directory structure contract
 
@@ -226,6 +232,8 @@ Projects maintain a `.aidoc/` directory with this structure:
 └── README.md
 ```
 
+This is the shape `framework/scripts/install.sh` creates on a new project.
+
 ### 7.3 Discovery rule
 
 When reading a template, rule, or playbook:
@@ -252,6 +260,8 @@ Refresh a pinned copy by repeating the §7.1 copy per
 `framework/governance/aidoc/UPGRADE-RUNBOOK.md` — remove the old copy
 first, then re-copy; never refresh by pulling inside
 `.aidoc/framework/` (a pull lets upstream-removed files linger).
+`framework/scripts/upgrade.sh` performs this re-point plus the override
+drift report; conflict resolution, conformance, and recording stay manual.
 
 After refreshing, verify `framework/VERSION` matches the pin in `.aidoc/profile.yaml`. If a newer version has breaking changes, update project overrides in `.aidoc/project/` before adopting.
 

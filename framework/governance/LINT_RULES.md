@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -104,7 +104,7 @@ each layer's derived count so that edit cannot be made silently.
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
-| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
+| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). Exemption (GD-46): an IPLAN declaring `tdd_consistency.status: not-applicable` is exempt from the `tdd` tag — the N/A status names the waived contract; `@spec:` stays required. | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
 | `TRACE-RES-001` | A trace tag does not resolve to an existing target document/element. | error | `TRACEABILITY.md` |
 | `REFGRAN01` | A document-level trace tag points to an element-declaring layer where an element-level citation is required (GD-03 reference granularity). | warning | `TAG_SYNTAX.md` |
 | `COV01` | Forward coverage: an in-scope BRD functional requirement is cited by no PRD, or reaches no downstream SPEC/IPLAN. | warning→error | `TRACEABILITY.md` |

@@ -179,6 +179,52 @@ class SyncVersionRefsTests(unittest.TestCase):
         self.assertIn(f"| Framework Version | {current} |", md)
         self.assertIn(f'framework_version: "{current}"', yaml_text)
 
+    def test_discovery_pattern_has_no_empty_alternative(self):
+        # #886: the metadata grep pattern must be a clean alternation — the
+        # old `||` join held empty alternatives that matched every file
+        # (sweep's literal re-match hid it). A recording grep shim captures
+        # the real pattern the script builds; pins still sweep.
+        current = VERSION_FILE.read_text(encoding="utf-8").strip()
+        stale = next(v for v in reversed(_old_versions()) if v != current)
+        fixture = _fixture(current, stale)
+        real_grep = shutil.which("grep")
+        shimdir = fixture / "bin"
+        shimdir.mkdir()
+        log = fixture / "patterns.log"
+        shim = shimdir / "grep"
+        shim.write_text(
+            "#!/bin/sh\n"
+            f'for a in "$@"; do case "$a" in -*) ;; *) printf "%s\\n" "$a" >> "{log}" ;; esac; done\n'
+            f'exec "{real_grep}" "$@"\n',
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        result = _run(fixture, env)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        patterns = log.read_text(encoding="utf-8").splitlines()
+        self.assertTrue(patterns, "recording shim captured no grep pattern")
+        for pat in patterns:
+            with self.subTest(pattern=pat[:60]):
+                self.assertNotIn("||", pat, "empty ERE alternative in discovery pattern")
+        md = (fixture / "framework" / "probe.md").read_text(encoding="utf-8")
+        yaml_text = (fixture / "framework" / "governance" / "probe.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(f"| Framework Version | {current} |", md)
+        self.assertIn(f'framework_version: "{current}"', yaml_text)
+
+    def test_restage_failure_warns_loudly(self):
+        # #886: a failed re-stage must warn, never `|| true` into silence.
+        text = SYNC.read_text(encoding="utf-8")
+        code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+        self.assertIn(
+            "WARNING: re-stage failed",
+            code,
+            "sync-version-refs.sh swallows re-stage errors silently",
+        )
+
     def test_newline_filename_swept(self):
         """A newline in a filename must not desync discovery (#830).
 

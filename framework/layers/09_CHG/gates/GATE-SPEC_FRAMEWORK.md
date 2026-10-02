@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.73.0 |
 
 
 > **Position**: Orthogonal to the artifact cascade — governs the `framework/`
@@ -116,7 +116,10 @@ protected-branch review. The validator never grants approval.
 > **E002 mapping (one-directional):** `major` ⇒ C3 (required). `minor` / `patch`
 > may be C2 — an additive change (a new optional knob, a new gate) reaches all
 > consumers yet is not breaking, so it does not force C3. Only a breaking change
-> escalates.
+> escalates. (Guidance-only additions — no new unconditional consumer duty,
+> affirmative or prohibitive, and no template/registry/API/lint change — ride
+> `patch`: GD-47. A duty is unconditional when it binds a consumer that ignores
+> the guidance, outside its opt-in activity.)
 
 ### 3.2 Warning Checks (Non-Blocking)
 

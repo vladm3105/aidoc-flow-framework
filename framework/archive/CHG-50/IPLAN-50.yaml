@@ -1,0 +1,177 @@
+# =============================================================================
+#  IPLAN-50: preprod-findings batch (#878-#890, MINOR 0.73.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-50/CHG-50.yaml (spec-source, C2,
+#  Implemented). Source: preprod review SHIP-WITH-FIXES (13 issues, all GO).
+#  Combined C1-work + docs batch under one C2 vehicle (CHG-42 precedent).
+#  Covering tests extend the consumer-scripts + hook-stage suites.
+# =============================================================================
+
+doc_id: IPLAN-50
+title: "Preprod-findings batch (#878-#890, 0.73.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.72.2"
+  source_chg: "CHG-50"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-50"
+  subtype: combined
+  source_spec: "@spec: N/A (robustness + docs batch under CHG-50; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 3
+  estimated_files: 15
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-50/CHG-50.yaml + IPLAN-50.yaml"
+      description: "Authorizing vehicle (CHG-50 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-50/ snapshots (install.sh + upgrade.sh + BOOTSTRAP.md + UPGRADE-RUNBOOK.md + DECISIONS.md + README.md + VERSION)"
+      description: "Pre-change snapshots (base 0.72.2)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/scripts/install.sh"
+      description: "Portable fill, pre-validate, AUTHOR reject, --canon-sha (v1.0 → v1.1)"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/scripts/upgrade.sh"
+      description: "Portable re-pin, atomic swap, pre-swap smoke, --canon-sha (v1.0 → v1.1)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/pre_push_check.sh"
+      description: "Full-phrase audit grep (#885)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Single-| join, loud re-stage, OLD_VERSIONS (#886)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/BOOTSTRAP.md"
+      description: "Knob pointer, step0, reconcile, prereqs (v1.1 → v1.2)"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+      description: "Dead-ref, step4 cite, --canon-sha note (v1.1 → v1.2)"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-47 qualification + GD-48 (v1.9 → v1.10)"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/README.md"
+      description: "aidoc listing names runbooks (v1.1 → v1.2)"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/PROJECT.md"
+      description: "Platform tense (rides cascade, docs/)"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_consumer_scripts.py + tests/unit/test_hook_stage_coverage.py + tests/unit/test_sync_scripts.py"
+      description: "Covering extends for script + hook + sweep behavior"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION + framework/CHANGELOG.md + sweep fallout"
+      description: "MINOR cut 0.73.0 (E005/E008) + pin moves only"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Script-behavior batch: extend the consumer-scripts suite (portable fill under BSD-sed shim, pre-validate refusal, atomic-swap restore, --canon-sha accept/reject) + hook-stage suite (full-phrase pin, stem-only negative control) + live simulations; full battery as regression."
+  cases:
+    - "chg_lint.py over CHG-50: 0 errors"
+    - "shellcheck clean on all four touched shell files"
+    - "Portable fill: install/upgrade complete with BSD-sed shim shadowing sed (no GNU -i)"
+    - "Pre-validate: --force + incomplete canon refuses BEFORE deleting .aidoc (tree intact)"
+    - "Atomic swap: failed mv restores FW.prev (simulated) + STAGE SURFACE assert fires on incomplete stage"
+    - "--canon-sha: matching sha proceeds, mismatching sha dies, absent flag keeps tag-only path"
+    - "Hook: full verdict-bearing phrase passes; bare stem fails (negative control)"
+    - "Sync: single-| pattern matches only version rows; re-stage failure warns loudly"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-50/CHG-50.yaml"
+    - "shellcheck framework/scripts/install.sh framework/scripts/upgrade.sh hooks/pre_push_check.sh hooks/sync-version-refs.sh"
+    - "bash hooks/sync-version-refs.sh && bash hooks/sync-version-refs.sh (second run zero replacements)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test:
+    - "python3 -m unittest tests.conformance.test_consumer_scripts -v"
+    - "python3 -m unittest tests.unit.test_hook_stage_coverage -v"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Linux behavior byte-identical where the fix is portability-only (GNU sed expressions preserved, moved to tmpfile flow)"
+  - "--canon-sha is opt-in; tag-only path unchanged (VERSION↔tag check kept)"
+  - "No consumer-visible behavior change beyond the 13 issues"
+  - "Sweep is pin moves only outside the manifest; root CHANGELOG.md frozen, untouched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "Vehicle + fixes + tests + cut + battery DONE; PR next"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-50"
+  upstream: ["Issues #878-#890 (preprod SHIP-WITH-FIXES, all GO 2026-10-02)"]
+  downstream: ["PR feature/50-preprod-batch → dev (after implementation)"]

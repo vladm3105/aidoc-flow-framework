@@ -125,7 +125,7 @@ ARCHIVE_EXCL="archive/CHG-"
 # release on every MINOR bump (#663) — the conformance pin
 # (tests/conformance/test_sync_version_refs.py) fails if a swept-form
 # literal in the tree is missing from this list.
-OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1 0.68.2 0.68.3 0.68.4 0.68.5 0.68.6 0.69.0 0.70.0 0.70.1 0.70.2"
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1 0.68.2 0.68.3 0.68.4 0.68.5 0.68.6 0.69.0 0.70.0 0.70.1 0.70.2 0.70.3 0.71.0 0.72.0 0.72.1 0.72.2"
 
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
 # NUL-delimited throughout (#830-3): a newline in a filename must not split
@@ -144,7 +144,11 @@ done < <(grep -rlZ 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbook
 _meta_pat=""
 for old in $OLD_VERSIONS; do
   [ -n "$_meta_pat" ] && _meta_pat="${_meta_pat}|"
-  _meta_pat="${_meta_pat}framework_version: \"${old}\"|| Framework Version | ${old} |"
+  # Single-| alternation; literal pipes as [|] and dots as [.] (portable
+  # ERE — \| is a GNU extension). The old || join held empty alternatives
+  # that matched every file; sweep's literal re-match hid it (#886).
+  _old_esc="${old//./[.]}"
+  _meta_pat="${_meta_pat}framework_version: \"${_old_esc}\"|[|] Framework Version [|] ${_old_esc} [|]"
 done
 while IFS= read -r -d '' f; do
   rel="${f#"$REPO_ROOT"/}"
@@ -168,7 +172,7 @@ fi
 # repo-wide, silently folding unauthorized hunks into the VERSION commit.
 if git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   if [ "${#touched[@]}" -gt 0 ]; then
-    git -C "$REPO_ROOT" add -- "${touched[@]}" 2>/dev/null || true
+    git -C "$REPO_ROOT" add -- "${touched[@]}" 2>/dev/null || echo "sync-version-refs: WARNING: re-stage failed — sweep modifications left unstaged" >&2
   fi
 fi
 
