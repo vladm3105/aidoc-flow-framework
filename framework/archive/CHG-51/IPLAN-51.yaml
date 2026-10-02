@@ -1,0 +1,94 @@
+# =============================================================================
+#  IPLAN-51: TAGGING inventory refresh (0.73.0 post-tag, version keep)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-51/CHG-51.yaml (F2 direct, C1,
+#  In-Progress). Source: release cut 0.73.0 (no issue — procedure step).
+#  Docs-only C1: subtype docs + tdd_consistency not-applicable (GD-46).
+#  Figures verified by re-derivation commands below.
+# =============================================================================
+
+doc_id: IPLAN-51
+title: "TAGGING inventory refresh (0.73.0 post-tag)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.73.0"
+  source_chg: "CHG-51"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-51"
+  subtype: docs
+  source_spec: "@spec: N/A (release-record refresh under CHG-51; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 1
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-51/CHG-51.yaml + IPLAN-51.yaml"
+      description: "Authorizing vehicle (CHG-51 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/TAGGING.md"
+      description: "Inventory-block figure refresh (6 edits)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  status: not-applicable
+  strategy: "Docs-only C1: figure refresh verified by live re-derivation (tag targets, distinct values, range). Release-record conformance test as regression."
+  cases:
+    - "chg_lint.py over CHG-51: 0 errors"
+    - "High-water v0.73.0: tag exists on remote with exact-version target"
+    - "Range 0.46.0–0.73.0 contiguous: no missing assigned version (phantoms excluded)"
+    - "Distinct VERSION values = 146 (re-derived one-liner)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+  issues:
+    - rule: "N/A"
+      reason: "Docs-only manifest (IPLAN subtype docs): no code/test bindings exist, so no TDD cases can bind."
+
+# =============================================================================
+# Section 4: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only the listed file touched"
+  - "Every figure re-derived, none transcribed from memory"
+  - "No version cut (version keep); no CHANGELOG entry"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "Vehicle + refresh + battery DONE; PR next"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-51"
+  upstream: ["Release cut 0.73.0 (tags pushed 2026-10-02)"]
+  downstream: ["PR feature/51-tagging-refresh → dev (after implementation)"]
