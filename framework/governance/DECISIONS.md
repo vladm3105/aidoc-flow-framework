@@ -15,11 +15,49 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.8 |
+| Version | 1.9 |
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.0 |
+| Framework Version | 0.72.1 |
+
+---
+
+## GD-47 — Guidance-only additions ride PATCH: the SemVer carve-out test (CHG-48, 0.72.1 PATCH)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.72.0 → 0.72.1` (PATCH),
+  change-level **C2** (spec rule clarification; reviewer may escalate to C3).
+  Vehicle: CHG-48 + IPLAN-48 (`framework/archive/CHG-48/`). Trigger: issue
+  #867 (the written rule said "additions are minor" while shipped 0.70.1 carried
+  a new guidance doc as PATCH — that doc's normative surface is two MUST NOTs
+  conditional on the opt-in activity of emitting telemetry, vacuous for
+  non-emitting engines, which §1 declares conforming).
+- **Context:** the SemVer rule named only major/minor/patch for breaking,
+  additive, and clarification changes. A guidance-only addition — new prose, at
+  most duties conditional on the guidance's own opt-in activity, zero
+  unconditional surface — sat between "addition" and "clarification" with no
+  citable bucket, so the next author had to guess. A token test ("no new MUST")
+  cannot decide the bucket: prohibitions (MUST NOT / SHALL NOT) and synonyms
+  (SHALL / REQUIRED) evade it, and the 0.70.1 precedent itself carries two
+  MUST NOTs — so the test is duty-based, not token-based.
+- **Decision:** guidance-only additions ride PATCH. The test: the addition
+  introduces no new unconditional consumer duty — affirmative (MUST / SHALL /
+  REQUIRED) or prohibitive (MUST NOT / SHALL NOT) — and no
+  template/registry/API/lint change. A duty is unconditional when it binds a
+  consumer that ignores the guidance; prohibitions vacuous outside the
+  guidance's own opt-in activity don't count. Everything with unconditional
+  surface still rides MINOR. This keeps shipped 0.70.1 correct (published
+  versions are corrected forward, never rewritten) and aligns with the existing
+  normative/non-normative split (F2.2). Rejected: reaffirm-all-additions-MINOR —
+  it would declare a shipped version misclassified and strand future guidance
+  between a wrong PATCH precedent and a strict MINOR rule. Self-application:
+  this rule prose itself rides PATCH under its own test — it binds the release
+  process, not implementations, and adds no template/registry/API/lint surface.
+- **Consequence:** authors cite the README Versioning sentence; reviewers check
+  the unconditional-duty + surface test. Rule written in `framework/README.md`
+  Versioning and the E002 mapping (both gate twins). Which line a change rides
+  is orthogonal to its change level: E003 still bars C1 for spec changes — a
+  PATCH-riding spec fix still needs its C2+ vehicle.
 
 ---
 

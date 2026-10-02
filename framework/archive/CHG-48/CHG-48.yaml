@@ -1,0 +1,259 @@
+# =============================================================================
+#  CHG-48: SemVer guidance-only PATCH carve-out (spec C2 PATCH → 0.72.1)
+#  (F3-excluded spec-source change; SDD-carrying vehicle)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — versioning rule prose + gate mapping, not project
+#  artifacts). Not F1/F3/F4/Emergency/Type-R (spec-shape precedent
+#  CHG-36/37/45/46: sdd_lifecycle entries + snapshots + seed_scope
+#  no-change + SDD-first steps).
+#  C2 per GATE-SPEC-E003 (spec is never C1); PATCH per the rule this vehicle
+#  writes (guidance-only clarification: no new unconditional consumer duty,
+#  affirmative or prohibitive, no template/registry/API/lint change — the
+#  vehicle is itself the first exhibit of the carve-out).
+#  IPLAN: framework/archive/CHG-48/IPLAN-48.yaml (In Progress; no spec edits
+#  before that per §3.13 — vehicle authored first, rule prose after).
+#  Requester citation: issue #867 (SemVer guidance-only question), read live
+#  2026-10-02 (OPEN), both legs re-verified on dev @ dda6f663 (README
+#  Versioning rule :134-136; CHG-38 C1 PATCH carrying ENGINE_TELEMETRY.md).
+#  Mode-B GO on #867 (no superseder; decision recorded as GD-47 herein).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (README Versioning :134-136, E002 mapping in
+#  both gate twins :116-119, CHG-38 vehicle C1/patch, ENGINE_TELEMETRY.md
+#  MUST audit :23/:75/:82, F2.2 non-normative C1 :68-71, DECISIONS head);
+#  (2) no client/server — prose-only rule clarification; enforcement
+#  surface is conformance (twin-identity + doc lints) + full battery;
+#  (3) N/A no structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous
+#  (governance-rule prose; no SDD contract at stake — CHG-45 precedent);
+#  (6) N/A no handlers; (7) single issue #867 (last open issue); (8)
+#  covering tests N/A with reason — pure prose, twins pinned by existing
+#  conformance (twin-identity test), verification commands in IPLAN-48
+#  suffice per F2.3-analogous prose treatment; (9) fix located: README
+#  sentence + E002 parenthetical in both twins + GD-47 + PATCH cut;
+#  (10) N/A no migrations; (11) SDD versioning — sdd_lifecycle entries
+#  for README (09_CHG? No: README is framework front door — carried under
+#  09_CHG governance-docs entries like CHG-45's PROJECT.md which rode
+#  09_CHG; versions 1.0→1.1) + gate twins (09_CHG, 1.0→1.1 each) +
+#  DECISIONS (09_CHG, 1.8→1.9) + IPLAN-48 (08_IPLAN create);
+#  CHANGELOG/VERSION/sweep ride fanout (CHG-11); (12) GOV-014 paired —
+#  artifacts_modified carries no unlisted rewrite; (13) SDD-first —
+#  sdd_lifecycle steps before iplan_creation (CHG-L005); (14) no code
+#  steps in CHG (legal phases).
+#  DECISION (GD-47): guidance-only additions ride PATCH. Test: the addition
+#  introduces no new unconditional consumer duty — affirmative (MUST/SHALL/
+#  REQUIRED) or prohibitive (MUST NOT/SHALL NOT) — and no template/registry/
+#  API/lint change. A duty is unconditional when it binds a consumer that
+#  ignores the guidance; prohibitions vacuous outside the guidance's own
+#  opt-in activity don't count (the 0.70.1 precedent's two MUST NOTs are
+#  conditional on emitting telemetry). Token tests ("no new MUST") evade via
+#  synonyms and miss prohibitions — the test is duty-based. Rationale: keeps
+#  shipped 0.70.1 correct (history is corrected forward, never rewritten);
+#  aligns with the existing normative/non-normative split (F2.2); MINOR keeps
+#  all unconditional surface (CHG-45 scripts, CHG-46 lint rule). Rejected:
+#  reaffirm all-additions-MINOR (would declare a shipped version misclassified
+#  and strand future guidance between a wrong PATCH precedent and a strict
+#  MINOR rule).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose-only rule text, no
+#  privilege, no egress, no new parsing. Nothing to constrain.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30; CHG-23/24/25/27/28 finding stands). Phase 0b: no module
+#  lifecycle — repo carries no docs/modules/ tree (mirrors CHG-37 §4A).
+#  Out of scope: re-cutting 0.70.1 (immutable, correct under the clarified
+#  rule); the E003/C1 tension for non-normative spec docs (noted, not this
+#  vehicle — the issue explicitly does not dispute the F2.2 C1 vehicle).
+# =============================================================================
+
+id: CHG-48
+title: "SemVer guidance-only PATCH carve-out (spec C2 PATCH → 0.72.1)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.72.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-48"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: "2026-10-02T00:00:00Z"
+  supersedes:
+    - "framework README v1.0 (framework/archive/CHG-48/README.md)"
+    - "gate mapping v1.0 gov twin (framework/archive/CHG-48/GATE-SPEC_FRAMEWORK.gov.md)"
+    - "gate mapping v1.0 layer twin (framework/archive/CHG-48/GATE-SPEC_FRAMEWORK.layer.md)"
+    - "governance DECISIONS v1.8 (framework/archive/CHG-48/DECISIONS.md)"
+    - "framework/VERSION 0.72.0 (framework/archive/CHG-48/VERSION)"
+    - "IPLAN-48 authorizing record (framework/archive/CHG-48/IPLAN-48.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Write the PATCH carve-out for guidance-only additions: one sentence in framework/README Versioning + a parallel E002-mapping parenthetical in both gate twins + GD-47. PATCH 0.72.0 → 0.72.1."
+  why: "The SemVer rule as written ('additions are minor') contradicts the shipped 0.70.1 precedent (guidance doc with only conditional MUST NOTs as PATCH); authors have no citable rule for the next guidance-only addition. #867 proves both legs."
+  trigger: "Issue #867 (P3 governance question, preprod-review lens 5 finding)."
+  scope:
+    in:
+      - "framework/README.md (Versioning carve-out sentence, v1.0 → v1.1)"
+      - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md (E002 parenthetical, v1.0 → v1.1)"
+      - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md (identical E002 parenthetical, v1.0 → v1.1)"
+      - "framework/governance/DECISIONS.md (GD-47, v1.8 → v1.9)"
+      - "PATCH cut 0.72.1: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.72.1]"
+      - "framework/archive/CHG-48/ vehicle + pre-change snapshots"
+    out:
+      - "Re-cutting 0.70.1 (immutable and correct under the clarified rule)"
+      - "E003/C1 tension for non-normative spec docs (noted, explicitly out per #867)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-48/README.md"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "Versioning gains the guidance-only PATCH carve-out sentence"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+    action: amend
+    archive_path: "framework/archive/CHG-48/GATE-SPEC_FRAMEWORK.gov.md"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "E002 mapping gains the guidance-only PATCH parenthetical (gov twin)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+    action: amend
+    archive_path: "framework/archive/CHG-48/GATE-SPEC_FRAMEWORK.layer.md"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "Identical E002 parenthetical (layer twin — twins stay byte-identical)"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-48/DECISIONS.md"
+    new_version: "1.9"
+    current_version: "1.8"
+    changes: "New GD-47 entry (guidance-only PATCH carve-out + MUST test + rejected reaffirm-MINOR)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-48/IPLAN-48.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# see Phase 0b note in header)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (CHG-23/24/25/27/28 finding stands); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps run BEFORE iplan_creation — CHG-L005)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-48/ (README.md, both gate twins distinctly, DECISIONS.md, VERSION — excluding the CHG-48 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "README.md, GATE-SPEC_FRAMEWORK twins, DECISIONS.md, VERSION"
+      archive_path: "framework/archive/CHG-48/"
+      new_version: "0.72.1"
+      current_version: "0.72.0"
+      status: Completed
+    - step: "Run SDD cascade per lifecycle above (README sentence; E002 parenthetical in both twins byte-identical; GD-47 v1.9)"
+      phase: "sdd_lifecycle"
+      artifact: "README.md, gate twins, governance docs"
+      archive_path: "framework/archive/CHG-48/"
+      new_version: "0.72.1"
+      current_version: "0.72.0"
+      status: Implemented
+    - step: "PATCH fanout per IPLAN-48 manifest (framework/VERSION 0.72.1, framework/CHANGELOG.md [0.72.1], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-48/"
+      new_version: "0.72.1"
+      current_version: "0.72.0"
+      status: Implemented
+    - step: "Create IPLAN-48 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-48"
+      status: Completed
+    - step: "Run IPLAN-48 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/48-semver-guidance-carveout → dev"
+      status: Implemented
+  files_modified:
+    - "framework/archive/CHG-48/CHG-48.yaml"
+    - "framework/archive/CHG-48/IPLAN-48.yaml"
+    - "framework/archive/CHG-48/README.md + GATE-SPEC_FRAMEWORK.gov.md + GATE-SPEC_FRAMEWORK.layer.md + DECISIONS.md + VERSION (snapshots)"
+    - "framework/README.md (Versioning carve-out sentence)"
+    - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md (E002 parenthetical)"
+    - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md (identical E002 parenthetical)"
+    - "framework/governance/DECISIONS.md (GD-47)"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.72.0 → 0.72.1 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-48"
+    changes: "Authorizing record for SemVer guidance-only carve-out (this file)"
+  - id: "IPLAN-48"
+    changes: "Authorizing IPLAN (framework/archive/CHG-48/IPLAN-48.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec: no single approver (CHG-L002 is C3-only) — review happens via the protected-branch PR review.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-48 (0 errors)"
+    - "Gate twins byte-identical after edit (cmp)"
+    - "sync-version-refs.sh idempotent second run (zero replacements)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/48-semver-guidance-carveout → dev"
