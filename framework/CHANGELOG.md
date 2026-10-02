@@ -9,11 +9,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 |-------|-------|
 | Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.71.0 |
+| Framework Version | 0.72.0 |
 
 ---
+
+## [0.72.0] — 2026-10-02
+
+### Added — TAG01 docs-only N/A model (C2 MINOR → 0.72.0, CHG-46 + IPLAN-46)
+
+- Docs-only IPLANs get an honest green (#872): `tdd_consistency.status` gains `not-applicable` (with a one-line reason), TAG01 lifts the `tdd` tag for N/A IPLANs keyed on that single signal, and IPLAN `subtype` gains `docs` (code_build minus `execution_commands`). `@spec:` stays required everywhere; code-IPLAN enforcement byte-identical. The pre-0.72.0 borrow-a-real-`@tdd`-tag workaround is retired.
+- Sweep 0.71.0 → 0.72.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.71.0] — 2026-10-02
 

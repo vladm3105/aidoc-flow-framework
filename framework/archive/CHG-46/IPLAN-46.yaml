@@ -27,7 +27,7 @@ document_control:
   iplan_id: "IPLAN-46"
   subtype: combined
   source_spec: "@spec: N/A (spec-source change under CHG-46; no SPEC component)"
-  status: In Progress
+  status: Completed
   version: "1.0"
   date_created: "2026-10-02T00:00:00Z"
   last_updated: "2026-10-02T00:00:00Z"
@@ -54,59 +54,59 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
-      description: "Status enum + docs subtype + 3 markers (schema 1.0 → 1.1)"
+      description: "Status enum + docs subtype + 3 markers (schema_version stays 1.0)"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "sdd_doc_lint/__init__.py"
       description: "TAG01 N/A guard (reuses _fm)"
       order: 3
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "sdd_doc_lint/tests/test_tag01_na_exemption.py"
       description: "Covering tests (N/A-green, verified-red, code-unchanged)"
       order: 4
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/LINT_RULES.md"
       description: "TAG01 row documents exemption (v1.2 → v1.3)"
       order: 5
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DECISIONS.md"
       description: "GD-46 entry (v1.7 → v1.8)"
       order: 6
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/VERSION"
       description: "MINOR cut 0.71.0 → 0.72.0"
       order: 7
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "hooks/sync-version-refs.sh"
       description: "OLD_VERSIONS gains 0.71.0"
       order: 8
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/CHANGELOG.md"
       description: "[0.72.0] entry (E008)"
       order: 9
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "Sweep fallout (mechanical pin moves)"
       description: "sync-version-refs 0.71.0 → 0.72.0 pin moves only; verified zero non-pin lines"
       order: 10
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -119,7 +119,8 @@ tdd_consistency:
     - "Verified-without-@tdd IPLAN: TAG01 still fires (negative control)"
     - "Code-IPLAN missing @spec: TAG01 still fires (spec requirement untouched)"
     - "Non-IPLAN artifacts: TAG01 behavior byte-identical (no other layer reads the guard)"
-    - "Template schema_version reads 1.1; status enum + docs subtype + markers present"
+    - "Edge pins: code_build+N/A green (single-signal), normalised variant green, missing/non-dict block red, EVAL N/A block still red"
+    - "Template schema_version stays 1.0 (uniformity guard green); status enum + docs subtype + markers present"
     - "sync-version-refs.sh second run: zero replacements (idempotent)"
     - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
     - "PR checks green on the branch"
@@ -143,12 +144,12 @@ execution_commands:
 # =============================================================================
 implementation_contracts:
   - "Manifest-closed: only listed files touched"
-  - "Single-signal exemption: TAG01 skips tdd for IPLAN iff tdd_consistency.status == not-applicable (subtype plays no role in the guard)"
+  - "Single-signal exemption: TAG01 skips tdd for IPLAN iff tdd_consistency.status normalises to not-applicable (subtype plays no role in the guard)"
   - "Guard reuses the already-parsed _fm in lint_text (no new YAML parsing, no new helper)"
   - "spec tag requirement untouched for every artifact including N/A IPLANs; non-IPLAN TAG01 paths byte-identical"
   - "docs subtype = code_build minus execution_commands (file_manifest, implementation_contracts, session_handoff gain docs; nothing else changes membership)"
   - "tdd_consistency section stays unconditionally required (presence) — it carries the N/A status honestly"
-  - "Template schema_version 1.0 → 1.1; LINT_RULES 1.2 → 1.3; DECISIONS 1.7 → 1.8"
+  - "Template schema_version stays 1.0 (CHG-24 #805 uniformity guard); LINT_RULES 1.2 → 1.3; DECISIONS 1.7 → 1.8"
   - "Sweep is pin moves only outside the manifest; root CHANGELOG.md frozen, untouched"
   - "Never weaken tests/conformance to pass"
 
@@ -158,8 +159,8 @@ implementation_contracts:
 session_handoff:
   sessions:
     - session: 1
-      status: In Progress
-      scope: "Vehicle + snapshots DONE; template + lint + tests + LINT_RULES + GD-46 + MINOR cut + battery + PR next"
+      status: Completed
+      scope: "All manifest orders DONE and verified; implementation + battery complete — PR to dev next"
 
 # =============================================================================
 # Section 7: Traceability

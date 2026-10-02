@@ -41,13 +41,14 @@
 #  suites as regression; (9) fix located: template enum + subtype + 3
 #  markers + TAG01 guard + LINT_RULES row + GD-46 + MINOR cut; (10) N/A no
 #  migrations; (11) SDD versioning — sdd_lifecycle entries for the touched
-#  template (08_IPLAN schema 1.0→1.1) + governance docs + lint code/test
+#  template (08_IPLAN, framework-versioned — schema_version stays uniform
+#  1.0 per the CHG-24 #805 guard) + governance docs + lint code/test
 #  (09_CHG) + IPLAN-46 (08_IPLAN create); CHANGELOG/VERSION/sweep ride
 #  fanout (CHG-11); (12) GOV-014 paired — artifacts_modified carries no
 #  unlisted SDD-layer rewrite; (13) SDD-first — sdd_lifecycle steps before
 #  iplan_creation (CHG-L005); (14) no code steps in CHG (legal phases).
 #  Design decisions (agent-owned, recorded): exemption keys on ONE signal —
-#  tdd_consistency.status == not-applicable (the waived contract named at
+#  tdd_consistency.status normalises to not-applicable (the waived contract named at
 #  its own point; subtype docs is separately useful for section sets, not a
 #  second gate); docs subtype = code_build minus execution_commands
 #  (file_manifest + implementation_contracts + session_handoff gain docs;
@@ -91,7 +92,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-46"
-  status: In-Progress
+  status: Implemented
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -100,7 +101,7 @@ change_control:
   author: "Muse Code"
   date_proposed: "2026-10-02T00:00:00Z"
   date_approved: "2026-10-02T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-10-02T00:00:00Z"
   supersedes:
     - "iplan template schema 1.0 (framework/archive/CHG-46/IPLAN-TEMPLATE.yaml)"
     - "lint rules v1.2 (framework/archive/CHG-46/LINT_RULES.md)"
@@ -120,7 +121,7 @@ change_description:
   trigger: "Issue #872 (P1 linter falsehood, filed 2026-10-02) with triage verdict GO."
   scope:
     in:
-      - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml (status enum + docs subtype + 3 markers; schema 1.0 → 1.1)"
+      - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml (status enum + docs subtype + 3 markers; schema_version stays 1.0)"
       - "sdd_doc_lint/__init__.py (TAG01 N/A guard, reusing parsed frontmatter)"
       - "sdd_doc_lint/tests/test_tag01_na_exemption.py (N/A-green, verified-red control, code-IPLAN unchanged)"
       - "framework/governance/LINT_RULES.md (TAG01 row documents the exemption, v1.2 → v1.3)"
@@ -142,9 +143,9 @@ sdd_lifecycle:
     document: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
     action: amend
     archive_path: "framework/archive/CHG-46/IPLAN-TEMPLATE.yaml"
-    new_version: "1.1"
-    current_version: "1.0"
-    changes: "tdd_consistency.status gains not-applicable (+ guidance); subtype gains docs; file_manifest/implementation_contracts/session_handoff markers gain docs; schema 1.0 → 1.1"
+    new_version: "0.72.0"
+    current_version: "0.71.0"
+    changes: "tdd_consistency.status gains not-applicable (+ guidance); subtype gains docs; file_manifest/implementation_contracts/session_handoff markers gain docs (schema_version stays uniform 1.0)"
   - layer: "09_CHG"
     document: "framework/governance/LINT_RULES.md"
     action: amend
@@ -165,7 +166,7 @@ sdd_lifecycle:
     archive_path: "framework/archive/CHG-46/__init__.py"
     new_version: "0.72.0"
     current_version: "0.71.0"
-    changes: "TAG01 loop skips tdd for IPLAN docs declaring tdd_consistency.status not-applicable (reuses _fm; no new parsing)"
+    changes: "TAG01 loop skips tdd for IPLANs declaring tdd_consistency.status not-applicable (normalised; reuses _fm; no new parsing)"
   - layer: "09_CHG"
     document: "sdd_doc_lint/tests/test_tag01_na_exemption.py"
     action: create
@@ -213,14 +214,14 @@ implementation:
       archive_path: "framework/archive/CHG-46/"
       new_version: "0.72.0"
       current_version: "0.71.0"
-      status: In-Progress
+      status: Implemented
     - step: "MINOR fanout per IPLAN-46 manifest (framework/VERSION 0.72.0, framework/CHANGELOG.md [0.72.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
       phase: "sdd_lifecycle"
       artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
       archive_path: "framework/archive/CHG-46/"
       new_version: "0.72.0"
       current_version: "0.71.0"
-      status: In-Progress
+      status: Implemented
     - step: "Create IPLAN-46 with all implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-46"
@@ -228,7 +229,7 @@ implementation:
     - step: "Run IPLAN-46 battery + open PR to dev"
       phase: "documentation_sync"
       artifact: "PR feature/46-tag01-na-exemption → dev"
-      status: In-Progress
+      status: Implemented
   files_modified:
     - "framework/archive/CHG-46/CHG-46.yaml"
     - "framework/archive/CHG-46/IPLAN-46.yaml"

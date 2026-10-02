@@ -15,11 +15,37 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.71.0 |
+| Framework Version | 0.72.0 |
+
+---
+
+## GD-46 — Docs-only IPLANs get an honest green: N/A consistency status, TAG01 tdd exemption, docs subtype (CHG-46, 0.72.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.71.0 → 0.72.0` (MINOR),
+  change-level **C2** (spec; additive template values + exemption path — code-IPLAN
+  enforcement byte-identical; reviewer may escalate to C3).
+  Vehicle: CHG-46 + IPLAN-46 (`framework/archive/CHG-46/`). Trigger: issue
+  #872 (docs-only C1s forced to borrow a real `@tdd` tag and assert `verified`
+  coverage they do not have — lint-forced theater, proven by a live downstream record).
+- **Context:** TAG01 requires `@tdd:` on every IPLAN (registry `required_tags`),
+  and `tdd_consistency.status` admitted only `not_started | in_progress | verified`.
+  A prose-only manifest was ungreenable except by borrowing a real case ID plus a
+  disclaimer — every `verified` in the corpus became discountable.
+- **Decision:** `tdd_consistency.status` gains `not-applicable` (with a one-line
+  reason in `issues[]`); TAG01 lifts the `tdd` tag for N/A IPLANs keyed on that
+  ONE signal (subtype plays no role in the guard — the waived contract is named
+  at its own point); IPLAN `subtype` gains `docs` (code_build minus
+  `execution_commands); `@spec:` stays required everywhere. Trust model unchanged:
+  statuses are author-asserted today (`verified` is equally unverified — TDD-SYNC
+  rules are Reserved), and an N/A dodge is no cheaper than the borrowed-tag dodge
+  it replaces while being more visible.
+- **Consequence:** docs-only authors declare N/A and drop the borrowed tag; the
+  pre-0.72.0 borrow-plus-disclaimer workaround is retired. Template schema_version
+  stays uniform 1.0 (CHG-24 #805 guard) — the change rides the framework version.
 
 ---
 

@@ -784,7 +784,18 @@ def lint_text(
 
     # Required upstream tags present (document-level, reported at line 0).
     required = layers[artifact].get("required_tags", []) or []
+    # GD-46: a docs-only IPLAN (tdd_consistency.status: not-applicable) is
+    # exempt from the tdd tag — the N/A status names the waived contract at
+    # its own point, so no borrowed @tdd tag is needed. @spec: stays required.
+    _consistency = _fm.get("tdd_consistency") if isinstance(_fm, dict) else None
+    _na_iplan = (
+        artifact == "IPLAN"
+        and isinstance(_consistency, dict)
+        and str(_consistency.get("status") or "").strip().lower() == "not-applicable"
+    )
     for tag in required:
+        if tag == "tdd" and _na_iplan:
+            continue
         if tag not in seen_tags:
             findings.append(
                 Finding(
