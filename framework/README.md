@@ -8,13 +8,14 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.2 |
+| Framework Version | 0.70.3 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
-single contract that every platform implements. It contains **no runtime
-code** — only the layer definitions, registry, governance rules, templates,
-and review playbooks that platforms consume.
+single contract that every engine implements. It contains the layer
+definitions, registry, governance rules, templates, and review playbooks
+engines consume — plus the owned `skills/` tooling, the one executable
+surface in the spec.
 
 ## What it specifies
 
@@ -72,7 +73,7 @@ framework/
   VERSION                Framework spec version (SemVer).
   CHANGELOG.md           Version history — document-of-record for spec changes (E008).
   SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  End-to-end SDD authoring guide (the one
-                         root doc platforms vendor alongside the spec subtrees).
+                         root doc engines vendor alongside the spec subtrees).
   QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
   TESTING_STRATEGY_TDD.md  Test-strategy guidance feeding the TDD layer.
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
@@ -87,7 +88,8 @@ framework/
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL
                          (authoring) and 10_IPVERIFY (execution/verification).
                          A vendored artifact class.
-  templates/             Doc templates that aren't layer artifacts.
+  skills/                Owned agent skills (SKILLS-REGISTRY.yaml + one
+                         dir per skill) — the one executable surface.
   registry/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
@@ -99,7 +101,8 @@ framework/
                          DECISIONS.md, the spec-level decision register.
                          See governance/README.md.
   archive/               Archived originals from CHG-modified documents.
-                         Structure: archive/{CHG-ID}/{category}/.
+                         Structure: archive/{CHG-ID}/ (vehicle files at
+                         top; legacy dirs add a {category}/ tier).
   governance/aidoc/      .aidoc/ contract: AIDOC.md, scaffold template.
 ```
 
@@ -109,7 +112,7 @@ The contract is enforced by the shared conformance suite in
 [`../tests/conformance/`](../tests/conformance/). It verifies that this spec is
 internally consistent — the registry agrees with itself and with the files on
 disk, templates match the registry, and no engine-specific content has leaked
-in — and defines the contract that platform implementations are tested against.
+in — and defines the contract that engine implementations are tested against.
 
 Run it from the repository root:
 
@@ -117,20 +120,20 @@ Run it from the repository root:
 python3 -m unittest discover -s tests/conformance -v
 ```
 
-## How platforms consume it
+## How engines consume it
 
-Each platform is an **independent engine** that implements this specification;
-the platforms share `framework/` and nothing else. A platform declares the
+Each engine is an **independent implementation** of this specification;
+engines share `framework/` and nothing else. An engine declares the
 `framework/VERSION` it conforms to, generates artifacts that validate against
 the layer templates and the registry's ID patterns, and enforces the
-traceability rules the registry encodes. See [`../README.md`](../README.md) for
-the platforms and the overall project layout.
+traceability rules the registry encodes. See [`../README.md`](../README.md)
+(Tooling) for the maintained tooling.
 
 ## Versioning
 
 `framework/VERSION` carries the spec version as SemVer. A breaking change to a
 layer schema, the registry model, or a governance rule is a major bump;
-backward-compatible additions are minor; clarifications are patch. Platforms
+backward-compatible additions are minor; clarifications are patch. Engines
 pin the spec version they implement.
 
 ## Change Management

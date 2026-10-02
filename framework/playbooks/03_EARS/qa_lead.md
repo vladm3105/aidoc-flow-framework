@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: qa_lead
 weight: 20
 agent: test-architect
-framework_spec_version: "0.70.2"
+framework_spec_version: "0.70.3"
 ---
 # qa_lead lens — EARS layer
 

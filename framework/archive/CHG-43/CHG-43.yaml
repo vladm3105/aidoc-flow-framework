@@ -1,0 +1,170 @@
+# =============================================================================
+#  CHG-43: core-README freshness batch (#862 + #863)
+#  (F2 direct, docs-only C1 batch, one PR — PATCH 0.70.2 → 0.70.3)
+# =============================================================================
+#  Flow: F2 direct (delegated goal "fix all issues" 2026-10-02 citing issues
+#  #862 + #863; no prior IPLAN, no product-behavior change — one framework/
+#  spec prose file, no contract change to any SDD template/registry/API) —
+#  docs-only C1: C1 CHG + scoped IPLAN per F2.2 (normative-text C1); entry
+#  GATE-SPEC (framework/ touched). Precedent: CHG-42 (F2 direct C1,
+#  framework/ prose + VERSION bump, GATE-SPEC).
+#  IPLAN: framework/archive/CHG-43/IPLAN-43.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: triage notes 2026-10-02 on #862 + #863 (all legs
+#  verified live on dev @ d1e1c0d4; Mode-B GO — filing-date diff empty,
+#  supersede scan clean: no archive CHG, no open PRs; 4 stale remote
+#  branches all carry the pre-fix text, no overlapping work).
+#  §3.4 checklist: completed before authoring (all 14): (1) framework/
+#  README.md read in full + every cited counter-source (root README, disk
+#  listings, hygiene test, git history); (2) no client/server — docs-only,
+#  claim is doc-truthfulness; (3)(4)(6)(10) N/A — no structs/queries/
+#  handlers/migrations (prose only); (5) EARS/BDD IDs vacuous — no
+#  requirement-traced functionality (CHG-39/42 precedent); (7) coupled:
+#  both issues share this vehicle (same file, adjacent sections);
+#  (8) pure prose — covering tests N/A-allowed per F2.2; verification is
+#  per-fix grep re-checks + full battery + sync idempotence + chg_lint;
+#  (9) fix locations verified per-issue at file:line; (11) no SDD
+#  versioning — sdd_lifecycle [] (framework spec prose is not an SDD layer
+#  artifact; CHG-39 precedent); (12) C16/E25-E27 paired — artifacts_
+#  modified carries no SDD artifact; (13) SDD-first vacuous; (14) no code
+#  steps in CHG (legal phases only).
+#  Consumer noun (#862): "engine" — the live generic (engine-agnostic
+#  spec, ENGINE_TOKENS); "platform" names the archived Hermes/plugin pair.
+#  EARS/BDD IDs vacuous (no requirement-traced functionality affected).
+#  SECURITY_REVIEW: assessed — prose-only, no threat surface (no code,
+#  hooks, workflows, or egress touched).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — GOV-014 paired).
+#  Covering tests: N/A-allowed for pure prose (F2.2); the IPLAN battery
+#  (unit + conformance + sdd_doc_lint + chg_lint + sync idempotence) guards
+#  regressions, and per-fix grep re-checks pin the new wording.
+#  Out of scope: the Last-Updated stamp convention (unmaintained repo-wide,
+#  needs a discipline decision first — observation only); the E003/C1
+#  tension (governance conflict, not README staleness — observation only);
+#  root README snapshot section (self-declared point-in-time, correct by
+#  its own contract); archive/** (frozen).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-43
+title: "core-README freshness batch (#862 + #863, PATCH 0.70.3)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.70.2"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-43"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-43 authorizing record (framework/archive/CHG-43/IPLAN-43.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix two core-README staleness defects: reframe retired-platform consumer language to engines + repoint the dead platforms pointer (#862); sync the Layout tree to disk — drop phantom templates/, add skills/, admit the owned skills tooling in the no-code sentence, relax the archive shape (#863). PATCH 0.70.2 → 0.70.3."
+  why: "The framework README is the spec's front door: #862 teaches a consumer model the repo retired (platform wrappers), #863 inventories a directory that does not exist while hiding one that does and asserts a no-code invariant the skills tooling falsifies."
+  trigger: "Delegated goal 'fix all issues' 2026-10-02: issues #862 (P2) + #863 (P2), one vehicle."
+  scope:
+    in:
+      - "#862: framework/README consumer nouns (:14-15, :74-75, :112, :120-127, :136 versioning) platform → engine; pointer repointed at root Tooling section"
+      - "#863: Layout tree — drop templates/ line, add skills/ line, reword no-code sentence (:14-17), relax archive shape (:101-102)"
+      - "PATCH cut 0.70.3: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.70.3]"
+      - "framework/archive/CHG-43/CHG-43.yaml + IPLAN-43.yaml (this vehicle)"
+    out:
+      - "Last-Updated stamp convention; E003/C1 tension (observations only)"
+      - "Root README snapshot section (correct by its own contract)"
+      - "Mechanical consumer content (VERSION declaration, template validation) — still true, untouched"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-43 + IPLAN-43 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-43 + IPLAN-43"
+      status: Completed
+    - step: "Apply the two README fixes per IPLAN-43 contracts (#862 consumer reframe + #863 tree sync)"
+      phase: "documentation_sync"
+      artifact: "framework/README.md"
+      status: In-Progress
+    - step: "PATCH cut 0.70.3: VERSION bump + sync sweep (pin moves only) + framework/CHANGELOG.md [0.70.3]"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, framework/CHANGELOG.md"
+      status: In-Progress
+    - step: "Run IPLAN-43 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/862-863-readme-freshness → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-43/CHG-43.yaml"
+    - "framework/archive/CHG-43/IPLAN-43.yaml"
+    - "framework/README.md (#862 consumer nouns + pointer; #863 tree + sentence + archive shape)"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.70.2 → 0.70.3 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-43"
+    changes: "Authorizing record for #862+#863 README freshness batch (this file)"
+  - id: "IPLAN-43"
+    changes: "Authorizing IPLAN (framework/archive/CHG-43/IPLAN-43.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-43 (0 errors)"
+    - "Per-fix grep re-checks (IPLAN-43 execution_commands.validation)"
+    - "sync-version-refs.sh idempotent second run (zero replacements)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/862-863-readme-freshness → dev"

@@ -19,7 +19,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-10-01 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.2 |
+| Framework Version | 0.70.3 |
 
 ---
 
