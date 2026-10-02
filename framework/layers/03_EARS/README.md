@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 ## Overview
@@ -16,7 +16,7 @@
 EARS (Easy Approach to Requirements Syntax) formalizes business and product
 requirements into precise, testable statements using WHEN-THE-SHALL-WITHIN syntax.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## C4 Model Position
 

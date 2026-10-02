@@ -1,0 +1,243 @@
+# =============================================================================
+#  IPLAN-42: staleness-review docs-truthfulness batch (#854-#859)
+#  (F2 direct, C1, one PR — PATCH 0.70.1 → 0.70.2)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-42/CHG-42.yaml (F2 direct, C1,
+#  In-Progress). Source: delegated goal "fix all issues" 2026-10-01 (#854
+#  P1 + #855 P1 + #856 P2 + #857 P2 + #858 P3 + #859 P3).
+#  Pure prose: no code, hooks, workflows, or templates touched; covering
+#  tests N/A-allowed per F2.2. Verification pins each fix with a grep
+#  re-check plus the full battery.
+# =============================================================================
+
+doc_id: IPLAN-42
+title: "Docs-truthfulness batch (#854-#859, PATCH 0.70.2)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-01"
+  framework_version: "0.70.1"
+  source_chg: "CHG-42"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-42"
+  subtype: combined
+  source_spec: "@spec: N/A (F2 direct batch under CHG-42; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-01T00:00:00Z"
+  last_updated: "2026-10-01T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 24
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-42/CHG-42.yaml + IPLAN-42.yaml"
+      description: "Authorizing vehicle (CHG-42 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/01_BRD/README.md"
+      description: "#854 Workflow line :21 → canon chain"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/02_PRD/README.md"
+      description: "#854 Workflow line :19 → canon chain"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/03_EARS/README.md"
+      description: "#854 Workflow line :19 → canon chain"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/04_BDD/README.md"
+      description: "#854 Workflow line :20 → canon chain"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/05_ADR/README.md"
+      description: "#854 Workflow line :19 → canon chain"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/06_SPEC/README.md"
+      description: "#854 Workflow line :34 → canon chain"
+      order: 6
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/07_TDD/README.md"
+      description: "#854 Workflow line :22 → canon chain"
+      order: 7
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "#854 Workflow line :24 → canon chain"
+      order: 8
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/README.md"
+      description: "#854 diagram (:27-29) + #855 C1 row (:159) + C1 note (:179-180) + #856 C3 cell (:161)"
+      order: 9
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/09_CHG/README.md"
+      description: "#854 cascade (:93) → code → EVAL → Verified tail"
+      order: 10
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/chg/README.md"
+      description: "#854 mirror twin of 09_CHG README — must stay byte-identical"
+      order: 11
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/TRACEABILITY.md"
+      description: "#854 canonical chain (:16) → canon (L-numbered form)"
+      order: 12
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "#854 F1 chain (:40) → canon (Code/Docs/Scripts form)"
+      order: 13
+      status: TODO
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md"
+      description: "#854 chain (:92) → canon (spaceless form)"
+      order: 14
+      status: TODO
+      session: 1
+      verified: false
+    - path: "AGENTS.md"
+      description: "#854 chain (:13) → canon (one line; governance-PR note in CHG-42/PR body)"
+      order: 15
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      description: "#857 BDD row (:57) → exception annotation"
+      order: 16
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/layers/10_EVAL/README.md"
+      description: "#859 diagram label (:67) + #858 parenthetical (:147)"
+      order: 17
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "PATCH cut 0.70.1 → 0.70.2"
+      order: 18
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.70.1"
+      order: 19
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "[0.70.2] entry (E008)"
+      order: 20
+      status: TODO
+      session: 1
+      verified: false
+    - path: "Sweep fallout (mechanical pin moves)"
+      description: "sync-version-refs 0.70.1 → 0.70.2 pin moves only; verified zero non-pin lines"
+      order: 21
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Pure prose — covering tests N/A-allowed per F2.2. Each fix is pinned by a grep re-check below (old form zero hits, new form exact hits); the full battery (unit + conformance + sdd_doc_lint) guards regressions; the sync script's counted substitutions + idempotence re-run guard the PATCH cut."
+  cases:
+    - "chg_lint.py over CHG-42: 0 errors"
+    - "#854: old chain forms zero hits (spaced, spaceless, L-numbered, Code/Docs/Scripts); canon chain exact hits at all 14 sites"
+    - "#854: 09_CHG/README.md and governance/chg/README.md byte-identical (cmp)"
+    - "#855: direct-commit zero hits in framework/README.md; C1 row + note state always-traced"
+    - "#856: C3 cell names per-layer gate + GATE-SPEC scoping"
+    - "#857: BDD row carries the no-@-tag exception annotation"
+    - "#858: 'only layer with no element' zero hits; exemption list present"
+    - "#859: 'bug_fix_verify)' short form zero hits; diagram box art aligned"
+    - "sync-version-refs.sh second run: zero replacements (idempotent)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-42/CHG-42.yaml"
+    - "rg -n 'IPLAN → (CHG → )?EVAL → Code' -g '!framework/archive/**' -g '!framework/CHANGELOG.md' -g '!plans/**' . (expect zero)"
+    - "rg -n 'IPLAN→(CHG→)?EVAL→Code' -g '!framework/archive/**' . (expect zero)"
+    - "rg -n 'IPLAN → Code' framework/layers/0[1-8]*/README.md framework/README.md AGENTS.md | wc -l (expect 10)"
+    - "cmp framework/layers/09_CHG/README.md framework/governance/chg/README.md"
+    - "rg -n -i 'direct.?commit' framework/README.md (expect zero)"
+    - "rg -n 'only layer with no element' framework/ (expect zero)"
+    - "rg -n 'bug_fix_verify\\)' framework/ (expect zero)"
+    - "bash hooks/sync-version-refs.sh && bash hooks/sync-version-refs.sh (second run zero replacements)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "git diff --stat origin/dev (expect only manifest files + pin moves)"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "One-line form kept on every Workflow line (#759); canon '... → IPLAN → Code → EVAL → Verified' (spaceless/L-numbered/Code-Docs-Scripts variants per site)"
+  - "09_CHG twin byte-identical after edit (apply via cp, verify via cmp)"
+  - "EVAL-internal traceability lines (10_EVAL:115, EVAL-00_index.TEMPLATE.md:37) untouched; plans/* drafts, CHANGELOG history, archive/** untouched"
+  - "C2/Emergency README rows untouched; GATE-SPEC definition untouched; registry + BDD README untouched"
+  - "Sweep is pin moves only: zero non-pin lines outside the manifest (verify via git diff word-diff)"
+  - "No VERSION obligation beyond the single PATCH (0.70.2); root CHANGELOG.md frozen (CHG-40), untouched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + six doc fixes + PATCH cut + battery + PR"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-42"
+  upstream: ["Issue #854 (P1 ordering)", "Issue #855 (P1 C1 row)", "Issue #856 (P2 C3 cell)", "Issue #857 (P2 BDD row)", "Issue #858 (P3 parenthetical)", "Issue #859 (P3 label)"]
+  downstream: ["PR feature/854-859-staleness-fixes → dev"]

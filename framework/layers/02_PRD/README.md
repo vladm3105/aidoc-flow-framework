@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 ## Overview
@@ -16,7 +16,7 @@
 PRDs define product features, user personas, and acceptance criteria as the
 second step in the SDD workflow. Each PRD corresponds to one BRD iteration cycle.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## C4 Model Mapping
 

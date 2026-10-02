@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 ## Overview
@@ -18,7 +18,7 @@ first step in the SDD workflow. Each BRD *set* — a platform BRD plus its child
 feature BRDs (linked by `@depends:`) — represents one MVP iteration cycle; a
 cycle is not limited to a single BRD.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## Seed input
 

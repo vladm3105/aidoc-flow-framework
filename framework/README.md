@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -24,10 +24,10 @@ business requirements. Each layer is a single document type with end-to-end
 traceability:
 
 ```
-BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
-                                                        ↑
-                                          CHG (L9, overlay) → EVAL (L10)
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 ```
+
+CHG (L9) is the on-demand overlay, orthogonal to this chain (GD-01).
 
 | Layer | Artifact | Purpose |
 |-------|----------|---------|
@@ -156,9 +156,9 @@ Any change to framework/  →  Classify (C1/C2/C3/Emergency)
 
 | Level | Scope | Gate | Process |
 |-------|-------|------|---------|
-| C1 | Typo, formatting | None | Direct commit |
+| C1 | Typo, formatting | Scoped IPLAN (GATE-CODE) | C1 CHG + scoped IPLAN (sole exception: seed-phase drafting pre-first-BRD) |
 | **C2** | Section update, new governance rule | Peer review | Full CHG process |
-| **C3** | Cross-layer, breaking changes | Formal gate (GATE-SPEC) | Full CHG + maintainer + 2 reviewers |
+| **C3** | Cross-layer, breaking changes | Formal gate per layer (GATE-01/03/06/08/CODE; GATE-SPEC only for framework/ self-edits) | Full CHG + maintainer + 2 reviewers |
 | Emergency | Critical production fix | Post-hoc + post-mortem within 48h | Fix first, document after |
 
 Framework-spec changes (edits to `framework/` itself) route through
@@ -176,8 +176,8 @@ Classify-then-route detail for the diagram above lives in
 [`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06): **F1** greenfield
 (full chain), **F2** direct request (no SDD cascade), **F3** brownfield behavior change (SDD-first restart),
 **F4** bugfix on an implemented IPLAN (CHG-05 vehicle), plus Emergency and Type-R yield paths.
-C1 note (F2.2, ratified): docs-only C1 stays direct-commit; code- or script-touching C1 requires
-a C1 CHG + scoped IPLAN.
+C1 note (F2.2, ratified CHG-12): every C1 rides a C1 CHG + scoped IPLAN, every author;
+sole exception seed-phase drafting pre-first-BRD.
 
 ### Document lifecycle tracking
 

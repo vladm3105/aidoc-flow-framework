@@ -11,9 +11,21 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 ---
+
+## [0.70.2] — 2026-10-01
+
+### Fixed — staleness-review docs-truthfulness batch (C1 PATCH → 0.70.2, CHG-42 + IPLAN-42)
+
+- EVAL ordering canon (#854): authoring flows `… → IPLAN → Code`, validation flows `Code-complete → Completed → EVAL cycles → Verified`; the one-line chain now reads `… → IPLAN → Code → EVAL → Verified` in all 8 layer `**Workflow**` lines, `framework/README.md` (CHG noted as the on-demand overlay, GD-01), the 09_CHG cascade, `TRACEABILITY.md:16`, `CHG_REQUEST_FLOWS.md` §2, `docs/PROJECT.md`, and `AGENTS.md`. CHG drops out of the linear chain (overlay, never a chain step). EVAL-internal `IPLAN → EVAL → RPT → verdict` lines untouched (correct as written).
+- README C1 row + F2.2 note (#855): both now state the ratified always-traced rule (C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) — `direct commit` zero hits in the file.
+- README C3 gate cell (#856): formal gate per layer (GATE-01/03/06/08/CODE); GATE-SPEC only for `framework/` self-edits.
+- SDD guide BDD row (#857): annotated as the documented `@`-tag exception (structured `ears:` list per scenario; emits no `@`-tag). Registry `required_tags: [ears]` untouched (semantically correct).
+- EVAL parenthetical (#858): `only layer with no element IDs` → exemption list (CHG overlay none, SPEC optional per ID_NAMING_STANDARDS). EVAL ID mandate untouched.
+- EVAL diagram label (#859): `(bug_fix_verify)` → `(bug_fix_verification)`, box widened, connectors realigned.
+- Sweep 0.70.1 → 0.70.2 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.70.1] — 2026-10-01
 

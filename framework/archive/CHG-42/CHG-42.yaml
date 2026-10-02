@@ -1,0 +1,189 @@
+# =============================================================================
+#  CHG-42: staleness-review docs-truthfulness batch (#854-#859)
+#  (F2 direct, docs-only C1 batch, one PR — PATCH 0.70.1 → 0.70.2)
+# =============================================================================
+#  Flow: F2 direct (delegated goal "fix all issues" 2026-10-01 citing issues
+#  #854-#859; no prior IPLAN, no product-behavior change — framework/ spec
+#  prose + docs/PROJECT.md + AGENTS.md chain line, no contract change to any
+#  SDD template/registry/API) — docs-only C1: C1 CHG + scoped IPLAN per F2.2
+#  (normative-text C1); entry GATE-SPEC (framework/ touched). Precedent:
+#  CHG-39 (F2 direct C1, framework/ prose + VERSION bump, GATE-SPEC).
+#  IPLAN: framework/archive/CHG-42/IPLAN-42.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: triage notes 2026-10-01 on #854-#859 (all six claims
+#  verified live on dev @ c90a1555; Mode-B GO — filing-date diff empty,
+#  supersede scan clean: no archive CHG, decision, open PR, or live branch
+#  overlaps; feature/845-846-engine-guidance content-identical on shared
+#  files, stale remote branch).
+#  §3.4 checklist: completed before authoring (all 14): (1) every referenced
+#  file read live at triage (file:line in each issue body, re-verified Mode
+#  B); (2) no client/server — docs-only, claim is doc-truthfulness;
+#  (3)(4)(6)(10) N/A — no structs/queries/handlers/migrations (prose only);
+#  (5) EARS/BDD IDs vacuous — no requirement-traced functionality (CHG-39
+#  precedent); (7) coupled: all six share this vehicle; #855+#856 same
+#  table, #858+#859 same file, #854 one ordering decision across files;
+#  (8) pure prose — covering tests N/A-allowed per F2.2; verification is
+#  per-fix grep re-checks + full battery + sync idempotence + chg_lint;
+#  (9) fix locations verified per-issue at file:line; (11) no SDD
+#  versioning — sdd_lifecycle [] (framework spec prose, governance/*.md,
+#  VERSION, changelog are not SDD layer artifacts; CHG-39 precedent);
+#  (12) C16/E25-E27 paired — artifacts_modified carries no SDD artifact;
+#  (13) SDD-first vacuous; (14) no code steps in CHG (legal phases only).
+#  Canon decision (#854): authoring flows ... → IPLAN → Code; validation
+#  flows Code-complete → IPLAN Completed → EVAL cycles → Verified (08_IPLAN
+#  + 10_EVAL's own Workflow line win). Linear chain drops CHG (overlay per
+#  GD-01, on-demand — never a chain step) and ends at the terminal state:
+#  ... → IPLAN → Code → EVAL → Verified. One-line form kept per #759.
+#  EARS/BDD IDs vacuous (no requirement-traced functionality affected).
+#  SECURITY_REVIEW: assessed — prose-only, no threat surface (no code,
+#  hooks, workflows, or egress touched).
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30, CHG-23/24/25/27/28 finding). Phase 0b: F2, omitted
+#  (sdd_lifecycle [] — GOV-014 paired).
+#  Covering tests: N/A-allowed for pure prose (F2.2); the IPLAN battery
+#  (unit + conformance + sdd_doc_lint + chg_lint + sync idempotence) guards
+#  regressions, and per-fix grep re-checks pin the new wording.
+#  Out of scope: EVAL-internal traceability lines (10_EVAL:115,
+#  EVAL-00_index.TEMPLATE.md:37 — correct as written); plans/* drafts
+#  (historical working docs); CHANGELOG history lines; archive/** (frozen);
+#  the C2/Emergency README rows (#855: not re-verified, untouched); the
+#  every-C1 rule itself (settled #772/#773/#774 — this CHG syncs the stale
+#  table to it, it does not relitigate it).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  Governance-PR note: AGENTS.md:13 carries the same one-line chain; leaving
+#  it stale would leave #854 half-fixed, so it rides this vehicle (one
+#  line). Precedent CHG-40/PR #849 (AGENTS.md + 7 files, one PR).
+# =============================================================================
+
+id: CHG-42
+title: "staleness-review docs-truthfulness batch (#854-#859, PATCH 0.70.2)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-01"
+  framework_version: "0.70.1"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-42"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-01T00:00:00Z"
+  date_approved: "2026-10-01T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-42 authorizing record (framework/archive/CHG-42/IPLAN-42.yaml)"
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix six doc-truthfulness contradictions from the 2026-10-01 staleness review: canonize EVAL-after-Code validation ordering across 8 layer Workflow lines + README diagram + CHG cascade + canonical chain sites (#854); sync the README C1 row + F2.2 note to the always-traced rule (#855); route C3 to the per-layer formal gate (#856); annotate the guide BDD row as the @-tag exception (#857); soften the EVAL 'only layer' parenthetical (#858); fix the EVAL diagram trigger label (#859). PATCH 0.70.1 → 0.70.2."
+  why: "Each contradiction misroutes readers or engines deriving behavior from prose: #855 directs agents to skip CHG+IPLAN against a ratified rule; #854 states four mutually inconsistent lifecycle orderings in load-bearing wording; #857 emits forbidden @ears tags; #856 sends product C3s to the framework-self meta gate; #858/#859 corrupt ID-rule and trigger-name lookups."
+  trigger: "Delegated goal 'fix all issues' 2026-10-01: issues #854 (P1) + #855 (P1) + #856 (P2) + #857 (P2) + #858 (P3) + #859 (P3), one vehicle."
+  scope:
+    in:
+      - "#854: 8 layer Workflow lines (01-08) + framework/README diagram + 09_CHG cascade (+ mirror twin) + TRACEABILITY:16 + CHG_REQUEST_FLOWS:40 + docs/PROJECT.md:92 + AGENTS.md:13 → canon '... → IPLAN → Code → EVAL → Verified'"
+      - "#855: framework/README C1 row (:159) + F2.2 note (:179-180) → always-traced rule"
+      - "#856: framework/README C3 gate cell (:161) → per-layer formal gate"
+      - "#857: SPEC_DRIVEN_DEVELOPMENT_GUIDE BDD row (:57) → exception annotation"
+      - "#858: 10_EVAL:147 parenthetical → exemption list"
+      - "#859: 10_EVAL:67 diagram label → bug_fix_verification"
+      - "PATCH cut 0.70.2: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.70.2]"
+      - "framework/archive/CHG-42/CHG-42.yaml + IPLAN-42.yaml (this vehicle)"
+    out:
+      - "EVAL-internal traceability (10_EVAL:115, EVAL-00_index.TEMPLATE.md:37) — correct, untouched"
+      - "plans/* drafts, CHANGELOG history, framework/archive/** (frozen/historical)"
+      - "C2/Emergency README rows; the every-C1 rule itself (settled, not relitigated)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-42 + IPLAN-42 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-42 + IPLAN-42"
+      status: Completed
+    - step: "Apply the six doc fixes per IPLAN-42 contracts (#854 canon + #855/#856 table + #857 guide + #858/#859 EVAL)"
+      phase: "documentation_sync"
+      artifact: "8 layer READMEs + framework/README + 09_CHG twin + TRACEABILITY + CHG_REQUEST_FLOWS + PROJECT.md + AGENTS.md + guide + 10_EVAL README"
+      status: In-Progress
+    - step: "PATCH cut 0.70.2: VERSION bump + sync sweep (pin moves only) + framework/CHANGELOG.md [0.70.2]"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION, hooks/sync-version-refs.sh, framework/CHANGELOG.md"
+      status: In-Progress
+    - step: "Run IPLAN-42 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/854-859-staleness-fixes → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-42/CHG-42.yaml"
+    - "framework/archive/CHG-42/IPLAN-42.yaml"
+    - "framework/layers/01_BRD/README.md + 02_PRD + 03_EARS + 04_BDD + 05_ADR + 06_SPEC + 07_TDD + 08_IPLAN (Workflow lines)"
+    - "framework/README.md (diagram + C1 row + C1 note + C3 cell)"
+    - "framework/layers/09_CHG/README.md + framework/governance/chg/README.md (mirror twin)"
+    - "framework/governance/TRACEABILITY.md + CHG_REQUEST_FLOWS.md"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (BDD row)"
+    - "framework/layers/10_EVAL/README.md (label + parenthetical)"
+    - "docs/PROJECT.md + AGENTS.md (chain lines)"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.70.1 → 0.70.2 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-42"
+    changes: "Authorizing record for #854-#859 docs-truthfulness batch (this file)"
+  - id: "IPLAN-42"
+    changes: "Authorizing IPLAN (framework/archive/CHG-42/IPLAN-42.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-42 (0 errors)"
+    - "Per-fix grep re-checks (IPLAN-42 execution_commands.validation)"
+    - "sync-version-refs.sh idempotent second run (zero replacements)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/854-859-staleness-fixes → dev"

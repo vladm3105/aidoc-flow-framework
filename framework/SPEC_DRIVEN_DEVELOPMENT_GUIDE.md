@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 ## Overview
@@ -54,7 +54,7 @@ normative capability, outside the spec):
 BRD:   —
 PRD:   @brd
 EARS:  @prd
-BDD:   @ears
+BDD:   @ears  # structured ears: list per scenario — emits no @-tag (04_BDD exception)
 ADR:   @ears @bdd
 SPEC:  @ears @bdd @adr
 TDD:   @ears @bdd @adr @spec
