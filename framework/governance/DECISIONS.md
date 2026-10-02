@@ -15,11 +15,48 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
-| Last Updated | 2026-10-01 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.71.0 |
+
+---
+
+## GD-45 — Shipped consumer install + upgrade scripts; runbook automation follow-up closed (CHG-45, 0.71.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.70.3 → 0.71.0` (MINOR),
+  change-level **C2** (spec; additive `framework/scripts/` surface — no
+  existing procedure step, gate, or knob changed meaning; reviewer may
+  escalate to C3).
+  Vehicle: CHG-45 + IPLAN-45 (`framework/archive/CHG-45/`). Trigger: issue
+  #870 (no script installed or upgraded a consumer tree; the runbook's
+  "Minimal automation" follow-up stood open since CHG-16).
+- **Context:** adopting the framework meant hand-running the `BOOTSTRAP.md`
+  steps (scaffold, profile, link-or-copy, pin, smoke checks) and upgrading
+  meant hand-running the runbook's remove-then-re-copy — every manual
+  re-point a chance to copy the canon tree whole (the #834 leak shape) or
+  to refresh over the old tree and let upstream-removed files linger.
+- **Decision:** ship `framework/scripts/install.sh` (BOOTSTRAP steps 1–5)
+  and `framework/scripts/upgrade.sh` (runbook step-2 re-point for both
+  consumer kinds + the `stale` detector as `DRIFT:`/`OK:`/`UNPINNED:`
+  lines, making W002 measurable). Both kinds are first-class: pinned
+  allowlist copy (default) and symlink (`--kind symlink` + `--shared`).
+  The copy set is read from `allowlist.txt`, a machine-readable mirror of
+  the §7.1 allowlist — conformance pins entry-parity with the prose, so the
+  set still has exactly one author (#741 lesson). Deliberately manual:
+  override conflict resolution (step 3), conformance re-pass (step 4 —
+  `--conformance-cmd` runs it but the operator owns green), and changelog
+  recording (step 5); kind conversion (reinstall instead). Confirm gates:
+  install refuses an existing `.aidoc/` by default and replaces it wholesale
+  only under `--force` + (`--yes` or a TTY confirm); upgrade's destructive
+  re-point needs `--yes` or a TTY confirm while its `--force` only
+  re-installs the same version. `UPGRADE-RUNBOOK.md` + `BOOTSTRAP.md` carry
+  one-line script pointers (v1.1); the runbook's "Minimal automation"
+  follow-up is closed.
+- **Consequence:** new adoptions and re-adoptions run one command with
+  dry-run preview; the §7.1 allowlist can no longer drift from what the
+  scripts copy — the suite fails first.
 
 ---
 

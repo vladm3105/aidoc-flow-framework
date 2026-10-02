@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.71.0 |
 
 This is the ordered procedure for deploying `.aidoc/` on a new project
 (#786). The contract lives in `AIDOC.md`; the profile semantics in
@@ -16,6 +16,9 @@ This is the ordered procedure for deploying `.aidoc/` on a new project
 each step's check must pass before moving on.
 
 ## Procedure
+
+Steps 1–5 are automated by `framework/scripts/install.sh` (pinned copy or
+symlink) — the steps below are the procedure it performs.
 
 ### 1. Copy the scaffold README
 

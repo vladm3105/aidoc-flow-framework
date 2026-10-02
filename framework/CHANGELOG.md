@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.71.0 |
 
 ---
+
+## [0.71.0] — 2026-10-02
+
+### Added — consumer install + upgrade scripts (C2 MINOR → 0.71.0, CHG-45 + IPLAN-45)
+
+- Shipped executable consumer tooling (#870): `framework/scripts/install.sh` (BOOTSTRAP steps 1–5: scaffold, profile, attach, pin, smoke-verify) and `framework/scripts/upgrade.sh` (runbook step-2 re-point for both consumer kinds + the `stale` detector as `DRIFT:`/`OK:`/`UNPINNED:` lines, making W002 measurable). Both kinds first-class: pinned allowlist copy (default) and symlink (`--kind symlink` + `--shared`); `--dry-run` previews, `--force`/`--yes` confirm destructive ops, exit 0/1/2 (ok/failed/usage-or-refused).
+- The copy set is read from `framework/scripts/allowlist.txt`, a machine-readable mirror of the §7.1 allowlist — conformance pins entry-parity with the prose, so the set keeps exactly one author (#741 lesson; the #834 leak shape stays excluded).
+- `UPGRADE-RUNBOOK.md` + `BOOTSTRAP.md` v1.0 → v1.1 (one-line script pointers; the runbook's "Minimal automation" follow-up closed — CHG-16's deferred item); GD-45 recorded; `docs/PROJECT.md` §7 points at the scripts. Runbook/BOOTSTRAP procedure steps untouched; conflict resolution, conformance, and recording stay manual.
+- Sweep 0.70.3 → 0.71.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.70.3] — 2026-10-02
 

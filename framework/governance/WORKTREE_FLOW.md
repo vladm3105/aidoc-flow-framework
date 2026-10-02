@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-20 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.71.0 |
 
 Task isolation and promotion for framework-consuming projects. Covers `dev`
 integration only. `dev` → `staging` → `main` promotions are human-executed

@@ -13,8 +13,8 @@
 #  C2 per GATE-SPEC-E003 (spec is never C1); MINOR per E002 mapping (new
 #  backwards-compatible capability — executable consumer tooling; nothing
 #  existing changes meaning).
-#  IPLAN: framework/archive/CHG-45/IPLAN-45.yaml (In Progress; no spec edits
-#  before that per §3.13 — vehicle authored first, scripts after).
+#  IPLAN: framework/archive/CHG-45/IPLAN-45.yaml (Completed; no spec edits
+#  before it was In Progress per §3.13 — vehicle authored first, scripts after).
 #  Requester citation: issue #870 (consumer install + upgrade scripts),
 #  read live 2026-10-02 (OPEN), gap-verified on dev @ 9f8cde83 (no
 #  consumer scripts exist; BOOTSTRAP/UPGRADE-RUNBOOK/§7.1 all manual).
@@ -55,17 +55,22 @@
 #  privilege. Constraints (enforced in IPLAN contracts + review): target
 #  args validated (must exist, must be a directory, traversal contained
 #  via resolve + prefix-check); single network egress (git clone canon at
-#  an explicit framework/vX.Y.Z tag, --depth 1, never main); no eval;
-#  set -euo pipefail; destructive ops (remove old copy) require explicit
-#  confirm after --dry-run; never rm -rf outside the resolved target.
+#  an explicit framework/vX.Y.Z tag, --depth 1, never main); no eval except
+#  the operator's own --conformance-cmd string (explicit local command, never
+#  constructed from repo/override content);
+#  set -euo pipefail; destructive ops print the op summary and require
+#  --yes or a TTY confirm (never silent); never rm -rf outside the
+#  resolved target.
 #  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
 #  2026-09-30; CHG-23/24/25/27/28 finding stands). Phase 0b: no module
 #  lifecycle — repo carries no docs/modules/ tree (mirrors CHG-37 §4A).
 #  Out of scope: Windows-native runners (shell per founder scope; manual
 #  procedures stay the portable fallback); verified-planning installer
 #  (narrower scope, stays independent); repo-local hooks/ (not consumer
-#  surface); stale-detector script (runbook open follow-up, stays open);
-#  #865 (CI) + #867 (SemVer policy) — independent issues.
+#  surface); #865 (CI) + #867 (SemVer policy) — independent issues.
+#  The runbook's "Minimal automation" follow-up CLOSES in this vehicle: the
+#  stale detector ships inside upgrade.sh (DRIFT:/OK:/UNPINNED: lines) —
+#  it is part of "update", not a second script.
 # =============================================================================
 
 id: CHG-45
@@ -93,7 +98,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-45"
-  status: In-Progress
+  status: Implemented
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -102,7 +107,7 @@ change_control:
   author: "Muse Code"
   date_proposed: "2026-10-02T00:00:00Z"
   date_approved: "2026-10-02T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-10-02T00:00:00Z"
   supersedes:
     - "upgrade runbook v1.0 (framework/archive/CHG-45/UPGRADE-RUNBOOK.md)"
     - "bootstrap v1.0 (framework/archive/CHG-45/BOOTSTRAP.md)"
@@ -121,7 +126,7 @@ change_description:
   trigger: "Issue #870 (P2 feature, founder-requested 2026-10-02) with decided scope: both scripts, both consumer kinds, shell."
   scope:
     in:
-      - "framework/scripts/install.sh + upgrade.sh + allowlist.txt (new, shell, --dry-run, both consumer kinds)"
+      - "framework/scripts/install.sh + upgrade.sh + allowlist.txt (new, shell, --dry-run, both consumer kinds; stale detector inside upgrade.sh)"
       - "tests/conformance/test_consumer_scripts.py (parity, dry-run, pin-verify, refuse-nonempty, both kinds via fixtures)"
       - "Governance doc amends: UPGRADE-RUNBOOK.md + BOOTSTRAP.md (script headers, v1.0 → v1.1) + DECISIONS.md (GD-45, v1.6 → v1.7)"
       - "docs/PROJECT.md §7 headers pointing at the scripts (rides cascade; docs/, not SDD layer)"
@@ -143,7 +148,7 @@ sdd_lifecycle:
     archive_path: "framework/archive/CHG-45/UPGRADE-RUNBOOK.md"
     new_version: "1.1"
     current_version: "1.0"
-    changes: "'Or run upgrade.sh' header + pointer; retire 'Minimal automation' no-script claim (stale detector stays open follow-up); remove-first procedure untouched"
+    changes: "'Or run upgrade.sh' header + pointer; 'Minimal automation' follow-up closed (stale detector ships in upgrade.sh); remove-first procedure untouched"
   - layer: "09_CHG"
     document: "framework/governance/aidoc/BOOTSTRAP.md"
     action: amend
@@ -163,13 +168,13 @@ sdd_lifecycle:
     action: create
     archive_path: null
     new_version: "1.0"
-    changes: "Fresh-adopt installer per BOOTSTRAP.md (scaffold + allowlist copy + pin record); --dry-run; refuses non-empty .aidoc/ without --force"
+    changes: "Fresh-adopt installer per BOOTSTRAP.md (scaffold + allowlist copy + pin record); --dry-run; refuses existing .aidoc/ without --force (--force needs --yes/TTY)"
   - layer: "09_CHG"
     document: "framework/scripts/upgrade.sh"
     action: create
     archive_path: null
     new_version: "1.0"
-    changes: "Remove-then-recopy upgrader per UPGRADE-RUNBOOK.md (both consumer kinds); --dry-run; tag-pinned clone; pin verification after"
+    changes: "Stage-then-rename upgrader per UPGRADE-RUNBOOK.md (both consumer kinds; never half-copied); --dry-run; tag-pinned clone; pin verification after"
   - layer: "09_CHG"
     document: "framework/scripts/allowlist.txt"
     action: create
@@ -223,14 +228,14 @@ implementation:
       archive_path: "framework/archive/CHG-45/"
       new_version: "0.71.0"
       current_version: "0.70.3"
-      status: In-Progress
+      status: Implemented
     - step: "MINOR fanout per IPLAN-45 manifest (framework/VERSION 0.71.0, framework/CHANGELOG.md [0.71.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
       phase: "sdd_lifecycle"
       artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
       archive_path: "framework/archive/CHG-45/"
       new_version: "0.71.0"
       current_version: "0.70.3"
-      status: In-Progress
+      status: Implemented
     - step: "Create IPLAN-45 with all implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-45"
@@ -238,7 +243,7 @@ implementation:
     - step: "Run IPLAN-45 battery + open PR to dev"
       phase: "documentation_sync"
       artifact: "PR feature/45-consumer-scripts → dev"
-      status: In-Progress
+      status: Implemented
   files_modified:
     - "framework/archive/CHG-45/CHG-45.yaml"
     - "framework/archive/CHG-45/IPLAN-45.yaml"
@@ -265,7 +270,7 @@ gate_approval:
   gate: GATE-SPEC
   approver: null
   date: null
-  # C2 spec: framework maintainer + 1 reviewer via protected-branch review. Approver recorded before Implemented.
+  # C2 spec: no single approver (CHG-L002 is C3-only) — review happens via the protected-branch PR review.
 
 # =============================================================================
 # Section 6: Verification
