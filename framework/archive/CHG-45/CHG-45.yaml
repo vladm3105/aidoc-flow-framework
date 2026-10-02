@@ -1,0 +1,283 @@
+# =============================================================================
+#  CHG-45: Consumer install + upgrade scripts (spec C2 MINOR → 0.71.0)
+#  (F3-excluded spec-source change; SDD-carrying vehicle)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (orthogonal to the F1–F4
+#  artifact cascade: it changes the shared framework/ contract, not a
+#  project's artifacts). Not F1 (no new product/layer chain), not F3 (no
+#  implemented-product behavior change — the spec has no modules/seed
+#  runtime), not F4, not Emergency/Type-R. Vehicle follows the spec-shape
+#  precedent (CHG-36/CHG-37: sdd_lifecycle entries for touched governance
+#  docs + pre-change snapshots under framework/archive/CHG-45/ + seed_scope
+#  no-change + SDD-first steps).
+#  C2 per GATE-SPEC-E003 (spec is never C1); MINOR per E002 mapping (new
+#  backwards-compatible capability — executable consumer tooling; nothing
+#  existing changes meaning).
+#  IPLAN: framework/archive/CHG-45/IPLAN-45.yaml (In Progress; no spec edits
+#  before that per §3.13 — vehicle authored first, scripts after).
+#  Requester citation: issue #870 (consumer install + upgrade scripts),
+#  read live 2026-10-02 (OPEN), gap-verified on dev @ 9f8cde83 (no
+#  consumer scripts exist; BOOTSTRAP/UPGRADE-RUNBOOK/§7.1 all manual).
+#  Founder scope answers 2026-10-02 (all recommended): both scripts now,
+#  both consumer kinds (symlink + pinned-copy), shell.
+#  Mode-B GO on #870 (verified at filing + triage, same SHA; filing-date
+#  diff empty; no archive/PR/branch superseder).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (PROJECT §7.1 allowlist :156-187 + §7.5
+#  :249-257, UPGRADE-RUNBOOK remove-first :35-37, BOOTSTRAP copy steps
+#  :21-25, #741 scripts-removal 4c38d761, verified-planning/install.sh
+#  :1-20 precedent, TAGGING framework stream, DECISIONS GD-44 head);
+#  (2) no client/server — local shell scripts (FS ops + one git-clone
+#  egress); enforcement surface is the new conformance test; (3) no
+#  structs (shell) — function inventory in IPLAN-45 contracts; (4) N/A no
+#  queries; (5) EARS/BDD IDs vacuous (no SDD contract at stake; covering
+#  conformance test substitutes — CHG-36/37 precedent); (6) N/A no
+#  handlers; (7) single issue #870; (8) covering tests: new
+#  tests/conformance/test_consumer_scripts.py (allowlist parity, dry-run,
+#  pin-verify, refuse-nonempty, both consumer kinds via fixtures) + full
+#  unit/conformance/lint suites as regression; (9) fix located: 2 new
+#  scripts + allowlist manifest + test + 3 governance doc amends + GD-45
+#  + PROJECT headers + MINOR cut; (10) N/A no migrations; (11) SDD
+#  versioning — sdd_lifecycle entries for the 3 touched governance docs
+#  (09_CHG amend + snapshots) + script/manifest/test creates + IPLAN-45
+#  (08_IPLAN create); CHANGELOG/VERSION/sweep ride fanout (CHG-11);
+#  (12) GOV-014 paired — artifacts_modified carries no unlisted SDD-layer
+#  rewrite (docs/PROJECT.md headers ride the cascade step: docs/, not an
+#  SDD layer artifact); (13) SDD-first — sdd_lifecycle steps before
+#  iplan_creation (CHG-L005); (14) no code steps in CHG (legal phases).
+#  Design decisions (agent-owned, recorded): scripts live at
+#  framework/scripts/install.sh + upgrade.sh (restore the #741-removed dir
+#  with owned content; executables stay out of the prose tree); the copy
+#  set is owned by framework/scripts/allowlist.txt (one path per line)
+#  with a conformance test pinning manifest ≡ §7.1 prose (the #741 lesson:
+#  derive, never a second hardcoded list).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — scripts execute with user
+#  privilege. Constraints (enforced in IPLAN contracts + review): target
+#  args validated (must exist, must be a directory, traversal contained
+#  via resolve + prefix-check); single network egress (git clone canon at
+#  an explicit framework/vX.Y.Z tag, --depth 1, never main); no eval;
+#  set -euo pipefail; destructive ops (remove old copy) require explicit
+#  confirm after --dry-run; never rm -rf outside the resolved target.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30; CHG-23/24/25/27/28 finding stands). Phase 0b: no module
+#  lifecycle — repo carries no docs/modules/ tree (mirrors CHG-37 §4A).
+#  Out of scope: Windows-native runners (shell per founder scope; manual
+#  procedures stay the portable fallback); verified-planning installer
+#  (narrower scope, stays independent); repo-local hooks/ (not consumer
+#  surface); stale-detector script (runbook open follow-up, stays open);
+#  #865 (CI) + #867 (SemVer policy) — independent issues.
+# =============================================================================
+
+id: CHG-45
+title: "Consumer install + upgrade scripts (spec C2 MINOR → 0.71.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.70.3"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-45"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "upgrade runbook v1.0 (framework/archive/CHG-45/UPGRADE-RUNBOOK.md)"
+    - "bootstrap v1.0 (framework/archive/CHG-45/BOOTSTRAP.md)"
+    - "governance DECISIONS v1.6 (framework/archive/CHG-45/DECISIONS.md)"
+    - "framework/VERSION 0.70.3 (framework/archive/CHG-45/VERSION)"
+    - "IPLAN-45 authorizing record (framework/archive/CHG-45/IPLAN-45.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Ship consumer install + upgrade shell scripts (both consumer kinds) driven by a single allowlist manifest pinned to §7.1 by conformance, with --dry-run, traversal-safe args, tag-pinned clone, and pin verification; add GD-45; point runbook/BOOTSTRAP/§7 at the scripts. MINOR 0.70.3 → 0.71.0."
+  why: "Adoption and re-adoption are manual copy procedures; every manual copy risks missed files and stale-tree re-infection, and nothing executable enforces the copy set. #741 proves hardcoded second lists die — hence manifest + conformance pin."
+  trigger: "Issue #870 (P2 feature, founder-requested 2026-10-02) with decided scope: both scripts, both consumer kinds, shell."
+  scope:
+    in:
+      - "framework/scripts/install.sh + upgrade.sh + allowlist.txt (new, shell, --dry-run, both consumer kinds)"
+      - "tests/conformance/test_consumer_scripts.py (parity, dry-run, pin-verify, refuse-nonempty, both kinds via fixtures)"
+      - "Governance doc amends: UPGRADE-RUNBOOK.md + BOOTSTRAP.md (script headers, v1.0 → v1.1) + DECISIONS.md (GD-45, v1.6 → v1.7)"
+      - "docs/PROJECT.md §7 headers pointing at the scripts (rides cascade; docs/, not SDD layer)"
+      - "MINOR cut 0.71.0: framework/VERSION + OLD_VERSIONS + pin sweep + framework/CHANGELOG.md [0.71.0]"
+      - "framework/archive/CHG-45/ vehicle + pre-change snapshots"
+    out:
+      - "Windows-native runners (manual procedures stay the portable fallback)"
+      - "verified-planning installer; repo-local hooks/ (unchanged surfaces)"
+      - "#865 (CI) + #867 (SemVer policy) — independent issues"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    action: amend
+    archive_path: "framework/archive/CHG-45/UPGRADE-RUNBOOK.md"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "'Or run upgrade.sh' header + pointer; retire 'Minimal automation' no-script claim (stale detector stays open follow-up); remove-first procedure untouched"
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/BOOTSTRAP.md"
+    action: amend
+    archive_path: "framework/archive/CHG-45/BOOTSTRAP.md"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "'Or run install.sh' header + pointer; copy steps untouched (manual fallback)"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-45/DECISIONS.md"
+    new_version: "1.7"
+    current_version: "1.6"
+    changes: "New GD-45 entry (consumer scripts exist; copy set derived from single allowlist; drift fails conformance)"
+  - layer: "09_CHG"
+    document: "framework/scripts/install.sh"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Fresh-adopt installer per BOOTSTRAP.md (scaffold + allowlist copy + pin record); --dry-run; refuses non-empty .aidoc/ without --force"
+  - layer: "09_CHG"
+    document: "framework/scripts/upgrade.sh"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Remove-then-recopy upgrader per UPGRADE-RUNBOOK.md (both consumer kinds); --dry-run; tag-pinned clone; pin verification after"
+  - layer: "09_CHG"
+    document: "framework/scripts/allowlist.txt"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Machine-readable consumer copy set (one path per line); conformance pins it identical to §7.1 prose"
+  - layer: "09_CHG"
+    document: "tests/conformance/test_consumer_scripts.py"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Covering tests: manifest≡§7.1 parity, dry-run, pin-verify, refuse-nonempty, both consumer kinds via fixtures"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-45/IPLAN-45.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# see Phase 0b note in header)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (CHG-23/24/25/27/28 finding stands); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps run BEFORE iplan_creation — CHG-L005)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-45/ (UPGRADE-RUNBOOK.md, BOOTSTRAP.md, DECISIONS.md, VERSION — excluding the CHG-45 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "UPGRADE-RUNBOOK.md, BOOTSTRAP.md, DECISIONS.md, VERSION"
+      archive_path: "framework/archive/CHG-45/"
+      new_version: "0.71.0"
+      current_version: "0.70.3"
+      status: Completed
+    - step: "Run SDD cascade per lifecycle above (2 scripts + allowlist + test + 3 doc amends + GD-45 v1.7 + PROJECT headers)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/scripts/, tests/conformance/test_consumer_scripts.py, governance docs"
+      archive_path: "framework/archive/CHG-45/"
+      new_version: "0.71.0"
+      current_version: "0.70.3"
+      status: In-Progress
+    - step: "MINOR fanout per IPLAN-45 manifest (framework/VERSION 0.71.0, framework/CHANGELOG.md [0.71.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-45/"
+      new_version: "0.71.0"
+      current_version: "0.70.3"
+      status: In-Progress
+    - step: "Create IPLAN-45 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-45"
+      status: Completed
+    - step: "Run IPLAN-45 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/45-consumer-scripts → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-45/CHG-45.yaml"
+    - "framework/archive/CHG-45/IPLAN-45.yaml"
+    - "framework/archive/CHG-45/UPGRADE-RUNBOOK.md + BOOTSTRAP.md + DECISIONS.md + VERSION (snapshots)"
+    - "framework/scripts/install.sh + upgrade.sh + allowlist.txt (new)"
+    - "tests/conformance/test_consumer_scripts.py (new)"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md + BOOTSTRAP.md (headers)"
+    - "framework/governance/DECISIONS.md (GD-45)"
+    - "docs/PROJECT.md (§7 script headers)"
+    - "framework/VERSION + hooks/sync-version-refs.sh (OLD_VERSIONS) + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.70.3 → 0.71.0 pin moves (covered by the sync-script entry; verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-45"
+    changes: "Authorizing record for consumer install + upgrade scripts (this file)"
+  - id: "IPLAN-45"
+    changes: "Authorizing IPLAN (framework/archive/CHG-45/IPLAN-45.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec: framework maintainer + 1 reviewer via protected-branch review. Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-45 (0 errors)"
+    - "New conformance test green + shellcheck clean on both scripts (pre-push gate)"
+    - "Manifest≡§7.1 parity test green (drift fails)"
+    - "sync-version-refs.sh idempotent second run (zero replacements)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/45-consumer-scripts → dev"

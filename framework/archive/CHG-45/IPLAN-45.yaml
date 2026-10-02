@@ -1,0 +1,194 @@
+# =============================================================================
+#  IPLAN-45: Consumer install + upgrade scripts (#870, MINOR 0.71.0)
+#  (spec-source, C2, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-45/CHG-45.yaml (spec-source, C2,
+#  In-Progress). Source: issue #870 (P2 feature, founder scope decided
+#  2026-10-02: both scripts, both consumer kinds, shell).
+#  New executable surface: shell scripts implementing BOOTSTRAP.md and
+#  UPGRADE-RUNBOOK.md. Covering conformance test (not unit — the scripts
+#  are exercised through fixture repos asserting end-state, not internals).
+# =============================================================================
+
+doc_id: IPLAN-45
+title: "Consumer install + upgrade scripts (#870, 0.71.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.70.3"
+  source_chg: "CHG-45"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-45"
+  subtype: combined
+  source_spec: "@spec: N/A (spec-source change under CHG-45; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 4
+  estimated_files: 14
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-45/CHG-45.yaml + IPLAN-45.yaml"
+      description: "Authorizing vehicle (CHG-45 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-45/UPGRADE-RUNBOOK.md + BOOTSTRAP.md + DECISIONS.md + VERSION"
+      description: "Pre-change snapshots (base 0.70.3)"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/scripts/allowlist.txt"
+      description: "Machine-readable consumer copy set (one path per line)"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/scripts/install.sh"
+      description: "Fresh-adopt installer (executable)"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/scripts/upgrade.sh"
+      description: "Remove-then-recopy upgrader (executable)"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_consumer_scripts.py"
+      description: "Covering tests (parity, dry-run, pin-verify, refuse-nonempty, both kinds)"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+      description: "Script header (v1.0 → v1.1); procedure untouched"
+      order: 6
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/aidoc/BOOTSTRAP.md"
+      description: "Script header (v1.0 → v1.1); steps untouched"
+      order: 7
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-45 entry (v1.6 → v1.7)"
+      order: 8
+      status: TODO
+      session: 1
+      verified: false
+    - path: "docs/PROJECT.md"
+      description: "§7 script headers (rides cascade)"
+      order: 9
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "MINOR cut 0.70.3 → 0.71.0"
+      order: 10
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.70.3"
+      order: 11
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "[0.71.0] entry (E008)"
+      order: 12
+      status: TODO
+      session: 1
+      verified: false
+    - path: "Sweep fallout (mechanical pin moves)"
+      description: "sync-version-refs 0.70.3 → 0.71.0 pin moves only; verified zero non-pin lines"
+      order: 13
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "New executable surface: covering CONFORMANCE tests (fixture repos asserting end-state: files landed, pins recorded, refuses honored), not unit tests of shell internals. Parity test pins allowlist.txt identical to the §7.1 prose list (the #741 guard). Full battery as regression."
+  cases:
+    - "chg_lint.py over CHG-45: 0 errors"
+    - "Manifest≡§7.1 parity: every allowlist.txt line appears in §7.1 and vice versa"
+    - "install.sh --dry-run changes nothing (fixture repo byte-identical before/after)"
+    - "install.sh refuses non-empty .aidoc/ without --force (exit 2); proceeds with --force"
+    - "install.sh records framework_version pin == invoked VERSION"
+    - "upgrade.sh removes-then-recopies (lingered-file fixture proves removal, not overlay)"
+    - "upgrade.sh verifies VERSION vs pin after; mismatch exits 1"
+    - "Both consumer kinds covered (symlink retarget + pinned-copy replace fixtures)"
+    - "shellcheck clean on both scripts (pre-push gate runs it)"
+    - "sync-version-refs.sh second run: zero replacements (idempotent)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-45/CHG-45.yaml"
+    - "shellcheck framework/scripts/install.sh framework/scripts/upgrade.sh"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_consumer_scripts.py'"
+    - "bash hooks/sync-version-refs.sh && bash hooks/sync-version-refs.sh (second run zero replacements)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test:
+    - "python3 -m unittest discover -s tests/conformance -p 'test_consumer_scripts.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "CLI surface: install.sh <project> --canon <tag> [--dry-run] [--force]; upgrade.sh <project> --canon <tag> [--dry-run] [--yes] [--kind pin|symlink]; exit 0 ok / 1 failed / 2 usage-or-refused"
+  - "Input tree: both scripts clone the canon themselves (scratch git clone --depth 1 at required --canon framework/vX.Y.Z — explicit on both, no magic default); install reads scaffold + profile + allowlist from that clone; upgrade additionally reads the installed tree for the current pin + kind"
+  - "Kind handling: upgrade auto-detects (symlink at .aidoc/framework → retarget; directory → remove-then-recopy); --kind overrides detection and errors on mismatch (no silent conversion)"
+  - "set -euo pipefail; no eval; target args resolved + prefix-contained; rm confined to the resolved target"
+  - "Clone at explicit framework/vX.Y.Z tag, --depth 1, never main"
+  - "Destructive ops print the --dry-run plan first; upgrade requires --yes or a TTY confirm (never silent)"
+  - "Scripts executable bit set (100755); no CRLF; shfmt-clean"
+  - "allowlist.txt is the ONLY copy-set owner in code; §7.1 prose stays the human source; parity test binds them"
+  - "Runbook/BOOTSTRAP procedures untouched (headers only); doc Versions bumped 1.0 → 1.1 (runbooks), 1.6 → 1.7 (DECISIONS)"
+  - "Sweep is pin moves only outside the manifest; root CHANGELOG.md frozen, untouched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + snapshots (this session); scripts + tests + MINOR cut + battery + PR (next)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-45"
+  upstream: ["Issue #870 (P2 feature, founder scope 2026-10-02)"]
+  downstream: ["PR feature/45-consumer-scripts → dev (after implementation)"]
