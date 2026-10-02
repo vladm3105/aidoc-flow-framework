@@ -1,0 +1,170 @@
+# =============================================================================
+#  IPLAN-46: TAG01 docs-only N/A model (#872, MINOR 0.72.0)
+#  (spec-source, C2, one PR)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-46/CHG-46.yaml (spec-source, C2,
+#  In-Progress). Source: issue #872 (P1 linter falsehood, triage GO
+#  2026-10-02).
+#  Linter-behavior change with template-schema touch: covering tests are
+#  inline lint_text cases in sdd_doc_lint/tests (no new fixtures needed —
+#  the valid/broken fixture sets cover BRD/PRD/EARS/SPEC only and stay
+#  untouched).
+# =============================================================================
+
+doc_id: IPLAN-46
+title: "TAG01 docs-only N/A model (#872, 0.72.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.71.0"
+  source_chg: "CHG-46"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-46"
+  subtype: combined
+  source_spec: "@spec: N/A (spec-source change under CHG-46; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 3
+  estimated_files: 12
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-46/CHG-46.yaml + IPLAN-46.yaml"
+      description: "Authorizing vehicle (CHG-46 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-46/IPLAN-TEMPLATE.yaml + LINT_RULES.md + DECISIONS.md + VERSION + __init__.py"
+      description: "Pre-change snapshots (base 0.71.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+      description: "Status enum + docs subtype + 3 markers (schema 1.0 → 1.1)"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+    - path: "sdd_doc_lint/__init__.py"
+      description: "TAG01 N/A guard (reuses _fm)"
+      order: 3
+      status: TODO
+      session: 1
+      verified: false
+    - path: "sdd_doc_lint/tests/test_tag01_na_exemption.py"
+      description: "Covering tests (N/A-green, verified-red, code-unchanged)"
+      order: 4
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/LINT_RULES.md"
+      description: "TAG01 row documents exemption (v1.2 → v1.3)"
+      order: 5
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD-46 entry (v1.7 → v1.8)"
+      order: 6
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "MINOR cut 0.71.0 → 0.72.0"
+      order: 7
+      status: TODO
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "OLD_VERSIONS gains 0.71.0"
+      order: 8
+      status: TODO
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "[0.72.0] entry (E008)"
+      order: 9
+      status: TODO
+      session: 1
+      verified: false
+    - path: "Sweep fallout (mechanical pin moves)"
+      description: "sync-version-refs 0.71.0 → 0.72.0 pin moves only; verified zero non-pin lines"
+      order: 10
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Linter-behavior change: inline lint_text cases (no fixtures — the valid/broken sets stay untouched). Each case pins one edge of the exemption; full battery as regression."
+  cases:
+    - "chg_lint.py over CHG-46: 0 errors"
+    - "N/A docs-IPLAN (@spec present, no @tdd, status not-applicable): zero TAG01"
+    - "Verified-without-@tdd IPLAN: TAG01 still fires (negative control)"
+    - "Code-IPLAN missing @spec: TAG01 still fires (spec requirement untouched)"
+    - "Non-IPLAN artifacts: TAG01 behavior byte-identical (no other layer reads the guard)"
+    - "Template schema_version reads 1.1; status enum + docs subtype + markers present"
+    - "sync-version-refs.sh second run: zero replacements (idempotent)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-46/CHG-46.yaml"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -p 'test_tag01_na_exemption.py'"
+    - "bash hooks/sync-version-refs.sh && bash hooks/sync-version-refs.sh (second run zero replacements)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -p 'test_tag01_na_exemption.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only listed files touched"
+  - "Single-signal exemption: TAG01 skips tdd for IPLAN iff tdd_consistency.status == not-applicable (subtype plays no role in the guard)"
+  - "Guard reuses the already-parsed _fm in lint_text (no new YAML parsing, no new helper)"
+  - "spec tag requirement untouched for every artifact including N/A IPLANs; non-IPLAN TAG01 paths byte-identical"
+  - "docs subtype = code_build minus execution_commands (file_manifest, implementation_contracts, session_handoff gain docs; nothing else changes membership)"
+  - "tdd_consistency section stays unconditionally required (presence) — it carries the N/A status honestly"
+  - "Template schema_version 1.0 → 1.1; LINT_RULES 1.2 → 1.3; DECISIONS 1.7 → 1.8"
+  - "Sweep is pin moves only outside the manifest; root CHANGELOG.md frozen, untouched"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle + snapshots DONE; template + lint + tests + LINT_RULES + GD-46 + MINOR cut + battery + PR next"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-46"
+  upstream: ["Issue #872 (P1 linter falsehood, triage GO 2026-10-02)"]
+  downstream: ["PR feature/46-tag01-na-exemption → dev (after implementation)"]
