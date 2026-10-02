@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 ## Overview
 
@@ -62,10 +62,10 @@ IPLAN-02 (Auth JWT)
               └──────────┘ │   └────────┬─────────┘
                            │            │
                            │            ▼
-                           │   ┌──────────────────┐
-                           │   │  RPT Cycle N+1   │
-                           │   │  (bug_fix_verify)│
-                           │   └────────┬─────────┘
+                           │   ┌────────────────────────┐
+                           │   │  RPT Cycle N+1         │
+                           │   │  (bug_fix_verification)│
+                           │   └────────┬───────────────┘
                            │            │
                            └────────────┘
 ```
@@ -144,7 +144,7 @@ docs/sdd/10_EVAL/
 - `{NN}` is a zero-padded sequential number (01, 02, ... 99)
 - `{hash}` is a 4-character content-derived identifier from the TDD
 - Test case IDs are stable across eval cycles — they identify the test case, not a specific run
-- Every test case **MUST** carry an `EVAL.NN.SS.xxxx` ID — IDs are required, not optional (no exemption; the CHG overlay is the only layer with no element IDs)
+- Every test case **MUST** carry an `EVAL.NN.SS.xxxx` ID — IDs are required, not optional (no exemption; cf. exemptions: CHG overlay has no element IDs, SPEC IDs optional per ID_NAMING_STANDARDS)
 - Report IDs include the cycle number: RPT-001, RPT-002, ...
 - **One source per test case** — each test case maps to exactly one upstream element (one source_type + one source_id). Never mix BDD, TDD, EARS, or other sources in a single test case. Create as many test cases as needed.
 

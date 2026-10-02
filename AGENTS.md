@@ -10,7 +10,7 @@ preserves the old file.
 ## What this repo is
 
 One engine-agnostic specification (`framework/`) defining the 10-layer SDD
-flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code).
+flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified).
 Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`

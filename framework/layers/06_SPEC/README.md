@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 
 ## C4 Model Position
@@ -31,7 +31,7 @@ Code             — source code                                    C4-L4
 
 Implementation-ready technical specification for a single software component. Defines interfaces, data models, and behavior contracts before downstream TDD test cases are written.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → EVAL → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## Design Decisions
 

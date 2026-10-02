@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.1 |
+| Framework Version | 0.70.2 |
 
 | Field | Value |
 |---|---|
@@ -37,7 +37,7 @@ row wins:
 
 ## 2. F1 — Greenfield development
 
-The initial 10-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code/Docs/Scripts).
+The initial 10-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code/Docs/Scripts → EVAL → Verified).
 `change_source: upstream`, `change_level: C3` (cross-layer by construction; `gate_approval.approver` required before status leaves `Proposed` per GOV-012),
 entry GATE-01. SDD-first order (§3.1.1) applies end to end: no IPLAN before the SDD versions it references exist;
 no code before an `In Progress` IPLAN exists (§3.13). This flow is fully governed today; it is named here so the
