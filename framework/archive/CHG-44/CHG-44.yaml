@@ -1,0 +1,157 @@
+# =============================================================================
+#  CHG-44: 0.70.3 post-tag docs — TAGGING inventory + PROJECT §7.5 (#866)
+#  (F2 direct, docs-only C1, one PR — no VERSION bump)
+# =============================================================================
+#  Flow: F2 direct (release-review follow-ups 2026-10-02: TAGGING snapshot
+#  refresh after cutting framework/v0.68.4–v0.70.3 + issue #866; no prior
+#  IPLAN, no product-behavior change — docs/ prose only, no framework/
+#  touch, no contract change) — docs-only C1: C1 CHG + scoped IPLAN per
+#  F2.2; entry GATE-CODE. Precedent: CHG-30 (F2 C1 docs batch, GATE-CODE)
+#  and CHG-32 (0.68.2 post-tag docs).
+#  IPLAN: framework/archive/CHG-44/IPLAN-44.yaml (goes In Progress on
+#  approval; no writes before that per §3.13).
+#  Requester citation: preprod-review 0.70.3 verdict SHIP-WITH-FIXES
+#  (2026-10-02): lens-3 HIGHs — TAGGING snapshot frozen at 0.68.3 + #866
+#  §7.5 git-pull contradiction. Mode-B GO on #866 (all legs verified on
+#  dev @ ae08930b at filing + triage; filing-date diff empty; no
+#  superseder — brand-new issue).
+#  §3.4 checklist: completed before authoring (all 14): (1) TAGGING.md
+#  inventory block + PROJECT §7.1/§7.5 + UPGRADE-RUNBOOK read live;
+#  figures re-derived from git (held/tagged/tag-target reads), not copied;
+#  (2) no client/server — docs-only; (3)(4)(6)(10) N/A — prose only;
+#  (5) EARS/BDD IDs vacuous (CHG-30 precedent); (7) coupled: snapshot +
+#  §7.5 share this vehicle (same release-docs batch); (8) pure prose —
+#  covering tests N/A-allowed per F2.2; verification is figure re-checks
+#  + full battery + chg_lint; (9) fix locations verified at file:line;
+#  (11) no SDD versioning — sdd_lifecycle [] (docs/ prose is not an SDD
+#  layer artifact); (12) C16/E25-E27 paired; (13) SDD-first vacuous;
+#  (14) no code steps in CHG (legal phases only).
+#  EARS/BDD IDs vacuous (no requirement-traced functionality affected).
+#  SECURITY_REVIEW: assessed — prose-only, no threat surface.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30). Phase 0b: F2, omitted (sdd_lifecycle [] — GOV-014 paired).
+#  Covering tests: N/A-allowed for pure prose (F2.2); figures re-derived
+#  in the IPLAN battery commands; full suite guards regressions.
+#  Out of scope: #865 (dev-push lint artifact — deferred past promotion,
+#  needs CI/code change); #867 (SemVer policy question — needs a decision,
+#  explicitly out of the release); GitHub Releases (convention is
+#  tags-only; v0.44.0 stays Latest); project vX.Y.Z tag (no milestone
+#  completed); the promotion itself (founder-executed PR, follows this
+#  vehicle's merge).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+# =============================================================================
+
+id: CHG-44
+title: "0.70.3 post-tag docs: TAGGING inventory + PROJECT §7.5 (#866)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.70.3"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-44"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-44 authorizing record (framework/archive/CHG-44/IPLAN-44.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Post-tag release docs for 0.70.3: refresh the TAGGING.md release-inventory snapshot (high-water framework/v0.70.3, contiguity 0.46.0–0.70.3 at 56/56, 77-of-141 untagged, spec at 0.70.3 — all re-derived) and rewrite PROJECT §7.5 from git-pull to remove-then-recopy per UPGRADE-RUNBOOK.md (#866). No VERSION bump (docs/ only, not a spec change)."
+  why: "The inventory snapshot is the release record: after cutting 8 tags it must state the new high-water or the next reader re-derives from stale figures. §7.5 teaches the exact upgrade failure the runbook exists to prevent; release review caught it and the CHG-32 pattern fixes review staleness in the post-tag vehicle."
+  trigger: "Preprod-review 0.70.3 SHIP-WITH-FIXES (lens-3 HIGHs) + issue #866 (P2 docs)."
+  scope:
+    in:
+      - "docs/TAGGING.md inventory block (:98-157): high-water v0.70.3, 56/56 contiguity, 77-of-141, spec-at-0.70.3, tags-without-Release range — figures re-derived 2026-10-02"
+      - "docs/PROJECT.md §7.5 (:249-257): delegate to UPGRADE-RUNBOOK.md remove-first; keep VERSION-verification + breaking-change sentences (#866)"
+      - "framework/archive/CHG-44/CHG-44.yaml + IPLAN-44.yaml (this vehicle)"
+    out:
+      - "#865 (CI code change, deferred); #867 (policy decision, deferred)"
+      - "GitHub Releases; project vX.Y.Z tag; the promotion merge (founder)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create CHG-44 + IPLAN-44 vehicle and validate with chg_lint"
+      phase: "iplan_creation"
+      artifact: "CHG-44 + IPLAN-44"
+      status: Completed
+    - step: "Refresh TAGGING snapshot + rewrite PROJECT §7.5 per IPLAN-44 contracts"
+      phase: "documentation_sync"
+      artifact: "docs/TAGGING.md, docs/PROJECT.md"
+      status: In-Progress
+    - step: "Run IPLAN-44 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/44-release-docs-0703 → dev"
+      status: In-Progress
+  files_modified:
+    - "framework/archive/CHG-44/CHG-44.yaml"
+    - "framework/archive/CHG-44/IPLAN-44.yaml"
+    - "docs/TAGGING.md (inventory snapshot → 0.70.3)"
+    - "docs/PROJECT.md (§7.5 remove-first rewrite, #866)"
+
+artifacts_modified:
+  - id: "CHG-44"
+    changes: "Authorizing record for 0.70.3 post-tag docs (this file)"
+  - id: "IPLAN-44"
+    changes: "Authorizing IPLAN (framework/archive/CHG-44/IPLAN-44.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-44 (0 errors)"
+    - "Inventory figures re-derived (held/tagged/untagged/tag-target reads)"
+    - "§7.5 delegates to runbook; 'git pull' zero hits in §7.5"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/44-release-docs-0703 → dev"
