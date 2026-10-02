@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-29 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.2 |
+| Framework Version | 0.70.3 |
 
 | Field | Value |
 |---|---|

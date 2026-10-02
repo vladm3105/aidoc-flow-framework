@@ -11,9 +11,17 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-30 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.2 |
+| Framework Version | 0.70.3 |
 
 ---
+
+## [0.70.3] — 2026-10-02
+
+### Fixed — core-README freshness batch (C1 PATCH → 0.70.3, CHG-43 + IPLAN-43)
+
+- Retired-platform framing (#862): consumer nouns `platform` → `engine` throughout `framework/README.md` (§How engines consume it, intro, guide/vendor line, conformance line, versioning line — `platform` now zero hits); dead "for the platforms" pointer repointed at the root README Tooling section. Mechanical consumer content (VERSION declaration, template validation) preserved.
+- Layout tree vs disk (#863): dropped the phantom `templates/` line (removed #809), added the `skills/` owned-surface line (shipped #742), reworded the no-runtime-code sentence to admit the skills tooling, relaxed the archive shape to `archive/{CHG-ID}/` with the flat vehicle as the current form.
+- Sweep 0.70.2 → 0.70.3 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.70.2] — 2026-10-01
 
