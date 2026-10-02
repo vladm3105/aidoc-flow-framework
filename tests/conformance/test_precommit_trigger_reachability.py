@@ -37,7 +37,12 @@ CONFIG = REPO_ROOT / ".pre-commit-config.yaml"
 # Hooks whose `files:` is deliberately narrower than anything in the tree would
 # satisfy are not defects. None exist today; the empty tuple is the seam, so a
 # future exemption has to be named here rather than weakening the assertion.
-KNOWN_UNREACHABLE: tuple = ()
+KNOWN_UNREACHABLE: tuple = (
+    # check-plan (verified-planning gate rollout): the repo has no plans/
+    # yet, so no tracked file can fire it today; the hook anticipates the
+    # first real plan. Remove this exemption when plans/PLAN-*.md lands.
+    "check-plan",
+)
 
 
 def _tracked_files() -> list:
