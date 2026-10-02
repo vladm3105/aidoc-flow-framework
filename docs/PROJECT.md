@@ -248,11 +248,12 @@ metadata:
 
 ### 7.5 Updating the framework
 
-```bash
-cd .aidoc/framework && git pull origin main
-```
+Refresh a pinned copy by repeating the §7.1 copy per
+`framework/governance/aidoc/UPGRADE-RUNBOOK.md` — remove the old copy
+first, then re-copy; never refresh by pulling inside
+`.aidoc/framework/` (a pull lets upstream-removed files linger).
 
-After pulling, verify `framework/VERSION` matches the pin in `.aidoc/profile.yaml`. If a newer version has breaking changes, update project overrides in `.aidoc/project/` before adopting.
+After refreshing, verify `framework/VERSION` matches the pin in `.aidoc/profile.yaml`. If a newer version has breaking changes, update project overrides in `.aidoc/project/` before adopting.
 
 ### 7.6 No symlinks
 
