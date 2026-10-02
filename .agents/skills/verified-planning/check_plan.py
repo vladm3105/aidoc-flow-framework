@@ -114,8 +114,17 @@ def table_rows(body: str) -> list[tuple[str, list[str]]]:
 
 
 def _resolve(rel: str, roots: list[Path]) -> Path | None:
+    if Path(rel).is_absolute():
+        return None  # absolute citations are rejected by the caller, not resolved
     for base in roots:
-        target = base / rel
+        # resolve() before the containment check so `..` segments and symlinks
+        # are judged by where they land, not by how they are spelled: `sub/../x`
+        # inside the root still resolves; anything landing outside does not.
+        target = (base / rel).resolve()
+        try:
+            target.relative_to(base.resolve())
+        except ValueError:
+            continue
         if target.exists():
             return target
     return None
@@ -155,6 +164,12 @@ def check_ledger(
         # it, and its claim text must say what it BLOCKS — otherwise "PROBE"
         # becomes a way to dodge a citation you simply did not look up.
         if citation.upper().startswith("PROBE"):
+            if len(cells) < 2:
+                errs.append(
+                    f"ledger row {i}: PROBE row needs claim + citation cells — "
+                    f"write '| <claim> — blocks Phase <N> | `n/a` | PROBE: <command> |'"
+                )
+                continue
             cmd = citation.split(":", 1)[1].strip() if ":" in citation else ""
             if not cmd:
                 errs.append(
@@ -182,6 +197,12 @@ def check_ledger(
             errs.append(f"ledger row {i}: citation '{citation}' is not path:line")
             continue
         rel, line = m.group(1), int(m.group(2))
+        if Path(rel).is_absolute():
+            errs.append(
+                f"ledger row {i}: citation '{rel}' is absolute — cite paths "
+                f"relative to a root"
+            )
+            continue
         target = _resolve(rel, roots)
         if target is None:
             where = ", ".join(str(r) for r in roots)

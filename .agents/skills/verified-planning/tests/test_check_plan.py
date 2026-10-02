@@ -457,3 +457,52 @@ def test_probe_blocking_a_phase_id_resolves(tmp_path):
     body = REVIEW_OK + "\n## Phases\n\n- **B1. probe, then write**\n"
     r = _run(_plan(repo, row, review=body))
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_absolute_citation_is_rejected_not_resolved(tmp_path):
+    # An absolute citation would otherwise open files outside every root,
+    # turning the gate into a file-existence oracle over PR-controlled text.
+    repo = _repo(tmp_path)
+    outside = tmp_path / "outside.txt"
+    outside.write_text("secret\n")
+    row = f"| 1 | outside file | `secret` | {outside}:1 |\n"
+    r = _run(_plan(repo, row))
+    assert r.returncode == 1
+    assert "is absolute" in r.stdout, r.stdout
+
+
+def test_dotdot_escape_is_rejected(tmp_path):
+    # `..` that lands outside every root resolves to nothing — same oracle,
+    # spelled relatively. The outside file EXISTS, so only containment (not
+    # absence) can produce this error: pre-fix this test fails with rc 0.
+    repo = _repo(tmp_path / "repo")
+    (tmp_path / "outside.txt").write_text("secret\n")
+    row = "| 1 | outside file | `secret` | ../outside.txt:1 |\n"
+    r = _run(_plan(repo, row))
+    assert r.returncode == 1
+    assert "does not exist under any root" in r.stdout, r.stdout
+
+
+def test_dotdot_contained_in_root_still_resolves(tmp_path):
+    # Containment is judged by landing spot, not spelling: `sub/../x` inside
+    # the root is a real citation and must keep working.
+    repo = _repo(tmp_path)
+    (repo / "sub").mkdir()
+    row = "| 1 | completion is logged | `task_completed` | sub/../src/loop.py:11 |\n"
+    r = _run(_plan(repo, row))
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_single_cell_probe_row_errors_instead_of_crashing(tmp_path):
+    # A one-cell PROBE row has no claim cell; the gate must report it, not
+    # raise IndexError (which exits 1 by accident with a traceback).
+    repo = _repo(tmp_path)
+    plan = repo / "PLAN-002_probe.md"
+    plan.write_text(
+        "## Claim ledger\n\n| Citation |\n|----------|\n"
+        "| PROBE: curl example.com |\n\n" + REVIEW_OK
+    )
+    r = _run(plan)
+    assert r.returncode == 1
+    assert "needs claim + citation cells" in r.stdout, r.stdout
+    assert "Traceback" not in r.stdout + r.stderr
