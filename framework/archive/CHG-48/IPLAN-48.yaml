@@ -23,7 +23,7 @@ document_control:
   iplan_id: "IPLAN-48"
   subtype: combined
   source_spec: "@spec: N/A (spec-source change under CHG-48; no SPEC component)"
-  status: In Progress
+  status: Completed
   version: "1.0"
   date_created: "2026-10-02T00:00:00Z"
   last_updated: "2026-10-02T00:00:00Z"
@@ -52,51 +52,51 @@ file_manifest:
     - path: "framework/README.md"
       description: "Versioning carve-out sentence (v1.0 → v1.1)"
       order: 2
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
       description: "E002 parenthetical, gov twin (v1.0 → v1.1)"
       order: 3
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
       description: "Identical E002 parenthetical, layer twin (v1.0 → v1.1)"
       order: 4
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/governance/DECISIONS.md"
       description: "GD-47 entry (v1.8 → v1.9)"
       order: 5
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/VERSION"
       description: "PATCH cut 0.72.0 → 0.72.1"
       order: 6
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "hooks/sync-version-refs.sh"
       description: "OLD_VERSIONS gains 0.72.0"
       order: 7
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/CHANGELOG.md"
       description: "[0.72.1] entry (E008)"
       order: 8
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "Sweep fallout (mechanical pin moves)"
       description: "sync-version-refs 0.72.0 → 0.72.1 pin moves only; verified zero non-pin lines"
       order: 9
-      status: TODO
+      status: DONE
       session: 1
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 3: TDD Consistency
@@ -141,8 +141,8 @@ implementation_contracts:
 session_handoff:
   sessions:
     - session: 1
-      status: In Progress
-      scope: "Vehicle + snapshots DONE; rule prose + GD-47 + PATCH cut + battery + PR next"
+      status: Completed
+      scope: "Vehicle + rule prose + GD-47 + PATCH cut + battery DONE; PR next"
 
 # =============================================================================
 # Section 7: Traceability

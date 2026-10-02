@@ -8,8 +8,9 @@
 #  CHG-36/37/45/46: sdd_lifecycle entries + snapshots + seed_scope
 #  no-change + SDD-first steps).
 #  C2 per GATE-SPEC-E003 (spec is never C1); PATCH per the rule this vehicle
-#  writes (guidance-only clarification: no MUST, no template/registry/API/
-#  lint change — the vehicle is itself the first exhibit of the carve-out).
+#  writes (guidance-only clarification: no new unconditional consumer duty,
+#  affirmative or prohibitive, no template/registry/API/lint change — the
+#  vehicle is itself the first exhibit of the carve-out).
 #  IPLAN: framework/archive/CHG-48/IPLAN-48.yaml (In Progress; no spec edits
 #  before that per §3.13 — vehicle authored first, rule prose after).
 #  Requester citation: issue #867 (SemVer guidance-only question), read live
@@ -39,15 +40,19 @@
 #  sdd_lifecycle steps before iplan_creation (CHG-L005); (14) no code
 #  steps in CHG (legal phases).
 #  DECISION (GD-47): guidance-only additions ride PATCH. Test: the addition
-#  introduces no new affirmative MUST and no template/registry/API/lint
-#  change (MUST NOT guardrails constraining the guidance itself do not
-#  count — they restrict, they require nothing). Rationale: keeps shipped
-#  0.70.1 correct (history is corrected forward, never rewritten); aligns
-#  with the existing normative/non-normative split (F2.2); MINOR keeps all
-#  enforceable surface (CHG-45 scripts, CHG-46 lint rule). Rejected: reaffirm
-#  all-additions-MINOR (would declare a shipped version misclassified and
-#  strand future SHOULD-guidance between a wrong PATCH precedent and a
-#  strict MINOR rule).
+#  introduces no new unconditional consumer duty — affirmative (MUST/SHALL/
+#  REQUIRED) or prohibitive (MUST NOT/SHALL NOT) — and no template/registry/
+#  API/lint change. A duty is unconditional when it binds a consumer that
+#  ignores the guidance; prohibitions vacuous outside the guidance's own
+#  opt-in activity don't count (the 0.70.1 precedent's two MUST NOTs are
+#  conditional on emitting telemetry). Token tests ("no new MUST") evade via
+#  synonyms and miss prohibitions — the test is duty-based. Rationale: keeps
+#  shipped 0.70.1 correct (history is corrected forward, never rewritten);
+#  aligns with the existing normative/non-normative split (F2.2); MINOR keeps
+#  all unconditional surface (CHG-45 scripts, CHG-46 lint rule). Rejected:
+#  reaffirm all-additions-MINOR (would declare a shipped version misclassified
+#  and strand future guidance between a wrong PATCH precedent and a strict
+#  MINOR rule).
 #  SECURITY_REVIEW (GATE-SPEC-W003): assessed — prose-only rule text, no
 #  privilege, no egress, no new parsing. Nothing to constrain.
 #  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
@@ -83,7 +88,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-48"
-  status: In-Progress
+  status: Implemented
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -92,7 +97,7 @@ change_control:
   author: "Muse Code"
   date_proposed: "2026-10-02T00:00:00Z"
   date_approved: "2026-10-02T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-10-02T00:00:00Z"
   supersedes:
     - "framework README v1.0 (framework/archive/CHG-48/README.md)"
     - "gate mapping v1.0 gov twin (framework/archive/CHG-48/GATE-SPEC_FRAMEWORK.gov.md)"
@@ -108,7 +113,7 @@ change_control:
 
 change_description:
   summary: "Write the PATCH carve-out for guidance-only additions: one sentence in framework/README Versioning + a parallel E002-mapping parenthetical in both gate twins + GD-47. PATCH 0.72.0 → 0.72.1."
-  why: "The SemVer rule as written ('additions are minor') contradicts the shipped 0.70.1 precedent (SHOULD-only guidance doc as PATCH); authors have no citable rule for the next guidance-only addition. #867 proves both legs."
+  why: "The SemVer rule as written ('additions are minor') contradicts the shipped 0.70.1 precedent (guidance doc with only conditional MUST NOTs as PATCH); authors have no citable rule for the next guidance-only addition. #867 proves both legs."
   trigger: "Issue #867 (P3 governance question, preprod-review lens 5 finding)."
   scope:
     in:
@@ -196,14 +201,14 @@ implementation:
       archive_path: "framework/archive/CHG-48/"
       new_version: "0.72.1"
       current_version: "0.72.0"
-      status: In-Progress
+      status: Implemented
     - step: "PATCH fanout per IPLAN-48 manifest (framework/VERSION 0.72.1, framework/CHANGELOG.md [0.72.1], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
       phase: "sdd_lifecycle"
       artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
       archive_path: "framework/archive/CHG-48/"
       new_version: "0.72.1"
       current_version: "0.72.0"
-      status: In-Progress
+      status: Implemented
     - step: "Create IPLAN-48 with all implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-48"
@@ -211,7 +216,7 @@ implementation:
     - step: "Run IPLAN-48 battery + open PR to dev"
       phase: "documentation_sync"
       artifact: "PR feature/48-semver-guidance-carveout → dev"
-      status: In-Progress
+      status: Implemented
   files_modified:
     - "framework/archive/CHG-48/CHG-48.yaml"
     - "framework/archive/CHG-48/IPLAN-48.yaml"

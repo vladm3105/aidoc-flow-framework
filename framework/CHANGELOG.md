@@ -11,9 +11,16 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.0 |
+| Framework Version | 0.72.1 |
 
 ---
+
+## [0.72.1] — 2026-10-02
+
+### Fixed — SemVer guidance-only PATCH carve-out (C2 PATCH → 0.72.1, CHG-48 + IPLAN-48)
+
+- The versioning rule now states the citable test (#867): guidance-only additions — no new unconditional consumer duty, affirmative or prohibitive, and no template/registry/API/lint change — ride PATCH; everything with unconditional surface still rides MINOR. Written in `framework/README.md` Versioning and the E002 mapping (both gate twins); GD-47 records the decision and the rejected reaffirm-MINOR. Shipped 0.70.1 stands correct under the clarified rule (its two MUST NOTs are conditional on the opt-in activity of emitting telemetry); no version re-cut.
+- Sweep 0.72.0 → 0.72.1 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.72.0] — 2026-10-02
 
