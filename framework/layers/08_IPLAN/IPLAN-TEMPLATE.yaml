@@ -55,10 +55,17 @@ document_control:
     IPLAN-Ready >=90/100.
 
     `subtype` selects which sections this IPLAN must carry. Values
-    (CLEANUP-PR-E; `audit_fix` added 0.54.0; `bugfix` added 0.56.0):
+    (CLEANUP-PR-E; `audit_fix` added 0.54.0; `bugfix` added 0.56.0;
+    `docs` added 0.72.0):
       - code_build: file_manifest, execution_commands,
         implementation_contracts, session_handoff, traceability
         required; rollback/smoke/canary/observability NOT required.
+      - docs: file_manifest, implementation_contracts,
+        session_handoff, traceability required (code_build minus
+        execution_commands — prose has nothing to execute);
+        tdd_consistency carries status not-applicable. The TAG01
+        `tdd` tag requirement is lifted for N/A IPLANs; the spec
+        tag stays required.
       - deploy: rollback_procedure, smoke_tests, canary_metrics,
         observability_hooks, runbook_reference, traceability
         required; file_manifest + execution_commands NOT required.
@@ -100,7 +107,7 @@ document_control:
     `document_control` and selects the section set. Missing subtype
     defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"
-  subtype: combined  # code_build | deploy | combined | audit_fix | bugfix
+  subtype: combined  # code_build | deploy | combined | audit_fix | bugfix | docs
   source_spec: "@spec: SPEC-NN"  # audit_fix: audit findings reference instead
                                  # bugfix: defect issue/tracker reference instead
   parent_iplan: null  # bugfix only: "IPLAN-NN" of the closed plan under repair
@@ -157,7 +164,7 @@ document_control:
 # =============================================================================
 file_manifest:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
+  _required_when_subtype: [code_build, combined, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0
   _guidance: |
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
@@ -290,7 +297,13 @@ tdd_consistency:
     - Rule E: TDD-00_index and IPLAN-00_index MUST show consistent statuses
 
     Enforcement: Lint rules TDD-SYNC-001 through TDD-SYNC-007.
-  status: not_started  # not_started | in_progress | verified
+
+    Docs-only IPLANs (subtype docs, manifest with no code/test bindings)
+    set status: not-applicable with a one-line reason in issues[] — never
+    verified (which asserts coverage) and never a borrowed @tdd tag. TAG01
+    lifts the tdd tag requirement for not-applicable IPLANs; the spec tag
+    stays required. (GD-46; the pre-0.72.0 borrowed-tag workaround is retired.)
+  status: not_started  # not_started | in_progress | verified | not-applicable
   last_verified: null
   verification_results:
     function_name_match: null  # percentage or null
@@ -351,7 +364,7 @@ execution_commands:
 # =============================================================================
 implementation_contracts:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
+  _required_when_subtype: [code_build, combined, docs]  # CLEANUP-PR-E item 17; docs added 0.72.0
   _guidance: |
     Optional. Required when 3+ files depend on shared interfaces.
     Contract types: Protocol Interface, Exception Hierarchy, State Machine,
@@ -374,7 +387,7 @@ implementation_contracts:
 # =============================================================================
 session_handoff:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
+  _required_when_subtype: [code_build, combined, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0
   _guidance: |
     Critical for stateless executor calls. Each AI agent session is
     independent — no memory across invocations. This section is the bridge.
