@@ -1,0 +1,153 @@
+# =============================================================================
+#  CHG-47: pre-push audit-trail scan skips empty ranges (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (hook tweak under hooks/, no product-behavior change —
+#  the OPS-0069 phrase rule is unchanged; an empty range has no commits to
+#  audit) — C1 CHG + scoped IPLAN per F2.2; entry GATE-CODE.
+#  Router record (§6): F4 rejected — the hook originates from PLAN-002 Wave 1
+#  canon adoption (#272); CHG-24 #810 created the covering test + CI invoker
+#  (#798) and CHG-27 #819 touched the same file. No single
+#  Completed/Verified parent IPLAN owns the empty-range behavior, so F4
+#  traceability fails and F2 applies.
+#  IPLAN: framework/archive/CHG-47/IPLAN-47.yaml (In Progress, authorizing)
+#  Issue: #865 (triaged + re-triaged 2026-10-02: P2 + bug + ci; ALIVE on dev
+#  @ 17b484ca via check-runs API — Lint / format / security hooks: failure
+#  on five consecutive dev heads; notes posted, labels applied)
+#  Requester citation (F2.3, verbatim ask): session goal "fix all issues
+#  https://github.com/vladm3105/aidoc-flow-framework/issues" (narrows to #865
+#  after #872 merged; triage order #872 → #865 → #867)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (hooks/pre_push_check.sh audit block :167-260,
+#  .github/workflows/pre-commit.yml pre-push step, .pre-commit-config.yaml
+#  :179-191 hook declaration, tests/unit/test_hook_stage_coverage.py
+#  conventions); (2) no client/server — local shell hook + vendored CI
+#  workflow; enforcement surface is the new unit test + shellcheck + full
+#  battery + PR checks; (3) no structs — one guard variable + elif branch;
+#  (4) N/A no queries; (5) EARS/BDD IDs vacuous (hook-behavior change, no
+#  SDD contract at stake — CHG-24/CHG-27 F2 precedent); (6) N/A no handlers;
+#  (7) single issue #865 (#867 SemVer policy independent); (8) covering
+#  test: new case in tests/unit/test_hook_stage_coverage.py pinning the
+#  executable skip (comment-stripped regex per file convention) + shellcheck
+#  + full battery; (9) fix located: range-empty guard in the audit block,
+#  PR-branch (non-empty) path untouched; (10) N/A no migrations;
+#  (11) no SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014
+#  paired); (12) artifacts_modified carries the vehicle only; (13) SDD-first
+#  vacuous for F2 (empty lifecycle, CHG-L005); (14) no code steps in CHG
+#  (legal phases).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  No framework/ spec touched → version_action keep, no VERSION/CHANGELOG
+#  (hooks-only F2 precedent: CHG-24 #810, CHG-27 #819; docs matrix maps
+#  internal hook behavior to (none) — the AGENTS.md phrase rule is unchanged).
+# =============================================================================
+
+id: CHG-47
+title: "pre-push audit-trail scan skips empty ranges (issue #865)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.72.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-47"
+  status: Implemented
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: "2026-10-02T00:00:00Z"
+  supersedes:
+    - "IPLAN-47 authorizing record (framework/archive/CHG-47/IPLAN-47.yaml)"
+  # NOTE: hooks/pre_push_check.sh is amended in place (hook tweak, no archive
+  # rotation); only the vehicle record is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Teach the pre-push audit-trail scan to skip with notice when the push range contains zero commits (post-merge dev push in CI) instead of failing on an absent phrase. PR-branch (non-empty) enforcement byte-identical."
+  why: "The Lint / format / security hooks context fails on every post-merge dev push: HEAD == origin/dev collapses the range, zero commits carry the phrase, the hook errors. A permanently red dev check trains everyone to ignore red."
+  trigger: "Issue #865 (triaged + re-triaged 2026-10-02, P2 + bug + ci)."
+  scope:
+    in:
+      - "hooks/pre_push_check.sh: range-empty guard + skip notice (additive branch)"
+      - "tests/unit/test_hook_stage_coverage.py: executable-code pin for the skip"
+    out:
+      - "PR-branch phrase enforcement (unchanged — non-empty ranges scan identically)"
+      - ".github/workflows/pre-commit.yml (vendored; no event-shape change)"
+      - "Any framework/ normative change (none — version keep)"
+      - "#867 (SemVer policy) — independent issue"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-47 with the hook edit + covering test + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-47"
+      status: Completed
+    - step: "Edit hooks/pre_push_check.sh (empty-range skip) + extend tests/unit/test_hook_stage_coverage.py + run IPLAN-47 battery"
+      phase: "documentation_sync"
+      artifact: "pre_push_check.sh"
+      status: Implemented
+  files_modified:
+    - "hooks/pre_push_check.sh"
+    - "tests/unit/test_hook_stage_coverage.py"
+
+artifacts_modified:
+  - id: "CHG-47"
+    changes: "Authorizing record for empty-range audit skip (this file)"
+  - id: "IPLAN-47"
+    changes: "Authorizing IPLAN (framework/archive/CHG-47/IPLAN-47.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: PR review is the approval; no named gate approver required (CHG-L002 applies to C3 only).
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-47 (0 errors)"
+    - "shellcheck hooks/pre_push_check.sh (clean)"
+    - "tests/unit/test_hook_stage_coverage.py green (incl. new skip pin)"
+    - "Manual empty-range simulation: hook prints SKIPPED notice, exit path unaffected for audit_ok"
+    - "Full battery: tests/unit + tests/conformance + sdd_doc_lint/tests green"
+    - "PR checks green on feature/47-dev-push-empty-range → dev"

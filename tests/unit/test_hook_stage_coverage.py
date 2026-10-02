@@ -7,6 +7,7 @@ outside local pushes. A pre-push hook without a CI invocation is a
 documented guarantee that nothing enforces.
 """
 
+import re
 import unittest
 from pathlib import Path
 
@@ -53,6 +54,29 @@ class HookStageCoverageTests(unittest.TestCase):
                     code,
                     f"pre_push_check.sh never invokes {suite}",
                 )
+
+    def test_empty_range_skips_audit_with_notice(self):
+        # #865: a zero-commit push range (post-merge dev push, HEAD ==
+        # origin/dev) must skip with notice, never fail on an absent phrase.
+        # Comments stripped so the test pins the executable branch.
+        text = (REPO_ROOT / "hooks" / "pre_push_check.sh").read_text(encoding="utf-8")
+        code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+        self.assertRegex(
+            code,
+            r"rev-list\s+--count",
+            "pre_push_check.sh never counts the push range",
+        )
+        self.assertIn(
+            "SKIPPED (empty push range",
+            code,
+            "pre_push_check.sh has no empty-range skip notice",
+        )
+        # The skip must gate on count == 0 specifically — a guard that
+        # skipped on any count (or on rev-list failure) would fail open.
+        self.assertTrue(
+            re.search(r'rev-list\s+--count.*?=\s*"0"', code, re.S),
+            "pre_push_check.sh skip is not gated on zero count",
+        )
 
     def test_pre_push_stage_invoked_in_ci(self):
         ids = pre_push_hook_ids()
