@@ -1,0 +1,286 @@
+# =============================================================================
+#  CHG-50: preprod-findings batch (spec C2 MINOR → 0.73.0)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — consumer scripts + governance docs, not project
+#  artifacts). Not F1/F3/F4/Emergency/Type-R (spec-shape precedent
+#  CHG-36/37/45/46/48: sdd_lifecycle entries + snapshots + seed_scope
+#  no-change + SDD-first steps). Batch shape precedent: CHG-42 (staleness
+#  batch #854-#859, one vehicle + one cut).
+#  C2 per GATE-SPEC-E003 (spec is never C1 — normative-surface changes
+#  herein); MINOR per GD-47's own test (new --canon-sha flag is new API
+#  surface — the rule's first self-application; everything else is
+#  robustness/docs and would ride PATCH alone).
+#  IPLAN: framework/archive/CHG-50/IPLAN-50.yaml (In Progress; no spec edits
+#  before that per §3.13 — vehicle authored first, fixes after).
+#  Requester citation: preprod review of the dev→main promotion (0.70.3 →
+#  0.72.2), five lenses, verdict SHIP-WITH-FIXES; 13 surviving findings
+#  filed as #878-#890 (all Mode B GO 2026-10-02 on dev @ ad5e8695).
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (install.sh sed/rm/AUTHOR/clone lines,
+#  upgrade.sh sed/swap/smoke/clone lines, pre_push_check.sh phrase greps,
+#  sync-version-refs.sh join/stage lines, BOOTSTRAP knob list + steps,
+#  RUNBOOK refs, GD-47 Consequence, README listing, PROJECT §5,
+#  ADAPTATION_SURFACE knob count = 15); (2) no client/server — shell
+#  scripts + prose; enforcement surface is covering tests + shellcheck +
+#  full battery + PR checks; (3) N/A no structs; (4) N/A no queries;
+#  (5) EARS/BDD IDs vacuous (script-robustness + prose batch, no SDD
+#  contract at stake — CHG-45 precedent); (6) N/A no handlers; (7) 13
+#  issues #878-890 (one batch, one PR — CHG-42 precedent); (8) covering
+#  tests: extend tests/conformance/test_consumer_scripts.py (portable-fill,
+#  pre-validate, atomic swap, --canon-sha) + tests/unit/
+#  test_hook_stage_coverage.py (full-phrase pin) — see IPLAN-50; (9) fixes
+#  located per issue bodies; (10) N/A no migrations; (11) SDD versioning —
+#  sdd_lifecycle amends for the 6 framework/ files (scripts gain a
+#  `# Version:` marker, 1.0→1.1) + BOOTSTRAP/RUNBOOK/README (1.1→1.2) +
+#  DECISIONS (1.9→1.10: GD-47 F2.2 qualification + GD-48) + IPLAN-50
+#  (08_IPLAN create); hooks/tests/docs/PROJECT ride files_modified +
+#  IPLAN manifest (CHG-45/47 precedent); CHANGELOG/VERSION/sweep ride
+#  fanout (CHG-11); (12) GOV-014 paired — artifacts_modified carries no
+#  unlisted rewrite; (13) SDD-first — sdd_lifecycle steps before
+#  iplan_creation (CHG-L005); (14) no code steps in CHG (legal phases).
+#  DECISION (GD-48): this batch rides MINOR because --canon-sha is new
+#  API surface; script-robustness + docs fixes alone would ride PATCH.
+#  Rejected: splitting the flag into its own vehicle (second cut + second
+#  sweep for one flag; the batch is one promotion gate).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — the batch HARDENS the
+#  supply chain (--canon-sha) and removes failure windows; no new
+#  privilege, no egress, no new parsing of untrusted input (AUTHOR
+#  newline now refused). Nothing to constrain.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified
+#  2026-09-30; CHG-23/24/25/27/28 finding stands). Phase 0b: no module
+#  lifecycle — repo carries no docs/modules/ tree (mirrors CHG-37 §4A).
+#  Out of scope: lens findings adjudicated non-defects (grep -Z confusion
+#  -Z is --null on BSD too; hook bash3 fail-closed guard; bot/revert
+#  exemptions; upgrade eval of operator's own command; TAG latent;
+#  README :75 vendor sentence accurate as written; TAGGING high-water —
+#  refreshed by the promotion step itself; Implemented-not-Completed —
+#  matches CHG-38 precedent). Rationales recorded in the preprod
+#  synthesis (promotion PR body).
+# =============================================================================
+
+id: CHG-50
+title: "Preprod-findings batch (spec C2 MINOR → 0.73.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-02"
+  framework_version: "0.72.2"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-50"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-02T00:00:00Z"
+  date_approved: "2026-10-02T00:00:00Z"
+  date_implemented: "2026-10-02T00:00:00Z"
+  supersedes:
+    - "install.sh v1.0 (framework/archive/CHG-50/install.sh)"
+    - "upgrade.sh v1.0 (framework/archive/CHG-50/upgrade.sh)"
+    - "BOOTSTRAP v1.1 (framework/archive/CHG-50/BOOTSTRAP.md)"
+    - "UPGRADE-RUNBOOK v1.1 (framework/archive/CHG-50/UPGRADE-RUNBOOK.md)"
+    - "governance DECISIONS v1.9 (framework/archive/CHG-50/DECISIONS.md)"
+    - "framework README v1.1 (framework/archive/CHG-50/README.md)"
+    - "framework/VERSION 0.72.2 (framework/archive/CHG-50/VERSION)"
+    - "IPLAN-50 authorizing record (framework/archive/CHG-50/IPLAN-50.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Fix the 13 surviving preprod findings (#878-#890): portable sed fill, --canon-sha pin, rm-before-validate, atomic swap + pre-swap smoke, AUTHOR newline reject (scripts); full-phrase audit grep (hook); ||-join + loud re-stage (sync); knob pointer + step0 + kind reconcile (BOOTSTRAP); dead-ref + step4 cite (RUNBOOK); GD-47 F2.2 qualification + GD-48 (DECISIONS); runbook listing (README); platform tense (PROJECT). MINOR cut 0.73.0."
+  why: "Preprod verdict SHIP-WITH-FIXES on the 0.70.3→0.72.2 promotion: the new consumer scripts are broken on macOS, clone by mutable tag, and carry failure windows; the runbooks carry stale pointers. The promotion must not ship these to all consumers."
+  trigger: "Issues #878-#890 (preprod lenses 1-5, all Mode B GO 2026-10-02)."
+  scope:
+    in:
+      - "framework/scripts/install.sh (v1.0 → v1.1: portable fill, pre-validate, AUTHOR reject, --canon-sha)"
+      - "framework/scripts/upgrade.sh (v1.0 → v1.1: portable re-pin, atomic swap, pre-swap smoke, --canon-sha)"
+      - "hooks/pre_push_check.sh (full-phrase audit grep)"
+      - "hooks/sync-version-refs.sh (single-| join, loud re-stage warning, OLD_VERSIONS)"
+      - "BOOTSTRAP.md (v1.1 → v1.2: knob pointer, step0, kind reconcile, prereqs)"
+      - "UPGRADE-RUNBOOK.md (v1.1 → v1.2: dead-ref fix, step4 cite, --canon-sha note)"
+      - "DECISIONS.md (v1.9 → v1.10: GD-47 qualification + GD-48)"
+      - "framework/README.md (v1.1 → v1.2: aidoc listing)"
+      - "docs/PROJECT.md (platform tense; rides cascade, docs/)"
+      - "Covering tests (consumer-scripts + hook-stage extends)"
+      - "MINOR cut 0.73.0: framework/VERSION + pin sweep + framework/CHANGELOG.md [0.73.0]"
+      - "framework/archive/CHG-50/ vehicle + pre-change snapshots"
+    out:
+      - "Lens findings adjudicated non-defects (see header Out of scope)"
+      - "E003 amendment (deeper question stays open; only GD-47's wording is qualified)"
+      - "TAGGING.md high-water refresh (done by the promotion step itself)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/scripts/install.sh"
+    action: amend
+    archive_path: "framework/archive/CHG-50/install.sh"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "Portable tmpfile fill (macOS), pre-validate before --force rm, AUTHOR newline reject, --canon-sha pin; gains # Version marker"
+  - layer: "09_CHG"
+    document: "framework/scripts/upgrade.sh"
+    action: amend
+    archive_path: "framework/archive/CHG-50/upgrade.sh"
+    new_version: "1.1"
+    current_version: "1.0"
+    changes: "Portable tmpfile re-pin, backup-swap + trap restore, pre-swap SURFACE assert, --canon-sha pin; gains # Version marker"
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/BOOTSTRAP.md"
+    action: amend
+    archive_path: "framework/archive/CHG-50/BOOTSTRAP.md"
+    new_version: "1.2"
+    current_version: "1.1"
+    changes: "Knob enumeration → SURFACE pointer; step0 canon clone; pin/symlink reconcile; prereqs"
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    action: amend
+    archive_path: "framework/archive/CHG-50/UPGRADE-RUNBOOK.md"
+    new_version: "1.2"
+    current_version: "1.1"
+    changes: "Dead gate ref → repo-rooted path; step4 conformance cite; --canon-sha note"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-50/DECISIONS.md"
+    new_version: "1.10"
+    current_version: "1.9"
+    changes: "GD-47 Consequence F2.2 qualification + new GD-48 entry (batch rides MINOR)"
+  - layer: "09_CHG"
+    document: "framework/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-50/README.md"
+    new_version: "1.2"
+    current_version: "1.1"
+    changes: "aidoc/ tree listing names both runbooks"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-50/IPLAN-50.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo;
+# see Phase 0b note in header)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (CHG-23/24/25/27/28 finding stands); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps run BEFORE iplan_creation — CHG-L005)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-50/ (install.sh, upgrade.sh, BOOTSTRAP.md, UPGRADE-RUNBOOK.md, DECISIONS.md, README.md, VERSION — excluding the CHG-50 vehicle files themselves so the snapshot never clobbers the authorizing record)"
+      phase: "sdd_lifecycle"
+      artifact: "install.sh, upgrade.sh, BOOTSTRAP.md, UPGRADE-RUNBOOK.md, DECISIONS.md, README.md, VERSION"
+      archive_path: "framework/archive/CHG-50/"
+      new_version: "0.73.0"
+      current_version: "0.72.2"
+      status: Completed
+    - step: "Run SDD cascade per lifecycle above (script fixes + doc fixes + GD-47/GD-48; hooks/tests/PROJECT ride the IPLAN manifest)"
+      phase: "sdd_lifecycle"
+      artifact: "install.sh, upgrade.sh, BOOTSTRAP.md, UPGRADE-RUNBOOK.md, DECISIONS.md, README.md"
+      archive_path: "framework/archive/CHG-50/"
+      new_version: "0.73.0"
+      current_version: "0.72.2"
+      status: Implemented
+    - step: "MINOR fanout per IPLAN-50 manifest (framework/VERSION 0.73.0, framework/CHANGELOG.md [0.73.0], pin sweep — ride this step + IPLAN manifest per CHG-11 precedent)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, framework/CHANGELOG.md + pin fanout"
+      archive_path: "framework/archive/CHG-50/"
+      new_version: "0.73.0"
+      current_version: "0.72.2"
+      status: Implemented
+    - step: "Create IPLAN-50 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-50"
+      status: Completed
+    - step: "Run IPLAN-50 battery + open PR to dev"
+      phase: "documentation_sync"
+      artifact: "PR feature/50-preprod-batch → dev"
+      status: Implemented
+  files_modified:
+    - "framework/archive/CHG-50/CHG-50.yaml"
+    - "framework/archive/CHG-50/IPLAN-50.yaml"
+    - "framework/archive/CHG-50/ snapshots (install.sh + upgrade.sh + BOOTSTRAP.md + UPGRADE-RUNBOOK.md + DECISIONS.md + README.md + VERSION)"
+    - "framework/scripts/install.sh (portable fill, pre-validate, AUTHOR reject, --canon-sha)"
+    - "framework/scripts/upgrade.sh (portable re-pin, atomic swap, pre-swap smoke, --canon-sha)"
+    - "hooks/pre_push_check.sh (full-phrase audit grep)"
+    - "hooks/sync-version-refs.sh (single-| join, loud re-stage, OLD_VERSIONS)"
+    - "framework/governance/aidoc/BOOTSTRAP.md (knob pointer, step0, reconcile, prereqs)"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md (dead-ref, step4 cite, --canon-sha note)"
+    - "framework/governance/DECISIONS.md (GD-47 qualification + GD-48)"
+    - "framework/README.md (aidoc listing)"
+    - "docs/PROJECT.md (platform tense)"
+    - "tests/conformance/test_consumer_scripts.py + tests/unit/test_hook_stage_coverage.py + tests/unit/test_sync_scripts.py (covering extends)"
+    - "framework/VERSION + framework/CHANGELOG.md"
+    - "Sweep fallout: mechanical 0.72.2 → 0.73.0 pin moves (verified zero non-pin lines)"
+
+artifacts_modified:
+  - id: "CHG-50"
+    changes: "Authorizing record for preprod-findings batch (this file)"
+  - id: "IPLAN-50"
+    changes: "Authorizing IPLAN (framework/archive/CHG-50/IPLAN-50.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec: no single approver (CHG-L002 is C3-only) — review happens via the protected-branch PR review.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-50 (0 errors)"
+    - "shellcheck clean on install.sh + upgrade.sh + pre_push_check.sh + sync-version-refs.sh"
+    - "New covering tests green (consumer-scripts + hook-stage extends)"
+    - "Live script simulations: --canon-sha accept/reject, --force pre-validate refusal, atomic-swap restore"
+    - "sync-version-refs.sh idempotent second run (zero replacements)"
+    - "python3 -m unittest discover -s tests/unit (green)"
+    - "python3 -m unittest discover -s tests/conformance (green)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
+    - "PR checks green on feature/50-preprod-batch → dev"

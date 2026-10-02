@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.9 |
+| Version | 1.10 |
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.2 |
+| Framework Version | 0.73.0 |
+
+---
+
+## GD-48 — Preprod batch rides MINOR: --canon-sha is new API surface (CHG-50, 0.73.0 MINOR)
+
+- **Status:** Accepted — 2026-10-02 · **SemVer:** framework `0.72.2 → 0.73.0` (MINOR),
+  change-level **C2** (spec; script behavior + rule prose — reviewer may escalate to C3).
+  Vehicle: CHG-50 + IPLAN-50 (`framework/archive/CHG-50/`). Trigger: preprod
+  review of the 0.70.3→0.72.2 promotion (five lenses, SHIP-WITH-FIXES — 13
+  surviving findings filed as #878–#890).
+- **Context:** the batch mixes pure robustness/docs fixes (portable sed fill,
+  rm-before-validate, atomic swap, runbook pointers — PATCH-riding alone)
+  with one additive item: the `--canon-sha` pin flag on both consumer
+  scripts, plus a tightened audit-trail grep.
+- **Decision:** the batch rides MINOR. GD-47's test decides it: a new CLI flag
+  is new API surface, so the PATCH line is closed — the first self-application
+  of the GD-47 rule to a later change. The tightened hook grep rides along
+  (hooks carry no SemVer line of their own). Rejected: splitting the flag
+  into its own vehicle (a second cut + sweep for one flag; the batch is one
+  promotion gate).
+- **Consequence:** a batch rides the highest line any member needs. GD-47's
+  Consequence is qualified by the same vehicle (#883): E003 bars C1 for
+  normative-surface spec changes; F2.2 non-normative C1 (CHG-38/CHG-49
+  precedent) stands.
 
 ---
 
@@ -56,8 +80,9 @@ Newest first. Timestamps are ISO 8601 UTC.
 - **Consequence:** authors cite the README Versioning sentence; reviewers check
   the unconditional-duty + surface test. Rule written in `framework/README.md`
   Versioning and the E002 mapping (both gate twins). Which line a change rides
-  is orthogonal to its change level: E003 still bars C1 for spec changes — a
-  PATCH-riding spec fix still needs its C2+ vehicle.
+  is orthogonal to its change level: E003 still bars C1 for normative-surface
+  spec changes — other than F2.2 non-normative C1 (CHG-38/CHG-49 precedent),
+  a PATCH-riding spec fix still needs its C2+ vehicle.
 
 ---
 

@@ -15,10 +15,15 @@ Pins the machine-readable contract behind ``framework/scripts/``:
   * Destructive ops need ``--yes`` or a TTY confirm; usage and refusal
     errors exit 2, operational failures exit 1.
   * Both scripts are ``shellcheck``-clean when the tool is available.
+  * CHG-50: no GNU ``sed -i`` (BSD-safe tmpfile fill, proven under a shim
+    that rejects ``-i``), ``--canon-sha`` pin verified post-clone,
+    install pre-validates before ``--force`` delete, upgrade swaps via
+    backup rename with a pre-swap smoke assert, AUTHOR newlines refused.
 """
 
 from __future__ import annotations
 
+import os
 import re
 import shutil
 import subprocess
@@ -73,8 +78,53 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
     return canon
 
 
-def _run(script: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run([str(script), *args], capture_output=True, text=True, timeout=120)
+def _run(script: Path, *args: str, env: dict | None = None) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [str(script), *args],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=env or dict(os.environ),
+    )
+
+
+def _git_init(path: Path) -> str:
+    """Turn a fixture canon into a git checkout; return HEAD SHA."""
+    env = {
+        "GIT_AUTHOR_NAME": "t",
+        "GIT_AUTHOR_EMAIL": "t@t",
+        "GIT_COMMITTER_NAME": "t",
+        "GIT_COMMITTER_EMAIL": "t@t",
+    }
+    subprocess.run(["git", "init", "-q"], cwd=path, check=True, capture_output=True)
+    subprocess.run(["git", "add", "-A"], cwd=path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "canon"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        env={**dict(os.environ), **env},
+    )
+    out = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=path, check=True, capture_output=True, text=True
+    )
+    return out.stdout.strip()
+
+
+def _bsd_sed_shim(shimdir: Path) -> None:
+    """A sed that dies on GNU -i (BSD/macOS behavior), else execs real sed."""
+    real_sed = shutil.which("sed")
+    shimdir.mkdir(parents=True, exist_ok=True)
+    shim = shimdir / "sed"
+    shim.write_text(
+        "#!/bin/sh\n"
+        'for a in "$@"; do\n'
+        '  case "$a" in -i|-i*) echo "sed: -i needs backup suffix (BSD)" >&2; exit 1 ;; esac\n'
+        "done\n"
+        f'exec "{real_sed}" "$@"\n',
+        encoding="utf-8",
+    )
+    shim.chmod(0o755)
 
 
 class AllowlistParity(unittest.TestCase):
@@ -223,6 +273,60 @@ class InstallScript(unittest.TestCase):
         proc = _run(INSTALL, str(self.project), "--canon-dir", str(bad))
         self.assertEqual(proc.returncode, 1)
         self.assertIn("unknown keys", proc.stderr)
+
+    def test_force_with_incomplete_canon_refuses_before_deleting(self):
+        # #880: --force must validate the canon BEFORE deleting .aidoc.
+        first = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(first.returncode, 0, first.stderr)
+        bad = _make_canon(self.tmp, "9.9.12", "canon-incomplete")
+        (bad / "framework" / "governance" / "PROFILE-TEMPLATE.yaml").unlink()
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(bad), "--force", "--yes")
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("canon template missing", proc.stderr)
+        # The original tree is intact — nothing was deleted.
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.9"', profile)
+
+    def test_author_newline_refused(self):
+        # #884: a newline in AUTHOR would break the sed fill program.
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon), "--author", "a\nb")
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("newline", proc.stderr)
+        self.assertFalse((self.project / ".aidoc").exists())
+
+    def test_canon_sha_accept_and_reject(self):
+        # #879: --canon-sha pins the canon HEAD; mismatch dies, non-git refuses.
+        sha = _git_init(self.canon)
+        good = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon), "--canon-sha", sha)
+        self.assertEqual(good.returncode, 0, good.stderr)
+        self.assertIn("SHA verified", good.stdout)
+        bad_sha = "0" * 40 if not sha.startswith("0") else "1" * 40
+        proj2 = self.tmp / "proj2"
+        proj2.mkdir()
+        mismatch = _run(INSTALL, str(proj2), "--canon-dir", str(self.canon), "--canon-sha", bad_sha)
+        self.assertEqual(mismatch.returncode, 1)
+        self.assertIn("!=", mismatch.stderr)
+        malformed = _run(INSTALL, str(proj2), "--canon-dir", str(self.canon), "--canon-sha", "xyz")
+        self.assertEqual(malformed.returncode, 2)
+        self.assertIn("40-hex", malformed.stderr)
+        plain = _make_canon(self.tmp, "9.9.13", "canon-plain")
+        proj3 = self.tmp / "proj3"
+        proj3.mkdir()
+        non_git = _run(INSTALL, str(proj3), "--canon-dir", str(plain), "--canon-sha", sha)
+        self.assertEqual(non_git.returncode, 2)
+        self.assertIn("needs a git canon tree", non_git.stderr)
+
+    def test_install_completes_under_bsd_sed(self):
+        # #878: no GNU -i anywhere — the full install runs under a BSD-mimic
+        # sed that dies on -i. (Fails on the pre-CHG-50 scripts.)
+        shimdir = self.tmp / "bin"
+        _bsd_sed_shim(shimdir)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon), env=env)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.9"', profile)
 
     def test_install_usage_errors(self):
         proc = _run(INSTALL, "--help")
@@ -445,6 +549,161 @@ class UpgradeScript(unittest.TestCase):
         )
         self.assertEqual(proc.returncode, 2)
         self.assertIn("not a link", proc.stderr)
+
+    def test_backup_swap_leaves_no_prev_on_success(self):
+        # #881: the old tree is kept as backup only until the swap succeeds.
+        self._install_pin()
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        fw = self.project / ".aidoc" / "framework"
+        self.assertFalse(
+            Path(str(fw) + ".prev").exists(), "backup must be removed after a clean swap"
+        )
+        marker = (fw / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-B")
+
+    def test_stale_prev_refuses(self):
+        # #881: a leftover backup means an interrupted upgrade — refuse loudly.
+        self._install_pin()
+        prev = self.project / ".aidoc" / "framework.prev"
+        prev.mkdir()
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("stale backup", proc.stderr)
+        marker = (self.project / ".aidoc" / "framework" / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-A")
+
+    def test_incomplete_stage_refuses_swap(self):
+        # #881: never trade a good tree for an incomplete stage.
+        self._install_pin()
+        (self.canon_b / "framework" / "governance" / "ADAPTATION_SURFACE.yaml").unlink()
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("refusing swap", proc.stderr)
+        fw = self.project / ".aidoc" / "framework"
+        self.assertTrue(fw.is_dir())
+        marker = (fw / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-A")
+
+    def test_upgrade_canon_sha_accept_and_reject(self):
+        # #879: upgrade honors --canon-sha like install does.
+        self._install_pin()
+        sha = _git_init(self.canon_b)
+        good = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--canon-sha",
+            sha,
+            "--yes",
+        )
+        self.assertEqual(good.returncode, 0, good.stderr)
+        self.assertIn("SHA verified", good.stdout)
+        bad_sha = "0" * 40 if not sha.startswith("0") else "1" * 40
+        mismatch = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--canon-sha",
+            bad_sha,
+            "--yes",
+            "--force",
+        )
+        self.assertEqual(mismatch.returncode, 1)
+        self.assertIn("!=", mismatch.stderr)
+
+    def test_failed_swap_restores_previous_tree(self):
+        # #881: a failing second rename restores the backup, never strands.
+        # A counting mv shim fails exactly the STAGE→FW rename (2nd mv call).
+        self._install_pin()
+        shimdir = self.tmp / "bin"
+        shimdir.mkdir()
+        real_mv = shutil.which("mv")
+        count = self.tmp / "mv-count"
+        shim = shimdir / "mv"
+        shim.write_text(
+            "#!/bin/sh\n"
+            f'N=$(cat "{count}" 2>/dev/null || echo 0); N=$((N+1)); echo "$N" > "{count}"\n'
+            'if [ "$N" = 2 ]; then echo "shim: refusing 2nd mv" >&2; exit 1; fi\n'
+            f'exec "{real_mv}" "$@"\n',
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            env=env,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("previous tree restored", proc.stderr)
+        fw = self.project / ".aidoc" / "framework"
+        self.assertTrue(fw.is_dir())
+        marker = (fw / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-A")
+
+    def test_upgrade_completes_under_bsd_sed(self):
+        # #878: the re-pin runs under a BSD-mimic sed. (Fails pre-CHG-50.)
+        self._install_pin()
+        shimdir = self.tmp / "bin"
+        _bsd_sed_shim(shimdir)
+        env = dict(os.environ)
+        env["PATH"] = str(shimdir) + os.pathsep + env["PATH"]
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            env=env,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.10"', profile)
+
+
+class ScriptPortabilityPins(unittest.TestCase):
+    """Static pins: no GNU-only constructs may re-enter the scripts (#878)."""
+
+    @staticmethod
+    def _code(path: Path) -> str:
+        text = path.read_text(encoding="utf-8")
+        return "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+
+    def test_no_gnu_sed_inplace(self):
+        for script in (INSTALL, UPGRADE):
+            with self.subTest(script=script.name):
+                code = self._code(script)
+                self.assertNotRegex(code, r"sed\s+-i", f"{script.name} uses GNU sed -i")
+                self.assertIn("pinsub", code, f"{script.name} lost its portable fill")
+
+    def test_scripts_carry_version_markers(self):
+        for script in (INSTALL, UPGRADE):
+            with self.subTest(script=script.name):
+                text = script.read_text(encoding="utf-8")
+                self.assertRegex(
+                    text, r"(?m)^# Version: 1\.1$", f"{script.name} lost its version marker"
+                )
 
 
 class ScriptsAreShellcheckClean(unittest.TestCase):

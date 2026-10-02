@@ -11,9 +11,19 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.72.2 |
+| Framework Version | 0.73.0 |
 
 ---
+
+## [0.73.0] — 2026-10-02
+
+### Added — Preprod-findings batch (C2 MINOR → 0.73.0, CHG-50 + IPLAN-50)
+
+- New `--canon-sha` pin on `install.sh` + `upgrade.sh` (#879): tags are mutable transport, so the canon `HEAD` can now be pinned to a full 40-hex SHA, verified post-clone. New API surface → the batch rides MINOR per GD-47's own test (GD-48).
+- Consumer-script robustness: portable tmpfile fill replaces GNU `sed -i` (macOS-safe, #878); install pre-validates canon templates before `--force` delete (#880); upgrade swaps via backup rename with a pre-swap smoke assert (#881); AUTHOR newlines refused (#884). Scripts gain `# Version: 1.1` markers.
+- Hook hardening: the pre-push audit grep now demands the full verdict-bearing phrase, bare stems rejected (#885); the version sweep uses a clean single-`|` ERE join and warns loudly on re-stage failure (#886).
+- Runbook + governance truthfulness: BOOTSTRAP knob list → SURFACE pointer, step-0 clone, pin/symlink reconcile, prereqs (#882, #887); UPGRADE-RUNBOOK dead gate ref + step-4 invocation cite (#888); GD-47 F2.2 qualification (#883); README aidoc listing (#889); PROJECT platform tense (#890).
+- Sweep 0.72.2 → 0.73.0 is pin moves only (verified zero non-pin lines outside the manifest).
 
 ## [0.72.2] — 2026-10-02
 

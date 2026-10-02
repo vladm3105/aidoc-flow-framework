@@ -78,6 +78,32 @@ class HookStageCoverageTests(unittest.TestCase):
             "pre_push_check.sh skip is not gated on zero count",
         )
 
+    def test_audit_requires_verdict_bearing_phrase(self):
+        # #885: a bare stem with no agents/verdict must not pass the audit.
+        # Comments stripped so the test pins the executable grep, not prose.
+        text = (REPO_ROOT / "hooks" / "pre_push_check.sh").read_text(encoding="utf-8")
+        code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+        self.assertRegex(
+            code,
+            r"Multi-agent self-review per OPS-0065 \\\(",
+            "audit grep lost the verdict-bearing standard shape",
+        )
+        self.assertRegex(
+            code,
+            r"OPS-0065 \\\(\[\^\)\]\+\\\): \[\^ \]",
+            "audit grep lost the non-empty agents/verdict demand",
+        )
+        self.assertRegex(
+            code,
+            r"Self-review skipped per founder OK — \[\^ \]",
+            "audit grep lost the reason-bearing skip shape",
+        )
+        self.assertNotIn(
+            'grep -qF "$phrase"',
+            code,
+            "stem-only fixed-string grep is back (bare stems would pass)",
+        )
+
     def test_pre_push_stage_invoked_in_ci(self):
         ids = pre_push_hook_ids()
         self.assertTrue(ids, "no pre-push-stage hook declared")

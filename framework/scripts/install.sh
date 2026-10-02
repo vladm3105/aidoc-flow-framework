@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # install.sh — deploy a fresh `.aidoc/` on a new consumer project.
+# Version: 1.1
 #
 # Automates framework/governance/aidoc/BOOTSTRAP.md steps 1–5:
 #   1. copy the scaffold README into <project>/.aidoc/ and fill the
@@ -19,6 +20,10 @@
 #   --canon <tag>     canon release tag, e.g. framework/v0.70.3 (required
 #                     for --kind pin unless --canon-dir is given; verified
 #                     against the canon VERSION when given).
+#   --canon-sha <sha> full 40-hex commit SHA the canon tree must resolve to
+#                     (optional hardening: tags are mutable transport —
+#                     verified post-clone via git rev-parse; refused when
+#                     the canon tree is not a git checkout).
 #   --kind pin        pinned allowlist copy (default; self-contained).
 #   --kind symlink    symlink .aidoc/framework at --shared <path> (persistent
 #                     canon checkout; scratch clones are never linked).
@@ -55,12 +60,25 @@ run() { # run <dry-text> <cmd...>: echo in dry-run, execute otherwise
   local text="$1"; shift
   if [ "${DRY_RUN:-0}" = 1 ]; then echo "dry-run: $text"; else "$@"; fi
 }
+pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
+  # BSD/macOS-safe: explicit mktemp template, bare mktemp fails on BSD).
+  # Writes via temp + redirect so the original keeps its mode; the file is
+  # untouched when sed fails, and a failed write dies loudly.
+  local file="$1"; shift
+  local tmp
+  tmp="$(mktemp "${TMPDIR:-/tmp}/pinsub.XXXXXX")" || die "mktemp failed"
+  if sed "$@" "$file" > "$tmp"; then
+    cat "$tmp" > "$file" || { rm -f "$tmp"; die "write failed: $file"; }
+    rm -f "$tmp"
+  else rm -f "$tmp"; die "substitution failed: $file"; fi
+}
 
-PROJECT=""; CANON_TAG=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
     --canon) need_value "$@"; CANON_TAG="$2"; shift 2 ;;
+    --canon-sha) need_value "$@"; CANON_SHA="$(printf '%s' "$2" | tr 'A-F' 'a-f')"; shift 2 ;;
     --kind) need_value "$@"; KIND="$2"; shift 2 ;;
     --shared) need_value "$@"; SHARED="$2"; shift 2 ;;
     --canon-dir) need_value "$@"; CANON_DIR="$2"; shift 2 ;;
@@ -92,9 +110,18 @@ fi
 if [ "$KIND" = pin ] && [ -z "$CANON_DIR" ] && [ -z "$CANON_TAG" ]; then
   refuse "--kind pin requires --canon <tag> (or --canon-dir <dir>)"
 fi
+if [ -n "$CANON_SHA" ]; then
+  case "$CANON_SHA" in
+    ????????????????????????????????????????) : ;;
+    *) refuse "--canon-sha must be a full 40-hex commit SHA" ;;
+  esac
+  case "$CANON_SHA" in *[!0-9a-f]*) refuse "--canon-sha must be hex" ;; esac
+fi
 if [ -n "$AUTHOR" ]; then :;
 elif AUTHOR="$(git config user.name 2>/dev/null)" && [ -n "$AUTHOR" ]; then :;
 else AUTHOR="$(id -un 2>/dev/null || echo engineer)"; fi
+case "$AUTHOR" in *"
+"*) refuse "author name must not contain a newline" ;; esac
 
 # Resolve the canon tree (clone to scratch, or use a given directory).
 SCRATCH=""
@@ -109,7 +136,7 @@ else
     [ -d "$CANON_DIR" ] || refuse "canon dir not found: $CANON_DIR"
     CANON="$(cd -- "$CANON_DIR" && pwd)" || refuse "cannot resolve --canon-dir: $CANON_DIR"
   else
-    SCRATCH="$(mktemp -d)"
+    SCRATCH="$(mktemp -d "${TMPDIR:-/tmp}/aidoc-canon.XXXXXX")"
     log "cloning $CANON_TAG to scratch"
     run "git clone --depth 1 --branch $CANON_TAG $CANON_URL <scratch>" \
       git clone --depth 1 --branch "$CANON_TAG" "$CANON_URL" "$SCRATCH"
@@ -131,8 +158,23 @@ else
   fi
   log "canon framework/VERSION: $VERSION"
 fi
+if [ -n "$CANON_SHA" ]; then
+  if [ "$DRY_RUN" = 1 ] && [ "$NEEDS_CLONE" = 1 ]; then
+    log "(dry-run: SHA check skipped — no clone performed)"
+  else
+    GOT="$(git -C "$CANON" rev-parse HEAD 2>/dev/null)" || refuse "--canon-sha needs a git canon tree (clone, or a git --canon-dir/--shared checkout)"
+    [ "$GOT" = "$CANON_SHA" ] || die "canon HEAD $GOT != --canon-sha $CANON_SHA"
+    log "canon SHA verified: $GOT"
+  fi
+fi
 
 # BOOTSTRAP step 1–2: scaffold README + profile template.
+# Validate the canon BEFORE any --force delete: a bad canon must refuse with
+# the consumer's existing tree intact, never delete-then-die (#880).
+if [ "$DRY_RUN" != 1 ]; then
+  [ -f "$CANON/framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md" ] || die "canon template missing: $CANON/framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+  [ -f "$CANON/framework/governance/PROFILE-TEMPLATE.yaml" ] || die "canon template missing: $CANON/framework/governance/PROFILE-TEMPLATE.yaml"
+fi
 if [ -e "$AIDOC" ] && [ "$FORCE" = 1 ]; then
   if [ "$DRY_RUN" != 1 ] && [ "$YES" != 1 ]; then
     if [ ! -t 0 ]; then
@@ -153,8 +195,8 @@ for src in "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md:$AIDOC/README.
 done
 if [ "$DRY_RUN" != 1 ]; then
   AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&|\\]/\\&/g')"
-  sed -i "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g" "$AIDOC/README.md"
-  sed -i -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/" "$AIDOC/profile.yaml"
+  pinsub "$AIDOC/README.md" "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g"
+  pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
   log "README placeholders filled (date=$TODAY author=$AUTHOR version=$VERSION)"
   log "profile.yaml pinned at framework_version $VERSION"
 else

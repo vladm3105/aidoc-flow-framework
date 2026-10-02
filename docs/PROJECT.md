@@ -90,8 +90,10 @@ tags, never move a release tag, disposable bookmarks).
 The `framework/` spec is the contract. A shared suite under
 `tests/conformance/` validates that a platform correctly implements the
 10-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code→EVAL→Verified), schemas,
-templates, and traceability rules. Both platforms run the **same** suite —
-this is what keeps two independent engines behaviourally equivalent.
+templates, and traceability rules. Both platforms ran the **same** suite —
+this is what kept two independent engines behaviourally equivalent (platform
+streams frozen since the 2026-09-07 archive: `hermes/v0.1.1`,
+`claude-code-plugin/v0.25.0`; see `docs/TAGGING.md`).
 
 ## 6. Change Management
 
