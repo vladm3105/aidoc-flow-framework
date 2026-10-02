@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.70.3 |
+| Framework Version | 0.71.0 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -19,6 +19,11 @@ W001, for breaking changes) are inputs, and adoption drift (W002) is what the
 procedure below clears.
 
 ## Procedure
+
+The mechanical half (step-2 re-point + drift report) is automated by
+`framework/scripts/upgrade.sh` — the steps below are the procedure it
+performs. Conflict resolution (step 3), conformance (step 4), and recording
+(step 5) stay manual.
 
 ### 1. Read the canon-side inputs
 
@@ -74,12 +79,15 @@ table: "Consumer must adapt" rows are ordinary consumer PRs, not canon CHGs).
 The canon owes only the inputs: versioned releases, W001 migration notes for
 breaking changes, and drift tracking (W002).
 
-## Minimal automation (open follow-up)
+## Minimal automation (shipped: CHG-45)
 
-No shipped script performs any part of this yet. The smallest useful one is a
-`stale` detector: read each override's authored-against `framework_version`
-pin, compare against the canon `VERSION`, and report drift — making W002
-measurable. Kept out of this batch on purpose (prose-only vehicle, CHG-16).
+`framework/scripts/upgrade.sh` performs the mechanical half: the step-2
+re-point for both consumer kinds plus the `stale` detector — each override's
+authored-against `framework_version` pin compared against the canon
+`VERSION`, reported as `DRIFT:`/`OK:`/`UNPINNED:` lines, making W002
+measurable. `framework/scripts/install.sh` is the `BOOTSTRAP.md` companion
+for new projects. Steps 3–5 stay manual by design. (Kept out of CHG-16 on
+purpose — prose-only vehicle; the follow-up is now closed.)
 
 ## See also
 

@@ -1,0 +1,13 @@
+# Consumer copy set — machine-readable mirror of docs/PROJECT.md §7.1.
+#
+# Rules: copy each plain path from the canon tree root into the consumer's
+# `.aidoc/framework/`; then delete each `!`-prefixed path inside the copy.
+# Lines starting with `#` and blank lines are ignored. This file MUST stay
+# identical to the §7.1 allowlist — tests/conformance/test_consumer_scripts.py
+# pins the parity (a second hardcoded list is how drift starts; #741, #834).
+framework/
+docs/
+hooks/
+sdd_doc_lint/
+tests/
+!framework/archive/
