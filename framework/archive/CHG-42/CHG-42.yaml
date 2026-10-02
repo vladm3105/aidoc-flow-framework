@@ -187,4 +187,3 @@ verification:
     - "python3 -m unittest discover -s tests/conformance (green)"
     - "python3 -m unittest discover -s sdd_doc_lint/tests (green)"
     - "PR checks green on feature/854-859-staleness-fixes → dev"
-
