@@ -1,0 +1,114 @@
+# =============================================================================
+#  IPLAN-47: Skip audit-trail scan on empty push ranges (#865)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-47/CHG-47.yaml (F2 direct, C1,
+#  In-Progress). Source: issue #865 (P2 CI red on dev pushes).
+#  Hook-behavior C1: one guard variable + one elif branch in the audit
+#  block; covering test pins executable code per file convention.
+# =============================================================================
+
+doc_id: IPLAN-47
+title: "Skip audit-trail scan on empty push ranges (#865)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-02"
+  framework_version: "0.72.0"
+  source_chg: "CHG-47"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-47"
+  subtype: combined
+  source_spec: "@spec: N/A (hook behavior under CHG-47; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-10-02T00:00:00Z"
+  last_updated: "2026-10-02T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 2
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-47/CHG-47.yaml + IPLAN-47.yaml"
+      description: "Authorizing vehicle (CHG-47 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/pre_push_check.sh"
+      description: "Range-empty guard + skip notice in the audit block"
+      order: 1
+      status: TODO
+      session: 1
+      verified: false
+    - path: "tests/unit/test_hook_stage_coverage.py"
+      description: "Executable-code pin for the empty-range skip"
+      order: 2
+      status: TODO
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Hook-behavior C1: static pin of the executable skip (comment-stripped regex, mirroring the file's #818 convention) + shellcheck + live empty-range simulation + full battery as regression."
+  cases:
+    - "chg_lint.py over CHG-47: 0 errors"
+    - "New unit case green: skip branch present in executable code (rev-list count + SKIPPED empty-range notice)"
+    - "shellcheck hooks/pre_push_check.sh: clean"
+    - "Live simulation: empty range prints SKIPPED notice and does not emit the ::error:: phrase line"
+    - "Live simulation: non-empty range without phrase still errors (PR-branch enforcement preserved)"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "PR checks green on the branch"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-47/CHG-47.yaml"
+    - "shellcheck hooks/pre_push_check.sh"
+    - "python3 -m unittest discover -s tests/unit -p 'test_hook_stage_coverage.py'"
+    - "bash hooks/pre_push_check.sh in empty-range and non-empty fixtures (simulations)"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+  test:
+    - "python3 -m unittest discover -s tests/unit -p 'test_hook_stage_coverage.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only the hook + its unit test touched"
+  - "Skip fires ONLY on zero-commit ranges (rev-list --count == 0); every non-empty range scans byte-identically"
+  - "Skip prints a notice naming the empty range (never silent)"
+  - "No workflow/event-shape change (pre-commit.yml untouched)"
+  - "No version/CHANGELOG impact (hooks-only F2, version keep)"
+  - "Never weaken tests to pass"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "Vehicle DONE; hook edit + test + simulations + battery + PR next"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-47"
+  upstream: ["Issue #865 (P2 CI red on dev pushes, re-triage GO 2026-10-02)"]
+  downstream: ["PR feature/47-dev-push-empty-range → dev (after implementation)"]
