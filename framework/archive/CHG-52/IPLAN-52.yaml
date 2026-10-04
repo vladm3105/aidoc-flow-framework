@@ -1,0 +1,95 @@
+# =============================================================================
+#  IPLAN-52: Graph-engine architecture description draft (version keep)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-52/CHG-52.yaml (F2 direct, C1,
+#  In-Progress). Source: founder request (no issue — design task).
+#  Docs-only C1: subtype docs + tdd_consistency not-applicable (GD-46).
+#  Draft verified by lint battery + self-review below.
+# =============================================================================
+
+doc_id: IPLAN-52
+title: "Graph-engine architecture description draft"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-04"
+  framework_version: "0.73.0"
+  source_chg: "CHG-52"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-52"
+  subtype: docs
+  source_spec: "@spec: N/A (design draft under CHG-52; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-04T00:00:00Z"
+  last_updated: "2026-10-04T00:00:00Z"
+  author: "Muse Code"
+  complexity: 1
+  estimated_files: 1
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-52/CHG-52.yaml + IPLAN-52.yaml"
+      description: "Authorizing vehicle (CHG-52 + this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md"
+      description: "New architecture description draft (D1–D7, guards, handoff, OQ-1–OQ-6)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  status: not-applicable
+  strategy: "Docs-only C1: prose draft verified by lint battery (chg_lint,
+    yamllint, markdownlint), full test battery, and multi-agent self-review."
+  cases:
+    - "chg_lint.py over CHG-52: 0 errors"
+    - "yamllint clean on CHG-52.yaml + IPLAN-52.yaml"
+    - "markdownlint clean on GRAPH-ENGINE-ARCHITECTURE-DRAFT.md"
+    - "tests/unit green; tests/conformance green; sdd_doc_lint/tests green"
+    - "Self-review (draft + vehicle): PASS recorded in commit message"
+    - "PR checks green on the branch"
+  issues:
+    - rule: "N/A"
+      reason: "Docs-only manifest (IPLAN subtype docs): no code/test bindings exist, so no TDD cases can bind."
+
+# =============================================================================
+# Section 4: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Manifest-closed: only the listed files touched"
+  - "Draft records founder decisions faithfully; recommendations marked as such"
+  - "No version cut (version keep); no CHANGELOG entry"
+  - "Never weaken tests/conformance to pass"
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: Completed
+      scope: "Vehicle + draft + battery + self-review DONE; push + PR next"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-52"
+  upstream: ["Founder design-stage requests (2026-10-04 session)"]
+  downstream: ["PR feature/52-graph-engine-arch-draft → dev (after implementation)"]
