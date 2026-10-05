@@ -6,9 +6,8 @@ contracts (GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md) 
 """
 
 import unittest
-import yaml
-from pathlib import Path
 
+import yaml
 from _spec import FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
@@ -60,7 +59,9 @@ class GovernanceWorkflowsTest(unittest.TestCase):
                 self.assertIn("id", data)
                 self.assertIn("name", data)
                 self.assertIn("version", data)
-                self.assertEqual(data.get("specVersion"), "0.8", f"{wf_name} must specify specVersion: '0.8'")
+                self.assertEqual(
+                    data.get("specVersion"), "0.8", f"{wf_name} must specify specVersion: '0.8'"
+                )
                 self.assertIn("start", data)
                 self.assertIn("states", data)
 
@@ -69,19 +70,29 @@ class GovernanceWorkflowsTest(unittest.TestCase):
                 self.assertGreater(len(states), 0, f"{wf_name} must declare at least one state")
 
                 state_names = {s["name"] for s in states if "name" in s}
-                self.assertEqual(len(state_names), len(states), f"{wf_name} contains duplicate state names")
-                self.assertIn(data["start"], state_names, f"Start state '{data['start']}' not in states")
+                self.assertEqual(
+                    len(state_names), len(states), f"{wf_name} contains duplicate state names"
+                )
+                self.assertIn(
+                    data["start"], state_names, f"Start state '{data['start']}' not in states"
+                )
 
                 terminal_states = 0
                 for state in states:
                     s_name = state["name"]
                     s_type = state.get("type")
-                    self.assertIn(s_type, VALID_STATE_TYPES, f"State '{s_name}' has invalid type '{s_type}'")
+                    self.assertIn(
+                        s_type, VALID_STATE_TYPES, f"State '{s_name}' has invalid type '{s_type}'"
+                    )
 
                     # Check transition target
                     if "transition" in state:
                         target = state["transition"]
-                        self.assertIn(target, state_names, f"Transition from '{s_name}' targets unknown state '{target}'")
+                        self.assertIn(
+                            target,
+                            state_names,
+                            f"Transition from '{s_name}' targets unknown state '{target}'",
+                        )
 
                     # Check switch conditions
                     if s_type == "switch":
@@ -89,25 +100,43 @@ class GovernanceWorkflowsTest(unittest.TestCase):
                         for cond in conditions:
                             c_target = cond.get("transition")
                             if c_target:
-                                self.assertIn(c_target, state_names, f"Switch condition in '{s_name}' targets unknown '{c_target}'")
+                                self.assertIn(
+                                    c_target,
+                                    state_names,
+                                    f"Switch condition in '{s_name}' targets unknown '{c_target}'",
+                                )
                         default_target = state.get("defaultCondition", {}).get("transition")
                         if default_target:
-                            self.assertIn(default_target, state_names, f"Default condition in '{s_name}' targets unknown '{default_target}'")
+                            self.assertIn(
+                                default_target,
+                                state_names,
+                                f"Default condition in '{s_name}' targets unknown '{default_target}'",
+                            )
 
                     # Check compensation target
                     if "compensatedBy" in state:
                         comp_target = state["compensatedBy"]
-                        self.assertIn(comp_target, state_names, f"CompensatedBy in '{s_name}' targets unknown state '{comp_target}'")
+                        self.assertIn(
+                            comp_target,
+                            state_names,
+                            f"CompensatedBy in '{s_name}' targets unknown state '{comp_target}'",
+                        )
 
                     # Check terminal state
-                    if state.get("end") is True or (isinstance(state.get("end"), dict) and state["end"].get("terminate") is True):
+                    if state.get("end") is True or (
+                        isinstance(state.get("end"), dict) and state["end"].get("terminate") is True
+                    ):
                         terminal_states += 1
 
-                self.assertGreater(terminal_states, 0, f"{wf_name} must contain at least one terminal state")
+                self.assertGreater(
+                    terminal_states, 0, f"{wf_name} must contain at least one terminal state"
+                )
 
     def test_diagram_standards_synchronization(self):
         diag_standards = (GOVERNANCE / "DIAGRAM_STANDARDS.md").read_text(encoding="utf-8")
-        self.assertIn("Governance State Machines & Workflow Graphs (CNCF Serverless Workflow)", diag_standards)
+        self.assertIn(
+            "Governance State Machines & Workflow Graphs (CNCF Serverless Workflow)", diag_standards
+        )
         self.assertIn(".sw.yaml", diag_standards)
         self.assertIn("GOVERNANCE_WORKFLOW_STANDARD.md", diag_standards)
 
