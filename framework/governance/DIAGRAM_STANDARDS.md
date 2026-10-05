@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.74.0 |
+| Framework Version | 0.75.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -76,8 +76,10 @@ Use appropriate Mermaid diagram type for the content:
 
 Use the following model across the MVP → PROD → NEW MVP lifecycle.
 
-| Layer Artifact | Required Model | Purpose |
-|----------------|----------------|---------|
+| Layer / Tier Artifact | Required Model | Purpose |
+|-----------------------|----------------|---------|
+| Seed (Tier 1 Inputs)  | C4 L1 (Context) + DFD L1 | System boundary in external environment and top-level data movement |
+| Module (Tier 2 Domain)| C4 L2 (Container) + DFD L2 + sequence | Subsystem container architecture, data movement & sensitivity matrix, process choreography |
 | BRD (L1) | C4 L1 (Context) + DFD L1 | Business/system boundary and top-level data movement |
 | PRD (L2) | C4 L2 (Container) + DFD L2 + key sequence | Product container interactions, data movement, temporal user/system flow |
 | ADR (L5) | Decision sequence (no C4 level — decision bridge) | Architecture decision rationale and alternatives |
@@ -128,8 +130,10 @@ Required fields in SPEC diagram contract subsection:
 
 ### Layer Enforcement Summary
 
-| Layer | Mandatory Checks |
+| Layer / Tier | Mandatory Checks |
 |---|---|
+| Seed (Tier 1) | `@diagram: c4-l1`, `@diagram: dfd-l1` (defined in `framework/templates/SEED-TEMPLATE.md`) |
+| Module (Tier 2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` (or `sequence-async`); required Data Sensitivity Matrix (`framework/templates/MODULE-TEMPLATE.md`) |
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
 | PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
 | EARS (L3) | No diagrams required (refinement step; inherits upstream) |

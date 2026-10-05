@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.74.0 |
+| Framework Version | 0.75.0 |
 
 
 Defines the project module directory structure and naming conventions.
@@ -113,6 +113,16 @@ When a reader opens the module, `README.md` is always the first thing they see.
 ### 5. Diagrams stay with their module
 SVG diagrams live inside the module directory or alongside the flat file.
 No separate `diagrams/` directory.
+
+### 7. Canonical Template & Triple-Lens Standard
+All module documentation (flat files or directory entry points) must adhere to
+[`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+Modules are decomposed from Tier 1 Seed documents per the normative 5-step methodology in
+[`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md),
+satisfying the Triple-Lens standard:
+1. **C4-L2 Container Architecture** (`@diagram: c4-l2`)
+2. **DFD-L2 Data Movement, Trust Boundaries & Sensitivity Matrix** (`@diagram: dfd-l2`)
+3. **Inter-Module Process Choreography & Failure Handling** (`@diagram: sequence-sync` / `sequence-async`)
 
 ### 6. Multi-file module structure
 
