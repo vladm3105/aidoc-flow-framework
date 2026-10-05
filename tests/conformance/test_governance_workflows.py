@@ -18,6 +18,8 @@ EXPECTED_WORKFLOWS = [
     "seed-to-module-decomposition.sw.yaml",
     "worktree-pr-lifecycle.sw.yaml",
     "eval-verification-run.sw.yaml",
+    "review-remediation-flow.sw.yaml",
+    "decision-ratification-flow.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -145,8 +147,9 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         decisions = (GOVERNANCE / "DECISIONS.md").read_text(encoding="utf-8")
         self.assertIn("GD-51", decisions)
         self.assertIn("GD-53", decisions)
+        self.assertIn("GD-54", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
-        self.assertIn("0.76.0", decisions)
+        self.assertIn("0.79.0", decisions)
 
 
 if __name__ == "__main__":

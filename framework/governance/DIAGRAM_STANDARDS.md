@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Diagram Standards
@@ -18,12 +18,12 @@ custom_fields:
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.3 |
+|---|---|
+| Version | 1.4 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -32,7 +32,7 @@ All diagrams, charts, workflows, and visual representations in SDD framework art
 ### Requirements
 
 | Requirement | Description |
-|-------------|-------------|
+|---|---|
 | **Format** | Mermaid syntax (fenced code blocks with `mermaid` language tag) |
 | **Validation** | Diagrams must render without parse errors |
 | **Style** | Follow the platform's diagram-generation tooling for syntax correctness |
@@ -43,18 +43,18 @@ All diagrams, charts, workflows, and visual representations in SDD framework art
 The following diagram formats are NOT permitted in any SDD artifact:
 
 | Format Type | Example | Prohibition Reason |
-|-------------|---------|-------------------|
+|---|---|---|
 | ASCII art boxes | `+----+`, `|    |`, `+----+` | Not renderable, inconsistent display |
 | Text-based flowcharts | `A --> B --> C` (outside Mermaid) | No semantic structure |
-| Unicode box-drawing | ``, `  `, `` | Font-dependent rendering |
+| Unicode box-drawing | `┌─┐`, `│ │`, `└─┘` | Font-dependent rendering |
 | Manual arrow diagrams | `==>`, `->`, `<--` (outside Mermaid) | No styling or layout control |
 | Indented hierarchy text | Manual spacing alignment | Fragile, breaks with formatting |
 
 ### Allowed Exceptions
 
 | Exception | Permitted Use | Example |
-|-----------|---------------|---------|
-| Directory trees | File/folder structure representation | ` src/`, ` tests/` |
+|---|---|---|
+| Directory trees | File/folder structure representation | `📁 src/`, `├── tests/` |
 | Inline code references | Simple path or command notation | `src/main.py` |
 | Table-based data | Structured data display | Markdown tables |
 
@@ -63,7 +63,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 Use appropriate Mermaid diagram type for the content:
 
 | Content Type | Mermaid Diagram |
-|--------------|-----------------|
+|---|---|
 | Process flows | `flowchart TD/LR` |
 | Sequences/interactions | `sequenceDiagram` |
 | State transitions | `stateDiagram-v2` |
@@ -77,7 +77,7 @@ Use appropriate Mermaid diagram type for the content:
 Use the following model across the MVP → PROD → NEW MVP lifecycle.
 
 | Layer / Tier Artifact | Required Model | Purpose |
-|-----------------------|----------------|---------|
+|---|---|---|
 | Seed (Tier 1 Inputs)  | C4 L1 (Context) + DFD L1 | System boundary in external environment and top-level data movement |
 | Module (Tier 2 Domain)| C4 L2 (Container) + DFD L2 + sequence | Subsystem container architecture, data movement & sensitivity matrix, process choreography |
 | BRD (L1) | C4 L1 (Context) + DFD L1 | Business/system boundary and top-level data movement |
@@ -151,7 +151,7 @@ BRD diagrams are scoped by `brd_type` (platform or feature). Required diagrams e
 **Platform BRD (3 required)**:
 
 | # | Type | Description | Diagram Tag |
-|---|------|-------------|-------------|
+|---|---|---|---|
 | 1 | `structure_overview` | Document section map with key metrics | `@diagram: c4-l1` |
 | 2 | `cross_brd_dependencies` | Upstream/downstream BRD dependency graph | `@diagram: c4-l1` |
 | 3 | `data_model` | Primary data model or entity hierarchy | `@diagram: dfd-l1` |
@@ -159,7 +159,7 @@ BRD diagrams are scoped by `brd_type` (platform or feature). Required diagrams e
 **Feature BRD (2 required)**:
 
 | # | Type | Description | Diagram Tag |
-|---|------|-------------|-------------|
+|---|---|---|---|
 | 1 | `user_journey` | Happy-path user flow | `@diagram: sequence-sync` |
 | 2 | `integration_points` | External system touchpoints | `@diagram: c4-l1` |
 
@@ -197,7 +197,7 @@ click <node_id> "<relative_path>" "<tooltip_text>"
 **When to Use Interactive Diagrams**:
 
 | Use Case | Recommended | Example |
-|----------|-------------|---------|
+|---|---|---|
 | Traceability diagrams | [PASS] Yes | Link BRD → PRD → EARS nodes |
 | Architecture overviews | [PASS] Yes | Link to component docs |
 | Workflow diagrams | [WARN] Optional | Link to process docs |
@@ -206,7 +206,7 @@ click <node_id> "<relative_path>" "<tooltip_text>"
 **Best Practices**:
 
 | Practice | Guidance |
-|----------|----------|
+|---|---|
 | **Relative Paths** | Use `../` relative paths, not absolute URLs |
 | **Consistent Direction** | Link from diagram location to target |
 | **Tooltip Text** | Include descriptive tooltip (e.g., "View PRD-01 Details") |
@@ -220,7 +220,7 @@ so an agent-authored diagram is an injection surface (see `SECURITY_REVIEW.md`).
 Diagram content MUST be sanitized:
 
 | Rule | Allowed | Rejected |
-|------|---------|----------|
+|---|---|---|
 | **Handler target scheme** | a repo-relative path (`../PRD-01/`) or an `https://` URL | `javascript:`, `data:`, `file:`, `vbscript:` or any other scheme |
 | **Inline node markup** | plain text; an `<a href>` with a relative/`https` target | `<script>`, event attributes (`onclick=…`), `<iframe>`/`<object>`, or markup built from untrusted input |
 | **Untrusted-sourced labels/paths** | escaped and treated as data | a path or label copied verbatim from an external document without review |
@@ -244,7 +244,7 @@ flowchart LR
 **Format Comparison**:
 
 | Aspect | Static Diagram | Click Handlers | Inline Anchors |
-|--------|---------------|----------------|----------------|
+|---|---|---|---|
 | **Compatibility** | [PASS] All viewers | [PASS] Most viewers | [WARN] HTML only |
 | **Maintainability** | [PASS] No path updates | [FAIL] Path breakage risk | [FAIL] Path breakage risk |
 | **Navigation** | [FAIL] Manual | [PASS] One-click | [PASS] One-click |
@@ -254,7 +254,7 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`.
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), and decision ratification (`decision-ratification-flow.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 

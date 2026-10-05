@@ -7,11 +7,27 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
+
+## [0.79.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Review Sagas & Decision Ratification flows (C2 MINOR → 0.79.0, CHG-58 + IPLAN-58)
+
+- **Review Remediation & Saga State Machine (`framework/governance/workflows/review-remediation-flow.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format as the official state machine governing multi-persona review crew fan-out (`DispatchReviewCrew` parallel state with `completionType: allOf`), finding severity categorization (`critical`, `medium`, `low`, `acknowledged`), 3-strike remediation loop (`quality_loop_max_iterations`), break-circuit timeout checkpoints (`SOFT_DEADLINE`), and saga rollback compensation (`compensatedBy: CancelAndCleanUpSaga`) (#909).
+- **Decision Ratification State Machine (`framework/governance/workflows/decision-ratification-flow.sw.yaml`)**: Establishes the canonical CNCF Serverless Workflow state machine governing formal governance decisions (`DECISIONS.md`), featuring candidate structural validation, review crew consensus evaluation, asynchronous human founder sign-off event callbacks (`type: callback`), immutability sealing upon acceptance, and superseding transitions.
+- **Core Governance Alignment**:
+  - `framework/governance/REVIEW_REMEDIATION_FLOW.md` (v1.1): Updated to bind the executable review remediation state machine with embedded Mermaid `stateDiagram-v2` (`state-review-remediation-flow`).
+  - `framework/governance/REVIEW_SAGA.md` (v1.1): Bound lifecycle saga states, transitions, and journal checkpoints to `review-remediation-flow.sw.yaml`.
+  - `framework/governance/DECISION_WORKFLOW.md` (v1.2): Updated to formalize the decision ratification flow with embedded Mermaid `stateDiagram-v2` (`state-decision-ratification-flow`).
+  - `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.3): Registered `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml` under governance catalog.
+  - `framework/governance/DIAGRAM_STANDARDS.md` (v1.4): Registered review remediation and decision ratification state machines in diagram catalog.
+  - `framework/governance/DECISIONS.md` (v1.15): Ratified Decision `GD-54`.
+- **Conformance Assertions**: Updated `tests/conformance/test_governance_workflows.py` adding `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml` to `EXPECTED_WORKFLOWS` and verifying schema, reachability, and transitions; updated `tests/conformance/test_governance.py` with both new workflows in `EXPECTED_FILES`.
+- Sweep 0.78.0 → 0.79.0 propagated across tree.
 
 ---
 

@@ -1,0 +1,197 @@
+# ===============================================================================
+# CNCF Serverless Workflow: Decision Ratification & Lifecycle Flow
+# ===============================================================================
+# Specification: CNCF Serverless Workflow DSL v0.8 (YAML)
+# Standard Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+# Governs: framework/governance/DECISION_WORKFLOW.md, DECISIONS.md
+# Runtime Architecture: Pure declarative YAML; zero runtime lock-in (D-0013)
+# ===============================================================================
+
+id: decision-ratification-flow
+name: Decision Ratification and Lifecycle Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Executable CNCF Serverless Workflow state machine orchestrating the formal
+  architecture decision lifecycle: proposal drafting, multi-agent review consensus,
+  founder approval callback, ratification sealing with immutability, and supersede transitions.
+
+start: AuthorDecisionDraft
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Author Decision Draft
+  # -----------------------------------------------------------------------------
+  - name: AuthorDecisionDraft
+    type: operation
+    actions:
+      - name: DraftDecisionRecord
+        functionRef:
+          refName: createDecisionDraft
+          arguments:
+            context: "${ .context }"
+            options: "${ .options }"
+            chosen_option: "${ .chosen_option }"
+            consequences: "${ .consequences }"
+            status: "Proposed"
+    transition: DispatchDecisionReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 2: Dispatch Multi-Agent Review Crew (Parallel Fan-out)
+  # -----------------------------------------------------------------------------
+  - name: DispatchDecisionReviewCrew
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: ArchitectReviewBranch
+        actions:
+          - name: ReviewArchitecturalConsistency
+            functionRef:
+              refName: evaluateArchitecturalIntegrity
+              arguments:
+                persona: "architect"
+                decision_id: "${ .decision_id }"
+      - name: AuditorReviewBranch
+        actions:
+          - name: ReviewTraceabilityAndCompliance
+            functionRef:
+              refName: evaluateDecisionCompliance
+              arguments:
+                persona: "auditor"
+                decision_id: "${ .decision_id }"
+      - name: SecurityReviewBranch
+        actions:
+          - name: ReviewSecurityPosture
+            functionRef:
+              refName: evaluateDecisionSecurity
+              arguments:
+                persona: "security_engineer"
+                decision_id: "${ .decision_id }"
+    transition: EvaluateReviewConsensus
+
+  # -----------------------------------------------------------------------------
+  # State 3: Evaluate Review Consensus
+  # -----------------------------------------------------------------------------
+  - name: EvaluateReviewConsensus
+    type: switch
+    dataConditions:
+      - name: ConsensusApproved
+        condition: "${ .consensus == true and .blocking_objections == 0 }"
+        transition: FounderApprovalCallback
+    defaultCondition:
+      transition: ReviseDecisionDraft
+
+  # -----------------------------------------------------------------------------
+  # State 4: Revise Decision Draft on Objections
+  # -----------------------------------------------------------------------------
+  - name: ReviseDecisionDraft
+    type: operation
+    actions:
+      - name: UpdateDecisionWithFeedback
+        functionRef:
+          refName: patchDecisionDraft
+          arguments:
+            feedback: "${ .review_feedback }"
+            decision_id: "${ .decision_id }"
+    transition: DispatchDecisionReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 5: Founder Approval Callback (Human-in-the-Loop Gate)
+  # -----------------------------------------------------------------------------
+  - name: FounderApprovalCallback
+    type: callback
+    action:
+      name: RequestFounderSignOff
+      functionRef:
+        refName: notifyFounderApprovalNeeded
+        arguments:
+          decision_id: "${ .decision_id }"
+          summary: "${ .summary }"
+    eventRef: FounderDecisionApprovalEvent
+    transition: CheckFounderDecision
+
+  # -----------------------------------------------------------------------------
+  # State 6: Evaluate Founder Decision Event
+  # -----------------------------------------------------------------------------
+  - name: CheckFounderDecision
+    type: switch
+    dataConditions:
+      - name: FounderApproved
+        condition: "${ .founder_verdict == 'APPROVED' }"
+        transition: LockDecisionAndStampRatification
+    defaultCondition:
+      transition: RejectDecision
+
+  # -----------------------------------------------------------------------------
+  # State 7: Lock Decision and Stamp Ratification
+  # -----------------------------------------------------------------------------
+  - name: LockDecisionAndStampRatification
+    type: operation
+    actions:
+      - name: StampRatificationMetadata
+        functionRef:
+          refName: finalizeRatification
+          arguments:
+            decision_id: "${ .decision_id }"
+            status: "Locked"
+            ratified_date: "${ .timestamp }"
+            approved_by: "founder"
+      - name: AppendToDecisionsRegister
+        functionRef:
+          refName: syncDecisionsMarkdown
+          arguments:
+            register_path: "framework/governance/DECISIONS.md"
+            decision_entry: "${ .decision_record }"
+    transition: MonitorDecisionLifecycle
+
+  # -----------------------------------------------------------------------------
+  # State 8: Monitor Decision Operational Lifecycle
+  # -----------------------------------------------------------------------------
+  - name: MonitorDecisionLifecycle
+    type: switch
+    dataConditions:
+      - name: DecisionSuperseded
+        condition: "${ .superseding_decision_id != null }"
+        transition: SupersedeDecision
+    defaultCondition:
+      transition: DecisionActiveTerminal
+
+  # -----------------------------------------------------------------------------
+  # State 9: Transition to Superseded State
+  # -----------------------------------------------------------------------------
+  - name: SupersedeDecision
+    type: operation
+    actions:
+      - name: MarkDecisionSuperseded
+        functionRef:
+          refName: updateDecisionStatus
+          arguments:
+            decision_id: "${ .decision_id }"
+            status: "Superseded"
+            superseded_by: "${ .superseding_decision_id }"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # State 10: Active Locked Terminal State
+  # -----------------------------------------------------------------------------
+  - name: DecisionActiveTerminal
+    type: inject
+    data:
+      lifecycle_state: "ACTIVE_LOCKED"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # State 11: Rejection Terminal State
+  # -----------------------------------------------------------------------------
+  - name: RejectDecision
+    type: operation
+    actions:
+      - name: RecordRejection
+        functionRef:
+          refName: updateDecisionStatus
+          arguments:
+            decision_id: "${ .decision_id }"
+            status: "Rejected"
+            reason: "${ .rejection_reason }"
+    end:
+      terminate: true

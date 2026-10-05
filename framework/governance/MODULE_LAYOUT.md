@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
 
 
 Defines the project module directory structure and naming conventions.

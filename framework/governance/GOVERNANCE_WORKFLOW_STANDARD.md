@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.2 |
+|---|---|
+| Version | 1.3 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -19,8 +19,8 @@ flows and multi-agent lifecycle state machines.
 ## 1. Purpose & Architectural Context
 
 The SDD framework governs complex, multi-agent development lifecycles (Change Requests,
-Review Sagas, Worktree Isolations, Seed Decompositions, and SDD Cascades). Historically,
-these rules were documented solely as human-readable prose across dozens of markdown files.
+Review Sagas, Worktree Isolations, Seed Decompositions, Evaluation Runs, and Decision Ratifications).
+Historically, these rules were documented solely as human-readable prose across dozens of markdown files.
 
 This specification formalizes **Machine-Executable Governance**:
 1. **From Prose to State Machines**: Governance flows are formally declared as Directed Acyclic
@@ -39,7 +39,7 @@ This specification formalizes **Machine-Executable Governance**:
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
-   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas).
+   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification).
    Governed exclusively by this standard.
 2. **Implementation Workflows (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**:
    Govern codebase mutation, test file creation, and execution-time saga compensation.
@@ -56,12 +56,16 @@ framework/governance/
 │   ├── seed-to-module-decomposition.sw.yaml  # 5-step seed to C4-L2 module flow
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
-│   └── review-saga-orchestration.sw.yaml     # Multi-agent review crew dispatch & fan-in
+│   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
+│   └── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
 ├── SEED_TO_MODULE_DECOMPOSITION.md           # Prose guide embedding decomposition graph
-└── WORKTREE_FLOW.md                          # Prose guide embedding worktree graph
+├── WORKTREE_FLOW.md                          # Prose guide embedding worktree graph
+├── REVIEW_REMEDIATION_FLOW.md                # Prose guide embedding review-remediation graph
+├── REVIEW_SAGA.md                            # Review saga lifecycle contract
+└── DECISION_WORKFLOW.md                      # Decision workflow embedding ratification graph
 ```
 
 ### File Naming Convention
@@ -134,7 +138,7 @@ actions:
 
 ### Rule 5: Human-in-the-Loop & Founder OK Gates
 Certain governance transitions strictly require in-session human authorization (e.g., release
-promotion, unmerged branch deletion, or self-review skips). These must be modeled using
+promotion, unmerged branch deletion, decision ratification, or self-review skips). These must be modeled using
 `callback` or `event` states that halt autonomous progression until an explicit event arrives:
 ```yaml
 - name: AwaitFounderAuthorization
@@ -149,7 +153,7 @@ promotion, unmerged branch deletion, or self-review skips). These must be modele
 ```
 
 ### Rule 6: Saga Rollback & Compensation Actions
-Workflows that perform mutating operations (worktree creation, git branching, file writes) must
+Workflows that perform mutating operations (worktree creation, git branching, file writes, patch remediations) must
 declare `compensatedBy` handlers to cleanly undo side effects on failure or abort:
 ```yaml
 - name: AllocateTaskWorktree
@@ -228,3 +232,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
   - *Fix*: Standardized on `specVersion: "0.8"` across all workflow definitions in Section 2.
   - *Gap found*: Missing parallel state execution semantics in LangGraph adapter description.
   - *Fix*: Reconciled Section 3 and Section 5 to handle parallel fan-out nodes.
+- **2026-10-05 — Pass 3 (Step 3 Quality Loops & Decision Ratification)**:
+  - *Gap found*: Quality loop (`REVIEW_REMEDIATION_FLOW.md`) and decision lifecycle (`DECISION_WORKFLOW.md`) lacked registered CNCF state machine models.
+  - *Fix*: Registered `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml` in Section 2 and updated Rule 5/6 references.

@@ -15,11 +15,44 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.14 |
+| Version | 1.15 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
+
+---
+
+## GD-54 — CNCF Serverless Workflow standard (YAML) for Review Sagas & Decision Ratification flows (CHG-58, 0.79.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.78.0 → 0.79.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-58 + IPLAN-58 (`framework/archive/CHG-58/`).
+  Issue: #909.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51),
+  Layer 08 execution (GD-52), and Layer 10 verification (GD-53), the framework's quality loop and decision governance
+  were reviewed. Review sagas (`REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`) and decision ratification
+  (`DECISION_WORKFLOW.md`, `DECISIONS.md`) govern artifact quality control and framework architecture changes.
+  Prior to this change, these critical quality and governance controls were documented in prose with informal ASCII diagrams,
+  exposing them to agent interpretation drift during multi-agent reviews and ratification.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/workflows/review-remediation-flow.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing multi-persona review crew fan-out, finding severity
+     categorization (`critical`, `medium`, `low`, `acknowledged`), 3-strike remediation loop (`quality_loop_max_iterations`),
+     wall-clock break-circuit timeout checkpoints (`SOFT_DEADLINE`), and saga compensation rollback (`compensatedBy:`).
+  2. Author `framework/governance/workflows/decision-ratification-flow.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing decision proposals, review crew consensus, founder sign-off
+     callbacks (`type: callback`), immutability sealing upon ratification, and superseding transitions.
+  3. Update companion governance documentation:
+     - `framework/governance/REVIEW_REMEDIATION_FLOW.md` (v1.0 → 1.1) to bind the executable review remediation state machine.
+     - `framework/governance/REVIEW_SAGA.md` (v1.0 → 1.1) to bind the CNCF review saga workflow.
+     - `framework/governance/DECISION_WORKFLOW.md` (v1.1 → 1.2) to bind the executable decision ratification state machine.
+     - `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.2 → 1.3) and `framework/governance/DIAGRAM_STANDARDS.md` (v1.3 → 1.4)
+       to register `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml`.
+  4. Extend conformance assertions in `tests/conformance/test_governance_workflows.py` to validate `review-remediation-flow.sw.yaml`
+     and `decision-ratification-flow.sw.yaml` schema compliance, state reachability, and diagram synchronization; update `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- **Consequence:** Formalizes review sagas and decision ratification into machine-executable, engine-agnostic state graphs;
+  guarantees deterministic quality loops and immutable decision sealing across autonomous multi-agent systems;
+  prevents runaway remediation loops and unhandled timeouts.
 
 ---
 
