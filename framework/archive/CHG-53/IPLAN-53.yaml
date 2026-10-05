@@ -1,0 +1,155 @@
+# =============================================================================
+#  IPLAN-53: Canonical SEED-TEMPLATE.md, path standard & GD-36 reconciliation
+#  (spec-source, C2, MINOR 0.74.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-53/CHG-53.yaml (In-Progress)
+#  Source: Issue #899
+# =============================================================================
+
+doc_id: IPLAN-53
+title: "Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (spec C2 MINOR → 0.74.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.73.0"
+  source_chg: "CHG-53"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-53"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-53; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 10
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-53/CHG-53.yaml + IPLAN-53.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-53/MODULE_LAYOUT.md + DECISION_WORKFLOW.md + AIDOC-SCAFFOLD-TEMPLATE.md + DECISIONS.md + VERSION + CHANGELOG.md + test_seed_contract.py"
+      description: "Pre-change snapshots (base 0.73.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/templates/SEED-TEMPLATE.md"
+      description: "New canonical seed document template"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/MODULE_LAYOUT.md"
+      description: "Directory structure standardized to <project>/seed/ (Tier 1 Inputs)"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISION_WORKFLOW.md"
+      description: "Lines 43 & 128 reconciled to GD-36 (frozen per version)"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/SEED_CONTRACT.md"
+      description: "Document end-to-end Seed → Module → SDD supersede sequence & Secondary Gate"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Add <project>/seed/ bootstrapping layout"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record GD-49"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_seed_contract.py"
+      description: "Conformance tests asserting SEED-TEMPLATE.md presence and structure"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.73.0 to OLD_VERSIONS"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.73.0 → 0.74.0"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add 0.74.0 entry"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+execution_steps:
+  - step: 1
+    name: "Pre-change snapshots"
+    action: "Snapshot modified files to framework/archive/CHG-53/"
+    status: DONE
+  - step: 2
+    name: "Author SEED-TEMPLATE.md"
+    action: "Create framework/templates/SEED-TEMPLATE.md with document_control and standard sections"
+    status: DONE
+  - step: 3
+    name: "Reconcile MODULE_LAYOUT.md"
+    action: "Update docs/seed/ references to <project>/seed/ (Tier 1 Inputs)"
+    status: DONE
+  - step: 4
+    name: "Reconcile DECISION_WORKFLOW.md"
+    action: "Update lines 43 and 128 to reflect GD-36 frozen-per-version rule"
+    status: DONE
+  - step: 5
+    name: "Update SEED_CONTRACT.md"
+    action: "Add end-to-end Seed → Module → SDD supersede lifecycle and Secondary Gate sweep"
+    status: DONE
+  - step: 6
+    name: "Update AIDOC-SCAFFOLD-TEMPLATE.md"
+    action: "Add seed/ tree structure to project onboarding scaffolding"
+    status: DONE
+  - step: 7
+    name: "Record GD-49 in DECISIONS.md"
+    action: "Document GD-49 decision"
+    status: DONE
+  - step: 8
+    name: "Extend test_seed_contract.py"
+    action: "Add unit tests verifying SEED-TEMPLATE.md and path standard"
+    status: DONE
+  - step: 9
+    name: "Sync versions and changelog"
+    action: "Update sync-version-refs.sh, bump VERSION to 0.74.0, update CHANGELOG.md"
+    status: DONE
+  - step: 10
+    name: "Run test suite"
+    action: "Verify all tests pass green"
+    status: DONE

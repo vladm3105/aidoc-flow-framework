@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.74.0 |
 
 
 Defines the project module directory structure and naming conventions.
@@ -19,52 +19,62 @@ rules, acceptance criteria.
 ## Directory Structure
 
 ```
-docs/
-├── modules/                          # Source material (architect → product owner)
-│   ├── MODULE-00_index.md            # Master module registry
-│   │
-│   ├── MODULE-01_server/             # Directory form (multi-file modules)
-│   │   ├── README.md                 # Overview, principles, constraints
-│   │   ├── architecture.svg          # Architecture diagram
-│   │   ├── decisions.md              # Design decisions + seed references
-│   │   └── constraints.md            # Invariants, business rules, dependencies
-│   │
-│   ├── MODULE-12_observability/      # Complex module (6+ files)
-│   │   ├── README.md                 # Overview, principles, invariants
-│   │   ├── architecture.svg
-│   │   ├── log_export.md             # Log export extension interface
-│   │   ├── metrics.md                # Business metrics catalog (40+)
-│   │   ├── dashboards_alerts.md      # Dashboards, alerts, SLOs
-│   │   └── agent_surface.md          # Future LLM/agent instrumentation
-│   │
-│   └── MODULE-03_auth.md             # Flat form (single-file modules)
-│
-├── seed/                             # Frozen input (architect + stakeholders)
-│   ├── architecture/
+<project>/
+├── seed/                             # Tier 1 Inputs (architect + stakeholders — canonical path)
+│   ├── 00_index.md                   # Master seed index (optional)
+│   ├── vision/                       # Business & product vision
+│   ├── architecture/                 # Architecture options & trade-offs
 │   │   ├── 00_index.md
-│   │   └── ...
-│   ├── agent-surface/
-│   │   ├── 00_index.md
-│   │   └── ...
-│   └── adr/                          # Seed-level ADRs (web-specific)
+│   │   └── auth.md
+│   └── agent-surface/                # Agent surface contracts
+│       ├── 00_index.md
+│       └── ...
 │
-├── sdd/                              # Formal SDD chain (dev team)
-│   ├── 01_BRD/                       # Layer 1 — Business Requirements
-│   ├── 02_PRD/                       # Layer 2 — Product Requirements
-│   ├── 03_EARS/                      # Layer 3 — Formal Requirements
-│   ├── 04_BDD/                       # Layer 4 — Acceptance Scenarios
-│   ├── 05_ADR/                       # Layer 5 — Architecture Decisions
-│   ├── 06_SPEC/                      # Layer 6 — Implementation Specs
-│   ├── 07_TDD/                       # Layer 7 — Test Definitions
-│   ├── 08_IPLAN/                     # Layer 8 — Implementation Plans
-│   └── 09-CHG/                       # Change Records + archives
+├── docs/                             # Tier 2 AI outputs (the produced chain)
+│   ├── modules/                      # Source material (architect → product owner)
+│   │   ├── MODULE-00_index.md        # Master module registry
+│   │   │
+│   │   ├── MODULE-01_server/         # Directory form (multi-file modules)
+│   │   │   ├── README.md             # Overview, principles, constraints
+│   │   │   ├── architecture.svg      # Architecture diagram
+│   │   │   ├── decisions.md          # Design decisions + seed references
+│   │   │   └── constraints.md        # Invariants, business rules, dependencies
+│   │   │
+│   │   ├── MODULE-12_observability/  # Complex module (6+ files)
+│   │   │   ├── README.md             # Overview, principles, invariants
+│   │   │   ├── architecture.svg
+│   │   │   ├── log_export.md         # Log export extension interface
+│   │   │   ├── metrics.md            # Business metrics catalog (40+)
+│   │   │   ├── dashboards_alerts.md  # Dashboards, alerts, SLOs
+│   │   │   └── agent_surface.md      # Future LLM/agent instrumentation
+│   │   │
+│   │   └── MODULE-03_auth.md         # Flat form (single-file modules)
+│   │
+│   ├── sdd/                          # Formal SDD chain (dev team)
+│   │   ├── 01_BRD/                   # Layer 1 — Business Requirements
+│   │   ├── 02_PRD/                   # Layer 2 — Product Requirements
+│   │   ├── 03_EARS/                  # Layer 3 — Formal Requirements
+│   │   ├── 04_BDD/                   # Layer 4 — Acceptance Scenarios
+│   │   ├── 05_ADR/                   # Layer 5 — Architecture Decisions
+│   │   ├── 06_SPEC/                  # Layer 6 — Implementation Specs
+│   │   ├── 07_TDD/                   # Layer 7 — Test Definitions
+│   │   ├── 08_IPLAN/                 # Layer 8 — Implementation Plans
+│   │   └── 09-CHG/                   # Change Records + archives
+│   │
+│   └── governance/                   # Project governance rules
+│       ├── DOC_GOVERNANCE_CORE.md    # All rules (canonical)
+│       ├── DECISION_WORKFLOW.md      # Seed vs Module vs SDD ADR
+│       ├── SELF_LEARNING.md          # Self-learning loop governance
+│       └── MODULE_LAYOUT.md          # This document
 │
-└── governance/                       # Project governance rules
-    ├── DOC_GOVERNANCE_CORE.md           # All rules (canonical)
-    ├── DECISION_WORKFLOW.md          # Seed vs Module vs SDD ADR
-    ├── SELF_LEARNING.md             # Self-learning loop governance
-    └── MODULE_LAYOUT.md             # This document
+├── .aidoc/                           # Tier 3 Project customization & overrides
+└── logs/<TS>/                        # Tier 4 Tool internals (gitignored)
 ```
+
+> **Canonical Seed Path (#899):** The framework's 4-tier model (`README.md`, `AIDOC.md`)
+> establishes `<project>/seed/` at project root as Tier 1 Inputs, distinct from AI-produced
+> outputs under `<project>/docs/`. The legacy location `<project>/docs/seed/` remains supported
+> and tolerated by `sdd_doc_lint` for backward compatibility.
 
 ## Rules
 
@@ -123,11 +133,12 @@ MODULE-NN_slug/
 
 ### 7. Seed versions beside modules, never duplicated
 
-Seed docs (`docs/seed/`) are versioned input to the BRD: each file carries a
-`document_control` block and versions via archive → rewrite → bump +
-`supersedes` (SEED_CONTRACT.md), frozen per version. Seed docs are not part of
-the module. Modules reference the **current** seed version but do not duplicate
-seed content; a seed supersede re-points the referencing module in the same CHG
+Seed docs reside at `<project>/seed/` (canonical Tier 1 Inputs; `docs/seed/` is tolerated
+by tooling) and are versioned input to the BRD: each file carries a `document_control` block
+and versions via archive → rewrite → bump + `supersedes` ([`SEED_CONTRACT.md`](SEED_CONTRACT.md)),
+frozen per version. Canonical scaffold: [`framework/templates/SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md).
+Seed docs are not part of the module. Modules reference the **current** seed version but do
+not duplicate seed content; a seed supersede re-points the referencing module in the same CHG
 lifecycle.
 
 ### 8. SDD stays separate

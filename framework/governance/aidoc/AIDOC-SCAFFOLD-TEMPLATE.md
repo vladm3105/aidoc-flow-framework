@@ -4,17 +4,43 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | Approved |
-| Last Updated | YYYY-MM-DD |
+| Last Updated | 2026-10-05 |
 | Author | <your name> |
-| Framework Version | X.Y.Z |
+| Framework Version | 0.74.0 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
 that take precedence over the framework's defaults.
 
-## Directory structure
+## Project tier overview
+
+A consumer project structures files into four explicit tiers (`README.md`, `AIDOC.md`):
+
+```
+<project>/
+├── seed/                    # Tier 1 Inputs: stakeholder vision & architecture options
+│   ├── 00_index.md          # Master seed index (optional)
+│   ├── vision/              # Business intent & product goals
+│   └── architecture/        # Architecture domains (scaffold: SEED-TEMPLATE.md)
+│       └── auth.md
+├── docs/                    # Tier 2 AI outputs: modules/ + sdd/ formal chain
+├── .aidoc/                  # Tier 3 Project customization layer (this directory)
+│   ├── profile.yaml         # project profile — adaptation knobs
+│   ├── framework → ...      # symlink to shared framework (canonical path)
+│   ├── project/             # project-specific overrides
+│   │   ├── governance/      # rule overrides (same structure as framework/)
+│   │   │   └── ...
+│   │   ├── layers/          # template overrides (same structure as framework/)
+│   │   │   └── ...
+│   │   └── playbooks/       # playbook overrides (same structure as framework/)
+│   │       └── ...
+│   └── README.md            # this file
+└── logs/<TS>/               # Tier 4 Tool internals (gitignored)
+```
+
+## Directory structure (`.aidoc/`)
 
 ```
 .aidoc/
@@ -59,3 +85,11 @@ the override contract and constraints.
 
 This project pins **aidoc-flow-framework X.Y.Z** (declared in
 `profile.yaml` as `framework_version`).
+
+
+## Seed tier bootstrapping
+
+Initial human-authored requirements live under `<project>/seed/` before the first
+BRD is authored (`SEED_CONTRACT.md` R1). Seed documents explore options, trade-offs,
+and architectural invariants without carrying formal SDD element IDs. Initialize
+substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](../../templates/SEED-TEMPLATE.md).

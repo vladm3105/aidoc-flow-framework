@@ -15,11 +15,38 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.10 |
+| Version | 1.11 |
 | Status | Approved |
-| Last Updated | 2026-10-02 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.74.0 |
+
+---
+
+## GD-49 — Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (CHG-53, 0.74.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.73.0 → 0.74.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-53 + IPLAN-53 (`framework/archive/CHG-53/`).
+  Issue: #899.
+- **Context:** While GD-36 (CHG-11) ratified the versioned seed tier ("frozen-per-version"),
+  several practical gaps remained: (1) no canonical `SEED-TEMPLATE.md` shipped in `framework/templates/`;
+  (2) `MODULE_LAYOUT.md` nested seed under `docs/seed/`, contradicting the 4-tier model (`README.md`,
+  `AIDOC.md`) which establishes `<project>/seed/` at project root as Tier 1 Inputs; (3) `DECISION_WORKFLOW.md`
+  retained obsolete GD-08 phrasing ("Frozen after first BRD"); (4) `AIDOC-SCAFFOLD-TEMPLATE.md` omitted
+  seed tree bootstrapping; (5) the complete end-to-end `seed_scope` supersede lifecycle (`Seed → Module → SDD`)
+  with the Secondary Review Gate's stale-term grep sweep was fragmented across governance docs.
+- **Decision (spec C2 MINOR):**
+  1. Ship canonical `framework/templates/SEED-TEMPLATE.md` with standard `document_control` frontmatter
+     and guidance for Vision, Realities, Options/Trade-Offs, Invariants, Non-Goals, and natural-language claims.
+  2. Standardize `<project>/seed/` at project root as the canonical Tier 1 Inputs path across `MODULE_LAYOUT.md`
+     and scaffolding; tooling (`sdd_doc_lint`) continues to tolerate `docs/seed/` for legacy compatibility.
+  3. Reconcile `DECISION_WORKFLOW.md` lines 43 & 128 to GD-36 ("Frozen per version, superseded via F3 Phase 0a").
+  4. Document the full Seed → Module → SDD cascade in `SEED_CONTRACT.md`, including Phase 0a, Phase 0b, the hard
+     Review Checkpoint, and the Secondary Review Gate stale-term sweep.
+  5. Add `<project>/seed/` bootstrapping to `AIDOC-SCAFFOLD-TEMPLATE.md`.
+  6. Add conformance test in `test_seed_contract.py` asserting template presence and standards.
+- **Consequence:** Eliminates friction for architects and AI agents initializing or updating seed documents;
+  closes path ambiguity across framework documentation; prevents stale-reference accumulation during seed supersedes.
 
 ---
 
