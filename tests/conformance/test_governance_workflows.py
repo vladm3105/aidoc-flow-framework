@@ -17,6 +17,7 @@ EXPECTED_WORKFLOWS = [
     "chg-request-flow.sw.yaml",
     "seed-to-module-decomposition.sw.yaml",
     "worktree-pr-lifecycle.sw.yaml",
+    "eval-verification-run.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -143,6 +144,7 @@ class GovernanceWorkflowsTest(unittest.TestCase):
     def test_decisions_synchronization(self):
         decisions = (GOVERNANCE / "DECISIONS.md").read_text(encoding="utf-8")
         self.assertIn("GD-51", decisions)
+        self.assertIn("GD-53", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
         self.assertIn("0.76.0", decisions)
 

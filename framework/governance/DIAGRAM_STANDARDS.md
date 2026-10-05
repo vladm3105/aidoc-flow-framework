@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.77.0 |
+| Framework Version | 0.78.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -256,6 +256,7 @@ Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
 1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`.
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
+3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 
 Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance prose document or implementation plan.
 

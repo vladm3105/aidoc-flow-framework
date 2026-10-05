@@ -7,13 +7,23 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.77.0 |
+| Framework Version | 0.78.0 |
 
 ---
+
+## [0.78.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL & IPVERIFY) verification runners (C2 MINOR → 0.78.0, CHG-57 + IPLAN-57)
+
+- **Layer 10 Evaluation Execution State Machine (`framework/governance/workflows/eval-verification-run.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format as the standard state machine governing Layer 10 evaluation execution (#907). Features parallel test execution branches (`parallel-test-matrix` executing unit, acceptance, conformance, and security SAST suites concurrently), automated scorecard aggregation (`aggregate-scorecard`), deterministic threshold-based quality gate routing (`evaluate-quality-gate` switch state), immutable receipt emission (`EVAL-REPORT-TEMPLATE.yaml`), and automatic defect remediation loop routing to `REVIEW_REMEDIATION_FLOW.md`.
+- **Layer 10 Specification Alignment (`framework/layers/10_EVAL/README.md`)**: Updated Layer 10 specification to document executable evaluation state machines and define workflow bindings connecting evaluation strategies (`EVAL-TEMPLATE.yaml`), test execution DAGs (`eval-verification-run.sw.yaml`), and execution receipts (`EVAL-REPORT-TEMPLATE.yaml`).
+- **Core Governance & Decision GD-53**: Ratified Decision `GD-53` in `framework/governance/DECISIONS.md`. Updated `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.3) registering `eval-verification-run.sw.yaml` under governance workflows, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.4) registering evaluation execution state machines.
+- **Conformance Test Suite**: Updated `tests/conformance/test_governance_workflows.py` adding `eval-verification-run.sw.yaml` to `EXPECTED_WORKFLOWS` and verifying schema, parallel branches, and transitions; updated `tests/conformance/test_governance.py` with `workflows/eval-verification-run.sw.yaml` in `EXPECTED_FILES`.
+- Sweep 0.77.0 → 0.78.0 propagated across tree.
 
 ## [0.77.0] — 2026-10-05
 

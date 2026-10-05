@@ -19,7 +19,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.77.0 |
+| Framework Version | 0.78.0 |
+
+---
+
+## GD-53 — CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL) evaluation & verification runners (CHG-57, 0.78.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.77.0 → 0.78.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-57 + IPLAN-57 (`framework/archive/CHG-57/`).
+  Issue: #907.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51)
+  and Layer 08 implementation execution (GD-52), Layer 10 (EVAL & IPVERIFY) was reviewed. Layer 10 governs the
+  testing and quality verification cycle (trigger → multi-tier test execution → scorecard calculation → quality
+  gate check → report receipt emission → remediation loop). In the existing specification, this lifecycle was
+  documented primarily through conceptual text and ASCII diagrams in `framework/layers/10_EVAL/README.md`.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/workflows/eval-verification-run.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing multi-tier test execution (unit, acceptance, conformance,
+     and security SAST via `type: parallel`, `completionType: allOf`), scorecard calculation, automated quality
+     gate evaluation (`type: switch`), immutable `EVAL-{NN}-RPT-{NNN}.yaml` receipt emission, and remediation dispatch.
+  2. Update `framework/layers/10_EVAL/README.md` to formally document and bind the CNCF Serverless Workflow
+     execution model, maintaining clean domain boundaries between strategy documents (`EVAL-TEMPLATE.yaml`),
+     static report receipts (`EVAL-REPORT-TEMPLATE.yaml`), and the executable workflow engine.
+  3. Update `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and `framework/governance/DIAGRAM_STANDARDS.md`
+     to register `eval-verification-run.sw.yaml`.
+  4. Extend conformance assertions in `tests/conformance/test_governance_workflows.py` to validate `eval-verification-run.sw.yaml`
+     schema compliance, DAG reachability, and diagram synchronization; update `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- **Consequence:** Replaces ad-hoc evaluation execution with a vendor-neutral, deterministic CNCF state machine
+  executable across multi-agent systems via LangGraph/Temporal adapters while keeping `EVAL-TEMPLATE.yaml` and
+  `EVAL-REPORT-TEMPLATE.yaml` byte-faithful and compliant with `sdd_doc_lint`.
 
 ---
 

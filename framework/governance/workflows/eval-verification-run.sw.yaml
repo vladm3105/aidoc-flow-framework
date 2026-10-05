@@ -1,0 +1,180 @@
+# =============================================================================
+#  eval-verification-run.sw.yaml — CNCF Serverless Workflow State Machine
+# =============================================================================
+#  Standard: CNCF Serverless Workflow Specification v0.8 (YAML)
+#  Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+#  Domain: Evaluation Execution & Quality Verification Lifecycle (Layer 10)
+# =============================================================================
+
+id: eval-verification-run
+name: Evaluation and Verification Runner State Machine
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Declarative Directed Acyclic Graph (DAG) state machine orchestrating multi-tier
+  test suite execution (unit, acceptance, conformance, security SAST), automated
+  quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
+
+metadata:
+  framework_version: "0.78.0"
+  workflow_type: "governance-evaluation-execution"
+  governed_layer: "10_EVAL"
+  traceability_tags:
+    - "@layer: 10_EVAL"
+    - "@gate: GATE-08"
+    - "@standard: CNCF-Serverless-Workflow-0.8"
+
+start: IngestEvaluationTrigger
+
+states:
+  # ---------------------------------------------------------------------------
+  # State 1: Ingest Evaluation Trigger & Load Strategy
+  # ---------------------------------------------------------------------------
+  - name: IngestEvaluationTrigger
+    type: operation
+    actions:
+      - name: ValidateTriggerContext
+        functionRef:
+          refName: validateTriggerFn
+          arguments:
+            trigger_types:
+              - initial_eval
+              - bug_fix_verification
+              - chg_verification
+              - scheduled
+              - pre_deploy
+      - name: LoadEvaluationStrategy
+        functionRef:
+          refName: loadEvalStrategyFn
+          arguments:
+            eval_strategy_path: "docs/sdd/10_EVAL/EVAL-{NN}/EVAL-{NN}.yaml"
+            threshold_min_score: 90
+    transition: ExecuteParallelTestSuites
+
+  # ---------------------------------------------------------------------------
+  # State 2: Parallel Test Suite Execution (All-Of)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteParallelTestSuites
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: UnitSuiteBranch
+        actions:
+          - name: RunUnitTests
+            functionRef:
+              refName: runCommandFn
+              arguments:
+                command: "python3 -m unittest discover -s tests/unit"
+                suite: "unit"
+      - name: AcceptanceSuiteBranch
+        actions:
+          - name: RunAcceptanceTests
+            functionRef:
+              refName: runCommandFn
+              arguments:
+                command: "pytest tests/acceptance/"
+                suite: "acceptance"
+      - name: ConformanceSuiteBranch
+        actions:
+          - name: RunConformanceTests
+            functionRef:
+              refName: runCommandFn
+              arguments:
+                command: "pytest tests/conformance/"
+                suite: "conformance"
+      - name: SecurityAuditBranch
+        actions:
+          - name: RunSecurityScan
+            functionRef:
+              refName: runCommandFn
+              arguments:
+                command: "bandit -r framework/ sdd_doc_lint/"
+                suite: "security-sast"
+    transition: EvaluateQualityGates
+
+  # ---------------------------------------------------------------------------
+  # State 3: Evaluate Scorecard and Quality Gates
+  # ---------------------------------------------------------------------------
+  - name: EvaluateQualityGates
+    type: operation
+    actions:
+      - name: CalculateScorecardMetrics
+        functionRef:
+          refName: computeScorecardFn
+          arguments:
+            coverage_weight: 0.40
+            traceability_weight: 0.25
+            threshold_weight: 0.20
+            readiness_weight: 0.15
+    transition: CheckQualityGateDecision
+
+  # ---------------------------------------------------------------------------
+  # State 4: Decision Switch (Pass vs Fail)
+  # ---------------------------------------------------------------------------
+  - name: CheckQualityGateDecision
+    type: switch
+    dataConditions:
+      - name: EvaluationPassed
+        condition: "${ .score >= 90 and .blocker_count == 0 and .critical_count == 0 }"
+        transition: EmitPassingReportReceipt
+      - name: EvaluationFailed
+        condition: "${ .score < 90 or .blocker_count > 0 or .critical_count > 0 }"
+        transition: HandleEvaluationFailure
+    defaultCondition:
+      transition: HandleEvaluationFailure
+
+  # ---------------------------------------------------------------------------
+  # State 5: Terminal Success Path (Emit Report & Mark Verified)
+  # ---------------------------------------------------------------------------
+  - name: EmitPassingReportReceipt
+    type: operation
+    actions:
+      - name: WriteReportReceipt
+        functionRef:
+          refName: writeReportReceiptFn
+          arguments:
+            verdict: "PASS"
+            report_template: "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+            output_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml"
+      - name: UpdateIplanStatusVerified
+        functionRef:
+          refName: updateDocumentStatusFn
+          arguments:
+            target_document: "IPLAN-{NN}"
+            new_status: "Verified"
+    end: true
+
+  # ---------------------------------------------------------------------------
+  # State 6: Evaluation Failure Handling
+  # ---------------------------------------------------------------------------
+  - name: HandleEvaluationFailure
+    type: operation
+    actions:
+      - name: WriteFailingReportReceipt
+        functionRef:
+          refName: writeReportReceiptFn
+          arguments:
+            verdict: "FAIL"
+            report_template: "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+            output_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml"
+      - name: LogDefectFindings
+        functionRef:
+          refName: logFindingsFn
+          arguments:
+            track_findings: true
+            finding_prefix: "F-"
+    transition: TriggerRemediationLoop
+
+  # ---------------------------------------------------------------------------
+  # State 7: Terminal Failure / Remediation Dispatch Sink
+  # ---------------------------------------------------------------------------
+  - name: TriggerRemediationLoop
+    type: operation
+    actions:
+      - name: DispatchBugfixVehicle
+        functionRef:
+          refName: dispatchBugfixFn
+          arguments:
+            flow: "REVIEW_REMEDIATION_FLOW.md"
+            action: "Create C1 CHG + scoped IPLAN"
+    end: true

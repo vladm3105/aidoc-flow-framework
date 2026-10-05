@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.77.0 |
+| Framework Version | 0.78.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -55,6 +55,7 @@ framework/governance/
 │   ├── chg-request-flow.sw.yaml              # Change classification, gates & landing
 │   ├── seed-to-module-decomposition.sw.yaml  # 5-step seed to C4-L2 module flow
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
+│   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   └── review-saga-orchestration.sw.yaml     # Multi-agent review crew dispatch & fan-in
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard

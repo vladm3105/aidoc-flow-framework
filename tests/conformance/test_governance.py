@@ -52,6 +52,7 @@ EXPECTED_FILES = [
     "workflows/chg-request-flow.sw.yaml",
     "workflows/seed-to-module-decomposition.sw.yaml",
     "workflows/worktree-pr-lifecycle.sw.yaml",
+    "workflows/eval-verification-run.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",

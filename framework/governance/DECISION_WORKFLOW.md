@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.77.0 |
+| Framework Version | 0.78.0 |
 
 
 Defines the authorship boundary between seed, module, and SDD decision layers.
