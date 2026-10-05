@@ -81,7 +81,7 @@ states:
           arguments:
             command: >-
               git commit -m "feat: <description>
-              
+
               Multi-agent self-review per OPS-0065 (<agents>): PASS
               Closes #<issue>"
     transition: PushFeatureBranch
