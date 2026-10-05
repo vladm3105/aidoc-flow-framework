@@ -15,11 +15,69 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.13 |
+| Version | 1.14 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.78.0 |
+
+---
+
+## GD-53 — CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL) evaluation & verification runners (CHG-57, 0.78.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.77.0 → 0.78.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-57 + IPLAN-57 (`framework/archive/CHG-57/`).
+  Issue: #907.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51)
+  and Layer 08 implementation execution (GD-52), Layer 10 (EVAL & IPVERIFY) was reviewed. Layer 10 governs the
+  testing and quality verification cycle (trigger → multi-tier test execution → scorecard calculation → quality
+  gate check → report receipt emission → remediation loop). In the existing specification, this lifecycle was
+  documented primarily through conceptual text and ASCII diagrams in `framework/layers/10_EVAL/README.md`.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/workflows/eval-verification-run.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing multi-tier test execution (unit, acceptance, conformance,
+     and security SAST via `type: parallel`, `completionType: allOf`), scorecard calculation, automated quality
+     gate evaluation (`type: switch`), immutable `EVAL-{NN}-RPT-{NNN}.yaml` receipt emission, and remediation dispatch.
+  2. Update `framework/layers/10_EVAL/README.md` to formally document and bind the CNCF Serverless Workflow
+     execution model, maintaining clean domain boundaries between strategy documents (`EVAL-TEMPLATE.yaml`),
+     static report receipts (`EVAL-REPORT-TEMPLATE.yaml`), and the executable workflow engine.
+  3. Update `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and `framework/governance/DIAGRAM_STANDARDS.md`
+     to register `eval-verification-run.sw.yaml`.
+  4. Extend conformance assertions in `tests/conformance/test_governance_workflows.py` to validate `eval-verification-run.sw.yaml`
+     schema compliance, DAG reachability, and diagram synchronization; update `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- **Consequence:** Replaces ad-hoc evaluation execution with a vendor-neutral, deterministic CNCF state machine
+  executable across multi-agent systems via LangGraph/Temporal adapters while keeping `EVAL-TEMPLATE.yaml` and
+  `EVAL-REPORT-TEMPLATE.yaml` byte-faithful and compliant with `sdd_doc_lint`.
+
+---
+
+## GD-52 — CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution (CHG-56, 0.77.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.76.0 → 0.77.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-56 + IPLAN-56 (`framework/archive/CHG-56/`).
+  Issue: #905.
+- **Context:** Following the adoption of CNCF Serverless Workflow for governance state machines (GD-51),
+  Layer 08 (IPLAN) was reviewed as the primary execution bridge from SPEC/TDD to code. Historically,
+  IPLAN templates (`IPLAN-TEMPLATE.yaml`) functioned as static checklists with passive command lists and
+  prose rollback procedures. While human-readable, static checklists force autonomous AI coding agents
+  to guess step order and rollback procedures without deterministic state machine guarantees.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/IPLAN_WORKFLOW_STANDARD.md` establishing the CNCF Serverless Workflow
+     v0.8 specification in YAML format as the official standard for executable implementation plan task graphs.
+  2. Adopt the Hybrid Envelope Architecture: preserving the outer SDD document envelope (`metadata`,
+     `document_control`, `file_manifest`, `tdd_consistency`, `traceability`) to maintain full backward
+     compatibility with `sdd_doc_lint` (`STRUCT01`, `TAG01`), while housing the executable workflow DAG
+     under a dedicated `workflow:` block.
+  3. Ship canonical template `framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml` featuring `subtype: workflow`,
+     deterministic `operation` states, automated verification `switch` gates, persona attribution,
+     and native saga rollback compensation (`compensatedBy:`).
+  4. Clarify domain boundaries: governance workflows (`framework/governance/workflows/`) govern repository
+     lifecycles; implementation workflows (`framework/layers/08_IPLAN/`) govern codebase mutation.
+  5. Update `PLAN_STANDARD.md` and `README.md` in Layer 08 to formally recognize `subtype: workflow`.
+  6. Add conformance test suite `tests/conformance/test_iplan_workflow.py`.
+- **Consequence:** Transforms implementation plans from passive checklists into deterministic,
+  machine-executable graphs; enables zero-engine-lock-in execution via LangGraph or agent runners on the fly;
+  eliminates unhandled test failures through native saga rollback handlers.
 
 ---
 

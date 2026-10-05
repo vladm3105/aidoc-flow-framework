@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.78.0 |
 
 ## Traceability Chain
 

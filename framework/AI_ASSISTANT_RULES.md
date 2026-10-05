@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.78.0 |
 
 
 ## Template Usage

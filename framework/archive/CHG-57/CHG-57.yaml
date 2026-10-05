@@ -1,0 +1,200 @@
+# =============================================================================
+#  CHG-57: Adopt CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL)
+#  evaluation & verification runners (spec C2 MINOR → 0.78.0)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — governance standard, layer 10 README, conformance tests).
+#  Precedent CHG-56: sdd_lifecycle entries + snapshots + seed_scope no-change + SDD-first steps.
+#  C2 per GATE-SPEC-E003; MINOR per GD-47's test (new eval-verification-run.sw.yaml
+#  is new execution surface).
+#  IPLAN: framework/archive/CHG-57/IPLAN-57.yaml (authoring gated after approval)
+#  Issue: #907 ([Layer 10][spec] Adopt CNCF Serverless Workflow standard for Layer 10 Evaluation & Verification runner)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified; (2) prose + CNCF YAML templates + python tests;
+#  (3) N/A no structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous;
+#  (6) N/A no handlers; (7) issue #907 referenced; (8) covering tests:
+#  tests/conformance/test_governance_workflows.py; (9) fixes located per issue #907;
+#  (10) N/A no migrations; (11) SDD versioning — sdd_lifecycle amends for
+#  10_EVAL/README.md (2.0→2.1), GOVERNANCE_WORKFLOW_STANDARD (1.2→1.3),
+#  DIAGRAM_STANDARDS (1.3→1.4), DECISIONS (1.14→1.15, GD-53), plus new
+#  eval-verification-run.sw.yaml (1.0) and IPLAN-57 (1.0);
+#  (12) GOV-014 paired; (13) SDD-first — sdd_lifecycle steps before iplan_creation;
+#  (14) no code steps in CHG (legal phases).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — declarative YAML state machines +
+#  governance standards; engine-agnostic (D-0013); incorporates parallel test execution,
+#  deterministic scorecard evaluation, and remediation dispatch without secret exposure.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified).
+# =============================================================================
+
+id: CHG-57
+title: "Adopt CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL) evaluation & verification runners (spec C2 MINOR → 0.78.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-05"
+  framework_version: "0.77.0"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-57"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-05T00:00:00Z"
+  date_approved: "2026-10-05T00:00:00Z"
+  date_implemented: "2026-10-05T00:00:00Z"
+  supersedes:
+    - "README.md v2.0 (framework/archive/CHG-57/README.md)"
+    - "GOVERNANCE_WORKFLOW_STANDARD.md v1.2 (framework/archive/CHG-57/GOVERNANCE_WORKFLOW_STANDARD.md)"
+    - "DIAGRAM_STANDARDS.md v1.3 (framework/archive/CHG-57/DIAGRAM_STANDARDS.md)"
+    - "DECISIONS.md v1.14 (framework/archive/CHG-57/DECISIONS.md)"
+    - "framework/VERSION 0.77.0 (framework/archive/CHG-57/VERSION)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Author framework/governance/workflows/eval-verification-run.sw.yaml; amend framework/layers/10_EVAL/README.md, GOVERNANCE_WORKFLOW_STANDARD.md, and DIAGRAM_STANDARDS.md; ratify GD-53 in DECISIONS.md; update EXPECTED_WORKFLOWS in test_governance_workflows.py and EXPECTED_FILES in test_governance.py; MINOR bump 0.77.0 → 0.78.0."
+  what: "Establishes the declarative CNCF Serverless Workflow v0.8 state machine (eval-verification-run.sw.yaml) governing Layer 10 (EVAL & IPVERIFY) multi-tier test suite execution (unit, acceptance, conformance, security SAST), automated quality gate scoring, immutable report emission (EVAL-REPORT-TEMPLATE.yaml), and defect remediation dispatch (REVIEW_REMEDIATION_FLOW.md). Aligns governance standards, diagram standards, and ratifies Decision GD-53."
+  why: "Replaces conceptual text and ASCII diagrams with a machine-executable Directed Acyclic Graph (DAG) state machine using the vendor-neutral CNCF Serverless Workflow v0.8 standard in YAML. Retains byte-faithfulness and STRUCT01 compatibility for EVAL-TEMPLATE.yaml and EVAL-REPORT-TEMPLATE.yaml while giving autonomous AI agents deterministic test sequencing, automated quality gate evaluation, and standardized remediation dispatch. Issue #907."
+  trigger: "User review 2026-10-05 approving CNCF standardization for Layer 10 (EVAL) + issue #907."
+  scope:
+    in:
+      - "framework/governance/workflows/eval-verification-run.sw.yaml: declarative CNCF v0.8 state machine for Layer 10 evaluation execution"
+      - "framework/layers/10_EVAL/README.md: document executable evaluation state machine and workflow bindings"
+      - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md: register eval-verification-run.sw.yaml under governance workflows"
+      - "framework/governance/DIAGRAM_STANDARDS.md: register evaluation execution state machines under diagram standards"
+      - "framework/governance/DECISIONS.md: add GD-53 ratifying Layer 10 evaluation runner CNCF workflow adoption"
+      - "tests/conformance/test_governance_workflows.py: add eval-verification-run.sw.yaml to EXPECTED_WORKFLOWS and verify integrity"
+      - "tests/conformance/test_governance.py: add workflows/eval-verification-run.sw.yaml to EXPECTED_FILES"
+      - "hooks/sync-version-refs.sh: add 0.77.0 to OLD_VERSIONS"
+      - "framework/VERSION: bump 0.77.0 → 0.78.0"
+      - "framework/CHANGELOG.md: entry for CHG-57 / 0.78.0"
+    out:
+      - "Runtime code changes or execution engine bundling (framework remains pure specification per D-0013)"
+      - "Existing EVAL-TEMPLATE.yaml and EVAL-REPORT-TEMPLATE.yaml schemas remain unchanged"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/workflows/eval-verification-run.sw.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Canonical CNCF Serverless Workflow v0.8 state machine governing Layer 10 evaluation execution, parallel test suites, quality gates, and remediation dispatch"
+  - layer: "09_CHG"
+    document: "framework/layers/10_EVAL/README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-57/README.md"
+    new_version: "2.1"
+    changes: "Document executable evaluation state machine and workflow bindings; doc Version 2.0 → 2.1"
+  - layer: "09_CHG"
+    document: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    action: amend
+    archive_path: "framework/archive/CHG-57/GOVERNANCE_WORKFLOW_STANDARD.md"
+    new_version: "1.3"
+    changes: "Register eval-verification-run.sw.yaml in workflow catalog; doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/DIAGRAM_STANDARDS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-57/DIAGRAM_STANDARDS.md"
+    new_version: "1.4"
+    changes: "Register evaluation execution state machines under diagram standards; doc Version 1.3 → 1.4"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-57/DECISIONS.md"
+    new_version: "1.15"
+    changes: "GD-53 entry ratifying CNCF Serverless Workflow standard for Layer 10 evaluation runners"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-57/IPLAN-57.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-57"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-57/ (GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, README.md, VERSION, CHANGELOG.md, sync-version-refs.sh, test_governance.py, test_governance_workflows.py)"
+      phase: "sdd_lifecycle"
+      artifact: "GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, README.md, VERSION, CHANGELOG.md, sync-version-refs.sh, test_governance.py, test_governance_workflows.py"
+      archive_path: "framework/archive/CHG-57/README.md"
+      new_version: "0.78.0"
+      current_version: "0.77.0"
+      status: Completed
+    - step: "Author eval-verification-run.sw.yaml, amend 10_EVAL/README.md, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, and DECISIONS.md"
+      phase: "sdd_lifecycle"
+      artifact: "eval-verification-run.sw.yaml, 10_EVAL/README.md, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md"
+      archive_path: "framework/archive/CHG-57/DECISIONS.md"
+      new_version: "0.78.0"
+      current_version: "0.77.0"
+      status: Completed
+    - step: "Author authorizing IPLAN-57.yaml under framework/archive/CHG-57/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-57/IPLAN-57.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+    - step: "Update tests/conformance/test_governance_workflows.py, test_governance.py, hooks/sync-version-refs.sh, bump VERSION to 0.78.0, update CHANGELOG.md, and run conformance suite"
+      phase: "documentation_sync"
+      artifact: "test_governance_workflows.py, test_governance.py, sync-version-refs.sh, VERSION, CHANGELOG.md"
+      archive_path: null
+      new_version: "0.78.0"
+      current_version: "0.77.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint validates CHG-57 cleanly (exit 0)"
+      result: Pass
+    - check: "test_governance_workflows.py passes green asserting eval-verification-run.sw.yaml schema, states, and transitions"
+      result: Pass
+    - check: "test_governance.py passes green with eval-verification-run.sw.yaml in EXPECTED_FILES"
+      result: Pass
+    - check: "test_sync_version_refs.py passes with 0.77.0 in OLD_VERSIONS"
+      result: Pass
+    - check: "Full conformance test suite passes green"
+      result: Pass

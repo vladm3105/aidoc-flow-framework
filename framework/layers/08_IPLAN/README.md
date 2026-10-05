@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.78.0 |
 
 
 ## C4 Model Position
@@ -72,6 +72,7 @@ cutover under one umbrella) is noted but not adopted.
   `audit_references`. Use for integration-readiness, security-review, and
   code-review findings. Do NOT use for new SPEC features (use `code_build`),
   and do NOT use for post-completion field defects (use `bugfix`).
+- **workflow** — machine-executable implementation DAG adopting CNCF Serverless Workflow v0.8 DSL in the Hybrid Envelope Architecture (`IPLAN-SWF-TEMPLATE.yaml`). Features deterministic state transitions, automated test verification gates, and native saga rollback compensation (`compensatedBy`).
 - **bugfix** — post-completion defect repair parented on a closed IPLAN
   (Completed, merged-at-Completed with VERIFY pending, or Verified) via
   `parent_iplan` + `source_chg`. The manifest is scope-limited to repair
@@ -197,6 +198,7 @@ To modify a Verified IPLAN:
 
 | File | Purpose |
 |------|---------|
+| `IPLAN-SWF-TEMPLATE.yaml` | **Executable Workflow** — adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs, test switch gates, and native saga rollback compensation (`subtype: workflow`). See [`IPLAN_WORKFLOW_STANDARD.md`](../../governance/IPLAN_WORKFLOW_STANDARD.md). |
 | `IPLAN-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
 | `IPLAN-VERIFY-TEMPLATE.yaml` | **Legacy validation** — superseded by the EVAL-RPT flow (CHG-08 #662); retained for existing readers. New validation authors EVAL-RPT reports; repairs use the `bugfix` subtype. |
 

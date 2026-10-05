@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.78.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -252,19 +252,19 @@ flowchart LR
 
 ### Governance State Machines & Workflow Graphs (CNCF Serverless Workflow)
 
-Governance flows and state machines across the framework (such as change request routing,
-worktree isolation, and architecture decomposition) are formally declared as Directed
-Acyclic Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format
-(`framework/governance/workflows/*.sw.yaml`).
+Workflow graphs across the framework are formally declared as Directed Acyclic
+Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`.
+2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
+3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 
-Every governance workflow graph MUST maintain 1-to-1 parity with a native Mermaid
-`stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance
-prose document.
+Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance prose document or implementation plan.
 
-| Aspect | Governance Specification |
+| Aspect | Workflow Specification |
 |---|---|
-| Normative Definition | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
-| Governance Standard | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` |
+| Governance Workflows | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
+| Implementation Workflows | `framework/layers/08_IPLAN/<slug>.yaml` (`workflow:` block) |
+| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md` & `IPLAN_WORKFLOW_STANDARD.md` |
 | Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
 | Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 
