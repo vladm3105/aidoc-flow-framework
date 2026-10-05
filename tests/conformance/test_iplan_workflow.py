@@ -7,8 +7,8 @@ and that governance contracts are properly synchronized.
 """
 
 import unittest
-import yaml
 
+import yaml
 from _spec import FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
