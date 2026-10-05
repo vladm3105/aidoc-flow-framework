@@ -15,11 +15,41 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.11 |
+| Version | 1.12 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.74.0 |
+| Framework Version | 0.75.0 |
+
+---
+
+## GD-50 — C4-L1 for Seed Docs, C4-L2 Triple-Lens for Modules, and Seed-to-Module Decomposition Flow (CHG-54, 0.75.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.74.0 → 0.75.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-54 + IPLAN-54 (`framework/archive/CHG-54/`).
+  Issue: #901.
+- **Context:** The framework aligned the 10 SDD layers with the C4 model (BRD=C4-L1, PRD=C4-L2, SPEC=C4-L3, Code=C4-L4),
+  but left Tier 1 Inputs (Seed) and Tier 2 Domain Source Material (Modules in `docs/modules/`) disconnected from the
+  abstraction hierarchy. Specifically: (1) `SEED-TEMPLATE.md` lacked C4-L1 System Context and DFD-L1 data flow boundary diagrams;
+  (2) `framework/templates/` shipped no canonical `MODULE-TEMPLATE.md`; (3) modules lacked an architectural modeling standard,
+  failing to capture the three critical perspectives (C4-L2 Container structure, DFD-L2 data movement & sensitivity classification,
+  and inter-module sequence choreography); (4) the framework lacked a normative specification explaining how to systematically
+  decompose seed vision into modules.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md` defining the 5-step methodology: Domain Boundary Discovery,
+     C4-L2 Container Definition, DFD-L2 Data Sensitivity & Trust Boundary Mapping, Inter-Module Process Choreography, and
+     Integrity/Invariant Audit.
+  2. Ship canonical `framework/templates/MODULE-TEMPLATE.md` with standard `document_control` frontmatter, C4-L2 container diagram,
+     DFD-L2 data flow diagram with Data Sensitivity & Protection Matrix (Public, Internal, Confidential, Restricted/PII), and
+     sequence failure choreography (`sequence-sync` / `sequence-async`).
+  3. Enhance `framework/templates/SEED-TEMPLATE.md` with C4-L1 System Context and DFD-L1 external data flow Mermaid diagrams.
+  4. Extend `framework/governance/DIAGRAM_STANDARDS.md` to formally recognize Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence)
+     in the C4 + DFD + Sequence ownership model.
+  5. Reconcile `MODULE_LAYOUT.md` (Rule 7) and `SEED_CONTRACT.md` (Phase 0b) to reference the new templates and decomposition playbook.
+  6. Add conformance test suite `tests/conformance/test_module_contract.py`.
+- **Consequence:** Closes the abstraction gap between high-level vision and technical execution; ensures privacy and data protection
+  by design via explicit DFD-L2 sensitivity matrices before code is authored; establishes clear container boundaries preventing
+  premature implementation coupling in module docs.
 
 ---
 

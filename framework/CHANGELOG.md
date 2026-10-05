@@ -7,13 +7,26 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.74.0 |
+| Framework Version | 0.75.0 |
 
 ---
+
+## [0.75.0] — 2026-10-05
+
+### Added — C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and Seed-to-Module decomposition flow (C2 MINOR → 0.75.0, CHG-54 + IPLAN-54)
+
+- **Seed-to-Module Decomposition Playbook (`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`)**: Establishes the normative 5-step methodology (Domain Boundary Discovery, Structural Container Modeling, Data Movement & Sensitivity Mapping, Inter-Module Process Choreography, and Integrity/Invariant Audit) for decomposing Tier 1 Seed documents into Tier 2 Modules (#901).
+- **Canonical Module Template (`framework/templates/MODULE-TEMPLATE.md`)**: Ships official module template with YAML `document_control` frontmatter, C4-L2 Container diagram (`@diagram: c4-l2`), DFD-L2 Data Movement diagram (`@diagram: dfd-l2`) with Data Sensitivity & Protection Matrix (Public, Internal, Confidential, Restricted/PII), and sequence error choreography (`@diagram: sequence-sync` / `sequence-async`).
+- **Seed Template Enhancement (`framework/templates/SEED-TEMPLATE.md`)**: Adds standard Mermaid C4-L1 System Context (`@diagram: c4-l1`) and DFD-L1 External Data Flow (`@diagram: dfd-l1`) diagrams.
+- **Diagram standards extension (`DIAGRAM_STANDARDS.md`)**: Formally incorporates Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence) into the *C4 + DFD + Sequence Ownership Model*.
+- **Governance alignment**: Updated `MODULE_LAYOUT.md` (Rule 7) and `SEED_CONTRACT.md` (Phase 0b) to reference the new templates and decomposition playbook.
+- **Decision GD-50**: Ratified in `framework/governance/DECISIONS.md`.
+- **Conformance suite**: Added `tests/conformance/test_module_contract.py` asserting module template schema, diagram tags, and governance integrity.
+- Sweep 0.74.0 → 0.75.0 propagated across tree.
 
 ## [0.74.0] — 2026-10-05
 
