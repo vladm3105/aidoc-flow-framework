@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.75.0 |
+| Framework Version | 0.76.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -249,6 +249,24 @@ flowchart LR
 | **Maintainability** | [PASS] No path updates | [FAIL] Path breakage risk | [FAIL] Path breakage risk |
 | **Navigation** | [FAIL] Manual | [PASS] One-click | [PASS] One-click |
 | **Recommended For** | Conceptual diagrams | Published traceability | In-document navigation |
+
+### Governance State Machines & Workflow Graphs (CNCF Serverless Workflow)
+
+Governance flows and state machines across the framework (such as change request routing,
+worktree isolation, and architecture decomposition) are formally declared as Directed
+Acyclic Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format
+(`framework/governance/workflows/*.sw.yaml`).
+
+Every governance workflow graph MUST maintain 1-to-1 parity with a native Mermaid
+`stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance
+prose document.
+
+| Aspect | Governance Specification |
+|---|---|
+| Normative Definition | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
+| Governance Standard | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` |
+| Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
+| Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 
 ### Diagram Tooling
 

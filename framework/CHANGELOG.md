@@ -11,9 +11,23 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.75.0 |
+| Framework Version | 0.76.0 |
 
 ---
+
+## [0.76.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for declarative governance flows and executable graphs (C2 MINOR → 0.76.0, CHG-55 + IPLAN-55)
+
+- **Governance Workflow Standard (`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format as the official framework standard for modeling, validating, and executing governance flows and multi-agent lifecycle state machines (#903). Defines primitives mapping, 7 graph integrity rules, and the zero-runtime LangGraph adapter pattern.
+- **Pilot Workflow State Machines (`framework/governance/workflows/`)**:
+  - `chg-request-flow.sw.yaml`: Complete state machine governing change request classification (Emergency, Type-R, F1–F4), gate progression, approval callbacks, SDD cascades, IPLAN authoring, and closeout verification.
+  - `seed-to-module-decomposition.sw.yaml`: 5-step decomposition state machine with parallel review crew fan-out (`completionType: allOf`) and Triple-Lens artifact sign-off.
+  - `worktree-pr-lifecycle.sw.yaml`: Worktree creation, commit audit enforcement (OPS-0065), PR watch loop, auto-merge, and §3.7 order-guarded cleanup.
+- **Diagram Standards Extension (`DIAGRAM_STANDARDS.md`)**: Links governance state machines to the CNCF workflow standard, establishing 1-to-1 visual graph parity with embedded Mermaid `stateDiagram-v2` diagrams.
+- **Decision GD-51**: Ratified in `framework/governance/DECISIONS.md`.
+- **Conformance Assertions**: Added `tests/conformance/test_governance_workflows.py` verifying YAML parsing, schema version, state reachability, and transition integrity across all workflows; updated `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- Sweep 0.75.0 → 0.76.0 propagated across tree.
 
 ## [0.75.0] — 2026-10-05
 

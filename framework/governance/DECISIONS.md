@@ -15,11 +15,43 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.12 |
+| Version | 1.13 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.75.0 |
+| Framework Version | 0.76.0 |
+
+---
+
+## GD-51 — CNCF Serverless Workflow standard (YAML) for declarative governance flows and executable graphs (CHG-55, 0.76.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.75.0 → 0.76.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-55 + IPLAN-55 (`framework/archive/CHG-55/`).
+  Issue: #903.
+- **Context:** The SDD framework historically defined governance rules (change request flows,
+  review sagas, worktree lifecycle, decomposition methodologies) across extensive prose markdown
+  files. While human-readable, prose specifications are vulnerable to agent interpretation drift,
+  cannot be directly validated against state transition invariants, and cannot be loaded directly
+  into multi-agent graph orchestrators (such as LangGraph, Temporal, or custom agent harnesses).
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` establishing the open,
+     vendor-neutral CNCF Serverless Workflow specification (`specVersion: "0.8"`) in YAML format
+     as the official standard for modeling, validating, and executing governance flows.
+  2. Maintain strict engine agnosticism (D-0013): the framework ships declarative `.sw.yaml` files
+     under `framework/governance/workflows/` without bundling runtime code or proprietary orchestrator dependencies.
+  3. Ship canonical pilot workflows:
+     - `framework/governance/workflows/chg-request-flow.sw.yaml`: State machine for CHG classification
+       (Emergency, Type-R, F1–F4), gate progression, and closeout.
+     - `framework/governance/workflows/seed-to-module-decomposition.sw.yaml`: 5-step decomposition
+       flow with Triple-Lens modeling.
+     - `framework/governance/workflows/worktree-pr-lifecycle.sw.yaml`: Ordered worktree creation,
+       commit audit, PR watch loop, auto-merge, and §3.7 cleanup order guard.
+  4. Extend `framework/governance/DIAGRAM_STANDARDS.md` to link governance state machines to the CNCF
+     workflow standard, mandating 1-to-1 parity between YAML specs and embedded Mermaid diagrams.
+  5. Add conformance test suite `tests/conformance/test_governance_workflows.py`.
+- **Consequence:** Bridges the gap between static governance documentation and autonomous multi-agent
+  execution; eliminates procedural drift; enables on-the-fly graph compilation into LangGraph and other
+  engines; guarantees deterministic verification across all framework lifecycles.
 
 ---
 
