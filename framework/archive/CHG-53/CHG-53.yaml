@@ -1,0 +1,212 @@
+# =============================================================================
+#  CHG-53: Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (spec C2 MINOR → 0.74.0)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — governance docs, template addition, conformance tests).
+#  Precedent CHG-11/CHG-36/CHG-37/CHG-45/CHG-46/CHG-48/CHG-50: sdd_lifecycle
+#  entries + snapshots + seed_scope no-change + SDD-first steps.
+#  C2 per GATE-SPEC-E003; MINOR per GD-47's test (new SEED-TEMPLATE.md and
+#  scaffold path standardization is new API surface).
+#  IPLAN: framework/archive/CHG-53/IPLAN-53.yaml (authoring gated after approval)
+#  Issue: #899 ([Governance][gap] Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (SEED_CONTRACT.md, MODULE_LAYOUT.md,
+#  DECISION_WORKFLOW.md, AIDOC-SCAFFOLD-TEMPLATE.md, AIDOC.md, DECISIONS.md,
+#  VERSION, test_seed_contract.py); (2) no client/server — prose + markdown
+#  template + python test; enforcement surface is chg_lint + test_seed_contract
+#  + full conformance battery + PR checks; (3) N/A no structs; (4) N/A no queries;
+#  (5) EARS/BDD IDs vacuous (spec change, no SDD contract at stake); (6) N/A no
+#  handlers; (7) issue #899 referenced; (8) covering tests: extend
+#  tests/conformance/test_seed_contract.py; (9) fixes located per issue #899;
+#  (10) N/A no migrations; (11) SDD versioning — sdd_lifecycle amends for
+#  MODULE_LAYOUT (1.0→1.1), DECISION_WORKFLOW (1.0→1.1), AIDOC-SCAFFOLD-TEMPLATE
+#  (2.0→2.1), SEED_CONTRACT (1.1→1.2), DECISIONS (1.10→1.11, GD-49), plus
+#  new SEED-TEMPLATE.md (1.0) and IPLAN-53 (1.0); (12) GOV-014 paired; (13)
+#  SDD-first — sdd_lifecycle steps before iplan_creation (CHG-L005); (14) no
+#  code steps in CHG (legal phases).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — template + governance guidance
+#  only; grants no capabilities/tools/permissions, introduces no secrets.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified;
+#  finding stands). Phase 0b: no module lifecycle — repo carries no docs/modules/
+#  tree (mirrors CHG-50 §4A).
+# =============================================================================
+
+id: CHG-53
+title: "Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (spec C2 MINOR → 0.74.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-05"
+  framework_version: "0.73.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-53"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-10-05T00:00:00Z"
+  date_approved: "2026-10-05T00:00:00Z"
+  date_implemented: "2026-10-05T00:00:00Z"
+  supersedes:
+    - "MODULE_LAYOUT.md v1.0 (framework/archive/CHG-53/MODULE_LAYOUT.md)"
+    - "DECISION_WORKFLOW.md v1.0 (framework/archive/CHG-53/DECISION_WORKFLOW.md)"
+    - "AIDOC-SCAFFOLD-TEMPLATE.md v2.0 (framework/archive/CHG-53/AIDOC-SCAFFOLD-TEMPLATE.md)"
+    - "DECISIONS.md v1.10 (framework/archive/CHG-53/DECISIONS.md)"
+    - "framework/VERSION 0.73.0 (framework/archive/CHG-53/VERSION)"
+    - "test_seed_contract.py (framework/archive/CHG-53/test_seed_contract.py)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Ship canonical framework/templates/SEED-TEMPLATE.md; standardize <project>/seed/ at project root as the canonical Tier 1 path (reconciling MODULE_LAYOUT.md with README.md and AIDOC.md); reconcile DECISION_WORKFLOW.md lines 43 & 128 to GD-36 (frozen per version); update SEED_CONTRACT.md to document the end-to-end Seed → Module → SDD supersede sequence and Secondary Review Gate grep sweep; update AIDOC-SCAFFOLD-TEMPLATE.md with seed/ bootstrapping; add conformance test in test_seed_contract.py; MINOR bump 0.73.0 → 0.74.0."
+  why: "Seed docs are the foundation and true-north reference of a project and version under GD-36. However, the framework shipped no canonical SEED-TEMPLATE.md, exhibited path divergence between MODULE_LAYOUT (docs/seed/) and README/AIDOC (seed/), retained stale 'frozen forever' phrasing in DECISION_WORKFLOW.md, and omitted seed/ bootstrapping in scaffold guidance. Issue #899."
+  trigger: "User review 2026-10-05 identifying seed doc tier gaps + issue #899."
+  scope:
+    in:
+      - "framework/templates/SEED-TEMPLATE.md: new canonical template with document_control and standard sections"
+      - "framework/governance/MODULE_LAYOUT.md: reconcile directory structure to <project>/seed/ (Tier 1 Inputs, peer to docs/)"
+      - "framework/governance/DECISION_WORKFLOW.md: reconcile lines 43 & 128 from 'Frozen after first BRD' to 'Frozen per version (GD-36 / SEED_CONTRACT R1)'"
+      - "framework/governance/SEED_CONTRACT.md: document the end-to-end Seed → Module → SDD supersede sequence and Secondary Review Gate grep sweep"
+      - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md: add seed/ tree bootstrapping layout"
+      - "framework/governance/DECISIONS.md: add GD-49 recording the canonical template and path reconciliation"
+      - "tests/conformance/test_seed_contract.py: add tests asserting SEED-TEMPLATE.md exists and adheres to standards"
+      - "hooks/sync-version-refs.sh: add 0.73.0 to OLD_VERSIONS"
+      - "framework/VERSION: bump 0.73.0 → 0.74.0"
+      - "framework/CHANGELOG.md: entry for CHG-53 / 0.74.0"
+    out:
+      - "Runtime code changes (framework has no runtime code)"
+      - "Layer 01-10 templates (BRD-TEMPLATE.yaml, etc. already carry correct seed_disposition)"
+      - "SEED01 linter logic (already supports both seed/ and docs/seed/)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/MODULE_LAYOUT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-53/MODULE_LAYOUT.md"
+    new_version: "1.1"
+    changes: "Reconcile directory structure to <project>/seed/ (Tier 1 Inputs); note docs/seed/ as legacy-tolerated; doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISION_WORKFLOW.md"
+    action: amend
+    archive_path: "framework/archive/CHG-53/DECISION_WORKFLOW.md"
+    new_version: "1.1"
+    changes: "Reconcile lines 43 & 128 to GD-36 (frozen per version, superseded via F3 Phase 0a); cross-reference SEED-TEMPLATE.md; doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/SEED_CONTRACT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-53/SEED_CONTRACT.md"
+    new_version: "1.2"
+    changes: "Add end-to-end supersede lifecycle (Seed → Module → SDD) and Secondary Gate grep sweep guidance; cross-reference SEED-TEMPLATE.md; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-53/AIDOC-SCAFFOLD-TEMPLATE.md"
+    new_version: "2.1"
+    changes: "Add <project>/seed/ tree layout and bootstrapping guidance; doc Version 2.0 → 2.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-53/DECISIONS.md"
+    new_version: "1.11"
+    changes: "GD-49 entry for canonical SEED-TEMPLATE.md and seed path reconciliation"
+  - layer: "09_CHG"
+    document: "framework/templates/SEED-TEMPLATE.md"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Canonical seed template with document_control frontmatter and standard sections"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-53/IPLAN-53.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-53"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-53/ (MODULE_LAYOUT.md, DECISION_WORKFLOW.md, AIDOC-SCAFFOLD-TEMPLATE.md, DECISIONS.md, VERSION, CHANGELOG.md, test_seed_contract.py)"
+      phase: "sdd_lifecycle"
+      artifact: "MODULE_LAYOUT.md, DECISION_WORKFLOW.md, AIDOC-SCAFFOLD-TEMPLATE.md, DECISIONS.md, VERSION, test_seed_contract.py"
+      archive_path: "framework/archive/CHG-53/"
+      new_version: "0.74.0"
+      current_version: "0.73.0"
+      status: Completed
+    - step: "Author framework/templates/SEED-TEMPLATE.md and amend governance docs per sdd_lifecycle"
+      phase: "sdd_lifecycle"
+      artifact: "SEED-TEMPLATE.md, MODULE_LAYOUT.md, DECISION_WORKFLOW.md, SEED_CONTRACT.md, AIDOC-SCAFFOLD-TEMPLATE.md, DECISIONS.md"
+      archive_path: "framework/archive/CHG-53/"
+      new_version: "0.74.0"
+      current_version: "0.73.0"
+      status: Completed
+    - step: "Author authorizing IPLAN-53.yaml under framework/archive/CHG-53/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-53/IPLAN-53.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+    - step: "Extend tests/conformance/test_seed_contract.py, update hooks/sync-version-refs.sh, bump VERSION to 0.74.0, update CHANGELOG.md, and run conformance suite"
+      phase: "documentation_sync"
+      artifact: "test_seed_contract.py, sync-version-refs.sh, VERSION, CHANGELOG.md"
+      archive_path: null
+      new_version: "0.74.0"
+      current_version: "0.73.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint validates CHG-53 cleanly (exit 0)"
+      result: Pass
+    - check: "test_seed_contract.py passes green including SEED-TEMPLATE assertions"
+      result: Pass
+    - check: "test_sync_version_refs.py passes with 0.73.0 in OLD_VERSIONS"
+      result: Pass
+    - check: "Full conformance test suite passes green"
+      result: Pass

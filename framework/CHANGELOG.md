@@ -7,13 +7,26 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-02 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.74.0 |
 
 ---
+
+## [0.74.0] — 2026-10-05
+
+### Added — Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (C2 MINOR → 0.74.0, CHG-53 + IPLAN-53)
+
+- **Canonical seed template (`framework/templates/SEED-TEMPLATE.md`)**: Ships official template with YAML `document_control` frontmatter (version, status, author, supersedes, revision_history) and standardized sections (Vision, Environmental Realities, Options/Trade-Offs, Invariants, Non-Goals, natural-language claims) (#899).
+- **Path standard reconciliation (`MODULE_LAYOUT.md`)**: Standardizes `<project>/seed/` at project root as Tier 1 Inputs, distinct from AI outputs under `<project>/docs/` (reconciling with `README.md` and `AIDOC.md`); notes `docs/seed/` as legacy-tolerated.
+- **`DECISION_WORKFLOW.md` GD-36 reconciliation**: Reconciles lines 43 & 128 from stale pre-CHG-11 "Frozen after first BRD" to "Frozen per version (GD-36 / SEED_CONTRACT R1: superseded via F3 Phase 0a)".
+- **End-to-end supersede lifecycle documentation (`SEED_CONTRACT.md`)**: Documents the full `Seed → Module → SDD` cascade (Phase 0a seed supersede, Phase 0b module sync, hard Review Checkpoint, Phase 0c SDD cascade + Secondary Review Gate stale-reference sweep).
+- **Project scaffolding (`AIDOC-SCAFFOLD-TEMPLATE.md`)**: Adds `<project>/seed/` tree layout and bootstrapping guidance.
+- **Decision GD-49**: Ratified in `framework/governance/DECISIONS.md`.
+- **Conformance assertions**: Extended `tests/conformance/test_seed_contract.py` with `SeedTemplateContract` suite.
+- Sweep 0.73.0 → 0.74.0 propagated across tree.
 
 ## [0.73.0] — 2026-10-02
 

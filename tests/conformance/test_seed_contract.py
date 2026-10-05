@@ -290,5 +290,60 @@ class Seed01Lint(unittest.TestCase):
         self.assertIn("`SEED01`", catalog, "SEED01 not documented in LINT_RULES.md")
 
 
+
+
+class SeedTemplateContract(unittest.TestCase):
+    """GD-49: canonical SEED-TEMPLATE.md existence, frontmatter schema, and guidance."""
+
+    def test_template_exists(self):
+        self.assertTrue(
+            (FRAMEWORK / "templates" / "SEED-TEMPLATE.md").is_file(),
+            "framework/templates/SEED-TEMPLATE.md is missing",
+        )
+
+    def test_template_document_control(self):
+        text = (FRAMEWORK / "templates" / "SEED-TEMPLATE.md").read_text(encoding="utf-8")
+        parts = text.split("---")
+        self.assertGreaterEqual(len(parts), 3, "SEED-TEMPLATE.md missing YAML frontmatter")
+        data = yaml.safe_load(parts[1])
+        self.assertIn("document_control", data)
+        dc = data["document_control"]
+        for key in (
+            "document_id",
+            "version",
+            "status",
+            "author",
+            "framework_version",
+            "supersedes",
+            "revision_history",
+        ):
+            self.assertIn(key, dc, f"SEED-TEMPLATE.md document_control missing {key}")
+
+    def test_template_version_within_regex_limit(self):
+        """Line distance between document_control: and version: must be <= 12 lines for SEED01 regex."""
+        lines = (FRAMEWORK / "templates" / "SEED-TEMPLATE.md").read_text(encoding="utf-8").splitlines()
+        dc_idx = None
+        ver_idx = None
+        for i, line in enumerate(lines):
+            if "document_control:" in line:
+                dc_idx = i
+            elif dc_idx is not None and "version:" in line:
+                ver_idx = i
+                break
+        self.assertIsNotNone(dc_idx, "document_control: not found")
+        self.assertIsNotNone(ver_idx, "version: not found")
+        self.assertLessEqual(ver_idx - dc_idx, 12, "version: is >12 lines below document_control:")
+
+    def test_gd49_recorded(self):
+        decisions = (GOVERNANCE / "DECISIONS.md").read_text(encoding="utf-8")
+        self.assertIn("## GD-49", decisions, "GD-49 not recorded in governance/DECISIONS.md")
+
+    def test_decision_workflow_reconciled(self):
+        """GD-36 reconciliation: DECISION_WORKFLOW.md must not contain 'Frozen after first BRD'."""
+        text = (GOVERNANCE / "DECISION_WORKFLOW.md").read_text(encoding="utf-8")
+        self.assertNotIn("Frozen after first BRD", text)
+
+
 if __name__ == "__main__":
+
     unittest.main()

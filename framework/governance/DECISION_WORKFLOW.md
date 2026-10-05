@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.74.0 |
 
 
 Defines the authorship boundary between seed, module, and SDD decision layers.
@@ -31,7 +31,7 @@ Seed (architect)          Module (product owner)        SDD ADR (dev team)
 Suggestions               ALL source material            ONE selected option
 2-3 options               Refined decisions              Formal decision
 Options + rationale       Invariants + constraints       Context-Decision-Consequences
-Frozen after first BRD    Living document                Versioned per CHG
+Frozen per version (GD-36) Living document                Versioned per CHG
 ```
 
 ### Tier 1: Seed Documents
@@ -40,8 +40,9 @@ Frozen after first BRD    Living document                Versioned per CHG
 - **Content:** Initial architecture suggestions, 2-3 options per decision,
   design principles, rationale for each option
 - **Location:** `<project>/seed/architecture/`, `<project>/seed/agent-surface/`
-- **Lifecycle:** Frozen once the first BRD of a cycle is authored
-  (per `SEED_CONTRACT.md`)
+  (canonical Tier 1 Inputs path; scaffold: `framework/templates/SEED-TEMPLATE.md`)
+- **Lifecycle:** Frozen per version once the first BRD of a cycle is authored
+  (per `SEED_CONTRACT.md` R1); supersedes version via F3 Phase 0a per GD-36
 
 **What seed docs contain:**
 - "Here are 3 options for telemetry collection"
@@ -125,7 +126,7 @@ this module lives in the module doc.
 
 | Artifact | Author | Contains | Lifecycle |
 |----------|--------|----------|-----------|
-| Seed doc | System architect + stakeholders | Suggestions, options, principles | Frozen after first BRD |
+| Seed doc | System architect + stakeholders | Suggestions, options, principles | Frozen per version (GD-36) |
 | Module doc | Product owner + dev team | ALL source material, refined decisions | Living document |
 | BRD | Dev team (from module) | Business requirements, seed disposition | Approved when PRD starts |
 | SDD ADR | Dev team | ONE selected architecture | Versioned per CHG |
@@ -134,7 +135,8 @@ this module lives in the module doc.
 
 ## Cross-References
 
-- `SEED_CONTRACT.md` — Seed lifecycle and disposition rules
+- `SEED_CONTRACT.md` — Seed lifecycle, disposition rules, and supersede flow
+- `framework/templates/SEED-TEMPLATE.md` — Canonical seed document template
 - `DOC_GOVERNANCE_CORE.md` — Version bumping, template policy
 - `layers/09_CHG/gates/` — Gate definitions for CHG approval
 - `registry/LAYER_REGISTRY.yaml` — Layer definitions and dependencies
