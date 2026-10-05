@@ -48,6 +48,7 @@ EXPECTED_FILES = [
     "MODULE_LAYOUT.md",
     "SEED_TO_MODULE_DECOMPOSITION.md",
     "GOVERNANCE_WORKFLOW_STANDARD.md",
+    "IPLAN_WORKFLOW_STANDARD.md",
     "workflows/chg-request-flow.sw.yaml",
     "workflows/seed-to-module-decomposition.sw.yaml",
     "workflows/worktree-pr-lifecycle.sw.yaml",

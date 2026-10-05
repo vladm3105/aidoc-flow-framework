@@ -11,9 +11,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.77.0 |
 
 ---
+
+## [0.77.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution graphs (C2 MINOR → 0.77.0, CHG-56 + IPLAN-56)
+
+- **Layer 08 Workflow Standard (`framework/governance/IPLAN_WORKFLOW_STANDARD.md`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format as the official execution standard for Layer 08 (IPLAN) implementation state machines (#905). Establishes the Hybrid Envelope Architecture preserving structural compatibility (`STRUCT01`) with existing SDD doc linter while housing executable workflow graphs, 6 normative integrity rules (DAG validation, deterministic state transitions, idempotency, traceability tag retention), saga rollback compensation pattern (`onErrors` compensations), and zero-runtime LangGraph adapter mapping.
+- **Layer 08 Canonical Workflow Template (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**: Introduces the canonical CNCF workflow-based implementation plan template (`subtype: workflow`) featuring parallel test generation, phased task batching, automated verification gates, and atomic rollback workflows.
+- **Layer 08 Standards Alignment**: Updated `framework/layers/08_IPLAN/PLAN_STANDARD.md` and `framework/layers/08_IPLAN/README.md` to formally document and register the `workflow` subtype alongside the linear task-based IPLAN, providing clear criteria for choosing between workflow and linear plan execution.
+- **Core Governance & Decision GD-52**: Ratified Decision `GD-52` in `framework/governance/DECISIONS.md`. Updated `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and `framework/governance/DIAGRAM_STANDARDS.md` to delineate the domain boundaries between governance policy workflows (`framework/governance/workflows/`) and implementation execution workflows (`framework/layers/08_IPLAN/`).
+- **Conformance Test Suite**: Added `tests/conformance/test_iplan_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state transitions, and step references; updated `tests/conformance/test_governance.py` with `IPLAN_WORKFLOW_STANDARD.md`.
+- Sweep 0.76.0 → 0.77.0 propagated across tree.
 
 ## [0.76.0] — 2026-10-05
 

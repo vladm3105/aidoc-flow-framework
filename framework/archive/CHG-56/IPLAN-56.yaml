@@ -1,0 +1,163 @@
+# =============================================================================
+#  IPLAN-56: Adopt CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN)
+#  execution (spec-source, C2, MINOR 0.77.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-56/CHG-56.yaml (Implemented)
+#  Source: Issue #905
+# =============================================================================
+
+doc_id: IPLAN-56
+title: "Adopt CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution (spec C2 MINOR → 0.77.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.76.0"
+  source_chg: "CHG-56"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-56"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-56; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 13
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-56/CHG-56.yaml + IPLAN-56.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-56/GOVERNANCE_WORKFLOW_STANDARD.md + DIAGRAM_STANDARDS.md + DECISIONS.md + PLAN_STANDARD.md + README.md + VERSION + CHANGELOG.md + sync-version-refs.sh + test_governance.py"
+      description: "Pre-change snapshots (base 0.76.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+      description: "Normative standard defining Layer 08 CNCF Serverless Workflow adoption and rules"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+      description: "Canonical template for executable implementation plans"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Clarify separation between governance workflows and implementation workflows"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Link IPLAN execution state machines to diagram standards"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record GD-52"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/08_IPLAN/PLAN_STANDARD.md"
+      description: "Document subtype workflow and reference new standard"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "Document IPLAN-SWF-TEMPLATE.yaml"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Add IPLAN_WORKFLOW_STANDARD.md to EXPECTED_FILES"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_iplan_workflow.py"
+      description: "Conformance tests asserting IPLAN workflow YAML syntax, schema version, states, compensation, and tags"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.76.0 to OLD_VERSIONS"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.76.0 → 0.77.0"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add 0.77.0 entry"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+execution_steps:
+  - step: 1
+    name: "Pre-change snapshots"
+    action: "Snapshot modified files to framework/archive/CHG-56/"
+    status: DONE
+  - step: 2
+    name: "Author IPLAN_WORKFLOW_STANDARD.md"
+    action: "Create framework/governance/IPLAN_WORKFLOW_STANDARD.md with Hybrid Envelope rules, saga rollbacks, and LangGraph adapter"
+    status: DONE
+  - step: 3
+    name: "Author IPLAN-SWF-TEMPLATE.yaml"
+    action: "Create framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml with CNCF v0.8 workflow graph"
+    status: DONE
+  - step: 4
+    name: "Align governance and layer docs"
+    action: "Update GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, PLAN_STANDARD.md, and README.md"
+    status: DONE
+  - step: 5
+    name: "Record GD-52 in DECISIONS.md"
+    action: "Document GD-52 decision ratifying CNCF Serverless Workflow standard for Layer 08"
+    status: DONE
+  - step: 6
+    name: "Update test_governance.py"
+    action: "Add IPLAN_WORKFLOW_STANDARD.md to EXPECTED_FILES"
+    status: DONE
+  - step: 7
+    name: "Author test_iplan_workflow.py"
+    action: "Add unit tests verifying IPLAN workflow YAML parsing, schema version, states, compensation, and tags"
+    status: DONE
+  - step: 8
+    name: "Sync versions and changelog"
+    action: "Update sync-version-refs.sh, bump VERSION to 0.77.0, update CHANGELOG.md"
+    status: DONE
+  - step: 9
+    name: "Run test suite"
+    action: "Verify all tests pass green"
+    status: DONE

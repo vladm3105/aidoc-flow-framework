@@ -1,7 +1,7 @@
 # SKILLS-REGISTRY.yaml — framework skills index
 # Single owner for skill list: this file. SKILL.md frontmatter `name` must match directory name.
 version: "1.0"
-framework_version: "0.76.0"
+framework_version: "0.77.0"
 source: "aidoc-flow-claude-agents-config/skills (private, 2026-09-27)"
 skills:
   - name: approval-gate

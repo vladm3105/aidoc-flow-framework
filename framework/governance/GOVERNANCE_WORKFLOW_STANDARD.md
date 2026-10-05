@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.76.0 |
+| Framework Version | 0.77.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -34,6 +34,16 @@ This specification formalizes **Machine-Executable Governance**:
    rendering native Mermaid state diagrams embedded directly into human-facing documentation.
 
 ---
+
+### Domain Separation: Governance Workflows vs. Implementation Workflows
+
+To prevent conflation between repository governance policy and codebase mutation tasks:
+1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
+   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas).
+   Governed exclusively by this standard.
+2. **Implementation Workflows (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**:
+   Govern codebase mutation, test file creation, and execution-time saga compensation.
+   Governed by [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
