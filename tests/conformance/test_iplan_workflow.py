@@ -96,7 +96,9 @@ class IPlanWorkflowTest(unittest.TestCase):
         for state in states:
             s_name = state["name"]
             s_type = state.get("type")
-            self.assertIn(s_type, VALID_STATE_TYPES, f"State '{s_name}' has invalid type '{s_type}'")
+            self.assertIn(
+                s_type, VALID_STATE_TYPES, f"State '{s_name}' has invalid type '{s_type}'"
+            )
 
             # Check transition target
             if "transition" in state:
