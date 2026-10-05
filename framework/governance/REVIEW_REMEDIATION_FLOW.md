@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.78.0 |
+| Framework Version | 0.79.0 |
 
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -87,6 +87,49 @@ Engines implement the check by comparing elapsed time against the
 `SOFT_DEADLINE` (a fixed buffer below the OS-level timeout); on crossing it they
 set saga `status: "PARTIAL_TIMEOUT"`, preserve any reduced findings, and exit
 cleanly for the caller to re-invoke.
+
+## Executable State Machine (CNCF Serverless Workflow)
+
+To eliminate procedural drift and provide a deterministic, machine-executable definition
+of this quality loop for autonomous AI coding agents and multi-agent crews (e.g. via LangGraph
+or Temporal adapters), the review and remediation lifecycle is formalized in:
+`framework/governance/workflows/review-remediation-flow.sw.yaml`.
+
+The workflow conforms to the CNCF Serverless Workflow v0.8 specification (`specVersion: "0.8"`)
+and defines the following state progression:
+
+```mermaid
+stateDiagram-v2
+    [*] --> PrepareReview: Artifact Created/Edited
+    PrepareReview --> CheckBreakCircuit
+    CheckBreakCircuit --> DispatchReviewCrew: elapsed <= SOFT_DEADLINE
+    CheckBreakCircuit --> HandlePartialTimeout: elapsed > SOFT_DEADLINE
+    DispatchReviewCrew --> SynthesizeFindings: Multi-persona review fan-in
+    SynthesizeFindings --> EvaluateGatePass: Calculate score & severity
+    EvaluateGatePass --> ApprovedDownstream: score >= gate AND no critical/medium
+    EvaluateGatePass --> CheckIterationCap: score < gate OR critical/medium findings
+    ApprovedDownstream --> [*]
+    CheckIterationCap --> RemediateArtifact: iteration < max (default 3)
+    CheckIterationCap --> EscalateToHuman: iteration >= max
+    RemediateArtifact --> CheckBreakCircuit: Re-review pass
+    EscalateToHuman --> [*]
+    HandlePartialTimeout --> [*]
+```
+
+### State-to-Primitive Mapping
+
+| Workflow State | CNCF State Type | Operational Semantics |
+|---|---|---|
+| `PrepareReview` | `operation` | Initializes saga journal, registers artifact under review, records requested crew |
+| `CheckBreakCircuit` | `switch` | Compares elapsed wall-clock against `SOFT_DEADLINE` to avoid unhandled OS SIGTERM |
+| `DispatchReviewCrew` | `parallel` | Dispatches independent review personas simultaneously (`completionType: allOf`) |
+| `SynthesizeFindings` | `operation` | Reduces persona findings into unified core (score, blocking counts, coverage) |
+| `EvaluateGatePass` | `switch` | Gates promotion: branches to approval if score ≥ threshold and no critical/medium issues |
+| `CheckIterationCap` | `switch` | Enforces 3-strike cap (`quality_loop_max_iterations`); branches to escalation if exceeded |
+| `RemediateArtifact` | `operation` | Applies localized fixes for blocking findings, increments iteration counter |
+| `ApprovedDownstream` | `operation` (end) | Seals review journal as `CLOSED`, permits downstream layer authoring |
+| `EscalateToHuman` | `operation` (end) | Transitions saga to `ESCALATED`, halts autonomous looping, alerts maintainer |
+| `HandlePartialTimeout` | `operation` (end) | Transitions saga to `PARTIAL_TIMEOUT`, writes durable checkpoint journal |
 
 ## Trigger points
 
@@ -246,6 +289,10 @@ or vice versa. Both must pass for a merge.
 
 - `DOC_GOVERNANCE_CORE.md` — governance principles and the readiness-gate baseline.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
+- `REVIEW_SAGA.md` — lifecycle saga, state transitions, and journal schema for review runs.
+- `workflows/review-remediation-flow.sw.yaml` — canonical CNCF Serverless Workflow state machine.
+- `GOVERNANCE_WORKFLOW_STANDARD.md` — normative specification for CNCF Serverless Workflow adoption.
+- `DIAGRAM_STANDARDS.md` — visualization standards and Mermaid syntax for governance workflows.
 - `chg/` — the change-management overlay (the `pre_merge`/gate machinery for changes).
 - `../README.md` — the layer flow these artifacts are created in.
 - `aidoc-flow-ci@ci/v1.6.0`:`docs/REPO_STANDARDS.md` §14 —

@@ -53,6 +53,8 @@ EXPECTED_FILES = [
     "workflows/seed-to-module-decomposition.sw.yaml",
     "workflows/worktree-pr-lifecycle.sw.yaml",
     "workflows/eval-verification-run.sw.yaml",
+    "workflows/review-remediation-flow.sw.yaml",
+    "workflows/decision-ratification-flow.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",
