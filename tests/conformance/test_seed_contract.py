@@ -290,8 +290,6 @@ class Seed01Lint(unittest.TestCase):
         self.assertIn("`SEED01`", catalog, "SEED01 not documented in LINT_RULES.md")
 
 
-
-
 class SeedTemplateContract(unittest.TestCase):
     """GD-49: canonical SEED-TEMPLATE.md existence, frontmatter schema, and guidance."""
 
@@ -321,7 +319,9 @@ class SeedTemplateContract(unittest.TestCase):
 
     def test_template_version_within_regex_limit(self):
         """Line distance between document_control: and version: must be <= 12 lines for SEED01 regex."""
-        lines = (FRAMEWORK / "templates" / "SEED-TEMPLATE.md").read_text(encoding="utf-8").splitlines()
+        lines = (
+            (FRAMEWORK / "templates" / "SEED-TEMPLATE.md").read_text(encoding="utf-8").splitlines()
+        )
         dc_idx = None
         ver_idx = None
         for i, line in enumerate(lines):
@@ -345,5 +345,4 @@ class SeedTemplateContract(unittest.TestCase):
 
 
 if __name__ == "__main__":
-
     unittest.main()

@@ -92,4 +92,4 @@ This project pins **aidoc-flow-framework X.Y.Z** (declared in
 Initial human-authored requirements live under `<project>/seed/` before the first
 BRD is authored (`SEED_CONTRACT.md` R1). Seed documents explore options, trade-offs,
 and architectural invariants without carrying formal SDD element IDs. Initialize
-substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md).
+substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](../../templates/SEED-TEMPLATE.md).
