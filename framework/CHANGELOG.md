@@ -7,11 +7,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.8 |
+| Version | 1.9 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.83.0 |
+| Framework Version | 0.84.0 |
+
+## [0.84.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 03 (EARS) requirements analysis & traceability validation workflows (C2 MINOR → 0.84.0, CHG-63 + IPLAN-63)
+
+- **EARS Requirements Analysis & Traceability Validation Workflow (`framework/governance/workflows/ears-requirements-validation.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing requirements syntax parsing, 5-pattern compliance verification, dependency DAG resolution, cross-requirement conflict detection, upstream PRD traceability validation, BDD-readiness score evaluation, stakeholder clarification callbacks, and requirement invalidation compensation sagas (#919). Features requirement stream ingestion (`IngestRequirementsStream`), syntax pattern validation (`ValidateEarsSyntax` enforcing WHEN/WHILE/WHERE/IF/Ubiquitous patterns, actor clauses, and timing bounds), parallel dependency resolution (`ResolveRequirementDependencies` parallel state across invariant, event-driven, and recovery branches), cross-requirement conflict detection (`DetectRequirementConflicts`), BDD-readiness scoring gate (`EvaluateBddReadiness` switch state targeting >=90/100 readiness score), stakeholder clarification callbacks (`RequestRequirementClarification` callback state with correlated `RequirementClarificationEvent` and timeout), canonical EARS element ID emission (`RatifyEarsContract`), and rejection invalidation compensation (`compensatedBy: InvalidateDownstreamArtifacts`).
+- **Layer 03 EARS Workflow Specification Standard (`framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing requirements analysis, dependency DAGs, and BDD-readiness gating as CNCF Serverless Workflow state machines. Defines formal mapping of requirements primitives to CNCF state types (`Ingestion & Parsing` → `inject`/`operation`, `Syntax Verification` → `operation`, `Dependency Resolution` → `parallel`, `Conflict Detection` → `operation`, `BDD-Readiness Evaluation` → `switch`, `Clarification Callback` → `callback`, `Contract Ratification` → `operation`, `Rejection Invalidation` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 03 EARS Workflow Template (`framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml`)**: Introduces the canonical EARS workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` (all 6 required sections present) while housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies.
+- **Core Governance & Decision GD-59**: Ratified Decision `GD-59` in `framework/governance/DECISIONS.md`. Updated `framework/layers/03_EARS/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.8) registering `ears-requirements-validation.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.9) cataloging EARS requirements validation workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_ears_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state reachability, step parity, and invalidation compensation; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.83.0 → 0.84.0 propagated across tree.
+
+---
 
 ## [0.83.0] — 2026-10-05
 

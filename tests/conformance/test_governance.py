@@ -59,6 +59,7 @@ EXPECTED_FILES = [
     "workflows/tdd-test-execution.sw.yaml",
     "workflows/spec-choreography-contract.sw.yaml",
     "workflows/adr-decision-analysis.sw.yaml",
+    "workflows/ears-requirements-validation.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",

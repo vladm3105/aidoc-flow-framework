@@ -1,0 +1,209 @@
+# =============================================================================
+#  ears-requirements-validation.sw.yaml — Layer 03 (EARS) Requirements Analysis & Traceability Validation Workflow
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: Decision GD-59 (framework/governance/DECISIONS.md)
+#  Domain: Layer 03 (EARS — Easy Approach to Requirements Syntax)
+# =============================================================================
+
+id: ears-requirements-validation
+name: EARS Requirements Analysis and Traceability Validation Workflow
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  CNCF Serverless Workflow orchestrating EARS requirements syntax parsing,
+  5-pattern compliance verification, dependency DAG resolution, cross-requirement
+  conflict detection, upstream PRD traceability validation, BDD-readiness score
+  evaluation, stakeholder clarification callbacks, and requirement invalidation
+  compensation sagas.
+start: IngestRequirementsStream
+
+events:
+  - name: RequirementClarificationEvent
+    type: org.aidoc.ears.clarification.received
+    source: /aidoc/stakeholder/clarification
+    correlation:
+      - contextAttributeName: requirementId
+  - name: RequirementInvalidationEvent
+    type: org.aidoc.ears.requirement.invalidated
+    source: /aidoc/ears/invalidation
+
+functions:
+  - name: parseEarsSyntax
+    operation: "urn:aidoc:functions:ears-parser#parse"
+    type: custom
+  - name: verifySyntaxPatterns
+    operation: "urn:aidoc:functions:ears-syntax-checker#verify"
+    type: custom
+  - name: resolveDependencyDag
+    operation: "urn:aidoc:functions:dag-resolver#validateAcyclic"
+    type: custom
+  - name: checkCrossRequirementConflicts
+    operation: "urn:aidoc:functions:conflict-detector#analyze"
+    type: custom
+  - name: computeBddReadinessScore
+    operation: "urn:aidoc:functions:bdd-readiness#computeScore"
+    type: custom
+  - name: emitCanonicalEarsIds
+    operation: "urn:aidoc:functions:hasher#generateEarsIds"
+    type: custom
+  - name: notifyUpstreamPrdAuthors
+    operation: "urn:aidoc:functions:notifier#notifyPrdAuthors"
+    type: custom
+  - name: flagDownstreamInvalidations
+    operation: "urn:aidoc:functions:tracker#flagInvalidations"
+    type: custom
+
+states:
+  - name: IngestRequirementsStream
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: ingestRequirementPayload
+        functionRef:
+          refName: parseEarsSyntax
+          arguments:
+            documentId: "${ .documentId }"
+            rawRequirements: "${ .requirements }"
+            upstreamPrdRef: "${ .traceability.prdRef }"
+    transition: ValidateEarsSyntax
+
+  - name: ValidateEarsSyntax
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: checkPatternsAndClauses
+        functionRef:
+          refName: verifySyntaxPatterns
+          arguments:
+            requirementsList: "${ .parsedRequirements }"
+            enforceActorClause: "THE [system/component] SHALL"
+            enforceTimingWithin: true
+            allowedPatterns:
+              - "event-driven (WHEN)"
+              - "state-driven (WHILE)"
+              - "optional (WHERE)"
+              - "unwanted (IF)"
+              - "ubiquitous (THE-SHALL)"
+    transition: ResolveRequirementDependencies
+
+  - name: ResolveRequirementDependencies
+    type: parallel
+    branches:
+      - name: InvariantRequirementsBranch
+        actions:
+          - name: checkInvariants
+            functionRef:
+              refName: resolveDependencyDag
+              arguments:
+                scope: "ubiquitous-and-state-driven"
+                requirements: "${ .parsedRequirements.invariants }"
+      - name: EventDrivenRequirementsBranch
+        actions:
+          - name: checkEventDag
+            functionRef:
+              refName: resolveDependencyDag
+              arguments:
+                scope: "event-driven-and-optional"
+                requirements: "${ .parsedRequirements.eventDriven }"
+      - name: UnwantedBehaviorRecoveryBranch
+        actions:
+          - name: checkRecoveryDag
+            functionRef:
+              refName: resolveDependencyDag
+              arguments:
+                scope: "unwanted-and-error-recovery"
+                requirements: "${ .parsedRequirements.recoveryPaths }"
+    completionType: allOf
+    transition: DetectRequirementConflicts
+
+  - name: DetectRequirementConflicts
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: scanContradictoryStates
+        functionRef:
+          refName: checkCrossRequirementConflicts
+          arguments:
+            parsedRequirements: "${ .parsedRequirements }"
+            dagResults: "${ .dagResults }"
+      - name: evaluateBddScore
+        functionRef:
+          refName: computeBddReadinessScore
+          arguments:
+            parsedRequirements: "${ .parsedRequirements }"
+            upstreamPrdRef: "${ .traceability.prdRef }"
+            conflictAnalysis: "${ .conflictAnalysis }"
+    transition: EvaluateBddReadiness
+
+  - name: EvaluateBddReadiness
+    type: switch
+    dataConditions:
+      - name: BddReadyApproved
+        condition: "${ .readinessScore >= 90 and .conflictCount == 0 and .upstreamPrdVerified == true }"
+        transition: RatifyEarsContract
+      - name: ClarificationRequired
+        condition: "${ .readinessScore >= 70 and .ambiguityFlag == true }"
+        transition: RequestRequirementClarification
+    defaultCondition:
+      transition: RejectRequirementSet
+
+  - name: RequestRequirementClarification
+    type: callback
+    action:
+      name: dispatchClarificationPrompt
+      functionRef:
+        refName: notifyUpstreamPrdAuthors
+        arguments:
+          requirementId: "${ .documentId }"
+          unclearClauses: "${ .ambiguityDetails }"
+    eventRef: RequirementClarificationEvent
+    timeouts:
+      eventTimeout: PT24H
+    transition: ValidateEarsSyntax
+
+  - name: RatifyEarsContract
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishRatifiedEarsSet
+        functionRef:
+          refName: emitCanonicalEarsIds
+          arguments:
+            documentId: "${ .documentId }"
+            requirements: "${ .parsedRequirements }"
+            readinessScore: "${ .readinessScore }"
+    end:
+      terminate: true
+
+  - name: RejectRequirementSet
+    type: operation
+    compensatedBy: InvalidateDownstreamArtifacts
+    actionMode: sequential
+    actions:
+      - name: recordRejectionDetails
+        functionRef:
+          refName: notifyUpstreamPrdAuthors
+          arguments:
+            documentId: "${ .documentId }"
+            status: "rejected"
+            rejectionReasons: "${ .conflictAnalysis.reasons }"
+            readinessScore: "${ .readinessScore }"
+    end:
+      terminate: true
+
+  - name: InvalidateDownstreamArtifacts
+    type: operation
+    usedForCompensation: true
+    actionMode: sequential
+    actions:
+      - name: purgeDownstreamDraftReferences
+        functionRef:
+          refName: flagDownstreamInvalidations
+          arguments:
+            documentId: "${ .documentId }"
+            affectedLayers:
+              - "04_BDD"
+              - "05_ADR"
+              - "06_SPEC"
+            reason: "EARS requirements rejected or invalidated during readiness validation"
