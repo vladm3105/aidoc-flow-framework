@@ -7,11 +7,31 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.12 |
+| Version | 1.13 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
+
+## [0.87.0] — 2026-10-06
+
+### Added — Upstream autonomous execution flow, circuit breakers, CHG testing plan, and adaptation scaffolding (C2 MINOR → 0.87.0, CHG-68 + IPLAN-68, #894)
+
+- **Companion Mermaid State Machine in `CHG_REQUEST_FLOWS.md`**: Embedded companion Mermaid `stateDiagram-v2` diagram (with intent header `@diagram: state-chg-request-flow` and scope boundary metadata) in `framework/governance/CHG_REQUEST_FLOWS.md` (v1.4), establishing 1-to-1 visual parity with normative CNCF Serverless Workflow state machine `workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md`.
+- **Multi-Tier Circuit Breakers Matrix (`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §6)**: Formalized multi-tier circuit breakers governing automated agent executions:
+  - `CB-1: Linter & Static Pre-Validation Failures` (threshold 3 attempts)
+  - `CB-2: SDD Layer Structural & Integrity Failures` (threshold 2 cycles)
+  - `CB-3: Automated Test Suite & Regression Failures` (threshold 2 attempts)
+  - `CB-4: Layer 10 Evaluation & Verification Gate Failures` (threshold 1 retry)
+  - `CB-5: CI/CD Pipeline & Merge Status Blockers` (threshold 2 runs)
+  - `CB-6: Unresolvable Ambiguity & Human Gate Stalls` (threshold 1 timeout)
+- **Layer 10 Terminal Lifecycle Gate Contract (`GOVERNANCE_WORKFLOW_STANDARD.md` §7 & `DOC_GOVERNANCE_CORE.md` §4.1)**: Formalized that transitions to `IPLAN: Verified` and `CHG: Completed` strictly require an authentic Layer 10 evaluation report (`EVAL-{NN}-RPT-001.yaml`) with `verdict: PASS` and 0 failures.
+- **Structured Testing Plan Schema in CHG Templates**: Added `testing_plan:` schema block (unit, integration, e2e_api, e2e_ui, static, bdd_mapping, and isolation_rules) to both `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (verified byte-identical) and updated guidance in both `README.md` copies (v1.4).
+- **Autonomous Execution Handbook Scaffold Template (`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`)**: Authored canonical operational execution handbook template for downstream consumer projects implementing autonomous AI agent development flows.
+- **Enhanced Project Adaptation Guidance**: Updated `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` (v2.2) and `docs/ADAPTATION-GUIDE.md` (v1.1) with concrete `.aidoc/project` blueprint, evaluation ingestion patterns, and client tool hook bindings (`hooks/hooks.json`). Updated `framework/governance/aidoc/README.md` (v1.2).
+- **Core Governance & Decision GD-62**: Ratified Decision `GD-62` in `framework/governance/DECISIONS.md` (v1.23). Cross-referenced circuit breakers in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` (v1.1). Registered `aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` in `tests/conformance/test_governance.py`.
+
+---
 
 ## [0.86.1] — 2026-10-06
 

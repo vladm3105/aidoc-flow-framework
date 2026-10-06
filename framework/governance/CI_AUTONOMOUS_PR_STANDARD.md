@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 Engine-agnostic rules for continuous integration and autonomous merging of
 reviewed changes. This standard fixes the integration topology the SDD layers
@@ -198,3 +198,7 @@ No step numbering is introduced into CHG governance by this standard.
   workflows, branch policies, and latency ceilings.
 - `CHG_REQUEST_FLOWS.md` — F3/spec vehicle class authorizing this
   standard (framework self-change).
+- `GOVERNANCE_WORKFLOW_STANDARD.md` §6 — the Multi-Tier Circuit Breakers
+  Matrix (CB-1 through CB-6) standardizing review iterations, CI polling
+  watchdog deadlines, retry caps, monotonic state progression, and manifest
+  boundaries.

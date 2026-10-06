@@ -24,8 +24,8 @@ follow it. The resulting shape:
 ├── profile.yaml             # project profile — adaptation knobs
 ├── framework/               # shared framework (symlink, canonical)
 ├── project/                 # project-specific overrides
-│   ├── governance/          # rule overrides
-│   ├── layers/              # template overrides
+│   ├── governance/          # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
+│   ├── layers/              # template overrides (e.g. Layer 10 EVAL templates)
 │   ├── playbooks/           # playbook overrides
 │   ├── scripts/             # script overrides
 │   ├── templates/           # template overrides
@@ -71,6 +71,21 @@ playbook, it checks `.aidoc/project/{same-path}` first and falls back to
 changes; each override should cite the upstream file and the reason it
 diverges. (`framework/` ships no `scripts/` or `templates/` directories —
 do not create `project/` overrides for paths with no upstream counterpart.)
+
+## 4.1 Concrete Operational Blueprints (#894)
+
+To prevent fragmented or ad-hoc project setups, instantiate the following core governance blueprints under `.aidoc/project/`:
+
+1. **Autonomous Execution Handbook (`.aidoc/project/governance/CHG_EXECUTION_FLOW.md`)**:
+   Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](../framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). It codifies the deterministic 8-step lifecycle, the 13 core invariants, the Multi-Tier Circuit Breakers (CB-1..CB-6), and deployable vs non-deployable routing tailored to the project's build and test runners.
+
+2. **Automated Evaluation Report Ingestion**:
+   For Layer 10 closeouts, projects maintain a deterministic evaluation generator (e.g. `scripts/test/generate_eval_report.py`). It ingests machine-readable test run summaries (e.g. `test-results/summary.json` output by `pytest`, `go-test`, or `playwright`) and BDD tag verifications, outputting the immutable `docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` artifact required to advance IPLAN to `Verified` and CHG to `Completed`.
+
+3. **Client Hooks Integration (`hooks/hooks.json`)**:
+   Projects bind the framework's advisory hooks into their local agent configurations:
+   - `PostToolUse` (matcher: `Write|Edit`): invokes `hooks/sdd-doc-review.sh` to provide immediate feedback on structural SDD requirements.
+   - `PreCommit` (matcher: `.*`): invokes `hooks/ch-gate-check.sh` and `hooks/pre_push_check.sh` to enforce the zero `--no-verify` invariant locally before commits reach remote CI.
 
 ## 5. What never goes where
 

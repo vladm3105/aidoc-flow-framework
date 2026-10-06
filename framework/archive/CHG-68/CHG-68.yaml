@@ -1,0 +1,282 @@
+# =============================================================================
+#  CHG-68: Upstream Autonomous Execution Flow, Circuit Breakers, CHG Testing Plan,
+#  and Adaptation Scaffolding
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (framework self-change).
+#  Level C2 per GATE-SPEC-E003; MINOR bump (0.86.1 → 0.87.0).
+#  IPLAN: framework/archive/CHG-68/IPLAN-68.yaml
+#  Issue: #894 ([docs] Project adaptation guidance is fragmented and lacks concrete .aidoc/project blueprint & scaffolding)
+# =============================================================================
+
+id: CHG-68
+title: "Upstream Autonomous Execution Flow, Circuit Breakers, CHG Testing Plan, and Adaptation Scaffolding"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-06"
+  framework_version: "0.87.0"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-68"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-06T00:00:00Z"
+  date_approved: "2026-10-06T00:00:00Z"
+  date_implemented: "2026-10-06T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-06T00:00:00Z"
+    verdict: Approved
+    evidence: "User authorization in session on 2026-10-06: 'approved. review your recomendations to identify any gaps, address the gapps and start implementation via CHG' and Issue #894."
+  supersedes:
+    - "framework/governance/CHG_REQUEST_FLOWS.md (framework/archive/CHG-68/CHG_REQUEST_FLOWS.md)"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md (framework/archive/CHG-68/GOVERNANCE_WORKFLOW_STANDARD.md)"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md (framework/archive/CHG-68/DOC_GOVERNANCE_CORE.md)"
+    - "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md (framework/archive/CHG-68/CI_AUTONOMOUS_PR_STANDARD.md)"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml (framework/archive/CHG-68/CHG-TEMPLATE.yaml)"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md (framework/archive/CHG-68/AIDOC-SCAFFOLD-TEMPLATE.md)"
+    - "docs/ADAPTATION-GUIDE.md (framework/archive/CHG-68/ADAPTATION-GUIDE.md)"
+    - "framework/governance/DECISIONS.md (framework/archive/CHG-68/DECISIONS.md)"
+    - "framework/CHANGELOG.md (framework/archive/CHG-68/CHANGELOG.md)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Upstream autonomous execution flow patterns proven in b-local-privy into the framework: embed companion Mermaid stateDiagram-v2 in CHG_REQUEST_FLOWS.md, formalize the Multi-Tier Circuit Breakers Matrix (CB-1..CB-6), introduce testing_plan schema in CHG templates, formalize Layer 10 terminal evaluation gate, author AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md, update adaptation guidance for Issue #894, and bump framework to 0.87.0."
+  what: |
+    1. Embed the missing companion Mermaid stateDiagram-v2 in framework/governance/CHG_REQUEST_FLOWS.md representing the normative CNCF Serverless Workflow state machine (chg-request-flow.sw.yaml) per DIAGRAM_STANDARDS.md.
+    2. Add the Multi-Tier Circuit Breakers Matrix (CB-1 through CB-6) to framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md, cross-referencing CI_AUTONOMOUS_PR_STANDARD.md and REVIEW_REMEDIATION_FLOW.md.
+    3. Add structured testing_plan schema (test_matrix: unit, integration, e2e_api, e2e_ui, static; bdd_mapping; isolation_rules) to both CHG-TEMPLATE.yaml copies (governance and layer 09_CHG) and document in 09_CHG/README.md.
+    4. Formalize the Layer 10 terminal evaluation gate in DOC_GOVERNANCE_CORE.md §4.1 and GOVERNANCE_WORKFLOW_STANDARD.md (IPLAN: Completed → Verified, CHG: Implemented → Completed require authentic EVAL report with status: PASS).
+    5. Author framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md as the operational blueprint for consumer projects (.aidoc/project/governance/CHG_EXECUTION_FLOW.md).
+    6. Update docs/ADAPTATION-GUIDE.md and AIDOC-SCAFFOLD-TEMPLATE.md to resolve Issue #894, establishing concrete .aidoc/project blueprints, automated evaluation ingestion contracts, and client hook integration (hooks.json).
+    7. Register AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md in tests/conformance/test_governance.py EXPECTED_FILES.
+    8. Record Decision GD-62 in framework/governance/DECISIONS.md, bump framework/VERSION to 0.87.0, and document release in framework/CHANGELOG.md.
+  why: "Synthesizes battle-tested autonomous governance execution, anti-infinite-loop circuit breakers, and concrete adaptation scaffolding into the canonical framework, closing open documentation gaps and resolving Issue #894."
+  trigger: "Review of b-local-privy CHG_EXECUTION_FLOW.md, user direction to resolve identified gaps, and Issue #894."
+  scope:
+    in:
+      - "framework/governance/CHG_REQUEST_FLOWS.md: Mermaid stateDiagram-v2 diagram"
+      - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md: Circuit Breakers Matrix and terminal evaluation gate"
+      - "framework/governance/DOC_GOVERNANCE_CORE.md: Layer 10 terminal lifecycle gate"
+      - "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md: cross-reference circuit breakers"
+      - "framework/governance/chg/CHG-TEMPLATE.yaml & framework/layers/09_CHG/CHG-TEMPLATE.yaml: testing_plan schema"
+      - "framework/layers/09_CHG/README.md: document testing_plan schema"
+      - "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md: new scaffold template"
+      - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md: reference execution template"
+      - "docs/ADAPTATION-GUIDE.md: concrete blueprint, evaluation ingestion, and hooks.json"
+      - "tests/conformance/test_governance.py: register new governance file in EXPECTED_FILES"
+      - "framework/governance/DECISIONS.md: record GD-62"
+      - "framework/VERSION: bump 0.86.1 → 0.87.0"
+      - "framework/CHANGELOG.md: 0.87.0 release notes"
+    out:
+      - "No runtime project code added to framework/ (engine-agnostic purity preserved per D-0013)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/CHG_REQUEST_FLOWS.md"
+    new_version: "1.4"
+    changes: "Embed companion Mermaid stateDiagram-v2 diagram matching chg-request-flow.sw.yaml"
+  - layer: "09_CHG"
+    document: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/GOVERNANCE_WORKFLOW_STANDARD.md"
+    new_version: "1.2"
+    changes: "Add Multi-Tier Circuit Breakers Matrix (CB-1..CB-6) and formalize Layer 10 terminal evaluation gate"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/DOC_GOVERNANCE_CORE.md"
+    new_version: "2.11"
+    changes: "Formalize Layer 10 terminal evaluation status progression in §4.1"
+  - layer: "09_CHG"
+    document: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/CI_AUTONOMOUS_PR_STANDARD.md"
+    new_version: "1.1"
+    changes: "Cross-reference consolidated Circuit Breakers Matrix in GOVERNANCE_WORKFLOW_STANDARD.md"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-68/CHG-TEMPLATE.yaml"
+    new_version: "1.3"
+    changes: "Add structured testing_plan schema block"
+  - layer: "09_CHG"
+    document: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/AIDOC-SCAFFOLD-TEMPLATE.md"
+    new_version: "2.2"
+    changes: "Reference AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md for project execution guidance"
+  - layer: "09_CHG"
+    document: "docs/ADAPTATION-GUIDE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/ADAPTATION-GUIDE.md"
+    new_version: "1.1"
+    changes: "Add concrete .aidoc/project blueprint, automated evaluation ingestion, and client hooks integration"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/DECISIONS.md"
+    new_version: "1.23"
+    changes: "Record Decision GD-62"
+  - layer: "09_CHG"
+    document: "framework/CHANGELOG.md"
+    action: amend
+    archive_path: "framework/archive/CHG-68/CHANGELOG.md"
+    new_version: "1.22"
+    changes: "Add [0.87.0] release entry"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-68/IPLAN-68.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-68"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "Framework self-change (change_source: spec). No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-68/"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CHG_REQUEST_FLOWS.md"
+      archive_path: "framework/archive/CHG-68/CHG_REQUEST_FLOWS.md"
+      new_version: "1.4"
+      current_version: "1.3"
+      status: Completed
+    - step: "Update CHG_REQUEST_FLOWS.md with companion Mermaid stateDiagram-v2 matching chg-request-flow.sw.yaml"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CHG_REQUEST_FLOWS.md"
+      archive_path: "framework/archive/CHG-68/CHG_REQUEST_FLOWS.md"
+      new_version: "1.4"
+      current_version: "1.3"
+      status: Completed
+    - step: "Update GOVERNANCE_WORKFLOW_STANDARD.md with Multi-Tier Circuit Breakers Matrix and terminal evaluation gate"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-68/GOVERNANCE_WORKFLOW_STANDARD.md"
+      new_version: "1.2"
+      current_version: "1.1"
+      status: Completed
+    - step: "Update DOC_GOVERNANCE_CORE.md with Layer 10 terminal evaluation status progression in §4.1"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      archive_path: "framework/archive/CHG-68/DOC_GOVERNANCE_CORE.md"
+      new_version: "2.11"
+      current_version: "2.10"
+      status: Completed
+    - step: "Update CI_AUTONOMOUS_PR_STANDARD.md cross-referencing Circuit Breakers Matrix"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+      archive_path: "framework/archive/CHG-68/CI_AUTONOMOUS_PR_STANDARD.md"
+      new_version: "1.1"
+      current_version: "1.0"
+      status: Completed
+    - step: "Update CHG-TEMPLATE.yaml (governance and layer 09_CHG) with testing_plan schema"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-68/CHG-TEMPLATE.yaml"
+      new_version: "1.3"
+      current_version: "1.2"
+      status: Completed
+    - step: "Create AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md in framework/governance/aidoc/"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-68/AIDOC-SCAFFOLD-TEMPLATE.md"
+      new_version: "2.2"
+      current_version: "2.1"
+      status: Completed
+    - step: "Update docs/ADAPTATION-GUIDE.md and AIDOC-SCAFFOLD-TEMPLATE.md"
+      phase: "sdd_lifecycle"
+      artifact: "docs/ADAPTATION-GUIDE.md"
+      archive_path: "framework/archive/CHG-68/ADAPTATION-GUIDE.md"
+      new_version: "1.1"
+      current_version: "1.0"
+      status: Completed
+    - step: "Register new file in tests/conformance/test_governance.py and record GD-62 in DECISIONS.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DECISIONS.md"
+      archive_path: "framework/archive/CHG-68/DECISIONS.md"
+      new_version: "1.23"
+      current_version: "1.22"
+      status: Completed
+    - step: "Bump framework/VERSION to 0.87.0 and update framework/CHANGELOG.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/CHANGELOG.md"
+      archive_path: "framework/archive/CHG-68/CHANGELOG.md"
+      new_version: "1.22"
+      current_version: "1.21"
+      status: Completed
+    - step: "Author authorizing IPLAN-68.yaml under framework/archive/CHG-68/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-68/IPLAN-68.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  suite: conformance
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-68/CHG-68.yaml"
+    - "pytest tests/conformance/test_governance.py"
+    - "pytest tests/conformance/test_ci_autonomous_pr_standard.py"
+    - "pre-commit run --all-files"
+  evidence:
+    conformance_suite: "PASS"
+    lint_check: "PASS"
+
+# =============================================================================
+# Section 7: Rollback Strategy
+# =============================================================================
+
+rollback:
+  strategy: git-revert
+  steps:
+    - "git checkout dev"
+    - "git branch -D feature/894-chg-execution-flow-governance"

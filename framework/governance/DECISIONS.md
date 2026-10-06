@@ -15,11 +15,34 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.22 |
+| Version | 1.23 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
+
+---
+
+## GD-62 — Upstream autonomous execution flow patterns, multi-tier circuit breakers, structured testing plans, and project adaptation scaffolding (CHG-68, 0.87.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Upstream proven operational patterns from production projects (`b-local-privy` Issue #894) into the framework core: embedding the missing companion Mermaid `stateDiagram-v2` diagram in `CHG_REQUEST_FLOWS.md`, formalizing multi-tier circuit breakers (CB-1 through CB-6), formalizing Layer 10 terminal evaluation gates, introducing structured `testing_plan` schemas in CHG templates, providing an operational execution handbook template (`AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`), and enhancing project adaptation guidance.
+- **Decision**:
+  1. Embed the companion Mermaid `stateDiagram-v2` diagram with intent header `@diagram: state-chg-request-flow` in `framework/governance/CHG_REQUEST_FLOWS.md`, achieving complete 1-to-1 visual parity with the normative CNCF Serverless Workflow state machine `workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md`.
+  2. Formalize the Multi-Tier Circuit Breakers Matrix in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §6, standardizing failure detection, threshold budgets, fallback strategies, and recovery actions across:
+     - `CB-1: Linter & Static Pre-Validation Failures` (threshold 3 attempts)
+     - `CB-2: SDD Layer Structural & Integrity Failures` (threshold 2 cycles)
+     - `CB-3: Automated Test Suite & Regression Failures` (threshold 2 attempts)
+     - `CB-4: Layer 10 Evaluation & Verification Gate Failures` (threshold 1 retry)
+     - `CB-5: CI/CD Pipeline & Merge Status Blockers` (threshold 2 runs)
+     - `CB-6: Unresolvable Ambiguity & Human Gate Stalls` (threshold 1 timeout)
+  3. Formalize the Layer 10 Terminal Lifecycle Gate Contract in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §7 and `framework/governance/DOC_GOVERNANCE_CORE.md` §4.1: transitions from `IPLAN: Completed` to `IPLAN: Verified` and `CHG: Implemented` to `CHG: Completed` strictly require an authentic Layer 10 evaluation report (`EVAL-{NN}-RPT-001.yaml`) with `verdict: PASS` and 0 failures.
+  4. Cross-reference the Circuit Breakers Matrix in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` §2.1.
+  5. Introduce a structured `testing_plan:` schema block in both `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintaining byte-identity), specifying unit, integration, e2e_api, e2e_ui, static, bdd_mapping, and isolation_rules, and document in both `README.md` copies.
+  6. Author `framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` as the canonical operational execution handbook scaffold for consumer projects implementing autonomous AI agent development flows.
+  7. Update `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` and `docs/ADAPTATION-GUIDE.md` incorporating concrete `.aidoc/project` blueprints, evaluation ingestion patterns, and client tool hook bindings (`hooks/hooks.json`).
+  8. Engine-agnostic purity (D-0013 / GD-06): retain generic vendor-neutral phrasing without tying the framework specification to any proprietary orchestrator, runtime platform, or task runner.
 
 ---
 

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.1 |
+| Version | 2.2 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | <your name> |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -30,8 +30,8 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 │   ├── profile.yaml         # project profile — adaptation knobs
 │   ├── framework → ...      # symlink to shared framework (canonical path)
 │   ├── project/             # project-specific overrides
-│   │   ├── governance/      # rule overrides (same structure as framework/)
-│   │   │   └── ...
+│   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
+│   │   │   └── CHG_EXECUTION_FLOW.md
 │   │   ├── layers/          # template overrides (same structure as framework/)
 │   │   │   └── ...
 │   │   └── playbooks/       # playbook overrides (same structure as framework/)
@@ -86,6 +86,13 @@ the override contract and constraints.
 This project pins **aidoc-flow-framework X.Y.Z** (declared in
 `profile.yaml` as `framework_version`).
 
+
+
+## Autonomous Execution Flow
+
+Autonomous agents execute change requests following the project execution flow standard.
+Initialize `<project>/.aidoc/project/governance/CHG_EXECUTION_FLOW.md` from the canonical blueprint:
+[`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md).
 
 ## Seed tier bootstrapping
 
