@@ -1,0 +1,208 @@
+id: worktree-pr-lifecycle
+name: Worktree and Pull Request Governance Lifecycle
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing the per-task git worktree lifecycle, commit audit trail
+  enforcement (OPS-0065), PR review and watch loop, auto-merge, and §3.7 cleanup order guard
+  per WORKTREE_FLOW.md and AGENTS.md.
+start: ValidateTaskIssue
+
+states:
+  # --- Step 1: Validate Task Issue ---
+  - name: ValidateTaskIssue
+    type: operation
+    actions:
+      - name: checkIssueLive
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh issue view <issue> --json state,body"
+    transition: EvaluateIssueState
+
+  - name: EvaluateIssueState
+    type: switch
+    dataConditions:
+      - condition: "${ .issue.state == 'OPEN' and .issue.reproducible == true }"
+        transition: AllocateWorktree
+    defaultCondition:
+      transition: AbortStaleIssue
+
+  - name: AbortStaleIssue
+    type: operation
+    actions:
+      - name: logStaleOrDeclined
+        functionRef:
+          refName: reportIssueInvalid
+    end:
+      terminate: true
+
+  # --- Step 2: Allocate Isolated Worktree ---
+  - name: AllocateWorktree
+    type: operation
+    compensatedBy: CleanupAbortedWorktree
+    actions:
+      - name: syncDevBranch
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git checkout dev && git pull origin dev"
+      - name: createWorktree
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git worktree add ../<project>-<issue> -b feature/<slug> origin/dev"
+    transition: ExecuteImplementation
+
+  # --- Step 3: Execute Implementation & Verification ---
+  - name: ExecuteImplementation
+    type: operation
+    actions:
+      - name: implementChanges
+        functionRef:
+          refName: executeOwnedFileEdits
+      - name: runLintersAndTests
+        functionRef:
+          refName: executeVerificationSuite
+    transition: StageAndCommit
+
+  # --- Step 4: Stage & Commit with Audit Phrase ---
+  - name: StageAndCommit
+    type: operation
+    actions:
+      - name: stageOwnedFiles
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git add <owned-files-only>"
+      - name: commitWithAuditTrail
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: >-
+              git commit -m "feat: <description>
+
+              Multi-agent self-review per OPS-0065 (<agents>): PASS
+              Closes #<issue>"
+    transition: PushFeatureBranch
+
+  # --- Step 5: Push Branch & Open PR ---
+  - name: PushFeatureBranch
+    type: operation
+    actions:
+      - name: pushToOrigin
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git push origin feature/<slug>"
+      - name: openPullRequest
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh pr create --base dev --head feature/<slug> --body-file <pr-body>"
+    transition: WatchPRChecks
+
+  # --- Step 6: Watch PR Checks Loop ---
+  - name: WatchPRChecks
+    type: operation
+    actions:
+      - name: pollChecks
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh pr checks <pr> --json name,state,bucket --jq '.[] | select(.bucket!=\"pass\")'"
+    transition: EvaluateCheckStatus
+
+  - name: EvaluateCheckStatus
+    type: switch
+    dataConditions:
+      - condition: "${ .checks.failures > 0 }"
+        transition: DiagnoseAndFixChecks
+      - condition: "${ .checks.pending > 0 }"
+        transition: AwaitCheckSettlement
+      - condition: "${ .checks.all_passed == true and .pr.mergeable == 'CLEAN' }"
+        transition: EnableAutoMerge
+    defaultCondition:
+      transition: AwaitCheckSettlement
+
+  - name: AwaitCheckSettlement
+    type: operation
+    actions:
+      - name: sleepInterval
+        functionRef:
+          refName: sleepSeconds
+          arguments:
+            seconds: 15
+    transition: WatchPRChecks
+
+  - name: DiagnoseAndFixChecks
+    type: operation
+    actions:
+      - name: inspectFailureLogs
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh pr checks <pr> --json name,state,workflow"
+      - name: patchFailure
+        functionRef:
+          refName: executeOwnedFileEdits
+      - name: pushFixCommit
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git push origin feature/<slug>"
+    transition: WatchPRChecks
+
+  # --- Step 7: Auto-Merge ---
+  - name: EnableAutoMerge
+    type: operation
+    actions:
+      - name: armAutoMergeSquash
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh pr merge <pr> --auto --squash --delete-branch"
+    transition: OrderGuardedCleanup
+
+  # --- Step 8: §3.7 Order-Guarded Cleanup & Issue Closeout ---
+  - name: OrderGuardedCleanup
+    type: operation
+    actions:
+      - name: removeWorktreeFirst
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git worktree remove ../<project>-<issue>"
+      - name: syncDevCheckout
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git checkout dev && git pull origin dev"
+      - name: deleteLocalBranch
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git branch -D feature/<slug>"
+      - name: postClosingComment
+        functionRef:
+          refName: runGhCli
+          arguments:
+            command: "gh issue comment <issue> --body-file <closing-comment>"
+    end: true
+
+  # --- Compensation Handlers ---
+  - name: CleanupAbortedWorktree
+    type: operation
+    actions:
+      - name: forceRemoveWorktree
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git worktree remove --force ../<project>-<issue>"
+      - name: abortFeatureBranch
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git branch -D feature/<slug>"
+    end:
+      terminate: true

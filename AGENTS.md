@@ -35,7 +35,9 @@ Search before filing (`gh issue list --search … --state all`); comment on an
 **open** match instead of duplicating it; a **closed** match gets a new issue
 cross-linked as a regression, never a reopen. The merge closes the issue — the PR
 body carries `Closes #N`, one keyword per reference (`Closes #A and #B` closes
-only `#A`).
+only `#A`). On merge, post a closing comment on each resolved issue — what
+shipped plus verification evidence (green checks, merge SHA on the target) —
+never leave a resolved issue closed without its record.
 
 Use `gh issue create --body-file -`, **never `--body -`**: the latter publishes a
 literal `-`, exits 0, and prints a URL, so it looks like it worked. Read the
@@ -112,6 +114,9 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   in `docs/TAGGING.md` — `vX.Y.Z` (project), `framework/vX.Y.Z`; `VERSION`
   files hold bare SemVer.
 - **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.7 order guard: `worktree remove` BEFORE branch delete, §4).
+- **Autonomous implementation.** Routine implementation runs without human in the loop — branch, build, self-review, merge on green. Reserve confirmation for important or structural decisions: releases, destructive unmerged-work deletion, and any rule below that names a human.
+- **Never bypass verification.** `--no-verify` (or any hook-bypass flag, skip-verification, or admin override) on commit, push, or merge is forbidden — a red hook means fix the cause in the worktree and re-run to green, never route around it.
+- **Verify subagent writes; share branches.** After a subagent reports file writes, read back at least 3 specific changes before trusting `success` (phantom success has occurred). Subagents share the parent's branch and never mint their own; parallel writers need isolated worktrees.
 
 ## Governance Gate (applies to ALL agents)
 
@@ -167,7 +172,7 @@ git push origin feature/<short-name>
 git push origin main   # ❌ BLOCKED by this rule
 ```
 
-Branch promotion: `feature-branch → dev → main`
+Branch promotion: `feature-branch → dev → main`. Release (`dev` → `main`) PRs are prepared and watched like any PR, but merge only with in-session human OK — a release is an important decision, never auto-merged.
 
 ### Commit audit-trail phrase
 
@@ -213,7 +218,11 @@ gh pr checks <N> --json name,state,bucket,workflow --jq '.[] | select(.bucket!="
 
 Auto-merge is authorized by default: on a PR you opened, once all required checks pass and the PR is mergeable (`mergeStateStatus` CLEAN on the current head — confirm `headRefOid`), enable it (`gh pr merge <N> --auto --squash --delete-branch`, the repo's squash-only convention) and read the merge back. Withhold auto-merge when the user said hold, required checks are incomplete or red, a repo rule reserves the merge for a human, or the PR is not yours — tool access is not merge authority.
 
-Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -d`) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.7 order guard). Never delete a branch with unmerged work still on it.
+Merge conflicts: never force-push, never rebase a pushed branch — `git fetch origin dev && git merge origin/dev` in the worktree. Additive conflicts (changelogs, indexes, non-overlapping edits) resolve directly; semantic conflicts (logic, migrations, policy, deletions) mean `git merge --abort` and escalate to the human. After pushing the resolution, confirm auto-merge is still armed (`gh pr view <N> --json autoMergeRequest`) and re-enable if cleared.
+
+Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -D` — the squash-only convention defeats `-d`'s ancestry guard, so the merge-commit-on-target check is the safety) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.7 order guard). Never delete a branch whose unique work is unverified on its target (under squash-only, "merged" is a PR fact, not ancestry — the merge-commit-on-target check is the proof).
+
+Stale-branch sweep: a branch whose work is implemented must not linger past the session that landed it. Sweep at session end (`git fetch --prune` first): own branches only unless the user names others, never a branch with an open PR, worktree removal before branch deletion (§3.7). Merged branches die per the paragraph above once the local tip is confirmed to hold nothing beyond the merged head (`git branch -D` local, `git push origin --delete` remote). A branch closed-as-superseded dies only with in-session human OK after the verification is reported: every unique commit's substance diffed onto a named landing commit on the target — a closed PR alone is not proof. Promotion (`dev`/`staging`/`main`) and protected (`legacy-*`/`archive/*`) branches are never touched.
 
 When a required check fails, fix every error: diagnose from the failed logs, fix on the PR branch, push, and re-watch from the new head (confirm `headRefOid` — a previous run's green is not this commit's). Never merge while red. Stop and report to the human when the same check fails twice after a fix attempt, or when the fix reaches beyond the PR's scope.
 
@@ -261,3 +270,8 @@ replacement (drop `uses:`, write local jobs) → new custom workflow file.
 - Drift detection is warning-only, never blocking: re-baseline to canonical,
   keep intentionally, or push the divergence upstream as a new shared default
   (broadly useful changes go to `aidoc-flow-ci` first, then re-pin here).
+- **Self-hosted norm for private repos.** Private consumers run CI on
+  self-hosted runners — keep shared and canon-bound workflow logic
+  runner-portable (no GitHub-hosted-only tooling, caches, or egress
+  assumptions); runner selection itself stays a consumer `ci_bindings` pin
+  (`ADAPTATION.md` §4.7), never framework content.

@@ -1,0 +1,212 @@
+# =============================================================================
+#  CHG-54: Codify C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and Seed-to-Module decomposition flow (spec C2 MINOR → 0.75.0)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — governance docs, template addition, conformance tests).
+#  Precedent CHG-53: sdd_lifecycle entries + snapshots + seed_scope no-change + SDD-first steps.
+#  C2 per GATE-SPEC-E003; MINOR per GD-47's test (new MODULE-TEMPLATE.md and
+#  SEED_TO_MODULE_DECOMPOSITION.md is new API surface).
+#  IPLAN: framework/archive/CHG-54/IPLAN-54.yaml (authoring gated after approval)
+#  Issue: #901 ([Governance][spec] Codify C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and Seed-to-Module decomposition flow)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified; (2) prose + markdown templates + python tests;
+#  (3) N/A no structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous;
+#  (6) N/A no handlers; (7) issue #901 referenced; (8) covering tests:
+#  tests/conformance/test_module_contract.py; (9) fixes located per issue #901;
+#  (10) N/A no migrations; (11) SDD versioning — sdd_lifecycle amends for
+#  SEED-TEMPLATE (1.0→1.1), DIAGRAM_STANDARDS (1.0→1.1), MODULE_LAYOUT (1.1→1.2),
+#  SEED_CONTRACT (1.2→1.3), DECISIONS (1.11→1.12, GD-50), plus new
+#  SEED_TO_MODULE_DECOMPOSITION.md (1.0), MODULE-TEMPLATE.md (1.0), and IPLAN-54 (1.0);
+#  (12) GOV-014 paired; (13) SDD-first — sdd_lifecycle steps before iplan_creation;
+#  (14) no code steps in CHG (legal phases).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — templates + governance guidance
+#  only; establishes data sensitivity classification standards (DFD-L2);
+#  grants no capabilities/tools/permissions, introduces no secrets.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified).
+# =============================================================================
+
+id: CHG-54
+title: "Codify C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and Seed-to-Module decomposition flow (spec C2 MINOR → 0.75.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-05"
+  framework_version: "0.74.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-54"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-10-05T00:00:00Z"
+  date_approved: "2026-10-05T00:00:00Z"
+  date_implemented: "2026-10-05T00:00:00Z"
+  supersedes:
+    - "SEED-TEMPLATE.md v1.0 (framework/archive/CHG-54/SEED-TEMPLATE.md)"
+    - "DIAGRAM_STANDARDS.md v1.0 (framework/archive/CHG-54/DIAGRAM_STANDARDS.md)"
+    - "MODULE_LAYOUT.md v1.1 (framework/archive/CHG-54/MODULE_LAYOUT.md)"
+    - "SEED_CONTRACT.md v1.2 (framework/archive/CHG-54/SEED_CONTRACT.md)"
+    - "DECISIONS.md v1.11 (framework/archive/CHG-54/DECISIONS.md)"
+    - "framework/VERSION 0.74.0 (framework/archive/CHG-54/VERSION)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Author framework/governance/SEED_TO_MODULE_DECOMPOSITION.md; ship canonical framework/templates/MODULE-TEMPLATE.md featuring C4-L2, DFD-L2 data sensitivity matrix, and sequence error flows; enhance framework/templates/SEED-TEMPLATE.md with C4-L1 System Context and DFD-L1 data flow boundaries; extend framework/governance/DIAGRAM_STANDARDS.md to formally recognize Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence); update MODULE_LAYOUT.md and SEED_CONTRACT.md (Phase 0b); ratify GD-50 in DECISIONS.md; add conformance tests in test_module_contract.py; MINOR bump 0.74.0 → 0.75.0."
+  why: "Resolves the abstraction gap between Tier 1 Inputs (Seed) and Tier 2 Modules by establishing the unified C4-L1 and C4-L2 architectural models, the Triple-Lens specification for modules (Structure, Data Sensitivity & Trust Boundaries, Process/Sequence), and the 5-step Seed-to-Module decomposition flow. Issue #901."
+  trigger: "User review 2026-10-05 approving C4-L1/L2 modeling and decomposition governance + issue #901."
+  scope:
+    in:
+      - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md: new normative specification detailing the 5-step decomposition methodology"
+      - "framework/templates/MODULE-TEMPLATE.md: new canonical module template with YAML frontmatter, C4-L2, DFD-L2 data sensitivity matrix, and sequence flow"
+      - "framework/templates/SEED-TEMPLATE.md: enhance with C4-L1 System Context and DFD-L1 data context Mermaid diagrams"
+      - "framework/governance/DIAGRAM_STANDARDS.md: extend ownership model to include Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence)"
+      - "framework/governance/MODULE_LAYOUT.md: reference MODULE-TEMPLATE.md and SEED_TO_MODULE_DECOMPOSITION.md"
+      - "framework/governance/SEED_CONTRACT.md: reference the decomposition flow in Phase 0b Module Synchronization"
+      - "framework/governance/DECISIONS.md: add GD-50 recording the Triple-Lens module standard and decomposition flow"
+      - "tests/conformance/test_module_contract.py: add tests asserting MODULE-TEMPLATE.md presence, frontmatter schema, and governance references"
+      - "hooks/sync-version-refs.sh: add 0.74.0 to OLD_VERSIONS"
+      - "framework/VERSION: bump 0.74.0 → 0.75.0"
+      - "framework/CHANGELOG.md: entry for CHG-54 / 0.75.0"
+    out:
+      - "Runtime code changes (framework has no runtime code)"
+      - "Layer 01-10 templates (BRD-TEMPLATE.yaml through EVAL remain intact)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/templates/SEED-TEMPLATE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-54/SEED-TEMPLATE.md"
+    new_version: "1.1"
+    changes: "Add standard C4-L1 System Context and DFD-L1 external data flow Mermaid diagrams; doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/DIAGRAM_STANDARDS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-54/DIAGRAM_STANDARDS.md"
+    new_version: "1.1"
+    changes: "Extend C4 + DFD + Sequence ownership table with Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence); doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/governance/MODULE_LAYOUT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-54/MODULE_LAYOUT.md"
+    new_version: "1.2"
+    changes: "Reference canonical MODULE-TEMPLATE.md and SEED_TO_MODULE_DECOMPOSITION.md; doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/SEED_CONTRACT.md"
+    action: amend
+    archive_path: "framework/archive/CHG-54/SEED_CONTRACT.md"
+    new_version: "1.3"
+    changes: "Reference SEED_TO_MODULE_DECOMPOSITION.md in Phase 0b; doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-54/DECISIONS.md"
+    new_version: "1.12"
+    changes: "GD-50 entry for C4-L1 Seed, C4-L2 Triple-Lens Modules, and Seed-to-Module decomposition flow"
+  - layer: "09_CHG"
+    document: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "New normative playbook for decomposing seed vision into C4-L2 modules"
+  - layer: "09_CHG"
+    document: "framework/templates/MODULE-TEMPLATE.md"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Canonical module template with document_control frontmatter, C4-L2, DFD-L2 data sensitivity matrix, and sequence flow"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-54/IPLAN-54.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-54"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-54/ (SEED-TEMPLATE.md, DIAGRAM_STANDARDS.md, MODULE_LAYOUT.md, SEED_CONTRACT.md, DECISIONS.md, VERSION, CHANGELOG.md, sync-version-refs.sh)"
+      phase: "sdd_lifecycle"
+      artifact: "SEED-TEMPLATE.md, DIAGRAM_STANDARDS.md, MODULE_LAYOUT.md, SEED_CONTRACT.md, DECISIONS.md, VERSION, sync-version-refs.sh"
+      archive_path: "framework/archive/CHG-54/"
+      new_version: "0.75.0"
+      current_version: "0.74.0"
+      status: Completed
+    - step: "Author SEED_TO_MODULE_DECOMPOSITION.md, MODULE-TEMPLATE.md, amend SEED-TEMPLATE.md, DIAGRAM_STANDARDS.md, MODULE_LAYOUT.md, SEED_CONTRACT.md, and DECISIONS.md"
+      phase: "sdd_lifecycle"
+      artifact: "SEED_TO_MODULE_DECOMPOSITION.md, MODULE-TEMPLATE.md, SEED-TEMPLATE.md, DIAGRAM_STANDARDS.md, MODULE_LAYOUT.md, SEED_CONTRACT.md, DECISIONS.md"
+      archive_path: "framework/archive/CHG-54/"
+      new_version: "0.75.0"
+      current_version: "0.74.0"
+      status: Completed
+    - step: "Author authorizing IPLAN-54.yaml under framework/archive/CHG-54/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-54/IPLAN-54.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+    - step: "Author tests/conformance/test_module_contract.py, update hooks/sync-version-refs.sh, bump VERSION to 0.75.0, update CHANGELOG.md, and run conformance suite"
+      phase: "documentation_sync"
+      artifact: "test_module_contract.py, sync-version-refs.sh, VERSION, CHANGELOG.md"
+      archive_path: null
+      new_version: "0.75.0"
+      current_version: "0.74.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint validates CHG-54 cleanly (exit 0)"
+      result: Pass
+    - check: "test_module_contract.py passes green including MODULE-TEMPLATE assertions"
+      result: Pass
+    - check: "test_sync_version_refs.py passes with 0.74.0 in OLD_VERSIONS"
+      result: Pass
+    - check: "Full conformance test suite passes green"
+      result: Pass

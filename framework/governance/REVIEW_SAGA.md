@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
@@ -24,6 +24,9 @@ conforming engine — saga runtime, prompt-orchestration engine, or another
 mechanism — can implement it while exposing the same observable lifecycle. The
 project's parity goal is **lifecycle-behavior parity**;
 this document is its load-bearing definition.
+
+Executable CNCF Serverless Workflow definitions for this saga lifecycle are
+formally codified in `framework/governance/workflows/review-remediation-flow.sw.yaml`.
 
 ## States
 
@@ -211,6 +214,9 @@ consumer's own engineering documentation, not in this engine-agnostic spec.
 - `REVIEW_REMEDIATION_FLOW.md` — the trigger points (`on_author`,
   `pre_promotion`, `pre_merge`, `on_gate_fail`) that fire the loop the
   saga records.
+- `workflows/review-remediation-flow.sw.yaml` — canonical CNCF Serverless Workflow state machine.
+- `GOVERNANCE_WORKFLOW_STANDARD.md` — normative specification for CNCF Serverless Workflow adoption.
+- `DIAGRAM_STANDARDS.md` — visualization standards and Mermaid syntax for governance workflows.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the
   blackboard (separate concern from saga state).
 - `saga.schema.json` — formal JSON Schema for the journal.

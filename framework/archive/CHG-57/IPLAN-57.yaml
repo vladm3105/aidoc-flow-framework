@@ -1,0 +1,139 @@
+# =============================================================================
+#  IPLAN-57: Adopt CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL)
+#  evaluation & verification runners (spec C2 MINOR → 0.78.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-57/CHG-57.yaml (Implemented)
+#  Source: Issue #907
+# =============================================================================
+
+doc_id: IPLAN-57
+title: "Adopt CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL) evaluation & verification runners (spec C2 MINOR → 0.78.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.77.0"
+  source_chg: "CHG-57"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-57"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-57; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 11
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-57/CHG-57.yaml + IPLAN-57.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-57/GOVERNANCE_WORKFLOW_STANDARD.md + DIAGRAM_STANDARDS.md + DECISIONS.md + README.md + VERSION + CHANGELOG.md + sync-version-refs.sh + test_governance.py + test_governance_workflows.py"
+      description: "Pre-change snapshots (base 0.77.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/eval-verification-run.sw.yaml"
+      description: "CNCF Serverless Workflow v0.8 state machine for Layer 10 evaluation execution"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/10_EVAL/README.md"
+      description: "Document executable evaluation state machine and workflow bindings"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Register eval-verification-run.sw.yaml in workflow catalog"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Register evaluation execution state machines under diagram standards"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-53"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Add eval-verification-run.sw.yaml to EXPECTED_WORKFLOWS and verify integrity"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Add workflows/eval-verification-run.sw.yaml to EXPECTED_FILES"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.77.0 to OLD_VERSIONS"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump version to 0.78.0"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Release notes for 0.78.0 / CHG-57"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+execution_steps:
+  - step: 1
+    name: "Pre-change snapshots"
+    action: "Snapshot modified files to framework/archive/CHG-57/"
+    status: DONE
+  - step: 2
+    name: "Author eval-verification-run.sw.yaml and update 10_EVAL/README.md"
+    action: "Create declarative CNCF v0.8 workflow for Layer 10 and document bindings"
+    status: DONE
+  - step: 3
+    name: "Align governance standards and ratify GD-53"
+    action: "Update GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, and record GD-53 in DECISIONS.md"
+    status: DONE
+  - step: 4
+    name: "Update conformance test suites"
+    action: "Update test_governance_workflows.py and test_governance.py"
+    status: DONE
+  - step: 5
+    name: "Sync versions and changelog"
+    action: "Update sync-version-refs.sh, bump VERSION to 0.78.0, propagate references, update CHANGELOG.md"
+    status: DONE
+  - step: 6
+    name: "Run test suite and verification"
+    action: "Verify all tests and chg_lint pass green"
+    status: DONE

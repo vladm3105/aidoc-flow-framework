@@ -108,6 +108,13 @@ ACCEPTED_PHANTOMS = {
     "held 0.52.0: the tree jumps 0.51.0 → 0.53.0. Same class as D-0078 (#558), found "
     "by repointing this guard at framework/CHANGELOG.md. Correct forward; do not "
     "rewrite the published record.",
+    (
+        "framework",
+        "0.77.0",
+    ): "CHG-56 / PR #908 — GD-52 (Layer 08 IPLAN CNCF workflows) was merged into dev "
+    "together with GD-53 (Layer 10 EVAL CNCF workflows) in commit f3919e1a, jumping "
+    "framework/VERSION 0.76.0 → 0.78.0. The version cannot be tagged without "
+    "contradicting history. Correct forward per D-0078 (#558).",
 }
 
 

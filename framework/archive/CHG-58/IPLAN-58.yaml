@@ -1,0 +1,171 @@
+# =============================================================================
+#  IPLAN-58: Adopt CNCF Serverless Workflow standard for Review Sagas & Decision
+#  Ratification flows (spec C2 MINOR → 0.79.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-58/CHG-58.yaml (Implemented)
+#  Source: Issue #909
+# =============================================================================
+
+doc_id: IPLAN-58
+title: "Adopt CNCF Serverless Workflow standard for Review Sagas & Decision Ratification flows (spec C2 MINOR → 0.79.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.78.0"
+  source_chg: "CHG-58"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-58"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-58; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 13
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-58/CHG-58.yaml + IPLAN-58.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-58/REVIEW_REMEDIATION_FLOW.md + REVIEW_SAGA.md + DECISION_WORKFLOW.md + GOVERNANCE_WORKFLOW_STANDARD.md + DIAGRAM_STANDARDS.md + DECISIONS.md + VERSION + CHANGELOG.md + sync-version-refs.sh + test_governance.py + test_governance_workflows.py"
+      description: "Pre-change snapshots (base 0.78.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/review-remediation-flow.sw.yaml"
+      description: "CNCF Serverless Workflow v0.8 state machine for review remediation quality loop"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/decision-ratification-flow.sw.yaml"
+      description: "CNCF Serverless Workflow v0.8 state machine for decision ratification"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      description: "Document executable state machine and Mermaid parity"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/REVIEW_SAGA.md"
+      description: "Register CNCF workflow mapping"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISION_WORKFLOW.md"
+      description: "Document executable decision ratification state machine and Mermaid parity"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Register review-remediation-flow and decision-ratification-flow in workflow catalog"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Register review remediation and decision ratification state machines under diagram standards"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-54"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Add workflows to EXPECTED_WORKFLOWS and verify integrity"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Add workflows to EXPECTED_FILES"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.78.0 to OLD_VERSIONS"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump version to 0.79.0"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add entry for CHG-58 / 0.79.0"
+      order: 14
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Test Strategy (TDD Consistency)
+# =============================================================================
+tdd_consistency:
+  covering_tests:
+    - "tests/conformance/test_governance_workflows.py"
+    - "tests/conformance/test_governance.py"
+  test_plan:
+    - "Validate YAML syntax and specVersion 0.8 on all workflows"
+    - "Verify state transition completeness and reachable terminal sinks"
+    - "Verify saga compensation rollback bindings"
+    - "Verify synchronization of governance documentation and Decision GD-54"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+implementation_contracts:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-58/"
+      phase: "sdd_lifecycle"
+      verification: "All 11 baseline files present in archive directory"
+    - step: "Author review-remediation-flow.sw.yaml"
+      phase: "sdd_lifecycle"
+      verification: "Passes yaml.safe_load and schema checks"
+    - step: "Author decision-ratification-flow.sw.yaml"
+      phase: "sdd_lifecycle"
+      verification: "Passes yaml.safe_load and schema checks"
+    - step: "Amend REVIEW_REMEDIATION_FLOW.md, REVIEW_SAGA.md, and DECISION_WORKFLOW.md"
+      phase: "sdd_lifecycle"
+      verification: "Mermaid state diagrams and workflow links verified"
+    - step: "Amend GOVERNANCE_WORKFLOW_STANDARD.md and DIAGRAM_STANDARDS.md"
+      phase: "sdd_lifecycle"
+      verification: "Workflows registered in catalog and standards"
+    - step: "Ratify Decision GD-54 in DECISIONS.md"
+      phase: "sdd_lifecycle"
+      verification: "GD-54 entry complete and verified"
+    - step: "Update conformance test suites"
+      phase: "tdd_enforcement"
+      verification: "pytest tests/conformance/test_governance_workflows.py and test_governance.py pass 100%"
+    - step: "Bump version to 0.79.0 and propagate"
+      phase: "version_propagation"
+      verification: "hooks/sync-version-refs.sh executes cleanly"

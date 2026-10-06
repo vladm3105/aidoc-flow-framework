@@ -1,0 +1,208 @@
+# =============================================================================
+#  CHG-56: Adopt CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution (spec C2 MINOR → 0.77.0)
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (changes the shared
+#  framework/ contract — governance standard, layer 08 template, conformance tests).
+#  Precedent CHG-55: sdd_lifecycle entries + snapshots + seed_scope no-change + SDD-first steps.
+#  C2 per GATE-SPEC-E003; MINOR per GD-47's test (new IPLAN_WORKFLOW_STANDARD.md
+#  and IPLAN-SWF-TEMPLATE.yaml is new API surface).
+#  IPLAN: framework/archive/CHG-56/IPLAN-56.yaml (authoring gated after approval)
+#  Issue: #905 ([Layer 08][spec] Adopt CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution)
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified; (2) prose + CNCF YAML templates + python tests;
+#  (3) N/A no structs; (4) N/A no queries; (5) EARS/BDD IDs vacuous;
+#  (6) N/A no handlers; (7) issue #905 referenced; (8) covering tests:
+#  tests/conformance/test_iplan_workflow.py; (9) fixes located per issue #905;
+#  (10) N/A no migrations; (11) SDD versioning — sdd_lifecycle amends for
+#  GOVERNANCE_WORKFLOW_STANDARD (1.1→1.2), DIAGRAM_STANDARDS (1.2→1.3),
+#  DECISIONS (1.13→1.14, GD-52), PLAN_STANDARD (1.0→1.1), plus new
+#  IPLAN_WORKFLOW_STANDARD.md (1.1), IPLAN-SWF-TEMPLATE.yaml (1.0), and IPLAN-56 (1.0);
+#  (12) GOV-014 paired; (13) SDD-first — sdd_lifecycle steps before iplan_creation;
+#  (14) no code steps in CHG (legal phases).
+#  SECURITY_REVIEW (GATE-SPEC-W003): assessed — declarative YAML templates +
+#  governance standards; engine-agnostic (D-0013); incorporates native saga rollback
+#  compensation (compensatedBy) preventing dirty workspace mutations; introduces no secrets.
+#  Phase 0a seed_scope: no-change — repo carries no seed/ tree (verified).
+# =============================================================================
+
+id: CHG-56
+title: "Adopt CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution (spec C2 MINOR → 0.77.0)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-05"
+  framework_version: "0.76.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-56"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Muse Code"
+  date_proposed: "2026-10-05T00:00:00Z"
+  date_approved: "2026-10-05T00:00:00Z"
+  date_implemented: "2026-10-05T00:00:00Z"
+  supersedes:
+    - "GOVERNANCE_WORKFLOW_STANDARD.md v1.1 (framework/archive/CHG-56/GOVERNANCE_WORKFLOW_STANDARD.md)"
+    - "DIAGRAM_STANDARDS.md v1.2 (framework/archive/CHG-56/DIAGRAM_STANDARDS.md)"
+    - "DECISIONS.md v1.13 (framework/archive/CHG-56/DECISIONS.md)"
+    - "PLAN_STANDARD.md v1.0 (framework/archive/CHG-56/PLAN_STANDARD.md)"
+    - "framework/VERSION 0.76.0 (framework/archive/CHG-56/VERSION)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Author framework/governance/IPLAN_WORKFLOW_STANDARD.md; ship canonical framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml with the Hybrid Envelope Architecture adopting CNCF Serverless Workflow v0.8 (YAML); update GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, PLAN_STANDARD.md, and README.md; ratify GD-52 in DECISIONS.md; update EXPECTED_FILES in test_governance.py; add conformance test suite in test_iplan_workflow.py; MINOR bump 0.76.0 → 0.77.0."
+  why: "Transforms static Layer 08 implementation checklists into machine-executable Directed Acyclic Graphs (DAGs) using the CNCF Serverless Workflow v0.8 standard in YAML format. Preserves the outer SDD document envelope for STRUCT01 and TAG01 compatibility while giving autonomous AI agents deterministic task execution, automated verification switch gates, and native saga rollback compensation (compensatedBy). Issue #905."
+  trigger: "User review 2026-10-05 approving CNCF Serverless Workflow standard for Layer 08 (IPLAN) + issue #905."
+  scope:
+    in:
+      - "framework/governance/IPLAN_WORKFLOW_STANDARD.md: core normative standard defining Layer 08 CNCF workflow adoption, rules, and runtime adapter"
+      - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml: canonical template for executable implementation plans"
+      - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md: clarify separation between governance workflows and implementation workflows"
+      - "framework/governance/DIAGRAM_STANDARDS.md: link IPLAN execution state machines to diagram standards"
+      - "framework/governance/DECISIONS.md: add GD-52 ratifying Layer 08 CNCF Serverless Workflow adoption"
+      - "framework/layers/08_IPLAN/PLAN_STANDARD.md: document subtype workflow"
+      - "framework/layers/08_IPLAN/README.md: document IPLAN-SWF-TEMPLATE.yaml"
+      - "tests/conformance/test_governance.py: add IPLAN_WORKFLOW_STANDARD.md to EXPECTED_FILES"
+      - "tests/conformance/test_iplan_workflow.py: add tests asserting IPLAN workflow YAML syntax, schema version, state reachability, compensation, and tags"
+      - "hooks/sync-version-refs.sh: add 0.76.0 to OLD_VERSIONS"
+      - "framework/VERSION: bump 0.76.0 → 0.77.0"
+      - "framework/CHANGELOG.md: entry for CHG-56 / 0.77.0"
+    out:
+      - "Runtime code changes or execution engine bundling (framework remains pure specification per D-0013)"
+      - "Existing IPLAN subtypes (code_build, deploy, combined, docs, bugfix, audit_fix remain intact)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    action: create
+    archive_path: null
+    new_version: "1.1"
+    changes: "Normative specification defining Layer 08 CNCF Serverless Workflow adoption, Hybrid Envelope Architecture, rules, and LangGraph adapter pattern"
+  - layer: "09_CHG"
+    document: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Canonical template for executable implementation plans adopting CNCF Serverless Workflow v0.8 DSL"
+  - layer: "09_CHG"
+    document: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    action: amend
+    archive_path: "framework/archive/CHG-56/GOVERNANCE_WORKFLOW_STANDARD.md"
+    new_version: "1.2"
+    changes: "Clarify domain separation between governance workflows (repo lifecycles) and implementation workflows (IPLAN code mutation); doc Version 1.1 → 1.2"
+  - layer: "09_CHG"
+    document: "framework/governance/DIAGRAM_STANDARDS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-56/DIAGRAM_STANDARDS.md"
+    new_version: "1.3"
+    changes: "Register IPLAN execution state machines under diagram standards; doc Version 1.2 → 1.3"
+  - layer: "09_CHG"
+    document: "framework/governance/DECISIONS.md"
+    action: amend
+    archive_path: "framework/archive/CHG-56/DECISIONS.md"
+    new_version: "1.14"
+    changes: "GD-52 entry ratifying CNCF Serverless Workflow standard for Layer 08 (IPLAN)"
+  - layer: "09_CHG"
+    document: "framework/layers/08_IPLAN/PLAN_STANDARD.md"
+    action: amend
+    archive_path: "framework/archive/CHG-56/PLAN_STANDARD.md"
+    new_version: "1.1"
+    changes: "Document subtype workflow and reference IPLAN_WORKFLOW_STANDARD.md and IPLAN-SWF-TEMPLATE.yaml; doc Version 1.0 → 1.1"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-56/IPLAN-56.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-56"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-56/ (GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, PLAN_STANDARD.md, README.md, VERSION, CHANGELOG.md, sync-version-refs.sh, test_governance.py)"
+      phase: "sdd_lifecycle"
+      artifact: "GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, PLAN_STANDARD.md, README.md, VERSION, CHANGELOG.md, sync-version-refs.sh, test_governance.py"
+      archive_path: "framework/archive/CHG-56/"
+      new_version: "0.77.0"
+      current_version: "0.76.0"
+      status: Completed
+    - step: "Author IPLAN_WORKFLOW_STANDARD.md, IPLAN-SWF-TEMPLATE.yaml, amend GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, PLAN_STANDARD.md, and README.md"
+      phase: "sdd_lifecycle"
+      artifact: "IPLAN_WORKFLOW_STANDARD.md, IPLAN-SWF-TEMPLATE.yaml, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md, PLAN_STANDARD.md, README.md"
+      archive_path: "framework/archive/CHG-56/"
+      new_version: "0.77.0"
+      current_version: "0.76.0"
+      status: Completed
+    - step: "Author authorizing IPLAN-56.yaml under framework/archive/CHG-56/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-56/IPLAN-56.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+    - step: "Author tests/conformance/test_iplan_workflow.py, update tests/conformance/test_governance.py, hooks/sync-version-refs.sh, bump VERSION to 0.77.0, update CHANGELOG.md, and run conformance suite"
+      phase: "documentation_sync"
+      artifact: "test_iplan_workflow.py, test_governance.py, sync-version-refs.sh, VERSION, CHANGELOG.md"
+      archive_path: null
+      new_version: "0.77.0"
+      current_version: "0.76.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint validates CHG-56 cleanly (exit 0)"
+      result: Pass
+    - check: "test_iplan_workflow.py passes green asserting YAML syntax, schema version, states, compensation, and tags"
+      result: Pass
+    - check: "test_governance.py passes green with IPLAN_WORKFLOW_STANDARD.md in EXPECTED_FILES"
+      result: Pass
+    - check: "test_sync_version_refs.py passes with 0.76.0 in OLD_VERSIONS"
+      result: Pass
+    - check: "Full conformance test suite passes green"
+      result: Pass

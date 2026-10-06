@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-02 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -80,9 +80,11 @@ framework/
   LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
                          evidence preserved verbatim; era caveats in header).
   layers/                The 10 layer definitions — one folder per layer, each
-                         with a template, a README, and an index template
-                         (08_IPLAN also carries PLAN_STANDARD.md and
-                         IPLAN-ECOSYSTEM.md).
+                         with standard and workflow templates ({TYPE}-TEMPLATE.yaml
+                         and {TYPE}-SWF-TEMPLATE.yaml), a normative workflow
+                         standard ({TYPE}_WORKFLOW_STANDARD.md), a README, and
+                         an index template (08_IPLAN also carries PLAN_STANDARD.md
+                         and IPLAN-ECOSYSTEM.md).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 11 folders:
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL
@@ -94,11 +96,12 @@ framework/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
     README.md
-  governance/            Governance rules; the CHG change-management overlay
-                         (gates incl. GATE-SPEC, the framework-spec change gate;
-                         templates); the project adaptation surface
-                         (ADAPTATION.md + ADAPTATION_SURFACE.yaml); and
-                         DECISIONS.md, the spec-level decision register.
+  governance/            Governance rules; the CNCF Serverless Workflow catalog
+                         (workflows/*.sw.yaml and GOVERNANCE_WORKFLOW_STANDARD.md);
+                         the CHG change-management overlay (gates incl. GATE-SPEC,
+                         the framework-spec change gate; templates); the project
+                         adaptation surface (ADAPTATION.md + ADAPTATION_SURFACE.yaml);
+                         and DECISIONS.md, the spec-level decision register.
                          See governance/README.md.
   archive/               Archived originals from CHG-modified documents.
                          Structure: archive/{CHG-ID}/ (vehicle files at

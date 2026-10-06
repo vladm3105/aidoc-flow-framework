@@ -1,0 +1,157 @@
+# =============================================================================
+#  IPLAN-55: Adopt CNCF Serverless Workflow standard (YAML) for declarative
+#  governance flows and executable graphs (spec-source, C2, MINOR 0.76.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-55/CHG-55.yaml (Implemented)
+#  Source: Issue #903
+# =============================================================================
+
+doc_id: IPLAN-55
+title: "Adopt CNCF Serverless Workflow standard (YAML) for declarative governance flows and executable graphs (spec C2 MINOR → 0.76.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.75.0"
+  source_chg: "CHG-55"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-55"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-55; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 11
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-55/CHG-55.yaml + IPLAN-55.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-55/DIAGRAM_STANDARDS.md + DECISIONS.md + VERSION + CHANGELOG.md + sync-version-refs.sh + test_governance.py"
+      description: "Pre-change snapshots (base 0.75.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Normative standard defining CNCF Serverless Workflow adoption and graph rules"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      description: "CNCF v0.8 workflow for CHG classification, gate checks, and lifecycle"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/seed-to-module-decomposition.sw.yaml"
+      description: "CNCF v0.8 workflow for 5-step decomposition and Triple-Lens modeling"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml"
+      description: "CNCF v0.8 workflow for worktree isolation, PR watch, and cleanup order guard"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Link governance state machines to the CNCF workflow standard"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record GD-51"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Add new governance files to EXPECTED_FILES"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Conformance tests asserting workflow YAML syntax, schema version, and state transitions"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.75.0 to OLD_VERSIONS"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.75.0 → 0.76.0"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add 0.76.0 entry"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+execution_steps:
+  - step: 1
+    name: "Pre-change snapshots"
+    action: "Snapshot modified files to framework/archive/CHG-55/"
+    status: DONE
+  - step: 2
+    name: "Author GOVERNANCE_WORKFLOW_STANDARD.md"
+    action: "Create framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md with workflow primitives, graph rules, and LangGraph adapter"
+    status: DONE
+  - step: 3
+    name: "Author pilot workflow YAMLs"
+    action: "Create chg-request-flow.sw.yaml, seed-to-module-decomposition.sw.yaml, and worktree-pr-lifecycle.sw.yaml"
+    status: DONE
+  - step: 4
+    name: "Extend DIAGRAM_STANDARDS.md"
+    action: "Add governance state machines & workflow graphs subsection"
+    status: DONE
+  - step: 5
+    name: "Record GD-51 in DECISIONS.md"
+    action: "Document GD-51 decision ratifying CNCF Serverless Workflow standard"
+    status: DONE
+  - step: 6
+    name: "Update test_governance.py"
+    action: "Add new governance files to EXPECTED_FILES"
+    status: DONE
+  - step: 7
+    name: "Author test_governance_workflows.py"
+    action: "Add unit tests verifying CNCF workflow YAML parsing, schema version, and state transitions"
+    status: DONE
+  - step: 8
+    name: "Sync versions and changelog"
+    action: "Update sync-version-refs.sh, bump VERSION to 0.76.0, update CHANGELOG.md"
+    status: DONE
+  - step: 9
+    name: "Run test suite"
+    action: "Verify all tests pass green"
+    status: DONE

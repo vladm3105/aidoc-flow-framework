@@ -15,11 +15,366 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.10 |
+| Version | 1.22 |
 | Status | Approved |
-| Last Updated | 2026-10-02 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
+
+---
+
+## GD-61 — CNCF Serverless Workflow standard (YAML) for Layer 01 (BRD) business validation and value stream workflows (CHG-65, 0.86.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous business requirements validation, value stream mapping across operational capabilities, quantitative ROI / cost-benefit analysis, executive steering committee consensus gating, and deterministic strategic initiative invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 01 (BRD) business requirements validation, value stream mapping, ROI evaluation, and strategic initiative invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 17 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `value_stream_mapping.workflow_definition`.
+  3. Author `framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md` establishing the normative mapping of BRD business validation primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Strategic Theme Ingestion` $\rightarrow$ `inject` or `operation` (extracts strategic theme, business drivers, and market context)
+     - `Value Stream Decomposition` $\rightarrow$ `parallel` (concurrent analysis across customer journey, core operations, and financial governance streams)
+     - `ROI & Feasibility Analysis` $\rightarrow$ `operation` (computes quantitative economic metrics, ROI, Net Present Value, and payback period)
+     - `Strategic Alignment Gate` $\rightarrow$ `switch` (evaluates objective fit, ROI viability, and budget feasibility)
+     - `Executive Steering Committee Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `ExecutiveSteeringApprovalEvent` with timeout)
+     - `Business Specification Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes approved baseline)
+     - `Strategic Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional draft allocations across PRD and reserves)
+  4. Author `framework/governance/workflows/brd-business-validation.sw.yaml` establishing the canonical business requirements validation and value stream runner.
+  5. Author `framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex enterprise strategic initiatives.
+  6. Maintain dual-template discipline: retain `BRD-TEMPLATE.yaml` for straightforward, single-capability business requirements or focused enhancements.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-60 — CNCF Serverless Workflow standard (YAML) for Layer 02 (PRD) product decomposition and feature prioritization workflows (CHG-64, 0.85.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous product requirements decomposition across C4 container boundaries, quantitative RICE feature prioritization, acceptance threshold validation, and deterministic requirement invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 02 (PRD) product feature decomposition, multi-container architectural partitioning, feature prioritization, acceptance threshold validation, and requirement invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 15 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `component_decomposition.workflow_definition`.
+  3. Author `framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md` establishing the normative mapping of PRD product feature decomposition primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Initiative Ingestion & Backlog Parsing` $\rightarrow$ `inject` or `operation` (extracts product initiative metadata and upstream BRD links)
+     - `Container Decomposition` $\rightarrow$ `parallel` (concurrent decomposition across distinct C4 container boundaries)
+     - `Feature Prioritization` $\rightarrow$ `operation` (computes objective RICE / MoSCoW utility scores)
+     - `Acceptance Threshold Validation` $\rightarrow$ `operation` (validates quantifiable performance and capacity bounds against `@threshold:` definitions)
+     - `BRD Strategic Alignment Gate` $\rightarrow$ `switch` (evaluates upstream traceability and strategic viability)
+     - `Stakeholder Scope Negotiation Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `ProductScopeAdjustmentEvent` with timeout)
+     - `Product Specification Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes approved features)
+     - `Rejection Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional artifacts across EARS/BDD/ADR/SPEC)
+  4. Author `framework/governance/workflows/prd-feature-decomposition.sw.yaml` establishing the canonical product feature decomposition and threshold validation runner.
+  5. Author `framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex, multi-container product feature initiatives.
+  6. Maintain dual-template discipline: retain `PRD-TEMPLATE.yaml` for straightforward, single-container initiatives or monolithic services.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-59 — CNCF Serverless Workflow standard (YAML) for Layer 03 (EARS) requirements analysis and traceability validation workflows (CHG-63, 0.84.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous requirements syntax analysis, 5-pattern compliance verification, dependency DAG resolution, cross-requirement conflict detection, BDD-readiness gating, and deterministic invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 03 (EARS) requirements syntax verification, dependency DAG resolution, conflict analysis, BDD-readiness evaluation, and requirement invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 6 required SDD sections and metadata (`document_control`, `purpose_and_context`, `requirements`, `quality_attributes`, `traceability`, `glossary`), while Section 3 houses the CNCF Serverless Workflow state machine (`subtype: workflow`) under `requirements.workflow_definition`.
+  3. Author `framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md` establishing the normative mapping of EARS requirements primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Requirements Ingestion & Parsing` $\rightarrow$ `inject` or `operation` (extracts requirements metadata and upstream PRD links)
+     - `Syntax Pattern Verification` $\rightarrow$ `operation` (validates WHEN/WHILE/WHERE/IF/Ubiquitous patterns, actor clauses, and timing bounds)
+     - `Dependency DAG Resolution` $\rightarrow$ `parallel` (concurrent verification of acyclic dependency clusters)
+     - `Conflict & Consistency Detection` $\rightarrow$ `operation` (scans for contradictory state triggers and overlapping conditions)
+     - `BDD-Readiness Evaluation` $\rightarrow$ `switch` (evaluates score $\ge 90/100$ and upstream PRD traceability)
+     - `Stakeholder Clarification Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `RequirementClarificationEvent` with timeout)
+     - `Requirement Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes ratified contract)
+     - `Rejection Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional artifacts across BDD/ADR/SPEC)
+  4. Author `framework/governance/workflows/ears-requirements-validation.sw.yaml` establishing the canonical requirements validation and traceability verification runner.
+  5. Author `framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex, multi-system requirement topologies and dependency DAGs.
+  6. Maintain dual-template discipline: retain `EARS-TEMPLATE.yaml` for straightforward, single-system requirements or linear feature sets.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-58 — CNCF Serverless Workflow standard (YAML) for Layer 05 (ADR) architectural trade-off analysis and decision evaluation workflows (CHG-62, 0.83.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous architectural trade-off evaluation, multi-criteria decision analysis (MCDA), stakeholder RFC review loops, and deterministic rejection archival sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 05 (ADR) architectural candidate trade-off evaluations, multi-criteria utility scoring, stakeholder RFC review loops, and rejection archival sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 12 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `architecture_flow.decision_workflow`.
+  3. Author `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` establishing the normative mapping of architectural decision evaluation primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Context & Driver Ingestion` $\rightarrow$ `inject` or `operation` (loads constraints and non-functional requirements from upstream `@ears` and `@bdd`)
+     - `Candidate Alternative Evaluation` $\rightarrow$ `parallel` (concurrent assessment of options A, B, and C with `completionType: allOf`)
+     - `Multi-Criteria Utility Scoring (MCDA)` $\rightarrow$ `operation` (executes weighted Pugh matrix / utility tree calculation)
+     - `Viability & Threshold Filtering` $\rightarrow$ `switch` (validates candidate score $\ge 80.0$ and veto count $== 0$)
+     - `Stakeholder RFC Review Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `StakeholderFeedbackEvent` with timeout)
+     - `Consensus Validation` $\rightarrow$ `switch` (verifies feedback approval and absence of blocking objections)
+     - `Decision Ratification` $\rightarrow$ `operation` (generates immutable element IDs and seals status as `Accepted`)
+     - `Rejection Archival & Cleanup` $\rightarrow$ `operation` with `compensatedBy` (archives rejected proposals and cleans temporary evaluation contexts)
+  4. Author `framework/governance/workflows/adr-decision-analysis.sw.yaml` establishing the canonical architectural trade-off analysis and decision evaluation runner.
+  5. Author `framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml` as the canonical template for complex, multi-candidate architecture decision records.
+  6. Maintain dual-template discipline: retain `ADR-TEMPLATE.yaml` for straightforward, single-candidate decisions or localized design choices.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-57 — CNCF Serverless Workflow standard (YAML) for Layer 06 (SPEC) distributed interaction and choreography contracts (CHG-61, 0.82.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous distributed component modeling, event choreography, asynchronous callbacks, and distributed transaction saga rollback compensation.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 06 (SPEC) distributed interaction sequences, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 8 core SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) in an embedded `workflow:` block.
+  3. Author `framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md` establishing the normative mapping of component specification and choreography constructs onto CNCF Serverless Workflow state machine primitives:
+     - `Ingress / Event Consumption` $\rightarrow$ `inject` or `event` (CloudEvent payload ingestion & correlation ID initialization)
+     - `Payload Schema Validation` $\rightarrow$ `switch` (evaluates incoming payload against §4 data models)
+     - `Local State Mutation` $\rightarrow$ `operation` (with `compensatedBy:` pointing to a local rollback state)
+     - `Concurrent Service Invocations` $\rightarrow$ `parallel` (concurrent fork/join calls across independent microservices)
+     - `Asynchronous Webhook Callbacks` $\rightarrow$ `callback` (suspends execution awaiting correlated CloudEvent with timeout)
+     - `SLA & Latency Verification` $\rightarrow$ `switch` (evaluates `@threshold:` compliance before committing)
+     - `Distributed Saga Compensation` $\rightarrow$ `operation` (executes backward recovery compensations across downstream services)
+     - `Commit & CloudEvent Emission` $\rightarrow$ `operation` (commits state changes and emits terminal completion CloudEvent)
+  4. Author `framework/governance/workflows/spec-choreography-contract.sw.yaml` establishing the canonical distributed service interaction and choreography runner.
+  5. Author `framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml` as the canonical template for complex, distributed, event-driven component specifications.
+  6. Maintain dual-template discipline: retain `SPEC-TEMPLATE.yaml` for atomic, in-process monolithic components and pure algorithms.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-56 — CNCF Serverless Workflow standard (YAML) for Layer 07 (TDD) test execution and fixture rollback sagas (CHG-60, 0.81.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous testing resilience, test tier orchestration, multi-agent TDD execution, and deterministic fixture teardown compensation.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 07 (TDD) multi-tier test execution, retries, and saga rollback compensation.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves SDD metadata and traceability, while Section 5 houses the CNCF Serverless Workflow state machine (`subtype: workflow`).
+  3. Author `framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md` establishing the normative mapping of Arrange-Act-Assert testing phases onto CNCF Serverless Workflow state machine primitives:
+     - `Arrange` $\rightarrow$ `inject` (test data setup) or `operation` (fixture provisioning with `compensatedBy`)
+     - `Act` $\rightarrow$ `operation` (test runner invocation)
+     - `Assert` $\rightarrow$ `switch` (assertion outcomes and `@threshold:` checks)
+     - `Retry` $\rightarrow$ `operation` (flaky failure backoff and retry tracking)
+     - `Teardown` $\rightarrow$ `operation` (saga compensation cleanup)
+  4. Author `framework/governance/workflows/tdd-test-execution.sw.yaml` establishing the canonical automated test execution suite runner.
+  5. Author `framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml` as the canonical template for complex, stateful test workflows.
+  6. Maintain dual-template discipline: retain `TDD-TEMPLATE.yaml` for atomic, isolated unit tests.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
+
+---
+
+## GD-55 — CNCF Serverless Workflow standard (YAML) for Layer 04 (BDD) stateful scenarios and QA acceptance runners (CHG-59, 0.80.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.79.0 → 0.80.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-59 + IPLAN-59 (`framework/archive/CHG-59/`).
+  Issue: #911.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51),
+  Layer 08 execution (GD-52), Layer 10 verification (GD-53), and review sagas / decision ratification (GD-54),
+  Layer 04 (Behavior-Driven Development, BDD) was evaluated. Layer 04 defines executable acceptance criteria
+  translating formal EARS requirements (Layer 03) into verifiable user acceptance behaviors.
+  In the existing framework, BDD scenarios were modeled strictly as flat lists of Given-When-Then strings
+  in `BDD-TEMPLATE.yaml`. While effective for simple unit-level checks, real-world user journeys require complex
+  stateful choreography (multi-step user journeys, event stimuli, asynchronous callbacks, retry with backoff,
+  and saga rollback compensation). Furthermore, the QA Staging execution lifecycle lacked a normative state-machine runner.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md` establishing the CNCF Serverless Workflow v0.8
+     specification in YAML format as the standard for modeling stateful BDD scenarios and execution flows.
+  2. Adopt the Hybrid Envelope Architecture for BDD: ship `framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`
+     featuring `subtype: workflow`, preserving outer SDD document envelope (`metadata`, `document_control`,
+     `feature`, `traceability`) for full compatibility with `sdd_doc_lint`, while housing the executable
+     workflow DAG under a dedicated `workflow:` block.
+  3. Map BDD Given/When/Then phases to CNCF state machine primitives: `given` → `inject`/`operation` (preconditions
+     with `compensatedBy:` rollback), `when` → `operation`/`event` (actions/stimuli), `then` → `switch` (assertions/thresholds).
+  4. Author `framework/governance/workflows/bdd-acceptance-run.sw.yaml` establishing the canonical QA staging
+     test suite execution workflow (environment provisioning, scenario matrix execution, assertion evaluation,
+     defect quarantine, and teardown compensation).
+  5. Update `framework/layers/04_BDD/README.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, and `DIAGRAM_STANDARDS.md`.
+  6. Add conformance test suite `tests/conformance/test_bdd_workflow.py` asserting schema compliance and hybrid
+     envelope invariants; update `test_governance.py` and `test_governance_workflows.py`.
+- **Consequence:** Unlocks machine-executable, engine-agnostic state graphs for complex user journeys across
+  multi-agent systems (e.g. LangGraph/Temporal); guarantees deterministic saga rollback on test failure;
+  formalizes the QA staging BDD acceptance execution runner while retaining standard `BDD-TEMPLATE.yaml`
+  for simple scenarios.
+
+---
+
+## GD-54 — CNCF Serverless Workflow standard (YAML) for Review Sagas & Decision Ratification flows (CHG-58, 0.79.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.78.0 → 0.79.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-58 + IPLAN-58 (`framework/archive/CHG-58/`).
+  Issue: #909.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51),
+  Layer 08 execution (GD-52), and Layer 10 verification (GD-53), the framework's quality loop and decision governance
+  were reviewed. Review sagas (`REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`) and decision ratification
+  (`DECISION_WORKFLOW.md`, `DECISIONS.md`) govern artifact quality control and framework architecture changes.
+  Prior to this change, these critical quality and governance controls were documented in prose with informal ASCII diagrams,
+  exposing them to agent interpretation drift during multi-agent reviews and ratification.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/workflows/review-remediation-flow.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing multi-persona review crew fan-out, finding severity
+     categorization (`critical`, `medium`, `low`, `acknowledged`), 3-strike remediation loop (`quality_loop_max_iterations`),
+     wall-clock break-circuit timeout checkpoints (`SOFT_DEADLINE`), and saga compensation rollback (`compensatedBy:`).
+  2. Author `framework/governance/workflows/decision-ratification-flow.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing decision proposals, review crew consensus, founder sign-off
+     callbacks (`type: callback`), immutability sealing upon ratification, and superseding transitions.
+  3. Update companion governance documentation:
+     - `framework/governance/REVIEW_REMEDIATION_FLOW.md` (v1.0 → 1.1) to bind the executable review remediation state machine.
+     - `framework/governance/REVIEW_SAGA.md` (v1.0 → 1.1) to bind the CNCF review saga workflow.
+     - `framework/governance/DECISION_WORKFLOW.md` (v1.1 → 1.2) to bind the executable decision ratification state machine.
+     - `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.2 → 1.3) and `framework/governance/DIAGRAM_STANDARDS.md` (v1.3 → 1.4)
+       to register `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml`.
+  4. Extend conformance assertions in `tests/conformance/test_governance_workflows.py` to validate `review-remediation-flow.sw.yaml`
+     and `decision-ratification-flow.sw.yaml` schema compliance, state reachability, and diagram synchronization; update `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- **Consequence:** Formalizes review sagas and decision ratification into machine-executable, engine-agnostic state graphs;
+  guarantees deterministic quality loops and immutable decision sealing across autonomous multi-agent systems;
+  prevents runaway remediation loops and unhandled timeouts.
+
+---
+
+## GD-53 — CNCF Serverless Workflow standard (YAML) for Layer 10 (EVAL) evaluation & verification runners (CHG-57, 0.78.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.77.0 → 0.78.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-57 + IPLAN-57 (`framework/archive/CHG-57/`).
+  Issue: #907.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51)
+  and Layer 08 implementation execution (GD-52), Layer 10 (EVAL & IPVERIFY) was reviewed. Layer 10 governs the
+  testing and quality verification cycle (trigger → multi-tier test execution → scorecard calculation → quality
+  gate check → report receipt emission → remediation loop). In the existing specification, this lifecycle was
+  documented primarily through conceptual text and ASCII diagrams in `framework/layers/10_EVAL/README.md`.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/workflows/eval-verification-run.sw.yaml` establishing a canonical CNCF Serverless
+     Workflow (`specVersion: "0.8"`) state machine governing multi-tier test execution (unit, acceptance, conformance,
+     and security SAST via `type: parallel`, `completionType: allOf`), scorecard calculation, automated quality
+     gate evaluation (`type: switch`), immutable `EVAL-{NN}-RPT-{NNN}.yaml` receipt emission, and remediation dispatch.
+  2. Update `framework/layers/10_EVAL/README.md` to formally document and bind the CNCF Serverless Workflow
+     execution model, maintaining clean domain boundaries between strategy documents (`EVAL-TEMPLATE.yaml`),
+     static report receipts (`EVAL-REPORT-TEMPLATE.yaml`), and the executable workflow engine.
+  3. Update `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and `framework/governance/DIAGRAM_STANDARDS.md`
+     to register `eval-verification-run.sw.yaml`.
+  4. Extend conformance assertions in `tests/conformance/test_governance_workflows.py` to validate `eval-verification-run.sw.yaml`
+     schema compliance, DAG reachability, and diagram synchronization; update `EXPECTED_FILES` in `tests/conformance/test_governance.py`.
+- **Consequence:** Replaces ad-hoc evaluation execution with a vendor-neutral, deterministic CNCF state machine
+  executable across multi-agent systems via LangGraph/Temporal adapters while keeping `EVAL-TEMPLATE.yaml` and
+  `EVAL-REPORT-TEMPLATE.yaml` byte-faithful and compliant with `sdd_doc_lint`.
+
+---
+
+## GD-52 — CNCF Serverless Workflow standard (YAML) for Layer 08 (IPLAN) execution (CHG-56, 0.77.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.76.0 → 0.77.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-56 + IPLAN-56 (`framework/archive/CHG-56/`).
+  Issue: #905.
+- **Context:** Following the adoption of CNCF Serverless Workflow for governance state machines (GD-51),
+  Layer 08 (IPLAN) was reviewed as the primary execution bridge from SPEC/TDD to code. Historically,
+  IPLAN templates (`IPLAN-TEMPLATE.yaml`) functioned as static checklists with passive command lists and
+  prose rollback procedures. While human-readable, static checklists force autonomous AI coding agents
+  to guess step order and rollback procedures without deterministic state machine guarantees.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/IPLAN_WORKFLOW_STANDARD.md` establishing the CNCF Serverless Workflow
+     v0.8 specification in YAML format as the official standard for executable implementation plan task graphs.
+  2. Adopt the Hybrid Envelope Architecture: preserving the outer SDD document envelope (`metadata`,
+     `document_control`, `file_manifest`, `tdd_consistency`, `traceability`) to maintain full backward
+     compatibility with `sdd_doc_lint` (`STRUCT01`, `TAG01`), while housing the executable workflow DAG
+     under a dedicated `workflow:` block.
+  3. Ship canonical template `framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml` featuring `subtype: workflow`,
+     deterministic `operation` states, automated verification `switch` gates, persona attribution,
+     and native saga rollback compensation (`compensatedBy:`).
+  4. Clarify domain boundaries: governance workflows (`framework/governance/workflows/`) govern repository
+     lifecycles; implementation workflows (`framework/layers/08_IPLAN/`) govern codebase mutation.
+  5. Update `PLAN_STANDARD.md` and `README.md` in Layer 08 to formally recognize `subtype: workflow`.
+  6. Add conformance test suite `tests/conformance/test_iplan_workflow.py`.
+- **Consequence:** Transforms implementation plans from passive checklists into deterministic,
+  machine-executable graphs; enables zero-engine-lock-in execution via LangGraph or agent runners on the fly;
+  eliminates unhandled test failures through native saga rollback handlers.
+
+---
+
+## GD-51 — CNCF Serverless Workflow standard (YAML) for declarative governance flows and executable graphs (CHG-55, 0.76.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.75.0 → 0.76.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-55 + IPLAN-55 (`framework/archive/CHG-55/`).
+  Issue: #903.
+- **Context:** The SDD framework historically defined governance rules (change request flows,
+  review sagas, worktree lifecycle, decomposition methodologies) across extensive prose markdown
+  files. While human-readable, prose specifications are vulnerable to agent interpretation drift,
+  cannot be directly validated against state transition invariants, and cannot be loaded directly
+  into multi-agent graph orchestrators (such as LangGraph, Temporal, or custom agent harnesses).
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` establishing the open,
+     vendor-neutral CNCF Serverless Workflow specification (`specVersion: "0.8"`) in YAML format
+     as the official standard for modeling, validating, and executing governance flows.
+  2. Maintain strict engine agnosticism (D-0013): the framework ships declarative `.sw.yaml` files
+     under `framework/governance/workflows/` without bundling runtime code or proprietary orchestrator dependencies.
+  3. Ship canonical pilot workflows:
+     - `framework/governance/workflows/chg-request-flow.sw.yaml`: State machine for CHG classification
+       (Emergency, Type-R, F1–F4), gate progression, and closeout.
+     - `framework/governance/workflows/seed-to-module-decomposition.sw.yaml`: 5-step decomposition
+       flow with Triple-Lens modeling.
+     - `framework/governance/workflows/worktree-pr-lifecycle.sw.yaml`: Ordered worktree creation,
+       commit audit, PR watch loop, auto-merge, and §3.7 cleanup order guard.
+  4. Extend `framework/governance/DIAGRAM_STANDARDS.md` to link governance state machines to the CNCF
+     workflow standard, mandating 1-to-1 parity between YAML specs and embedded Mermaid diagrams.
+  5. Add conformance test suite `tests/conformance/test_governance_workflows.py`.
+- **Consequence:** Bridges the gap between static governance documentation and autonomous multi-agent
+  execution; eliminates procedural drift; enables on-the-fly graph compilation into LangGraph and other
+  engines; guarantees deterministic verification across all framework lifecycles.
+
+---
+
+## GD-50 — C4-L1 for Seed Docs, C4-L2 Triple-Lens for Modules, and Seed-to-Module Decomposition Flow (CHG-54, 0.75.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.74.0 → 0.75.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-54 + IPLAN-54 (`framework/archive/CHG-54/`).
+  Issue: #901.
+- **Context:** The framework aligned the 10 SDD layers with the C4 model (BRD=C4-L1, PRD=C4-L2, SPEC=C4-L3, Code=C4-L4),
+  but left Tier 1 Inputs (Seed) and Tier 2 Domain Source Material (Modules in `docs/modules/`) disconnected from the
+  abstraction hierarchy. Specifically: (1) `SEED-TEMPLATE.md` lacked C4-L1 System Context and DFD-L1 data flow boundary diagrams;
+  (2) `framework/templates/` shipped no canonical `MODULE-TEMPLATE.md`; (3) modules lacked an architectural modeling standard,
+  failing to capture the three critical perspectives (C4-L2 Container structure, DFD-L2 data movement & sensitivity classification,
+  and inter-module sequence choreography); (4) the framework lacked a normative specification explaining how to systematically
+  decompose seed vision into modules.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md` defining the 5-step methodology: Domain Boundary Discovery,
+     C4-L2 Container Definition, DFD-L2 Data Sensitivity & Trust Boundary Mapping, Inter-Module Process Choreography, and
+     Integrity/Invariant Audit.
+  2. Ship canonical `framework/templates/MODULE-TEMPLATE.md` with standard `document_control` frontmatter, C4-L2 container diagram,
+     DFD-L2 data flow diagram with Data Sensitivity & Protection Matrix (Public, Internal, Confidential, Restricted/PII), and
+     sequence failure choreography (`sequence-sync` / `sequence-async`).
+  3. Enhance `framework/templates/SEED-TEMPLATE.md` with C4-L1 System Context and DFD-L1 external data flow Mermaid diagrams.
+  4. Extend `framework/governance/DIAGRAM_STANDARDS.md` to formally recognize Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence)
+     in the C4 + DFD + Sequence ownership model.
+  5. Reconcile `MODULE_LAYOUT.md` (Rule 7) and `SEED_CONTRACT.md` (Phase 0b) to reference the new templates and decomposition playbook.
+  6. Add conformance test suite `tests/conformance/test_module_contract.py`.
+- **Consequence:** Closes the abstraction gap between high-level vision and technical execution; ensures privacy and data protection
+  by design via explicit DFD-L2 sensitivity matrices before code is authored; establishes clear container boundaries preventing
+  premature implementation coupling in module docs.
+
+---
+
+## GD-49 — Canonical SEED-TEMPLATE.md, canonical seed/ path standard, and DECISION_WORKFLOW GD-36 reconciliation (CHG-53, 0.74.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.73.0 → 0.74.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-53 + IPLAN-53 (`framework/archive/CHG-53/`).
+  Issue: #899.
+- **Context:** While GD-36 (CHG-11) ratified the versioned seed tier ("frozen-per-version"),
+  several practical gaps remained: (1) no canonical `SEED-TEMPLATE.md` shipped in `framework/templates/`;
+  (2) `MODULE_LAYOUT.md` nested seed under `docs/seed/`, contradicting the 4-tier model (`README.md`,
+  `AIDOC.md`) which establishes `<project>/seed/` at project root as Tier 1 Inputs; (3) `DECISION_WORKFLOW.md`
+  retained obsolete GD-08 phrasing ("Frozen after first BRD"); (4) `AIDOC-SCAFFOLD-TEMPLATE.md` omitted
+  seed tree bootstrapping; (5) the complete end-to-end `seed_scope` supersede lifecycle (`Seed → Module → SDD`)
+  with the Secondary Review Gate's stale-term grep sweep was fragmented across governance docs.
+- **Decision (spec C2 MINOR):**
+  1. Ship canonical `framework/templates/SEED-TEMPLATE.md` with standard `document_control` frontmatter
+     and guidance for Vision, Realities, Options/Trade-Offs, Invariants, Non-Goals, and natural-language claims.
+  2. Standardize `<project>/seed/` at project root as the canonical Tier 1 Inputs path across `MODULE_LAYOUT.md`
+     and scaffolding; tooling (`sdd_doc_lint`) continues to tolerate `docs/seed/` for legacy compatibility.
+  3. Reconcile `DECISION_WORKFLOW.md` lines 43 & 128 to GD-36 ("Frozen per version, superseded via F3 Phase 0a").
+  4. Document the full Seed → Module → SDD cascade in `SEED_CONTRACT.md`, including Phase 0a, Phase 0b, the hard
+     Review Checkpoint, and the Secondary Review Gate stale-term sweep.
+  5. Add `<project>/seed/` bootstrapping to `AIDOC-SCAFFOLD-TEMPLATE.md`.
+  6. Add conformance test in `test_seed_contract.py` asserting template presence and standards.
+- **Consequence:** Eliminates friction for architects and AI agents initializing or updating seed documents;
+  closes path ambiguity across framework documentation; prevents stale-reference accumulation during seed supersedes.
 
 ---
 

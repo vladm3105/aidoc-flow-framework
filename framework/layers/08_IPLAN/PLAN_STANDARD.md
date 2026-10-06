@@ -22,6 +22,7 @@ defines:
 | ------- | ---- | ------- |
 | Permanent IPLAN | `IPLAN-NN_{slug}.yaml` | One SPEC component's file-creation order, executable steps, and session handoff. |
 | Bugfix IPLAN | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | Repair of closed (`Completed`/`Verified`) output: `parent_iplan` + `source_chg`, repair-scoped manifest (BGF-01..07). |
+| Executable Workflow IPLAN | `IPLAN-NN_{slug}.yaml` (`subtype: workflow`) | Machine-executable implementation DAG with native saga compensation adopting CNCF Serverless Workflow v0.8 ([`IPLAN-SWF-TEMPLATE.yaml`](IPLAN-SWF-TEMPLATE.yaml); [`IPLAN_WORKFLOW_STANDARD.md`](../../governance/IPLAN_WORKFLOW_STANDARD.md)). |
 | **Development/work plan** | **`plans/*.md`** | **The human-and-agent-readable plan-of-record for a change: objective, scope, approach, task sequence, verification, review trail.** |
 
 > Retired: Temporary IPLAN (`tmp/TMP-IPLAN-*.yaml`) — superseded by the

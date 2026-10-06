@@ -4,16 +4,19 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-26 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 ## Template Usage
 
-- Use templates from `layers/0X_TYPE/TYPE-TEMPLATE.yaml`.
+- **Dual-Template Selection (GD-51 through GD-61)**:
+  - **Standard Templates (`layers/0X_TYPE/TYPE-TEMPLATE.yaml`)**: Use for straightforward, atomic, or linear artifacts where declarative specification without execution graph state transitions is sufficient.
+  - **Workflow Templates (`layers/0X_TYPE/TYPE-SWF-TEMPLATE.yaml`)**: Use when the artifact models complex state transitions, multi-branch parallel operations, automated evaluation runners, distributed choreography contracts, or saga compensation rollbacks. These templates follow the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow v0.8 YAML state machine (`workflow_definition`).
+- **Normative Workflow Standards**: When authoring workflow-enabled artifacts or understanding layer state machines, consult `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and the per-layer specification standard `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md`.
 - Fill placeholder fields (`[text]`, `xxxx`) with actual values.
 - Do not remove `_guidance`, `_note`, `_example`, or `_antipatterns` fields — they are ignored by validators but provide context.
 

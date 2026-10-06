@@ -3,12 +3,13 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.0 |
+|---|---|
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
+| Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 
 ## Overview
@@ -59,24 +60,23 @@ Component (SPEC) — component interfaces, data models, behavior contracts
   └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
-|------|---------|
-| `BRD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance (`_guidance`, `_note`, `_example`, `_antipatterns` fields). Self-documenting for AI agents. |
-| `BRD-00_index.TEMPLATE.md` | BRD registry template — tracks planned and active BRDs per project |
+|---|---|
+| `BRD-TEMPLATE.yaml` | **Standard Declarative** — full template with embedded authoring guidance (`_guidance`, `_note`, `_example`, `_antipatterns` fields). Self-documenting for AI agents and focused/linear business capabilities. |
+| `BRD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope template embedding CNCF Serverless Workflow v0.8 state machines for complex value stream mapping, ROI feasibility, and executive steering consensus. |
+| `BRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining the mapping of business requirements primitives to CNCF state types, graph integrity invariants, and zero-runtime execution. |
+| `BRD-00_index.TEMPLATE.md` | BRD registry template — tracks planned and active BRDs per project. |
 
-The full `*-TEMPLATE.yaml` is the **default** for all cycles — it carries the embedded
-guidance an AI agent needs to author a valid document without external reference.
+### Dual-Template Selection Matrix
 
-agents already familiar with the full template's conventions. Using it without also
-reading the full template produces incomplete documents with missing context, empty
-required sections, and incorrect element IDs. The agent MUST load both files when
-as the reference for section-level expectations and authoring conventions.
+Layer 01 supports dual-template selection based on business domain complexity (GD-61):
 
-| Cycle | Template | Rationale |
-|-------|----------|-----------|
-| **All cycles** (default) | `*-TEMPLATE.yaml` | Embedded guidance makes it self-documenting. Lower error rate, fewer validation failures. |
+| Initiative Profile | Recommended Template | Operational Rationale |
+|---|---|---|
+| Single capability, direct business process, or focused enhancement | `BRD-TEMPLATE.yaml` | Declarative, lightweight, lowest overhead for linear requirements. |
+| Multi-stream value flows, quantitative ROI evaluation, steering committee review callbacks, or invalidation sagas | `BRD-SWF-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow graph enabling automated validation and rollback. |
 
 ## Lifecycle: MVP → PROD → NEW MVP
 
@@ -98,6 +98,8 @@ BRD set (MVP) → Production v1 → Feedback → next BRD set (NEW MVP) → Prod
 ```
 
 - New features = New BRD (don't expand existing BRDs)
+- Bug fixes = Bugfix vehicle (C1 CHG + scoped IPLAN; parent BRD immutable)
+- Architecture changes = Supersede BRD via CHG
 - Link cycles via `@depends: BRD-01` in traceability section
 - Target: 200-400 lines per BRD instance
 

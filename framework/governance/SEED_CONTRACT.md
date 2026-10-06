@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-24 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -22,9 +22,13 @@ artifacts, not any platform's runtime.
 ## Scope
 
 `<project>/seed/` holds the raw, human-authored requirements a cycle starts
-from (a brief, a stakeholder note, a prior-art dump). It is **not** a chain
-artifact in the SDD sense: it carries no element IDs and is not linted as an
-SDD document. It is *input* to the first BRD of a
+from (a brief, a stakeholder note, a prior-art dump). Per the framework's 4-tier
+model (`README.md`, `AIDOC.md`), `<project>/seed/` at project root is the canonical
+Tier 1 Inputs path (legacy `docs/seed/` is tolerated by tooling for backward compatibility).
+Canonical template: [`framework/templates/SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md).
+
+The seed is **not** a chain artifact in the SDD sense: it carries no element IDs and
+is not linted as an SDD document (D23). It is *input* to the first BRD of a
 cycle — and since CHG-11 it is a **versioned** input tier: each seed file
 carries a `document_control` block (see §Seed document control) and versions
 via archive → rewrite → bump + `supersedes`, affected files only, exactly like
@@ -91,7 +95,10 @@ is what makes that deferral traceable back to its seed input.
 ## Seed document control
 
 Every seed file carries a control header — frontmatter, not prose — so the
-tier versions without disturbing its human-readable form:
+tier versions without disturbing its human-readable form. The canonical starter
+template is [`framework/templates/SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md).
+Note: `version:` must remain within the first 12 lines of `document_control:` to ensure
+deterministic regex extraction by `sdd_doc_lint`:
 
 ```yaml
 document_control:
@@ -101,7 +108,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.73.0"
+  framework_version: "0.86.1"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:
@@ -205,3 +212,27 @@ When a seed gap review triggers a new SDD iteration:
 - Existing BRDs are updated with new seed_disposition entries (with current `seed_version` pins)
 - Downstream SDD layers are regenerated only if the new seed changes their scope
 - A CHG record is created if existing SDD documents are rewritten
+
+
+## End-to-End Supersede Lifecycle (Seed → Module → SDD)
+
+When environmental realities or architectural vision shift mid-lifecycle, the update
+executes under an F3 Change Request through the ordered cascade:
+
+1. **Phase 0a — `seed_scope: supersede`:**
+   - The affected seed file's `vN` is archived to `docs/sdd/09-CHG/archive/{CHG-ID}/seed/`.
+   - A clean `vN+1` is authored at `<project>/seed/` carrying `supersedes: [archive_path]` and AI-attribution metadata (`author: ai-agent + supervising human`, `chg_ref: CHG-ID` per GOV-021).
+   - If an initial seed document lacked `document_control`, the AI agent backfills it during this update (mandatory backfill per GOV-021).
+
+2. **Phase 0b — `module_lifecycle: sync` (The Living Bridge):**
+   - Seed docs never feed BRDs in isolation; modules bridge seed principles into technical constraints (`Seed → Module → SDD`).
+   - Every module touched by the seed change is analyzed and updated per the normative 5-step methodology in [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md) and formatted per [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+   - The module’s C4-L2 container boundaries, DFD-L2 data sensitivity matrix, and process sequences are refreshed to reflect the new seed realities.
+   - Touched modules are archived to `docs/sdd/09-CHG/archive/{CHG-ID}/modules/` and updated in `docs/modules/` (re-pointing seed references, updating invariants).
+
+3. **Hard Review Checkpoint:**
+   - The seed → modules alignment MUST pass before any SDD layer rewrite begins and before any IPLAN is authored.
+
+4. **Phase 0c — SDD Cascade & Stale Reference Sweep:**
+   - Re-point pinned BRD `seed_disposition` rows to `seed_version: "vN+1"` (or re-dispose as `rejected`/`deferred` if no longer carried). `SEED01` fails stale pins deterministically.
+   - Run the **Secondary Review Gate sweep**: grep all downstream SDD layers (`PRD` through `IPLAN`) for superseded terms or deprecated components, updating affected specifications.

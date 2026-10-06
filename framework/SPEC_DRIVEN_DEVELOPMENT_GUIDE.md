@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 ## Overview
@@ -73,6 +73,19 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 → BDD → ADR-Ready (>=90) → ADR → SPEC-Ready (>=90) → SPEC → TDD-Ready (>=90)
 → TDD → IPLAN-Ready (>=90) → IPLAN → EXEC-Ready (>=90) → Code
 ```
+
+## Dual-Template Architecture: Standard vs. Workflow-Driven SDD
+
+To support both lightweight specification drafting and complex autonomous agent orchestration, SDD supports two template flavors across all layers (ratified across Decisions GD-51 through GD-61):
+
+1. **Standard Templates (`{TYPE}-TEMPLATE.yaml`)**:
+   - Purely declarative YAML defining requirements, acceptance scenarios, architecture decisions, interfaces, test suites, or execution plans.
+   - Recommended for straightforward, linear, or atomic development tasks.
+
+2. **Workflow Templates (`{TYPE}-SWF-TEMPLATE.yaml`)**:
+   - Implement the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded, vendor-neutral **CNCF Serverless Workflow v0.8 YAML** state machine (`workflow_definition`).
+   - Enable autonomous multi-agent execution, parallel branch fan-out (`type: parallel`), human-in-the-loop review callbacks (`type: callback`), and automated saga rollback compensation (`compensatedBy`) upon gate or threshold failure.
+   - Normative mapping rules for each layer are documented in `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md` and `governance/GOVERNANCE_WORKFLOW_STANDARD.md`.
 
 ## Layer Responsibilities
 

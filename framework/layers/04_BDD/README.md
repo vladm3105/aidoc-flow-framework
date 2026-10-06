@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.0 |
+|---|---|
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 ## Overview
@@ -69,28 +69,33 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `BDD-TEMPLATE.yaml` | **Default** — full template with embedded `scenarios:` YAML guidance in `_example` fields. Self-documenting for AI agents. |
+| `BDD-SWF-TEMPLATE.yaml` | **Workflow subtype** — Hybrid Envelope housing a CNCF Serverless Workflow (v0.8) state machine for complex, stateful user journeys and saga rollback. |
+| `BDD_WORKFLOW_STANDARD.md` | Normative standard specifying Given/When/Then mapping to CNCF Serverless Workflow state primitives. |
 | `BDD-00_index.TEMPLATE.md` | BDD registry template — tracks planned and active BDD documents per project |
 
-## Scenario YAML Quick Reference
+## Scenario Formats: Standard vs. Stateful Workflow
 
-BDD scenarios are authored as **structured YAML** (a `scenarios:` list), not
-Gherkin `@`-tags. `id`/`type`/`priority` are fields; the upstream trace is an
-element-level `ears:` list; `given`/`when`/`then` are phase lists.
+The framework provides two complementary approaches to BDD authoring:
 
-```yaml
-scenarios:
-  - id: BDD.01.03.xxxx
-    name: User logs in with valid credentials
-    type: success
-    priority: p0-critical
-    ears: [EARS.01.03.xxxx]
-    given: ["a registered user with valid credentials"]
-    when: ["the user submits a login request"]
-    then:
-      - "the system authenticates the user"
-      - "a session token is returned WITHIN @threshold:PRD.01.perf.auth.p95"
-    spec_trace: ["SPEC Section 5 (Behavior)"]
-```
+1. **Standard Atomic Scenarios (`BDD-TEMPLATE.yaml`)**:
+   Designed for single-turn, atomic Given-When-Then checks.
+   ```yaml
+   scenarios:
+     - id: BDD.01.03.xxxx
+       name: User logs in with valid credentials
+       type: success
+       priority: p0-critical
+       ears: [EARS.01.03.xxxx]
+       given: ["a registered user with valid credentials"]
+       when: ["the user submits a login request"]
+       then:
+         - "the system authenticates the user"
+         - "a session token is returned WITHIN @threshold:PRD.01.perf.auth.p95"
+       spec_trace: ["SPEC Section 5 (Behavior)"]
+   ```
+
+2. **Stateful Behavioral Workflows (`BDD-SWF-TEMPLATE.yaml`)**:
+   Designed for multi-step user journeys, distributed transactions, asynchronous callbacks, and failure compensation. Utilizes the **Hybrid Envelope Architecture**: the outer envelope preserves SDD metadata and traceability, while an embedded `workflow:` block houses a valid CNCF Serverless Workflow v0.8 state machine (`subtype: workflow`). See [`BDD_WORKFLOW_STANDARD.md`](BDD_WORKFLOW_STANDARD.md) and [`framework/governance/workflows/bdd-acceptance-run.sw.yaml`](../../governance/workflows/bdd-acceptance-run.sw.yaml).
 
 ## Element IDs
 
@@ -118,12 +123,5 @@ scenarios:
 
 ## Downstream Traceability
 
-Each BDD scenario includes a `spec_trace` field linking to SPEC sections:
-
-```text
-spec_trace:
-  - "SPEC Section 3 (Interfaces)"
-  - "SPEC Section 5 (Behavior)"
-```
-
-BDD scenarios are also consumed by EVAL (Layer 10) for functional evaluation of scenario coverage.
+TDD (L7) maps each BDD scenario to a concrete test case via its §3 mapping table or §4 test case metadata.
+Every BDD scenario MUST be accounted for in TDD (`ACC01`).

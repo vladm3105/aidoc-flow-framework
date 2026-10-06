@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 ## Overview
 
@@ -79,6 +79,18 @@ IPLAN-02 (Auth JWT)
 | `chg_verification` | Re-run after a CHG modified the IPLAN | CHG-09 bumps IPLAN-01 to v3.0 |
 | `scheduled` | Periodic regression check | Weekly stability check |
 | `pre_deploy` | Gate check before branch promotion | Staging → main promotion |
+
+### Executable Evaluation State Machine (CNCF Serverless Workflow)
+
+Evaluation and verification execution across Layer 10 is formally governed by the declarative CNCF Serverless Workflow state machine:
+`framework/governance/workflows/eval-verification-run.sw.yaml` (`specVersion: "0.8"`).
+
+This state machine models and executes:
+1. **Strategy Ingestion**: Ingests trigger context and loads `EVAL-{NN}.yaml` targets, test suite commands, and PRD coverage thresholds.
+2. **Parallel Suite Execution**: Runs unit, acceptance, conformance, and security SAST suites concurrently (`type: parallel`, `completionType: allOf`).
+3. **Automated Quality Gate Checks**: Evaluates the aggregated test results and computed Evaluation Score against thresholds (advisory target: >= 90/100).
+4. **Immutable Receipt Generation**: Emits `EVAL-{NN}-RPT-{NNN}.yaml` report artifacts carrying full pass/fail breakdowns.
+5. **Remediation Triggering**: On failure, routes directly to the bugfix remediation flow (`REVIEW_REMEDIATION_FLOW.md`) to dispatch a C1 CHG + scoped IPLAN.
 
 ## File Format
 

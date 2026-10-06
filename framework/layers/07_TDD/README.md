@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.0 |
+|---|---|
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 ## C4 Model Position
@@ -25,7 +25,7 @@ Defines test cases that validate SPEC component contracts. Each TDD document map
 
 - **L7 position** — Logical: SPEC defines what to build, TDD defines how to test it, IPLAN orchestrates the build.
 - **Test case definitions embedded** — Section 4 of template provides concrete test inputs, expected outputs, and edge cases.
-- **Single template, no subtypes** — unified TDD authoring contract.
+- **Dual-template architecture** — `TDD-TEMPLATE.yaml` (default, standard atomic unit tests) and `TDD-SWF-TEMPLATE.yaml` (workflow subtype, CNCF Serverless Workflow v0.8 for stateful multi-tier test execution and fixture rollback sagas).
 - **Test-first enforcement** — test files are generated BEFORE implementation files
 - **BDD as source of truth** — no new behavior descriptions; maps existing BDD scenarios (with spec_trace links) to test types
 - **Acceptance pairing is normative (GD-08)** — every BDD scenario MUST be paired to a TDD **test case**: named in a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` (in a rendered Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying the test-case id). A scenario named only in the §7 traceability block is not paired. Enforced by `ACC01` (`../../governance/LINT_RULES.md`): `warning` in `build`, `error` in `gate-code`. Stricter than `COV02` (which a SPEC-only citation satisfies).
@@ -59,8 +59,28 @@ See template `metadata.id_standard` for details.
 | Test case shape | Section 4 test case definitions |
 | Upstream | EARS + BDD + ADR + SPEC |
 | Downstream | IPLAN, EVAL |
-| Template model | Single unified template |
-| Core assets | Template + index + README |
+| Template model | Dual-template (Standard vs Workflow) |
+| Core assets | Template + index + README + Workflow Standard |
+
+## Test Formats: Standard vs. Stateful Workflow
+
+The framework provides two complementary approaches to TDD authoring:
+
+1. **Standard Atomic Tests (`TDD-TEMPLATE.yaml`)**:
+   Designed for pure functions, isolated unit tests, and static mocks.
+   ```yaml
+   test_cases:
+     cases:
+       - id: "TDD.01.04.0001"
+         name: "test_parse_header_valid"
+         target: "src/parser.py"
+         test_file: "tests/unit/test_parser.py"
+         test_function: "test_parse_header_valid"
+         spec_ref: "@spec: SPEC-01"
+   ```
+
+2. **Stateful Test Workflows (`TDD-SWF-TEMPLATE.yaml`)**:
+   Designed for multi-tier test execution (unit $\rightarrow$ integration $\rightarrow$ contract $\rightarrow$ mutation), external fixture setup, automated retries with exponential backoffs, and fixture teardown sagas. Utilizes the **Hybrid Envelope Architecture**: the outer envelope preserves SDD metadata and traceability, while an embedded `workflow:` block houses a valid CNCF Serverless Workflow v0.8 state machine (`subtype: workflow`). See [`TDD_WORKFLOW_STANDARD.md`](TDD_WORKFLOW_STANDARD.md) and [`framework/governance/workflows/tdd-test-execution.sw.yaml`](../../governance/workflows/tdd-test-execution.sw.yaml).
 
 ## Test Strategy (Section 2)
 
@@ -94,9 +114,11 @@ Section 2 (strategy)  file_manifest      tdd_order           Completed → Verif
 Section 4 (cases)     tdd_ref links      Phase 1-5           (after validation)
 ```
 
-## Template
+## Templates & Reference Documents
 
 | File | Purpose |
 |------|---------|
 | `TDD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `TDD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for stateful test execution and fixture sagas. |
+| `TDD_WORKFLOW_STANDARD.md` | Normative standard specifying Arrange/Act/Assert mapping to CNCF Serverless Workflow state primitives. |
 | `TDD-00_index.TEMPLATE.md` | TDD registry template — tracks planned and active TDDs per project |

@@ -1,0 +1,161 @@
+# =============================================================================
+#  IPLAN-54: Codify C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and
+#  Seed-to-Module decomposition flow (spec-source, C2, MINOR 0.75.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-54/CHG-54.yaml (Implemented)
+#  Source: Issue #901
+# =============================================================================
+
+doc_id: IPLAN-54
+title: "Codify C4-L1 for seed docs, C4-L2 Triple-Lens for modules, and Seed-to-Module decomposition flow (spec C2 MINOR → 0.75.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.74.0"
+  source_chg: "CHG-54"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-54"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-54; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Muse Code"
+  complexity: 2
+  estimated_files: 10
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-54/CHG-54.yaml + IPLAN-54.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-54/SEED-TEMPLATE.md + DIAGRAM_STANDARDS.md + MODULE_LAYOUT.md + SEED_CONTRACT.md + DECISIONS.md + VERSION + CHANGELOG.md + sync-version-refs.sh"
+      description: "Pre-change snapshots (base 0.74.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+      description: "New normative playbook for decomposing seed vision into C4-L2 modules"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/templates/MODULE-TEMPLATE.md"
+      description: "New canonical module template with C4-L2, DFD-L2 data sensitivity matrix, and sequence flow"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/templates/SEED-TEMPLATE.md"
+      description: "Enhanced with C4-L1 System Context and DFD-L1 data flow boundary diagrams"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Extended ownership table with Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/MODULE_LAYOUT.md"
+      description: "Reference MODULE-TEMPLATE.md and SEED_TO_MODULE_DECOMPOSITION.md"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/SEED_CONTRACT.md"
+      description: "Reference SEED_TO_MODULE_DECOMPOSITION.md in Phase 0b"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record GD-50"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_module_contract.py"
+      description: "Conformance tests asserting MODULE-TEMPLATE.md presence, schema, and governance references"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.74.0 to OLD_VERSIONS"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump 0.74.0 → 0.75.0"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add 0.75.0 entry"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+execution_steps:
+  - step: 1
+    name: "Pre-change snapshots"
+    action: "Snapshot modified files to framework/archive/CHG-54/"
+    status: DONE
+  - step: 2
+    name: "Author SEED_TO_MODULE_DECOMPOSITION.md"
+    action: "Create framework/governance/SEED_TO_MODULE_DECOMPOSITION.md with 5-step methodology"
+    status: DONE
+  - step: 3
+    name: "Author MODULE-TEMPLATE.md"
+    action: "Create framework/templates/MODULE-TEMPLATE.md with document_control frontmatter, C4-L2, DFD-L2 matrix, and sequence"
+    status: DONE
+  - step: 4
+    name: "Enhance SEED-TEMPLATE.md"
+    action: "Add C4-L1 System Context and DFD-L1 diagrams to framework/templates/SEED-TEMPLATE.md"
+    status: DONE
+  - step: 5
+    name: "Extend DIAGRAM_STANDARDS.md"
+    action: "Add Seed (C4-L1) and Modules (C4-L2, DFD-L2, Sequence) to diagram ownership model"
+    status: DONE
+  - step: 6
+    name: "Reconcile MODULE_LAYOUT.md and SEED_CONTRACT.md"
+    action: "Update cross-references to MODULE-TEMPLATE.md and SEED_TO_MODULE_DECOMPOSITION.md"
+    status: DONE
+  - step: 7
+    name: "Record GD-50 in DECISIONS.md"
+    action: "Document GD-50 decision"
+    status: DONE
+  - step: 8
+    name: "Author test_module_contract.py"
+    action: "Add unit tests verifying MODULE-TEMPLATE.md, schema, and diagram standards"
+    status: DONE
+  - step: 9
+    name: "Sync versions and changelog"
+    action: "Update sync-version-refs.sh, bump VERSION to 0.75.0, update CHANGELOG.md"
+    status: DONE
+  - step: 10
+    name: "Run test suite"
+    action: "Verify all tests pass green"
+    status: DONE

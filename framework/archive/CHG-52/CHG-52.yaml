@@ -1,0 +1,144 @@
+# =============================================================================
+#  CHG-52: Graph-engine architecture description draft (F2 direct, C1)
+# =============================================================================
+#  Flow: F2 direct (design-stage architecture draft for the future
+#  graph-based engine repo — new plans/ prose, no normative change) — C1 CHG
+#  + scoped IPLAN per F2.2; entry GATE-CODE.
+#  Router record (§6): F1 rejected — no product/layer chain authored (draft
+#  only, engine lives in a future separate repo); F3 rejected — no behavior
+#  change to an implemented product; F4 rejected — no Completed/Verified
+#  parent IPLAN owns this content; F2 applies.
+#  IPLAN: framework/archive/CHG-52/IPLAN-52.yaml (Completed, authorizing)
+#  Requester citation (F2.3, verbatim ask): "Create/scketch an architecture
+#  description as document (draft) at first. We will review open questions
+#  there. Include your recomendations into the document for open questions"
+#  (followed by: "commit and push to remote").
+#  §3.4 checklist: completed before authoring — (1) every referenced file
+#  opened and line-verified (CHG-51 vehicle shape, chg_lint L001/L004/L017
+#  expectations, pre-commit hook inventory); (2) no client/server —
+#  prose-only plans/ file; enforcement surface is chg_lint + yamllint +
+#  markdownlint + full battery + PR checks; (3) N/A no structs; (4) N/A no
+#  queries; (5) EARS/BDD IDs vacuous (design draft prose, no SDD contract
+#  at stake); (6) N/A no handlers; (7) no issue (founder-directed design
+#  task); (8) covering tests N/A with reason — prose draft, verified by
+#  lint battery + self-review in IPLAN-52; (9) fix located: new file
+#  plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md; (10) N/A no migrations;
+#  (11) no SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014
+#  paired); (12) artifacts_modified carries the vehicle only; (13)
+#  SDD-first vacuous for F2 (empty lifecycle, CHG-L005); (14) no code
+#  steps in CHG (legal phases).
+#  No SDD document modified → sdd_lifecycle: [] per F2.3 (GOV-014 paired).
+#  plans/ draft → semver patch, version_action keep (design prose rides no
+#  cut; no VERSION/CHANGELOG).
+# =============================================================================
+
+id: CHG-52
+title: "Graph-engine architecture description draft"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-04"
+  framework_version: "0.73.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-52"
+  status: In-Progress
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Muse Code"
+  date_proposed: "2026-10-04T00:00:00Z"
+  date_approved: "2026-10-04T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "IPLAN-52 authorizing record (framework/archive/CHG-52/IPLAN-52.yaml)"
+  # NOTE: plans/ draft is a new file (no archive rotation); only the vehicle
+  # record is superseded-tracked.
+  # sdd_lifecycle is EMPTY per F2.3 (no SDD contract at stake).
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Author plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md: design-stage architecture
+    description for the future graph-based SDD engine (separate repo, F1-first
+    authoring engine through Verified IPLAN), recording locked decisions D1–D7
+    and open questions OQ-1–OQ-6 with recommendations."
+  why: "The founder directed a design-stage draft capturing the engine decisions before any implementation; the draft must exist on a branch for review."
+  trigger: "Founder request to sketch the graph-engine architecture with recommendations on open questions, then commit and push."
+  scope:
+    in:
+      - "plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md: new design draft (architecture, guards, handoff contract, open questions)"
+    out:
+      - "Any version cut (version keep — design prose rides no release line)"
+      - "Engine implementation (explicitly deferred; design stage only)"
+      - "Framework spec changes (no normative edits)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Create IPLAN-52 with the draft + verification commands (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-52"
+      status: Completed
+    - step: "Author architecture draft + run IPLAN-52 battery + self-review + push branch"
+      phase: "documentation_sync"
+      artifact: "plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md"
+      status: Completed
+  files_modified:
+    - "plans/GRAPH-ENGINE-ARCHITECTURE-DRAFT.md"
+
+artifacts_modified:
+  - id: "CHG-52"
+    changes: "Authorizing record for architecture draft (this file)"
+  - id: "IPLAN-52"
+    changes: "Authorizing IPLAN (framework/archive/CHG-52/IPLAN-52.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: null
+  date: null
+  # C1 direct: peer review (maintainer) via the PR; no named gate approver required (CHG-L002 applies to C3 only).
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "chg_lint.py over CHG-52 (0 errors)"
+    - "yamllint + markdownlint clean on new files"
+    - "Full battery: tests/unit + tests/conformance + sdd_doc_lint/tests green"
+    - "Multi-agent self-review per OPS-0065 recorded in commit message"
+    - "PR checks green on feature/52-graph-engine-arch-draft → dev"

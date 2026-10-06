@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.73.0 |
+| Framework Version | 0.86.1 |
 
 
 Defines the authorship boundary between seed, module, and SDD decision layers.
@@ -31,7 +31,7 @@ Seed (architect)          Module (product owner)        SDD ADR (dev team)
 Suggestions               ALL source material            ONE selected option
 2-3 options               Refined decisions              Formal decision
 Options + rationale       Invariants + constraints       Context-Decision-Consequences
-Frozen after first BRD    Living document                Versioned per CHG
+Frozen per version (GD-36) Living document                Versioned per CHG
 ```
 
 ### Tier 1: Seed Documents
@@ -40,8 +40,9 @@ Frozen after first BRD    Living document                Versioned per CHG
 - **Content:** Initial architecture suggestions, 2-3 options per decision,
   design principles, rationale for each option
 - **Location:** `<project>/seed/architecture/`, `<project>/seed/agent-surface/`
-- **Lifecycle:** Frozen once the first BRD of a cycle is authored
-  (per `SEED_CONTRACT.md`)
+  (canonical Tier 1 Inputs path; scaffold: `framework/templates/SEED-TEMPLATE.md`)
+- **Lifecycle:** Frozen per version once the first BRD of a cycle is authored
+  (per `SEED_CONTRACT.md` R1); supersedes version via F3 Phase 0a per GD-36
 
 **What seed docs contain:**
 - "Here are 3 options for telemetry collection"
@@ -125,16 +126,69 @@ this module lives in the module doc.
 
 | Artifact | Author | Contains | Lifecycle |
 |----------|--------|----------|-----------|
-| Seed doc | System architect + stakeholders | Suggestions, options, principles | Frozen after first BRD |
+| Seed doc | System architect + stakeholders | Suggestions, options, principles | Frozen per version (GD-36) |
 | Module doc | Product owner + dev team | ALL source material, refined decisions | Living document |
 | BRD | Dev team (from module) | Business requirements, seed disposition | Approved when PRD starts |
 | SDD ADR | Dev team | ONE selected architecture | Versioned per CHG |
 | SPEC | Dev team | Implementation specification | Versioned per CHG |
 | IPLAN | Dev team | Execution plan | Completed when code is green |
 
+## Executable CNCF Decision Ratification Flow
+
+Decisions that alter framework governance or shared contracts (`DECISIONS.md`) pass through
+a formal ratification state machine. To guarantee procedural consistency and provide multi-agent
+graph orchestrators with deterministic state transitions, the ratification lifecycle is
+formalized in:
+`framework/governance/workflows/decision-ratification-flow.sw.yaml`.
+
+The workflow conforms to the CNCF Serverless Workflow v0.8 specification (`specVersion: "0.8"`):
+
+```mermaid
+stateDiagram-v2
+    [*] --> ProposeDecision: Draft GD-XX
+    ProposeDecision --> ValidateStructure: Check required sections
+    ValidateStructure --> RejectDraft: Structure invalid
+    ValidateStructure --> ReviewCrewConsensus: Valid draft
+    RejectDraft --> [*]
+    ReviewCrewConsensus --> CheckConsensus: Multi-agent evaluation
+    CheckConsensus --> RejectionTerminal: Consensus rejected
+    CheckConsensus --> AwaitFounderSignOff: Consensus approved
+    AwaitFounderSignOff --> CheckFounderApproval: Event callback received
+    CheckFounderApproval --> RejectionTerminal: Founder declined
+    CheckFounderApproval --> RatifiedSeal: Founder approved
+    RatifiedSeal --> CheckSupersedes: Append to DECISIONS.md
+    CheckSupersedes --> TransitionSuperseded: Decision replaces older GD
+    CheckSupersedes --> RatificationComplete: New standalone decision
+    TransitionSuperseded --> RatificationComplete: Mark prior GD superseded
+    RatificationComplete --> [*]
+    RejectionTerminal --> [*]
+```
+
+### State-to-Primitive Mapping
+
+| Workflow State | CNCF State Type | Operational Semantics |
+|---|---|---|
+| `ProposeDecision` | `operation` | Collects candidate decision draft (Context, Decision, Consequences, Alternatives) |
+| `ValidateStructure` | `switch` | Verifies presence of mandatory sections and unique GD-XX identifier |
+| `RejectDraft` | `operation` (end) | Rejects draft due to structural or metadata defects |
+| `ReviewCrewConsensus` | `parallel` | Gathers independent multi-agent evaluations from review personas |
+| `CheckConsensus` | `switch` | Evaluates whether review crew reached unanimous or qualified consensus |
+| `AwaitFounderSignOff` | `callback` | Suspends execution awaiting asynchronous human founder OK (`decisionSignOffEvent`) |
+| `CheckFounderApproval` | `switch` | Branches based on founder signature / approval decision |
+| `RatifiedSeal` | `operation` | Marks decision as Accepted, seals record with merge SHA and ISO timestamp |
+| `CheckSupersedes` | `switch` | Detects whether the new decision supersedes prior ratified decisions |
+| `TransitionSuperseded` | `operation` | Marks superseded decisions with transition pointer and reason |
+| `RatificationComplete` | `operation` (end) | Bumps `DECISIONS.md` control version, updates changelog |
+| `RejectionTerminal` | `operation` (end) | Terminal rejection state preserving audit log and rejection rationale |
+
 ## Cross-References
 
-- `SEED_CONTRACT.md` — Seed lifecycle and disposition rules
+- `SEED_CONTRACT.md` — Seed lifecycle, disposition rules, and supersede flow
+- `framework/templates/SEED-TEMPLATE.md` — Canonical seed document template
 - `DOC_GOVERNANCE_CORE.md` — Version bumping, template policy
+- `DECISIONS.md` — Authoritative record of ratified framework governance decisions
+- `workflows/decision-ratification-flow.sw.yaml` — Canonical CNCF Serverless Workflow state machine
+- `GOVERNANCE_WORKFLOW_STANDARD.md` — Normative specification for CNCF Serverless Workflow adoption
+- `DIAGRAM_STANDARDS.md` — Visualization standards and Mermaid syntax for governance workflows
 - `layers/09_CHG/gates/` — Gate definitions for CHG approval
 - `registry/LAYER_REGISTRY.yaml` — Layer definitions and dependencies
