@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.85.0 |
+| Framework Version | 0.86.0 |
 | Authority | Decision GD-60 (framework/governance/DECISIONS.md) |
 
 ---

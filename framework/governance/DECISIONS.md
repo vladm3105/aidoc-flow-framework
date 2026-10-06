@@ -15,11 +15,34 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.21 |
+| Version | 1.22 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.85.0 |
+| Framework Version | 0.86.0 |
+
+---
+
+## GD-61 — CNCF Serverless Workflow standard (YAML) for Layer 01 (BRD) business validation and value stream workflows (CHG-65, 0.86.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous business requirements validation, value stream mapping across operational capabilities, quantitative ROI / cost-benefit analysis, executive steering committee consensus gating, and deterministic strategic initiative invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 01 (BRD) business requirements validation, value stream mapping, ROI evaluation, and strategic initiative invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 17 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `value_stream_mapping.workflow_definition`.
+  3. Author `framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md` establishing the normative mapping of BRD business validation primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Strategic Theme Ingestion` $\rightarrow$ `inject` or `operation` (extracts strategic theme, business drivers, and market context)
+     - `Value Stream Decomposition` $\rightarrow$ `parallel` (concurrent analysis across customer journey, core operations, and financial governance streams)
+     - `ROI & Feasibility Analysis` $\rightarrow$ `operation` (computes quantitative economic metrics, ROI, Net Present Value, and payback period)
+     - `Strategic Alignment Gate` $\rightarrow$ `switch` (evaluates objective fit, ROI viability, and budget feasibility)
+     - `Executive Steering Committee Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `ExecutiveSteeringApprovalEvent` with timeout)
+     - `Business Specification Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes approved baseline)
+     - `Strategic Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional draft allocations across PRD and reserves)
+  4. Author `framework/governance/workflows/brd-business-validation.sw.yaml` establishing the canonical business requirements validation and value stream runner.
+  5. Author `framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex enterprise strategic initiatives.
+  6. Maintain dual-template discipline: retain `BRD-TEMPLATE.yaml` for straightforward, single-capability business requirements or focused enhancements.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 

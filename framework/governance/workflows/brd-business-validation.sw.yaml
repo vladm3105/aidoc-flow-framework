@@ -1,0 +1,195 @@
+# =============================================================================
+#  brd-business-validation.sw.yaml — Layer 01 (BRD) Business Validation & Value Stream Workflow
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: Decision GD-61 (framework/governance/DECISIONS.md)
+#  Domain: Layer 01 (BRD — Business Requirements Document)
+# =============================================================================
+
+id: brd-business-validation
+name: BRD Business Requirements Validation and Value Stream Workflow
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  CNCF Serverless Workflow orchestrating strategic theme ingestion,
+  business objective formalization (SMART criteria), value stream mapping
+  across operational capabilities, quantitative ROI and cost-benefit analysis,
+  budget and priority feasibility evaluation, executive steering committee
+  approval callbacks, and strategic initiative invalidation compensation sagas.
+start: IngestStrategicInitiative
+
+events:
+  - name: ExecutiveSteeringApprovalEvent
+    type: org.aidoc.brd.steering.approved
+    source: /aidoc/steering/approval
+    correlation:
+      - contextAttributeName: initiativeId
+  - name: StrategicInitiativeInvalidatedEvent
+    type: org.aidoc.brd.initiative.invalidated
+    source: /aidoc/brd/invalidation
+
+functions:
+  - name: parseStrategicInitiative
+    operation: "urn:aidoc:functions:brd-parser#parse"
+    type: custom
+  - name: mapCustomerValueStream
+    operation: "urn:aidoc:functions:value-stream-analyzer#mapCustomerJourney"
+    type: custom
+  - name: mapCoreOperationsValueStream
+    operation: "urn:aidoc:functions:value-stream-analyzer#mapCoreOperations"
+    type: custom
+  - name: mapFinancialGovernanceValueStream
+    operation: "urn:aidoc:functions:value-stream-analyzer#mapFinancialGovernance"
+    type: custom
+  - name: evaluateRoiAndCostBenefit
+    operation: "urn:aidoc:functions:roi-evaluator#computeMetrics"
+    type: custom
+  - name: verifyStrategicObjectiveFit
+    operation: "urn:aidoc:functions:strategy-evaluator#verifyFit"
+    type: custom
+  - name: emitCanonicalBrdIds
+    operation: "urn:aidoc:functions:hasher#generateBrdIds"
+    type: custom
+  - name: notifyExecutiveSteeringCommittee
+    operation: "urn:aidoc:functions:notifier#notifySteeringCommittee"
+    type: custom
+  - name: purgeDownstreamInitiativeAllocations
+    operation: "urn:aidoc:functions:compensator#purgeAllocations"
+    type: custom
+
+states:
+  - name: IngestStrategicInitiative
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: ingestInitiativePayload
+        functionRef:
+          refName: parseStrategicInitiative
+          arguments:
+            initiativeId: "${ .initiativeId }"
+            businessContext: "${ .executive_summary }"
+            businessObjectives: "${ .business_objectives }"
+            projectScope: "${ .project_scope }"
+            stakeholders: "${ .stakeholders }"
+    transition: MapValueStreamCapabilities
+
+  - name: MapValueStreamCapabilities
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: CustomerJourneyBranch
+        actions:
+          - name: analyzeCustomerStreamAction
+            functionRef:
+              refName: mapCustomerValueStream
+              arguments:
+                stakeholders: "${ .stakeholders }"
+                functionalScope: "${ .functional_requirements }"
+      - name: OperationalProcessBranch
+        actions:
+          - name: analyzeOperationalStreamAction
+            functionRef:
+              refName: mapCoreOperationsValueStream
+              arguments:
+                scope: "${ .project_scope }"
+                qualityExpectations: "${ .quality_expectations }"
+      - name: FinancialGovernanceBranch
+        actions:
+          - name: analyzeFinancialStreamAction
+            functionRef:
+              refName: mapFinancialGovernanceValueStream
+              arguments:
+                assumptions: "${ .constraints_and_assumptions }"
+                riskAssessment: "${ .risk_management }"
+    transition: EvaluateRoiAndFeasibility
+
+  - name: EvaluateRoiAndFeasibility
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: computeRoiAction
+        functionRef:
+          refName: evaluateRoiAndCostBenefit
+          arguments:
+            objectives: "${ .business_objectives }"
+            scope: "${ .project_scope }"
+            costEstimates: "${ .financial_projection.estimated_cost }"
+            benefitEstimates: "${ .financial_projection.projected_revenue }"
+      - name: verifyAlignmentAction
+        functionRef:
+          refName: verifyStrategicObjectiveFit
+          arguments:
+            businessObjectives: "${ .business_objectives }"
+            acceptanceCriteria: "${ .acceptance_criteria }"
+    transition: EvaluateStrategicAlignmentGate
+
+  - name: EvaluateStrategicAlignmentGate
+    type: switch
+    dataConditions:
+      - name: InitiativeApproved
+        condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
+        transition: RatifyBusinessSpecification
+      - name: ExecutiveReviewRequired
+        condition: "${ .requiresExecutiveReview == true }"
+        transition: AwaitSteeringCommitteeCallback
+    defaultCondition:
+      transition: RejectBusinessInitiative
+
+  - name: AwaitSteeringCommitteeCallback
+    type: callback
+    action:
+      name: notifyExecutiveAction
+      functionRef:
+        refName: notifyExecutiveSteeringCommittee
+        arguments:
+          initiativeId: "${ .initiativeId }"
+          roiSummary: "${ .roiSummary }"
+          strategicFit: "${ .strategicFit }"
+    eventRef: ExecutiveSteeringApprovalEvent
+    timeouts:
+      eventTimeout: PT72H
+    transition: EvaluateRoiAndFeasibility
+
+  - name: RatifyBusinessSpecification
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: emitBrdElementIdsAction
+        functionRef:
+          refName: emitCanonicalBrdIds
+          arguments:
+            initiativeId: "${ .initiativeId }"
+            businessObjectives: "${ .business_objectives }"
+            functionalRequirements: "${ .functional_requirements }"
+    end:
+      terminate: true
+
+  - name: RejectBusinessInitiative
+    type: operation
+    compensatedBy: InvalidateStrategicInitiatives
+    actionMode: sequential
+    actions:
+      - name: recordInitiativeRejectionAction
+        functionRef:
+          refName: parseStrategicInitiative
+          arguments:
+            initiativeId: "${ .initiativeId }"
+            status: "REJECTED"
+            reason: "${ .rejectionReason }"
+    end:
+      terminate: true
+
+  - name: InvalidateStrategicInitiatives
+    type: operation
+    usedForCompensation: true
+    actionMode: sequential
+    actions:
+      - name: purgeAllocationsAction
+        functionRef:
+          refName: purgeDownstreamInitiativeAllocations
+          arguments:
+            initiativeId: "${ .initiativeId }"
+            downstreamTargets:
+              - "PRD Draft Allocations"
+              - "Capacity & Headcount Reservations"
+              - "Strategic Portfolio Slots"
