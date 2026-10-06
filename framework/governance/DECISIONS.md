@@ -15,11 +15,39 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.25 |
+| Version | 1.26 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.1 |
+| Framework Version | 0.88.2 |
+
+---
+
+## GD-66 — Complete Graph Governance Alignment, Purge of Legacy Flow Tokens, and Multi-Path IPLAN/Gate Standard Re-Architecture (CHG-72, 0.88.2 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Complete end-to-end framework alignment with the Dual-Layer Traversal-Path Graph Nomenclature ratified in GD-65 (CHG-71). Ensure all governance standards, workflow definitions, IPLAN execution envelopes, CHG templates, gate definitions, error catalogs, and decision guides eliminate lingering legacy tokens (`F1`–`F4`, `Type-R`) in favor of canonical graph traversal paths (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`). Re-architect IPLAN and Gate 08 to govern all 6 traversal paths, establishing direct leaf fast-lane rules for `DIR2C` (`iplan_to_code`).
+- **Decision**:
+  1. **Purge of Lingering Legacy Tokens**:
+     - Systematically eliminated lingering references to `F1`–`F4` and `Type-R` across `CHG-TEMPLATE.yaml` (governance and Layer 09 mirror), `framework/governance/chg/README.md`, `GATE-CODE_IMPLEMENTATION.md`, and CNCF workflow router descriptions (`workflows/chg-request-flow.sw.yaml`).
+     - Established 100% byte-parity between `framework/governance/chg/` and `framework/layers/09_CHG/`.
+  2. **Multi-Path IPLAN Standard Re-Architecture (`IPLAN_WORKFLOW_STANDARD.md`)**:
+     - Re-architected Section 1 from governing single "Waterfall vs Feedback" dichotomy to comprehensively governing all 6 graph traversal paths (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`).
+     - Added `flow` and `flow_code` to the IPLAN Hybrid Document Envelope (YAML header) matching CHG and CNCF workflow schemas.
+     - Codified DIR2C / Fast-Lane rules: relaxed Rule 2 (`@spec` interface) and Rule 4 (`@tdd` test) for direct tasks (`DIR2C` / `iplan_to_code`), allowing isolated doc/tool changes to enter execution without artificial upstream spec dependencies.
+     - Added Section 4.1 formalizing DAG topologies across `SDD2C` (Linear Cascade), `CODE2C` (Intra-Tier Loop), `DIR2C` (Direct Execution), and `CODE2S` (Bubble-Up Reversal).
+     - Modernized Section 5 execution engine adapter pattern with explicit LangGraph state channel schemas.
+  3. **ID & Naming Standards Formalization (`ID_NAMING_STANDARDS.md`)**:
+     - Added Section 1.5 defining the canonical Graph Flow & Code Naming Standards.
+     - Registered CNCF Serverless Workflow files (`*.sw.yaml`) and workflow templates (`-SWF-TEMPLATE.yaml`) in the formal File Naming table.
+     - Formalized Section 4 Workflow State and Action Naming Conventions (`PascalCase` for states, `camelCase` for actions).
+  4. **Gate System & Error Catalog Synchronization**:
+     - Updated `GATE-08_IPLAN.md` to exempt `DIR2C` from `GATE-08-E003` (`@spec` / `@tdd` presence) and provide multi-path routing rules.
+     - Updated `GATE-CODE_IMPLEMENTATION.md` to formally route reverse cascade bubbles under `CODE2S` (`code_to_sdd`) and direct execution under `DIR2C` (`iplan_to_code`).
+     - Updated `GATE_INTERACTION_DIAGRAM.md` with an embedded Mermaid `stateDiagram-v2` illustrating all 6 graph traversal paths across the gate system.
+     - Updated `GATE_APPROVAL_FORM.md` with explicit `Flow`, `Flow Code`, and expanded `Change Source` / `Change Level` fields.
+     - Updated `GATE_ERROR_CATALOG.md` linking emergency codes `EMG-*` to `HOTFIX` and cross-referencing automated `sdd_doc_lint` checks (`CHG-L013` / `GOV-018`).
 
 ---
 

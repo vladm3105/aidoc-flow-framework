@@ -16,11 +16,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.1 |
+| Framework Version | 0.88.2 |
 
 
 Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
@@ -109,7 +109,7 @@ Where:
 |------|----------|-------------|------------|
 | GATE-08-E001 | Completeness | IPLAN file manifest incomplete | Add missing files to manifest |
 | GATE-08-E002 | Order | Test files not before implementation files | Reorder manifest: tests first |
-| GATE-08-E003 | Traceability | IPLAN missing @spec/@tdd tags | Add upstream traceability tags |
+| GATE-08-E003 | Traceability | IPLAN missing @spec/@tdd tags (SDD2C, SEED2C) | Add upstream traceability tags (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Handoff | Session handoff protocol missing | Document state variables and resume protocol |
 
 ### 5.2 Warnings (W)
@@ -171,6 +171,9 @@ protected-branch review.
 
 ## 7. Emergency Bypass Errors
 
+> Governs the emergency bypass path (`HOTFIX` / `hotfix`). Non-emergency changes
+> must follow standard gate routing (`SDD2C`, `CODE2C`, `DIR2C`, `SEED2C`, or `CODE2S`).
+
 ### 7.1 Blocking Errors (E)
 
 | Code | Category | Description | Resolution |
@@ -195,19 +198,19 @@ protected-branch review.
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| ROUTE-E001 | Routing | Invalid gate entry for change source | Route to correct gate per source |
-| ROUTE-E002 | Cascade | Skipped mandatory gate | Pass all required gates in sequence |
-| ROUTE-E003 | Approval | Missing upstream gate approval | Complete upstream gate first |
+| ROUTE-E001 | Routing | Invalid gate entry or flow routing for change source | Route to correct gate per source (enforced by `chg_lint.py` CHG-L013 / GOV-018) |
+| ROUTE-E002 | Cascade | Skipped mandatory gate in traversal path | Pass all required gates in sequence (enforced by `chg_lint.py` CHG-L005) |
+| ROUTE-E003 | Approval | Missing upstream gate approval | Complete upstream gate first (enforced by `chg_lint.py` CHG-L002) |
 | ROUTE-E004 | Classification | Change level mismatch across gates | Maintain consistent level |
 
 ### 8.2 Validation Errors
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| VAL-E001 | Schema | CHG document fails schema validation | Fix YAML structure |
+| VAL-E001 | Schema | CHG document fails schema validation | Fix YAML structure (enforced by `chg_lint.py` CHG-L001–L017) |
 | VAL-E002 | Structure | Required section missing | Add missing section |
-| VAL-E003 | Traceability | Broken cross-reference | Fix or remove invalid reference |
-| VAL-E004 | Status | Invalid status transition | Follow status workflow |
+| VAL-E003 | Traceability | Broken cross-reference | Fix or remove invalid reference (enforced by `chg_lint.py` CHG-L004) |
+| VAL-E004 | Status | Invalid status transition | Follow status workflow (enforced by `chg_lint.py` CHG-L001) |
 
 ## 9. Error Resolution Quick Reference
 

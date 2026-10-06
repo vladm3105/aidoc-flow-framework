@@ -107,9 +107,12 @@ document_control:
     `document_control` and selects the section set. Missing subtype
     defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"
+  flow: sdd_to_code  # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: SDD2C   # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
   subtype: combined  # code_build | deploy | combined | audit_fix | bugfix | docs
   source_spec: "@spec: SPEC-NN"  # audit_fix: audit findings reference instead
                                  # bugfix: defect issue/tracker reference instead
+                                 # iplan_to_code (DIR2C): optional/none
   parent_iplan: null  # bugfix only: "IPLAN-NN" of the closed plan under repair
                       # (must be an original terminal plan — never another bugfix)
   source_chg: null  # bugfix only: "CHG-NN" authorizing the repair

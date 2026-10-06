@@ -4,22 +4,31 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.1 |
+| Framework Version | 0.88.2 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
-in YAML format within the SDD Hybrid Envelope Architecture.
+in YAML format within the SDD Hybrid Envelope Architecture across all 6 framework traversal-path graph flows.
 
 ---
 
 ## 1. Purpose & Architectural Context
 
-In the 10-layer SDD specification, Layer 08 (IPLAN) serves as the **mandatory execution bridge
-from SPEC (Layer 06) and TDD (Layer 07) to source code implementation**.
+In the 10-layer SDD specification, Layer 08 (IPLAN) serves as the **mandatory execution engine
+for mutating codebase changes**. Rather than being restricted to a monolithic forward bridge
+from SPEC (Layer 06) and TDD (Layer 07) to source code, Layer 08 executes across **all 6 canonical
+graph traversal paths** ratified in Decisions GD-65 and GD-66:
+
+1. **`sdd_to_code` (`SDD2C`)**: Full forward SDD cascade for greenfield capabilities (BRD $\to$ PRD $\to$ EARS $\to$ BDD $\to$ ADR $\to$ SPEC $\to$ TDD $\to$ IPLAN $\to$ Code).
+2. **`iplan_to_code` (`DIR2C`)**: Fast-lane direct execution for C1 documentation, tooling, script, and non-behavioral changes (`sdd_lifecycle: []`), bypassing upstream SPEC/TDD.
+3. **`code_to_code` (`CODE2C`)**: Closed-IPLAN defect repair (`IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml`) executing defect reproduction first, patch implementation, and regression suite verification.
+4. **`code_to_sdd` (`CODE2S`)**: Backward code-to-doc reconciliation (Type-R §3.1.2) where a frozen, verified codebase coordinates reverse-engineering into upstream SDD specifications.
+5. **`seed_to_code` (`SEED2C`)**: Brownfield / contract changes executing multi-tier macro-decomposition from Tier 1 Seed Vision and Tier 2 Module containers down through SDD layers to Code.
+6. **`hotfix` (`HOTFIX`)**: Production emergency remediation with expedited rollback/patch DAG followed by retrospective CHG and post-mortem within 48 hours.
 
 Historically, IPLAN documents functioned as static checklists:
 1. `file_manifest`: A passive inventory of files to create or modify.
@@ -41,7 +50,7 @@ This standard establishes **Machine-Executable Implementation Plans**:
    worktrees and half-implemented commits.
 4. **Engine Agnosticism ([D-0013](DECISIONS.md))**: The framework ships pure declarative YAML without
    bundling proprietary orchestrator runtimes. Workflows compile on the fly into LangGraph, Temporal,
-   or custom agent harnesses.
+   Rust Rig (`rig-core`), or custom agent harnesses.
 5. **Clear Domain Boundary**:
    - Governance workflows (`framework/governance/workflows/*.sw.yaml` governed by `GOVERNANCE_WORKFLOW_STANDARD.md`)
      model *meta-development and governance lifecycles* (Change Requests, Worktrees, PR Watches).
@@ -63,7 +72,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.88.1"
+  framework_version: "0.88.2"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -71,8 +80,10 @@ metadata:
 
 document_control:
   iplan_id: "IPLAN-NN"
-  subtype: workflow  # Declares the CNCF workflow subtype
-  source_spec: "@spec: SPEC-NN"
+  flow: "sdd_to_code"      # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: "SDD2C"       # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
+  subtype: workflow        # code_build | deploy | combined | workflow | audit_fix | bugfix | docs
+  source_spec: "@spec: SPEC-NN"  # Required for SDD2C/SEED2C; optional for DIR2C (iplan_to_code)
   status: Draft
   version: "1.0"
   author: "[Engineer / Persona]"
@@ -85,7 +96,7 @@ file_manifest:
       status: PENDING
 
 tdd_consistency:
-  status: complete
+  status: complete  # complete | partial | not-applicable (DIR2C)
   tdd_ref: "@tdd: TDD.NN.01.0001"
 
 # --- Section 3: CNCF Serverless Workflow Graph ---
@@ -134,12 +145,15 @@ Layer 08 maps CNCF Serverless Workflow v0.8 primitives to concrete implementatio
 Every file modified or created within an `operation` state's actions must be declared in the
 top-level `file_manifest.files` list. Undocumented file modifications are strictly prohibited.
 
-### Rule 2: TDD-First State Order
-In accordance with framework testing strategy, implementation workflows must order test file
-creation and execution before or in tandem with source code implementation:
-1. Create/amend unit test files.
-2. Implement source code fulfilling test assertions.
-3. Execute verification gate evaluating test results.
+### Rule 2: Flow-Aware Test Ordering
+In accordance with framework testing strategy, task ordering is bound to the declared traversal path:
+1. **`sdd_to_code` (`SDD2C`) & `seed_to_code` (`SEED2C`)**: Implementation workflows must order test file
+   creation and execution before or in tandem with source code implementation.
+2. **`code_to_code` (`CODE2C`)**: Workflows must author a failing regression reproduction test before
+   modifying source code, verifying that the fix specifically resolves the reported defect.
+3. **`iplan_to_code` (`DIR2C`) Carve-out**: Direct documentation, tooling, script, or chore changes are
+   exempt from test-first ordering (`tdd_consistency.status: not-applicable`); they require covering
+   linter, formatter, or build dry-run checks before commit.
 
 ### Rule 3: Mandatory Saga Compensation on Mutating States
 Every `operation` state that creates files, modifies source code, or alters git state must declare
@@ -148,6 +162,12 @@ a `compensatedBy` handler that reverts its specific mutations if subsequent veri
 ### Rule 4: Action Traceability Metadata
 To maintain element-level traceability across the SDD layers, actions within operation states
 must carry upstream citations within their `metadata` dictionary:
+- **`SDD2C`**: Must carry `@spec` and `@tdd` (plus optional `@req` / `@brd`).
+- **`SEED2C`**: Must carry `@seed`, `@module`, `@spec`, and `@tdd`.
+- **`CODE2C`**: Must carry `@chg` and `@tdd` (or parent IPLAN element citation).
+- **`DIR2C`**: Must carry `@task` or `@chg` (exempt from `@spec` / `@tdd` requirements).
+- **`CODE2S`**: Must carry `@code` source file citations pointing to verified ground truth.
+
 ```yaml
 actions:
   - name: implementTokenMinting
@@ -173,9 +193,44 @@ diagram in its companion documentation or planning record.
 
 ---
 
+## 4.1 Traversal-Path State Machine Topologies
+
+Layer 08 compiles into 4 distinct execution topologies depending on the declared `flow`:
+
+### 1. Greenfield Forward Topology (`sdd_to_code` / `SDD2C`)
+```
+PreFlightCheck → SnapshotOriginals → ImplementTestsFirst → ImplementSourceCode → EvaluateVerificationGate → CommitAndSignoff
+                                                                                       ↓ (fails)
+                                                                               TriggerSagaRollback
+```
+
+### 2. Defect Repair Topology (`code_to_code` / `CODE2C`)
+```
+PreFlightCheck → SnapshotOriginals → AuthorReproductionTest → ApplyPatchFix → EvaluateRegressionGate → CommitAndSignoff
+                                                                                     ↓ (fails)
+                                                                             TriggerSagaRollback
+```
+
+### 3. Direct Fast-Lane Topology (`iplan_to_code` / `DIR2C`)
+```
+PreFlightCheck → SnapshotOriginals → ApplyFileEdits → EvaluateLintsAndChecks → CommitAndSignoff
+                                                              ↓ (fails)
+                                                      TriggerSagaRollback
+```
+
+### 4. Backward Reconciliation Topology (`code_to_sdd` / `CODE2S`)
+```
+PreFlightCheck → FreezeCodebase → InspectCodeContracts → ReverseAuthorSDD → EvaluateDocLintGate → CommitAndSignoff
+                                                                                  ↓ (fails)
+                                                                          TriggerSagaRollback
+```
+
+---
+
 ## 5. LangGraph & Runtime Adapter Pattern
 
-Autonomous agent runners compile the `workflow:` block of an IPLAN into LangGraph on the fly:
+Autonomous agent runners compile the `workflow:` block of an IPLAN into LangGraph on the fly,
+validating node transitions against the declared `flow`:
 
 ```python
 from langgraph.graph import StateGraph, START, END
@@ -184,6 +239,11 @@ import yaml
 def compile_iplan_workflow(iplan_path: str, action_handlers: dict) -> StateGraph:
     with open(iplan_path, "r", encoding="utf-8") as f:
         doc = yaml.safe_load(f)
+
+    # Validate flow declaration
+    control = doc.get("document_control", {})
+    flow = control.get("flow", "sdd_to_code")
+    flow_code = control.get("flow_code", "SDD2C")
 
     # Extract the CNCF workflow block from the Hybrid Envelope
     spec = doc.get("workflow", {})
@@ -234,3 +294,7 @@ def compile_iplan_workflow(iplan_path: str, action_handlers: dict) -> StateGraph
   - *Fix*: Formalized clear separation in Section 1 (governance flows govern repo policy; IPLAN flows govern code mutation).
   - *Gap found*: Lack of tag extraction rules in workflow actions.
   - *Fix*: Codified Rule 4 mandating `@spec` and `@tdd` in action `metadata` dictionaries for seamless AST extraction.
+- **2026-10-06 — Pass 3 (Dual-Layer Graph Flow & Multi-Topology Execution)**:
+  - *Gap found*: Monolithic forward-flow assumption broke `DIR2C` (iplan_to_code), `CODE2C` (bugfix), and `CODE2S` (reconciliation).
+  - *Fix*: Re-architected Section 1 to govern all 6 graph traversal paths; added `flow` and `flow_code` to the Hybrid Envelope; relaxed Rule 2 and Rule 4 for `DIR2C`; codified 4 standard DAG topologies in Section 4.1.
+

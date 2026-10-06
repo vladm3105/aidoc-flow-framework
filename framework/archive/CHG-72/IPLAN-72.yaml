@@ -1,0 +1,147 @@
+# =============================================================================
+#  IPLAN-72: Framework-Wide Naming Standards & IPLAN Multi-Topology Alignment
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.2"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - governance-alignment
+    - graph-nomenclature
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-72"
+  source_chg: "CHG-72"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: workflow
+  status: In Progress
+  version: "1.0"
+  author: "Framework Maintainer"
+  date_created: "2026-10-06T00:00:00Z"
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/ID_NAMING_STANDARDS.md"
+      description: "Define graph flow and code standards, *.sw.yaml file patterns, and state/action naming rules"
+      order: 1
+      status: PENDING
+    - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+      description: "Define universal Layer 08 execution across all 6 graph flows, relax @spec/@tdd for DIR2C, add flow/flow_code to Hybrid Envelope"
+      order: 2
+      status: PENDING
+    - path: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+      description: "Add flow and flow_code to document_control in IPLAN CNCF workflow template"
+      order: 3
+      status: PENDING
+    - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+      description: "Add flow and flow_code to document_control in standard IPLAN template"
+      order: 4
+      status: PENDING
+    - path: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      description: "Purge residual legacy string in line 6 description"
+      order: 5
+      status: PENDING
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "Purge retired F1-F4 and Type-R tokens in comments"
+      order: 6
+      status: PENDING
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Byte-identical sync of CHG template mirror"
+      order: 7
+      status: PENDING
+    - path: "framework/governance/chg/README.md"
+      description: "Replace Dual Lifecycle with 6 Traversal-Path Graph Lifecycles and modernize text"
+      order: 8
+      status: PENDING
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Byte-identical sync of CHG README mirror"
+      order: 9
+      status: PENDING
+    - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Update to CODE2S / code_to_sdd and add explicit DIR2C fast-lane routing"
+      order: 10
+      status: PENDING
+    - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Byte-identical sync of GATE-CODE mirror"
+      order: 11
+      status: PENDING
+    - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+      description: "Clarify GATE-08-E003 scope for SDD2C/SEED2C and document DIR2C/CODE2C entry at GATE-CODE"
+      order: 12
+      status: PENDING
+    - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+      description: "Byte-identical sync of GATE-08 mirror"
+      order: 13
+      status: PENDING
+    - path: "framework/governance/chg/gates/GATE_INTERACTION_DIAGRAM.md"
+      description: "Add Mermaid state diagram for 6 traversal paths"
+      order: 14
+      status: PENDING
+    - path: "framework/layers/09_CHG/gates/GATE_INTERACTION_DIAGRAM.md"
+      description: "Byte-identical sync of GATE_INTERACTION_DIAGRAM mirror"
+      order: 15
+      status: PENDING
+    - path: "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+      description: "Add Flow/Flow Code, update legal change sources and levels"
+      order: 16
+      status: PENDING
+    - path: "framework/layers/09_CHG/templates/GATE_APPROVAL_FORM.md"
+      description: "Byte-identical sync of GATE_APPROVAL_FORM mirror"
+      order: 17
+      status: PENDING
+    - path: "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+      description: "Link EMG-* to HOTFIX and cross-reference automated CHG lint rules"
+      order: 18
+      status: PENDING
+    - path: "framework/layers/09_CHG/gates/GATE_ERROR_CATALOG.md"
+      description: "Byte-identical sync of GATE_ERROR_CATALOG mirror"
+      order: 19
+      status: PENDING
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-66"
+      order: 20
+      status: PENDING
+    - path: "framework/CHANGELOG.md"
+      description: "Release notes for 0.88.2"
+      order: 21
+      status: PENDING
+    - path: "framework/VERSION"
+      description: "Bump to 0.88.2"
+      order: 22
+      status: PENDING
+    - path: "VERSION"
+      description: "Bump to 0.88.2"
+      order: 23
+      status: PENDING
+
+# =============================================================================
+# Section 3: Traceability & Validation
+# =============================================================================
+
+traceability:
+  upstream:
+    - "@chg: CHG-72"
+  downstream:
+    - "@code: framework/governance/"
+    - "@code: framework/layers/"
+
+tdd_consistency:
+  status: not-applicable
+  rationale: "Documentation, standard, and template synchronization under DIR2C flow"

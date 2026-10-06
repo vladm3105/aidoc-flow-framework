@@ -3,7 +3,7 @@ name: Change Request Governance Flow
 version: "1.0"
 specVersion: "0.8"
 description: >-
-  Normative state machine governing change classification (Emergency, Type-R, F1-F4),
+  Normative state machine governing change classification (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C),
   gate transitions (GATE-01 through GATE-CODE, GATE-SPEC), SDD cascades, IPLAN authoring,
   and landing verification per CHG_REQUEST_FLOWS.md and AGENTS.md.
 start: ClassifyChangeTrigger
