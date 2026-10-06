@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.82.0 |
+| Framework Version | 0.83.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -39,7 +39,7 @@ This specification formalizes **Machine-Executable Governance**:
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
-   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification, QA Staging Acceptance Runs, Automated TDD Execution, Distributed Component Choreography).
+   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification, QA Staging Acceptance Runs, Automated TDD Execution, Distributed Component Choreography, Architectural Trade-off Analysis).
    Governed exclusively by this standard.
 2. **Implementation Workflows (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**:
    Govern codebase mutation, test file creation, and execution-time saga compensation.
@@ -53,6 +53,9 @@ To prevent conflation between repository governance policy and codebase mutation
 5. **Technical Specification Workflows (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`)**:
    Govern distributed component interactions, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
    Governed by [`framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`](../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md).
+6. **Architectural Decision Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
+   Govern multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and rejection archival sagas.
+   Governed by [`framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md`](../layers/05_ADR/ADR_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
@@ -69,7 +72,8 @@ framework/governance/
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
 │   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
 │   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
-│   └── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
+│   ├── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
+│   └── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
@@ -118,85 +122,64 @@ renders the visual graph, but must never declare transitions not permitted by th
 Every execution path in a workflow graph must reach an unambiguous terminal state:
 - **`end: true`**: Denotes successful phase completion and compliance sign-off.
 - **`end: { terminate: true }`**: Denotes explicit gate failure, escalation, or rejection.
-Unbounded cycles without explicit termination conditions are strictly prohibited.
 
-### Rule 3: Gate Boundary Integrity & Switch Guards
-All governance gates (GATE-01 through GATE-08, GATE-CODE, GATE-SPEC) must be represented as
-explicit `switch` states. Gate transitions must carry unambiguous `dataConditions`:
-```yaml
-- name: EvaluateGateSpec
-  type: switch
-  dataConditions:
-    - condition: "${ .gate_checks.all_passed == true and .gate_checks.unresolved_blockers == 0 }"
-      transition: ApproveChangeRequest
-  defaultCondition:
-    transition: EscalateGateFailures
-```
+Unconditional loops without terminating edge conditions or retry limits are prohibited.
 
-### Rule 4: Agent Persona Attribution in Actions
-When an `operation` state delegates work to an AI agent, the action metadata must declare:
-- The required agent role or persona (e.g., `architect`, `security_engineer`, `qa_lead`).
-- The explicit input artifacts and output target.
-```yaml
-actions:
-  - name: performSecurityAudit
-    functionRef:
-      refName: dispatchAgentPersona
-      arguments:
-        persona: "security_engineer"
-        playbook: "framework/playbooks/05_ADR/security_engineer.md"
-        input_artifact: "docs/sdd/05_ADR/ADR-01.yaml"
-```
+### Rule 3: Discrete Gate Verification (`type: switch`)
+All quality gates and transition approvals must be represented as discrete `switch` states
+evaluating unambiguous boolean conditions (e.g., `"${ .eval_verdict == 'PASS' }"`).
+Conditional branches must explicitly define a `defaultCondition` preventing deadlocks.
 
-### Rule 5: Human-in-the-Loop & Founder OK Gates
-Certain governance transitions strictly require in-session human authorization (e.g., release
-promotion, unmerged branch deletion, decision ratification, or self-review skips). These must be modeled using
-`callback` or `event` states that halt autonomous progression until an explicit event arrives:
+### Rule 4: Parallelism for Independent Reviews (`type: parallel`)
+Multi-agent reviews (e.g., simultaneous checks by Architect, Security, and Auditor) must be
+modeled as `parallel` states with `completionType: allOf` to minimize latency while guaranteeing
+full consensus.
+
+### Rule 5: Human-in-the-Loop Callback Gates (`type: callback`)
+States requiring explicit human confirmation (e.g. founder approval for releases per `AGENTS.md`,
+or destructive worktree cleanup approvals) must use the `callback` state pattern. Execution
+suspends until a correlated external authorization event (`kind: consumed`) is received or an
+`eventTimeout` expires:
+
 ```yaml
-- name: AwaitFounderAuthorization
+- name: AwaitFounderReleaseApproval
   type: callback
   action:
+    name: NotifyFounderReleasePending
     functionRef:
-      refName: promptHumanOperator
-      arguments:
-        prompt: "Release promotion from dev to main requires founder sign-off."
+      refName: sendReleaseApprovalRequest
   eventRef: FounderApprovalEvent
-  transition: PromoteRelease
+  timeouts:
+    eventTimeout: "PT24H"
+  transition: ProcessFounderDecision
 ```
 
-### Rule 6: Saga Rollback & Compensation Actions
-Workflows that perform mutating operations (worktree creation, git branching, file writes, patch remediations, staging fixture injection) must
-declare `compensatedBy` handlers to cleanly undo side effects on failure or abort:
+### Rule 6: Rollback and Remediation Sagas (`compensatedBy`)
+Destructive operations, task branch allocations, or worktree creation steps that fail downstream
+validation must declare a compensating state using the `compensatedBy` attribute. This guarantees
+clean environment restoration without orphaned branches or dirty state:
+
 ```yaml
-- name: AllocateTaskWorktree
+- name: ProvisionWorktree
   type: operation
-  compensatedBy: CleanupTaskWorktree
+  compensatedBy: CleanupWorktreeSaga
   actions:
-    - name: createWorktree
+    - name: RunGitWorktreeAdd
       functionRef:
-        refName: runGitCommand
-        arguments:
-          command: "git worktree add ../<name> -b feature/<slug> origin/dev"
-  transition: ExecuteTaskWork
+        refName: executeWorktreeAdd
+  transition: RunFeatureImplementation
 ```
-
-### Rule 7: Visual Graph Synchronization (Mermaid Parity)
-Every workflow graph must maintain 1-to-1 parity with a native Mermaid `stateDiagram-v2`
-embedded in its companion governance document. The graph must clearly display:
-- States and transitions.
-- Decision branches (choice diamonds / conditions).
-- Terminal success and failure sinks.
 
 ---
 
-## 5. LangGraph & Runtime Adapter Pattern
+## 5. Execution Integration: LangGraph & Agent Runtimes
 
-To preserve framework neutrality while enabling zero-effort execution in Python agent ecosystems,
-runtimes compile `.sw.yaml` into LangGraph on the fly using a standard adapter:
+While the framework specification is runtime-neutral ([D-0013](DECISIONS.md)), any downstream
+agent harness consuming this framework can convert `.sw.yaml` files into executable graphs:
 
 ```python
-from langgraph.graph import StateGraph, START, END
 import yaml
+from langgraph.graph import StateGraph, END
 
 def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
     with open(yaml_path) as f:
@@ -253,3 +236,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 5 (Step 6 SPEC Distributed Choreography Standard)**:
   - *Gap found*: Distributed service interaction sequencing, event choreography, and saga rollback compensation lacked registration in governance workflow catalog.
   - *Fix*: Registered `spec-choreography-contract.sw.yaml` in Section 2, added Layer 06 SPEC workflow domain separation entry in Section 1, and documented Pass 5 in Review Log.
+- **2026-10-05 — Pass 6 (Step 7 ADR Decision Analysis & MCDA Scoring Standard)**:
+  - *Gap found*: Architectural candidate trade-off evaluation, multi-criteria decision analysis (MCDA), stakeholder RFC review loops, and rejection archival sagas lacked formal CNCF Serverless Workflow modeling.
+  - *Fix*: Registered `adr-decision-analysis.sw.yaml` in Section 2, added Layer 05 ADR workflow domain separation entry in Section 1, and documented Pass 6 in Review Log.

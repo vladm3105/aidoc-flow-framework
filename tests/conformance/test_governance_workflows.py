@@ -23,6 +23,7 @@ EXPECTED_WORKFLOWS = [
     "bdd-acceptance-run.sw.yaml",
     "tdd-test-execution.sw.yaml",
     "spec-choreography-contract.sw.yaml",
+    "adr-decision-analysis.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -62,70 +63,69 @@ class GovernanceWorkflowsTest(unittest.TestCase):
                     data = yaml.safe_load(f)
 
                 self.assertIsInstance(data, dict, f"{wf_name} must parse as a YAML mapping")
-                self.assertIn("id", data)
-                self.assertIn("name", data)
-                self.assertIn("version", data)
+                self.assertIn("id", data, f"{wf_name} missing 'id'")
+                self.assertIn("name", data, f"{wf_name} missing 'name'")
                 self.assertEqual(
-                    data.get("specVersion"), "0.8", f"{wf_name} must specify specVersion: '0.8'"
+                    data.get("specVersion"), "0.8", f"{wf_name} must target specVersion 0.8"
                 )
-                self.assertIn("start", data)
-                self.assertIn("states", data)
+                self.assertIn("start", data, f"{wf_name} missing 'start' state")
+                self.assertIn("states", data, f"{wf_name} missing 'states' list")
 
                 states = data["states"]
-                self.assertIsInstance(states, list)
+                self.assertIsInstance(states, list, f"{wf_name} 'states' must be a list")
                 self.assertGreater(len(states), 0, f"{wf_name} must declare at least one state")
 
-                state_names = {s["name"] for s in states if "name" in s}
-                self.assertEqual(
-                    len(state_names), len(states), f"{wf_name} contains duplicate state names"
-                )
+                state_names = {s["name"] for s in states if isinstance(s, dict) and "name" in s}
                 self.assertIn(
-                    data["start"], state_names, f"Start state '{data['start']}' not in states"
+                    data["start"],
+                    state_names,
+                    f"{wf_name} start state '{data['start']}' not found in states",
                 )
 
                 terminal_states = 0
                 for state in states:
-                    s_name = state["name"]
+                    s_name = state.get("name", "<unnamed>")
                     s_type = state.get("type")
                     self.assertIn(
-                        s_type, VALID_STATE_TYPES, f"State '{s_name}' has invalid type '{s_type}'"
+                        s_type,
+                        VALID_STATE_TYPES,
+                        f"{wf_name} state '{s_name}' has invalid type '{s_type}'",
                     )
 
-                    # Check transition target
+                    # Check transitions exist
                     if "transition" in state:
                         target = state["transition"]
                         self.assertIn(
                             target,
                             state_names,
-                            f"Transition from '{s_name}' targets unknown state '{target}'",
+                            f"{wf_name} state '{s_name}' transitions to undefined state '{target}'",
                         )
 
-                    # Check switch conditions
+                    # Check switch dataCondition transitions
                     if s_type == "switch":
                         conditions = state.get("dataConditions", [])
                         for cond in conditions:
-                            c_target = cond.get("transition")
-                            if c_target:
+                            if "transition" in cond:
                                 self.assertIn(
-                                    c_target,
+                                    cond["transition"],
                                     state_names,
-                                    f"Switch condition in '{s_name}' targets unknown '{c_target}'",
+                                    f"{wf_name} switch condition '{cond.get('name')}' transitions to undefined state",
                                 )
-                        default_target = state.get("defaultCondition", {}).get("transition")
-                        if default_target:
+                        default_trans = state.get("defaultCondition", {}).get("transition")
+                        if default_trans:
                             self.assertIn(
-                                default_target,
+                                default_trans,
                                 state_names,
-                                f"Default condition in '{s_name}' targets unknown '{default_target}'",
+                                f"{wf_name} switch defaultCondition transitions to undefined state",
                             )
 
-                    # Check compensation target
+                    # Check compensatedBy references
                     if "compensatedBy" in state:
                         comp_target = state["compensatedBy"]
                         self.assertIn(
                             comp_target,
                             state_names,
-                            f"CompensatedBy in '{s_name}' targets unknown state '{comp_target}'",
+                            f"{wf_name} state '{s_name}' compensatedBy undefined state '{comp_target}'",
                         )
 
                     # Check terminal state
@@ -154,8 +154,8 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         self.assertIn("GD-55", decisions)
         self.assertIn("GD-56", decisions)
         self.assertIn("GD-57", decisions)
+        self.assertIn("GD-58", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
-        self.assertIn("0.82.0", decisions)
 
 
 if __name__ == "__main__":

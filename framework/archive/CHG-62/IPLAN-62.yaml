@@ -1,0 +1,95 @@
+# =============================================================================
+#  IPLAN-62: Adopt CNCF Serverless Workflow standard for Layer 05 (ADR) architectural
+#  trade-off analysis and decision evaluation workflows (spec C2 MINOR → 0.83.0)
+# =============================================================================
+
+id: IPLAN-62
+title: "Implementation Plan: Layer 05 (ADR) CNCF Serverless Workflow Standardization"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.82.0"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "In Progress"
+  chg_reference: "CHG-62"
+  created_at: "2026-10-05T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/workflows/adr-decision-analysis.sw.yaml"
+      description: "CNCF Serverless Workflow state machine for architectural trade-off analysis and multi-criteria evaluation"
+      order: 1
+      status: PENDING
+    - path: "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+      description: "Hybrid Envelope Architecture template for Layer 05 ADR workflow"
+      order: 2
+      status: PENDING
+    - path: "framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md"
+      description: "Normative specification mapping architectural decision evaluation primitives to CNCF states"
+      order: 3
+      status: PENDING
+    - path: "framework/layers/05_ADR/README.md"
+      description: "Update Layer 05 README to document dual-template architecture"
+      order: 4
+      status: PENDING
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Register adr-decision-analysis in governance workflow catalog"
+      order: 5
+      status: PENDING
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Register ADR decision analysis state machines in diagram standards"
+      order: 6
+      status: PENDING
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-58"
+      order: 7
+      status: PENDING
+    - path: "tests/conformance/test_adr_workflow.py"
+      description: "Conformance test suite for Layer 05 ADR workflows"
+      order: 8
+      status: PENDING
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Register adr-decision-analysis in EXPECTED_WORKFLOWS"
+      order: 9
+      status: PENDING
+    - path: "tests/conformance/test_governance.py"
+      description: "Register workflow and ADR standard in EXPECTED_FILES"
+      order: 10
+      status: PENDING
+    - path: "framework/VERSION"
+      description: "Bump version to 0.83.0"
+      order: 11
+      status: PENDING
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.82.0 to OLD_VERSIONS"
+      order: 12
+      status: PENDING
+    - path: "framework/CHANGELOG.md"
+      description: "Changelog entry for 0.83.0 / CHG-62"
+      order: 13
+      status: PENDING
+
+tdd_consistency:
+  status: complete
+  tdd_ref: "@conformance: tests/conformance/test_adr_workflow.py"
+
+execution_steps:
+  - phase: 1
+    name: "Author ADR Decision Analysis Workflow"
+    command: "Deploy framework/governance/workflows/adr-decision-analysis.sw.yaml"
+  - phase: 2
+    name: "Author ADR Hybrid Template & Standard"
+    command: "Deploy framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml and ADR_WORKFLOW_STANDARD.md"
+  - phase: 3
+    name: "Update Companion Governance & Layer Documents"
+    command: "Update README.md, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md (GD-58)"
+  - phase: 4
+    name: "Deploy Conformance Tests & Update Registries"
+    command: "Deploy test_adr_workflow.py, update test_governance_workflows.py and test_governance.py"
+  - phase: 5
+    name: "Propagate Version Bump"
+    command: "Update VERSION, sync-version-refs.sh, CHANGELOG.md, and run hooks/sync-version-refs.sh"
+  - phase: 6
+    name: "Verification & Merge"
+    command: "Run full conformance suite, pre-commit, push, open PR, watch checks, merge, and clean worktree"

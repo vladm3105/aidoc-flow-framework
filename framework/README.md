@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.82.0 |
+| Framework Version | 0.83.0 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the

@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.18 |
+| Version | 1.19 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.82.0 |
+| Framework Version | 0.83.0 |
+
+---
+
+## GD-58 — CNCF Serverless Workflow standard (YAML) for Layer 05 (ADR) architectural trade-off analysis and decision evaluation workflows (CHG-62, 0.83.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous architectural trade-off evaluation, multi-criteria decision analysis (MCDA), stakeholder RFC review loops, and deterministic rejection archival sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 05 (ADR) architectural candidate trade-off evaluations, multi-criteria utility scoring, stakeholder RFC review loops, and rejection archival sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 12 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `architecture_flow.decision_workflow`.
+  3. Author `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` establishing the normative mapping of architectural decision evaluation primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Context & Driver Ingestion` $\rightarrow$ `inject` or `operation` (loads constraints and non-functional requirements from upstream `@ears` and `@bdd`)
+     - `Candidate Alternative Evaluation` $\rightarrow$ `parallel` (concurrent assessment of options A, B, and C with `completionType: allOf`)
+     - `Multi-Criteria Utility Scoring (MCDA)` $\rightarrow$ `operation` (executes weighted Pugh matrix / utility tree calculation)
+     - `Viability & Threshold Filtering` $\rightarrow$ `switch` (validates candidate score $\ge 80.0$ and veto count $== 0$)
+     - `Stakeholder RFC Review Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `StakeholderFeedbackEvent` with timeout)
+     - `Consensus Validation` $\rightarrow$ `switch` (verifies feedback approval and absence of blocking objections)
+     - `Decision Ratification` $\rightarrow$ `operation` (generates immutable element IDs and seals status as `Accepted`)
+     - `Rejection Archival & Cleanup` $\rightarrow$ `operation` with `compensatedBy` (archives rejected proposals and cleans temporary evaluation contexts)
+  4. Author `framework/governance/workflows/adr-decision-analysis.sw.yaml` establishing the canonical architectural trade-off analysis and decision evaluation runner.
+  5. Author `framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml` as the canonical template for complex, multi-candidate architecture decision records.
+  6. Maintain dual-template discipline: retain `ADR-TEMPLATE.yaml` for straightforward, single-candidate decisions or localized design choices.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 

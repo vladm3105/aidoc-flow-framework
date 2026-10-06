@@ -11,7 +11,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.82.0 |
+| Framework Version | 0.83.0 |
+
+## [0.83.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 05 (ADR) architectural trade-off analysis & decision evaluation workflows (C2 MINOR → 0.83.0, CHG-62 + IPLAN-62)
+
+- **ADR Architectural Decision Analysis Workflow (`framework/governance/workflows/adr-decision-analysis.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing architectural candidate evaluations, multi-criteria trade-off scoring, and stakeholder review loops (#917). Features context and constraints ingestion (`IngestDecisionContext`), concurrent candidate alternative evaluation (`EvaluateCandidateAlternatives` parallel state across candidate options), multi-criteria decision analysis utility scoring (`ComputeUtilityScores` weighted MCDA matrix calculation), quantitative viability threshold filtering (`EvaluateDecisionViability` switch state), stakeholder Request-for-Comment review callbacks (`SolicitStakeholderRFC` callback state with correlated `StakeholderFeedbackEvent` and timeout), consensus approval verification, canonical ADR element ID ratification, and proposal rejection archive compensation (`compensatedBy: ArchiveRejectedDecision`).
+- **Layer 05 ADR Workflow Specification Standard (`framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing architectural trade-off analysis, multi-criteria decision matrices, and stakeholder RFC review loops as CNCF Serverless Workflow state machines. Defines formal mapping of decision evaluation primitives to CNCF state types (`Context Ingestion` → `inject`/`operation`, `Candidate Assessment` → `parallel`, `MCDA Utility Scoring` → `operation`, `Viability Check` → `switch`, `RFC Review` → `callback`, `Consensus Check` → `switch`, `Decision Ratification` → `operation`, `Rejection Archival` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 05 ADR Workflow Template (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**: Introduces the canonical ADR workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` (all 12 required sections present) while housing an embedded CNCF Serverless Workflow state machine for complex, multi-candidate architectural decisions.
+- **Core Governance & Decision GD-58**: Ratified Decision `GD-58` in `framework/governance/DECISIONS.md`. Updated `framework/layers/05_ADR/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.7) registering `adr-decision-analysis.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.8) cataloging ADR decision analysis workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_adr_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state reachability, step parity, and MCDA scoring transitions; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.82.0 → 0.83.0 propagated across tree.
+
+---
 
 ## [0.82.0] — 2026-10-05
 

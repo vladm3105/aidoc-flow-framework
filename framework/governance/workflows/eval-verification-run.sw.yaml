@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.82.0"
+  framework_version: "0.83.0"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
