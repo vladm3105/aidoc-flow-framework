@@ -56,6 +56,7 @@ EXPECTED_FILES = [
     "workflows/review-remediation-flow.sw.yaml",
     "workflows/decision-ratification-flow.sw.yaml",
     "workflows/bdd-acceptance-run.sw.yaml",
+    "workflows/tdd-test-execution.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",

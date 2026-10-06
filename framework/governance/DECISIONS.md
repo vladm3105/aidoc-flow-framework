@@ -15,11 +15,32 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.16 |
+| Version | 1.17 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.80.0 |
+| Framework Version | 0.81.0 |
+
+---
+
+## GD-56 — CNCF Serverless Workflow standard (YAML) for Layer 07 (TDD) test execution and fixture rollback sagas (CHG-60, 0.81.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous testing resilience, test tier orchestration, multi-agent TDD execution, and deterministic fixture teardown compensation.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 07 (TDD) multi-tier test execution, retries, and saga rollback compensation.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves SDD metadata and traceability, while Section 5 houses the CNCF Serverless Workflow state machine (`subtype: workflow`).
+  3. Author `framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md` establishing the normative mapping of Arrange-Act-Assert testing phases onto CNCF Serverless Workflow state machine primitives:
+     - `Arrange` $\rightarrow$ `inject` (test data setup) or `operation` (fixture provisioning with `compensatedBy`)
+     - `Act` $\rightarrow$ `operation` (test runner invocation)
+     - `Assert` $\rightarrow$ `switch` (assertion outcomes and `@threshold:` checks)
+     - `Retry` $\rightarrow$ `operation` (flaky failure backoff and retry tracking)
+     - `Teardown` $\rightarrow$ `operation` (saga compensation cleanup)
+  4. Author `framework/governance/workflows/tdd-test-execution.sw.yaml` establishing the canonical automated test execution suite runner.
+  5. Author `framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml` as the canonical template for complex, stateful test workflows.
+  6. Maintain dual-template discipline: retain `TDD-TEMPLATE.yaml` for atomic, isolated unit tests.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 

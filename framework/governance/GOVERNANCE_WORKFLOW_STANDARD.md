@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.80.0 |
+| Framework Version | 0.81.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -61,7 +61,8 @@ framework/governance/
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
-│   └── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
+│   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
+│   └── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph

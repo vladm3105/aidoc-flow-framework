@@ -11,7 +11,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.80.0 |
+| Framework Version | 0.81.0 |
+
+## [0.81.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 07 (TDD) test execution & fixture rollback sagas (C2 MINOR → 0.81.0, CHG-60 + IPLAN-60)
+
+- **TDD Automated Test Suite Execution Workflow (`framework/governance/workflows/tdd-test-execution.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing multi-tier test suite execution (#913). Features hermetic test container/database provisioning with deterministic teardown compensation (`compensatedBy: TeardownTestFixtures`), concurrent test tier dispatch (`DispatchTestMatrix` parallel state across unit, integration, contract, and mutation test branches), automated flaky test detection and retry with jittered exponential backoff (`ApplyFlakyRetryBackoff`), defect quarantine logging (`QuarantineAndCompensate`), and immutable test receipt generation.
+- **Layer 07 TDD Workflow Specification Standard (`framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing stateful test workflows, fixture lifecycles, and saga compensation within TDD. Defines the formal mapping of Arrange-Act-Assert testing phases to CNCF state types (`Arrange` → `inject`/`operation`, `Act` → `operation`, `Assert` → `switch`, `Retry` → `operation`, `Teardown` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 07 TDD Workflow Template (`framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml`)**: Introduces the canonical TDD workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow state machine for complex, stateful test suites.
+- **Core Governance & Decision GD-56**: Ratified Decision `GD-56` in `framework/governance/DECISIONS.md`. Updated `framework/layers/07_TDD/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.5) registering `tdd-test-execution.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.6) cataloging TDD test execution workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_tdd_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state transitions, and step references; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.80.0 → 0.81.0 propagated across tree.
+
+---
 
 ## [0.80.0] — 2026-10-05
 

@@ -21,6 +21,7 @@ EXPECTED_WORKFLOWS = [
     "review-remediation-flow.sw.yaml",
     "decision-ratification-flow.sw.yaml",
     "bdd-acceptance-run.sw.yaml",
+    "tdd-test-execution.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -150,8 +151,9 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         self.assertIn("GD-53", decisions)
         self.assertIn("GD-54", decisions)
         self.assertIn("GD-55", decisions)
+        self.assertIn("GD-56", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
-        self.assertIn("0.80.0", decisions)
+        self.assertIn("0.81.0", decisions)
 
 
 if __name__ == "__main__":
