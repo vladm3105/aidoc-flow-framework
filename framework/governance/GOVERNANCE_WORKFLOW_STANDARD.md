@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.79.0 |
+| Framework Version | 0.80.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -19,7 +19,7 @@ flows and multi-agent lifecycle state machines.
 ## 1. Purpose & Architectural Context
 
 The SDD framework governs complex, multi-agent development lifecycles (Change Requests,
-Review Sagas, Worktree Isolations, Seed Decompositions, Evaluation Runs, and Decision Ratifications).
+Review Sagas, Worktree Isolations, Seed Decompositions, Evaluation Runs, Decision Ratifications, and QA Acceptance Runs).
 Historically, these rules were documented solely as human-readable prose across dozens of markdown files.
 
 This specification formalizes **Machine-Executable Governance**:
@@ -39,11 +39,14 @@ This specification formalizes **Machine-Executable Governance**:
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
-   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification).
+   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification, QA Staging Acceptance Runs).
    Governed exclusively by this standard.
 2. **Implementation Workflows (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**:
    Govern codebase mutation, test file creation, and execution-time saga compensation.
    Governed by [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md).
+3. **Behavioral Acceptance Workflows (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`)**:
+   Govern complex, multi-step stateful user journeys and scenario-level saga rollback.
+   Governed by [`framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`](../layers/04_BDD/BDD_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
@@ -57,7 +60,8 @@ framework/governance/
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
-│   └── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
+│   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
+│   └── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
@@ -153,7 +157,7 @@ promotion, unmerged branch deletion, decision ratification, or self-review skips
 ```
 
 ### Rule 6: Saga Rollback & Compensation Actions
-Workflows that perform mutating operations (worktree creation, git branching, file writes, patch remediations) must
+Workflows that perform mutating operations (worktree creation, git branching, file writes, patch remediations, staging fixture injection) must
 declare `compensatedBy` handlers to cleanly undo side effects on failure or abort:
 ```yaml
 - name: AllocateTaskWorktree
@@ -235,3 +239,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 3 (Step 3 Quality Loops & Decision Ratification)**:
   - *Gap found*: Quality loop (`REVIEW_REMEDIATION_FLOW.md`) and decision lifecycle (`DECISION_WORKFLOW.md`) lacked registered CNCF state machine models.
   - *Fix*: Registered `review-remediation-flow.sw.yaml` and `decision-ratification-flow.sw.yaml` in Section 2 and updated Rule 5/6 references.
+- **2026-10-05 — Pass 4 (Step 4 BDD Acceptance Execution Runner)**:
+  - *Gap found*: QA staging BDD acceptance execution runner lacked registration in governance workflow standard.
+  - *Fix*: Registered `bdd-acceptance-run.sw.yaml` in Section 2 and added domain separation pointer to `BDD_WORKFLOW_STANDARD.md`.

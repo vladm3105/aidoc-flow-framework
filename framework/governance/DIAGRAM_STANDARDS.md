@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |---|---|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.79.0 |
+| Framework Version | 0.80.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -137,7 +137,7 @@ Required fields in SPEC diagram contract subsection:
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
 | PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
 | EARS (L3) | No diagrams required (refinement step; inherits upstream) |
-| BDD (L4) | structured YAML scenarios (no C4/DFD diagram requirements) |
+| BDD (L4) | structured YAML scenarios or CNCF Serverless Workflow state machines (BDD-SWF-TEMPLATE.yaml; bdd-acceptance-run.sw.yaml) |
 | ADR (L5) | Required decision sequence; no C4/DFD tags (decision bridge, not a C4 level) |
 | SPEC (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required Component Diagram Contract subsection, sequence-path constraints, downstream TDD ownership link |
 | TDD (L7) | No C4/DFD requirements (test case definitions) |
@@ -254,9 +254,10 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), and decision ratification (`decision-ratification-flow.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), and BDD acceptance run (`bdd-acceptance-run.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
+4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.
 
 Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance prose document or implementation plan.
 
@@ -264,7 +265,8 @@ Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDia
 |---|---|
 | Governance Workflows | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
 | Implementation Workflows | `framework/layers/08_IPLAN/<slug>.yaml` (`workflow:` block) |
-| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md` & `IPLAN_WORKFLOW_STANDARD.md` |
+| Behavioral Workflows | `framework/layers/04_BDD/<slug>.yaml` (`workflow:` block) |
+| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md` |
 | Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
 | Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 

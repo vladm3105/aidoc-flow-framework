@@ -1,0 +1,204 @@
+# =============================================================================
+#  BDD-SWF-TEMPLATE.yaml — Stateful BDD Scenarios (CNCF Serverless Workflow)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Subtype: workflow)
+#  Purpose: Machine-executable, stateful BDD acceptance workflow template
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Architecture: HYBRID ENVELOPE
+#    Outer document conforms to SDD Layer 4 structure (metadata, document_control,
+#    feature, traceability) for 100% compatibility with sdd_doc_lint.
+#    Inner 'workflow:' block houses a valid CNCF Serverless Workflow v0.8
+#    state machine for multi-step choreography, event stimuli, and saga rollback.
+#
+#  Downstream: ADR (Layer 5), TDD (Layer 7 via BDD scenario mapping)
+#  Upstream: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
+# =============================================================================
+
+id: BDD-NN
+doc_id: BDD-NN
+title: "[Feature/Component Under Test - Stateful Workflow]"
+
+# =============================================================================
+# Section 0: Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "bdd-document"
+  subtype: "workflow"
+  layer: 4
+  lifecycle: mvp-prod-newmvp
+  total_sections: 5
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.
+      BDD validates end-to-end user acceptance criteria.
+      Every scenario or workflow defined in this layer MUST be paired with a concrete
+      TDD test case in Layer 7 (GD-08, ACC01).
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  version: "1.0"
+  status: draft  # draft | in-review | approved | superseded
+  date_created: "2026-10-05"
+  last_updated: "2026-10-05"
+  author: "[Author Persona — e.g., QA Lead, Requirements Specialist]"
+  target_release: "[vX.Y.Z]"
+
+# =============================================================================
+# Section 2: Feature Context & User Story
+# =============================================================================
+
+feature:
+  name: "[Feature Under Test]"
+  description: >-
+    [High-level description of the business process or system capability being validated]
+  user_story:
+    as_a: "[Persona / Role]"
+    i_want: "[System capability or interaction]"
+    so_that: "[Business outcome or value delivered]"
+
+# =============================================================================
+# Section 3: Traceability (EARS Upstream + TDD Downstream)
+# =============================================================================
+
+traceability:
+  tags:
+    - "@bdd: BDD-NN"
+  upstream:
+    ears:
+      - "EARS.NN.SS.xxxx"
+  downstream:
+    tdd_targets:
+      - "TDD.NN.SS.xxxx"
+    spec_interfaces:
+      - "SPEC Section 3 (Interfaces)"
+
+# =============================================================================
+# Section 4: Executable Behavioral Workflow (CNCF Serverless Workflow v0.8)
+# =============================================================================
+
+workflow:
+  id: "bdd-nn-behavioral-flow"
+  name: "[Stateful Behavioral Acceptance Flow]"
+  version: "1.0"
+  specVersion: "0.8"
+  description: >-
+    [CNCF Serverless Workflow modeling multi-step Given-When-Then choreography
+    with failure branches, asynchronous events, and saga compensation rollback]
+
+  start: SetupGivenPreconditions
+
+  timeouts:
+    workflowExecTimeout:
+      duration: PT5M
+
+  states:
+    # -------------------------------------------------------------------------
+    # GIVEN: Precondition Initialization & Fixture Injection
+    # -------------------------------------------------------------------------
+    - name: SetupGivenPreconditions
+      type: operation
+      compensatedBy: RollbackStatefulChanges
+      actions:
+        - name: injectPreconditions
+          functionRef:
+            refName: fixtureSetupFunction
+            arguments:
+              account_state: "active"
+              initial_balance: 1000
+              auth_token: "mock-valid-jwt"
+      transition: DispatchWhenAction
+
+    # -------------------------------------------------------------------------
+    # WHEN: Stimulus / Action Execution
+    # -------------------------------------------------------------------------
+    - name: DispatchWhenAction
+      type: operation
+      actions:
+        - name: executeStimulus
+          functionRef:
+            refName: systemActionDispatcher
+            arguments:
+              action: "processTransfer"
+              destination: "acc-9876"
+              amount: 250
+      transition: VerifyThenExpectations
+
+    # -------------------------------------------------------------------------
+    # THEN: Verification / Outcome Assertion
+    # -------------------------------------------------------------------------
+    - name: VerifyThenExpectations
+      type: switch
+      dataConditions:
+        - name: SuccessfulTransferOutcome
+          condition: "${ .response.status == 200 and .response.balance == 750 }"
+          transition: CompleteScenarioSuccess
+        - name: ThresholdViolationOutcome
+          condition: "${ .response.latency_ms > 250 }"
+          transition: RecordThresholdViolation
+      defaultCondition:
+        transition: RecordAssertionFailure
+
+    # -------------------------------------------------------------------------
+    # TERMINAL: Scenario Success
+    # -------------------------------------------------------------------------
+    - name: CompleteScenarioSuccess
+      type: inject
+      data:
+        verdict: "PASSED"
+        ears_verified: ["EARS.NN.SS.xxxx"]
+      end: true
+
+    # -------------------------------------------------------------------------
+    # TERMINAL: Assertion / Threshold Failure with Quarantine Handling
+    # -------------------------------------------------------------------------
+    - name: RecordThresholdViolation
+      type: inject
+      data:
+        verdict: "FAILED_THRESHOLD"
+        threshold_tag: "@threshold:PRD.NN.perf.latency.p95"
+      transition: RollbackStatefulChanges
+
+    - name: RecordAssertionFailure
+      type: inject
+      data:
+        verdict: "FAILED_ASSERTION"
+        error_code: "ASSERTION_MISMATCH"
+      transition: RollbackStatefulChanges
+
+    # -------------------------------------------------------------------------
+    # SAGA COMPENSATION: State Rollback Handler
+    # -------------------------------------------------------------------------
+    - name: RollbackStatefulChanges
+      type: operation
+      actions:
+        - name: revertFixture
+          functionRef:
+            refName: fixtureRollbackFunction
+            arguments:
+              rollback_action: "revertAccountState"
+      end: true
+
+  functions:
+    - name: fixtureSetupFunction
+      type: custom
+      operation: "urn:aidoc:bdd:fixture-setup"
+    - name: systemActionDispatcher
+      type: custom
+      operation: "urn:aidoc:bdd:action-dispatcher"
+    - name: fixtureRollbackFunction
+      type: custom
+      operation: "urn:aidoc:bdd:fixture-rollback"

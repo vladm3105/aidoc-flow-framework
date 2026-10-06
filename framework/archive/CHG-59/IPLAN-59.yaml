@@ -1,0 +1,173 @@
+# =============================================================================
+#  IPLAN-59: Adopt CNCF Serverless Workflow standard for Layer 04 (BDD) stateful
+#  scenarios and QA acceptance runners (spec C2 MINOR → 0.80.0)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-59/CHG-59.yaml (Implemented)
+#  Source: Issue #911
+# =============================================================================
+
+doc_id: IPLAN-59
+title: "Adopt CNCF Serverless Workflow standard for Layer 04 (BDD) stateful scenarios and QA acceptance runners (spec C2 MINOR → 0.80.0)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-05"
+  framework_version: "0.79.0"
+  source_chg: "CHG-59"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-59"
+  subtype: docs
+  source_spec: "@spec: N/A (spec-source change under CHG-59; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 13
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/archive/CHG-59/CHG-59.yaml + IPLAN-59.yaml"
+      description: "Authorizing vehicle"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-59/README.md + GOVERNANCE_WORKFLOW_STANDARD.md + DIAGRAM_STANDARDS.md + DECISIONS.md + VERSION + CHANGELOG.md + sync-version-refs.sh + test_governance.py + test_governance_workflows.py"
+      description: "Pre-change snapshots (base 0.79.0)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md"
+      description: "Normative specification standard mapping Given/When/Then to CNCF Serverless Workflow state machines"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml"
+      description: "Canonical hybrid template housing CNCF Serverless Workflow state machine within BDD envelope"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/workflows/bdd-acceptance-run.sw.yaml"
+      description: "CNCF Serverless Workflow v0.8 state machine for QA staging BDD acceptance test suite execution"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/04_BDD/README.md"
+      description: "Document CNCF Serverless Workflow template and execution model; doc Version 1.0 → 1.1"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Register bdd-acceptance-run in workflow catalog; doc Version 1.3 → 1.4"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Register BDD scenario execution state machine; doc Version 1.4 → 1.5"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-55"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_bdd_workflow.py"
+      description: "Add conformance tests asserting BDD-SWF-TEMPLATE and bdd-acceptance-run"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Add bdd-acceptance-run to EXPECTED_WORKFLOWS and verify integrity"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Add workflow and BDD standard to EXPECTED_FILES"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.79.0 to OLD_VERSIONS"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump version to 0.80.0"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Add entry for CHG-59 / 0.80.0"
+      order: 14
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Test Strategy (TDD Consistency)
+# =============================================================================
+tdd_consistency:
+  covering_tests:
+    - "tests/conformance/test_bdd_workflow.py"
+    - "tests/conformance/test_governance_workflows.py"
+    - "tests/conformance/test_governance.py"
+  test_plan:
+    - "Validate YAML syntax and specVersion 0.8 on bdd-acceptance-run.sw.yaml"
+    - "Validate BDD-SWF-TEMPLATE.yaml against hybrid envelope invariants and sdd_doc_lint"
+    - "Verify Given/When/Then to CNCF state machine mapping consistency"
+    - "Verify state transition completeness and reachable terminal sinks"
+    - "Verify synchronization of BDD documentation and Decision GD-55"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+implementation_contracts:
+  steps:
+    - step: "Snapshot pre-change originals to framework/archive/CHG-59/"
+      phase: "sdd_lifecycle"
+      verification: "All 10 baseline files present in archive directory"
+    - step: "Author BDD_WORKFLOW_STANDARD.md"
+      phase: "sdd_lifecycle"
+      verification: "Normative specification created and reviewed"
+    - step: "Author BDD-SWF-TEMPLATE.yaml"
+      phase: "sdd_lifecycle"
+      verification: "Passes yaml.safe_load, template convention checks, and schema checks"
+    - step: "Author bdd-acceptance-run.sw.yaml"
+      phase: "sdd_lifecycle"
+      verification: "Passes yaml.safe_load and CNCF SWF v0.8 schema checks"
+    - step: "Amend 04_BDD/README.md, GOVERNANCE_WORKFLOW_STANDARD.md, and DIAGRAM_STANDARDS.md"
+      phase: "sdd_lifecycle"
+      verification: "Cross-references and Mermaid diagrams verified"
+    - step: "Ratify Decision GD-55 in DECISIONS.md"
+      phase: "sdd_lifecycle"
+      verification: "GD-55 entry complete and verified"
+    - step: "Author tests/conformance/test_bdd_workflow.py and update test_governance_workflows.py and test_governance.py"
+      phase: "tdd_enforcement"
+      verification: "pytest tests/conformance/ passes 100%"
+    - step: "Bump version to 0.80.0 and propagate"
+      phase: "version_propagation"
+      verification: "hooks/sync-version-refs.sh executes cleanly"

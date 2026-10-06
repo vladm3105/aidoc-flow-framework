@@ -11,7 +11,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.79.0 |
+| Framework Version | 0.80.0 |
+
+## [0.80.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 04 (BDD) stateful scenarios & QA acceptance runners (C2 MINOR → 0.80.0, CHG-59 + IPLAN-59)
+
+- **BDD QA Acceptance Runner Workflow (`framework/governance/workflows/bdd-acceptance-run.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing multi-scenario QA acceptance suites (#911). Models hermetic staging isolation setup, parallel multi-environment scenario execution (`DispatchScenarioMatrix` parallel state), Given/When/Then assertion verification, SLA threshold validation (`@threshold:` annotation checks), defect isolation with automated quarantine logging (`LogDefectAndQuarantine`), and deterministic staging teardown compensation (`compensatedBy: TeardownStagingEnvironment`).
+- **Layer 04 BDD Workflow Specification Standard (`framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing stateful behavioral workflows, multi-step customer journeys, and saga compensation within BDD. Defines the mapping of Given/When/Then primitives to CNCF state types (`Given` → `inject`/`operation`, `When` → `operation`/`event`, `Then` → `switch`), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 04 BDD Workflow Template (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`)**: Introduces the canonical BDD workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow state machine for complex, stateful acceptance scenarios and saga compensations.
+- **Core Governance & Decision GD-55**: Ratified Decision `GD-55` in `framework/governance/DECISIONS.md`. Updated `framework/layers/04_BDD/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.4) registering `bdd-acceptance-run.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.5) cataloging BDD acceptance workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_bdd_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state transitions, and step references; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.79.0 → 0.80.0 propagated across tree.
+
+---
 
 ## [0.79.0] — 2026-10-05
 
