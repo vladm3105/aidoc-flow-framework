@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.0 |
+|---|---|
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-20 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.87.0 |
+| Framework Version | 0.88.0 |
 
 Task isolation and promotion for framework-consuming projects. Covers `dev`
 integration only. `dev` → `staging` → `main` promotions are human-executed
@@ -28,6 +28,12 @@ and out of scope.
 5. No whole-tree git operations (`stash`, `checkout -- <dirs>`, branch
    switch, blanket `add -A`) in a tree with running subagents. Use
    file-scoped commands.
+6. **Auto-Merge Re-Arming Mandate:** Any push of conflict resolution commits
+   clears platform auto-merge arming. Agents must explicitly re-verify status
+   checks and re-arm auto-merge.
+7. **Zero Force-Push Invariant:** Rebasing pushed feature branches or force-pushing
+   (`--force`, `--force-with-lease`) is strictly forbidden. Conflict resolution
+   must use forward branch merges (`git merge origin/dev`).
 
 ## 2. Prerequisites
 
@@ -36,6 +42,20 @@ and out of scope.
 - Authorized work: active CHG (`Approved` or later) and IPLAN (`In Progress`)
   where applicable.
 - Disk: each worktree duplicates working files. Remove worktrees after merge.
+
+### 2.2 Multi-Worktree Port & Container Isolation
+
+When multiple agent tasks run concurrently across separate worktrees on the same
+host, shared local runtime resources can collide. Projects MUST isolate worktree
+runtimes:
+1. **Container Name Sandboxing:** Prepend project and task/worktree slug to
+   container and container-orchestration project names (e.g.,
+   `COMPOSE_PROJECT_NAME=<project>-<slug>`).
+2. **Dynamic Port Offset:** Assign dynamic port offsets or distinct port ranges
+   per worktree in environment configurations (e.g., `.env.local`) to prevent
+   address/socket collisions during parallel integration and acceptance testing.
+3. **Volume Isolation:** Never share ephemeral test databases or writable cache
+   volumes between concurrent worktrees.
 
 ## 3. Procedure
 
@@ -96,7 +116,52 @@ gh pr create --base dev --head feature/<short-name> --title "<scope>: <what>" --
 PR body rules: include `Closes #N` or `Fixes #N` only on full resolution;
 partial advances get a progress comment. Never write the phrase negated.
 
-### 3.7 After merge — cleanup (ORDER MATTERS)
+### 3.7 Autonomous PR Conflict Resolution Protocol
+
+When a target branch (`dev`) advances while a feature PR is under review, merge
+conflicts may occur. AI agents follow a strict two-class conflict taxonomy:
+
+#### 3.7.1 Conflict Taxonomy
+
+1. **Class 1: Deterministic / Additive Conflicts**
+   - **Scope:** Append-only surfaces, documentation indices, changelogs, task
+     trackers, non-overlapping manifest additions.
+   - **Autonomous Authority:** AI agents are authorized to resolve Class 1
+     conflicts autonomously in the worktree.
+   - **Procedure:**
+     ```bash
+     git fetch origin dev
+     git merge origin/dev
+     # Resolve additive conflicts by preserving both entries in sorted or chronological order
+     git add <resolved-files>
+     git commit -m "chore: merge origin/dev to resolve additive conflict"
+     git push origin feature/<short-name>
+     ```
+2. **Class 2: Semantic / Architectural Conflicts**
+   - **Scope:** Interface signatures, concurrent business logic modifications,
+     governance policy alterations, deleted vs modified files.
+   - **Autonomous Authority:** AI agents MUST NOT guess or autonomously reconcile
+     semantic conflicts.
+   - **Procedure:** Immediately abort the merge (`git merge --abort`), capture the
+     conflict diff, post an escalation comment on the PR, and stop.
+
+#### 3.7.2 Auto-Merge Re-Arming Mandate
+
+Pushing a conflict resolution commit clears any previously armed auto-merge status
+on the host platform. After pushing the merge commit, the agent MUST:
+1. Re-query PR status and verify all CI checks are running or green.
+2. Explicitly re-arm auto-merge (`gh pr merge <PR> --auto --squash` or platform equivalent).
+3. Confirm auto-merge is actively armed before ending execution.
+
+#### 3.7.3 Circuit Breakers
+
+- **CB-5.1 (Single-Attempt Limit):** An agent may attempt autonomous conflict
+  resolution at most ONCE per PR. If the push results in subsequent conflicts or
+  CI failure, the agent must stop and escalate.
+- **CB-5.2 (Zero Semantic Guessing):** Any presence of conflicting algorithmic or
+  domain logic triggers an immediate `git merge --abort` and human escalation.
+
+### 3.8 After merge — cleanup (ORDER MATTERS)
 
 ```bash
 cd <main-checkout>
@@ -121,6 +186,9 @@ forcing.
 | Wrong branch at commit/push time | Stop. Never commit to `dev`/`staging`/`main`. |
 | `worktree remove` reports dirty tree | Snapshot irreplaceable work first, then `--force`. |
 | Concurrent subagents active | Use `git diff -- <owned files>` only. No whole-tree stat, stash, or branch switch. |
+| Class 1 merge conflict | Fetch and merge `origin/dev`, resolve additively, push, and re-arm auto-merge. |
+| Class 2 merge conflict | `git merge --abort` immediately; escalate to human. |
+| Auto-merge disarmed post-push | Verify CI suite and explicitly re-arm auto-merge. |
 
 ## 5. Validation
 
@@ -131,6 +199,8 @@ forcing.
    throughout.
 4. Merged PR targets `dev`, carries required CI gates, and references the
    authorizing CHG/IPLAN.
+5. Pushed conflict resolutions are verified to have preserved branch lineage
+   without force-pushes, and auto-merge is re-armed.
 
 ## 6. References
 

@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.23 |
+| Version | 1.24 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.87.0 |
+| Framework Version | 0.88.0 |
+
+---
+
+## GD-63 — Upstream b-local-privy Governance Adaptation Patterns, Anti-Deadlock CI, Worktree Conflict Resolution, Tripartite Separation of Concerns, and Project Adaptation Scaffolding (CHG-69, 0.88.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Upstream proven operational governance patterns from live production project (`b-local-privy` Issue #923) into the framework core, addressing deadlocks in required status checks, non-standardized merge conflict resolution in autonomous PR flows, lack of tripartite separation of concerns between DEV, SDET, and QA, missing test failure taxonomy, and providing 5 new adaptation scaffolding blueprints for new projects.
+- **Decision**:
+  1. **Anti-Deadlock Invariant & CI Smart Routing**: Codified in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` Document Control v1.2. Prohibits trigger-level path filtering (`paths:`, `paths-ignore:`) on required status checks to prevent perpetual pending deadlocks on doc/governance PRs; mandates internal job/step smart change detection with fail-closed default, the Zero-Mock Invariant, concentric latency targets (<15s, <45s, 2-4m), and machine-readable signoff attestations.
+  2. **Worktree Autonomous PR Conflict Resolution Protocol**: Codified in `framework/governance/WORKTREE_FLOW.md` Document Control v1.1. Establishes Class 1 (Deterministic/Additive) vs Class 2 (Semantic/Architectural) conflict taxonomy, mandates forward branch merges (`git merge origin/dev` in worktree with 0 force-pushes), auto-merge re-arming mandate, circuit breakers (CB-5.1 single attempt, CB-5.2 zero semantic guessing), and multi-worktree port & container sandboxing.
+  3. **Two-Stage Review & Fix Architecture**: Codified in `framework/governance/REVIEW_REMEDIATION_FLOW.md` Document Control v1.2. Formalizes Stage A (Proposal/Spec Review) vs Stage B (Implementation PR Review), strict independence (Judge $\neq$ Generator, fresh context isolation), 4-lens rubric (Correctness, Anti-Mock, Governance, Security), and Technical Verification Authority vs Fiduciary & Scope Authorization.
+  4. **Tripartite Engineering Architecture & QA Invariant**: Codified in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` Document Control v1.3 §8. Establishes clear separation between DEV, SDET, and QA personas, with a strict HARD BLOCK prohibiting QA from modifying production application or test code. Formalizes §8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
+  5. **EARS Grammar & Subagent Prompt Grounding**: Codified in `framework/AI_ASSISTANT_RULES.md` Document Control v1.3. Enforces EARS distinction (`WHILE` for normal operating states vs `IF` for error/fault conditions) and mandates literal upstream element ID passing in subagent prompts.
+  6. **TDD Failure Taxonomy & IPLAN Invariants**: Codified in `framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md` Document Control v1.1 §5. Distinguishes application defects (`failed`) from environment crashes (`infra_error`), and establishes 1:1 status propagation, file ownership, and identifier agreement between TDD and IPLAN.
+  7. **New Project Adaptation Scaffolding Blueprints**: Authored 5 new production scaffolding templates under `framework/governance/aidoc/`:
+     - `AIDOC-CI-SMART-ROUTING-TEMPLATE.md`
+     - `AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`
+     - `AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`
+     - `AIDOC-QA-PROTOCOL-TEMPLATE.md`
+     - `AIDOC-BROWSER-TESTING-TEMPLATE.md`
+  8. **Scaffolding Inventory & Adaptation Guidance**: Updated `AIDOC-SCAFFOLD-TEMPLATE.md` (v2.3) and `docs/ADAPTATION-GUIDE.md` (v1.2) incorporating the 6 operational blueprints.
+  9. **Conformance Testing**: Registered all 5 new templates in `tests/conformance/test_governance.py` (`EXPECTED_FILES`).
+  10. **Engine-Agnostic Purity (D-0013 / GD-06)**: Retained generic vendor-neutral phrasing in core framework specifications; concrete ecosystem tooling (GitHub Actions, Docker Compose, Playwright, pytest) isolated cleanly within the adaptation scaffolding templates.
 
 ---
 
