@@ -7,11 +7,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.10 |
+| Version | 1.11 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.85.0 |
+| Framework Version | 0.86.0 |
+
+## [0.86.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 01 (BRD) business validation & value stream workflows (C2 MINOR → 0.86.0, CHG-65 + IPLAN-65)
+
+- **BRD Business Requirements Validation Workflow (`framework/governance/workflows/brd-business-validation.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing strategic theme ingestion, business objective formalization (SMART criteria), value stream mapping across operational capabilities, quantitative ROI / cost-benefit analysis, budget and priority feasibility evaluation, executive steering committee approval callbacks, and strategic initiative invalidation compensation sagas (#923). Features strategic theme ingestion (`IngestStrategicInitiative`), parallel value stream mapping (`MapValueStreamCapabilities` parallel state across customer journey, core operations, and financial governance branches), quantitative ROI / feasibility scoring (`EvaluateRoiAndFeasibility` computing ROI, Net Present Value, and payback metrics), strategic alignment gating (`EvaluateStrategicAlignmentGate` switch state), executive steering committee review callbacks (`AwaitSteeringCommitteeCallback` callback state with correlated `ExecutiveSteeringApprovalEvent` and timeout), canonical BRD element ID emission (`RatifyBusinessSpecification`), and rejection invalidation compensation (`compensatedBy: InvalidateStrategicInitiatives`).
+- **Layer 01 BRD Workflow Specification Standard (`framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing business requirements validation, value stream mapping, and strategic ROI alignment as CNCF Serverless Workflow state machines. Defines formal mapping of business primitives to CNCF state types (`Strategic Theme Ingestion` → `inject`/`operation`, `Value Stream Decomposition` → `parallel`, `ROI & Feasibility Analysis` → `operation`, `Strategic Alignment Gate` → `switch`, `Steering Committee Review` → `callback`, `Business Initiative Ratification` → `operation`, `Strategic Invalidation Saga` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 01 BRD Workflow Template (`framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml`)**: Introduces the canonical BRD workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` (all 17 required sections present) while housing an embedded CNCF Serverless Workflow state machine for enterprise strategic initiatives under `value_stream_mapping.workflow_definition`.
+- **Core Governance & Decision GD-61**: Ratified Decision `GD-61` in `framework/governance/DECISIONS.md`. Updated `framework/layers/01_BRD/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.10) registering `brd-business-validation.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.11) cataloging BRD business validation workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_brd_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state reachability, step parity, and invalidation compensation; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.85.0 → 0.86.0 propagated across tree.
+
+---
 
 ## [0.85.0] — 2026-10-05
 

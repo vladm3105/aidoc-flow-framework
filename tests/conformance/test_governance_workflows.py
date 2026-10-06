@@ -26,6 +26,7 @@ EXPECTED_WORKFLOWS = [
     "adr-decision-analysis.sw.yaml",
     "ears-requirements-validation.sw.yaml",
     "prd-feature-decomposition.sw.yaml",
+    "brd-business-validation.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {

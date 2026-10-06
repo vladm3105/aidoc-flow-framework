@@ -61,6 +61,7 @@ EXPECTED_FILES = [
     "workflows/adr-decision-analysis.sw.yaml",
     "workflows/ears-requirements-validation.sw.yaml",
     "workflows/prd-feature-decomposition.sw.yaml",
+    "workflows/brd-business-validation.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",
