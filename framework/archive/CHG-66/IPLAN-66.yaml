@@ -1,0 +1,80 @@
+# =============================================================================
+#  IPLAN-66: Synchronize governance and framework root guides with full CNCF
+#  Serverless Workflow adoption (spec C2 PATCH → 0.86.1)
+# =============================================================================
+
+id: IPLAN-66
+title: "Implementation Plan: Governance & Framework Root Documentation Synchronization"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.86.0"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "In Progress"
+  chg_reference: "CHG-66"
+  created_at: "2026-10-06T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/README.md"
+      description: "Update governance README with workflow standards and workflows/ catalog"
+      order: 1
+      status: PENDING
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "Update Template Policy to formally document dual-template architecture"
+      order: 2
+      status: PENDING
+    - path: "framework/AI_ASSISTANT_RULES.md"
+      description: "Update Template Usage section with dual-template selection criteria"
+      order: 3
+      status: PENDING
+    - path: "framework/README.md"
+      description: "Update framework README layout and workflow descriptions"
+      order: 4
+      status: PENDING
+    - path: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      description: "Add workflow-driven SDD section and dual-template guidance"
+      order: 5
+      status: PENDING
+    - path: "framework/VERSION"
+      description: "Bump spec version 0.86.0 -> 0.86.1"
+      order: 6
+      status: PENDING
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.86.0 to OLD_VERSIONS"
+      order: 7
+      status: PENDING
+    - path: "framework/CHANGELOG.md"
+      description: "Add 0.86.1 release notes"
+      order: 8
+      status: PENDING
+
+execution_steps:
+  - id: STEP-01
+    action: "Copy baseline snapshots to framework/archive/CHG-66/"
+    expected_output: "Archived baselines present in git"
+  - id: STEP-02
+    action: "Update framework/governance/README.md"
+    expected_output: "Workflow standard and catalog documented"
+  - id: STEP-03
+    action: "Update framework/governance/DOC_GOVERNANCE_CORE.md"
+    expected_output: "Dual-template architecture documented in Template Policy"
+  - id: STEP-04
+    action: "Update framework/AI_ASSISTANT_RULES.md"
+    expected_output: "Dual-template selection rules documented"
+  - id: STEP-05
+    action: "Update framework/README.md"
+    expected_output: "Framework layout and workflow descriptions updated"
+  - id: STEP-06
+    action: "Update framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    expected_output: "Dual-template architecture guidance added"
+  - id: STEP-07
+    action: "Bump framework/VERSION to 0.86.1 and update hooks/sync-version-refs.sh"
+    expected_output: "Spec version 0.86.1 propagated across playbooks"
+  - id: STEP-08
+    action: "Update framework/CHANGELOG.md with 0.86.1 release notes"
+    expected_output: "Changelog updated"
+  - id: STEP-09
+    action: "Run pre-commit and conformance tests"
+    expected_output: "All suites pass green"

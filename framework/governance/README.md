@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.0 |
+| Framework Version | 0.86.1 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -34,11 +34,14 @@ or the Emergency / Type-R yield paths — is routed by
 
 | File | Covers |
 |------|--------|
-| `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, immutability, validation baseline. |
+| `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, dual-template architecture, immutability, validation baseline. |
+| `GOVERNANCE_WORKFLOW_STANDARD.md` | Normative standard establishing the CNCF Serverless Workflow DSL (v0.8 YAML) for modeling, validating, and executing governance flows and multi-agent lifecycle state machines. |
+| `IPLAN_WORKFLOW_STANDARD.md` | Normative standard mapping implementation planning, dependency DAGs, parallel phases, and saga rollback compensation to CNCF Serverless Workflow state machines. |
+| `WORKTREE_FLOW.md` | Order-guarded worktree isolation, autonomous feature branching, PR watch, and post-merge branch deletion lifecycle rules (§3.7 order guard). |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
 | `TRACEABILITY.md` | The 10-layer traceability chain, necessary-upstream tagging, and readiness gates. |
 | `TAG_SYNTAX.md` | `@`-tag form reference: per-layer punctuation, element-vs-document granularity (GD-03), pipe-delimited cardinality, the self-tag / downstream carve-outs, and the `@chg:` provenance back-reference (a non-trace tag; GD-11). |
-| `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement and the C4 + DFD + sequence ownership model. |
+| `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement, C4 + DFD + sequence ownership model, and CNCF workflow state diagram bindings. |
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |
 | `SECURITY_REVIEW.md` | Safety checks for agent-authored artifacts — secret leakage, prompt-injection, provenance, active-content sanitization. |
 | `REVIEW_REMEDIATION_FLOW.md` | The engine-agnostic review→remediation→gate quality loop, its trigger points (`on_author`, `on_gate_fail`, `pre_promotion`, `pre_merge`), and the independent `pre_merge` review gate (judge≠generator, severity classes, escalation). |
@@ -62,6 +65,25 @@ or the Emergency / Type-R yield paths — is routed by
 | `SELF_LEARNING.md` | Self-learning governance loop — how the framework captures and applies lessons learned. |
 | `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06) — the classify→route table for change requests (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix) plus Emergency and Type-R yield paths, and the C1/IPLAN-gate ruling. |
 | `CI_AUTONOMOUS_PR_STANDARD.md` | Engine-agnostic CI and autonomous change-integration rules — the unified harness, latency tiers, required-check conclusiveness (anti-deadlock), two-pass independent review, merge-conflict authority classes, and anti-blind closure (GD-42). |
+
+## CNCF Serverless Workflows (`workflows/`)
+
+The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workflow v0.8 YAML (`.sw.yaml`) definitions governing multi-agent SDD lifecycles and automated verification runners:
+
+| Workflow File | Layer / Domain | Governs |
+|---|---|---|
+| `brd-business-validation.sw.yaml` | Layer 01 BRD | Strategic theme ingestion, parallel value stream mapping, quantitative ROI/feasibility scoring, executive steering review callbacks, and invalidation compensation. |
+| `prd-feature-decomposition.sw.yaml` | Layer 02 PRD | Product theme ingestion, epic-to-story decomposition, quantitative RICE/WSJF scoring, threshold assertion gating, and scope freeze sagas. |
+| `ears-syntax-verification.sw.yaml` | Layer 03 EARS | 5-pattern EARS syntactic verification, cross-cutting constraint extraction, bi-directional traceability graph mapping, and defect escalation. |
+| `bdd-acceptance-run.sw.yaml` | Layer 04 BDD | Stateful fixture provisioning, Given/When/Then scenario execution, threshold assertion gating, and saga rollback compensation (`RollbackStatefulChanges`). |
+| `adr-decision-analysis.sw.yaml` | Layer 05 ADR | Multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and architectural invalidation sagas. |
+| `spec-choreography-validation.sw.yaml` | Layer 06 SPEC | Distributed component interaction verification, schema compatibility checks, dead-letter routing, and compensating transactions. |
+| `tdd-cycle-orchestrator.sw.yaml` | Layer 07 TDD | Red-Green-Refactor cycle loops, fixture lifecycle isolation, regression test gating, and fixture rollback compensation. |
+| `iplan-execution-graph.sw.yaml` | Layer 08 IPLAN | Dependency DAG topological sorting, step retry strategies, parallel phase execution, and checkpoint validation. |
+| `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification (F1-F4), gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
+| `review-saga-orchestration.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
+| `decision-ratification.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
+| `eval-verification-run.sw.yaml` | Layer 10 EVAL | Multi-tier test execution, structured error triage, threshold verification, and evidence bundling. |
 
 ## CHG Overlay (`chg/`)
 
