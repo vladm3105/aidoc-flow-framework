@@ -16,7 +16,7 @@
 
 Layer 04 (Behavior-Driven Development, BDD) bridges formal business and system requirements (Layer 03 EARS) into executable acceptance criteria that downstream technical specifications (Layer 06 SPEC) and test contracts (Layer 07 TDD) fulfill.
 
-Historically, BDD scenarios in the framework were authored as flat lists of Given-When-Then string triplets within [`BDD-TEMPLATE.yaml`](file:///mnt/e/dev/aidoc-framework/framework/layers/04_BDD/BDD-TEMPLATE.yaml). While optimal for simple, deterministic, single-turn interactions, static lists present acute limitations when modeling modern cloud-native systems:
+Historically, BDD scenarios in the framework were authored as flat lists of Given-When-Then string triplets within [`BDD-TEMPLATE.yaml`](./BDD-TEMPLATE.yaml). While optimal for simple, deterministic, single-turn interactions, static lists present acute limitations when modeling modern cloud-native systems:
 
 1. **Complex Choreography**: Real-world user journeys involve asynchronous callbacks, event-driven stimuli, polling timeouts, and conditional branching that cannot be cleanly modeled in a flat sequence.
 2. **Saga Compensation**: When a stateful scenario fails midway through a multi-step workflow, database fixtures and external mock states must be deterministically rolled back.
@@ -71,7 +71,7 @@ The BDD Given-When-Then paradigm maps directly onto CNCF Serverless Workflow sta
 
 Stateful scenarios frequently mutate data in staging databases or external services. When an assertion fails or a timeout occurs, leaving dirty state causes cascade failures in subsequent tests.
 
-In [`BDD-SWF-TEMPLATE.yaml`](file:///mnt/e/dev/aidoc-framework/framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml), setup states declare a compensating rollback state:
+In [`BDD-SWF-TEMPLATE.yaml`](./BDD-SWF-TEMPLATE.yaml), setup states declare a compensating rollback state:
 
 ```yaml
 - name: SetupGivenPreconditions
@@ -89,7 +89,7 @@ If the action or any subsequent verification fails, the workflow engine triggers
 
 ## 5. QA Staging Acceptance Runner (`bdd-acceptance-run.sw.yaml`)
 
-While individual BDD documents model feature acceptance criteria, the execution of the test suite is governed by [`bdd-acceptance-run.sw.yaml`](file:///mnt/e/dev/aidoc-framework/framework/governance/workflows/bdd-acceptance-run.sw.yaml):
+While individual BDD documents model feature acceptance criteria, the execution of the test suite is governed by [`bdd-acceptance-run.sw.yaml`](../../governance/workflows/bdd-acceptance-run.sw.yaml):
 
 ```mermaid
 graph TD
@@ -120,7 +120,7 @@ graph TD
 
 Authors choose between two canonical templates based on scenario complexity:
 
-| Criteria | Standard [`BDD-TEMPLATE.yaml`](file:///mnt/e/dev/aidoc-framework/framework/layers/04_BDD/BDD-TEMPLATE.yaml) | Hybrid [`BDD-SWF-TEMPLATE.yaml`](file:///mnt/e/dev/aidoc-framework/framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml) |
+| Criteria | Standard [`BDD-TEMPLATE.yaml`](./BDD-TEMPLATE.yaml) | Hybrid [`BDD-SWF-TEMPLATE.yaml`](./BDD-SWF-TEMPLATE.yaml) |
 |---|---|---|
 | **Scenario Structure** | Atomic, single-turn interactions | Multi-step user journeys, distributed transactions |
 | **Execution Flow** | Linear Given-When-Then | Branching, polling, event stimuli, retries |
