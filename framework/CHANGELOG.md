@@ -7,11 +7,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.9 |
+| Version | 1.10 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.84.0 |
+| Framework Version | 0.85.0 |
+
+## [0.85.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 02 (PRD) product decomposition & feature prioritization workflows (C2 MINOR → 0.85.0, CHG-64 + IPLAN-64)
+
+- **PRD Product Feature Decomposition Workflow (`framework/governance/workflows/prd-feature-decomposition.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing product initiative ingestion, multi-container architectural partitioning, RICE feature prioritization, quantitative SLA acceptance threshold validation (@threshold:), upstream BRD alignment verification, stakeholder scope negotiation callbacks, and downstream requirement invalidation compensation sagas (#921). Features initiative backlog parsing (`IngestProductInitiative`), parallel container decomposition (`DecomposeContainerArchitecture` parallel state across gateway, core domain, and storage branches), feature prioritization scoring (`PrioritizeFeatureBacklog` computing RICE reach/impact/confidence/effort metrics), acceptance threshold validation (`EvaluateAcceptanceThresholds` validating SLA and capacity bounds), strategic alignment gating (`ValidateBrdAlignmentGate` switch state), stakeholder scope negotiation callbacks (`SolicitScopeAdjustment` callback state with correlated `ProductScopeAdjustmentEvent` and timeout), canonical PRD element ID emission (`RatifyProductSpecification`), and rejection invalidation compensation (`compensatedBy: InvalidateDownstreamArtifacts`).
+- **Layer 02 PRD Workflow Specification Standard (`framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing product feature decomposition, container architectures, and RICE prioritization as CNCF Serverless Workflow state machines. Defines formal mapping of product primitives to CNCF state types (`Initiative Ingestion` → `inject`/`operation`, `Container Decomposition` → `parallel`, `Feature Prioritization` → `operation`, `Acceptance Threshold Validation` → `operation`, `BRD Alignment Gate` → `switch`, `Scope Negotiation Callback` → `callback`, `Contract Ratification` → `operation`, `Rejection Invalidation` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 02 PRD Workflow Template (`framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml`)**: Introduces the canonical PRD workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` (all 15 required sections present) while housing an embedded CNCF Serverless Workflow state machine for multi-container product initiatives under `component_decomposition.workflow_definition`.
+- **Core Governance & Decision GD-60**: Ratified Decision `GD-60` in `framework/governance/DECISIONS.md`. Updated `framework/layers/02_PRD/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.9) registering `prd-feature-decomposition.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.10) cataloging PRD feature decomposition workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_prd_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state reachability, step parity, and invalidation compensation; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.84.0 → 0.85.0 propagated across tree.
+
+---
 
 ## [0.84.0] — 2026-10-05
 

@@ -1,0 +1,208 @@
+# =============================================================================
+#  prd-feature-decomposition.sw.yaml — Layer 02 (PRD) Product Decomposition & Feature Prioritization Workflow
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: Decision GD-60 (framework/governance/DECISIONS.md)
+#  Domain: Layer 02 (PRD — Product Requirements Document)
+# =============================================================================
+
+id: prd-feature-decomposition
+name: PRD Product Decomposition and Feature Prioritization Workflow
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  CNCF Serverless Workflow orchestrating product initiative ingestion,
+  multi-container architectural decomposition, RICE / MoSCoW feature prioritization,
+  quantitative SLA acceptance threshold validation (@threshold:), upstream BRD
+  alignment verification, stakeholder scope negotiation callbacks, and
+  downstream requirement invalidation compensation sagas.
+start: IngestProductInitiative
+
+events:
+  - name: ProductScopeAdjustmentEvent
+    type: org.aidoc.prd.scope.adjusted
+    source: /aidoc/stakeholder/scope
+    correlation:
+      - contextAttributeName: initiativeId
+  - name: ProductRequirementInvalidatedEvent
+    type: org.aidoc.prd.feature.invalidated
+    source: /aidoc/prd/invalidation
+
+functions:
+  - name: parseProductInitiative
+    operation: "urn:aidoc:functions:prd-parser#parse"
+    type: custom
+  - name: decomposeContainerTopology
+    operation: "urn:aidoc:functions:container-decomposer#decompose"
+    type: custom
+  - name: calculateRiceScores
+    operation: "urn:aidoc:functions:prioritization-engine#computeRice"
+    type: custom
+  - name: validateThresholdBounds
+    operation: "urn:aidoc:functions:threshold-validator#verify"
+    type: custom
+  - name: verifyBrdAlignment
+    operation: "urn:aidoc:functions:traceability-engine#verifyBrd"
+    type: custom
+  - name: emitCanonicalPrdIds
+    operation: "urn:aidoc:functions:hasher#generatePrdIds"
+    type: custom
+  - name: notifyProductStakeholders
+    operation: "urn:aidoc:functions:notifier#notifyProductStakeholders"
+    type: custom
+  - name: purgeDownstreamDraftArtifacts
+    operation: "urn:aidoc:functions:compensator#purgeDownstreamDrafts"
+    type: custom
+
+states:
+  - name: IngestProductInitiative
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: ingestInitiativePayload
+        functionRef:
+          refName: parseProductInitiative
+          arguments:
+            documentId: "${ .documentId }"
+            initiativeSummary: "${ .executive_summary }"
+            upstreamBrdRef: "${ .traceability.brdRef }"
+            featureBacklog: "${ .features }"
+    transition: DecomposeContainerArchitecture
+
+  - name: DecomposeContainerArchitecture
+    type: parallel
+    branches:
+      - name: GatewayAndIngressContainerBranch
+        actions:
+          - name: decomposeGatewayFeatures
+            functionRef:
+              refName: decomposeContainerTopology
+              arguments:
+                containerRole: "ingress-gateway"
+                features: "${ .features.gateway }"
+      - name: CoreDomainServicesBranch
+        actions:
+          - name: decomposeCoreFeatures
+            functionRef:
+              refName: decomposeContainerTopology
+              arguments:
+                containerRole: "core-domain-service"
+                features: "${ .features.coreDomain }"
+      - name: PersistenceAndStorageBranch
+        actions:
+          - name: decomposeStorageFeatures
+            functionRef:
+              refName: decomposeContainerTopology
+              arguments:
+                containerRole: "persistence-layer"
+                features: "${ .features.storage }"
+    completionType: allOf
+    transition: PrioritizeFeatureBacklog
+
+  - name: PrioritizeFeatureBacklog
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: computeFeaturePrioritization
+        functionRef:
+          refName: calculateRiceScores
+          arguments:
+            features: "${ .decomposedFeatures }"
+            scoringModel: "RICE"
+            weights:
+              reach: 1.0
+              impact: 2.0
+              confidence: 1.0
+              effort: 1.5
+    transition: EvaluateAcceptanceThresholds
+
+  - name: EvaluateAcceptanceThresholds
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: verifySlaAndCapacityThresholds
+        functionRef:
+          refName: validateThresholdBounds
+          arguments:
+            thresholdList: "${ .acceptance_criteria.thresholds }"
+            enforceQuantifiability: true
+            disallowSubjectiveMetrics: true
+      - name: checkBrdTraceability
+        functionRef:
+          refName: verifyBrdAlignment
+          arguments:
+            features: "${ .decomposedFeatures }"
+            upstreamBrdRef: "${ .traceability.brdRef }"
+    transition: ValidateBrdAlignmentGate
+
+  - name: ValidateBrdAlignmentGate
+    type: switch
+    dataConditions:
+      - name: AlignmentApproved
+        condition: "${ .brdAlignmentVerified == true and .unanchoredFeatureCount == 0 and .minimumViabilityMet == true }"
+        transition: RatifyProductSpecification
+      - name: ScopeAdjustmentRequired
+        condition: "${ .exceedsBudgetOrTimeline == true and .negotiableScope == true }"
+        transition: SolicitScopeAdjustment
+    defaultCondition:
+      transition: RejectProductFeatureSet
+
+  - name: SolicitScopeAdjustment
+    type: callback
+    action:
+      name: dispatchScopeAdjustmentNotice
+      functionRef:
+        refName: notifyProductStakeholders
+        arguments:
+          documentId: "${ .documentId }"
+          overageDetails: "${ .budgetOverageAnalysis }"
+    eventRef: ProductScopeAdjustmentEvent
+    timeouts:
+      eventTimeout: PT48H
+    transition: PrioritizeFeatureBacklog
+
+  - name: RatifyProductSpecification
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishRatifiedPrdArtifacts
+        functionRef:
+          refName: emitCanonicalPrdIds
+          arguments:
+            documentId: "${ .documentId }"
+            features: "${ .decomposedFeatures }"
+            status: "Approved"
+    end:
+      terminate: true
+
+  - name: RejectProductFeatureSet
+    type: operation
+    compensatedBy: InvalidateDownstreamArtifacts
+    actionMode: sequential
+    actions:
+      - name: recordRejectionAudit
+        functionRef:
+          refName: notifyProductStakeholders
+          arguments:
+            documentId: "${ .documentId }"
+            status: "Rejected"
+            rationale: "${ .alignmentFailureReasons }"
+    end:
+      terminate: true
+
+  - name: InvalidateDownstreamArtifacts
+    type: operation
+    usedForCompensation: true
+    actionMode: sequential
+    actions:
+      - name: revokeDraftArtifacts
+        functionRef:
+          refName: purgeDownstreamDraftArtifacts
+          arguments:
+            documentId: "${ .documentId }"
+            affectedLayers:
+              - "03_EARS"
+              - "04_BDD"
+              - "05_ADR"
+              - "06_SPEC"
+            reason: "PRD product feature initiative rejected during alignment gating"

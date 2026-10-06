@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.20 |
+| Version | 1.21 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.84.0 |
+| Framework Version | 0.85.0 |
+
+---
+
+## GD-60 — CNCF Serverless Workflow standard (YAML) for Layer 02 (PRD) product decomposition and feature prioritization workflows (CHG-64, 0.85.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous product requirements decomposition across C4 container boundaries, quantitative RICE feature prioritization, acceptance threshold validation, and deterministic requirement invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 02 (PRD) product feature decomposition, multi-container architectural partitioning, feature prioritization, acceptance threshold validation, and requirement invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 15 required SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) under `component_decomposition.workflow_definition`.
+  3. Author `framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md` establishing the normative mapping of PRD product feature decomposition primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Initiative Ingestion & Backlog Parsing` $\rightarrow$ `inject` or `operation` (extracts product initiative metadata and upstream BRD links)
+     - `Container Decomposition` $\rightarrow$ `parallel` (concurrent decomposition across distinct C4 container boundaries)
+     - `Feature Prioritization` $\rightarrow$ `operation` (computes objective RICE / MoSCoW utility scores)
+     - `Acceptance Threshold Validation` $\rightarrow$ `operation` (validates quantifiable performance and capacity bounds against `@threshold:` definitions)
+     - `BRD Strategic Alignment Gate` $\rightarrow$ `switch` (evaluates upstream traceability and strategic viability)
+     - `Stakeholder Scope Negotiation Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `ProductScopeAdjustmentEvent` with timeout)
+     - `Product Specification Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes approved features)
+     - `Rejection Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional artifacts across EARS/BDD/ADR/SPEC)
+  4. Author `framework/governance/workflows/prd-feature-decomposition.sw.yaml` establishing the canonical product feature decomposition and threshold validation runner.
+  5. Author `framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex, multi-container product feature initiatives.
+  6. Maintain dual-template discipline: retain `PRD-TEMPLATE.yaml` for straightforward, single-container initiatives or monolithic services.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 
