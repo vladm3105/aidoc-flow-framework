@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.4 |
+| Version | 1.6 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.81.0 |
+| Framework Version | 0.82.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -39,7 +39,7 @@ This specification formalizes **Machine-Executable Governance**:
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
-   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification, QA Staging Acceptance Runs).
+   Govern multi-agent repository lifecycles (Change Requests, Worktrees, PR Watches, Review Sagas, Evaluation Runners, Decision Ratification, QA Staging Acceptance Runs, Automated TDD Execution, Distributed Component Choreography).
    Governed exclusively by this standard.
 2. **Implementation Workflows (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`)**:
    Govern codebase mutation, test file creation, and execution-time saga compensation.
@@ -47,6 +47,12 @@ To prevent conflation between repository governance policy and codebase mutation
 3. **Behavioral Acceptance Workflows (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`)**:
    Govern complex, multi-step stateful user journeys and scenario-level saga rollback.
    Governed by [`framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`](../layers/04_BDD/BDD_WORKFLOW_STANDARD.md).
+4. **Test-Driven Workflows (`framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml`)**:
+   Govern multi-tier test execution, fixture provisioning, and teardown compensation sagas.
+   Governed by [`framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md`](../layers/07_TDD/TDD_WORKFLOW_STANDARD.md).
+5. **Technical Specification Workflows (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`)**:
+   Govern distributed component interactions, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
+   Governed by [`framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`](../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
@@ -62,7 +68,8 @@ framework/governance/
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
 │   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
-│   └── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
+│   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
+│   └── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
@@ -243,3 +250,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 4 (Step 4 BDD Acceptance Execution Runner)**:
   - *Gap found*: QA staging BDD acceptance execution runner lacked registration in governance workflow standard.
   - *Fix*: Registered `bdd-acceptance-run.sw.yaml` in Section 2 and added domain separation pointer to `BDD_WORKFLOW_STANDARD.md`.
+- **2026-10-05 — Pass 5 (Step 6 SPEC Distributed Choreography Standard)**:
+  - *Gap found*: Distributed service interaction sequencing, event choreography, and saga rollback compensation lacked registration in governance workflow catalog.
+  - *Fix*: Registered `spec-choreography-contract.sw.yaml` in Section 2, added Layer 06 SPEC workflow domain separation entry in Section 1, and documented Pass 5 in Review Log.

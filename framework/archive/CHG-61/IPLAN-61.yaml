@@ -1,0 +1,95 @@
+# =============================================================================
+#  IPLAN-61: Adopt CNCF Serverless Workflow standard for Layer 06 (SPEC) distributed
+#  interaction and choreography contracts (spec C2 MINOR → 0.82.0)
+# =============================================================================
+
+id: IPLAN-61
+title: "Implementation Plan: Layer 06 (SPEC) CNCF Serverless Workflow Standardization"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.81.0"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "In Progress"
+  chg_reference: "CHG-61"
+  created_at: "2026-10-05T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/workflows/spec-choreography-contract.sw.yaml"
+      description: "CNCF Serverless Workflow state machine for distributed component choreography and saga compensation"
+      order: 1
+      status: PENDING
+    - path: "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+      description: "Hybrid Envelope Architecture template for Layer 06 SPEC workflow"
+      order: 2
+      status: PENDING
+    - path: "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md"
+      description: "Normative specification mapping distributed interface and event choreography to CNCF states"
+      order: 3
+      status: PENDING
+    - path: "framework/layers/06_SPEC/README.md"
+      description: "Update Layer 06 README to document dual-template architecture"
+      order: 4
+      status: PENDING
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Register spec-choreography-contract in governance workflow catalog"
+      order: 5
+      status: PENDING
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Register SPEC choreography state machines in diagram standards"
+      order: 6
+      status: PENDING
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-57"
+      order: 7
+      status: PENDING
+    - path: "tests/conformance/test_spec_workflow.py"
+      description: "Conformance test suite for Layer 06 SPEC workflows"
+      order: 8
+      status: PENDING
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Register spec-choreography-contract in EXPECTED_WORKFLOWS"
+      order: 9
+      status: PENDING
+    - path: "tests/conformance/test_governance.py"
+      description: "Register workflow and SPEC standard in EXPECTED_FILES"
+      order: 10
+      status: PENDING
+    - path: "framework/VERSION"
+      description: "Bump version to 0.82.0"
+      order: 11
+      status: PENDING
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.81.0 to OLD_VERSIONS"
+      order: 12
+      status: PENDING
+    - path: "framework/CHANGELOG.md"
+      description: "Changelog entry for 0.82.0 / CHG-61"
+      order: 13
+      status: PENDING
+
+tdd_consistency:
+  status: complete
+  tdd_ref: "@conformance: tests/conformance/test_spec_workflow.py"
+
+execution_steps:
+  - phase: 1
+    name: "Author SPEC Choreography Contract Workflow"
+    command: "Deploy framework/governance/workflows/spec-choreography-contract.sw.yaml"
+  - phase: 2
+    name: "Author SPEC Hybrid Template & Standard"
+    command: "Deploy framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml and SPEC_WORKFLOW_STANDARD.md"
+  - phase: 3
+    name: "Update Companion Governance & Layer Documents"
+    command: "Update README.md, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md, DECISIONS.md (GD-57)"
+  - phase: 4
+    name: "Deploy Conformance Tests & Update Registries"
+    command: "Deploy test_spec_workflow.py, update test_governance_workflows.py and test_governance.py"
+  - phase: 5
+    name: "Propagate Version Bump"
+    command: "Update VERSION, sync-version-refs.sh, CHANGELOG.md, and run hooks/sync-version-refs.sh"
+  - phase: 6
+    name: "Verification & Merge"
+    command: "Run full conformance suite, pre-commit, push, open PR, watch checks, merge, and clean worktree"
