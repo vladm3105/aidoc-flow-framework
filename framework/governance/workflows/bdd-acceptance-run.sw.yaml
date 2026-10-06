@@ -1,0 +1,164 @@
+id: bdd-acceptance-run
+name: BDD Acceptance Test Suite Execution Workflow
+version: '1.0'
+specVersion: '0.8'
+description: >-
+  Canonical CNCF Serverless Workflow governing QA staging environment setup,
+  BDD acceptance scenario matrix execution, Given/When/Then assertion evaluation,
+  threshold validation, defect quarantine, and staging teardown compensation.
+
+start: ProvisionStagingEnvironment
+
+timeouts:
+  workflowExecTimeout:
+    duration: PT30M
+
+states:
+  # =========================================================================
+  # State 1: Provision QA Staging Environment
+  # =========================================================================
+  - name: ProvisionStagingEnvironment
+    type: operation
+    compensatedBy: TeardownStagingEnvironment
+    actions:
+      - name: provisionEnvironment
+        functionRef:
+          refName: stagingEnvManager
+          arguments:
+            target_environment: staging
+            seed_fixtures: true
+            mock_external_apis: true
+    transition: DiscoverAcceptanceScenarios
+
+  # =========================================================================
+  # State 2: Discover and Index BDD Acceptance Scenarios
+  # =========================================================================
+  - name: DiscoverAcceptanceScenarios
+    type: operation
+    actions:
+      - name: indexScenarios
+        functionRef:
+          refName: bddParser
+          arguments:
+            layer_path: "docs/04_BDD"
+            template_path: "framework/layers/04_BDD"
+            extract_fields:
+              - id
+              - name
+              - type
+              - priority
+              - ears
+              - spec_trace
+              - given
+              - when
+              - then
+    transition: CheckDiscoveredScenarios
+
+  # =========================================================================
+  # State 3: Filter & Validate Discovered Scenario Set
+  # =========================================================================
+  - name: CheckDiscoveredScenarios
+    type: switch
+    dataConditions:
+      - name: EmptyScenarioSet
+        condition: "${ .scenarios | length == 0 }"
+        transition: TeardownStagingEnvironment
+      - name: ScenariosAvailable
+        condition: "${ .scenarios | length > 0 }"
+        transition: ExecuteScenarioMatrix
+    defaultCondition:
+      transition: TeardownStagingEnvironment
+
+  # =========================================================================
+  # State 4: Execute Scenario Matrix in QA Staging
+  # =========================================================================
+  - name: ExecuteScenarioMatrix
+    type: operation
+    actions:
+      - name: runScenarios
+        functionRef:
+          refName: bddScenarioRunner
+          arguments:
+            scenarios: "${ .scenarios }"
+            fail_fast: false
+            collect_telemetry: true
+            record_thresholds: true
+    transition: EvaluateScenarioAssertions
+
+  # =========================================================================
+  # State 5: Evaluate Given/When/Then Assertions & Thresholds
+  # =========================================================================
+  - name: EvaluateScenarioAssertions
+    type: switch
+    dataConditions:
+      - name: AllScenariosPassed
+        condition: "${ .failures | length == 0 }"
+        transition: EmitAcceptanceReceipt
+      - name: DefectDetected
+        condition: "${ .failures | length > 0 }"
+        transition: QuarantineFailedScenarios
+    defaultCondition:
+      transition: QuarantineFailedScenarios
+
+  # =========================================================================
+  # State 6: Quarantine Failed Scenarios and Capture Trace Evidence
+  # =========================================================================
+  - name: QuarantineFailedScenarios
+    type: operation
+    actions:
+      - name: quarantineFailures
+        functionRef:
+          refName: defectQuarantineHandler
+          arguments:
+            failures: "${ .failures }"
+            reproduction_mode: isolated
+            emit_defect_issue: true
+            flag_unpaired_tdd: true
+    transition: EmitAcceptanceReceipt
+
+  # =========================================================================
+  # State 7: Emit Machine-Readable Acceptance Run Receipt
+  # =========================================================================
+  - name: EmitAcceptanceReceipt
+    type: operation
+    actions:
+      - name: generateReceipt
+        functionRef:
+          refName: acceptanceReceiptEmitter
+          arguments:
+            report_schema: "BDD-RPT-v1.0"
+            include_traceability: true
+            include_scorecard: true
+    transition: TeardownStagingEnvironment
+
+  # =========================================================================
+  # State 8: Teardown Staging Environment (Terminal / Compensation Sink)
+  # =========================================================================
+  - name: TeardownStagingEnvironment
+    type: operation
+    actions:
+      - name: teardownEnvironment
+        functionRef:
+          refName: stagingEnvManager
+          arguments:
+            action: teardown
+            clean_databases: true
+            revoke_mock_tokens: true
+    end: true
+
+functions:
+  - name: stagingEnvManager
+    type: custom
+    operation: "urn:aidoc:governance:staging-env-manager"
+  - name: bddParser
+    type: custom
+    operation: "urn:aidoc:governance:bdd-parser"
+  - name: bddScenarioRunner
+    type: custom
+    operation: "urn:aidoc:governance:bdd-scenario-runner"
+  - name: defectQuarantineHandler
+    type: custom
+    operation: "urn:aidoc:governance:defect-quarantine"
+  - name: acceptanceReceiptEmitter
+    type: custom
+    operation: "urn:aidoc:governance:acceptance-receipt-emitter"

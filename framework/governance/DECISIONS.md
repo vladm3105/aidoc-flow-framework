@@ -15,11 +15,46 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.15 |
+| Version | 1.16 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.79.0 |
+| Framework Version | 0.80.0 |
+
+---
+
+## GD-55 — CNCF Serverless Workflow standard (YAML) for Layer 04 (BDD) stateful scenarios and QA acceptance runners (CHG-59, 0.80.0 MINOR)
+
+- **Status:** Accepted — 2026-10-05 · **SemVer:** framework `0.79.0 → 0.80.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-59 + IPLAN-59 (`framework/archive/CHG-59/`).
+  Issue: #911.
+- **Context:** Following the adoption of CNCF Serverless Workflow state machines for repository governance (GD-51),
+  Layer 08 execution (GD-52), Layer 10 verification (GD-53), and review sagas / decision ratification (GD-54),
+  Layer 04 (Behavior-Driven Development, BDD) was evaluated. Layer 04 defines executable acceptance criteria
+  translating formal EARS requirements (Layer 03) into verifiable user acceptance behaviors.
+  In the existing framework, BDD scenarios were modeled strictly as flat lists of Given-When-Then strings
+  in `BDD-TEMPLATE.yaml`. While effective for simple unit-level checks, real-world user journeys require complex
+  stateful choreography (multi-step user journeys, event stimuli, asynchronous callbacks, retry with backoff,
+  and saga rollback compensation). Furthermore, the QA Staging execution lifecycle lacked a normative state-machine runner.
+- **Decision (spec C2 MINOR):**
+  1. Author `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md` establishing the CNCF Serverless Workflow v0.8
+     specification in YAML format as the standard for modeling stateful BDD scenarios and execution flows.
+  2. Adopt the Hybrid Envelope Architecture for BDD: ship `framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`
+     featuring `subtype: workflow`, preserving outer SDD document envelope (`metadata`, `document_control`,
+     `feature`, `traceability`) for full compatibility with `sdd_doc_lint`, while housing the executable
+     workflow DAG under a dedicated `workflow:` block.
+  3. Map BDD Given/When/Then phases to CNCF state machine primitives: `given` → `inject`/`operation` (preconditions
+     with `compensatedBy:` rollback), `when` → `operation`/`event` (actions/stimuli), `then` → `switch` (assertions/thresholds).
+  4. Author `framework/governance/workflows/bdd-acceptance-run.sw.yaml` establishing the canonical QA staging
+     test suite execution workflow (environment provisioning, scenario matrix execution, assertion evaluation,
+     defect quarantine, and teardown compensation).
+  5. Update `framework/layers/04_BDD/README.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, and `DIAGRAM_STANDARDS.md`.
+  6. Add conformance test suite `tests/conformance/test_bdd_workflow.py` asserting schema compliance and hybrid
+     envelope invariants; update `test_governance.py` and `test_governance_workflows.py`.
+- **Consequence:** Unlocks machine-executable, engine-agnostic state graphs for complex user journeys across
+  multi-agent systems (e.g. LangGraph/Temporal); guarantees deterministic saga rollback on test failure;
+  formalizes the QA staging BDD acceptance execution runner while retaining standard `BDD-TEMPLATE.yaml`
+  for simple scenarios.
 
 ---
 
