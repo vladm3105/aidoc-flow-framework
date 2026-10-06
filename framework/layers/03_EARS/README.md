@@ -4,12 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.83.0 |
-
+| Framework Version | 0.84.0 |
 
 ## Overview
 
@@ -34,12 +33,26 @@ Component (SPEC) — component interfaces, data models, behavior contracts
   └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |------|---------|
-| `EARS-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project |
+| `EARS-TEMPLATE.yaml` | **Default Declarative** — full template with embedded authoring guidance for single-system requirements. Self-documenting for AI agents. |
+| `EARS-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
+| `EARS_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining EARS primitive to CNCF state mappings, DAG integrity rules, and invalidation compensation. |
+| `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project. |
+
+## Workflow Integration & CNCF Serverless Workflow Standard
+
+Layer 03 adopts the **CNCF Serverless Workflow DSL v0.8 (YAML)** (Decision **GD-59**)
+to orchestrate requirement verification graphs:
+- **Dependency DAGs**: Parallel resolution of inter-requirement dependencies (`@depends:`).
+- **Syntax Parsing**: Automated verification of the 5 EARS patterns (WHEN, WHILE, WHERE, IF, Ubiquitous) and mandatory response clauses (`THE [system] SHALL ... WITHIN ...`).
+- **Conflict Analysis**: Deterministic scanning for mutually exclusive states and conflicting operational triggers.
+- **BDD-Readiness Gating**: Formal evaluation against the >=90/100 readiness criteria before transition to Layer 04 (BDD).
+- **Invalidation Sagas**: Automated compensation (`compensatedBy: InvalidateDownstreamArtifacts`) revoking downstream draft artifacts when requirements are rejected.
+
+See `EARS_WORKFLOW_STANDARD.md` for complete specification rules and graph invariants.
 
 ## EARS Syntax Patterns
 

@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.19 |
+| Version | 1.20 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.83.0 |
+| Framework Version | 0.84.0 |
+
+---
+
+## GD-59 — CNCF Serverless Workflow standard (YAML) for Layer 03 (EARS) requirements analysis and traceability validation workflows (CHG-63, 0.84.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous requirements syntax analysis, 5-pattern compliance verification, dependency DAG resolution, cross-requirement conflict detection, BDD-readiness gating, and deterministic invalidation compensation sagas.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 03 (EARS) requirements syntax verification, dependency DAG resolution, conflict analysis, BDD-readiness evaluation, and requirement invalidation compensation sagas.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 6 required SDD sections and metadata (`document_control`, `purpose_and_context`, `requirements`, `quality_attributes`, `traceability`, `glossary`), while Section 3 houses the CNCF Serverless Workflow state machine (`subtype: workflow`) under `requirements.workflow_definition`.
+  3. Author `framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md` establishing the normative mapping of EARS requirements primitives onto CNCF Serverless Workflow state machine primitives:
+     - `Requirements Ingestion & Parsing` $\rightarrow$ `inject` or `operation` (extracts requirements metadata and upstream PRD links)
+     - `Syntax Pattern Verification` $\rightarrow$ `operation` (validates WHEN/WHILE/WHERE/IF/Ubiquitous patterns, actor clauses, and timing bounds)
+     - `Dependency DAG Resolution` $\rightarrow$ `parallel` (concurrent verification of acyclic dependency clusters)
+     - `Conflict & Consistency Detection` $\rightarrow$ `operation` (scans for contradictory state triggers and overlapping conditions)
+     - `BDD-Readiness Evaluation` $\rightarrow$ `switch` (evaluates score $\ge 90/100$ and upstream PRD traceability)
+     - `Stakeholder Clarification Callback` $\rightarrow$ `callback` (suspends execution awaiting correlated `RequirementClarificationEvent` with timeout)
+     - `Requirement Ratification` $\rightarrow$ `operation` (generates canonical SHA-256 hash IDs and publishes ratified contract)
+     - `Rejection Invalidation Compensation` $\rightarrow$ `operation` with `compensatedBy` (invalidates downstream provisional artifacts across BDD/ADR/SPEC)
+  4. Author `framework/governance/workflows/ears-requirements-validation.sw.yaml` establishing the canonical requirements validation and traceability verification runner.
+  5. Author `framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml` as the canonical hybrid template for complex, multi-system requirement topologies and dependency DAGs.
+  6. Maintain dual-template discipline: retain `EARS-TEMPLATE.yaml` for straightforward, single-system requirements or linear feature sets.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 

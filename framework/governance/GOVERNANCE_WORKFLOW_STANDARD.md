@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.83.0 |
+| Framework Version | 0.84.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -56,6 +56,9 @@ To prevent conflation between repository governance policy and codebase mutation
 6. **Architectural Decision Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
    Govern multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and rejection archival sagas.
    Governed by [`framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md`](../layers/05_ADR/ADR_WORKFLOW_STANDARD.md).
+7. **Requirements Validation Workflows (`framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml`)**:
+   Govern requirement dependency DAG resolution, syntax verification, cross-requirement conflict detection, BDD-readiness gating, and invalidation compensation sagas.
+   Governed by [`framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md`](../layers/03_EARS/EARS_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
@@ -73,7 +76,8 @@ framework/governance/
 │   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
 │   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
 │   ├── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
-│   └── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
+│   ├── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
+│   └── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
@@ -239,3 +243,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 6 (Step 7 ADR Decision Analysis & MCDA Scoring Standard)**:
   - *Gap found*: Architectural candidate trade-off evaluation, multi-criteria decision analysis (MCDA), stakeholder RFC review loops, and rejection archival sagas lacked formal CNCF Serverless Workflow modeling.
   - *Fix*: Registered `adr-decision-analysis.sw.yaml` in Section 2, added Layer 05 ADR workflow domain separation entry in Section 1, and documented Pass 6 in Review Log.
+- **2026-10-05 — Pass 7 (Step 8 EARS Requirements Validation & Dependency DAG Standard)**:
+  - *Gap found*: Requirements syntax verification, dependency DAG resolution, conflict detection, and BDD-readiness gating lacked formal CNCF Serverless Workflow modeling.
+  - *Fix*: Registered `ears-requirements-validation.sw.yaml` in Section 2, added Layer 03 EARS workflow domain separation entry in Section 1, and documented Pass 7 in Review Log.
