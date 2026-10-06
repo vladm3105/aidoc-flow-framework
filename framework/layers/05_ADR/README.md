@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.0 |
+|---|---|
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.82.0 |
+| Framework Version | 0.83.0 |
 
 
 ## Overview
@@ -35,9 +35,26 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 ## Files
 
 | File | Purpose |
-|------|---------|
-| `ADR-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project |
+|---|---|
+| `ADR-TEMPLATE.yaml` | **Standard** — static template with embedded authoring guidance for atomic architectural decisions. |
+| `ADR-SWF-TEMPLATE.yaml` | **Workflow** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
+| `ADR_WORKFLOW_STANDARD.md` | **Normative Standard** — formal mapping of architecture decision evaluation primitives to CNCF Serverless Workflow state machines. |
+| `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project. |
+
+## Dual-Template Architecture
+
+Layer 05 supports two complementary authoring templates depending on decision complexity:
+
+1. **Standard Template (`ADR-TEMPLATE.yaml`)**:
+   - Best for straightforward, single-candidate decisions or localized design choices.
+   - Evaluates alternatives via lightweight prose comparison tables.
+   - Pure structural YAML validated directly by `sdd_doc_lint`.
+
+2. **CNCF Workflow Template (`ADR-SWF-TEMPLATE.yaml`)**:
+   - Required for complex, high-stakes decisions with $\ge 2$ competing candidates, distributed impact, or multi-criteria quality attribute trade-offs (MCDA).
+   - Embeds an executable CNCF Serverless Workflow (`specVersion: "0.8"`) state machine under `architecture_flow.decision_workflow`.
+   - Automates parallel candidate evaluation, weighted utility scoring, stakeholder RFC review callbacks, and rejection archive compensation.
+   - Fully compliant with the 12 required sections asserted by `sdd_doc_lint`.
 
 ## ADR Status Lifecycle
 
@@ -50,7 +67,7 @@ Proposed → Accepted → Deprecated → Superseded
 (NOT Draft/In Review/Approved)
 
 | Status | SPEC-Ready Score | Meaning |
-|--------|-----------------|---------|
+|---|---|---|
 | Proposed | 70-89% | Decision under evaluation |
 | Accepted | >=90% | Decision approved, ready for SPEC |
 | Deprecated | — | Decision no longer relevant |

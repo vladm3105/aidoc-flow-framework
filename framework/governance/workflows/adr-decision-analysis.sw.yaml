@@ -1,0 +1,220 @@
+# ===============================================================================
+# CNCF Serverless Workflow: Architectural Decision Analysis & Evaluation Flow
+# ===============================================================================
+# Specification: CNCF Serverless Workflow DSL v0.8 (YAML)
+# Standard Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+# Governs: framework/layers/05_ADR/ (Architecture Decision Records)
+# Runtime Architecture: Pure declarative YAML; zero runtime lock-in (D-0013)
+# ===============================================================================
+
+id: adr-decision-analysis
+name: Architectural Decision Analysis and Multi-Criteria Evaluation Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Executable CNCF Serverless Workflow state machine orchestrating systematic
+  architectural decision evaluation: context ingestion, parallel candidate assessment,
+  multi-criteria decision analysis (MCDA) utility scoring, stakeholder RFC review
+  callbacks, decision ratification, and rejection archive compensation.
+
+start: IngestDecisionContext
+
+events:
+  - name: StakeholderFeedbackEvent
+    type: org.aidoc.sdd.adr.stakeholder_feedback
+    source: /aidoc/governance/rfc
+    kind: consumed
+    correlation:
+      - attribute: proposalId
+  - name: DecisionRFCPublishedEvent
+    type: org.aidoc.sdd.adr.rfc_published
+    source: /aidoc/governance/adr
+    kind: produced
+
+functions:
+  - name: ingestContextConstraints
+    type: custom
+    operation: aidoc:sdd:adr:ingestContext
+  - name: evaluateOptionAgainstQualityAttributes
+    type: custom
+    operation: aidoc:sdd:adr:evaluateOption
+  - name: computeWeightedUtilityMatrix
+    type: custom
+    operation: aidoc:sdd:adr:computeMCDA
+  - name: publishDecisionRFC
+    type: custom
+    operation: aidoc:sdd:adr:publishRFC
+  - name: sealAcceptedDecision
+    type: custom
+    operation: aidoc:sdd:adr:sealDecision
+  - name: archiveRejectedProposal
+    type: custom
+    operation: aidoc:sdd:adr:archiveProposal
+  - name: cleanupEvaluationContext
+    type: custom
+    operation: aidoc:sdd:adr:cleanupContext
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Ingest Context & Architectural Constraints
+  # -----------------------------------------------------------------------------
+  - name: IngestDecisionContext
+    type: operation
+    actions:
+      - name: IngestArchitecturalDrivers
+        functionRef:
+          refName: ingestContextConstraints
+          arguments:
+            adr_id: "${ .adr_id }"
+            ears_tags: "${ .upstream_ears_tags }"
+            bdd_tags: "${ .upstream_bdd_tags }"
+            quality_attributes: "${ .quality_attributes }"
+            budget_constraints: "${ .budget_constraints }"
+    transition: EvaluateCandidateAlternatives
+
+  # -----------------------------------------------------------------------------
+  # State 2: Concurrent Architectural Candidate Evaluation (Parallel Fan-out)
+  # -----------------------------------------------------------------------------
+  - name: EvaluateCandidateAlternatives
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: EvaluateCandidateA
+        actions:
+          - name: AnalyzeOptionA
+            functionRef:
+              refName: evaluateOptionAgainstQualityAttributes
+              arguments:
+                candidate_id: "OPT-A"
+                candidate_name: "${ .candidates.option_a.name }"
+                latency_profile: "${ .candidates.option_a.latency }"
+                resilience_profile: "${ .candidates.option_a.resilience }"
+                cost_estimate: "${ .candidates.option_a.cost }"
+      - name: EvaluateCandidateB
+        actions:
+          - name: AnalyzeOptionB
+            functionRef:
+              refName: evaluateOptionAgainstQualityAttributes
+              arguments:
+                candidate_id: "OPT-B"
+                candidate_name: "${ .candidates.option_b.name }"
+                latency_profile: "${ .candidates.option_b.latency }"
+                resilience_profile: "${ .candidates.option_b.resilience }"
+                cost_estimate: "${ .candidates.option_b.cost }"
+      - name: EvaluateCandidateC
+        actions:
+          - name: AnalyzeOptionC
+            functionRef:
+              refName: evaluateOptionAgainstQualityAttributes
+              arguments:
+                candidate_id: "OPT-C"
+                candidate_name: "${ .candidates.option_c.name }"
+                latency_profile: "${ .candidates.option_c.latency }"
+                resilience_profile: "${ .candidates.option_c.resilience }"
+                cost_estimate: "${ .candidates.option_c.cost }"
+    transition: ComputeUtilityScores
+
+  # -----------------------------------------------------------------------------
+  # State 3: Multi-Criteria Utility Matrix Computation (MCDA)
+  # -----------------------------------------------------------------------------
+  - name: ComputeUtilityScores
+    type: operation
+    actions:
+      - name: CalculateMCDAMatrix
+        functionRef:
+          refName: computeWeightedUtilityMatrix
+          arguments:
+            evaluation_results: "${ .evaluation_results }"
+            attribute_weights: "${ .attribute_weights }"
+            threshold_score: 80.0
+    transition: EvaluateDecisionViability
+
+  # -----------------------------------------------------------------------------
+  # State 4: Decision Viability Evaluation (Switch)
+  # -----------------------------------------------------------------------------
+  - name: EvaluateDecisionViability
+    type: switch
+    dataConditions:
+      - name: ViableCandidateSelected
+        condition: "${ .selected_candidate.utility_score >= 80.0 and .selected_candidate.veto_count == 0 }"
+        transition: SolicitStakeholderRFC
+    defaultCondition:
+      transition: RejectAndArchiveProposal
+
+  # -----------------------------------------------------------------------------
+  # State 5: Solicit Stakeholder RFC Feedback (Correlated Callback)
+  # -----------------------------------------------------------------------------
+  - name: SolicitStakeholderRFC
+    type: callback
+    action:
+      name: PublishProposalRFC
+      functionRef:
+        refName: publishDecisionRFC
+        arguments:
+          proposalId: "${ .adr_id }"
+          selected_candidate: "${ .selected_candidate }"
+          tradeoff_matrix: "${ .tradeoff_matrix }"
+    eventRef: StakeholderFeedbackEvent
+    timeouts:
+      eventTimeout: "PT48H"
+    transition: EvaluateStakeholderFeedback
+
+  # -----------------------------------------------------------------------------
+  # State 6: Evaluate Stakeholder Feedback Consensus (Switch)
+  # -----------------------------------------------------------------------------
+  - name: EvaluateStakeholderFeedback
+    type: switch
+    dataConditions:
+      - name: ConsensusApproved
+        condition: "${ .feedback.status == \"APPROVED\" and .feedback.blocking_objections == 0 }"
+        transition: RatifyArchitectureDecision
+    defaultCondition:
+      transition: RejectAndArchiveProposal
+
+  # -----------------------------------------------------------------------------
+  # State 7: Ratify Architecture Decision
+  # -----------------------------------------------------------------------------
+  - name: RatifyArchitectureDecision
+    type: operation
+    actions:
+      - name: GenerateImmutableADR
+        functionRef:
+          refName: sealAcceptedDecision
+          arguments:
+            adr_id: "${ .adr_id }"
+            status: "Accepted"
+            chosen_candidate: "${ .selected_candidate }"
+            consequences: "${ .consequences }"
+            spec_readiness_score: 95
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # State 8: Reject Proposal & Trigger Archive Compensation (Saga Rollback)
+  # -----------------------------------------------------------------------------
+  - name: RejectAndArchiveProposal
+    type: operation
+    compensatedBy: ArchiveRejectedDecision
+    actions:
+      - name: RecordProposalRejection
+        functionRef:
+          refName: archiveRejectedProposal
+          arguments:
+            adr_id: "${ .adr_id }"
+            status: "Rejected"
+            reason: "${ .rejection_reason }"
+            rejected_candidate: "${ .selected_candidate }"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Compensation State: Cleanup & Archive Evaluation Context
+  # -----------------------------------------------------------------------------
+  - name: ArchiveRejectedDecision
+    type: operation
+    usedForCompensation: true
+    actions:
+      - name: PurgeTemporaryContext
+        functionRef:
+          refName: cleanupEvaluationContext
+          arguments:
+            adr_id: "${ .adr_id }"
+            archive_mode: "PERMANENT_RECORD"
