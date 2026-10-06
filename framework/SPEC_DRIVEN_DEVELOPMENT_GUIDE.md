@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 
 ## Overview
@@ -59,6 +59,7 @@ ADR:   @ears @bdd
 SPEC:  @ears @bdd @adr
 TDD:   @ears @bdd @adr @spec
 IPLAN: @spec @tdd
+EVAL:  @ears @bdd @tdd @iplan
 ```
 
 `required_tags` is the minimum trace-resolution set; a layer MAY carry extra

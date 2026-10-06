@@ -15,11 +15,49 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.24 |
+| Version | 1.25 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
+
+---
+
+## GD-65 — Dual-Layer Traversal-Path Graph Nomenclature for LangGraph & Rust Rig (CHG-71, 0.88.1 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Modernize framework change request classification from legacy alphanumeric tokens (`F1`–`F4`, `Type-R`, `Emergency`) to an engine-ready Dual-Layer Traversal-Path Graph Nomenclature tailored for autonomous LangGraph (Python/TypeScript) and Rust Rig (`rig-core`) execution engines, while eliminating long-term abbreviation collision risks.
+- **Decision**:
+  1. **Dual-Layer Nomenclature Standard**:
+     - **Canonical Runtime Identifiers (`snake_case`)**: `hotfix`, `code_to_sdd`, `code_to_code`, `seed_to_code`, `iplan_to_code`, `sdd_to_code`. Maps 1:1 to Python function names, LangGraph state channels, and Rust Serde `rename_all = "snake_case"` without runtime translation overhead.
+     - **Unambiguous Graph Codes (5–6 character mnemonic `X2Y` tags)**: `HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`. Avoids 3-letter collisions with hardware and business domains (e.g. `I2C` hardware bus, `D2C` direct-to-consumer), provides uniform visual scanning, and establishes unambiguous branch/PR/metric keys.
+  2. **Topological Traversal Semantics**:
+     - `HOTFIX` (`hotfix`): `Code` $\rightarrow$ `Prod` (post-hoc `Doc`) emergency path.
+     - `CODE2S` (`code_to_sdd`): `Code` $\rightarrow$ `IPLAN` $\rightarrow$ `SDD` backward reverse reconciliation.
+     - `CODE2C` (`code_to_code`): `Defect` $\rightarrow$ `IPLAN` $\rightarrow$ `Code` intra-tier bugfix on parent IPLAN.
+     - `SEED2C` (`seed_to_code`): `Seed` $\rightarrow$ `Module` $\rightarrow$ `SDD` $\rightarrow$ `Code` full multi-tier chain.
+     - `DIR2C` (`iplan_to_code`): `IPLAN` $\rightarrow$ `Code` / `Docs` direct scoped leaf change.
+     - `SDD2C` (`sdd_to_code`): `BRD` $\rightarrow$ `PRD` $\rightarrow$ ... $\rightarrow$ `Code` greenfield SDD layer cascade.
+  3. **Templates & Schemas Synchronized**: Added explicit `flow` and `flow_code` fields to `change_control` in `framework/governance/chg/CHG-TEMPLATE.yaml` and mirror `framework/layers/09_CHG/CHG-TEMPLATE.yaml`.
+  4. **CNCF Serverless Workflow & Diagram Parity**: Updated `framework/governance/workflows/chg-request-flow.sw.yaml` router switch and PascalCase execution states (`ExecuteHotfix`, `ExecuteCodeToSdd`, `ExecuteCodeToCode`, `ExecuteSeedToCode`, `ExecuteIplanToCode`, `ExecuteSddToCode`), and updated companion Mermaid diagram in `CHG_REQUEST_FLOWS.md`.
+  5. **Static Linter & Conformance Guard**: Updated `sdd_doc_lint/chg_lint.py` (CHG-L013 / GOV-018) to validate `flow` and `flow_code` enums and parity, and extended `tests/conformance/test_chg_flows_router.py` with `DualLayerGraphNomenclatureAgreement`.
+
+---
+
+## GD-64 — Pre-Production Verification, CNCF Workflow Reconciliation, CI Blueprint Hardening, and Release 0.88.1 Cut-Off Preparation (CHG-70, 0.88.1 PATCH)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Formalize findings, bugfixes, and specification consistency alignments identified during comprehensive pre-production 5-lens review prior to the release cut-off (CHG-70).
+- **Decision**:
+  1. **Document Control & Metadata Synchronization**: Synchronized Document Control tables across all governance files (`README.md`, `WORKTREE_FLOW.md`, `REVIEW_REMEDIATION_FLOW.md`, `DECISION_WORKFLOW.md`, `DIAGRAM_STANDARDS.md`, `AIDOC.md`, `AIDOC-SCAFFOLD-TEMPLATE.md`, `08_IPLAN/README.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, and all 6 adaptation blueprint templates) to Framework Version 0.88.1. Corrected future date in `10_EVAL/README.md`.
+  2. **CNCF Serverless Workflow & Diagram Parity**: Reconciled governance workflow inventory in `framework/governance/README.md` to reflect all 13 active workflows on disk. Embedded companion visual Mermaid state diagrams in `WORKTREE_FLOW.md`, `REVIEW_REMEDIATION_FLOW.md`, and `DECISION_WORKFLOW.md` matching their normative `.sw.yaml` specifications.
+  3. **Worktree & PR Lifecycle Hardening**: Added explicit merge conflict handling (`ResolveMergeConflict` state) to `workflows/worktree-pr-lifecycle.sw.yaml`. Reordered worktree cleanup sequence in `WORKTREE_FLOW.md` §3.8 and updated order guard cross-references in `AGENTS.md` and `governance/README.md`.
+  4. **CI Smart Routing & Adaptation Scaffolding Hardening**: Hardened `AIDOC-CI-SMART-ROUTING-TEMPLATE.md` with `permissions: contents: read` and fixed bash loop variable syntax. Reconciled `docs/ADAPTATION-GUIDE.md` §4.1 inventory with all 5 new blueprints and harmonized fallback discovery paths.
+  5. **Layer Chain & Enum Completeness**: Reconciled layer chains in `01_BRD`, `02_PRD`, and `03_EARS` workflow standards to include Layer 09 CHG. Added `docs` subtype to `08_IPLAN/README.md` subtype specification. Added Layer 10 EVAL upstream dependency mapping to `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
+  6. **Circuit Breakers Taxonomy Reconciliation**: Reconciled CB-1 through CB-6 multi-tier circuit breakers in `DECISIONS.md` (GD-62) and `CHANGELOG.md` with the ratified definitions in `GOVERNANCE_WORKFLOW_STANDARD.md` §6.
+  7. **Release Hook Synchronization**: Updated `hooks/sync-version-refs.sh` `OLD_VERSIONS` array to include `0.88.0` for automated version propagation conformance.
 
 ---
 
@@ -55,12 +93,12 @@ Newest first. Timestamps are ISO 8601 UTC.
 - **Decision**:
   1. Embed the companion Mermaid `stateDiagram-v2` diagram with intent header `@diagram: state-chg-request-flow` in `framework/governance/CHG_REQUEST_FLOWS.md`, achieving complete 1-to-1 visual parity with the normative CNCF Serverless Workflow state machine `workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md`.
   2. Formalize the Multi-Tier Circuit Breakers Matrix in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §6, standardizing failure detection, threshold budgets, fallback strategies, and recovery actions across:
-     - `CB-1: Linter & Static Pre-Validation Failures` (threshold 3 attempts)
-     - `CB-2: SDD Layer Structural & Integrity Failures` (threshold 2 cycles)
-     - `CB-3: Automated Test Suite & Regression Failures` (threshold 2 attempts)
-     - `CB-4: Layer 10 Evaluation & Verification Gate Failures` (threshold 1 retry)
-     - `CB-5: CI/CD Pipeline & Merge Status Blockers` (threshold 2 runs)
-     - `CB-6: Unresolvable Ambiguity & Human Gate Stalls` (threshold 1 timeout)
+     - `CB-1: Review-Fix Iteration Breaker` (Max 2 remediation passes)
+     - `CB-2: CI Polling Deadline` (15 minutes (60 cycles @ 15s))
+     - `CB-3: CI Failure Remediation Cap` (Exactly 1 retry attempt)
+     - `CB-4: Monotonic Phase State Invariant` (0 regressions allowed)
+     - `CB-5: Git Divergence & Conflict Lock` (0 force-pushes allowed)
+     - `CB-6: Scope Boundary Escort` (Out-of-manifest file edit)
   3. Formalize the Layer 10 Terminal Lifecycle Gate Contract in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §7 and `framework/governance/DOC_GOVERNANCE_CORE.md` §4.1: transitions from `IPLAN: Completed` to `IPLAN: Verified` and `CHG: Implemented` to `CHG: Completed` strictly require an authentic Layer 10 evaluation report (`EVAL-{NN}-RPT-001.yaml`) with `verdict: PASS` and 0 failures.
   4. Cross-reference the Circuit Breakers Matrix in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` §2.1.
   5. Introduce a structured `testing_plan:` schema block in both `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintaining byte-identity), specifying unit, integration, e2e_api, e2e_ui, static, bdd_mapping, and isolation_rules, and document in both `README.md` copies.

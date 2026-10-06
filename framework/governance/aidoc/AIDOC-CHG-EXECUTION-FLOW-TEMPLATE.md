@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: Autonomous Phased CHG Execution Flow
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Autonomous End-to-End CHG Processing for `[Project Name]`
 **Governing Rules:** `AGENTS.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, `CI_AUTONOMOUS_PR_STANDARD.md`, `DOC_GOVERNANCE_CORE.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`
@@ -38,9 +47,9 @@ This specification standardizes this end-to-end engine, eliminating the governan
 11. **Standardized 8-Step Lifecycle Sequencing Invariant (HARD BLOCK):** Changes must execute in strict sequence: Step #1 (CHG Creation) MUST occur prior to modifying any project files. Seed Docs (Tier 1) and Module Docs (Tier 2) updates occur ONLY in Step #5 after Step #4 formal approval. Modifying seed or module docs before CHG approval is strictly prohibited.
 12. **Mandatory Seed & Module Document Versioning Invariant (HARD BLOCK):** As soon as seed documents are improved/evolved or module documents are updated, all documents must have explicit versioning (`Version: X.Y`, `Status`, `Date`, `Authoring CHG`, `Revision History`) and be registered in master index registries.
 13. **Approval Authority Matrix & Verifiable Evidence:** Change weight and blast radius govern who holds authority to approve changes (Step #4) and auto-merge PRs (Step #6):
-    - **C1 (Type-D):** Pass 2 Autonomous AI Orchestrator / Judge. Auto-merge on `dev` when CI green.
-    - **C2 (Type-R / Type-F):** Pass 2 Autonomous AI Orchestrator / Judge citing delegating issue/prompt evidence. Auto-merge on `dev` when CI green.
-    - **C3 (Type-F):** Strictly Human Founder Gate (`GATE-10`, `Owner (C3)`). Auto-merge on `dev` strictly gated by explicit C3 Gate Approval.
+    - **C1 (`DIR2C` / `CODE2C`):** Pass 2 Autonomous AI Orchestrator / Judge. Auto-merge on `dev` when CI green.
+    - **C2 (`CODE2S` / `SEED2C`):** Pass 2 Autonomous AI Orchestrator / Judge citing delegating issue/prompt evidence. Auto-merge on `dev` when CI green.
+    - **C3 (`SDD2C` / `SEED2C` cross-layer):** Strictly Human Founder Gate (`GATE-10`, `Owner (C3)`). Auto-merge on `dev` strictly gated by explicit C3 Gate Approval.
     - **Promotions (`dev` -> `staging` -> `main`):** Strictly Human Founder via repository Web UI. Zero autonomous auto-merge.
 
 ---

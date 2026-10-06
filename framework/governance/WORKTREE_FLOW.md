@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 Task isolation and promotion for framework-consuming projects. Covers `dev`
 integration only. `dev` → `staging` → `main` promotions are human-executed
@@ -57,7 +57,44 @@ runtimes:
 3. **Volume Isolation:** Never share ephemeral test databases or writable cache
    volumes between concurrent worktrees.
 
-## 3. Procedure
+## 3. Procedure & State Machine Lifecycle
+
+The following state machine governs the complete worktree and autonomous PR lifecycle, corresponding to normative workflow `workflows/worktree-pr-lifecycle.sw.yaml`:
+
+<!-- @diagram: state-worktree-pr-lifecycle -->
+```mermaid
+---
+title: Worktree and Autonomous PR Lifecycle
+---
+stateDiagram-v2
+    direction TB
+
+    [*] --> CreateIsolatedWorktree
+    CreateIsolatedWorktree --> ImplementTaskChanges
+    ImplementTaskChanges --> RunLocalVerification
+    RunLocalVerification --> CommitOwnedFiles
+    CommitOwnedFiles --> PushFeatureBranch
+    PushFeatureBranch --> OpenPullRequest
+    OpenPullRequest --> WatchPRChecks
+
+    state WatchPRChecks {
+        [*] --> PollChecks
+        PollChecks --> EvaluateStatus
+    }
+
+    WatchPRChecks --> AwaitCheckSettlement: Checks Pending
+    AwaitCheckSettlement --> WatchPRChecks: 15s Sleep
+
+    WatchPRChecks --> DiagnoseAndFixChecks: Checks Failed
+    DiagnoseAndFixChecks --> WatchPRChecks: Push Fix
+
+    WatchPRChecks --> ResolveMergeConflict: Merge Conflicting
+    ResolveMergeConflict --> WatchPRChecks: Re-arm & Push
+
+    WatchPRChecks --> EnableAutoMerge: Checks Green & Clean
+    EnableAutoMerge --> OrderGuardedCleanup: Auto-Merge Settled
+    OrderGuardedCleanup --> [*]: Issue Closed
+```
 
 ### 3.1 Sync `dev` in main checkout
 
@@ -167,14 +204,15 @@ on the host platform. After pushing the merge commit, the agent MUST:
 cd <main-checkout>
 git worktree remove ../<project>-<issue> --force
 git fetch --prune origin
-git branch -d feature/<short-name>
 git checkout dev
 git pull --ff-only origin dev
+git branch -D feature/<short-name>
 ```
 
 **Order guard:** `worktree remove` runs BEFORE branch delete. Deleting the
 branch first orphans the worktree's metadata and the remove then fails.
-Delete the remote branch on merge. If `worktree remove` fails due to
+Switch to `dev` and pull `origin/dev` before deleting the local branch.
+Delete the remote branch on merge (`--delete-branch`). If `worktree remove` fails due to
 uncommitted state, snapshot (copy to a scratch dir or patch export) before
 forcing.
 

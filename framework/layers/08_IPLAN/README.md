@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 
 ## C4 Model Position
@@ -57,7 +57,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 ## IPLAN Subtypes
 
 `document_control.subtype` selects which section set an IPLAN carries
-(`code_build | deploy | combined | audit_fix | bugfix`; default `combined` for
+(`code_build | deploy | combined | audit_fix | bugfix | docs`; default `combined` for
 pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
 breaking instance-format change; a future `devops` direction (infrastructure +
 cutover under one umbrella) is noted but not adopted.
@@ -79,6 +79,8 @@ cutover under one umbrella) is noted but not adopted.
   files; the parent plan is never touched. See `IPLAN-TEMPLATE.yaml`
   `document_control` guidance for the normative step order, rollback markers,
   naming pattern, and no-fix-on-fix rule.
+- **docs** — documentation-only and governance implementation plans without code
+  touches (added in 0.72.0). C1 docs changes ride a C1 CHG + scoped docs-subtype IPLAN.
 
 ## IPLAN Baseline
 

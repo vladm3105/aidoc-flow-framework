@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: Quality Assurance & Acceptance Testing Protocol
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Acceptance Testing, Staging Verification & Defect Reporting for `[Project Name]`
 **Governing Rules:** `GOVERNANCE_WORKFLOW_STANDARD.md`, `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`

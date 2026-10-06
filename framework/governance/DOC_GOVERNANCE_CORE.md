@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 ## Principles
 
@@ -170,18 +170,18 @@ Phase 3: Bi-directional Verification Gate
 Every artifact change is classified into exactly one flow — or into a governed non-flow path that yields to its
 own section — before its CHG is authored. First match wins, in this order:
 
-| # | Flow | `change_source` | `change_level` | Entry gate | SDD cascade? |
-|---|---|---|---|---|---|
-| F1 | Greenfield development (new chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
-| F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (always C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) |
-| F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — modules-first (0a supersede-capable + checkpoint, §4), affected layers down |
-| F4 | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
-| — | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
-| — | Type-R reconciliation (verified code precedes specs) | `reconciliation` | C2 typical | GATE-CODE | Reverse (§3.1.2) |
+| # | Graph Code & Flow | Traversal Scope & Definition | `change_source` | `change_level` | Entry gate | SDD cascade? |
+|---|---|---|---|---|---|---|
+| F1 | **SDD2C** (`sdd_to_code`) | Greenfield development (new SDD chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
+| F2 | **DIR2C** (`iplan_to_code`) | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (always C1 CHG + scoped IPLAN, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) |
+| F3 | **SEED2C** (`seed_to_code`) | Brownfield full-tier chain (restart at lowest affected layer) | `upstream` / `midstream` / `design` / `spec` | C2 / C3 | GATE-01 / 03 / 06 | Yes — modules-first (0a supersede-capable + checkpoint, §4), affected layers down |
+| F4 | **CODE2C** (`code_to_code`) | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
+| — | **HOTFIX** (`hotfix`) | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
+| — | **CODE2S** (`code_to_sdd`) | Type-R reconciliation (verified code precedes specs) | `reconciliation` | C2 typical | GATE-CODE | Reverse (§3.1.2) |
 
-Router: Emergency → Type-R → F4 (defect in closed IPLAN?) → F3 (behavior/contract change?) → F2 (no prior IPLAN,
-no SDD contract?) → F1 (default). Misfiled flows are defects: F1/F3 MUST NOT file as F2/F4 to dodge the cascade;
-F3 MUST NOT file as F4 (F4 repairs output to standing SDD; F3 changes the promise).
+Router: `HOTFIX` (Emergency) → `CODE2S` (Type-R) → `CODE2C` (F4 defect in closed IPLAN?) → `SEED2C` (F3 behavior/contract change?) → `DIR2C` (F2 no prior IPLAN,
+no SDD contract?) → `SDD2C` (F1 default). Misfiled flows are defects: `SDD2C`/`SEED2C` (F1/F3) MUST NOT file as `DIR2C`/`CODE2C` (F2/F4) to dodge the cascade;
+`SEED2C` (F3) MUST NOT file as `CODE2C` (F4 repairs output to standing SDD; F3 changes the promise).
 Full definitions, the C1/IPLAN-gate ruling (every C1 requires a scoped IPLAN, every author — no
 direct-commit path; sole exception seed-phase drafting pre-first-BRD), the misclassification guard (GOV-018),
 and verification expectations:

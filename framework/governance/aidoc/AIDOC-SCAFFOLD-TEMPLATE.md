@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.3 |
+| Version | 2.4 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | <your name> |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -62,7 +62,7 @@ When the agent reads a template, rule, or playbook:
 
 1. Check `.aidoc/project/{same-path}` first
 2. If the file exists there, use it (project override)
-3. If not, fall back to `.aidoc/framework/{same-path}` (shared framework)
+3. If not, fall back to `.aidoc/framework/framework/{same-path}` (or `.aidoc/framework/{same-path}` if pointing directly at the framework root)
 
 ## Framework symlink
 

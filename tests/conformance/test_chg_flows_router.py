@@ -22,6 +22,7 @@ CORE = FRAMEWORK / "governance" / "DOC_GOVERNANCE_CORE.md"
 FLOWS = FRAMEWORK / "governance" / "CHG_REQUEST_FLOWS.md"
 LINT_RULES = FRAMEWORK / "governance" / "LINT_RULES.md"
 CHG_LINT = REPO_ROOT / "sdd_doc_lint" / "chg_lint.py"
+SWF_CHG = FRAMEWORK / "governance" / "workflows" / "chg-request-flow.sw.yaml"
 
 
 def _text(path: Path) -> str:
@@ -264,5 +265,71 @@ class AlwaysTracedAgreement(unittest.TestCase):
         self.assertIn("seed-phase drafting", text)
 
 
+class DualLayerGraphNomenclatureAgreement(unittest.TestCase):
+    def test_templates_carry_flow_fields(self):
+        """Both CHG templates declare flow and flow_code fields."""
+        for template in (LAYER_TEMPLATE, GOV_TEMPLATE):
+            with self.subTest(template=str(template)):
+                text = _text(template)
+                self.assertIn("flow: null", text)
+                self.assertIn("flow_code: null", text)
+                self.assertIn("seed_to_code", text)
+                self.assertIn("SEED2C", text)
+
+    def test_workflows_evaluate_graph_codes(self):
+        """chg-request-flow.sw.yaml evaluates dual-layer flow tokens and codes."""
+        text = _text(SWF_CHG)
+        for code in ("HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"):
+            self.assertIn(code, text)
+        for flow in ("hotfix", "code_to_sdd", "code_to_code", "seed_to_code", "iplan_to_code", "sdd_to_code"):
+            self.assertIn(flow, text)
+
+    def test_flows_doc_carries_graph_codes(self):
+        """CHG_REQUEST_FLOWS.md carries the 5-6 char graph codes and traversal paths."""
+        text = _text(FLOWS)
+        for code in ("HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"):
+            self.assertIn(code, text)
+        for flow in ("hotfix", "code_to_sdd", "code_to_code", "seed_to_code", "iplan_to_code", "sdd_to_code"):
+            self.assertIn(flow, text)
+
+    def test_core_carries_graph_codes(self):
+        """DOC_GOVERNANCE_CORE.md carries the 5-6 char graph codes."""
+        text = _text(CORE)
+        for code in ("HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"):
+            self.assertIn(code, text)
+
+    def test_linter_validates_flow_and_code(self):
+        """chg_lint validates flow and flow_code enums and ensures parity."""
+        import sys
+        if str(REPO_ROOT) not in sys.path:
+            sys.path.insert(0, str(REPO_ROOT))
+        from sdd_doc_lint.chg_lint import check_flow_misclassification
+
+        # Invalid flow
+        errors, warnings, passes = [], [], []
+        data = {"change_control": {"flow": "invalid_flow", "flow_code": "DIR2C"}}
+        check_flow_misclassification(data, errors, warnings, passes)
+        self.assertTrue(any("invalid flow 'invalid_flow'" in e for e in errors))
+
+        # Invalid flow_code
+        errors, warnings, passes = [], [], []
+        data = {"change_control": {"flow": "iplan_to_code", "flow_code": "INVALID"}}
+        check_flow_misclassification(data, errors, warnings, passes)
+        self.assertTrue(any("invalid flow_code 'INVALID'" in e for e in errors))
+
+        # Mismatched pair
+        errors, warnings, passes = [], [], []
+        data = {"change_control": {"flow": "seed_to_code", "flow_code": "DIR2C"}}
+        check_flow_misclassification(data, errors, warnings, passes)
+        self.assertTrue(any("does not match flow_code" in e for e in errors))
+
+        # Valid matching pair
+        errors, warnings, passes = [], [], []
+        data = {"change_control": {"flow": "seed_to_code", "flow_code": "SEED2C"}}
+        check_flow_misclassification(data, errors, warnings, passes)
+        self.assertEqual(errors, [])
+
+
 if __name__ == "__main__":
     unittest.main()
+

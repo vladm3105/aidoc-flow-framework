@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 
 ## Overview
@@ -139,8 +139,8 @@ are unaffected by this rule.
 
 ## Request Flows
 
-Classify-then-route detail (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
-paths): `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
+Classify-then-route detail across dual-layer graph flows (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C / F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
+paths): `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: HOTFIX (Emergency) → CODE2S (Type-R) → CODE2C (F4) → SEED2C (F3) → DIR2C (F2) → SDD2C (F1).
 
 ---
 

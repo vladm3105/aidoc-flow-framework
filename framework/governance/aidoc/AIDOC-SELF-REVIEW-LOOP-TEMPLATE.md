@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: Autonomous Multi-Agent Dual Self-Review Protocol
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Two-Stage Review & Remediation Loop for `[Project Name]`
 **Governing Rules:** `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`, `AGENTS.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`

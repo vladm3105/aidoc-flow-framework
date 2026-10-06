@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: Autonomous PR Conflict Resolution Protocol
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Conflict Triage & Resolution Procedures for `[Project Name]`
 **Governing Rules:** `WORKTREE_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`

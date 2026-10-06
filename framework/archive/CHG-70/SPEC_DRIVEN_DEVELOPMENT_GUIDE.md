@@ -1,0 +1,112 @@
+# Specification-Driven Development Guide
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.0 |
+
+
+## Overview
+
+SDD is a streamlined 10-layer documentation-to-code framework. Each layer produces one YAML document type, with end-to-end traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
+
+```
+BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
+                                                                                           ↑
+                                                                             CHG (L9, overlay) → EVAL (L10)
+```
+
+## Layer Descriptions
+
+| Layer | Artifact | Purpose | Upstream | Downstream |
+|-------|----------|---------|----------|------------|
+| L1 | BRD | Business requirements, objectives, scope | — | PRD |
+| L2 | PRD | Product features, user stories, ADR topics | BRD | EARS |
+| L3 | EARS | Formal requirements (WHEN-THE-SHALL-WITHIN) | PRD | BDD |
+| L4 | BDD | Executable acceptance scenarios (Given-When-Then) with spec_trace | EARS | ADR |
+| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | EARS, BDD | SPEC |
+| L6 | SPEC | Component interfaces, data models, behavior contracts | EARS, BDD, ADR | TDD |
+| L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | EARS, BDD, ADR, SPEC | IPLAN |
+| L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | SPEC, TDD | Code |
+| L9 | CHG | Change management overlay — gates, versioning, audit trail | Any | — |
+| L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
+
+The forward chain above is the **F1 greenfield** flow. Subsequent changes do not all repeat it: behavior changes
+restart the chain from the lowest affected layer (**F3** brownfield, SDD-first), defects in completed work repair
+through the scoped bugfix vehicle (**F4**, parent immutable), and small direct requests skip the SDD cascade
+(**F2**). Which flow a change takes is routed by
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
+
+## Necessary-upstream traceability
+
+Each layer cites only its **necessary upstream** (`required_tags` in
+`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer.
+Deeper lineage is transitive (one hop per layer, or a trace-walk query over the
+`@`-tag graph — no such script ships in this repo; the traversal is the
+normative capability, outside the spec):
+
+```
+BRD:   —
+PRD:   @brd
+EARS:  @prd
+BDD:   @ears  # structured ears: list per scenario — emits no @-tag (04_BDD exception)
+ADR:   @ears @bdd
+SPEC:  @ears @bdd @adr
+TDD:   @ears @bdd @adr @spec
+IPLAN: @spec @tdd
+```
+
+`required_tags` is the minimum trace-resolution set; a layer MAY carry extra
+provenance tags (e.g. a platform ADR's `@brd`/`@prd`) but is not required to.
+
+## Readiness Score Flow
+
+Each layer must achieve >=90/100 readiness score before generating the next layer:
+
+```
+BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>=90)
+→ BDD → ADR-Ready (>=90) → ADR → SPEC-Ready (>=90) → SPEC → TDD-Ready (>=90)
+→ TDD → IPLAN-Ready (>=90) → IPLAN → EXEC-Ready (>=90) → Code
+```
+
+## Dual-Template Architecture: Standard vs. Workflow-Driven SDD
+
+To support both lightweight specification drafting and complex autonomous agent orchestration, SDD supports two template flavors across all layers (ratified across Decisions GD-51 through GD-61):
+
+1. **Standard Templates (`{TYPE}-TEMPLATE.yaml`)**:
+   - Purely declarative YAML defining requirements, acceptance scenarios, architecture decisions, interfaces, test suites, or execution plans.
+   - Recommended for straightforward, linear, or atomic development tasks.
+
+2. **Workflow Templates (`{TYPE}-SWF-TEMPLATE.yaml`)**:
+   - Implement the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded, vendor-neutral **CNCF Serverless Workflow v0.8 YAML** state machine (`workflow_definition`).
+   - Enable autonomous multi-agent execution, parallel branch fan-out (`type: parallel`), human-in-the-loop review callbacks (`type: callback`), and automated saga rollback compensation (`compensatedBy`) upon gate or threshold failure.
+   - Normative mapping rules for each layer are documented in `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md` and `governance/GOVERNANCE_WORKFLOW_STANDARD.md`.
+
+## Layer Responsibilities
+
+| Area | Owner | Implementation Rule |
+|-----|-------------|---------------------|
+| Architecture decisions | ADR (L5) | Context-Decision-Consequences with downstream SPEC readiness |
+| Requirement formalization | EARS (L3) + BDD (L4) | Formal clauses + executable scenarios with `spec_trace` |
+| Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
+| Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
+| Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
+| Governance workflow | CHG overlay (L9) | Project-level control outside the sequential lifecycle (operational namespace 09) |
+
+## Development vs Deployment Separation
+
+SDD enforces a strict boundary between development and deployment concerns. Development plans (IPLAN L8) produce artifacts. Deployment plans consume and apply them.
+
+| Concern | Plan Type | Owns | Done When |
+|---------|-----------|------|-----------|
+| **Development** | IPLAN (L8) | Source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, shipped via `git push` | Code + IaC + scripts authored, committed, green; tests pass |
+| **Deployment** | Separate deployment plan | Operator execution: `terraform apply`, `atlas migrate apply`, image build + deploy, environment activation, acceptance/soak runs | Artifacts applied to target environment; acceptance gates green |
+
+**Rule.** An IPLAN flips to `Completed` once source code + Terraform modules + CI/CD scripts are authored, committed, and green. It does NOT wait for deployment. A deployment-stuck IPLAN (e.g., "ready for `terraform apply`") is still complete from the development side.
+
+**Cross-plan handoff.** When closing a development IPLAN whose artifacts depend on a deployment step, register the obligation in `IPLAN-00_index.yaml` §deferred_items before flipping status. The IPLAN status reflects authoring-completion; the registry entry tracks the deploy-side handoff.

@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.10"
+  version: "1.11"
 ---
 
 # Diagram Standards
@@ -21,9 +21,9 @@ custom_fields:
 |---|---|
 | Version | 1.11 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 ## Mandatory Format: Mermaid Only
 
