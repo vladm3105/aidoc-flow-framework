@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 The `.aidoc/` directory is the project customization layer for every project
 that uses the framework. This directory holds the governance documents for
@@ -22,6 +22,7 @@ bootstrap (`BOOTSTRAP.md`) and upgrade (`UPGRADE-RUNBOOK.md`) runbooks.
 |------|--------|
 | `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, symlink convention. |
 | `AIDOC-SCAFFOLD-TEMPLATE.md` | Template for bootstrapping a new project's `.aidoc/` directory. |
+| `AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` | Operational execution handbook template for autonomous change processing (`.aidoc/project/governance/CHG_EXECUTION_FLOW.md`). |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template for `.aidoc/profile.yaml` (in `governance/`). |
 | `BOOTSTRAP.md` | Step-by-step bootstrap procedure + shape validation for a new project's `.aidoc/`. |
 | `UPGRADE-RUNBOOK.md` | Consumer upgrade runbook: re-adopting a new `framework/VERSION`. |

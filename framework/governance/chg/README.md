@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 
 ## Overview
@@ -267,10 +267,15 @@ Each CHG document contains 7 sections (8 for Emergency):
 | 2. Change Description | What changed, why, trigger |
 | 3. Impact Assessment | Affected layers, cascade direction, risk level, traceability |
 | 4. Implementation | SDD lifecycle steps first, then IPLAN creation/update |
-| 5. Verification | Automated tests and manual checks with methods |
+| 5. Verification & Testing Plan | Automated tests, manual checks, and structured testing_plan |
 | 6. Gate Approval | Gate reference, approver, date, conditions |
 | 7. Rollback Plan | Strategy, steps, estimated effort |
 | 8. Emergency Change | (Conditional) Emergency ID, severity, post-mortem tracking |
+
+
+### Standard Testing Plan (`testing_plan:`)
+
+For changes modifying source code, schemas, or runtime configuration, `CHG-TEMPLATE.yaml` introduces an optional but strongly recommended `testing_plan:` top-level block. It specifies the multi-tier test matrix (`unit`, `integration`, `e2e_api`, `e2e_ui`, `static`), BDD scenario mappings, and runtime isolation rules upfront, ensuring that verification criteria are locked and reviewed before code is written.
 
 ## Gate System
 

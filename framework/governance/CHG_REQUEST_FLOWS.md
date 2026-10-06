@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 | Field | Value |
 |---|---|
@@ -34,6 +34,112 @@ row wins:
 | F4 | Bugfix on implemented IPLAN | Defect found in EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN | `feedback` | C1 CHG (CHG-05 vehicle) | GATE-CODE | No (parent SDD stands; fix-IPLAN carries `validation_findings`) | Bugfix-subtype (`parent_iplan` + `source_chg`, repair-scoped manifest, rollback) | Regression suite + parent revision entry; runtime fixes close live (§3.3 rule 10) |
 | — | Emergency (non-flow path) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | Document within 48h + post-mortem | Fix IPLAN post-hoc per `09_CHG/README.md` (Emergency rows) + `templates/POST_MORTEM-TEMPLATE.md` (post-mortem ≤48h) | Post-mortem verification; deployable fixes close live (§3.3 rule 10) |
 | — | Type-R reconciliation (non-flow path) | Verified working codebase preceding its specs (non-emergency empirical work) | `reconciliation` | C2 typical (classify by cascade breadth) | GATE-CODE | Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2 | Reverse-authored (ground truth from code) | §3.1.2 Phase-3 battery; runtime touches close live (§3.3 rule 10) |
+
+### 1.1 Change Request Governance State Machine (CNCF Serverless Workflow Parity)
+
+Normative visual representation maintaining 1-to-1 parity with `framework/governance/workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md` §Governance State Machines & Workflow Graphs:
+
+<!--
+diagram_type: state
+scope_boundary: chg_request_flows
+upstream_refs: [chg-request-flow.sw.yaml]
+downstream_refs: [DOC_GOVERNANCE_CORE.md]
+-->
+<!-- @diagram: state-chg-request-flow -->
+```mermaid
+stateDiagram-v2
+    [*] --> ClassifyChangeTrigger
+    ClassifyChangeTrigger --> RouteByClassification: inspectChangeScope
+
+    state RouteByClassification <<choice>>
+    RouteByClassification --> ExecuteEmergencyFix: Emergency
+    RouteByClassification --> ReconcileCodebase: Type-R
+    RouteByClassification --> InitiateBugfixFlow: F4
+    RouteByClassification --> InitiateBrownfieldFlow: F3
+    RouteByClassification --> InitiateDirectRequestFlow: F2
+    RouteByClassification --> InitiateGreenfieldFlow: F1
+    RouteByClassification --> EscalateUnknownTrigger: Unknown
+
+    %% Emergency Path
+    state "Emergency: Execute Immediate Fix" as ExecuteEmergencyFix
+    state "Emergency: Author Post-Mortem (<=48h)" as DraftEmergencyPostMortem
+    ExecuteEmergencyFix --> DraftEmergencyPostMortem: deployHotfix
+    DraftEmergencyPostMortem --> [*]
+
+    %% Type-R Path
+    state "Type-R: Reconcile Codebase to Specs" as ReconcileCodebase
+    ReconcileCodebase --> [*]: reverseSDDCascade
+
+    %% Flow F2: Direct Request
+    state "F2: Author C1 Direct CHG" as InitiateDirectRequestFlow
+    state ValidateCHGDirect <<choice>>
+    state "F2: Author Scoped IPLAN" as AuthorScopedIPLAN
+    state "F2: Execute Direct Edits & Tests" as ExecuteDirectChanges
+    state "F2: Direct Closeout" as DirectCloseout
+    state "F2: Reject CHG Direct" as RejectCHGDirect
+
+    InitiateDirectRequestFlow --> ValidateCHGDirect: lintCHG
+    ValidateCHGDirect --> AuthorScopedIPLAN: lint clean (0 errors)
+    ValidateCHGDirect --> RejectCHGDirect: lint errors
+    AuthorScopedIPLAN --> ExecuteDirectChanges: draftScopedIPLAN
+    ExecuteDirectChanges --> DirectCloseout: tests green
+    DirectCloseout --> [*]
+    RejectCHGDirect --> [*]: terminate
+
+    %% Flow F4: Bugfix on Implemented IPLAN
+    state "F4: Author C1 Bugfix CHG" as InitiateBugfixFlow
+    state "F4: Author Bugfix-Subtype IPLAN" as AuthorBugfixIPLAN
+    state "F4: Patch Defect & Regressions" as ExecuteBugfix
+    state "F4: Bugfix Closeout" as BugfixCloseout
+
+    InitiateBugfixFlow --> AuthorBugfixIPLAN: draftCHGDocument
+    AuthorBugfixIPLAN --> ExecuteBugfix: draftBugfixIPLAN
+    ExecuteBugfix --> BugfixCloseout: regressionSuiteGreen
+    BugfixCloseout --> [*]
+
+    %% Flow F3: Brownfield Behavior Change
+    state "F3: Author Brownfield CHG (C2/C3)" as InitiateBrownfieldFlow
+    state SeedModuleSyncCheckpoint <<choice>>
+    state "F3: Execute SDD Cascade (Affected & Below)" as ExecuteSDDCascade
+    state "F3: Reject Seed/Module Checkpoint" as RejectBrownfieldGate
+
+    InitiateBrownfieldFlow --> SeedModuleSyncCheckpoint: draftBrownfieldCHG
+    SeedModuleSyncCheckpoint --> ExecuteSDDCascade: seed_scope & module_sync approved
+    SeedModuleSyncCheckpoint --> RejectBrownfieldGate: unreviewed/out-of-sync
+    RejectBrownfieldGate --> [*]: terminate
+
+    %% Flow F1: Greenfield Development
+    state "F1: Author Greenfield CHG (C3)" as InitiateGreenfieldFlow
+    state "F1: Await GATE-01 Approval" as AwaitGate01Approval
+    state EvaluateGate01Approval <<choice>>
+    state "F1: Execute Full 10-Layer SDD Cascade" as ExecuteFullSDDCascade
+    state "F1: Reject Greenfield Gate" as RejectGreenfieldGate
+
+    InitiateGreenfieldFlow --> AwaitGate01Approval: draftGreenfieldCHG
+    AwaitGate01Approval --> EvaluateGate01Approval: GateApprovalEvent
+    EvaluateGate01Approval --> ExecuteFullSDDCascade: approved == true
+    EvaluateGate01Approval --> RejectGreenfieldGate: rejected / timeout
+    RejectGreenfieldGate --> [*]: terminate
+
+    %% Implementation & Closeout (Shared F1 / F3)
+    state "Author Full IPLAN (In Progress)" as AuthorFullIPLAN
+    state "Execute Implementation & Tests" as ExecuteFullImplementation
+    state EvaluateGateCode <<choice>>
+    state "Execute Layer 10 EVAL & Closeout" as ExecuteEVALAndCloseout
+    state "Reject Code Gate" as RejectCodeGate
+
+    ExecuteSDDCascade --> AuthorFullIPLAN
+    ExecuteFullSDDCascade --> AuthorFullIPLAN
+    AuthorFullIPLAN --> ExecuteFullImplementation: draftFullIPLAN
+    ExecuteFullImplementation --> EvaluateGateCode: testSuiteRun
+    EvaluateGateCode --> ExecuteEVALAndCloseout: PASS (0 failed tests)
+    EvaluateGateCode --> RejectCodeGate: tests failed / lint errors
+    ExecuteEVALAndCloseout --> [*]: terminal report PASS
+    RejectCodeGate --> [*]: terminate
+
+    %% Unknown Escalation
+    EscalateUnknownTrigger --> [*]: alertAdmin
+```
 
 ## 2. F1 — Greenfield development
 

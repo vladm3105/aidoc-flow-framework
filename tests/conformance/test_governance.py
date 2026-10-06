@@ -70,6 +70,7 @@ EXPECTED_FILES = [
     "CI_AUTONOMOUS_PR_STANDARD.md",
     "aidoc/AIDOC.md",
     "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",
+    "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md",
     "aidoc/BOOTSTRAP.md",
     "aidoc/UPGRADE-RUNBOOK.md",
     "aidoc/README.md",

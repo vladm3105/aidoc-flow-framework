@@ -1,0 +1,104 @@
+# =============================================================================
+#  IPLAN-68: Upstream Autonomous Execution Flow, Circuit Breakers, CHG Testing Plan,
+#  and Adaptation Scaffolding
+# =============================================================================
+
+id: IPLAN-68
+title: "Implementation Plan: Upstream Autonomous Execution Flow, Circuit Breakers, CHG Testing Plan, and Adaptation Scaffolding"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.87.0"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "Completed"
+  chg_reference: "CHG-68"
+  created_at: "2026-10-06T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "Embed companion Mermaid stateDiagram-v2 diagram matching chg-request-flow.sw.yaml"
+      order: 1
+      status: DONE
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Add Multi-Tier Circuit Breakers Matrix and formalize Layer 10 terminal evaluation gate"
+      order: 2
+      status: DONE
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "Formalize Layer 10 terminal evaluation status progression in §4.1"
+      order: 3
+      status: DONE
+    - path: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+      description: "Cross-reference Circuit Breakers Matrix in GOVERNANCE_WORKFLOW_STANDARD.md"
+      order: 4
+      status: DONE
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "Add structured testing_plan schema block"
+      order: 5
+      status: DONE
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Synchronize testing_plan schema block into layer 09_CHG copy"
+      order: 6
+      status: DONE
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Document testing_plan block in 09_CHG guidance"
+      order: 7
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      description: "New operational execution handbook scaffold template for consumer projects"
+      order: 8
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Reference AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md for project execution guidance"
+      order: 9
+      status: DONE
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Update adaptation guidance with concrete blueprint, evaluation ingestion, and client hooks"
+      order: 10
+      status: DONE
+    - path: "tests/conformance/test_governance.py"
+      description: "Register aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md in EXPECTED_FILES"
+      order: 11
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record Decision GD-62"
+      order: 12
+      status: DONE
+    - path: "framework/VERSION"
+      description: "Bump framework version 0.86.1 -> 0.87.0"
+      order: 13
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "Document 0.87.0 release"
+      order: 14
+      status: DONE
+
+execution_steps:
+  - id: STEP-01
+    action: "Embed companion Mermaid stateDiagram-v2 in framework/governance/CHG_REQUEST_FLOWS.md"
+    expected_output: "Diagram renders cleanly with 1-to-1 parity with chg-request-flow.sw.yaml"
+  - id: STEP-02
+    action: "Add Multi-Tier Circuit Breakers Matrix and terminal evaluation gate to GOVERNANCE_WORKFLOW_STANDARD.md"
+    expected_output: "CB-1 through CB-6 and Layer 10 terminal gate codified"
+  - id: STEP-03
+    action: "Update DOC_GOVERNANCE_CORE.md §4.1 status progression"
+    expected_output: "EVAL gate explicitly governs IPLAN: Verified and CHG: Completed"
+  - id: STEP-04
+    action: "Cross-reference circuit breakers in CI_AUTONOMOUS_PR_STANDARD.md"
+    expected_output: "Harmonized references intact"
+  - id: STEP-05
+    action: "Add testing_plan schema to both CHG-TEMPLATE.yaml copies and update 09_CHG/README.md"
+    expected_output: "Both templates synchronized and documented"
+  - id: STEP-06
+    action: "Author framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+    expected_output: "Generic execution flow blueprint established"
+  - id: STEP-07
+    action: "Update docs/ADAPTATION-GUIDE.md and AIDOC-SCAFFOLD-TEMPLATE.md"
+    expected_output: "Issue #894 blueprint, evaluation ingestion, and hooks.json documented"
+  - id: STEP-08
+    action: "Register new file in test_governance.py, record GD-62, bump VERSION, and update CHANGELOG.md"
+    expected_output: "Conformance tests green, version at 0.87.0"
+  - id: STEP-09
+    action: "Run full conformance suite and pre-commit checks"
+    expected_output: "Zero failures across all test suites"

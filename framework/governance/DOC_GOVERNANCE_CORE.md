@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.87.0 |
 
 ## Principles
 
@@ -532,6 +532,13 @@ through the IPLAN.
 ```
 EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
 ```
+
+### Terminal Lifecycle Transition Gate
+
+The terminal lifecycle transitions for implementation plans and change requests are governed deterministically by Layer 10 Evaluation:
+- **IPLAN Transition (`Completed` → `Verified`):** Authorized strictly upon generation and commit of an authentic Layer 10 Evaluation Report (`EVAL-{NN}-RPT-{NNN}.yaml`) with `verdict: PASS` and zero test failures across all active verification layers.
+- **CHG Transition (`Implemented` → `Completed`):** Authorized strictly when the terminal evaluation report is committed and merged into the integration branch (`dev`).
+- **Non-Deployable Changes Exception:** Pure documentation, governance, and tooling changes (F2 Direct Requests) bypass live deployment and evaluation reports (`CHG_REQUEST_FLOWS.md` §3.3 rule 10), completing directly upon passing static validation and dual independent review.
 
 ## Security
 

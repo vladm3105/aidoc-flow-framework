@@ -296,6 +296,47 @@ verification:
       method: "[How verified — test, review, validation tool]"
 
 # =============================================================================
+# Section 5B: Standard Testing Plan (Recommended for code/runtime changes)
+# =============================================================================
+
+testing_plan:
+  _required: false  # Recommended for code, configuration, or schema changes
+  _guidance: |
+    Defines the multi-layer test architecture, execution commands, and concrete
+    pass criteria prior to writing code. Bridges CHG authorization to Layer 07
+    (TDD) and Layer 08 (IPLAN).
+  summary: "[Summary of verification coverage and isolation constraints]"
+  test_matrix:
+    unit:
+      scope: "[Domain packages, utilities, isolated pure functions]"
+      command: "[e.g. task test:unit or pytest tests/unit]"
+      pass_criteria: "[100% pass, data race checks enabled]"
+    integration:
+      scope: "[Database persistence, external clients, domain workflows]"
+      command: "[e.g. task test:integration or pytest tests/integration]"
+      pass_criteria: "[Zero unhandled errors, isolated test database/fixtures]"
+    e2e_api:
+      scope: "[End-to-end API journeys, port validation, state transitions]"
+      command: "[e.g. task test:e2e:api or npm run test:e2e]"
+      pass_criteria: "[100% pass, authentic assertions, zero dummy stubs]"
+    e2e_ui:
+      scope: "[User interface workflows, visual invariants, client bundles]"
+      command: "[e.g. task test:e2e:ui or playwright test]"
+      pass_criteria: "[100% pass, visual and interaction invariants confirmed]"
+    static:
+      scope: "[Boundary checks, secret scanning, YAML linting, BDD scenario IDs]"
+      command: "[e.g. task test:static or pre-commit run --all-files]"
+      pass_criteria: "[Zero lint errors, zero secrets, all IDs verified]"
+  bdd_mapping:
+    target_scenarios:
+      - "[@BDD.NN.SS.xxxx]"
+    traceability_enforcement: "[e.g. check-bdd-ids or conformance suite]"
+  isolation_rules:
+    environment: "[sandbox / local dev / ephemeral container]"
+    ports: "[ports required or N/A]"
+    cleanup: "[Teardown rules, database reset, residual artifact cleanup]"
+
+# =============================================================================
 # Section 6: Gate Approval (C3 only)
 # =============================================================================
 
