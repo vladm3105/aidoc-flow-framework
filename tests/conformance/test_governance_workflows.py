@@ -25,6 +25,7 @@ EXPECTED_WORKFLOWS = [
     "spec-choreography-contract.sw.yaml",
     "adr-decision-analysis.sw.yaml",
     "ears-requirements-validation.sw.yaml",
+    "prd-feature-decomposition.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -157,6 +158,7 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         self.assertIn("GD-57", decisions)
         self.assertIn("GD-58", decisions)
         self.assertIn("GD-59", decisions)
+        self.assertIn("GD-60", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
 
 

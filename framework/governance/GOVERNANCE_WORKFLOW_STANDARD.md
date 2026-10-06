@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.8 |
+| Version | 1.9 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.84.0 |
+| Framework Version | 0.85.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -59,6 +59,9 @@ To prevent conflation between repository governance policy and codebase mutation
 7. **Requirements Validation Workflows (`framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml`)**:
    Govern requirement dependency DAG resolution, syntax verification, cross-requirement conflict detection, BDD-readiness gating, and invalidation compensation sagas.
    Governed by [`framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md`](../layers/03_EARS/EARS_WORKFLOW_STANDARD.md).
+8. **Product Requirements Decomposition Workflows (`framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml`)**:
+   Govern multi-container feature decomposition, RICE prioritization, acceptance threshold validation, and requirement invalidation compensation sagas.
+   Governed by [`framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md`](../layers/02_PRD/PRD_WORKFLOW_STANDARD.md).
 
 ## 2. Directory Structure & File Conventions
 
@@ -77,7 +80,8 @@ framework/governance/
 │   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
 │   ├── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
 │   ├── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
-│   └── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
+│   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
+│   └── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
@@ -246,3 +250,6 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 7 (Step 8 EARS Requirements Validation & Dependency DAG Standard)**:
   - *Gap found*: Requirements syntax verification, dependency DAG resolution, conflict detection, and BDD-readiness gating lacked formal CNCF Serverless Workflow modeling.
   - *Fix*: Registered `ears-requirements-validation.sw.yaml` in Section 2, added Layer 03 EARS workflow domain separation entry in Section 1, and documented Pass 7 in Review Log.
+- **2026-10-05 — Pass 8 (Step 9 PRD Product Decomposition & Feature Prioritization Standard)**:
+  - *Gap found*: Multi-container feature decomposition, RICE prioritization, and quantitative acceptance threshold validation lacked formal CNCF Serverless Workflow modeling.
+  - *Fix*: Registered `prd-feature-decomposition.sw.yaml` in Section 2, added Layer 02 PRD workflow domain separation entry in Section 1, and documented Pass 8 in Review Log.

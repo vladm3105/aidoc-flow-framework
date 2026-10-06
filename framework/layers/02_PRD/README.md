@@ -4,25 +4,25 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.84.0 |
-
+| Framework Version | 0.85.0 |
 
 ## Overview
 
-PRDs define product features, user personas, and acceptance criteria as the
-second step in the SDD workflow. Each PRD corresponds to one BRD iteration cycle.
+PRDs define product features, user personas, container service boundaries, and
+acceptance criteria as the second step in the SDD workflow. Each PRD corresponds
+to one BRD iteration cycle.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
 ## C4 Model Mapping
 
 PRD is the **Container** level in the C4 architecture model. Content describes
-product features and functional blocks — not business environment (Context),
-component details (Component), or implementation details (Code).
+product features, functional blocks, and container boundaries — not business
+environment (Context), component details (Component), or implementation details (Code).
 
 ```text
 Context (BRD)    — business environment, actors, boundaries
@@ -34,12 +34,26 @@ Component (SPEC) — component interfaces, data models, behavior contracts
   └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |------|---------|
-| `PRD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `PRD-00_index.TEMPLATE.md` | PRD registry template — tracks planned and active PRDs per project |
+| `PRD-TEMPLATE.yaml` | **Default Declarative** — full template with embedded authoring guidance for single-container product features. Self-documenting for AI agents. |
+| `PRD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for multi-container product decomposition, RICE prioritization, and threshold validation. |
+| `PRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining PRD primitive to CNCF state mappings, container isolation rules, and invalidation compensation. |
+| `PRD-00_index.TEMPLATE.md` | PRD registry template — tracks planned and active PRDs per project. |
+
+## Workflow Integration & CNCF Serverless Workflow Standard
+
+Layer 02 adopts the **CNCF Serverless Workflow DSL v0.8 (YAML)** (Decision **GD-60**)
+to orchestrate product feature decomposition and threshold verification:
+- **Container Decomposition**: Parallel fan-out decomposing initiatives across distinct C4 container boundaries.
+- **RICE Feature Prioritization**: Automated utility scoring across Reach, Impact, Confidence, and Effort.
+- **Acceptance Thresholds**: Formal validation of quantitative SLA and capacity bounds (`@threshold:` definitions).
+- **BRD Alignment Gating**: Strategic business alignment checks verifying upstream `@brd:` traceability.
+- **Invalidation Sagas**: Automated compensation (`compensatedBy: InvalidateDownstreamArtifacts`) revoking downstream draft artifacts across EARS, BDD, ADR, and SPEC when initiatives are rejected.
+
+See `PRD_WORKFLOW_STANDARD.md` for complete specification rules and graph invariants.
 
 ## Element IDs
 
