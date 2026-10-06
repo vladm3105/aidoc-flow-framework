@@ -7,11 +7,28 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.11 |
+| Version | 1.12 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.0 |
+| Framework Version | 0.86.1 |
+
+## [0.86.1] — 2026-10-06
+
+### Changed — Synchronize governance and framework root guides with full CNCF Serverless Workflow adoption (C2 PATCH → 0.86.1, CHG-66 + IPLAN-66)
+
+- **Root Framework Guidance & Architecture Updates**:
+  - `framework/README.md` (v1.3): Updated layout and directory structure to formally document `{TYPE}-SWF-TEMPLATE.yaml` workflow templates, `{TYPE}_WORKFLOW_STANDARD.md` standards across all SDD layers, and the complete catalog of 12 declarative CNCF Serverless Workflows in `framework/governance/workflows/`.
+  - `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (v1.1): Added dedicated section "Dual-Template Architecture: Standard vs. Workflow-Driven SDD" providing explicit guidance on standard vs workflow-driven SDD, the Hybrid Envelope Architecture (`subtype: workflow`) ensuring full structural compliance with `sdd_doc_lint`, and saga rollback compensation mechanics.
+  - `framework/AI_ASSISTANT_RULES.md` (v1.2): Updated Section "Template Usage" with prescriptive rules for AI coding assistants on selecting `{TYPE}-TEMPLATE.yaml` vs `{TYPE}-SWF-TEMPLATE.yaml`, adhering to Hybrid Envelope nesting rules, and validating against `GOVERNANCE_WORKFLOW_STANDARD.md` and layer workflow standards.
+- **Governance Core Alignment**:
+  - `framework/governance/README.md` (v1.3): Added `GOVERNANCE_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, and `WORKTREE_FLOW.md` to document inventory; introduced `## CNCF Serverless Workflows (workflows/)` section detailing all 12 declarative workflow definitions targeting CNCF Serverless Workflow v0.8 YAML.
+  - `framework/governance/DOC_GOVERNANCE_CORE.md` (v1.4): Updated Section "Template Policy" to formally codify the Dual-Template Architecture (Decisions GD-51 through GD-61) and Hybrid Envelope Architecture across the 10 SDD layers.
+- **Version Ref Synchronization**:
+  - `hooks/sync-version-refs.sh`: Added `0.86.0` to `OLD_VERSIONS` history array.
+  - Sweep `0.86.0` → `0.86.1` propagated across framework tree.
+
+---
 
 ## [0.86.0] — 2026-10-05
 

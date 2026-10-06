@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.0 |
+| Framework Version | 0.86.1 |
 
 ## Principles
 
@@ -54,8 +54,17 @@ Practical effect:
   them. Both mandate YAML — read Principle 2 before concluding that a layer's
   instance format is unconstrained. The per-layer value is `../registry/LAYER_REGISTRY.yaml`
   `extensions` — the single normative source (GD-17); this bullet does not re-specify it.
-- Each layer has exactly one normative `{TYPE}-TEMPLATE.yaml`. EVAL carries
-  one additional normative template (`EVAL-REPORT-TEMPLATE.yaml`);
+- **Dual-Template Architecture (GD-51 through GD-61)**: To balance lightweight,
+  declarative artifact authoring with machine-executable state machines, each SDD layer
+  ships two canonical YAML templates:
+  1. **Standard Template (`{TYPE}-TEMPLATE.yaml`)**: The default declarative template for
+     atomic, single-capability, or linear artifact definitions.
+  2. **Workflow Template (`{TYPE}-SWF-TEMPLATE.yaml`)**: The workflow-enabled template
+     implementing the **Hybrid Envelope Architecture** (`subtype: workflow`). It preserves
+     100% structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an
+     embedded, vendor-neutral CNCF Serverless Workflow v0.8 YAML state machine
+     (`workflow_definition`) for complex, multi-branch, stateful, or saga-compensated execution.
+- In addition, EVAL carries one companion template (`EVAL-REPORT-TEMPLATE.yaml`);
   `IPLAN-VERIFY-TEMPLATE.yaml` is a retired tombstone pointer carrying no
   template content (CHG-08 #662 — validation runs as EVAL cycles, repairs via
   the `bugfix`-subtype IPLAN). Retired MVP variants survive only as tombstone
