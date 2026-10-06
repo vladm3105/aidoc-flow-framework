@@ -83,6 +83,7 @@ plan-of-record for a single change.
 ### Dual-Template Architecture (Standard vs. Workflow-Driven)
 
 Every layer provides two authoring templates:
+
 - **Standard Templates** (`{TYPE}-TEMPLATE.yaml`): Declarative, structured specifications for standard features.
 - **Workflow Templates** (`{TYPE}-SWF-TEMPLATE.yaml`): Workflow-driven specifications employing the **Hybrid Envelope Architecture** (`subtype: workflow`) to house embedded [CNCF Serverless Workflow](https://serverlessworkflow.io/) v0.8 DSL state machines. These govern complex, long-running, multi-step, or compensatory lifecycle processes (e.g., strategic ROI gating, acceptance test runners, ADR decision matrices, saga rollbacks) while maintaining 100% structural schema compliance with `sdd_doc_lint`.
 
