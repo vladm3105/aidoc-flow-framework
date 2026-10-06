@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.87.0 |
 
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -18,27 +18,6 @@ defines *what* happens and *when*, and what an engine must surface; it does not
 prescribe *how* an engine implements the checks.
 
 ## The quality loop
-
-### Two-Stage Review & Fix Architecture
-
-Quality assurance in autonomous agent engineering operates across two distinct,
-sequential stages:
-
-1. **Stage A: Proposal / Specification Review (Pre-Implementation)**
-   - **Target:** Requirements, architecture specifications, design documents,
-     ADRs, and test plans (Layers 01–08: BRD through IPLAN).
-   - **Objective:** Eliminate ambiguity, ungrounded assumptions, missing failure
-     modes, and contract misalignments BEFORE any implementation code is written.
-   - **Pass Criteria:** 100% resolution of blocking findings; readiness score
-     exceeds layer gate threshold; schema conformance verified.
-
-2. **Stage B: Implementation PR Review (Post-Implementation / Pre-Merge)**
-   - **Target:** Implementation code diffs, integration tests, IPLAN manifest
-     transitions, and runtime assertions.
-   - **Objective:** Verify operational correctness, anti-mock compliance, branch
-     hygiene, and regression avoidance.
-   - **Pass Criteria:** Conformance and unit/integration test suites green; 4-lens
-     rubric passed; zero unhandled edge cases in exercised paths.
 
 Each artifact moves through this loop before it is allowed to drive the
 downstream layer:
@@ -202,42 +181,12 @@ An engine MAY automate the `pre_merge` trigger as an **independent review gate**
 When it does, these engine-agnostic rules apply (the *how* — runner, model,
 tooling — is the engine's binding).
 
-**Strict Independence Rule (Judge ≠ Generator).** The reviewer (Judge) MUST be
-independent of the artifact's author/generator (Generator). An artifact is never
-cleared by the agent that drafted or modified it (mirrors CHG **C1** — no self-approval).
-Key independence constraints:
-1. **Fresh Context Mandate:** The review must execute in a clean context window or
-   via an isolated subagent conversation. Retaining author brainstorming or drafting
-   history introduces sycophancy and blindness to subtle regressions.
-2. **Review-Only Role:** The reviewer evaluates, scores, and emits findings with
-   precise line locations. The reviewer NEVER writes fixes directly in the review pass;
-   remediation is delegated back to the generator or dedicated remediation agent.
-
-**Four-Lens Review Rubric.** Automated and multi-agent reviews evaluate artifacts
-across four mandatory lenses:
-
-1. **Correctness & Contract Adherence:**
-   - Evaluates functional logic, input/output validation, error handling, boundary
-     conditions, and contract compliance against upstream SPEC/ADR.
-2. **Anti-Mock & Real-Environment Fidelity:**
-   - Evaluates test fidelity. Prohibits trivial unit mocks that bypass actual service
-     interactions or database constraints where integration tests are required. Asserts
-     that tests exercise real runtime behavior.
-3. **Governance & Traceability Discipline:**
-   - Asserts traceability tags (e.g. `req_refs`, `spec_refs`), lifecycle statuses,
-     clean branch hygiene, IPLAN manifest synchronization, and zero forbidden direct
-     modifications to protected branches.
-4. **Security, Sandbox & Isolation:**
-   - Evaluates input sanitization, least-privilege container/port isolation, prevention
-     of secret leakage, fail-closed defaults, and immunity to prompt injection in
-     autonomous tool execution.
-
-**Technical Verification Authority vs Fiduciary & Scope Authorization.**
-Autonomous AI agents are vested with **Technical Verification Authority** — the power
-to validate code, run test suites, lint artifacts, enforce contracts, and flag
-regressions autonomously. However, agents DO NOT possess **Fiduciary & Scope Authorization**:
-decisions regarding production releases, budget/cost expenditure, licensing changes,
-or fundamental scope expansion remain reserved strictly for human maintainers.
+**Independence (judge ≠ generator).** The reviewer MUST be independent of the
+artifact's author/generator — a different reviewing configuration, and where
+available a different model/vendor than produced it. An artifact is never cleared
+by the agent that produced it (mirrors CHG **C1** — no self-approval). The
+reviewer **reviews only**; remediation (the fix) is a separate step, not part of
+the same review pass.
 
 **Finding classification.** Each finding carries a severity:
 

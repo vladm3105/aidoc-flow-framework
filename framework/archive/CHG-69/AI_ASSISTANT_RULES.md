@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.87.0 |
 
 
 ## Template Usage
@@ -42,14 +42,6 @@
 10. EVAL — evaluation & QA governance: test strategy, coverage matrices (from EARS + BDD + TDD + IPLAN)
 11. Code — implementation from IPLAN
 ```
-
-## EARS Syntax Distinction Invariant
-
-When authoring Layer 03 (EARS) requirements or downstream mappings, AI assistants MUST enforce the structural distinction between operating states and error triggers:
-
-- **`WHILE <precondition>` (State-Driven Requirements):** MUST be used exclusively for normal, continuous, or steady operating states (e.g., `WHILE the user session is authenticated and active, the system SHALL display the workspace dashboard`).
-- **`IF <trigger>` (Unwanted Behavior / Fault Conditions):** MUST be used exclusively for event-driven errors, unexpected faults, rate limits, or exception triggers (e.g., `IF the database connection times out after 5000ms, the system SHALL retry with exponential backoff`).
-- **Anti-pattern:** Using `IF` for normal operating states (e.g., `*IF user is logged in...`) or `WHILE` for transient error bursts violates the EARS grammar and confuses downstream BDD scenario generators.
 
 ## TDD Enforcement
 
@@ -180,11 +172,6 @@ complete it BEFORE writing any CHG document.
 
 ## Delegation and concurrency pointers
 
-- **Subagent Prompt ID Grounding Invariant:** When dispatching subagents or delegating
-  tasks across layers, prompts MUST pass literal upstream element IDs (e.g. `BRD-001`,
-  `PRD-F01`, `REQ-042`, `SPEC-DATA-01`, `IPLAN Step 3.2`) and exact file paths.
-  Never summarize or omit upstream IDs. Subagent deliverables must cite those exact IDs
-  in their traceability metadata without hallucinating new schemes.
 - **Delegation integrity** (`NOTICES.md` Rule 1–2 harden): pass real upstream
   IDs in delegation prompts; after landing, re-validate every cited ID with a
   `grep -F` against its source file plus a `sort | uniq -d` duplicate check.

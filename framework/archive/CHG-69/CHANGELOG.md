@@ -7,51 +7,11 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.14 |
+| Version | 1.13 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
-
-## [0.88.0] — 2026-10-06
-
-### Added — Upstream b-local-privy Governance Adaptation Patterns, Anti-Deadlock CI, Worktree Conflict Resolution, Tripartite Separation of Concerns, and Adaptation Scaffolding (C2 MINOR → 0.88.0, CHG-69 + IPLAN-69, #923)
-
-- **Anti-Deadlock Invariant & CI Smart Routing (`framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` v1.2)**:
-  - Formally prohibited trigger-level path filtering (`paths:`, `paths-ignore:`) on required status checks, eliminating perpetual pending check deadlocks on documentation and governance PRs.
-  - Mandated internal smart routing with fail-closed defaults, the Zero-Mock Invariant for integration tests, concentric latency targets (<15s, <45s, 2-4m), and machine-readable signoff attestations.
-- **Autonomous PR Conflict Resolution Protocol (`framework/governance/WORKTREE_FLOW.md` v1.1)**:
-  - Codified Class 1 (Deterministic/Additive) vs Class 2 (Semantic/Architectural) merge conflict taxonomy.
-  - Enforced forward branch merge protocol (`git merge origin/dev` in worktree) with 0 force-pushes.
-  - Formalized the Auto-Merge Re-Arming Mandate and Conflict Resolution Circuit Breakers (CB-5.1 single attempt limit, CB-5.2 zero semantic guessing).
-  - Added §2.2 Multi-Worktree Port & Container Isolation Guidelines (container name sandboxing, dynamic port offsets, volume isolation).
-- **Two-Stage Review & Fix Architecture (`framework/governance/REVIEW_REMEDIATION_FLOW.md` v1.2)**:
-  - Formalized Stage A (Proposal/Spec Review) vs Stage B (Implementation PR Review).
-  - Codified the Strict Independence Rule (Judge $\neq$ Generator, fresh context isolation).
-  - Formalized the 4-Lens Review Rubric (Correctness, Anti-Mock, Governance, Security).
-  - Clarified Technical Verification Authority vs Fiduciary & Scope Authorization.
-- **Tripartite Engineering Architecture & Separation of Concerns (`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` v1.3 §8)**:
-  - Established discrete roles for DEV, SDET, and QA personas.
-  - Enforced the Strict Non-Code-Modifying Invariant (HARD BLOCK) prohibiting QA agents from modifying production or test code.
-  - Formalized §8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
-- **EARS Grammar Distinction & Subagent Prompt Grounding (`framework/AI_ASSISTANT_RULES.md` v1.3)**:
-  - Enforced structural distinction between `WHILE` (normal operating states) and `IF` (error/unwanted condition triggers).
-  - Added the Subagent Prompt ID Grounding Invariant requiring literal upstream element IDs in delegation prompts.
-- **TDD Failure Taxonomy & IPLAN Consistency (`framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md` v1.1 §5)**:
-  - Codified failure taxonomy distinguishing application defects (`failed`) from environment crashes (`infra_error`).
-  - Formalized cross-layer consistency rules (status propagation alignment, strict file ownership, identifier agreement).
-- **Five New Project Adaptation Scaffolding Blueprints (`framework/governance/aidoc/`)**:
-  - `AIDOC-CI-SMART-ROUTING-TEMPLATE.md`: Reference GitHub Actions change-detection workflow and anti-deadlock configuration.
-  - `AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`: Step-by-step runbook for forward branch merges, Class 1 conflict resolution, and auto-merge re-arming.
-  - `AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`: Reference multi-agent dual self-review protocol, 4-lens rubric, and commit audit phrases.
-  - `AIDOC-QA-PROTOCOL-TEMPLATE.md`: Acceptance testing protocol, structured defect emittance template, and post-merge issue closure report contract.
-  - `AIDOC-BROWSER-TESTING-TEMPLATE.md`: Headless Playwright/browser testing architecture, dynamic port sandboxing, and trace/video artifact retention.
-- **Scaffolding Inventory & Adaptation Guidance**:
-  - Updated `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` (v2.3) and `docs/ADAPTATION-GUIDE.md` (v1.2).
-  - Registered all 5 new templates in `tests/conformance/test_governance.py` (`EXPECTED_FILES`).
-  - Ratified Decision `GD-63` in `framework/governance/DECISIONS.md` (v1.24).
-
----
+| Framework Version | 0.87.0 |
 
 ## [0.87.0] — 2026-10-06
 

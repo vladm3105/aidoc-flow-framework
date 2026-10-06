@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.3 |
+| Version | 2.2 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | <your name> |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.87.0 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -88,22 +88,11 @@ This project pins **aidoc-flow-framework X.Y.Z** (declared in
 
 
 
-## Autonomous Execution & Operational Standards
+## Autonomous Execution Flow
 
-Autonomous agents operate under six core project governance blueprints initialized under `<project>/.aidoc/project/governance/`:
-
-1. **CHG Execution Flow (`CHG_EXECUTION_FLOW.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.
-2. **CI Smart Routing (`CI_SMART_ROUTING.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md`](AIDOC-CI-SMART-ROUTING-TEMPLATE.md). Codifies the Anti-Deadlock Invariant (zero trigger-level path filtering on required checks) and internal path-filter job routing.
-3. **Conflict Resolution (`CONFLICT_RESOLUTION.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`](AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md). Codifies Class 1 additive vs Class 2 semantic conflict handling, zero force-pushes, and mandatory auto-merge re-arming.
-4. **Self-Review Loop (`SELF_REVIEW_LOOP.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`](AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md). Codifies the Two-Stage Review & Fix loop (Stage A specs vs Stage B PRs), strict independence (Judge $\neq$ Generator), and the 4-lens rubric.
-5. **QA Protocol (`QA_PROTOCOL.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`](AIDOC-QA-PROTOCOL-TEMPLATE.md). Codifies the Tripartite Engineering Architecture, the strict non-code-modifying invariant for QA, and post-merge closing reports.
-6. **Browser Testing (`BROWSER_TESTING.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](AIDOC-BROWSER-TESTING-TEMPLATE.md). Codifies headless browser execution, multi-worktree port sandboxing, and trace/screenshot artifact retention.
+Autonomous agents execute change requests following the project execution flow standard.
+Initialize `<project>/.aidoc/project/governance/CHG_EXECUTION_FLOW.md` from the canonical blueprint:
+[`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md).
 
 ## Seed tier bootstrapping
 

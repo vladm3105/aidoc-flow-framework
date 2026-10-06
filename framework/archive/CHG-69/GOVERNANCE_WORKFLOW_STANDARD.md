@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.3 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.87.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -256,35 +256,7 @@ Change Requests and Implementation Plans conclude deterministically through the 
 
 ---
 
-## 8. Tripartite Engineering Architecture & Separation of Concerns
-
-Conforming multi-agent project implementations separate software delivery responsibilities across three autonomous, non-overlapping engineering roles:
-
-| Engineering Role | Primary Mandate | Allowed File Mutations | Prohibited Actions |
-|---|---|---|---|
-| **DEV (Developer / Author)** | Implements features, refactors architecture, fixes code defects | Production codebase, internal unit test fixtures, authorized IPLAN `file_manifest` targets | Approving own changes, self-merging without green status checks, modifying QA acceptance suites |
-| **SDET (Software Development Engineer in Test)** | Authors automated test harnesses, mock fixtures, synthetic test runners, and performance benchmarks | Test suites (`tests/*`), test scaffolding, CI testing scripts, benchmark harnesses | Directly mutating production application logic to force tests to pass |
-| **QA (Quality Assurance & Acceptance Verifier)** | Executes independent user-journey acceptance tests, end-to-end browser scenarios, compliance audits | Verification reports, test run logs, QA issue comments, failure reproduction artifacts | **HARD BLOCK: Zero production or test code mutations** (QA observes, tests, and reports; never writes fixes) |
-
-### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA)
-
-To prevent conflict of interest, test dilution, and cosmetic patching:
-1. **Observation & Verification Only:** QA personas and acceptance runners operate in a read-only capacity with respect to production codebases and test harness implementation.
-2. **Zero In-Place Fixes:** When an acceptance test fails, QA agents MUST NOT modify code or adjust assertions to mask the defect.
-3. **Defect Ticket & Repro Generation:** QA agents capture structured reproduction evidence (logs, DOM snapshots, network traces, failing payloads), formulate an actionable defect finding, and surface it back to the DEV persona or open a governed issue.
-
-### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract
-
-When a pull request merges into the target integration branch (`dev`), the delivering agent MUST close the loop by posting an explicit Implementation and Verification Report on the associated tracking issue before closing it:
-
-1. **Deterministic Close Reference:** PR descriptions must carry explicit `Closes #N` or `Fixes #N` keywords for each resolved issue.
-2. **Post-Merge Closing Comment:** The delivering agent must post a closing comment to the issue documenting:
-   - **Delivered Scope:** Concrete summary of implemented features or bug fixes.
-   - **Verification Evidence:** Green CI run links or IDs, test execution summary, and merge commit SHA on `origin/dev`.
-   - **Artifact Links:** Clickable links to updated SDD artifacts (SPEC, IPLAN, EVAL report).
-3. **Safe Publishing Mechanics:** Agents must author comment bodies via files (`gh issue comment <N> --body-file <file>`), verifying that the comment published with non-zero length.
-
-## 9. Review Log
+## 8. Review Log
 
 - **2026-10-05 — Pass 1 (Architectural Integrity & Primitives)**:
   - *Gap found*: Lack of formal human-in-the-loop primitive for founder OK gates in `AGENTS.md`.
@@ -320,6 +292,3 @@ When a pull request merges into the target integration branch (`dev`), the deliv
 - **2026-10-06 — Pass 10 (Autonomous Circuit Breakers & Terminal EVAL Gate)**:
   - *Gap found*: Circuit breaker thresholds (review-fix caps, CI polling timeouts, CI failure retries, git conflict classes, monotonic step locks) were dispersed across multiple documents without a unified operational matrix.
   - *Fix*: Codified Section 6 Multi-Tier Circuit Breakers Matrix (CB-1 through CB-6) and formalized Section 7 Layer 10 Terminal Lifecycle Gate Contract.
-- **2026-10-06 — Pass 11 (Tripartite Separation of Concerns & Issue Closure Contract)**:
-  - *Gap found*: Lack of clear boundaries between DEV, SDET, and QA personas, creating risks of QA modifying production code during acceptance test runs. Missing formal contract for post-merge issue closure reports.
-  - *Fix*: Codified Section 8 Tripartite Engineering Architecture with strict non-code-modifying invariant for QA, and formalized Section 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
