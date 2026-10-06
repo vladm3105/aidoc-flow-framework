@@ -16,11 +16,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.1 |
+| Framework Version | 0.88.2 |
 
 
 Visual representation of the Change Management gate system (5 artifact gates GATE-01/03/06/08/CODE + the GATE-SPEC meta gate) across the SDD workflow.
@@ -190,6 +190,76 @@ EXECUTION Change (IPLAN change)
             Code
 ```
 
+### 4.5 The 6 Traversal-Path Graph Lifecycles
+
+```mermaid
+stateDiagram-v2
+    direction TB
+    [*] --> Classification
+
+    state Classification {
+        direction LR
+        SelectFlow: Determine Traversal Path
+    }
+
+    SelectFlow --> HOTFIX: P1 / Security Incident
+    SelectFlow --> CODE2C: Routine Code Defect / Refactor
+    SelectFlow --> CODE2S: Code Bug Root-Caused Upstream
+    SelectFlow --> DIR2C: Isolated Doc / Tooling / Fast-Lane
+    SelectFlow --> SEED2C: Seed-Driven Bootstrap
+    SelectFlow --> SDD2C: Upstream / Midstream / Design Cascade
+
+    state HOTFIX {
+        HF_Emergency: Emergency Bypass
+        HF_GateCode: GATE-CODE (Deploy Hotfix)
+        HF_PostMortem: Post-Mortem & Retroactive CHG
+        HF_Emergency --> HF_GateCode --> HF_PostMortem
+    }
+
+    state CODE2C {
+        C2C_GateCode: GATE-CODE (IPLAN Execution)
+        C2C_Verify: Verification & CI Green
+        C2C_GateCode --> C2C_Verify
+    }
+
+    state CODE2S {
+        C2S_Detect: GATE-CODE (Defect Discovered)
+        C2S_Bubble: Bubble-Up Analysis
+        C2S_Cascade: Downstream Re-alignment
+        C2S_Detect --> C2S_Bubble --> C2S_Cascade
+    }
+
+    state DIR2C {
+        DIR_Gate08: GATE-08 (Direct IPLAN)
+        DIR_GateCode: GATE-CODE (Implementation)
+        DIR_Gate08 --> DIR_GateCode
+    }
+
+    state SEED2C {
+        S2C_Gate01: GATE-01 (BRD/PRD)
+        S2C_Gate03: GATE-03 (EARS/BDD/ADR)
+        S2C_Gate06: GATE-06 (SPEC/TDD)
+        S2C_Gate08: GATE-08 (IPLAN)
+        S2C_GateCode: GATE-CODE (Code)
+        S2C_Gate01 --> S2C_Gate03 --> S2C_Gate06 --> S2C_Gate08 --> S2C_GateCode
+    }
+
+    state SDD2C {
+        SDD_Entry: Entry (GATE-01 / 03 / 06)
+        SDD_Cascade: Downstream SDD Layers
+        SDD_Gate08: GATE-08 (IPLAN)
+        SDD_GateCode: GATE-CODE (Code)
+        SDD_Entry --> SDD_Cascade --> SDD_Gate08 --> SDD_GateCode
+    }
+
+    HOTFIX --> [*]
+    CODE2C --> [*]
+    CODE2S --> [*]
+    DIR2C --> [*]
+    SEED2C --> [*]
+    SDD2C --> [*]
+```
+
 ## 5. Emergency Bypass Flow
 
 ```
@@ -276,31 +346,33 @@ Legend:
 
 ### 8.1 Gate Selection Guide
 
-| Change Origin | Entry Gate | Cascade Path |
-|---------------|------------|--------------|
-| Business requirement | GATE-01 | 01 → 03 → 06 → 08 → CODE |
-| Requirement/architecture | GATE-03 | 03 → 06 → 08 → CODE |
-| SPEC/TDD change | GATE-06 | 06 → 08 → CODE |
-| IPLAN change | GATE-08 | 08 → CODE |
-| Code fix | GATE-CODE | CODE only |
-| Security vulnerability | GATE-03 or EMERGENCY | Depends on CVSS |
-| P1 Production incident | EMERGENCY | Bypass + Post-mortem |
-| `framework/` spec change | GATE-SPEC | Meta — no cascade; consumers re-sync |
+| Change Origin | Traversal Path | Entry Gate | Cascade Path |
+|---------------|----------------|------------|--------------|
+| Business requirement | `SDD2C` (`sdd_to_code`) | GATE-01 | 01 → 03 → 06 → 08 → CODE |
+| Requirement/architecture | `SDD2C` (`sdd_to_code`) | GATE-03 | 03 → 06 → 08 → CODE |
+| SPEC/TDD change | `SDD2C` (`sdd_to_code`) | GATE-06 | 06 → 08 → CODE |
+| Execution / Direct change | `DIR2C` (`iplan_to_code`) | GATE-08 | 08 → CODE |
+| Routine code bugfix | `CODE2C` (`code_to_code`) | GATE-CODE | CODE only |
+| Code defect root-caused upstream | `CODE2S` (`code_to_sdd`) | GATE-CODE | CODE → Bubble up to 08/06/03/01 → Cascade |
+| Seed bootstrap | `SEED2C` (`seed_to_code`) | GATE-01 | 01 → 03 → 06 → 08 → CODE |
+| Security vulnerability (standard) | `SDD2C` (`sdd_to_code`) | GATE-03 | Depends on CVSS |
+| P1 Production incident | `HOTFIX` (`hotfix`) | EMERGENCY | Bypass → GATE-CODE → Post-mortem |
+| `framework/` spec change | `GATE-SPEC` | Meta | Meta — no cascade; consumers re-sync |
 
 ### 8.2 Gate Entry Points by Change Source
 
-| Change Source | Primary Gate | Conditions |
-|---------------|--------------|------------|
-| Upstream | GATE-01 | Always |
-| Midstream | GATE-03 | Requirements/Architecture changes |
-| Design | GATE-06 | SPEC/TDD changes |
-| Execution | GATE-08 | IPLAN changes |
-| Downstream | GATE-CODE | Implementation fixes |
-| External | GATE-03 | Security/API changes |
-| External | EMERGENCY | Critical vulnerabilities |
-| Feedback | GATE-CODE | Defect fixes |
-| Feedback | EMERGENCY | P1 incidents |
-| Spec | GATE-SPEC | Changes to the `framework/` spec (meta) |
+| Change Source | Primary Gate | Traversal Path | Conditions |
+|---------------|--------------|----------------|------------|
+| Upstream | GATE-01 | `SDD2C` / `SEED2C` | Always |
+| Midstream | GATE-03 | `SDD2C` | Requirements/Architecture changes |
+| Design | GATE-06 | `SDD2C` | SPEC/TDD changes |
+| Execution | GATE-08 | `DIR2C` | Isolated docs/tooling/direct fixes |
+| Downstream | GATE-CODE | `CODE2C` / `CODE2S` | Implementation fixes / RCA |
+| External | GATE-03 | `SDD2C` | Security/API changes |
+| External | EMERGENCY | `HOTFIX` | Critical vulnerabilities |
+| Feedback | GATE-CODE | `CODE2C` / `CODE2S` | Defect fixes |
+| Feedback | EMERGENCY | `HOTFIX` | P1 incidents |
+| Spec | GATE-SPEC | N/A (Meta) | Changes to the `framework/` spec (meta) |
 
 ---
 
@@ -312,4 +384,3 @@ Legend:
 - [GATE-CODE_IMPLEMENTATION.md](./GATE-CODE_IMPLEMENTATION.md)
 - [GATE-SPEC_FRAMEWORK.md](./GATE-SPEC_FRAMEWORK.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
-```

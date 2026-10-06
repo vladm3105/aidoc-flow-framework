@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.1 |
+| Framework Version | 0.88.2 |
 
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
