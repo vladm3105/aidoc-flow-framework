@@ -80,12 +80,6 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 Overlays: markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
 plan-of-record for a single change.
 
-### Dual-Template Architecture (Standard vs. Workflow-Driven)
-
-Every layer provides two authoring templates:
-- **Standard Templates** (`{TYPE}-TEMPLATE.yaml`): Declarative, structured specifications for standard features.
-- **Workflow Templates** (`{TYPE}-SWF-TEMPLATE.yaml`): Workflow-driven specifications employing the **Hybrid Envelope Architecture** (`subtype: workflow`) to house embedded [CNCF Serverless Workflow](https://serverlessworkflow.io/) v0.8 DSL state machines. These govern complex, long-running, multi-step, or compensatory lifecycle processes (e.g., strategic ROI gating, acceptance test runners, ADR decision matrices, saga rollbacks) while maintaining 100% structural schema compliance with `sdd_doc_lint`.
-
 Document numbers are **per-layer counters with no cross-layer alignment**; an upstream
 item may fan out to many downstream documents. Lineage is carried by `@`-tags and
 content-hash element IDs, never by matching numbers.
@@ -299,11 +293,9 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 
 | Tool | Purpose |
 |------|---------|
-| `sdd_doc_lint/` | Structural linter — 320+ deterministic checks against layer standard and workflow templates |
+| `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against layer templates |
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 | `hooks/ch-gate-check.sh` | PreCommit advisory hook (also pre-commit) — warns on code without an active CHG |
-| `hooks/sync-version-refs.sh` | Version synchronization hook — propagates framework version across playbooks and metadata |
-| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (12 cataloged workflows) |
 
 The former platforms (Hermes MCP server, Claude Code plugin) were archived on
 2026-09-07 and their code has since been removed — no live platform code
@@ -312,14 +304,18 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.86.1`**.
-The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), establishing vendor-neutral declarative state machines and the Dual-Template Architecture. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
+the project is now in **post-cutover development** (latest project release
+`0.67.1`), tracking framework spec `0.67.1`. Platforms (Hermes, Claude Code
+plugin) have been archived — the framework is now self-sufficient for any
+AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-10-06); it is not
-> wired into the version-sync hook. For live version state see `framework/VERSION`.*
+> *This overview is a point-in-time snapshot (as of 2026-09-30); it is not
+> wired into the version-sync hook. For live version state see the per-package
+> `VERSION` files.*
 
-Development is tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
-the live document-of-record for spec changes is [`framework/CHANGELOG.md`](framework/CHANGELOG.md) (the root `CHANGELOG.md` is a frozen tombstone).
+Post-v1.0 development is tracked in
+[GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
+per-release detail is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
@@ -334,20 +330,14 @@ for the vulnerability-reporting policy.
 
 ## Documentation
 
-- [`framework/CHANGELOG.md`](framework/CHANGELOG.md) — live document-of-record for spec changes (GATE-SPEC-E008); root `CHANGELOG.md` is a frozen tombstone.
-- [`framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`](framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) — end-to-end SDD practitioner guide covering dual-template architecture, structural linting, and saga rollback compensation.
-- [`framework/AI_ASSISTANT_RULES.md`](framework/AI_ASSISTANT_RULES.md) — instructions for AI coding assistants on selecting templates, respecting gates, and preventing drift.
-- [`framework/README.md`](framework/README.md) — the engine-agnostic SDD specification and layer architecture.
-- [`framework/governance/README.md`](framework/governance/README.md) — governance policies, change management (CHG), and catalog of 12 CNCF Serverless Workflows.
-- [`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md`](framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md) — normative CNCF Serverless Workflow standard and catalog.
-- [`framework/governance/CHG_REQUEST_FLOWS.md`](framework/governance/CHG_REQUEST_FLOWS.md) — change request classification and flow routing (F1–F4, Emergency, Type-R).
-- [`framework/governance/WORKTREE_FLOW.md`](framework/governance/WORKTREE_FLOW.md) — per-task worktree invariants and order guards.
-- [`framework/governance/aidoc/AIDOC.md`](framework/governance/aidoc/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
+- `CHANGELOG.md` — project-level changelog.
 - `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
 - `docs/ADAPTATION-GUIDE.md` — how a new project adapts the framework (`.aidoc/` layer, profile knobs, overrides).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
+- `framework/README.md` — the engine-agnostic SDD specification.
+- [`framework/governance/aidoc/AIDOC.md`](framework/governance/aidoc/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
 - [`plans/ACCEPTANCE-HISTORY.md`](plans/ACCEPTANCE-HISTORY.md) — retired acceptance-test methodology (moved from `tests/ACCEPTANCE.md`, CHG-08 #670).
 - [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
 - [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.

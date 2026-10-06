@@ -1,0 +1,145 @@
+# =============================================================================
+#  CHG-67: Synchronize root README with framework 0.86.1, CNCF workflows,
+#  and live changelog pointer
+# =============================================================================
+#  Flow: change_source spec → GATE-SPEC meta gate (non-normative doc sync).
+#  C1 per GATE-SPEC-E003; docs-only non-normative changes to root README.md.
+#  IPLAN: framework/archive/CHG-67/IPLAN-67.yaml (authoring gated after approval)
+#  Issue: #927 ([docs] Synchronize root README with 0.86.1, CNCF workflows, and live changelog)
+# =============================================================================
+
+id: CHG-67
+title: "Synchronize root README with framework 0.86.1, CNCF workflows, and live changelog pointer"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-06"
+  framework_version: "0.86.1"
+  change_level:
+    value: C1
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-67"
+  status: Implemented
+  change_level: C1
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: none
+  version_action: amend
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-06T00:00:00Z"
+  date_approved: "2026-10-06T00:00:00Z"
+  date_implemented: "2026-10-06T00:00:00Z"
+  supersedes:
+    - "README.md (framework/archive/CHG-67/README.md)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Update root README.md to reflect framework version 0.86.1, document the Dual-Template Architecture (standard vs workflow), clarify the live document-of-record changelog pointer, and expand documentation index."
+  what: "Updates root README.md: (1) updates Status section to reflect framework 0.86.1 snapshot (as of 2026-10-06) and 100% completion of CNCF Serverless Workflow v0.8 adoption, (2) adds Dual-Template Architecture notes to The Layers overview, (3) adds hooks/sync-version-refs.sh to Tooling, (4) clarifies changelog pointers to framework/CHANGELOG.md and explains root CHANGELOG.md is a frozen tombstone, and (5) expands Documentation index to link SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, AI_ASSISTANT_RULES.md, GOVERNANCE_WORKFLOW_STANDARD.md, WORKTREE_FLOW.md, and CHG_REQUEST_FLOWS.md."
+  why: "Eliminates documentation drift on the repository entry point following full CNCF Serverless Workflow adoption and version advancements to 0.86.1. Issue #927."
+  trigger: "User request to check and update root README.md + Issue #927."
+  scope:
+    in:
+      - "README.md: status, layers table, tooling, changelog references, and documentation hub"
+    out:
+      - "framework/ (already updated and clean at 0.86.1)"
+      - "AGENTS.md (working agreements verified intact)"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "README.md"
+    action: amend
+    archive_path: "framework/archive/CHG-67/README.md"
+    new_version: "1.1"
+    changes: "Synchronize status with 0.86.1, document dual-template architecture, update changelog pointers and docs index"
+  - layer: "09_CHG"
+    document: "framework/archive/CHG-67/IPLAN-67.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for CHG-67"
+
+# =============================================================================
+# Section 4A: Module Lifecycle — OMITTED (no docs/modules/ tree in this repo)
+# =============================================================================
+
+# =============================================================================
+# Section 4B: Seed Scope (Phase 0a)
+# =============================================================================
+
+seed_scope:
+  decision: no-change
+  rationale: "No seed/ tree in this repo (verified); SEED_CONTRACT seed paths address consumer corpora, none present here. Nothing to create or supersede."
+  checked:
+    - "framework/governance/SEED_CONTRACT.md (contract read; repo-local seed-file search verified empty)"
+
+# =============================================================================
+# Section 5: Implementation (SDD-first: sdd_lifecycle steps before iplan_creation)
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change original to framework/archive/CHG-67/README.md"
+      phase: "sdd_lifecycle"
+      artifact: "README.md"
+      archive_path: "framework/archive/CHG-67/README.md"
+      new_version: "1.1"
+      current_version: "1.0"
+      status: Completed
+    - step: "Update root README.md with 0.86.1 status, dual templates, changelog pointers, and expanded documentation links"
+      phase: "sdd_lifecycle"
+      artifact: "README.md"
+      archive_path: "framework/archive/CHG-67/README.md"
+      new_version: "1.1"
+      current_version: "1.0"
+      status: Completed
+    - step: "Author authorizing IPLAN-67.yaml under framework/archive/CHG-67/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-67/IPLAN-67.yaml"
+      archive_path: null
+      new_version: "1.0"
+      current_version: null
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  suite: conformance
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-67/CHG-67.yaml"
+    - "pre-commit run --all-files"
+  evidence:
+    conformance_suite: "PASS"
+    lint_check: "PASS"
+
+# =============================================================================
+# Section 7: Rollback Strategy
+# =============================================================================
+
+rollback:
+  strategy: git-revert
+  archive_recovery:
+    source: "framework/archive/CHG-67/"
+    target: "README.md"
+  trigger: "Linting error, broken links, or markdownlint regression"
