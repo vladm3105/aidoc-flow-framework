@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: End-to-End Browser Testing & Visual Verification
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Browser Automation, Visual Regression & Headless Testing for `[Project Name]`
 **Governing Rules:** `GOVERNANCE_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`

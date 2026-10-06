@@ -111,6 +111,8 @@ change_control:
   #   In-Progress — Implementation underway
   #   Implemented — Code merged, SDD docs updated
   #   Completed   — Verification passed, final status
+  flow: null  # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: null  # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
   change_level: C2  # C1 | C2 | C3 | Emergency (Note: change_source: spec requires >= C2)
   change_source: null  # upstream | midstream | design | execution | external | feedback | reconciliation | direct | spec
   entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC (every C1 routes GATE-CODE via scoped IPLAN — no None path post-seed, CHG-12)

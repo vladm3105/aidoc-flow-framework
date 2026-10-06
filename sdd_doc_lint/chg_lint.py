@@ -963,6 +963,40 @@ def check_flow_misclassification(
             if fallback not in (None, "null", ""):
                 source = fallback
 
+    flow = control.get("flow")
+    flow_code = control.get("flow_code")
+    valid_flows = {
+        "hotfix",
+        "code_to_sdd",
+        "code_to_code",
+        "seed_to_code",
+        "iplan_to_code",
+        "sdd_to_code",
+    }
+    valid_flow_codes = {"HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"}
+    flow_code_map = {
+        "hotfix": "HOTFIX",
+        "code_to_sdd": "CODE2S",
+        "code_to_code": "CODE2C",
+        "seed_to_code": "SEED2C",
+        "iplan_to_code": "DIR2C",
+        "sdd_to_code": "SDD2C",
+    }
+    if flow is not None and str(flow).strip() not in ("", "null"):
+        if flow not in valid_flows:
+            errors.append(f"CHG-L013: invalid flow '{flow}'. Must be one of {sorted(valid_flows)}")
+    if flow_code is not None and str(flow_code).strip() not in ("", "null"):
+        if flow_code not in valid_flow_codes:
+            errors.append(
+                f"CHG-L013: invalid flow_code '{flow_code}'. Must be one of {sorted(valid_flow_codes)}"
+            )
+    if flow in flow_code_map and flow_code in valid_flow_codes:
+        if flow_code_map[flow] != flow_code:
+            errors.append(
+                f"CHG-L013: flow '{flow}' does not match flow_code '{flow_code}' "
+                f"(expected '{flow_code_map[flow]}')"
+            )
+
     impl = data.get("implementation", {})
     steps: list[dict[str, Any]] = []
     artifacts: list[dict[str, Any]] = []
@@ -995,15 +1029,15 @@ def check_flow_misclassification(
     if source == "feedback" and not has_iplan_ref:
         errors.append(
             "CHG-L013: code/script manifest with source feedback but no IPLAN reference — "
-            "post-completion repairs require a bugfix-subtype IPLAN (parent_iplan + source_chg, F4); "
+            "post-completion repairs require a bugfix-subtype IPLAN (parent_iplan + source_chg, CODE2C/F4); "
             "pre-completion fixes belong on the active IPLAN itself"
         )
         return
     errors.append(
         "CHG-L013: code/script manifest with empty SDD lifecycle but change_source is not "
         f"'direct' and no IPLAN reference (source={source}) — suspected misclassified flow: "
-        "F2 needs source direct + scoped IPLAN, F3 needs the SDD cascade, "
-        "F4 needs a bugfix-subtype IPLAN with parent_iplan"
+        "DIR2C (F2) needs source direct + scoped IPLAN, SEED2C (F3) needs the SDD cascade, "
+        "CODE2C (F4) needs a bugfix-subtype IPLAN with parent_iplan"
     )
 
 

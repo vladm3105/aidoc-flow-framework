@@ -1,0 +1,321 @@
+id: chg-request-flow
+name: Change Request Governance Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing change classification (Emergency, Type-R, F1-F4),
+  gate transitions (GATE-01 through GATE-CODE, GATE-SPEC), SDD cascades, IPLAN authoring,
+  and landing verification per CHG_REQUEST_FLOWS.md and AGENTS.md.
+start: ClassifyChangeTrigger
+
+states:
+  - name: ClassifyChangeTrigger
+    type: operation
+    actions:
+      - name: inspectChangeScope
+        functionRef:
+          refName: runClassificationRouter
+          arguments:
+            flow_order: ["Emergency", "Type-R", "F4", "F3", "F2", "F1"]
+            governance_contract: "framework/governance/CHG_REQUEST_FLOWS.md"
+    transition: RouteByClassification
+
+  - name: RouteByClassification
+    type: switch
+    dataConditions:
+      - condition: "${ .classification == 'Emergency' }"
+        transition: ExecuteEmergencyFix
+      - condition: "${ .classification == 'Type-R' }"
+        transition: ReconcileCodebase
+      - condition: "${ .classification == 'F4' }"
+        transition: InitiateBugfixFlow
+      - condition: "${ .classification == 'F3' }"
+        transition: InitiateBrownfieldFlow
+      - condition: "${ .classification == 'F2' }"
+        transition: InitiateDirectRequestFlow
+      - condition: "${ .classification == 'F1' }"
+        transition: InitiateGreenfieldFlow
+    defaultCondition:
+      transition: EscalateUnknownTrigger
+
+  # --- Non-Flow Path: Emergency ---
+  - name: ExecuteEmergencyFix
+    type: operation
+    actions:
+      - name: deployHotfix
+        functionRef:
+          refName: executeImmediateRepair
+    transition: DraftEmergencyPostMortem
+
+  - name: DraftEmergencyPostMortem
+    type: operation
+    actions:
+      - name: authorPostMortem
+        functionRef:
+          refName: draftPostMortemAndCHG
+          arguments:
+            deadline_hours: 48
+            template: "framework/templates/POST_MORTEM-TEMPLATE.md"
+    end: true
+
+  # --- Non-Flow Path: Type-R Reconciliation ---
+  - name: ReconcileCodebase
+    type: operation
+    actions:
+      - name: reverseEngineerSpecs
+        functionRef:
+          refName: runReverseSDDCascade
+          arguments:
+            order: ["Code", "TDD", "SPEC", "BDD", "EARS"]
+    end: true
+
+  # --- Flow F2: Direct Request ---
+  - name: InitiateDirectRequestFlow
+    type: operation
+    actions:
+      - name: authorDirectCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "direct"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+            sdd_lifecycle: []
+    transition: ValidateCHGDirect
+
+  - name: ValidateCHGDirect
+    type: switch
+    dataConditions:
+      - condition: "${ .lint_results.errors == 0 }"
+        transition: AuthorScopedIPLAN
+    defaultCondition:
+      transition: RejectCHGDirect
+
+  - name: AuthorScopedIPLAN
+    type: operation
+    actions:
+      - name: draftScopedIPLAN
+        functionRef:
+          refName: draftIPLANDocument
+          arguments:
+            shape: "scoped"
+    transition: ExecuteDirectChanges
+
+  - name: ExecuteDirectChanges
+    type: operation
+    actions:
+      - name: applyModifications
+        functionRef:
+          refName: executeOwnedFileEdits
+      - name: runCoveringTests
+        functionRef:
+          refName: executeVerificationSuite
+    transition: DirectCloseout
+
+  - name: DirectCloseout
+    type: operation
+    actions:
+      - name: closeDirectArtifacts
+        functionRef:
+          refName: markCompletedAndAudit
+    end: true
+
+  - name: RejectCHGDirect
+    type: operation
+    actions:
+      - name: reportLintErrors
+        functionRef:
+          refName: logGovernanceRejection
+    end:
+      terminate: true
+
+  # --- Flow F4: Bugfix on Implemented IPLAN ---
+  - name: InitiateBugfixFlow
+    type: operation
+    actions:
+      - name: authorBugfixCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "feedback"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+    transition: AuthorBugfixIPLAN
+
+  - name: AuthorBugfixIPLAN
+    type: operation
+    actions:
+      - name: draftBugfixIPLAN
+        functionRef:
+          refName: draftIPLANDocument
+          arguments:
+            shape: "bugfix-subtype"
+            requires_parent_iplan: true
+    transition: ExecuteBugfix
+
+  - name: ExecuteBugfix
+    type: operation
+    actions:
+      - name: patchDefect
+        functionRef:
+          refName: executeOwnedFileEdits
+      - name: runRegressionSuite
+        functionRef:
+          refName: executeVerificationSuite
+    transition: BugfixCloseout
+
+  - name: BugfixCloseout
+    type: operation
+    actions:
+      - name: closeBugfixArtifacts
+        functionRef:
+          refName: markCompletedAndAudit
+    end: true
+
+  # --- Flow F3: Brownfield Behavior Change ---
+  - name: InitiateBrownfieldFlow
+    type: operation
+    actions:
+      - name: authorBrownfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "${ .source_layer }"
+            change_level: "${ .computed_level }"
+    transition: SeedModuleSyncCheckpoint
+
+  - name: SeedModuleSyncCheckpoint
+    type: switch
+    dataConditions:
+      - condition: "${ .seed_scope.checked == true and .module_sync.complete == true }"
+        transition: ExecuteSDDCascade
+    defaultCondition:
+      transition: RejectBrownfieldGate
+
+  - name: RejectBrownfieldGate
+    type: operation
+    actions:
+      - name: logSeedModuleRejection
+        functionRef:
+          refName: logGovernanceRejection
+    end:
+      terminate: true
+
+  # --- Flow F1: Greenfield Development ---
+  - name: InitiateGreenfieldFlow
+    type: operation
+    actions:
+      - name: authorGreenfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "upstream"
+            change_level: "C3"
+            entry_gate: "GATE-01"
+    transition: AwaitGate01Approval
+
+  - name: AwaitGate01Approval
+    type: callback
+    action:
+      name: requestFounderOrArchitectSignoff
+      functionRef:
+        refName: promptGovernanceReviewer
+    eventRef: GateApprovalEvent
+    transition: EvaluateGate01Approval
+
+  - name: EvaluateGate01Approval
+    type: switch
+    dataConditions:
+      - condition: "${ .gate_approval.approved == true }"
+        transition: ExecuteFullSDDCascade
+    defaultCondition:
+      transition: RejectGreenfieldGate
+
+  - name: RejectGreenfieldGate
+    type: operation
+    actions:
+      - name: logGate01Rejection
+        functionRef:
+          refName: logGovernanceRejection
+    end:
+      terminate: true
+
+  # --- SDD Cascades & Implementation ---
+  - name: ExecuteSDDCascade
+    type: operation
+    actions:
+      - name: updateAffectedLayers
+        functionRef:
+          refName: cascadeLayerUpdates
+          arguments:
+            scope: "affected-and-below"
+    transition: AuthorFullIPLAN
+
+  - name: ExecuteFullSDDCascade
+    type: operation
+    actions:
+      - name: execute10LayerAuthoring
+        functionRef:
+          refName: runFullSDDChain
+          arguments:
+            layers: ["01_BRD", "02_PRD", "03_EARS", "04_BDD", "05_ADR", "06_SPEC", "07_TDD"]
+    transition: AuthorFullIPLAN
+
+  - name: AuthorFullIPLAN
+    type: operation
+    actions:
+      - name: draftFullIPLAN
+        functionRef:
+          refName: draftIPLANDocument
+          arguments:
+            shape: "full"
+            status: "In Progress"
+    transition: ExecuteFullImplementation
+
+  - name: ExecuteFullImplementation
+    type: operation
+    actions:
+      - name: implementCodeSteps
+        functionRef:
+          refName: executeOwnedFileEdits
+      - name: runFullTestSuite
+        functionRef:
+          refName: executeVerificationSuite
+    transition: EvaluateGateCode
+
+  - name: EvaluateGateCode
+    type: switch
+    dataConditions:
+      - condition: "${ .test_suite.status == 'PASS' and .lint_suite.errors == 0 }"
+        transition: ExecuteEVALAndCloseout
+    defaultCondition:
+      transition: RejectCodeGate
+
+  - name: RejectCodeGate
+    type: operation
+    actions:
+      - name: logCodeGateFailures
+        functionRef:
+          refName: logGovernanceRejection
+    end:
+      terminate: true
+
+  - name: ExecuteEVALAndCloseout
+    type: operation
+    actions:
+      - name: performEVALCycles
+        functionRef:
+          refName: executeEVALAssessment
+      - name: markArtifactsComplete
+        functionRef:
+          refName: markCompletedAndAudit
+    end: true
+
+  - name: EscalateUnknownTrigger
+    type: operation
+    actions:
+      - name: alertGovernanceAdmin
+        functionRef:
+          refName: raiseUnknownRouterError
+    end:
+      terminate: true

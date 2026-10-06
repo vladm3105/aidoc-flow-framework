@@ -1,0 +1,111 @@
+# =============================================================================
+#  IPLAN-71: Dual-Layer Traversal-Path Graph Nomenclature for LangGraph & Rust Rig
+# =============================================================================
+
+id: IPLAN-71
+title: "Implementation Plan: Dual-Layer Traversal-Path Graph Nomenclature for LangGraph & Rust Rig"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.1"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "Completed"
+  chg_reference: "CHG-71"
+  created_at: "2026-10-06T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      description: "Update RouteByClassification router switch dataConditions to evaluate .flow and .flow_code, and align execution states with PascalCase traversal paths"
+      order: 1
+      status: DONE
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "Update §1 router selector table with 6 traversal-path rows and 5-6 letter codes, update Mermaid stateDiagram-v2, and update §6 router procedure"
+      order: 2
+      status: DONE
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "Update §3.1.3 table with Graph Code & Flow and Traversal Scope, and update router sequence prose"
+      order: 3
+      status: DONE
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "Add flow and flow_code fields to change_control"
+      order: 4
+      status: DONE
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Sync byte-identical mirror of governance CHG template"
+      order: 5
+      status: DONE
+    - path: "framework/governance/chg/README.md"
+      description: "Update Request Flows selector table to cite dual-layer graph codes"
+      order: 6
+      status: DONE
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Sync byte-identical mirror of governance CHG README"
+      order: 7
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      description: "Update Invariant 13 Approval Authority Matrix mapping C1 to DIR2C/CODE2C and C2 to CODE2S/SEED2C"
+      order: 8
+      status: DONE
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "Update check_flow_misclassification (CHG-L013) to validate flow and flow_code enums, check parity, and provide traversal-path diagnoses"
+      order: 9
+      status: DONE
+    - path: "tests/conformance/test_chg_flows_router.py"
+      description: "Add DualLayerGraphNomenclatureAgreement test suite and linter parity validation"
+      order: 10
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-65 documenting dual-layer traversal-path graph nomenclature"
+      order: 11
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "Document ratification of Dual-Layer Traversal-Path Graph Nomenclature under [0.88.1]"
+      order: 12
+      status: DONE
+
+execution_steps:
+  - id: 1
+    name: "Update CNCF Serverless Workflow state machine"
+    description: "Update RouteByClassification switch conditions in framework/governance/workflows/chg-request-flow.sw.yaml to evaluate .flow and .flow_code, and align state transitions with PascalCase operations"
+    phase: "code_implementation"
+    status: Completed
+
+  - id: 2
+    name: "Update Core Governance Specifications and Diagrams"
+    description: "Update CHG_REQUEST_FLOWS.md and DOC_GOVERNANCE_CORE.md with 6 traversal-path rows, 5-6 char graph codes, Mermaid stateDiagram-v2, and router procedures"
+    phase: "code_implementation"
+    status: Completed
+
+  - id: 3
+    name: "Update CHG Templates and Readme Mirrors"
+    description: "Add flow and flow_code to CHG-TEMPLATE.yaml and update READMEs, maintaining strict byte-identity across governance and Layer 09 mirrors"
+    phase: "code_implementation"
+    status: Completed
+
+  - id: 4
+    name: "Update Adaptation Blueprint Approval Authority Matrix"
+    description: "Update Invariant 13 in framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md to map C1/C2/C3 authority to graph codes"
+    phase: "code_implementation"
+    status: Completed
+
+  - id: 5
+    name: "Enhance Static Linter & Conformance Tests"
+    description: "Update check_flow_misclassification in sdd_doc_lint/chg_lint.py and add DualLayerGraphNomenclatureAgreement to tests/conformance/test_chg_flows_router.py"
+    phase: "code_implementation"
+    status: Completed
+
+  - id: 6
+    name: "Ratify Governance Decision GD-65 & Update Changelog"
+    description: "Add GD-65 to framework/governance/DECISIONS.md and update framework/CHANGELOG.md"
+    phase: "code_implementation"
+    status: Completed
+
+verification_commands:
+  - command: "python3 -m unittest tests/conformance/test_lint_catalog.py"
+    description: "Verify lint catalog agreement"
+  - command: "pytest tests/conformance/test_chg_flows_router.py -v"
+    description: "Verify router agreement and dual-layer graph nomenclature"
+  - command: "python3 -m unittest tests/conformance/test_spec_hygiene.py tests/conformance/test_governance.py"
+    description: "Verify spec hygiene and governance mirror consistency"

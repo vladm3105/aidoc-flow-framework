@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.3 |
+|---|---|
+| Version | 1.4 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -37,7 +37,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, dual-template architecture, immutability, validation baseline. |
 | `GOVERNANCE_WORKFLOW_STANDARD.md` | Normative standard establishing the CNCF Serverless Workflow DSL (v0.8 YAML) for modeling, validating, and executing governance flows and multi-agent lifecycle state machines. |
 | `IPLAN_WORKFLOW_STANDARD.md` | Normative standard mapping implementation planning, dependency DAGs, parallel phases, and saga rollback compensation to CNCF Serverless Workflow state machines. |
-| `WORKTREE_FLOW.md` | Order-guarded worktree isolation, autonomous feature branching, PR watch, and post-merge branch deletion lifecycle rules (§3.7 order guard). |
+| `WORKTREE_FLOW.md` | Order-guarded worktree isolation, autonomous feature branching, PR watch, and post-merge branch deletion lifecycle rules (§3.8 order guard). |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
 | `TRACEABILITY.md` | The 10-layer traceability chain, necessary-upstream tagging, and readiness gates. |
 | `TAG_SYNTAX.md` | `@`-tag form reference: per-layer punctuation, element-vs-document granularity (GD-03), pipe-delimited cardinality, the self-tag / downstream carve-outs, and the `@chg:` provenance back-reference (a non-trace tag; GD-11). |
@@ -74,15 +74,16 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 |---|---|---|
 | `brd-business-validation.sw.yaml` | Layer 01 BRD | Strategic theme ingestion, parallel value stream mapping, quantitative ROI/feasibility scoring, executive steering review callbacks, and invalidation compensation. |
 | `prd-feature-decomposition.sw.yaml` | Layer 02 PRD | Product theme ingestion, epic-to-story decomposition, quantitative RICE/WSJF scoring, threshold assertion gating, and scope freeze sagas. |
-| `ears-syntax-verification.sw.yaml` | Layer 03 EARS | 5-pattern EARS syntactic verification, cross-cutting constraint extraction, bi-directional traceability graph mapping, and defect escalation. |
+| `ears-requirements-validation.sw.yaml` | Layer 03 EARS | 5-pattern EARS syntactic verification, cross-cutting constraint extraction, bi-directional traceability graph mapping, and defect escalation. |
 | `bdd-acceptance-run.sw.yaml` | Layer 04 BDD | Stateful fixture provisioning, Given/When/Then scenario execution, threshold assertion gating, and saga rollback compensation (`RollbackStatefulChanges`). |
 | `adr-decision-analysis.sw.yaml` | Layer 05 ADR | Multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and architectural invalidation sagas. |
-| `spec-choreography-validation.sw.yaml` | Layer 06 SPEC | Distributed component interaction verification, schema compatibility checks, dead-letter routing, and compensating transactions. |
-| `tdd-cycle-orchestrator.sw.yaml` | Layer 07 TDD | Red-Green-Refactor cycle loops, fixture lifecycle isolation, regression test gating, and fixture rollback compensation. |
-| `iplan-execution-graph.sw.yaml` | Layer 08 IPLAN | Dependency DAG topological sorting, step retry strategies, parallel phase execution, and checkpoint validation. |
+| `spec-choreography-contract.sw.yaml` | Layer 06 SPEC | Distributed component interaction verification, schema compatibility checks, dead-letter routing, and compensating transactions. |
+| `tdd-test-execution.sw.yaml` | Layer 07 TDD | Red-Green-Refactor cycle loops, fixture lifecycle isolation, regression test gating, and fixture rollback compensation. |
+| `seed-to-module-decomposition.sw.yaml` | Architecture | Triple-Lens decomposition (Structure, Trust Boundaries, Process/Sequence) from Tier 1 Seed Vision into Tier 2 C4-L2 Module Containers. |
 | `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification (F1-F4), gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
-| `review-saga-orchestration.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
-| `decision-ratification.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
+| `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
+| `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
+| `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
 | `eval-verification-run.sw.yaml` | Layer 10 EVAL | Multi-tier test execution, structured error triage, threshold verification, and evidence bundling. |
 
 ## CHG Overlay (`chg/`)
@@ -129,6 +130,7 @@ without forking.
 |------|--------|
 | `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, symlink convention. |
 | `AIDOC-SCAFFOLD-TEMPLATE.md` | Template for bootstrapping a new project's `.aidoc/` directory. |
+| `README.md` | Catalog of all adaptation scaffolding templates, execution flow handbooks, and operational blueprints. |
 
 The override contract (`ADAPTATION.md` §10) governs how `.aidoc/project/`
 mirrors the framework structure and takes precedence via the discovery rule.

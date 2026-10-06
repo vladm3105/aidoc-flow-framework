@@ -1,6 +1,15 @@
 # Architecture & Operational Standard: CI Smart Routing & Anti-Deadlock Protocol
 
-**Status:** Approved · **Date:** [YYYY-MM-DD]
+## Document Control
+
+| Field | Value |
+|---|---|
+| Version | 1.1 |
+| Status | Approved |
+| Last Updated | 2026-10-06 |
+| Author | Framework Maintainer |
+| Framework Version | 0.88.1 |
+
 **Scope:** Continuous Integration & Status Check Orchestration for `[Project Name]`
 **Governing Rules:** `CI_AUTONOMOUS_PR_STANDARD.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`
 **Canonical Template:** `framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md`
@@ -38,6 +47,9 @@ on:
     branches: [dev, main]
   push:
     branches: [dev, main]
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -126,9 +138,9 @@ jobs:
           backend_res="${{ needs.backend-tests.result }}"
           frontend_res="${{ needs.frontend-tests.result }}"
 
-          for res in "" ""; do
-            if [ "" != "success" ] && [ "" != "skipped" ]; then
-              echo "❌ CI Gate Failure: Dependent job result was "
+          for res in "$backend_res" "$frontend_res"; do
+            if [ "$res" != "success" ] && [ "$res" != "skipped" ]; then
+              echo "❌ CI Gate Failure: Dependent job result was $res"
               exit 1
             fi
           done

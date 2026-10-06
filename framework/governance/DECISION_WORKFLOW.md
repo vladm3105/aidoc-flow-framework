@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 
 Defines the authorship boundary between seed, module, and SDD decision layers.
@@ -143,43 +143,51 @@ formalized in:
 
 The workflow conforms to the CNCF Serverless Workflow v0.8 specification (`specVersion: "0.8"`):
 
+<!-- @diagram: state-decision-ratification-flow -->
 ```mermaid
+---
+title: Decision Ratification & Lifecycle Flow
+---
 stateDiagram-v2
-    [*] --> ProposeDecision: Draft GD-XX
-    ProposeDecision --> ValidateStructure: Check required sections
-    ValidateStructure --> RejectDraft: Structure invalid
-    ValidateStructure --> ReviewCrewConsensus: Valid draft
-    RejectDraft --> [*]
-    ReviewCrewConsensus --> CheckConsensus: Multi-agent evaluation
-    CheckConsensus --> RejectionTerminal: Consensus rejected
-    CheckConsensus --> AwaitFounderSignOff: Consensus approved
-    AwaitFounderSignOff --> CheckFounderApproval: Event callback received
-    CheckFounderApproval --> RejectionTerminal: Founder declined
-    CheckFounderApproval --> RatifiedSeal: Founder approved
-    RatifiedSeal --> CheckSupersedes: Append to DECISIONS.md
-    CheckSupersedes --> TransitionSuperseded: Decision replaces older GD
-    CheckSupersedes --> RatificationComplete: New standalone decision
-    TransitionSuperseded --> RatificationComplete: Mark prior GD superseded
-    RatificationComplete --> [*]
-    RejectionTerminal --> [*]
+    direction TB
+
+    [*] --> AuthorDecisionDraft
+    AuthorDecisionDraft --> DispatchDecisionReviewCrew
+    DispatchDecisionReviewCrew --> EvaluateReviewConsensus
+    
+    EvaluateReviewConsensus --> ReviseDecisionDraft: Objections present
+    ReviseDecisionDraft --> DispatchDecisionReviewCrew: Re-evaluate revision
+
+    EvaluateReviewConsensus --> FounderApprovalCallback: Consensus approved
+    FounderApprovalCallback --> CheckFounderDecision: Founder event received
+
+    CheckFounderDecision --> RejectDecision: Founder declined
+    CheckFounderDecision --> LockDecisionAndStampRatification: Founder approved
+
+    LockDecisionAndStampRatification --> MonitorDecisionLifecycle
+    MonitorDecisionLifecycle --> SupersedeDecision: Decision superseded
+    MonitorDecisionLifecycle --> DecisionActiveTerminal: Active unchanged
+
+    SupersedeDecision --> [*]
+    DecisionActiveTerminal --> [*]
+    RejectDecision --> [*]
 ```
 
 ### State-to-Primitive Mapping
 
 | Workflow State | CNCF State Type | Operational Semantics |
 |---|---|---|
-| `ProposeDecision` | `operation` | Collects candidate decision draft (Context, Decision, Consequences, Alternatives) |
-| `ValidateStructure` | `switch` | Verifies presence of mandatory sections and unique GD-XX identifier |
-| `RejectDraft` | `operation` (end) | Rejects draft due to structural or metadata defects |
-| `ReviewCrewConsensus` | `parallel` | Gathers independent multi-agent evaluations from review personas |
-| `CheckConsensus` | `switch` | Evaluates whether review crew reached unanimous or qualified consensus |
-| `AwaitFounderSignOff` | `callback` | Suspends execution awaiting asynchronous human founder OK (`decisionSignOffEvent`) |
-| `CheckFounderApproval` | `switch` | Branches based on founder signature / approval decision |
-| `RatifiedSeal` | `operation` | Marks decision as Accepted, seals record with merge SHA and ISO timestamp |
-| `CheckSupersedes` | `switch` | Detects whether the new decision supersedes prior ratified decisions |
-| `TransitionSuperseded` | `operation` | Marks superseded decisions with transition pointer and reason |
-| `RatificationComplete` | `operation` (end) | Bumps `DECISIONS.md` control version, updates changelog |
-| `RejectionTerminal` | `operation` (end) | Terminal rejection state preserving audit log and rejection rationale |
+| `AuthorDecisionDraft` | `operation` | Collects candidate decision draft (Context, Decision, Consequences, Alternatives) in status Proposed |
+| `DispatchDecisionReviewCrew` | `parallel` | Dispatches independent review personas (Architect, Auditor, Security) simultaneously (`completionType: allOf`) |
+| `EvaluateReviewConsensus` | `switch` | Evaluates whether review crew reached consensus without blocking objections |
+| `ReviseDecisionDraft` | `operation` | Updates decision draft with review crew feedback before re-dispatching |
+| `FounderApprovalCallback` | `callback` | Suspends execution awaiting asynchronous human founder OK (`FounderDecisionApprovalEvent`) |
+| `CheckFounderDecision` | `switch` | Branches based on founder verdict (`APPROVED` vs declined) |
+| `LockDecisionAndStampRatification` | `operation` | Finalizes ratification, sets status to Locked, appends record to `framework/governance/DECISIONS.md` |
+| `MonitorDecisionLifecycle` | `switch` | Monitors whether the decision remains active or has been superseded by a newer decision |
+| `SupersedeDecision` | `operation` (end) | Marks decision as Superseded with pointer to replacing decision ID |
+| `DecisionActiveTerminal` | `inject` (end) | Terminal active state certifying decision is in active, locked enforcement |
+| `RejectDecision` | `operation` (end) | Terminal rejection state recording rationale and setting status to Rejected |
 
 ## Cross-References
 

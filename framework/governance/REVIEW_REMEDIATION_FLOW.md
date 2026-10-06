@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.0 |
+| Framework Version | 0.88.1 |
 
 The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -119,38 +119,52 @@ or Temporal adapters), the review and remediation lifecycle is formalized in:
 The workflow conforms to the CNCF Serverless Workflow v0.8 specification (`specVersion: "0.8"`)
 and defines the following state progression:
 
+<!-- @diagram: state-review-remediation-flow -->
 ```mermaid
+---
+title: Review, Remediation & Gate Flow
+---
 stateDiagram-v2
-    [*] --> PrepareReview: Artifact Created/Edited
-    PrepareReview --> CheckBreakCircuit
-    CheckBreakCircuit --> DispatchReviewCrew: elapsed <= SOFT_DEADLINE
-    CheckBreakCircuit --> HandlePartialTimeout: elapsed > SOFT_DEADLINE
-    DispatchReviewCrew --> SynthesizeFindings: Multi-persona review fan-in
-    SynthesizeFindings --> EvaluateGatePass: Calculate score & severity
-    EvaluateGatePass --> ApprovedDownstream: score >= gate AND no critical/medium
-    EvaluateGatePass --> CheckIterationCap: score < gate OR critical/medium findings
-    ApprovedDownstream --> [*]
-    CheckIterationCap --> RemediateArtifact: iteration < max (default 3)
-    CheckIterationCap --> EscalateToHuman: iteration >= max
-    RemediateArtifact --> CheckBreakCircuit: Re-review pass
-    EscalateToHuman --> [*]
-    HandlePartialTimeout --> [*]
+    direction TB
+
+    [*] --> PrepareReviewCrew
+    PrepareReviewCrew --> DispatchReviewCrew
+    DispatchReviewCrew --> CheckBreakCircuit: All Lenses Completed
+    
+    CheckBreakCircuit --> EmitPartialTimeoutCheckpoint: elapsed >= soft_deadline
+    CheckBreakCircuit --> SynthesizeFindingsAndScore: Within deadline
+
+    SynthesizeFindingsAndScore --> EvaluateQualityGate
+    EvaluateQualityGate --> ApproveArtifact: score >= threshold AND blocking == 0
+    EvaluateQualityGate --> EscalateToFounder: iteration >= max_iterations
+    EvaluateQualityGate --> EnterRemediationCycle: Unresolved findings
+
+    EnterRemediationCycle --> VerifyRemediationPatch: Patch Applied
+    EnterRemediationCycle --> RollbackRemediationPatch: On Patch Failure
+    RollbackRemediationPatch --> EscalateToFounder
+
+    VerifyRemediationPatch --> DispatchReviewCrew: Structural Check Passed
+
+    ApproveArtifact --> [*]
+    EscalateToFounder --> [*]
+    EmitPartialTimeoutCheckpoint --> [*]
 ```
 
 ### State-to-Primitive Mapping
 
 | Workflow State | CNCF State Type | Operational Semantics |
 |---|---|---|
-| `PrepareReview` | `operation` | Initializes saga journal, registers artifact under review, records requested crew |
-| `CheckBreakCircuit` | `switch` | Compares elapsed wall-clock against `SOFT_DEADLINE` to avoid unhandled OS SIGTERM |
+| `PrepareReviewCrew` | `inject` | Initializes saga journal, registers artifact under review, records requested crew |
 | `DispatchReviewCrew` | `parallel` | Dispatches independent review personas simultaneously (`completionType: allOf`) |
-| `SynthesizeFindings` | `operation` | Reduces persona findings into unified core (score, blocking counts, coverage) |
-| `EvaluateGatePass` | `switch` | Gates promotion: branches to approval if score ≥ threshold and no critical/medium issues |
-| `CheckIterationCap` | `switch` | Enforces 3-strike cap (`quality_loop_max_iterations`); branches to escalation if exceeded |
-| `RemediateArtifact` | `operation` | Applies localized fixes for blocking findings, increments iteration counter |
-| `ApprovedDownstream` | `operation` (end) | Seals review journal as `CLOSED`, permits downstream layer authoring |
-| `EscalateToHuman` | `operation` (end) | Transitions saga to `ESCALATED`, halts autonomous looping, alerts maintainer |
-| `HandlePartialTimeout` | `operation` (end) | Transitions saga to `PARTIAL_TIMEOUT`, writes durable checkpoint journal |
+| `CheckBreakCircuit` | `switch` | Compares elapsed wall-clock against `soft_deadline_seconds` to avoid unhandled OS SIGTERM |
+| `SynthesizeFindingsAndScore` | `operation` | Reduces persona findings into unified core (score, blocking counts, coverage) |
+| `EvaluateQualityGate` | `switch` | Gates promotion: branches to approval if score ≥ threshold and zero blocking issues, or escalation if max iterations reached |
+| `EnterRemediationCycle` | `operation` | Applies localized fixes for blocking findings, increments iteration counter (compensated by `RollbackRemediationPatch`) |
+| `VerifyRemediationPatch` | `operation` | Validates structural integrity before triggering re-review pass |
+| `RollbackRemediationPatch` | `operation` (compensation) | Reverts dirty changes if remediation patch violates structural integrity |
+| `ApproveArtifact` | `operation` (end) | Seals review journal as `CLOSED`, permits downstream layer authoring |
+| `EscalateToFounder` | `operation` (end) | Transitions saga to `ESCALATED`, halts autonomous looping, alerts maintainer |
+| `EmitPartialTimeoutCheckpoint` | `operation` (end) | Transitions saga to `PARTIAL_TIMEOUT`, writes durable checkpoint journal |
 
 ## Trigger points
 
