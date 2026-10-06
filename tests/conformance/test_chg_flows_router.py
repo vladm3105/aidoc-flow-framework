@@ -281,7 +281,14 @@ class DualLayerGraphNomenclatureAgreement(unittest.TestCase):
         text = _text(SWF_CHG)
         for code in ("HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"):
             self.assertIn(code, text)
-        for flow in ("hotfix", "code_to_sdd", "code_to_code", "seed_to_code", "iplan_to_code", "sdd_to_code"):
+        for flow in (
+            "hotfix",
+            "code_to_sdd",
+            "code_to_code",
+            "seed_to_code",
+            "iplan_to_code",
+            "sdd_to_code",
+        ):
             self.assertIn(flow, text)
 
     def test_flows_doc_carries_graph_codes(self):
@@ -289,7 +296,14 @@ class DualLayerGraphNomenclatureAgreement(unittest.TestCase):
         text = _text(FLOWS)
         for code in ("HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"):
             self.assertIn(code, text)
-        for flow in ("hotfix", "code_to_sdd", "code_to_code", "seed_to_code", "iplan_to_code", "sdd_to_code"):
+        for flow in (
+            "hotfix",
+            "code_to_sdd",
+            "code_to_code",
+            "seed_to_code",
+            "iplan_to_code",
+            "sdd_to_code",
+        ):
             self.assertIn(flow, text)
 
     def test_core_carries_graph_codes(self):
@@ -301,6 +315,7 @@ class DualLayerGraphNomenclatureAgreement(unittest.TestCase):
     def test_linter_validates_flow_and_code(self):
         """chg_lint validates flow and flow_code enums and ensures parity."""
         import sys
+
         if str(REPO_ROOT) not in sys.path:
             sys.path.insert(0, str(REPO_ROOT))
         from sdd_doc_lint.chg_lint import check_flow_misclassification
@@ -332,4 +347,3 @@ class DualLayerGraphNomenclatureAgreement(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

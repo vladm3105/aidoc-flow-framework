@@ -965,7 +965,14 @@ def check_flow_misclassification(
 
     flow = control.get("flow")
     flow_code = control.get("flow_code")
-    valid_flows = {"hotfix", "code_to_sdd", "code_to_code", "seed_to_code", "iplan_to_code", "sdd_to_code"}
+    valid_flows = {
+        "hotfix",
+        "code_to_sdd",
+        "code_to_code",
+        "seed_to_code",
+        "iplan_to_code",
+        "sdd_to_code",
+    }
     valid_flow_codes = {"HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"}
     flow_code_map = {
         "hotfix": "HOTFIX",
@@ -980,7 +987,9 @@ def check_flow_misclassification(
             errors.append(f"CHG-L013: invalid flow '{flow}'. Must be one of {sorted(valid_flows)}")
     if flow_code is not None and str(flow_code).strip() not in ("", "null"):
         if flow_code not in valid_flow_codes:
-            errors.append(f"CHG-L013: invalid flow_code '{flow_code}'. Must be one of {sorted(valid_flow_codes)}")
+            errors.append(
+                f"CHG-L013: invalid flow_code '{flow_code}'. Must be one of {sorted(valid_flow_codes)}"
+            )
     if flow in flow_code_map and flow_code in valid_flow_codes:
         if flow_code_map[flow] != flow_code:
             errors.append(
