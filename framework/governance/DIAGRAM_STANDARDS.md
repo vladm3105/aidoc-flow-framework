@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.80.0 |
+| Framework Version | 0.81.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -254,7 +254,7 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), and BDD acceptance run (`bdd-acceptance-run.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), and TDD test execution (`tdd-test-execution.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.
