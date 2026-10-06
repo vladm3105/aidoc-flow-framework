@@ -7,11 +7,24 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.81.0 |
+| Framework Version | 0.82.0 |
+
+## [0.82.0] — 2026-10-05
+
+### Added — CNCF Serverless Workflow standard (YAML) for Layer 06 (SPEC) distributed interaction & choreography contracts (C2 MINOR → 0.82.0, CHG-61 + IPLAN-61)
+
+- **SPEC Distributed Interaction & Choreography Workflow (`framework/governance/workflows/spec-choreography-contract.sw.yaml`)**: Establishes the vendor-neutral CNCF Serverless Workflow DSL (`specVersion: "0.8"`) in YAML format governing distributed service interaction sequences, event choreography, and asynchronous API contracts (#915). Features CloudEvents ingestion (`IngressRequestEvent`), payload schema validation against data models, concurrent downstream service dispatch (`DispatchDownstreamServices` parallel state), asynchronous partner callback correlation (`AwaitAsyncCallback` callback state with `PT30S` timeout), SLA latency and error threshold verification (`@threshold:` checks), distributed transaction saga rollback compensation (`compensatedBy: ReleaseLocalResources` and `CompensateDistributedSaga`), and completion CloudEvent emission.
+- **Layer 06 SPEC Workflow Specification Standard (`framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`)**: Establishes the normative standard for representing distributed component interactions, event choreography, and saga rollback compensation within technical specifications. Defines formal mapping of component specification primitives to CNCF state types (`Ingress` → `inject`/`event`, `Validation` → `switch`, `Service Invocation` → `operation`, `Concurrent Dispatch` → `parallel`, `Async Callback` → `callback`, `SLA Verify` → `switch`, `Saga Rollback` → `operation` compensation), dual-template selection rules, 5 graph integrity invariants, and zero-runtime LangGraph translation guidance.
+- **Layer 06 SPEC Workflow Template (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`)**: Introduces the canonical SPEC workflow template employing the Hybrid Envelope Architecture (`subtype: workflow`) to preserve full structural schema compliance (`STRUCT01`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow state machine for complex, distributed component choreography.
+- **Core Governance & Decision GD-57**: Ratified Decision `GD-57` in `framework/governance/DECISIONS.md`. Updated `framework/layers/06_SPEC/README.md` (v1.1) documenting the dual-template architecture, `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` (v1.6) registering `spec-choreography-contract.sw.yaml` under governance catalog, and `framework/governance/DIAGRAM_STANDARDS.md` (v1.7) cataloging SPEC choreography workflows.
+- **Conformance Assertions**: Added `tests/conformance/test_spec_workflow.py` asserting Hybrid Envelope schema compliance, CNCF v0.8 DSL validity, state reachability, and choreography bindings; updated `tests/conformance/test_governance_workflows.py` and `tests/conformance/test_governance.py`.
+- Sweep 0.81.0 → 0.82.0 propagated across tree.
+
+---
 
 ## [0.81.0] — 2026-10-05
 

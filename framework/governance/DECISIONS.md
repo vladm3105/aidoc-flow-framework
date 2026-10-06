@@ -15,11 +15,35 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.17 |
+| Version | 1.18 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.81.0 |
+| Framework Version | 0.82.0 |
+
+---
+
+## GD-57 — CNCF Serverless Workflow standard (YAML) for Layer 06 (SPEC) distributed interaction and choreography contracts (CHG-61, 0.82.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-05
+- **Driver**: Autonomous distributed component modeling, event choreography, asynchronous callbacks, and distributed transaction saga rollback compensation.
+- **Decision**:
+  1. Adopt the vendor-neutral CNCF Serverless Workflow v0.8 specification in YAML format for modeling Layer 06 (SPEC) distributed interaction sequences, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
+  2. Maintain complete structural compatibility (`STRUCT01`) with `sdd_doc_lint` via the **Hybrid Envelope Architecture**: the outer envelope preserves all 8 core SDD sections and metadata, while housing the CNCF Serverless Workflow state machine (`subtype: workflow`) in an embedded `workflow:` block.
+  3. Author `framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md` establishing the normative mapping of component specification and choreography constructs onto CNCF Serverless Workflow state machine primitives:
+     - `Ingress / Event Consumption` $\rightarrow$ `inject` or `event` (CloudEvent payload ingestion & correlation ID initialization)
+     - `Payload Schema Validation` $\rightarrow$ `switch` (evaluates incoming payload against §4 data models)
+     - `Local State Mutation` $\rightarrow$ `operation` (with `compensatedBy:` pointing to a local rollback state)
+     - `Concurrent Service Invocations` $\rightarrow$ `parallel` (concurrent fork/join calls across independent microservices)
+     - `Asynchronous Webhook Callbacks` $\rightarrow$ `callback` (suspends execution awaiting correlated CloudEvent with timeout)
+     - `SLA & Latency Verification` $\rightarrow$ `switch` (evaluates `@threshold:` compliance before committing)
+     - `Distributed Saga Compensation` $\rightarrow$ `operation` (executes backward recovery compensations across downstream services)
+     - `Commit & CloudEvent Emission` $\rightarrow$ `operation` (commits state changes and emits terminal completion CloudEvent)
+  4. Author `framework/governance/workflows/spec-choreography-contract.sw.yaml` establishing the canonical distributed service interaction and choreography runner.
+  5. Author `framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml` as the canonical template for complex, distributed, event-driven component specifications.
+  6. Maintain dual-template discipline: retain `SPEC-TEMPLATE.yaml` for atomic, in-process monolithic components and pure algorithms.
+  7. Engine-agnostic purity (D-0013): the framework bundles no execution engines or orchestrator SDKs; workflows compile dynamically into LangGraph, Temporal, or custom agent harnesses.
 
 ---
 

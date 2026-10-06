@@ -1,0 +1,226 @@
+# =============================================================================
+#  CNCF Serverless Workflow: Layer 06 (SPEC) Distributed Interaction & Choreography
+#  Spec Version: 0.8 (YAML)
+#  Standard: framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md
+# =============================================================================
+
+id: spec-choreography-contract
+name: "Layer 06 SPEC Distributed Interaction & Choreography Contract"
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Orchestrates distributed service interactions, event choreography, asynchronous
+  callbacks, SLA threshold evaluation, and distributed saga compensation rollbacks
+  for Layer 06 technical specifications.
+
+start: ReceiveIngressRequest
+
+events:
+  - name: IngressRequestEvent
+    type: "io.aidoc.spec.request.received"
+    source: "https://aidoc.io/spec/gateway"
+  - name: AsyncCallbackEvent
+    type: "io.aidoc.spec.callback.received"
+    source: "https://aidoc.io/spec/partner"
+    correlation:
+      - contextAttributeName: "correlationid"
+
+states:
+  # ---------------------------------------------------------------------------
+  # State 1: Ingress & Correlation Ingestion
+  # ---------------------------------------------------------------------------
+  - name: ReceiveIngressRequest
+    type: inject
+    description: "Ingests ingress request payload and initialises distributed correlation context"
+    data:
+      correlation_id: "req-c4l3-915-001"
+      request_timestamp: "2026-10-05T20:30:00Z"
+      validation_passed: true
+      sla_status: "within_threshold"
+      downstream_status:
+        billing: "PENDING"
+        inventory: "PENDING"
+      callback_received: false
+    transition: ValidatePayloadSchema
+
+  # ---------------------------------------------------------------------------
+  # State 2: Schema & Interface Validation
+  # ---------------------------------------------------------------------------
+  - name: ValidatePayloadSchema
+    type: switch
+    description: "Evaluates incoming request payload against typed data model contracts (§4)"
+    dataConditions:
+      - name: PayloadValid
+        condition: "${ .validation_passed == true }"
+        transition: ReserveLocalResources
+    defaultCondition:
+      transition: HandleSchemaValidationError
+
+  # ---------------------------------------------------------------------------
+  # Error State: Schema Validation Error
+  # ---------------------------------------------------------------------------
+  - name: HandleSchemaValidationError
+    type: operation
+    description: "Emits 400 Bad Request rejection and records schema validation failure receipt"
+    actions:
+      - name: emitValidationRejection
+        functionRef:
+          refName: errorReporter
+          arguments:
+            errorCode: "ERR_SPEC_SCHEMA_VALIDATION_FAILED"
+            details: "Payload failed to satisfy declared data models in §4"
+    end:
+      terminate: true
+
+  # ---------------------------------------------------------------------------
+  # State 3: Local Resource Reservation (Compensable)
+  # ---------------------------------------------------------------------------
+  - name: ReserveLocalResources
+    type: operation
+    description: "Allocates local state or reservation locks with rollback compensation (§3, §5)"
+    compensatedBy: ReleaseLocalResources
+    actions:
+      - name: executeLocalReservation
+        functionRef:
+          refName: resourceManager
+          arguments:
+            correlationId: "${ .correlation_id }"
+            action: "reserve"
+    transition: DispatchDownstreamServices
+
+  # ---------------------------------------------------------------------------
+  # Compensation State: Release Local Resources
+  # ---------------------------------------------------------------------------
+  - name: ReleaseLocalResources
+    type: operation
+    description: "Compensating undo action: releases local locks and rolls back local state"
+    actions:
+      - name: executeLocalRelease
+        functionRef:
+          refName: resourceManager
+          arguments:
+            correlationId: "${ .correlation_id }"
+            action: "release"
+    end: true
+
+  # ---------------------------------------------------------------------------
+  # State 4: Parallel Downstream Dispatch
+  # ---------------------------------------------------------------------------
+  - name: DispatchDownstreamServices
+    type: parallel
+    description: "Dispatches concurrent asynchronous calls across downstream service endpoints"
+    completionType: allOf
+    branches:
+      - name: InvokeBillingEndpoint
+        actions:
+          - name: callBillingService
+            functionRef:
+              refName: billingClient
+              arguments:
+                correlationId: "${ .correlation_id }"
+                operation: "charge"
+      - name: InvokeInventoryEndpoint
+        actions:
+          - name: callInventoryService
+            functionRef:
+              refName: inventoryClient
+              arguments:
+                correlationId: "${ .correlation_id }"
+                operation: "allocate"
+    transition: AwaitAsyncCallback
+
+  # ---------------------------------------------------------------------------
+  # State 5: Asynchronous Callback & Correlation
+  # ---------------------------------------------------------------------------
+  - name: AwaitAsyncCallback
+    type: callback
+    description: "Suspends execution awaiting asynchronous partner webhook or event callback"
+    action:
+      name: triggerAsyncProcessing
+      functionRef:
+        refName: asyncNotifier
+        arguments:
+          correlationId: "${ .correlation_id }"
+          callbackUri: "https://aidoc.io/spec/callbacks"
+    eventRef: AsyncCallbackEvent
+    timeouts:
+      eventTimeout: "PT30S"
+    transition: EvaluateServiceSLA
+
+  # ---------------------------------------------------------------------------
+  # State 6: SLA Threshold & Error Evaluation
+  # ---------------------------------------------------------------------------
+  - name: EvaluateServiceSLA
+    type: switch
+    description: "Evaluates end-to-end latency and downstream status against @threshold: directives"
+    dataConditions:
+      - name: SLASatisfied
+        condition: "${ .sla_status == \"within_threshold\" }"
+        transition: CommitDistributedTransaction
+    defaultCondition:
+      transition: CompensateDistributedSaga
+
+  # ---------------------------------------------------------------------------
+  # State 7: Distributed Saga Compensation
+  # ---------------------------------------------------------------------------
+  - name: CompensateDistributedSaga
+    type: operation
+    description: "Coordinates distributed saga compensations across external services on failure"
+    actions:
+      - name: rollbackDownstreamServices
+        functionRef:
+          refName: sagaOrchestrator
+          arguments:
+            correlationId: "${ .correlation_id }"
+            strategy: "backward_recovery"
+            compensateBilling: true
+            compensateInventory: true
+    transition: EmitFailureEvent
+
+  # ---------------------------------------------------------------------------
+  # State 8: Commit Distributed Transaction
+  # ---------------------------------------------------------------------------
+  - name: CommitDistributedTransaction
+    type: operation
+    description: "Finalizes local and downstream state changes upon successful interaction"
+    actions:
+      - name: finalizeDistributedState
+        functionRef:
+          refName: transactionManager
+          arguments:
+            correlationId: "${ .correlation_id }"
+            status: "COMMITTED"
+    transition: EmitCompletionEvent
+
+  # ---------------------------------------------------------------------------
+  # Terminal State 9: Emit Completion CloudEvent
+  # ---------------------------------------------------------------------------
+  - name: EmitCompletionEvent
+    type: operation
+    description: "Emits io.aidoc.spec.choreography.completed CloudEvent and produces interaction receipt"
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: eventPublisher
+          arguments:
+            eventType: "io.aidoc.spec.choreography.completed"
+            correlationId: "${ .correlation_id }"
+            receiptStatus: "SUCCESS"
+    end: true
+
+  # ---------------------------------------------------------------------------
+  # Terminal State 10: Emit Failure CloudEvent
+  # ---------------------------------------------------------------------------
+  - name: EmitFailureEvent
+    type: operation
+    description: "Emits io.aidoc.spec.choreography.failed CloudEvent after saga compensation"
+    actions:
+      - name: publishFailureEvent
+        functionRef:
+          refName: eventPublisher
+          arguments:
+            eventType: "io.aidoc.spec.choreography.failed"
+            correlationId: "${ .correlation_id }"
+            receiptStatus: "COMPENSATED_FAILURE"
+    end:
+      terminate: true

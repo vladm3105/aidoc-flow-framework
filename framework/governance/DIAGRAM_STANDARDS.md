@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.5"
+  version: "1.7"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |---|---|
-| Version | 1.5 |
+| Version | 1.7 |
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.81.0 |
+| Framework Version | 0.82.0 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -254,10 +254,12 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), and TDD test execution (`tdd-test-execution.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), and SPEC choreography contracts (`spec-choreography-contract.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.
+5. **Test Execution & Fixture Rollback State Machines** (`framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md`.
+6. **Distributed Interaction & Choreography State Machines** (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`): Defined in `framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`.
 
 Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDiagram-v2` or `flowchart` diagram embedded directly within its companion governance prose document or implementation plan.
 
@@ -266,7 +268,9 @@ Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDia
 | Governance Workflows | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
 | Implementation Workflows | `framework/layers/08_IPLAN/<slug>.yaml` (`workflow:` block) |
 | Behavioral Workflows | `framework/layers/04_BDD/<slug>.yaml` (`workflow:` block) |
-| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md` |
+| Test Execution Workflows | `framework/layers/07_TDD/<slug>.yaml` (`workflow:` block) |
+| Choreography Workflows | `framework/layers/06_SPEC/<slug>.yaml` (`workflow:` block) |
+| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`, `SPEC_WORKFLOW_STANDARD.md` |
 | Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
 | Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 
