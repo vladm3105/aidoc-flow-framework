@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.89.0 |
+| Framework Version | 0.90.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -99,6 +99,7 @@ framework/governance/
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── REVIEW_WORKFLOW_STANDARD.md               # Normative specification for graph-based review sagas
+├── DURABLE_EXECUTION_STANDARD.md              # Normative specification for 3-tier durable multi-agent architecture
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
 ├── SEED_TO_MODULE_DECOMPOSITION.md           # Prose guide embedding decomposition graph
 ├── WORKTREE_FLOW.md                          # Prose guide embedding worktree graph

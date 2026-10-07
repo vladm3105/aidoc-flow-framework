@@ -7,11 +7,39 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.19 |
+| Version | 1.20 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.89.0 |
+| Framework Version | 0.90.0 |
+
+## [0.90.0] — 2026-10-07
+
+### Added — Durable Multi-Agent Execution Architecture Standard (3-Tier Model) & Layer-Specific Execution Guidance for IPLAN, CHG, and EVAL (C2 Spec, CHG-76 + IPLAN-76, Decision GD-70)
+
+- **Normative Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION_STANDARD.md`)**:
+  - Established the engine-agnostic 3-tier runtime execution architecture for autonomous SDD multi-agent systems:
+    - **Tier 1 (Run Workflow / Durable Control Plane)**: Plain deterministic workflow managing control flow, human approval gates, zero-cost durable waits, SAGA compensation stack, bounded loops, and execution status. Never calls LLMs.
+    - **Tier 2 (Cognitive Graphs / Reasoning Plane)**: Cyclical reasoning graphs (plan, explore, diagnose, review, patch) where every node calling an LLM runs as an orchestrator activity with structured schemas. Proposes artifacts to the store; never mutates filesystem or git directly.
+    - **Tier 3 (Deterministic Effect & Verification Services)**: Unambiguous, idempotent activities managing git workspaces, compilers, linters, tests, and publishing. Failures are returned structured values, never unhandled exceptions.
+  - Codified **The Golden Rule**: *"Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows."*
+- **Role Taxonomy & Contract (`RoleSpec`)**:
+  - Formalized three engine-agnostic role kinds: `graph` (reasoning node/subgraph), `executor` (heartbeated external agent CLI runner in isolated worktree), and `service` (plain deterministic activity with idempotent compensation).
+- **SAGA Invariants & Rollback Safety**:
+  - Enforced strict invariant: **No LLM in Rollback** (compensations are purely deterministic code executed in reverse LIFO order).
+  - Enforced **Order Guard Invariant (`WORKTREE_FLOW.md` §3.8)**: SAGA teardown MUST execute `git worktree remove` *before* deleting the branch (`git branch -D` or remote deletion).
+- **Thin-State Orchestration & Artifact Store Separation**:
+  - Workflow state plane carries compact metadata only ($\le 2$ KB: URIs, IDs, exit codes, summaries).
+  - Large artifacts (plans, logs, full AST diffs, test outputs) reside strictly in the data plane (artifact store).
+- **Layer-Specific Durable Execution Guidance (IPLAN, CHG, EVAL)**:
+  - **Layer 08 (IPLAN)**: Workspace lifecycle as Tier 3 service; step-by-step patch application with pre-registered SAGA compensation; heartbeated agent CLI crash recovery; worktree teardown order guard.
+  - **Layer 09 (CHG)**: Strict 5-state lifecycle state machine; zero-cost durable human approval gates (`wait_condition`); automated gate validation suites (GATE-01..GATE-SPEC); PR landing and branch promotion coordination.
+  - **Layer 10 (EVAL / IPVERIFY)**: Automated parallel test suite execution; ephemeral fixture provisioning with guaranteed SAGA teardown; multi-persona review crew fan-out across `agents` pool; deterministic quality gate floor (`structural_pass == true && blocking_findings == 0`); dual-path routing and `ReviewReport` `chg_handover`.
+- **Runtime Adaptation & Governance Indexing**:
+  - Added Section 12 to `framework/governance/ADAPTATION.md` detailing the reference runtime implementation pattern.
+  - Indexed `DURABLE_EXECUTION_STANDARD.md` across `GOVERNANCE_WORKFLOW_STANDARD.md` and conformance suite `tests/conformance/test_governance.py`.
+- **Versioning**:
+  - Bumped framework version to `0.90.0` and extended `OLD_VERSIONS` in `hooks/sync-version-refs.sh` with `0.89.0`.
 
 ## [0.89.0] — 2026-10-07
 
