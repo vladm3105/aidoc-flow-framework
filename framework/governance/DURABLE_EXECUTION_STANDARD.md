@@ -66,7 +66,7 @@ The runtime platform is strictly partitioned into three complementary tiers:
 - **Execution Boundary**: Every cognitive node that calls an LLM or remote tool is dispatched as an isolated, retryable activity from the Tier 1 workflow.
 
 ### Tier 3: Deterministic Effect & Verification Services (Execution & Gating)
-- **Role**: Interacting with the real world—filesystem, git repositories, compilers, linters ([`sdd_doc_lint`](../sdd_doc_lint/), [`sdd_swf_lint`](../sdd_doc_lint/swf_lint.py)), test suites, and remote forge APIs.
+- **Role**: Interacting with the real world—filesystem, git repositories, compilers, linters ([`sdd_doc_lint`](../../sdd_doc_lint/), [`sdd_swf_lint`](../../sdd_doc_lint/swf_lint.py)), test suites, and remote forge APIs.
 - **Characteristics**: 100% deterministic CLIs and services.
 - **Gate Floor**: Outputs are returned as structured data values, evaluating the normative deterministic quality gate floor:
   $$\text{Gate Floor} = (\text{structural\_pass} == \text{true}) \land (\text{blocking\_findings} == 0)$$
