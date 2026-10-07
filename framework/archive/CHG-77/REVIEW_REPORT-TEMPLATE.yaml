@@ -8,13 +8,13 @@
 #           playbook check findings, and the CHG remediation handover block.
 # =============================================================================
 
-report_id: "REV-RPT-01"                # Canonical identifier (e.g. REV-RPT-01 or UUID)
-target_artifact_id: "SPEC-01"          # Short ID of target artifact under review (e.g. BRD-01, SPEC-01)
-layer: "06_SPEC"                       # 01_BRD | 02_PRD | 03_EARS | 04_BDD | 05_ADR | 06_SPEC | 07_TDD | 08_IPLAN | 09_CHG | 10_EVAL
-review_mode: "team"                    # team | sequential | single_pass
-iteration: 1                           # 1-based create->review->revise loop iteration
-max_iterations: 3                      # Quality loop cap (quality_loop_max_iterations)
-created_at: "2026-10-07T00:00:00Z"     # ISO-8601 UTC timestamp
+report_id: "REV-RPT-NN"
+target_artifact_id: "[ARTIFACT-NN]"
+layer: "[01_BRD|02_PRD|03_EARS|04_BDD|05_ADR|06_SPEC|07_TDD|08_IPLAN|09_CHG]"
+review_mode: "team"                # team | sequential | single_pass
+iteration: 1                       # 1-based create->review->revise loop iteration
+max_iterations: 3                  # Quality loop cap (quality_loop_max_iterations)
+created_at: "YYYY-MM-DDTHH:MM:SSZ"
 
 # -----------------------------------------------------------------------------
 # Section 1: Gate Evaluation (Normative Floor + Advisory Score)
@@ -49,11 +49,11 @@ findings:
     priority: "P1"                 # P0 | P1 (blocking) vs P2 | P3 (advisory)
     check_ref: "C3"                # Citations from persona playbook (e.g. C1, C3)
     personas:
-      - "architect"                # Persona names citing this finding
-    location: "docs/06_SPEC/SPEC-01.yaml#L45-L60"
-    message: "Observed contract violation, defect, or missing requirement"
-    recommendation: "Concrete, localized remediation instruction"
-    suggested_chg_flow: "CODE2C"   # Recommended change router path if CHG needed (CODE2C | DIR2C | SEED2C)
+      - "[persona_name]"
+    location: "docs/0N_LAYER/[ARTIFACT-NN].md#L45-L60"
+    message: "[Clear description of observed defect or contract violation]"
+    recommendation: "[Concrete, localized remediation instruction]"
+    suggested_chg_flow: "CODE2C"   # Recommended change router path if CHG needed
 
 # -----------------------------------------------------------------------------
 # Section 4: CHG Remediation Handover Envelope
@@ -62,6 +62,6 @@ findings:
 chg_handover:
   required: false                  # true if findings touch approved/baseline artifacts
   suggested_flow: "CODE2C"         # CODE2C (defect) | DIR2C (doc/tool) | SEED2C (spec change)
-  target_chg_ref: "CHG-01"         # Authorizing CHG document reference
-  target_iplan_ref: "IPLAN-01"     # Scoped fix IPLAN carrying these findings
+  target_chg_ref: "CHG-NN"         # Authorizing CHG document reference
+  target_iplan_ref: "IPLAN-NN"     # Scoped fix IPLAN carrying these findings
   remediation_status: "Pending"    # Pending | In-Progress | Remediated | Verified

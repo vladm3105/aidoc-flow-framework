@@ -4,9 +4,9 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.6 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
 | Framework Version | 0.90.0 |
 
@@ -37,8 +37,6 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, dual-template architecture, immutability, validation baseline. |
 | `GOVERNANCE_WORKFLOW_STANDARD.md` | Normative standard establishing the CNCF Serverless Workflow DSL (v0.8 YAML) for modeling, validating, and executing governance flows and multi-agent lifecycle state machines. |
 | `IPLAN_WORKFLOW_STANDARD.md` | Normative standard mapping implementation planning, dependency DAGs, parallel phases, and saga rollback compensation to CNCF Serverless Workflow state machines. |
-| `DURABLE_EXECUTION_STANDARD.md` | Normative standard establishing the 3-tier runtime execution architecture (Durable Workflows, Cognitive Graphs, Deterministic Services) and layer-specific guidance for IPLAN, CHG, and EVAL. |
-| `REVIEW_WORKFLOW_STANDARD.md` | Normative standard establishing CNCF Serverless Workflow state machines for multi-persona review crews, parallel auditing, score synthesis, and the 6-traversal review taxonomy. |
 | `WORKTREE_FLOW.md` | Order-guarded worktree isolation, autonomous feature branching, PR watch, and post-merge branch deletion lifecycle rules (§3.8 order guard). |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
 | `TRACEABILITY.md` | The 10-layer traceability chain, necessary-upstream tagging, and readiness gates. |
@@ -52,7 +50,6 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `REVIEW_CREWS.yaml` | Machine-readable per-layer review crews + scoring weights behind `REVIEW_TEAM.md`. |
 | `REVIEW_SAGA.md` | The engine-agnostic saga lifecycle over the create→review→revise loop — state machine, transition table, journal schema, break-circuit policy. |
 | `saga.schema.json` | Machine-readable JSON Schema for the saga journal (`saga.json`) behind `REVIEW_SAGA.md`. |
-| `review_report.schema.json` | Machine-readable JSON Schema for the per-run unified review report behind `REVIEW_WORKFLOW_STANDARD.md` and `REVIEW_TEAM.md`. |
 | `SEED_CONTRACT.md` | The `seed/` input tier — versioned input, frozen per version, total per-claim disposition (absorbed/rejected/deferred, `absorbed` pins `seed_version`), BRD as the absorption point, the AI-attribution rule (GOV-021), and the `SEED01`-vs-auditor enforcement split. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
@@ -88,25 +85,6 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
 | `eval-verification-run.sw.yaml` | Layer 10 EVAL | Multi-tier test execution, structured error triage, threshold verification, and evidence bundling. |
-| `review/brd-review-remediation.sw.yaml` | Layer 01 BRD Review | Multi-persona parallel audit (business_analyst, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/prd-review-remediation.sw.yaml` | Layer 02 PRD Review | Multi-persona parallel audit (product_owner, tech_lead, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/ears-review-remediation.sw.yaml` | Layer 03 EARS Review | Multi-persona parallel audit (requirements_specialist, tech_lead, qa_lead, security_engineer, chaos_engineer), score synthesis, and 3-strike remediation saga. |
-| `review/bdd-review-remediation.sw.yaml` | Layer 04 BDD Review | Multi-persona parallel audit (qa_lead, tech_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/adr-review-remediation.sw.yaml` | Layer 05 ADR Review | Multi-persona parallel audit (architect, tech_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/spec-review-remediation.sw.yaml` | Layer 06 SPEC Review | Multi-persona parallel audit (architect, tech_lead, integration_lead, security_engineer, chaos_engineer), score synthesis, and 3-strike remediation saga. |
-| `review/tdd-review-remediation.sw.yaml` | Layer 07 TDD Review | Multi-persona parallel audit (qa_lead, tech_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/iplan-review-remediation.sw.yaml` | Layer 08 IPLAN Review | Multi-persona parallel audit (architect, tech_lead, integration_lead, operator, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-| `review/chg-review-remediation.sw.yaml` | Layer 09 CHG Review | Multi-persona parallel audit (architect, integration_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
-
-### Governance Templates (`templates/`)
-
-The `templates/` directory provides canonical templates for workflows and review reports:
-
-| Template File | Purpose |
-|---|---|
-| `CHG-SWF-TEMPLATE.yaml` | CNCF Serverless Workflow DSL template for change control, gate routing, and SDD cascade execution. |
-| `REVIEW-SWF-TEMPLATE.yaml` | CNCF Serverless Workflow DSL template for per-layer multi-persona review flows and 3-strike remediation sagas. |
-| `REVIEW_REPORT-TEMPLATE.yaml` | Engine-agnostic template for the unified review report (`ReviewReport`) with gate evaluation and CHG handover envelope. |
 
 ## CHG Overlay (`chg/`)
 

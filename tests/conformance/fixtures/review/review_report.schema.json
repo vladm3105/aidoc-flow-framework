@@ -1,26 +1,82 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "SDD review-team unified report",
-  "description": "The engine-agnostic unified review report both runners (Hermes saga + Claude Code plugin review-team) normalise to. Encodes the synthesis output of framework/governance/REVIEW_TEAM.md: an advisory readiness score, coverage, the deterministic gate, and the reduced findings.",
+  "$id": "https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/review_report.schema.json",
+  "title": "SDD Review Team Unified Report",
+  "description": "Engine-agnostic schema for the per-run review report. Formalizes the synthesis output of REVIEW_TEAM.md and REVIEW_WORKFLOW_STANDARD.md: deterministic gate floor, advisory readiness score, coverage ratio, localized findings, and CHG remediation handover.",
   "type": "object",
-  "required": ["target_artifact_id", "review_mode", "readiness_score", "coverage", "gate", "findings"],
+  "required": [
+    "target_artifact_id",
+    "review_mode",
+    "readiness_score",
+    "coverage",
+    "gate",
+    "findings"
+  ],
   "properties": {
-    "target_artifact_id": {"type": "string"},
-    "review_mode": {"type": "string", "enum": ["team", "sequential", "single_pass"]},
-    "readiness_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "report_id": {
+      "type": "string",
+      "description": "Canonical identifier (e.g. REV-RPT-01 or UUID)."
+    },
+    "target_artifact_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[0-9]{2,}$",
+      "description": "Short ID of the artifact under review (BRD-01, PRD-02, SPEC-01)."
+    },
+    "layer": {
+      "type": "string",
+      "enum": [
+        "01_BRD", "02_PRD", "03_EARS", "04_BDD",
+        "05_ADR", "06_SPEC", "07_TDD", "08_IPLAN",
+        "09_CHG", "10_EVAL"
+      ]
+    },
+    "review_mode": {
+      "type": "string",
+      "enum": ["team", "sequential", "single_pass"]
+    },
+    "iteration": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_iterations": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "readiness_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Advisory weighted average calculated from REVIEW_CREWS.yaml."
+    },
     "coverage": {
       "type": "object",
       "required": ["ran", "missing", "coverage_ratio", "low_confidence"],
       "properties": {
-        "ran": {"type": "array", "items": {"type": "string"}},
-        "missing": {"type": "array", "items": {"type": "string"}},
-        "coverage_ratio": {"type": "number", "minimum": 0, "maximum": 1},
-        "low_confidence": {"type": "boolean"}
+        "ran": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "missing": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "coverage_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "low_confidence": {
+          "type": "boolean"
+        }
       }
     },
     "gate": {
       "type": "object",
-      "description": "Deterministic: structural sdd_doc_lint floor AND no unresolved P0/P1. The readiness_score is advisory above this floor.",
+      "description": "Normative gate floor: structural_pass AND no_blocking. The readiness_score is advisory above this floor.",
       "required": ["structural_pass", "no_blocking", "passed"],
       "properties": {
         "structural_pass": {"type": "boolean"},
@@ -35,11 +91,42 @@
         "required": ["id", "priority", "location", "message", "recommendation"],
         "properties": {
           "id": {"type": "string"},
-          "priority": {"type": "string", "enum": ["P0", "P1", "P2", "P3"]},
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2", "P3"]
+          },
+          "check_ref": {
+            "type": "string",
+            "description": "Citation of the playbook check that fired (e.g. C1, C3)."
+          },
           "location": {"type": "string"},
           "message": {"type": "string"},
           "recommendation": {"type": "string"},
-          "personas": {"type": "array", "items": {"type": "string"}}
+          "personas": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "suggested_chg_flow": {
+            "type": "string",
+            "enum": ["CODE2C", "DIR2C", "SEED2C", "HOTFIX", "CODE2S", "SDD2C"]
+          }
+        }
+      }
+    },
+    "chg_handover": {
+      "type": "object",
+      "description": "Remediation vehicle metadata linking blocking review findings to an authorizing CHG.",
+      "properties": {
+        "required": {"type": "boolean"},
+        "suggested_flow": {
+          "type": "string",
+          "enum": ["CODE2C", "DIR2C", "SEED2C", "HOTFIX", "CODE2S", "SDD2C"]
+        },
+        "target_chg_ref": {"type": "string"},
+        "target_iplan_ref": {"type": "string"},
+        "remediation_status": {
+          "type": "string",
+          "enum": ["Pending", "In-Progress", "Remediated", "Verified"]
         }
       }
     }

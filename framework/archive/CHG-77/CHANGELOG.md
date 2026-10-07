@@ -15,14 +15,6 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 ## [0.90.0] — 2026-10-07
 
-### Fixed — Framework Audit Discrepancies Remediation (C1 Maintenance, CHG-77 + IPLAN-77)
-
-- **Template Schema Compliance**: Provided valid sample default values in `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` (`report_id`, `target_artifact_id`, `layer`, `created_at`) resolving strict schema validation errors against `review_report.schema.json`.
-- **Test Runner Portability**: Added root `pytest.ini` configuring `pythonpath = .` to eliminate `ModuleNotFoundError` during test collection across standard test runners.
-- **Fixture Schema Synchronization**: Synchronized `tests/conformance/fixtures/review/review_report.schema.json` with canonical governance schema (`review_report.schema.json`).
-- **Governance Indices & Documentation**: Indexed `DURABLE_EXECUTION_STANDARD.md`, `REVIEW_WORKFLOW_STANDARD.md`, all 9 per-layer review workflows (`workflows/review/`), and templates (`templates/`) in `framework/governance/README.md` and `framework/README.md`.
-- **Link Hygiene**: Repaired non-resolving placeholder link in `AIDOC-QA-PROTOCOL-TEMPLATE.md`.
-
 ### Added — Durable Multi-Agent Execution Architecture Standard (3-Tier Model) & Layer-Specific Execution Guidance for IPLAN, CHG, and EVAL (C2 Spec, CHG-76 + IPLAN-76, Decision GD-70)
 
 - **Normative Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION_STANDARD.md`)**:

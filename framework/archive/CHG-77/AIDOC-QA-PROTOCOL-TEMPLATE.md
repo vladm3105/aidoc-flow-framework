@@ -105,7 +105,7 @@ Upon successful PR merge into `dev`, the delivering agent completes the delivery
      - Implemented user payment timeout handling per SPEC-042.
      - Added integration test coverage exercising gateway timeouts.
    - **Verification Evidence:**
-     - CI Suite: [Run #12345](https://ci.example.com/runs/12345) — GREEN
+     - CI Suite: [Run #12345](url) — GREEN
      - Acceptance Suite: 14 scenarios passed, 0 failed.
    - **Artifact Links:**
      - `docs/sdd/06_SPEC/SPEC-042.yaml`

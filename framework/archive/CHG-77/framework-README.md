@@ -4,9 +4,9 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
 | Framework Version | 0.90.0 |
 
@@ -96,12 +96,10 @@ framework/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
     README.md
-  governance/            Governance rules; the 3-tier runtime execution architecture
-                         (DURABLE_EXECUTION_STANDARD.md); the CNCF Serverless Workflow
-                         catalog (workflows/*.sw.yaml, review workflows in workflows/review/,
-                         and GOVERNANCE_WORKFLOW_STANDARD.md); workflow/report templates
-                         (templates/); the CHG change-management overlay (gates incl.
-                         GATE-SPEC, the framework-spec change gate; templates); the project
+  governance/            Governance rules; the CNCF Serverless Workflow catalog
+                         (workflows/*.sw.yaml and GOVERNANCE_WORKFLOW_STANDARD.md);
+                         the CHG change-management overlay (gates incl. GATE-SPEC,
+                         the framework-spec change gate; templates); the project
                          adaptation surface (ADAPTATION.md + ADAPTATION_SURFACE.yaml);
                          and DECISIONS.md, the spec-level decision register.
                          See governance/README.md.

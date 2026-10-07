@@ -1,0 +1,158 @@
+# =============================================================================
+#  IPLAN-77: Framework Audit Discrepancies Remediation
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-77/CHG-77.yaml (F2 direct, C1, In-Progress)
+#  Source: Whole-repo audit following 0.90.0 release.
+# =============================================================================
+
+doc_id: IPLAN-77
+title: "Framework Audit Discrepancies Remediation (Templates, Governance Indices, Test Config, and Link Hygiene)"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-07"
+  framework_version: "0.90.0"
+  source_chg: "CHG-77"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - governance-alignment
+    - audit-remediation
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-77"
+  source_chg: "CHG-77"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: N/A (direct audit remediation under CHG-77; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+  last_updated: "2026-10-07T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 6
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml"
+      description: "Replace bracketed placeholders with schema-valid sample values (report_id, target_artifact_id, layer, created_at)"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "pytest.ini"
+      description: "Create root test configuration with pythonpath = ."
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/fixtures/review/review_report.schema.json"
+      description: "Synchronize fixture schema with modern framework/governance/review_report.schema.json"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/README.md"
+      description: "Index DURABLE_EXECUTION_STANDARD.md, REVIEW_WORKFLOW_STANDARD.md, review workflows, and templates"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/README.md"
+      description: "Update governance summary and layout tree for durable execution and review workflows"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      description: "Fix non-resolving link placeholder"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.90.0] Fixed section"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-77/CHG-77.yaml"
+      description: "Authorizing change record (this vehicle)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-77/IPLAN-77.yaml"
+      description: "Implementation plan (this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: TDD Consistency & Verification Strategy
+# =============================================================================
+
+tdd_consistency:
+  strategy: "No runtime production code touched — covering tests N/A with reason (F2 direct, tooling/template/documentation hygiene). Verification battery below ensures full regression safety."
+  cases:
+    - "chg_lint.py over CHG-77: 0 errors, 0 warnings"
+    - "jsonschema validation of REVIEW_REPORT-TEMPLATE.yaml against review_report.schema.json: exit code 0"
+    - "pytest execution without PYTHONPATH=. passes collection and runs all suites"
+    - "Full unit and conformance test suites remain 100% green"
+
+# =============================================================================
+# Section 4: Execution Phases
+# =============================================================================
+
+execution_phases:
+  phase_1_templates_and_schemas:
+    description: "Update REVIEW_REPORT-TEMPLATE.yaml and synchronize tests/conformance/fixtures/review/review_report.schema.json"
+    tasks:
+      - "Set report_id: 'REV-RPT-01', target_artifact_id: 'SPEC-01', layer: '06_SPEC', created_at: '2026-10-07T00:00:00Z' in REVIEW_REPORT-TEMPLATE.yaml"
+      - "Copy modern framework/governance/review_report.schema.json to tests/conformance/fixtures/review/review_report.schema.json"
+      - "Validate template against schema via python3 jsonschema script"
+  phase_2_configuration_and_links:
+    description: "Create pytest.ini and fix AIDOC-QA-PROTOCOL-TEMPLATE.md placeholder link"
+    tasks:
+      - "Create pytest.ini at repository root with pythonpath = . and testpaths = tests sdd_doc_lint/tests"
+      - "Fix line 108 in AIDOC-QA-PROTOCOL-TEMPLATE.md to format CI Run URL as code"
+  phase_3_readme_indices:
+    description: "Update framework/governance/README.md and framework/README.md"
+    tasks:
+      - "Add DURABLE_EXECUTION_STANDARD.md, REVIEW_WORKFLOW_STANDARD.md, and review_report.schema.json to governance/README.md"
+      - "Add review workflows (workflows/review/) and templates (templates/) to governance/README.md"
+      - "Update framework/README.md governance description and tree"
+  phase_4_verification:
+    description: "Execute full verification battery"
+    tasks:
+      - "Run chg_lint.py on CHG-77.yaml"
+      - "Run pytest sdd_doc_lint/tests/ and pytest tests/unit/ without PYTHONPATH"
+      - "Run pytest tests/conformance/"
+      - "Run swf_lint on all workflows"
+
+# =============================================================================
+# Section 5: Verification Commands
+# =============================================================================
+
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-77/CHG-77.yaml"
+    - "python3 -c 'import json, yaml, jsonschema; jsonschema.validate(yaml.safe_load(open(\"framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml\")), json.load(open(\"framework/governance/review_report.schema.json\")))'"
+    - "pytest sdd_doc_lint/tests/"
+    - "pytest tests/unit/"
+    - "pytest tests/conformance/ -k 'review or governance'"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/"
