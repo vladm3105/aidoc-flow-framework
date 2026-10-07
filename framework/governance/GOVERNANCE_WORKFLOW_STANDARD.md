@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -235,7 +235,7 @@ To guarantee that autonomous execution never enters an uncontrolled loop, exhaus
 
 | Breaker | Threshold | Trigger Condition | System Action | Governing Framework Standard |
 | :--- | :--- | :--- | :--- | :--- |
-| **CB-1: Review-Fix Iteration Breaker** | Max 2 remediation passes | Pass 2 judge returns `REVISE` or `BLOCK` twice consecutively on the same step | **HALT.** Escalate to human founder with exact dissenting findings and proposed alternatives. | `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 4 |
+| **CB-1: Review-Fix Iteration Breaker** | Max 2 remediation passes (3 review cycles) | Pass 2 remediation unpassed or iteration cap (3 cycles) reached | **HALT.** Escalate to human founder with exact dissenting findings and proposed alternatives. | `REVIEW_REMEDIATION_FLOW.md` §Iteration cap, `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 4 |
 | **CB-2: CI Polling Deadline** | 15 minutes (60 cycles @ 15s) | Required status checks remain pending, queued, or running after 15 minutes | **HALT.** Abort polling, diagnose stuck workflow run via platform API, and alert human founder. | `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 3, `AGENTS.md` §Watching your PR |
 | **CB-3: CI Failure Remediation Cap** | Exactly 1 retry attempt | Required CI status checks fail on pull request | **REMEDIATE ONCE.** Pull run logs, apply targeted fix on feature branch, re-verify locally, push commit. If checks fail a second time, **HALT** immediately. | `AGENTS.md` §Non-negotiables, `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 4 |
 | **CB-4: Monotonic Phase State Invariant** | 0 regressions allowed | Attempt to modify a `Completed` step or regress CHG/IPLAN status | **FATAL REJECT.** Completed steps are immutable. Post-implementation defects must be addressed via new follow-up issue/CHG. | `DOC_GOVERNANCE_CORE.md` §3.3 (CHG-L017), `CHG_REQUEST_FLOWS.md` |

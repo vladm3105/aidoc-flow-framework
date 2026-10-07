@@ -15,11 +15,39 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.27 |
+| Version | 1.28 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
+
+---
+
+## GD-68 — Review Flows & Saga Governance Hardening, Deterministic Quality Gate Floor, Iteration Cap Terminal State, and Adaptation Surface Parity (CHG-74, 0.88.4 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Resolve review flow and saga lifecycle gaps identified across `REVIEW_CREWS.yaml`, `REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`, `REVIEW_TEAM.md`, `SECURITY_REVIEW.md`, `review-remediation-flow.sw.yaml`, `ADAPTATION_SURFACE.yaml`, `ADAPTATION.md`, `PROFILE-TEMPLATE.yaml`, and `GOVERNANCE_WORKFLOW_STANDARD.md`. Eliminate platform-era references, establish deterministic quality gate floor rules, correct saga transition scopes and terminal states, align CB-1 arithmetic with the 3-cycle review iteration cap, and harmonize priority-to-severity mappings.
+- **Decision**:
+  1. **Deterministic Gate Floor Standard**:
+     - Codified that the normative gate authorizing promotion/merge requires deterministic structural lint passage (`structural_pass == true`) and zero unresolved blocking findings (`blocking_findings == 0` / zero `P0`/`P1`).
+     - Established that numeric readiness scores (e.g. >= 90) and narrative summaries serve as advisory calibration and enrichment above the deterministic floor, eliminating stochastic pass/fail flapping across model runs.
+     - Updated CNCF Serverless Workflow `review-remediation-flow.sw.yaml` condition to `${ .structural_pass == true and .blocking_findings == 0 }`.
+  2. **Review Saga Lifecycle & Terminal State Correction**:
+     - Updated `REVIEW_SAGA.md` Transition Table to allow `SYNTHESIZED` to transition to `CLOSED` (gate passed), `FANOUT_STARTED` (next iteration crew dispatch), `ESCALATED` (iteration cap exhausted or unresolvable blocking findings), or `PARTIAL_TIMEOUT` (soft deadline checkpoint).
+     - Standardized `ESCALATED` as the canonical terminal state for iteration cap exhaustion across `REVIEW_REMEDIATION_FLOW.md`, `ADAPTATION_SURFACE.yaml` (`quality_loop_max_iterations`), `ADAPTATION.md` §4.6 and §4.12, and `PROFILE-TEMPLATE.yaml`, reserving `PARTIAL_TIMEOUT` strictly for wall-clock deadline checkpoints.
+     - Updated `SPEC_TRANSITIONS` in `tests/conformance/test_saga_lifecycle_parity.py` to maintain parity.
+  3. **Circuit Breaker CB-1 Arithmetic Harmonization**:
+     - Harmonized the default iteration cap of 3 review cycles to explicitly accommodate at most 2 remediation passes (Review 1 → Fix 1 → Review 2 → Fix 2 → Review 3 → Escalate), aligning `REVIEW_REMEDIATION_FLOW.md` and `GOVERNANCE_WORKFLOW_STANDARD.md` §6 Table CB-1.
+  4. **Review Team & Crews Specification Hardening**:
+     - Purged platform-era notes from `REVIEW_CREWS.yaml`, documented default quorum contracts, and codified Layer 10 EVAL grading criteria.
+     - Purged retired agent-brief tests reference from `REVIEW_TEAM.md`, updated playbook file count to 69, clarified multi-persona `team` mode vs `single_pass`, and corrected section cross-references.
+     - Established bidirectional mapping table between finding Priority (`P0`–`P3`) and Severity (`critical`–`acknowledged`).
+     - Fixed pre-push hook path to `hooks/pre_push_check.sh` and harmonized audit reference to `OPS-0065`.
+  5. **Security Review & Engine Agnosticism**:
+     - Expanded `SECURITY_REVIEW.md` scope to cover all SDD layers (01–10: BRD through EVAL), replaced platform references with engine terminology, and corrected checklist threat/rule tags.
+  6. **Versioning**:
+     - Bumped framework version to `0.88.4` and extended `OLD_VERSIONS` in `hooks/sync-version-refs.sh` with `0.88.3`.
 
 ---
 

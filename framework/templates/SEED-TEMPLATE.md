@@ -6,7 +6,7 @@ document_control:
   author: "human: <architect/stakeholder> (+ ai-agent: <id>)"
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
-  framework_version: "0.88.3"
+  framework_version: "0.88.4"
   c4_level: "c4-l1"
   supersedes: []                                 # e.g., ["seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.0.md)"]
   revision_history:

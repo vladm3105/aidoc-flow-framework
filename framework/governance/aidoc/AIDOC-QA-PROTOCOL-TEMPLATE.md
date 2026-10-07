@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
 **Scope:** Acceptance Testing, Staging Verification & Defect Reporting for `[Project Name]`
 **Governing Rules:** `GOVERNANCE_WORKFLOW_STANDARD.md`, `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`

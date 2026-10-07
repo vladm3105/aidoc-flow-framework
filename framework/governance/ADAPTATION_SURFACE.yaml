@@ -10,11 +10,11 @@
 # =============================================================================
 
 metadata:
-  schema_version: "1.0.0"
+  schema_version: "1.1.0"
   description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
   authority: "framework/governance/ADAPTATION.md"
-  last_updated: "2026-09-07"
-  framework_version: "0.88.3"
+  last_updated: "2026-10-07"
+  framework_version: "0.88.4"
 
 # The single input an engine reads at runtime. The user-global file is an
 # authoring-time seed only (merged into the project profile, not read at
@@ -82,7 +82,7 @@ knobs:
     constraint: >
       Default iteration cap (see REVIEW_REMEDIATION_FLOW.md §Iteration cap):
       maximum review→remediate cycles before saga transitions to
-      PARTIAL_TIMEOUT. Range 1-10; values outside the range are treated as
+      ESCALATED. Range 1-10; values outside the range are treated as
       malformed and fall back to the default. Engines reading from
       `.aidoc/profile.yaml` must handle missing-file / missing-field /
       malformed-value paths by falling back to the default.

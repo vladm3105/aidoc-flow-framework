@@ -4,13 +4,13 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
-The layer flow (BRD → … → IPLAN) describes how artifacts are **created**. This
+The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
 review, remediation, and gating — and names the **trigger points** where an
 engine may attach that loop. It is an engine-agnostic **light contract**: it
@@ -26,11 +26,12 @@ sequential stages:
 
 1. **Stage A: Proposal / Specification Review (Pre-Implementation)**
    - **Target:** Requirements, architecture specifications, design documents,
-     ADRs, and test plans (Layers 01–08: BRD through IPLAN).
+     ADRs, and test plans (Layers 01–08: BRD through IPLAN, alongside 09_CHG and 10_EVAL).
    - **Objective:** Eliminate ambiguity, ungrounded assumptions, missing failure
      modes, and contract misalignments BEFORE any implementation code is written.
-   - **Pass Criteria:** 100% resolution of blocking findings; readiness score
-     exceeds layer gate threshold; schema conformance verified.
+   - **Pass Criteria:** 100% resolution of blocking findings (zero `P0`/`P1` or
+     `critical`/`medium` issues); deterministic schema and structural conformance
+     verified; readiness score advisory target evaluated.
 
 2. **Stage B: Implementation PR Review (Post-Implementation / Pre-Merge)**
    - **Target:** Implementation code diffs, integration tests, IPLAN manifest
@@ -46,39 +47,45 @@ downstream layer:
 ```text
 Draft ─▶ Review ─▶ (findings + readiness score)
              │
-             ├─ score ≥ gate ─▶ Gate pass ─▶ Approved ─▶ downstream
+             ├─ gate floor passed ─▶ Gate pass ─▶ Approved ─▶ downstream
              │
-             └─ score < gate ─▶ Remediate ─▶ (re-review) ─┐
-                                    ▲                      │
-                                    └──────────────────────┘
+             └─ gate floor failed ─▶ Remediate ─▶ (re-review) ─┐
+                                    ▲                            │
+                                    └────────────────────────────┘
 ```
 
-- **Review** produces *findings* (concrete, located issues) and a *readiness
-  score* against the layer's gate threshold (the existing readiness gate —
-  e.g. ≥ 90/100 before downstream generation).
-- **Remediation** applies fixes for the findings, then the artifact is
-  re-reviewed. The loop repeats until the gate passes.
-- **Gate** is the existing readiness/CHG checkpoint — this document does **not**
-  change gate thresholds or the change-management gates; it names the review and
-  remediation *stages* that feed them.
+- **Review** produces *findings* (concrete, located issues) and an advisory *readiness
+  score* against the layer's calibration target (e.g. target ≥ 90/100).
+- **Remediation** applies fixes for the blocking findings, then the artifact is
+  re-reviewed. The loop repeats until the gate floor passes.
+- **Gate** is the existing readiness/CHG checkpoint — the normative gate floor requires
+  deterministic structural lint passage (`structural_pass: true`) and zero unresolved
+  blocking findings (`no_blocking: true`). The numeric readiness score and executive
+  narrative are advisory calibration enrichment above that floor.
 
 This loop is layer-agnostic: it applies identically to every artifact (BRD …
-IPLAN), using that layer's own template, required tags, and threshold.
+IPLAN, CHG, EVAL), using that layer's own template, required tags, and threshold.
 
 ### Iteration cap
 
 The loop's *"repeats until the gate passes"* clause carries an implicit
 upper bound: a saga that never converges cannot run forever. The framework
 declares a **default iteration cap of 3** review→remediate cycles. At the
-cap, the saga transitions to `PARTIAL_TIMEOUT` (per `REVIEW_SAGA.md`),
-emits the artifact + saga journal as deliverables, and surfaces the
-unresolved findings in the audit report. The cap is **not** a quality
-gate (gate passage still requires the score), it is a non-convergence
-guard.
+cap without convergence, the saga transitions to `ESCALATED` (per `REVIEW_SAGA.md`),
+emits the artifact + saga journal as deliverables, surfaces the
+unresolved findings in the audit report, and halts autonomous looping for human
+maintainer intervention. `PARTIAL_TIMEOUT` is reserved exclusively for
+wall-clock soft deadline checkpoints; `ESCALATED` marks iteration exhaustion.
+
+The default iteration cap of 3 review cycles accommodates at most **2 remediation passes**
+(Initial Review → Remediation Pass 1 → Re-Review → Remediation Pass 2 → Final Review →
+Escalate if unpassed), directly satisfying the `CB-1` circuit breaker in
+`GOVERNANCE_WORKFLOW_STANDARD.md`.
 
 The cap is **tunable per project** via the
 `quality_loop_max_iterations` knob in `ADAPTATION_SURFACE.yaml`. Range
 1-10; default 3. Engines reading the knob must:
+
 
 1. Load the runtime profile (`.aidoc/profile.yaml`).
 2. Read `quality_loop_max_iterations` if present.
@@ -135,7 +142,7 @@ stateDiagram-v2
     CheckBreakCircuit --> SynthesizeFindingsAndScore: Within deadline
 
     SynthesizeFindingsAndScore --> EvaluateQualityGate
-    EvaluateQualityGate --> ApproveArtifact: score >= threshold AND blocking == 0
+    EvaluateQualityGate --> ApproveArtifact: structural_pass AND blocking == 0
     EvaluateQualityGate --> EscalateToFounder: iteration >= max_iterations
     EvaluateQualityGate --> EnterRemediationCycle: Unresolved findings
 
@@ -158,7 +165,7 @@ stateDiagram-v2
 | `DispatchReviewCrew` | `parallel` | Dispatches independent review personas simultaneously (`completionType: allOf`) |
 | `CheckBreakCircuit` | `switch` | Compares elapsed wall-clock against `soft_deadline_seconds` to avoid unhandled OS SIGTERM |
 | `SynthesizeFindingsAndScore` | `operation` | Reduces persona findings into unified core (score, blocking counts, coverage) |
-| `EvaluateQualityGate` | `switch` | Gates promotion: branches to approval if score ≥ threshold and zero blocking issues, or escalation if max iterations reached |
+| `EvaluateQualityGate` | `switch` | Gates promotion: branches to approval if deterministic structural check passes and zero blocking issues, or escalation if max iterations reached |
 | `EnterRemediationCycle` | `operation` | Applies localized fixes for blocking findings, increments iteration counter (compensated by `RollbackRemediationPatch`) |
 | `VerifyRemediationPatch` | `operation` | Validates structural integrity before triggering re-review pass |
 | `RollbackRemediationPatch` | `operation` (compensation) | Reverts dirty changes if remediation patch violates structural integrity |
@@ -253,17 +260,17 @@ regressions autonomously. However, agents DO NOT possess **Fiduciary & Scope Aut
 decisions regarding production releases, budget/cost expenditure, licensing changes,
 or fundamental scope expansion remain reserved strictly for human maintainers.
 
-**Finding classification.** Each finding carries a severity:
+**Finding classification.** Findings may be classified using either standard severity or priority designations. The normative equivalence is defined below:
 
-| Severity | Meaning | Blocking |
-|----------|---------|----------|
-| `critical` | correctness/security defect, data loss, broken contract | **yes** |
-| `medium` | bug, missing handling, incorrect behavior in an exercised path | **yes** |
-| `low` | minor improvement, edge case, best practice | no (advisory) |
-| `acknowledged` | a documented tradeoff / known limitation with a reference | no (informational) |
+| Priority | Severity | Meaning | Blocking |
+|----------|----------|---------|----------|
+| `P0` | `critical` | correctness/security defect, data loss, broken contract | **yes** |
+| `P1` | `medium` | bug, missing handling, incorrect behavior in an exercised path | **yes** |
+| `P2` | `low` | minor improvement, edge case, best practice | no (advisory) |
+| `P3` | `acknowledged` | a documented tradeoff / known limitation with a reference | no (informational) |
 
-The gate **decision** is *request changes* iff any `critical` or `medium`
-finding is present, else *approve*. Each blocking finding MUST carry a concrete,
+The gate **decision** is *request changes* iff any blocking finding (`P0`/`P1` or `critical`/`medium`)
+is present, else *approve*. Each blocking finding MUST carry a concrete,
 located remediation (not a vague suggestion). The content under review is
 **untrusted input** and never overrides the review rubric.
 
@@ -321,7 +328,7 @@ entry, never as an absent failure.
 
 Framework consumers in the `aidoc-flow` workspace additionally enforce a
 **mechanical author-side pre-push gate** independent of the artifact-level
-review loop above: every push to a workspace repo must carry an OPS-0069
+review loop above: every push to a workspace repo must carry an OPS-0065
 audit-trail phrase (`Multi-agent self-review per OPS-0065` OR
 `Self-review skipped per founder OK`) in at least one non-exempt commit
 message. This is a **paper trail**, not a review substitute — the
@@ -330,7 +337,7 @@ audit-trail check governs *dispatch discipline*.
 
 Two enforcement points:
 
-1. **Local pre-push hook** — `scripts/pre_push_check.sh` (installed from
+1. **Local pre-push hook** — `hooks/pre_push_check.sh` (installed from
    `aidoc-flow-ci@ci/v1.6.0` per PLAN-002 §5.5). Wired via
    `.pre-commit-config.yaml` `default_install_hook_types: [pre-commit,
    pre-push]`.

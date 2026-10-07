@@ -9,12 +9,12 @@
 
 id: review-remediation-flow
 name: Review Remediation and Quality Loop Flow
-version: "1.0"
+version: "1.1"
 specVersion: "0.8"
 description: >-
   Executable CNCF Serverless Workflow state machine orchestrating the multi-agent
-  quality loop: review crew dispatch, finding synthesis, gate threshold check,
-  3-strike remediation saga with rollback compensation, and terminal resolution.
+  quality loop: review crew dispatch, finding synthesis, deterministic gate floor
+  check, 3-strike remediation saga with rollback compensation, and terminal resolution.
 
 start: PrepareReviewCrew
 
@@ -29,11 +29,15 @@ states:
       iteration: 1
       max_iterations: 3
       threshold_score: 90.0
+      structural_pass: false
       soft_deadline_seconds: 600
     transition: DispatchReviewCrew
 
   # -----------------------------------------------------------------------------
   # State 2: Multi-Agent Review Crew Dispatch (Parallel Fan-out)
+  # Dynamic Mapping: In layer execution, branches are dynamically populated from
+  # REVIEW_CREWS.yaml based on the target artifact layer. The branches below
+  # represent the canonical 4-lens exemplar configuration.
   # -----------------------------------------------------------------------------
   - name: DispatchReviewCrew
     type: parallel
@@ -106,7 +110,7 @@ states:
     type: switch
     dataConditions:
       - name: GatePassed
-        condition: "${ .readiness_score >= .threshold_score and .blocking_findings == 0 }"
+        condition: "${ .structural_pass == true and .blocking_findings == 0 }"
         transition: ApproveArtifact
       - name: IterationCapReached
         condition: "${ .iteration >= .max_iterations }"

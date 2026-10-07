@@ -7,11 +7,35 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.17 |
+| Version | 1.18 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
+
+## [0.88.4] — 2026-10-07
+
+### Changed — Review Flows & Saga Governance Hardening, Deterministic Quality Gate Floor, Iteration Cap Terminal State, and Adaptation Surface Parity (C2 Spec, CHG-74 + IPLAN-74, Decision GD-68)
+
+- **Deterministic Gate Floor Standard**:
+  - Formalized that normative quality gate authorization for promotion and merge requires deterministic structural lint passage (`structural_pass == true`) and zero unresolved blocking findings (`blocking_findings == 0` / zero `P0`/`P1`).
+  - Positioned numeric readiness scores (e.g. >= 90) and executive narratives as advisory calibration and enrichment above the floor, preventing stochastic flappiness across model evaluations (`REVIEW_REMEDIATION_FLOW.md`, `REVIEW_TEAM.md`).
+  - Updated CNCF Serverless Workflow condition in `workflows/review-remediation-flow.sw.yaml` to `${ .structural_pass == true and .blocking_findings == 0 }`.
+- **Review Saga Lifecycle & Terminal State Correction**:
+  - Updated `REVIEW_SAGA.md` Transition Table to allow `SYNTHESIZED` to transition to `CLOSED`, `FANOUT_STARTED`, `ESCALATED`, or `PARTIAL_TIMEOUT`.
+  - Harmonized `ESCALATED` as the canonical non-convergence terminal state across `REVIEW_REMEDIATION_FLOW.md`, `ADAPTATION_SURFACE.yaml`, `ADAPTATION.md`, and `PROFILE-TEMPLATE.yaml`, reserving `PARTIAL_TIMEOUT` strictly for wall-clock soft deadline checkpoints.
+  - Updated `SPEC_TRANSITIONS` pin in `tests/conformance/test_saga_lifecycle_parity.py` to maintain exact lifecycle parity.
+- **Circuit Breaker CB-1 Arithmetic Harmonization**:
+  - Aligned `GOVERNANCE_WORKFLOW_STANDARD.md` §6 Table CB-1 with `REVIEW_REMEDIATION_FLOW.md`, clarifying that the default iteration cap of 3 review cycles accommodates at most 2 remediation passes before escalation.
+- **Review Team & Crews Specification Hardening**:
+  - Purged retired platform notes from `REVIEW_CREWS.yaml`, documented default quorum rules, and added Layer 10 EVAL grading criteria.
+  - Purged retired platform agent brief tests from `REVIEW_TEAM.md`, updated playbook count to 69 across the playbooks tree, and clarified multi-persona `team` mode vs `single_pass`.
+  - Established bidirectional finding Priority (`P0`–`P3`) to Severity (`critical`–`acknowledged`) equivalence mapping in `REVIEW_REMEDIATION_FLOW.md`.
+  - Harmonized self-review audit reference to `OPS-0065` and fixed hook path to `hooks/pre_push_check.sh`.
+- **Security Review & Engine Agnosticism**:
+  - Expanded `SECURITY_REVIEW.md` scope to cover all SDD layers (01–10: BRD through EVAL), replaced platform references with engine terminology, and corrected review checklist tags for Rule 4 (Least authority) and Threat T4 (Active content).
+- **Versioning**:
+  - Bumped framework version to `0.88.4` and extended `OLD_VERSIONS` in `hooks/sync-version-refs.sh` with `0.88.3`.
 
 ## [0.88.3] — 2026-10-06
 

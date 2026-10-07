@@ -1,0 +1,173 @@
+# =============================================================================
+#  IPLAN-74: Review Flow Harmonization, Saga Loop Enablement, and Governance Stale-Info Purge
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.4"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - governance-alignment
+    - review-flows
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-74"
+  source_chg: "CHG-74"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: workflow
+  status: Completed
+  version: "1.0"
+  author: "Framework Maintainer"
+  date_created: "2026-10-07T00:00:00Z"
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/REVIEW_CREWS.yaml"
+      description: "Purge retired platform notes, add quorum guideline, clarify Layer 10 EVAL grading and drafter/fixer roles"
+      order: 1
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      description: "Harmonize gate floor, update iteration cap terminal state to ESCALATED, fix hook path and OPS-0065, expand scope"
+      order: 2
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_SAGA.md"
+      description: "Enable multi-iteration saga loop in transition table, fix relative paths, disambiguate PARTIAL_TIMEOUT"
+      order: 3
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_TEAM.md"
+      description: "Purge retired agent brief test claim, update playbook counts to 69/51, fix section anchor, clarify review mode and quorum"
+      order: 4
+      status: COMPLETED
+    - path: "framework/governance/SECURITY_REVIEW.md"
+      description: "Fix checklist tag mapping, expand scope to Layer 10 EVAL, modernize runtime code reference"
+      order: 5
+      status: COMPLETED
+    - path: "framework/governance/workflows/review-remediation-flow.sw.yaml"
+      description: "Align GatePassed condition and document crew fan-out"
+      order: 6
+      status: COMPLETED
+    - path: "framework/governance/ADAPTATION_SURFACE.yaml"
+      description: "Fix quality_loop_max_iterations constraint description from PARTIAL_TIMEOUT to ESCALATED"
+      order: 7
+      status: COMPLETED
+    - path: "framework/governance/ADAPTATION.md"
+      description: "Fix quality_loop_max_iterations references from PARTIAL_TIMEOUT to ESCALATED"
+      order: 8
+      status: COMPLETED
+    - path: "framework/governance/PROFILE-TEMPLATE.yaml"
+      description: "Fix quality_loop_max_iterations comment from PARTIAL_TIMEOUT to ESCALATED"
+      order: 9
+      status: COMPLETED
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Harmonize CB-1: clarify that Max 2 remediation passes corresponds to 3-cycle cap"
+      order: 10
+      status: COMPLETED
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.88.3 to OLD_VERSIONS"
+      order: 11
+      status: COMPLETED
+    - path: "tests/conformance/test_saga_lifecycle_parity.py"
+      description: "Synchronize SPEC_TRANSITIONS pin with revised REVIEW_SAGA.md transition table"
+      order: 12
+      status: COMPLETED
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-68"
+      order: 13
+      status: COMPLETED
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.88.4]"
+      order: 14
+      status: COMPLETED
+    - path: "framework/VERSION"
+      description: "Bump version to 0.88.4"
+      order: 15
+      status: COMPLETED
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+
+execution_steps:
+  - id: STEP-01
+    description: "Update REVIEW_CREWS.yaml"
+    files: ["framework/governance/REVIEW_CREWS.yaml"]
+    command: null
+    status: COMPLETED
+  - id: STEP-02
+    description: "Update REVIEW_REMEDIATION_FLOW.md"
+    files: ["framework/governance/REVIEW_REMEDIATION_FLOW.md"]
+    command: null
+    status: COMPLETED
+  - id: STEP-03
+    description: "Update REVIEW_SAGA.md"
+    files: ["framework/governance/REVIEW_SAGA.md"]
+    command: null
+    status: COMPLETED
+  - id: STEP-04
+    description: "Update REVIEW_TEAM.md"
+    files: ["framework/governance/REVIEW_TEAM.md"]
+    command: null
+    status: COMPLETED
+  - id: STEP-05
+    description: "Update SECURITY_REVIEW.md"
+    files: ["framework/governance/SECURITY_REVIEW.md"]
+    command: null
+    status: COMPLETED
+  - id: STEP-06
+    description: "Update review-remediation-flow.sw.yaml"
+    files: ["framework/governance/workflows/review-remediation-flow.sw.yaml"]
+    command: null
+    status: COMPLETED
+  - id: STEP-07
+    description: "Update secondary adaptation surfaces (ADAPTATION_SURFACE.yaml, ADAPTATION.md, PROFILE-TEMPLATE.yaml)"
+    files:
+      - "framework/governance/ADAPTATION_SURFACE.yaml"
+      - "framework/governance/ADAPTATION.md"
+      - "framework/governance/PROFILE-TEMPLATE.yaml"
+    command: null
+    status: COMPLETED
+  - id: STEP-08
+    description: "Harmonize GOVERNANCE_WORKFLOW_STANDARD.md CB-1"
+    files: ["framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"]
+    command: null
+    status: COMPLETED
+  - id: STEP-09
+    description: "Update hooks/sync-version-refs.sh and test_saga_lifecycle_parity.py"
+    files:
+      - "hooks/sync-version-refs.sh"
+      - "tests/conformance/test_saga_lifecycle_parity.py"
+    command: null
+    status: COMPLETED
+  - id: STEP-10
+    description: "Bump framework/VERSION and run sync-version-refs.sh"
+    files: ["framework/VERSION"]
+    command: "bash hooks/sync-version-refs.sh"
+    status: COMPLETED
+  - id: STEP-11
+    description: "Update framework/governance/DECISIONS.md (ratify GD-68) and framework/CHANGELOG.md"
+    files:
+      - "framework/governance/DECISIONS.md"
+      - "framework/CHANGELOG.md"
+    command: null
+    status: COMPLETED
+  - id: STEP-12
+    description: "Run verification test suite and chg_lint"
+    files: []
+    command: "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-74/CHG-74.yaml && pytest tests/conformance/test_review_team.py tests/conformance/test_saga_lifecycle_parity.py tests/conformance/test_review_report_parity.py tests/conformance/test_sync_version_refs.py"
+    status: COMPLETED
