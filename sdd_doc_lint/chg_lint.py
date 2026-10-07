@@ -257,7 +257,7 @@ def check_iplan_reference(
 
     if not has_iplan:
         errors.append(
-            "CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); F2 files a scoped IPLAN, F4 a bugfix-subtype IPLAN"
+            "CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); DIR2C (F2) files a scoped IPLAN, CODE2C (F4) a bugfix-subtype IPLAN"
         )
     else:
         passes.append("CHG-L004: IPLAN reference found")
@@ -354,19 +354,82 @@ def check_sdd_lifecycle_completeness(
 ) -> None:
     """CHG-L006: sdd_lifecycle steps must exist when SDD documents are modified (§3.4.1 C16)."""
     modified = data.get("implementation", {})
-    artifacts: list[dict[str, Any]] = []
+    raw_artifacts: list[dict[str, Any]] = []
     if isinstance(modified, dict):
         raw = modified.get("artifacts_modified", [])
         if isinstance(raw, list):
-            artifacts = [a for a in raw if isinstance(a, dict)]
+            raw_artifacts = [a for a in raw if isinstance(a, dict)]
+
+    sdd_artifacts: list[dict[str, Any]] = []
+    for a in raw_artifacts:
+        file_path = str(a.get("file", ""))
+        art_id = str(a.get("id", ""))
+        if _is_code_path(file_path):
+            continue
+        if "IPLAN" in art_id.upper() or "IPLAN" in file_path.upper():
+            continue
+        sdd_artifacts.append(a)
+
     steps = _sdd_lifecycle_steps(data)
-    if artifacts and not steps:
+    if not sdd_artifacts:
+        passes.append(
+            "CHG-L006: SDD lifecycle completeness check passed (no modified SDD documents declared)"
+        )
+        return
+
+    if not steps:
         errors.append(
-            f"CHG-L006: {len(artifacts)} artifact(s) in artifacts_modified but no "
+            f"CHG-L006: {len(sdd_artifacts)} artifact(s) in artifacts_modified but no "
             "implementation.steps with phase 'sdd_lifecycle' — every modified SDD "
             "document needs an archive → rewrite → supersedes → version-bump step"
         )
         return
+
+    step_targets: set[str] = set()
+    for s in steps:
+        art = str(s.get("artifact") or "").strip()
+        if art:
+            step_targets.add(art)
+            step_targets.add(Path(art).stem)
+            if "_" in art:
+                step_targets.add(art.split("_")[0])
+            if "." in art:
+                parts = art.split(".")
+                if len(parts) >= 2:
+                    step_targets.add(f"{parts[0]}-{parts[1]}")
+        arch = str(s.get("archive_path") or "").strip()
+        if arch:
+            step_targets.add(arch)
+            step_targets.add(Path(arch).stem)
+            if "_" in Path(arch).stem:
+                step_targets.add(Path(arch).stem.split("_")[0])
+
+    missing: list[str] = []
+    for a in sdd_artifacts:
+        art_id = str(a.get("id") or "").strip()
+        file_path = str(a.get("file") or "").strip()
+        stem = Path(file_path).stem if file_path else ""
+
+        matched = False
+        candidates = {c for c in (art_id, file_path, stem) if c}
+        for c in candidates:
+            if c in step_targets:
+                matched = True
+                break
+            if any(c in st or st in c for st in step_targets if len(st) >= 3):
+                matched = True
+                break
+
+        if not matched:
+            missing.append(art_id or file_path or "unnamed artifact")
+
+    if missing:
+        errors.append(
+            "CHG-L006: artifacts_modified lists documents missing from sdd_lifecycle steps: "
+            + ", ".join(sorted(missing))
+        )
+        return
+
     passes.append("CHG-L006: SDD lifecycle completeness check passed")
 
 
@@ -1141,8 +1204,8 @@ def check_seed_module_lifecycle(
         )
     if problems:
         errors.append(
-            "CHG-L014: F3 change touches seed/module docs without lifecycle coverage "
-            "(GOV-020) — suspected F3 Phase 0a/0b omission: " + "; ".join(problems)
+            "CHG-L014: SEED2C (F3) change touches seed/module docs without lifecycle coverage "
+            "(GOV-020) — suspected SEED2C (F3) Phase 0a/0b omission: " + "; ".join(problems)
         )
         return
     passes.append("CHG-L014: seed/module touches covered by seed_scope/module_lifecycle")

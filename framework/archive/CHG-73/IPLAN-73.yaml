@@ -1,0 +1,151 @@
+# =============================================================================
+#  IPLAN-73: Linter Completeness Hardening, Hook Fixes, and Governance Stale-Info Purge
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.3"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - linter-hardening
+    - governance-alignment
+    - hook-fixes
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-73"
+  source_chg: "CHG-73"
+  flow: sdd_to_code
+  flow_code: SDD2C
+  subtype: code_build
+  status: Completed
+  version: "1.0"
+  author: "Framework Maintainer"
+  date_created: "2026-10-06T00:00:00Z"
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "Fix CHG-L006 per-artifact coverage loop (Issue #895); filter non-SDD and IPLAN files; modernize legacy error strings"
+      order: 1
+      status: DONE
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Add regression tests for CHG-L006 per-artifact coverage completeness and code artifact handling"
+      order: 2
+      status: DONE
+    - path: "sdd_doc_lint/trace_graph.py"
+      description: "Support Layer 10 EVAL in KNOWN_LAYERS, LAYER_INDEX, and TAG regex"
+      order: 3
+      status: DONE
+    - path: "hooks/pre_push_check.sh"
+      description: "Fix founder-OK em-dash in lines 244 and 258; harmonize OPS-0065 audit references; update retired CLAUDE.md URL"
+      order: 4
+      status: DONE
+    - path: "framework/governance/LINT_RULES.md"
+      description: "Update CHG-L006/GOV-014 contract description to enforce per-artifact coverage; bump version to 1.4"
+      order: 5
+      status: DONE
+    - path: "framework/governance/SEED_CONTRACT.md"
+      description: "Update F3 reference to SEED2C (F3); bump version to 1.4"
+      order: 6
+      status: DONE
+    - path: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+      description: "Update F1/F3 references to SDD2C (F1) / SEED2C (F3); bump version to 1.1"
+      order: 7
+      status: DONE
+    - path: "framework/templates/SEED-TEMPLATE.md"
+      description: "Update F3 reference to SEED2C (F3); bump version to 1.2"
+      order: 8
+      status: DONE
+    - path: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      description: "Update SDD guide to present 6 graph traversal paths alongside legacy shorthand; bump version to 1.3"
+      order: 9
+      status: DONE
+    - path: "framework/governance/README.md"
+      description: "Update document lifecycle and doc overview to describe 6 graph traversal paths; bump version to 1.5"
+      order: 10
+      status: DONE
+    - path: "framework/README.md"
+      description: "Update flow descriptions to highlight the 6 traversal-path graph lifecycles; bump version to 1.4"
+      order: 11
+      status: DONE
+    - path: "AGENTS.md"
+      description: "Harmonize governance gate with dual-layer graph codes (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)"
+      order: 12
+      status: DONE
+    - path: "README.md"
+      description: "Update root readme flow references to include dual-layer graph nomenclature"
+      order: 13
+      status: DONE
+    - path: "docs/SUPPORT.md"
+      description: "Add note clarifying cross-repo links in standalone checkouts"
+      order: 14
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-67"
+      order: 15
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes for 0.88.3"
+      order: 16
+      status: DONE
+    - path: "framework/VERSION"
+      description: "Bump framework version to 0.88.3"
+      order: 17
+      status: DONE
+    - path: "tests/conformance/test_consumer_scripts.py"
+      description: "Add stdin=subprocess.DEVNULL to prevent TTY blocking during non-interactive discovery runs"
+      order: 18
+      status: DONE
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+
+execution:
+  phases:
+    - name: "Phase 1: Linter and Trace Graph Hardening"
+      description: "Enforce per-artifact coverage in CHG-L006, add EVAL to trace graph, and add regression tests"
+      steps:
+        - "Update sdd_doc_lint/chg_lint.py to implement per-artifact matching in check_sdd_lifecycle_completeness"
+        - "Update sdd_doc_lint/trace_graph.py to include EVAL in KNOWN_LAYERS and TAG regex"
+        - "Add regression tests in sdd_doc_lint/tests/test_chg_lint.py"
+        - "Run pytest sdd_doc_lint/tests/ to verify all linter unit tests pass"
+
+    - name: "Phase 2: Hook Quality and Audit Reference Fixes"
+      description: "Fix pre_push_check.sh em-dash discrepancy, harmonize OPS-0065 references, and update dead links"
+      steps:
+        - "Edit hooks/pre_push_check.sh to add em-dash to founder-OK skip guidance strings on lines 244 & 258"
+        - "Harmonize OPS-0069 to OPS-0065 in hooks/pre_push_check.sh"
+        - "Update dead CLAUDE.md link to point to AGENTS.md"
+
+    - name: "Phase 3: Governance Stale-Info Purge & Graph Nomenclature Synchronization"
+      description: "Synchronize SDD documents and guidance files to consistently cite dual-layer graph codes"
+      steps:
+        - "Update framework/governance/LINT_RULES.md, SEED_CONTRACT.md, SEED_TO_MODULE_DECOMPOSITION.md, SEED-TEMPLATE.md"
+        - "Update framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, framework/governance/README.md, framework/README.md"
+        - "Update AGENTS.md, root README.md, and docs/SUPPORT.md"
+        - "Bump document control versions on all updated normative markdown documents"
+
+    - name: "Phase 4: Conformance Verification & Document of Record Synchronization"
+      description: "Run test suites, bump framework version to 0.88.3, ratify GD-67, and record release notes"
+      steps:
+        - "Bump framework/VERSION to 0.88.3"
+        - "Record Decision GD-67 in framework/governance/DECISIONS.md"
+        - "Record release notes in framework/CHANGELOG.md"
+        - "Run full test suites: PYTHONPATH=. pytest sdd_doc_lint/tests/ tests/conformance/ tests/acceptance/ tests/unit/"
+        - "Run pre-commit run --all-files and chg_lint on CHG-73.yaml"

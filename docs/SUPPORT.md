@@ -113,6 +113,8 @@ Gmail draft for the maintainer to review.
 
 Design and implementation are documented at:
 
+> *Note: Cross-repo links (`../../operations/`, `../../business/`) resolve in the multi-repo workspace structure.*
+
 - [`../../operations/docs/SUPPORT_INTAKE.md`](../../operations/docs/SUPPORT_INTAKE.md)
   — operations-side intake design (Forms→Sheet schema, classifier
   cascade, per-class routing, escalation rules, notification fan-out).

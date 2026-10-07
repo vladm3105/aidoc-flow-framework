@@ -104,6 +104,96 @@ class LifecycleCompletenessTests(unittest.TestCase):
             self.assertEqual([e for e in errors if "CHG-L006" in e], [])
             self.assertTrue(any("CHG-L006" in p for p in passes))
 
+    def test_subset_lifecycle_coverage_is_error(self):
+        # Issue #895: CHG modifying SPEC-X and SPEC-Y but with sdd_lifecycle
+        # steps covering only SPEC-X must fail L006 naming SPEC-Y.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["artifacts_modified"] = [
+                {"id": "SPEC-X", "file": "framework/layers/06_SPEC/SPEC-X.md"},
+                {"id": "SPEC-Y", "file": "framework/layers/06_SPEC/SPEC-Y.md"},
+            ]
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Archive + rewrite SPEC-X",
+                    "phase": "sdd_lifecycle",
+                    "artifact": "SPEC-X",
+                    "status": "Completed",
+                    "archive_path": "framework/archive/CHG-99/SPEC-X.md",
+                    "new_version": "2.0",
+                },
+                {
+                    "step": "Create IPLAN-99",
+                    "phase": "iplan_creation",
+                    "artifact": "IPLAN-99",
+                    "status": "Completed",
+                },
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            l006_errors = [e for e in errors if "CHG-L006" in e]
+            self.assertTrue(l006_errors, "expected CHG-L006 error for uncovered artifact")
+            self.assertTrue(any("SPEC-Y" in e for e in l006_errors), l006_errors)
+
+    def test_full_lifecycle_coverage_passes(self):
+        # All modified SDD artifacts covered by lifecycle steps -> clean pass.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["implementation"]["artifacts_modified"] = [
+                {"id": "SPEC-X", "file": "framework/layers/06_SPEC/SPEC-X.md"},
+                {"id": "SPEC-Y", "file": "framework/layers/06_SPEC/SPEC-Y.md"},
+            ]
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Archive + rewrite SPEC-X",
+                    "phase": "sdd_lifecycle",
+                    "artifact": "SPEC-X",
+                    "status": "Completed",
+                    "archive_path": "framework/archive/CHG-99/SPEC-X.md",
+                    "new_version": "2.0",
+                },
+                {
+                    "step": "Archive + rewrite SPEC-Y",
+                    "phase": "sdd_lifecycle",
+                    "artifact": "SPEC-Y",
+                    "status": "Completed",
+                    "archive_path": "framework/archive/CHG-99/SPEC-Y.md",
+                    "new_version": "2.0",
+                },
+                {
+                    "step": "Create IPLAN-99",
+                    "phase": "iplan_creation",
+                    "artifact": "IPLAN-99",
+                    "status": "Completed",
+                },
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L006" in e], [])
+            self.assertTrue(any("CHG-L006" in p for p in passes))
+
+    def test_code_artifact_does_not_require_sdd_lifecycle(self):
+        # Code artifacts in artifacts_modified do not require sdd_lifecycle steps.
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = _base_chg()
+            chg["change_control"]["change_source"] = "direct"
+            chg["change_control"]["change_level"] = "C1"
+            chg["implementation"]["artifacts_modified"] = [
+                {"id": "HOOK", "file": "hooks/sync-version-refs.sh"}
+            ]
+            chg["implementation"]["steps"] = [
+                {
+                    "step": "Create IPLAN-99",
+                    "phase": "iplan_creation",
+                    "artifact": "IPLAN-99",
+                    "status": "Completed",
+                }
+            ]
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L006" in e], [])
+            self.assertTrue(any("CHG-L006" in p for p in passes))
+
 
 class SddFirstOrderTests(unittest.TestCase):
     """CHG-L005 (§3.1.1): SDD scope precedes IPLAN creation; lifecycle flows

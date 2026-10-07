@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 05 (Architecture Decision Records / ADR) architectural trade-off evaluations, multi-criteria decision analysis (MCDA), stakeholder RFC review callbacks, and decision ratification using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 

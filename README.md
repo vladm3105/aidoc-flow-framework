@@ -170,10 +170,10 @@ framework's contract completes the model rather than exposing a weakness.
 5. **Validate the oracle** at EARS/BDD with a PO before building.
 6. **Build test-first** from the IPLANs; sessions hand off via the IPLAN session-handoff.
 7. **Observe reality**, then **adapt** via CHG — the chain is a control loop, not a
-   blueprint. Which flow an adaptation takes — F1 greenfield, F2 direct request,
-   F3 brownfield restart, F4 bugfix on an implemented IPLAN, or the Emergency /
-   Type-R yield paths — is routed by
-   `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, CHG-06).
+   blueprint. Which flow an adaptation takes — the 6 traversal-path graph lifecycles
+   (SDD2C greenfield, DIR2C direct request, SEED2C brownfield restart, CODE2C bugfix,
+   CODE2S reconciliation, or HOTFIX emergency) — is routed by
+   `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, CHG-06; modernized in 0.88.0+).
 
 ---
 
@@ -341,7 +341,7 @@ for the vulnerability-reporting policy.
 - [`framework/README.md`](framework/README.md) — the engine-agnostic SDD specification and layer architecture.
 - [`framework/governance/README.md`](framework/governance/README.md) — governance policies, change management (CHG), and catalog of 12 CNCF Serverless Workflows.
 - [`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md`](framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md) — normative CNCF Serverless Workflow standard and catalog.
-- [`framework/governance/CHG_REQUEST_FLOWS.md`](framework/governance/CHG_REQUEST_FLOWS.md) — change request classification and flow routing (F1–F4, Emergency, Type-R).
+- [`framework/governance/CHG_REQUEST_FLOWS.md`](framework/governance/CHG_REQUEST_FLOWS.md) — change request classification and flow routing across 6 traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C).
 - [`framework/governance/WORKTREE_FLOW.md`](framework/governance/WORKTREE_FLOW.md) — per-task worktree invariants and order guards.
 - [`framework/governance/aidoc/AIDOC.md`](framework/governance/aidoc/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
 - `SECURITY.md` — security policy and vulnerability reporting.
