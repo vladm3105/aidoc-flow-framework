@@ -49,6 +49,7 @@ EXPECTED_FILES = [
     "SEED_TO_MODULE_DECOMPOSITION.md",
     "GOVERNANCE_WORKFLOW_STANDARD.md",
     "REVIEW_WORKFLOW_STANDARD.md",
+    "DURABLE_EXECUTION_STANDARD.md",
     "review_report.schema.json",
     "templates/REVIEW_REPORT-TEMPLATE.yaml",
     "templates/REVIEW-SWF-TEMPLATE.yaml",

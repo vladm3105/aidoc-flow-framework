@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.89.0 |
+| Framework Version | 0.90.0 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -412,3 +412,30 @@ When adapting the framework, consuming projects MUST propagate these enforcement
 These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
 skills (process-level), and DOC_GOVERNANCE_CORE.md (documentation-level) all enforce
 the CHG gate independently.
+
+## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform
+
+Consuming platforms deploying autonomous agent runtimes MUST implement the engine-agnostic
+**3-Tier Execution Architecture** codified in [`DURABLE_EXECUTION_STANDARD.md`](DURABLE_EXECUTION_STANDARD.md):
+
+1. **Tier 1: Durable Workflow (Orchestration & SAGA Engine)**:
+   - Owns process durability, crash replay determinism, timeout budgets, and reverse-order SAGA rollback.
+   - Example platform engines: Temporal, Restate, Hatchet, DBOS, or native CNCF Serverless Workflow runners.
+2. **Tier 2: Graph-Based Cognitive Flows (Reasoning & Review Loops)**:
+   - Owns cognitive deliberation, multi-persona review fan-out ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml)), and diagnostic fixer loops.
+   - Example platform engines: LangGraph, AutoGen, CrewAI, or custom directed cognitive graphs.
+3. **Tier 3: Deterministic Effect & Verification Services (Physical Execution)**:
+   - Owns isolated workspace lifecycle ([`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)), compilation, deterministic linting (`sdd_doc_lint`, `sdd_swf_lint`), and test suites.
+
+### The Invariant Rule for Consuming Platforms:
+> **Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.**
+>
+> - Graphs *propose*.
+> - Services *apply and verify*.
+> - Durable Workflows *orchestrate, compensate, gate, and advance*.
+
+### Key Implementation Invariants for Adapters:
+- **Thin State**: Durable workflows pass URIs, IDs, and status codes ($\le 2$ KB) only. Large artifacts (diffs, plans, logs) live in the project's external artifact store.
+- **Deterministic Quality Gate Floor**: Promotion/merge authorization strictly requires `structural_pass == true` and `blocking_findings == 0` (zero P0/P1 blockers). Advisory scores and narrative summaries must not flap the binary gate.
+- **Deterministic Rollback**: No generative model is ever used to undo git state. Rollback is performed exclusively by deterministic services (`git worktree remove` before `git branch -D`).
+- **Dual-Path Remediation**: In-band micro-fixes operate in a bounded loop ($\le 3$ iterations, `REV-AUTO`). Structural or contract failures emit a formal `ReviewReport` (`review_report.schema.json`) with `chg_handover` metadata and escalate to change management (`REV-CHG`).

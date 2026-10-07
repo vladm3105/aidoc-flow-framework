@@ -1,0 +1,115 @@
+# =============================================================================
+#  IPLAN-76: Durable Multi-Agent Execution Architecture Standard
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.90.0"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - governance-alignment
+    - durable-execution
+    - cognitive-graphs
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-76"
+  source_chg: "CHG-76"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: workflow
+  status: Completed
+  version: "1.0"
+  author: "Framework Maintainer"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/DURABLE_EXECUTION_STANDARD.md"
+      description: "Normative governance standard establishing the 3-tier runtime execution architecture (Durable Workflows, Cognitive Graphs, Deterministic Services)"
+      order: 1
+      status: COMPLETED
+    - path: "framework/governance/ADAPTATION.md"
+      description: "Introduce Section 12 Reference Runtime Execution Architecture for consuming projects"
+      order: 2
+      status: COMPLETED
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Index DURABLE_EXECUTION_STANDARD.md and 3-tier runtime execution mapping"
+      order: 3
+      status: COMPLETED
+    - path: "tests/conformance/test_governance.py"
+      description: "Add DURABLE_EXECUTION_STANDARD.md to EXPECTED_FILES"
+      order: 4
+      status: COMPLETED
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.89.0 to OLD_VERSIONS"
+      order: 5
+      status: COMPLETED
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-70"
+      order: 6
+      status: COMPLETED
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.90.0]"
+      order: 7
+      status: COMPLETED
+    - path: "framework/VERSION"
+      description: "Bump version to 0.90.0"
+      order: 8
+      status: COMPLETED
+
+# =============================================================================
+# Section 3: Execution Phases
+# =============================================================================
+
+execution_phases:
+  phase_1_standard:
+    description: "Author framework/governance/DURABLE_EXECUTION_STANDARD.md"
+    tasks:
+      - "Codify the 3-tier architecture: Durable Workflows, Cognitive Graphs, Deterministic Services"
+      - "Codify The Golden Rule: Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows"
+      - "Formalize RoleSpec taxonomy: graph, executor, service"
+      - "Codify SAGA compensation rules, idempotency, and pre-registration"
+      - "Define Control Plane vs Data Plane separation (thin state passing)"
+      - "Codify event history limits and capacity formulas"
+      - "Define CNCF Serverless Workflow (.sw.yaml) compilation mapping"
+      - "Define dual-path remediation: REV-AUTO vs REV-CHG"
+  phase_2_adaptation_and_governance:
+    description: "Update ADAPTATION.md and GOVERNANCE_WORKFLOW_STANDARD.md"
+    tasks:
+      - "Add Section 12 to ADAPTATION.md referencing DURABLE_EXECUTION_STANDARD.md"
+      - "Update GOVERNANCE_WORKFLOW_STANDARD.md directory index and references"
+      - "Update test_governance.py EXPECTED_FILES"
+  phase_3_conformance_and_release:
+    description: "Update tests, ratify GD-70, sync version refs, bump VERSION to 0.90.0"
+    tasks:
+      - "Ratify Decision GD-70 in DECISIONS.md"
+      - "Update CHANGELOG.md, hooks/sync-version-refs.sh, and framework/VERSION"
+      - "Run full conformance and unit suites"
+
+# =============================================================================
+# Section 4: Verification
+# =============================================================================
+
+verification:
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-76/CHG-76.yaml"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/"
+    - "python3 -m pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh"

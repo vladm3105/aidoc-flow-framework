@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.89.0 |
+| Framework Version | 0.90.0 |
 
 **Scope:** Autonomous End-to-End CHG Processing for `[Project Name]`
 **Governing Rules:** `AGENTS.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, `CI_AUTONOMOUS_PR_STANDARD.md`, `DOC_GOVERNANCE_CORE.md`
