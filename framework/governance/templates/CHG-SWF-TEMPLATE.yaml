@@ -1,0 +1,279 @@
+# =============================================================================
+#  CHG-SWF-TEMPLATE.yaml — CNCF Serverless Workflow Template for Change Control
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+#  Governs: framework/governance/CHG_REQUEST_FLOWS.md, AGENTS.md
+#  Purpose: Template for configuring change classification, gate routing,
+#           SDD cascades, and landing verification across the 6 traversal paths.
+# =============================================================================
+
+id: "[change-scope]-chg-governance-flow"
+name: "[Change Scope] Governance Flow"
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Template governing change classification (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C),
+  entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
+
+metadata:
+  framework_version: "0.89.0"
+  workflow_type: "governance-change-request"
+  governed_layer: "09_CHG"
+
+start: ClassifyChangeTrigger
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Inspect Change Scope & Route
+  # -----------------------------------------------------------------------------
+  - name: ClassifyChangeTrigger
+    type: operation
+    actions:
+      - name: inspectChangeScope
+        functionRef:
+          refName: runClassificationRouter
+          arguments:
+            flow_order:
+              - "hotfix"
+              - "code_to_sdd"
+              - "code_to_code"
+              - "seed_to_code"
+              - "iplan_to_code"
+              - "sdd_to_code"
+    transition: RouteByClassification
+
+  # -----------------------------------------------------------------------------
+  # State 2: Route by Classification
+  # -----------------------------------------------------------------------------
+  - name: RouteByClassification
+    type: switch
+    dataConditions:
+      - name: RouteHotfix
+        condition: "${ .flow == 'hotfix' || .flow_code == 'HOTFIX' }"
+        transition: ExecuteHotfix
+      - name: RouteCodeToSdd
+        condition: "${ .flow == 'code_to_sdd' || .flow_code == 'CODE2S' }"
+        transition: ExecuteCodeToSdd
+      - name: RouteCodeToCode
+        condition: "${ .flow == 'code_to_code' || .flow_code == 'CODE2C' }"
+        transition: ExecuteCodeToCode
+      - name: RouteSeedToCode
+        condition: "${ .flow == 'seed_to_code' || .flow_code == 'SEED2C' }"
+        transition: ExecuteSeedToCode
+      - name: RouteIplanToCode
+        condition: "${ .flow == 'iplan_to_code' || .flow_code == 'DIR2C' }"
+        transition: ExecuteIplanToCode
+      - name: RouteSddToCode
+        condition: "${ .flow == 'sdd_to_code' || .flow_code == 'SDD2C' }"
+        transition: ExecuteSddToCode
+    defaultCondition:
+      transition: EscalateUnknownTrigger
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 1: HOTFIX
+  # -----------------------------------------------------------------------------
+  - name: ExecuteHotfix
+    type: operation
+    actions:
+      - name: deployHotfix
+        functionRef:
+          refName: executeImmediateRepair
+    transition: DraftEmergencyPostMortem
+
+  - name: DraftEmergencyPostMortem
+    type: operation
+    actions:
+      - name: authorPostMortem
+        functionRef:
+          refName: draftPostMortemAndCHG
+          arguments:
+            deadline_hours: 48
+            template: "framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 2: CODE2S (code_to_sdd)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteCodeToSdd
+    type: operation
+    actions:
+      - name: reverseEngineerSpecs
+        functionRef:
+          refName: runReverseSDDCascade
+          arguments:
+            order: ["Code", "TDD", "SPEC", "BDD", "EARS"]
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 3: CODE2C (code_to_code / Defect Repair)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteCodeToCode
+    type: operation
+    actions:
+      - name: authorBugfixCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "feedback"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+    transition: AuthorBugfixIPLAN
+
+  - name: AuthorBugfixIPLAN
+    type: operation
+    actions:
+      - name: draftBugfixIPLAN
+        functionRef:
+          refName: draftIPLAN
+          arguments:
+            subtype: "bugfix"
+    transition: ExecuteBugfixChanges
+
+  - name: ExecuteBugfixChanges
+    type: operation
+    actions:
+      - name: patchCodeAndRunRegression
+        functionRef:
+          refName: executePatchAndVerify
+    transition: CloseoutBugfix
+
+  - name: CloseoutBugfix
+    type: operation
+    actions:
+      - name: verifyBugfix
+        functionRef:
+          refName: sealBugfixCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 4: SEED2C (seed_to_code / Brownfield Spec Redesign)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteSeedToCode
+    type: operation
+    actions:
+      - name: authorBrownfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "design"
+            change_level: "C3"
+            entry_gate: "GATE-01"
+    transition: RunSeedModuleSync
+
+  - name: RunSeedModuleSync
+    type: operation
+    actions:
+      - name: syncSeedAndModules
+        functionRef:
+          refName: reconcileSeedAndModules
+    transition: ExecuteFullSDDCascade
+
+  - name: ExecuteFullSDDCascade
+    type: operation
+    actions:
+      - name: cascadeThroughLayers
+        functionRef:
+          refName: authorSDDCascade
+    transition: AuthorFullIPLAN
+
+  - name: AuthorFullIPLAN
+    type: operation
+    actions:
+      - name: createFullIPLAN
+        functionRef:
+          refName: draftIPLAN
+    transition: CloseoutSeedToCode
+
+  - name: CloseoutSeedToCode
+    type: operation
+    actions:
+      - name: verifyFullImplementation
+        functionRef:
+          refName: sealCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 5: DIR2C (iplan_to_code / Direct Task)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteIplanToCode
+    type: operation
+    actions:
+      - name: authorDirectCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "direct"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+            sdd_lifecycle: []
+    transition: AuthorScopedIPLAN
+
+  - name: AuthorScopedIPLAN
+    type: operation
+    actions:
+      - name: draftScopedIPLAN
+        functionRef:
+          refName: draftIPLAN
+          arguments:
+            subtype: "scoped"
+    transition: ExecuteDirectChanges
+
+  - name: ExecuteDirectChanges
+    type: operation
+    actions:
+      - name: executeEditsAndVerify
+        functionRef:
+          refName: applyDirectChanges
+    transition: CloseoutDirect
+
+  - name: CloseoutDirect
+    type: operation
+    actions:
+      - name: sealDirectComplete
+        functionRef:
+          refName: sealCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 6: SDD2C (sdd_to_code / Greenfield Product Chain)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteSddToCode
+    type: operation
+    actions:
+      - name: authorGreenfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "upstream"
+            change_level: "C3"
+            entry_gate: "GATE-01"
+    transition: ExecuteLayerChain
+
+  - name: ExecuteLayerChain
+    type: operation
+    actions:
+      - name: generateFullLayerChain
+        functionRef:
+          refName: authorTenLayerChain
+    transition: CloseoutGreenfield
+
+  - name: CloseoutGreenfield
+    type: operation
+    actions:
+      - name: verifyGreenfield
+        functionRef:
+          refName: sealCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Failure / Escalation State
+  # -----------------------------------------------------------------------------
+  - name: EscalateUnknownTrigger
+    type: operation
+    actions:
+      - name: alertMaintainer
+        functionRef:
+          refName: escalateClassificationFailure
+    end:
+      terminate: true

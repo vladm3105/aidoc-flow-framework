@@ -1,0 +1,203 @@
+# =============================================================================
+#  IPLAN-75: Graph-Based Review Flows, SAGA Workflows, Report Template & swf_lint
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.89.0"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - governance-alignment
+    - review-flows
+    - swf-lint
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-75"
+  source_chg: "CHG-75"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: workflow
+  status: Completed
+  version: "1.0"
+  author: "Framework Maintainer"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "sdd_doc_lint/swf_lint.py"
+      description: "Implement standalone deterministic structural linter for CNCF Serverless Workflows and embedded templates"
+      order: 1
+      status: COMPLETED
+    - path: "sdd_doc_lint/tests/test_swf_lint.py"
+      description: "Unit test suite for swf_lint covering SWF-L001 through SWF-L008 rules"
+      order: 2
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+      description: "Normative governance standard for graph-based review flows, SAGA mechanics, and CHG handover"
+      order: 3
+      status: COMPLETED
+    - path: "framework/governance/review_report.schema.json"
+      description: "Graduated and formal review report schema with CHG handover envelope"
+      order: 4
+      status: COMPLETED
+    - path: "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml"
+      description: "Canonical template for review reports with CHG handover fields"
+      order: 5
+      status: COMPLETED
+    - path: "framework/governance/templates/REVIEW-SWF-TEMPLATE.yaml"
+      description: "Template for review saga workflows"
+      order: 6
+      status: COMPLETED
+    - path: "framework/governance/templates/CHG-SWF-TEMPLATE.yaml"
+      description: "Template for change control workflows"
+      order: 7
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/brd-review-remediation.sw.yaml"
+      description: "Layer 01 BRD review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 8
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/prd-review-remediation.sw.yaml"
+      description: "Layer 02 PRD review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 9
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/ears-review-remediation.sw.yaml"
+      description: "Layer 03 EARS review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 10
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/bdd-review-remediation.sw.yaml"
+      description: "Layer 04 BDD review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 11
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/adr-review-remediation.sw.yaml"
+      description: "Layer 05 ADR review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 12
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/spec-review-remediation.sw.yaml"
+      description: "Layer 06 SPEC review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 13
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/tdd-review-remediation.sw.yaml"
+      description: "Layer 07 TDD review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 14
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/iplan-review-remediation.sw.yaml"
+      description: "Layer 08 IPLAN review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 15
+      status: COMPLETED
+    - path: "framework/governance/workflows/review/chg-review-remediation.sw.yaml"
+      description: "Layer 09 CHG review remediation workflow matching REVIEW_CREWS.yaml"
+      order: 16
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      description: "Incorporate Refined & Hardened Architectural Blueprints, flow router, and CHG handover protocol"
+      order: 17
+      status: COMPLETED
+    - path: "framework/governance/REVIEW_SAGA.md"
+      description: "Align references with Review Workflow Standard and blueprints"
+      order: 18
+      status: COMPLETED
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Index REVIEW_WORKFLOW_STANDARD.md and new review workflows"
+      order: 19
+      status: COMPLETED
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Index review workflow state diagrams"
+      order: 20
+      status: COMPLETED
+    - path: "framework/governance/workflows/review-remediation-flow.sw.yaml"
+      description: "Align master parameterized workflow with standard"
+      order: 21
+      status: COMPLETED
+    - path: "hooks/sdd-doc-review.sh"
+      description: "Decouple advisory hook from retired plugin slash commands"
+      order: 22
+      status: COMPLETED
+    - path: "tests/conformance/test_governance_workflows.py"
+      description: "Update expected workflows list and test coverage"
+      order: 23
+      status: COMPLETED
+    - path: "tests/conformance/test_review_report_parity.py"
+      description: "Update schema reference to framework/governance/review_report.schema.json"
+      order: 24
+      status: COMPLETED
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.88.4 to OLD_VERSIONS"
+      order: 25
+      status: COMPLETED
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify Decision GD-69"
+      order: 26
+      status: COMPLETED
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.89.0]"
+      order: 27
+      status: COMPLETED
+    - path: "framework/VERSION"
+      description: "Bump version to 0.89.0"
+      order: 28
+      status: COMPLETED
+
+# =============================================================================
+# Section 3: Execution Phases
+# =============================================================================
+
+execution_phases:
+  phase_1_tooling:
+    description: "Implement sdd_doc_lint/swf_lint.py and test_swf_lint.py"
+    tasks:
+      - "Create sdd_doc_lint/swf_lint.py with SWF-L001..L008 checks"
+      - "Create sdd_doc_lint/tests/test_swf_lint.py and verify passes"
+  phase_2_governance_and_templates:
+    description: "Author REVIEW_WORKFLOW_STANDARD.md, review report schema and templates"
+    tasks:
+      - "Author framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+      - "Promote framework/governance/review_report.schema.json"
+      - "Author framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml"
+      - "Author framework/governance/templates/REVIEW-SWF-TEMPLATE.yaml"
+      - "Author framework/governance/templates/CHG-SWF-TEMPLATE.yaml"
+  phase_3_layer_workflows:
+    description: "Author per-layer review workflows under framework/governance/workflows/review/"
+    tasks:
+      - "Author REV-01-BRD through REV-09-CHG workflows matching REVIEW_CREWS.yaml"
+      - "Validate all workflows using swf_lint.py"
+  phase_4_governance_hardening:
+    description: "Update existing governance documents, diagrams, and hooks"
+    tasks:
+      - "Update REVIEW_REMEDIATION_FLOW.md with Refined Architectural Blueprints and CHG handover"
+      - "Update REVIEW_SAGA.md, GOVERNANCE_WORKFLOW_STANDARD.md, DIAGRAM_STANDARDS.md"
+      - "Update hooks/sdd-doc-review.sh"
+  phase_5_conformance_and_release:
+    description: "Update tests, ratify GD-69, sync version refs, bump VERSION to 0.89.0"
+    tasks:
+      - "Update test_governance_workflows.py and test_review_report_parity.py"
+      - "Ratify Decision GD-69 in DECISIONS.md"
+      - "Update CHANGELOG.md, hooks/sync-version-refs.sh, and framework/VERSION"
+      - "Run full conformance and unit suites"
+
+# =============================================================================
+# Section 4: Verification
+# =============================================================================
+
+verification:
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-75/CHG-75.yaml"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/"
+    - "python3 -m pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh"

@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 FIXTURES = ROOT / "fixtures" / "review"
 SCHEMA_PATH = FIXTURES / "review_report.schema.json"
+GOV_SCHEMA_PATH = ROOT.parent.parent / "framework" / "governance" / "review_report.schema.json"
 RUNNER_FIXTURES = ("hermes_BRD-01_report.json", "plugin_BRD-01_report.json")
 
 _FINDING_REQUIRED = {"id", "priority", "location", "message", "recommendation"}
@@ -70,6 +71,7 @@ class ReviewReportParity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        cls.gov_schema = json.loads(GOV_SCHEMA_PATH.read_text(encoding="utf-8"))
         cls.reports = {
             name: json.loads((FIXTURES / name).read_text(encoding="utf-8"))
             for name in RUNNER_FIXTURES
@@ -79,6 +81,12 @@ class ReviewReportParity(unittest.TestCase):
         for name, report in self.reports.items():
             with self.subTest(fixture=name):
                 self.assertEqual(validate(report, self.schema), [], name)
+
+    def test_governance_schema_validates_runner_fixtures(self):
+        self.assertTrue(GOV_SCHEMA_PATH.is_file(), "Missing framework/governance/review_report.schema.json")
+        for name, report in self.reports.items():
+            with self.subTest(fixture=name):
+                self.assertEqual(validate(report, self.gov_schema), [], name)
 
     def test_runners_share_report_structure(self):
         reports = list(self.reports.values())

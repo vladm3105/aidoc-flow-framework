@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.4 |
+| Framework Version | 0.89.0 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
@@ -26,7 +26,9 @@ project's parity goal is **lifecycle-behavior parity**;
 this document is its load-bearing definition.
 
 Executable CNCF Serverless Workflow definitions for this saga lifecycle are
-formally codified in `framework/governance/workflows/review-remediation-flow.sw.yaml`.
+formally codified in `framework/governance/REVIEW_WORKFLOW_STANDARD.md`,
+`framework/governance/workflows/review-remediation-flow.sw.yaml`, and the per-layer
+review workflows in `framework/governance/workflows/review/` (`REV-01-BRD` through `REV-09-CHG`).
 
 ## States
 
@@ -214,7 +216,9 @@ consumer's own engineering documentation, not in this engine-agnostic spec.
 - `REVIEW_REMEDIATION_FLOW.md` — the trigger points (`on_author`,
   `pre_promotion`, `pre_merge`, `on_gate_fail`) that fire the loop the
   saga records.
+- `REVIEW_WORKFLOW_STANDARD.md` — graph-based review flow specification and traversal taxonomy.
 - `workflows/review-remediation-flow.sw.yaml` — canonical CNCF Serverless Workflow state machine.
+- `workflows/review/` — per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`).
 - `GOVERNANCE_WORKFLOW_STANDARD.md` — normative specification for CNCF Serverless Workflow adoption.
 - `DIAGRAM_STANDARDS.md` — visualization standards and Mermaid syntax for governance workflows.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the

@@ -1,0 +1,207 @@
+# =============================================================================
+#  REV-02-PRD: Product Requirements Document Review & Remediation Workflow
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: framework/governance/REVIEW_WORKFLOW_STANDARD.md
+#  Governs: Layer 02 (PRD) Review Saga per REVIEW_CREWS.yaml
+# =============================================================================
+
+id: prd-review-remediation-flow
+name: PRD Review and Remediation Quality Loop
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Layer 02 (PRD) review remediation saga orchestrating crew fan-out
+  (product_owner, architect, tech_lead, auditor, chaos_engineer, security_engineer),
+  deterministic gate floor evaluation, and author remediation.
+
+metadata:
+  framework_version: "0.89.0"
+  governed_layer: "02_PRD"
+  workflow_type: "governance-review-saga"
+  flow_code: "REV-02-PRD"
+
+start: PrepareReviewCrew
+
+states:
+  - name: PrepareReviewCrew
+    type: inject
+    data:
+      status: "PREPARED"
+      iteration: 1
+      max_iterations: 3
+      threshold_score: 90.0
+      structural_pass: false
+      soft_deadline_seconds: 600
+      layer: "02_PRD"
+      author: "product_owner"
+    transition: DispatchReviewCrew
+
+  - name: DispatchReviewCrew
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: ProductOwnerLensBranch
+        actions:
+          - name: ExecuteProductOwnerLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "product_owner"
+                weight: 30
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/product_owner.md"
+      - name: ArchitectLensBranch
+        actions:
+          - name: ExecuteArchitectLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "architect"
+                weight: 25
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/architect.md"
+      - name: TechLeadLensBranch
+        actions:
+          - name: ExecuteTechLeadLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "tech_lead"
+                weight: 20
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/tech_lead.md"
+      - name: AuditorLensBranch
+        actions:
+          - name: ExecuteAuditorLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "auditor"
+                weight: 10
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/auditor.md"
+      - name: ChaosLensBranch
+        actions:
+          - name: ExecuteChaosLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "chaos_engineer"
+                weight: 8
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/chaos_engineer.md"
+      - name: SecurityLensBranch
+        actions:
+          - name: ExecuteSecurityLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "security_engineer"
+                weight: 7
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/02_PRD/security_engineer.md"
+    transition: CheckBreakCircuit
+
+  - name: CheckBreakCircuit
+    type: switch
+    dataConditions:
+      - name: TimeoutExceeded
+        condition: "${ .elapsed_seconds >= .soft_deadline_seconds }"
+        transition: EmitPartialTimeoutCheckpoint
+    defaultCondition:
+      transition: SynthesizeFindingsAndScore
+
+  - name: SynthesizeFindingsAndScore
+    type: operation
+    actions:
+      - name: ReduceCrewFindings
+        functionRef:
+          refName: reduceFindingsAndCalculateScore
+          arguments:
+            branches: "${ .branches }"
+            artifact_id: "${ .artifact_id }"
+            layer: "02_PRD"
+    transition: EvaluateQualityGate
+
+  - name: EvaluateQualityGate
+    type: switch
+    dataConditions:
+      - name: GatePassed
+        condition: "${ .structural_pass == true and .blocking_findings == 0 }"
+        transition: ApproveArtifact
+      - name: IterationCapReached
+        condition: "${ .iteration >= .max_iterations }"
+        transition: EscalateToFounder
+    defaultCondition:
+      transition: EnterRemediationCycle
+
+  - name: EnterRemediationCycle
+    type: operation
+    compensatedBy: RollbackRemediationPatch
+    actions:
+      - name: ApplyRemediationPatches
+        functionRef:
+          refName: remediateFindings
+          arguments:
+            author: "product_owner"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+      - name: IncrementIterationCounter
+        functionRef:
+          refName: incrementCounter
+          arguments:
+            counter: "${ .iteration }"
+    transition: VerifyRemediationPatch
+
+  - name: VerifyRemediationPatch
+    type: operation
+    actions:
+      - name: RunStructuralLinter
+        functionRef:
+          refName: validateStructuralIntegrity
+          arguments:
+            artifact_id: "${ .artifact_id }"
+    transition: DispatchReviewCrew
+
+  - name: RollbackRemediationPatch
+    type: operation
+    actions:
+      - name: RevertDirtyChanges
+        functionRef:
+          refName: revertPatches
+          arguments:
+            artifact_id: "${ .artifact_id }"
+            iteration: "${ .iteration }"
+    transition: EscalateToFounder
+
+  - name: ApproveArtifact
+    type: operation
+    actions:
+      - name: SealReviewJournal
+        functionRef:
+          refName: sealJournalClosed
+          arguments:
+            status: "CLOSED"
+    end: true
+
+  - name: EscalateToFounder
+    type: operation
+    actions:
+      - name: RecordEscalationJournal
+        functionRef:
+          refName: recordEscalation
+          arguments:
+            status: "ESCALATED"
+    end:
+      terminate: true
+
+  - name: EmitPartialTimeoutCheckpoint
+    type: operation
+    actions:
+      - name: PersistPartialCheckpoint
+        functionRef:
+          refName: persistCheckpointJournal
+          arguments:
+            status: "PARTIAL_TIMEOUT"
+    end: true

@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: security_engineer
 weight: 10
 agent: security-engineer
-framework_spec_version: "0.88.4"
+framework_spec_version: "0.89.0"
 ---
 # security_engineer lens — CHG layer
 

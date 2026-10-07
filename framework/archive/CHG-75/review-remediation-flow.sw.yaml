@@ -1,0 +1,211 @@
+# ===============================================================================
+# CNCF Serverless Workflow: Review, Remediation & Gate Flow
+# ===============================================================================
+# Specification: CNCF Serverless Workflow DSL v0.8 (YAML)
+# Standard Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+# Governs: framework/governance/REVIEW_REMEDIATION_FLOW.md, REVIEW_SAGA.md
+# Runtime Architecture: Pure declarative YAML; zero runtime lock-in (D-0013)
+# ===============================================================================
+
+id: review-remediation-flow
+name: Review Remediation and Quality Loop Flow
+version: "1.1"
+specVersion: "0.8"
+description: >-
+  Executable CNCF Serverless Workflow state machine orchestrating the multi-agent
+  quality loop: review crew dispatch, finding synthesis, deterministic gate floor
+  check, 3-strike remediation saga with rollback compensation, and terminal resolution.
+
+start: PrepareReviewCrew
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Prepare Review Run Metadata
+  # -----------------------------------------------------------------------------
+  - name: PrepareReviewCrew
+    type: inject
+    data:
+      status: "PREPARED"
+      iteration: 1
+      max_iterations: 3
+      threshold_score: 90.0
+      structural_pass: false
+      soft_deadline_seconds: 600
+    transition: DispatchReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 2: Multi-Agent Review Crew Dispatch (Parallel Fan-out)
+  # Dynamic Mapping: In layer execution, branches are dynamically populated from
+  # REVIEW_CREWS.yaml based on the target artifact layer. The branches below
+  # represent the canonical 4-lens exemplar configuration.
+  # -----------------------------------------------------------------------------
+  - name: DispatchReviewCrew
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: ArchitectLensBranch
+        actions:
+          - name: ExecuteArchitectLens
+            functionRef:
+              refName: evaluateArchitectLens
+              arguments:
+                persona: "architect"
+                artifact_id: "${ .artifact_id }"
+      - name: AuditorLensBranch
+        actions:
+          - name: ExecuteAuditorLens
+            functionRef:
+              refName: evaluateAuditorLens
+              arguments:
+                persona: "auditor"
+                artifact_id: "${ .artifact_id }"
+      - name: SecurityLensBranch
+        actions:
+          - name: ExecuteSecurityLens
+            functionRef:
+              refName: evaluateSecurityLens
+              arguments:
+                persona: "security_engineer"
+                artifact_id: "${ .artifact_id }"
+      - name: QaLensBranch
+        actions:
+          - name: ExecuteQaLens
+            functionRef:
+              refName: evaluateQaLens
+              arguments:
+                persona: "qa_lead"
+                artifact_id: "${ .artifact_id }"
+    transition: CheckBreakCircuit
+
+  # -----------------------------------------------------------------------------
+  # State 3: Wall-Clock Break-Circuit Checkpoint
+  # -----------------------------------------------------------------------------
+  - name: CheckBreakCircuit
+    type: switch
+    dataConditions:
+      - name: TimeoutExceeded
+        condition: "${ .elapsed_seconds >= .soft_deadline_seconds }"
+        transition: EmitPartialTimeoutCheckpoint
+    defaultCondition:
+      transition: SynthesizeFindingsAndScore
+
+  # -----------------------------------------------------------------------------
+  # State 4: Synthesize Findings, Score & Categorization (Reduce)
+  # -----------------------------------------------------------------------------
+  - name: SynthesizeFindingsAndScore
+    type: operation
+    actions:
+      - name: ReduceCrewFindings
+        functionRef:
+          refName: reduceFindingsAndCalculateScore
+          arguments:
+            branches: "${ .branches }"
+            artifact_id: "${ .artifact_id }"
+    transition: EvaluateQualityGate
+
+  # -----------------------------------------------------------------------------
+  # State 5: Quality Gate & Iteration Cap Switch
+  # -----------------------------------------------------------------------------
+  - name: EvaluateQualityGate
+    type: switch
+    dataConditions:
+      - name: GatePassed
+        condition: "${ .structural_pass == true and .blocking_findings == 0 }"
+        transition: ApproveArtifact
+      - name: IterationCapReached
+        condition: "${ .iteration >= .max_iterations }"
+        transition: EscalateToFounder
+    defaultCondition:
+      transition: EnterRemediationCycle
+
+  # -----------------------------------------------------------------------------
+  # State 6: Remediation Fixer Phase (Mutating Step with Saga Rollback)
+  # -----------------------------------------------------------------------------
+  - name: EnterRemediationCycle
+    type: operation
+    compensatedBy: RollbackRemediationPatch
+    actions:
+      - name: ApplyRemediationPatches
+        functionRef:
+          refName: remediateFindings
+          arguments:
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+      - name: IncrementIterationCounter
+        functionRef:
+          refName: incrementCounter
+          arguments:
+            counter: "${ .iteration }"
+    transition: VerifyRemediationPatch
+
+  # -----------------------------------------------------------------------------
+  # State 7: Verify Patch Integrity Before Re-Review
+  # -----------------------------------------------------------------------------
+  - name: VerifyRemediationPatch
+    type: operation
+    actions:
+      - name: RunStructuralLinter
+        functionRef:
+          refName: validateStructuralIntegrity
+          arguments:
+            artifact_id: "${ .artifact_id }"
+    transition: DispatchReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 8: Saga Compensation Handler (Rollback Dirty Fixes)
+  # -----------------------------------------------------------------------------
+  - name: RollbackRemediationPatch
+    type: operation
+    actions:
+      - name: RevertDirtyChanges
+        functionRef:
+          refName: restorePreRemediationState
+          arguments:
+            checkpoint_id: "${ .pre_remediation_checkpoint }"
+    transition: EscalateToFounder
+
+  # -----------------------------------------------------------------------------
+  # State 9: Terminal Gate Approval (Success)
+  # -----------------------------------------------------------------------------
+  - name: ApproveArtifact
+    type: operation
+    actions:
+      - name: EmitApprovalRecord
+        functionRef:
+          refName: recordGateApproval
+          arguments:
+            artifact_id: "${ .artifact_id }"
+            score: "${ .readiness_score }"
+            status: "CLOSED"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # State 10: Terminal Escalation (Quarantine / Founder Attention)
+  # -----------------------------------------------------------------------------
+  - name: EscalateToFounder
+    type: operation
+    actions:
+      - name: QuarantineArtifactAndNotify
+        functionRef:
+          refName: recordEscalation
+          arguments:
+            artifact_id: "${ .artifact_id }"
+            status: "ESCALATED"
+            reason: "Iteration cap exceeded or unrecoverable blocking findings"
+    end:
+      terminate: true
+
+  # -----------------------------------------------------------------------------
+  # State 11: Terminal Partial Timeout Checkpoint (Resumable)
+  # -----------------------------------------------------------------------------
+  - name: EmitPartialTimeoutCheckpoint
+    type: operation
+    actions:
+      - name: SaveSagaJournalCheckpoint
+        functionRef:
+          refName: persistCheckpointJournal
+          arguments:
+            status: "PARTIAL_TIMEOUT"
+            artifact_id: "${ .artifact_id }"
+    end:
+      terminate: true
