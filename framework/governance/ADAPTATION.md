@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -149,7 +149,7 @@ Honored by: **authoring** and **audit**.
 ### 4.6 `quality_loop_max_iterations`
 
 The default cap on review→remediate cycles before the saga transitions to
-`PARTIAL_TIMEOUT` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
+`ESCALATED` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
 1–10; a value outside the range is treated as malformed and falls back to the
 default (`3`). An engine reading it from the profile must handle
 missing-file / missing-field / malformed-value by falling back to the default.
@@ -213,7 +213,7 @@ Honored by: **audit**.
 
 How many patch→verify cycles an execution task runs before it stops
 retrying. The saga lifecycle already bounds *review* loops
-(`quality_loop_max_iterations` → `PARTIAL_TIMEOUT`); this is the matching
+(`quality_loop_max_iterations` → `ESCALATED`); this is the matching
 bound for *execution* attempts, which otherwise retry unboundedly. Range
 1–10 (`3` default, mirroring the review-loop cap); out-of-range values are
 malformed and fall back to the default. This bounds the loop; it does not

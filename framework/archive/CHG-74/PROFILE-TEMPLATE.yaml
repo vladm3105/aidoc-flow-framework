@@ -1,0 +1,146 @@
+# =============================================================================
+#  PROFILE-TEMPLATE.yaml — project profile skeleton (override-only delta)
+# =============================================================================
+#  Authority: framework/governance/ADAPTATION.md (the prose contract).
+#  Closed knob registry: framework/governance/ADAPTATION_SURFACE.yaml.
+#
+#  A project profile carries ONLY the adaptation overrides the project
+#  chooses. Unset keys fall through to framework defaults via the
+#  precedence chain documented in ADAPTATION.md:
+#
+#      framework defaults  <  user-global seed  <  project profile
+#
+#  Engines bootstrap a new project's `.aidoc/profile.yaml` from this
+#  template; populated profiles ship the same shape but with the
+#  override keys uncommented and filled in.
+#
+#  Engines IGNORE any key not declared as a knob in ADAPTATION_SURFACE.yaml.
+#  Per-layer review crews and persona weights live in REVIEW_CREWS.yaml
+#  and are not project-overridable through this surface.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  authority: "framework/governance/ADAPTATION.md"
+  last_updated: "2026-09-07"
+  framework_version: "0.88.3"
+  # project_name: "<your project>"
+  framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
+
+# =============================================================================
+#  Adaptation knobs (15 — see ADAPTATION_SURFACE.yaml for the closed set)
+#  Uncomment and edit any line to override the framework default.
+# =============================================================================
+
+# review_mode determines whether reviews fan out to per-lens subagents.
+#   team        — multi-persona Task subagent fan-out (default at gates)
+#   single_pass — one model context applies every lens (lower cost,
+#                 lower signal-independence)
+# Default: team. Never weakens the deterministic structural gate floor.
+#
+# review_mode: team
+
+# audit_threshold raises the per-layer readiness-score gate floor.
+# Raise-only: a value lower than the framework default is ignored.
+# Framework default: 90 per layer.
+#
+# audit_threshold:
+#   BRD: 92
+#   PRD: 92
+#   EARS: 90
+#   BDD: 90
+#   ADR: 90
+#   SPEC: 90
+#   TDD: 90
+#   IPLAN: 90
+
+# active_layers restricts the cascade to a subset of the 10 layers.
+# Mandatory layers cannot be disabled (see ADAPTATION_SURFACE.yaml
+# `layers.skippable`). Disabling a skippable layer applies the cascade rule.
+# Default: all 10 layers active.
+#
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
+
+# section_toggles disables template-declared OPTIONAL sections.
+# Required sections are not toggleable — toggling them is out of surface
+# and ignored. Example: turn off the BRD §2 Executive Summary if the
+# project doesn't need it.
+#
+# section_toggles:
+#   BRD:
+#     executive_summary: false
+
+# glossary applies project-specific terminology to generated prose only.
+# Audits do not enforce terminology in v1.
+#
+# glossary:
+#   "MAU": "Monthly Active Users"
+#   "p95": "95th percentile"
+
+# quality_loop_max_iterations caps review→remediate cycles before the saga
+# transitions to PARTIAL_TIMEOUT (see REVIEW_REMEDIATION_FLOW.md §Iteration cap).
+# Range 1-10; a value outside the range is treated as malformed and falls back
+# to the default. This bounds the loop; it does not weaken any gate.
+# Default: 3.
+#
+# quality_loop_max_iterations: 3
+
+# ci_bindings pins the platform mechanics CI_AUTONOMOUS_PR_STANDARD.md points
+# at: verification-tier latency ceilings (Invariant 2), required checks and
+# branch policy (Invariant 3), runners, workflows, integration branch. Values
+# are platform-specific and opaque to the framework; unset keys fall through
+# to framework defaults. Ceilings keep static < integration < promotion
+# ordering. Default: {} (no overrides).
+#
+# ci_bindings:
+#   static_ceiling: "<platform duration>"  # illustrative keys — platforms
+#   integration_ceiling: "<platform duration>"  # choose their own names
+
+# exec_max_files caps how many distinct files one execution task may
+# create or modify. Range 1-100; out-of-range values fall back to default.
+# Default: 8.
+#
+# exec_max_files: 8
+
+# exec_max_diff_lines caps the added-plus-removed lines in one task's diff.
+# Range 1-10000; out-of-range values fall back to default. Default: 600.
+#
+# exec_max_diff_lines: 600
+
+# exec_protected_paths lists repository-relative path prefixes an
+# execution task must never write. Additive to engine built-ins only —
+# listing a path never unprotects anything. Default: [] (no additions).
+#
+# exec_protected_paths:
+#   - "framework/archive/"
+#   - ".git/"
+
+# exec_test_timeout_s is the per-test-command wall-clock ceiling in
+# seconds. Range 30-3600; out-of-range values fall back to default.
+# Default: 300.
+#
+# exec_test_timeout_s: 300
+
+# exec_max_attempts caps patch→verify cycles before an execution task
+# stops retrying. Range 1-10; out-of-range values fall back to default.
+# Default: 3.
+#
+# exec_max_attempts: 3
+
+# exec_token_budget is the total model-token budget per execution task,
+# retries included. Range 10000-2000000; out-of-range values fall back
+# to default. Default: 200000.
+#
+# exec_token_budget: 200000
+
+# exec_wall_clock_budget_s is the total wall-clock budget in seconds per
+# execution task, retries included. Range 60-14400; out-of-range values
+# fall back to default. Default: 1800.
+#
+# exec_wall_clock_budget_s: 1800
+
+# exec_failure_summary_lines is the fixed size in lines of the failure
+# summary carried across retries, keeping retried context compact.
+# Range 5-200; out-of-range values fall back to default. Default: 30.
+#
+# exec_failure_summary_lines: 30

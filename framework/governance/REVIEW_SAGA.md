@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
@@ -64,7 +64,7 @@ before writing the journal).
 | `BRANCH_COMPENSATING` | `BRANCH_RUNNING`, `ESCALATED` |
 | `BRANCH_COMPLETED` | `FANIN_REDUCED`, `PARTIAL_TIMEOUT` |
 | `FANIN_REDUCED` | `SYNTHESIZED`, `PARTIAL_TIMEOUT` |
-| `SYNTHESIZED` | `CLOSED` |
+| `SYNTHESIZED` | `CLOSED`, `FANOUT_STARTED`, `ESCALATED`, `PARTIAL_TIMEOUT` |
 | `ESCALATED` | (terminal) |
 | `CLOSED` | (terminal) |
 | `PARTIAL_TIMEOUT` | (terminal-this-process; future invocations resume from this journal state by re-entering one of the allowed source states) |
@@ -81,7 +81,7 @@ verification. Every conforming implementation must produce a journal matching `s
 | Field | Type | Description |
 |---|---|---|
 | `review_run_id` | string | 12-char-or-longer run identifier. Implementations MAY use deterministic IDs derived from the artifact + persona set + time bucket, or UUIDs. |
-| `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `framework/governance/ID_NAMING_STANDARDS.md` §"Format" and the authoritative `registry/LAYER_REGISTRY.yaml` `id_patterns.document` pattern (`^[A-Z]+-\d{2,}$` — two-or-more digits; two-digit is the common case). |
+| `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `ID_NAMING_STANDARDS.md` §"Format" and the authoritative `../registry/LAYER_REGISTRY.yaml` `id_patterns.document` pattern (`^[A-Z]+-\d{2,}$` — two-or-more digits; two-digit is the common case). |
 | `layer` | string | One of the framework layers (`01_BRD`..`08_IPLAN`), the `09_CHG` change-management overlay, or `10_EVAL` — matching the `layer` enum in `saga.schema.json`. |
 | `personas_requested` | array of strings | The crew dispatched, drawn from `REVIEW_CREWS.yaml` personas registry. |
 | `status` | string | Current run-level state from the table above. |
@@ -220,8 +220,8 @@ consumer's own engineering documentation, not in this engine-agnostic spec.
 - `SECURITY_REVIEW.md` — untrusted-input handling for content in the
   blackboard (separate concern from saga state).
 - `saga.schema.json` — formal JSON Schema for the journal.
-- D-0031 (see the D-series annex in `governance/DECISIONS.md`) — the
+- D-0031 (see the D-series annex in `DECISIONS.md`) — the
   supersession decision that brought this contract into the framework spec.
-- D-0005 (see the D-series annex in `governance/DECISIONS.md`) — the prior
+- D-0005 (see the D-series annex in `DECISIONS.md`) — the prior
   decision that one engine would not port the saga, superseded in scope
   (its blackboard-for-crew-state reasoning remains authoritative).

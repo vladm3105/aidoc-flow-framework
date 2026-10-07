@@ -15,18 +15,25 @@
 #  Each crew carries a `# rationale:` comment explaining its chaos_engineer vs
 #  security_engineer bias. The full allocation rules are in REVIEW_TEAM.md
 #  §"Weight allocation rules". This file is the single source of truth for the
-#  numbers; agent briefs and skill pseudo-text cite it (see CHAOS-SEC-SPLIT-001).
+#  numbers and crew compositions across the framework.
 # =============================================================================
 
 metadata:
-  schema_version: "1.0.0"
+  schema_version: "1.1.0"
   description: "Per-layer review-team crews + scoring weights for the SDD flow"
   authority: "framework/governance/REVIEW_TEAM.md"
-  last_updated: "2026-09-07"
-  framework_version: "0.88.3"
+  last_updated: "2026-10-07"
+  framework_version: "0.88.4"
 
 # Default collaboration mode when a crew/operation does not override it.
 default_mode: independent          # independent | sequential | single_pass
+
+# Default quorum threshold for review crews (§Resilience & security in REVIEW_TEAM.md).
+# A review run below quorum transitions to low_confidence: true and requires human review.
+default_quorum:
+  min_coverage_ratio: 0.80         # minimum 80% total crew weight must report
+  require_specialists: true        # mandatory specialist perspectives must not be skipped
+
 
 # Closed persona set (review lenses + role slots). Crews reference only these.
 personas:
@@ -79,7 +86,7 @@ crews:
   TDD:
     author: qa_lead
     # rationale: Equal split (10 / 10) — security_engineer co-owns SECTEST per
-    # its agent brief; failure-test cases balance security-test cases.
+    # the TDD playbook contract; failure-test cases balance security-test cases.
     review: {qa_lead: 35, tech_lead: 25, chaos_engineer: 10, security_engineer: 10, operator: 10, auditor: 10}
   IPLAN:
     author: tech_lead
@@ -95,3 +102,8 @@ crews:
     # because CHG sits at the deploy boundary and covers emergency-change
     # + rollback paths.
     review: {integration_lead: 30, architect: 20, chaos_engineer: 15, operator: 15, auditor: 10, security_engineer: 10}
+
+# Note: Layer 10 (EVAL) is not crew-scored. It is verdict-graded by the
+# 10_IPVERIFY playbooks (evaluator, validator, verifier, report_generator)
+# per REVIEW_TEAM.md §Conformance & adaptation.
+

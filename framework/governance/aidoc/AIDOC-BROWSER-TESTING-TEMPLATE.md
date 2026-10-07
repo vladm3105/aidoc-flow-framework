@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.3 |
+| Framework Version | 0.88.4 |
 
 **Scope:** Browser Automation, Visual Regression & Headless Testing for `[Project Name]`
 **Governing Rules:** `GOVERNANCE_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`
