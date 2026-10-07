@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -35,16 +34,18 @@ EXIT_FINDINGS = 1
 EXIT_USAGE = 2
 EXIT_MISSING_PREREQUISITE = 3
 
-VALID_STATE_TYPES = frozenset({
-    "operation",
-    "switch",
-    "parallel",
-    "callback",
-    "event",
-    "sleep",
-    "inject",
-    "foreach",
-})
+VALID_STATE_TYPES = frozenset(
+    {
+        "operation",
+        "switch",
+        "parallel",
+        "callback",
+        "event",
+        "sleep",
+        "inject",
+        "foreach",
+    }
+)
 
 
 @dataclass
@@ -86,7 +87,6 @@ def _load_review_crews(repo_root: Path | None) -> dict[str, Any] | None:
 
 def extract_workflow(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     """Extract workflow dict from a .sw.yaml file or hybrid *-SWF-TEMPLATE.yaml."""
-    errors = []
     try:
         content = path.read_text(encoding="utf-8")
         data = yaml.safe_load(content)
@@ -132,7 +132,9 @@ def lint_workflow_dict(
     for field in ("id", "name", "start", "states"):
         if field not in wf:
             findings.append(
-                Finding(file_path, 1, "ERROR", "SWF-L001", f"Missing required root field: '{field}'")
+                Finding(
+                    file_path, 1, "ERROR", "SWF-L001", f"Missing required root field: '{field}'"
+                )
             )
 
     spec_ver = str(wf.get("specVersion", "")).strip()
@@ -205,9 +207,7 @@ def lint_workflow_dict(
 
         # Terminal state detection
         is_end = state.get("end") is True
-        is_terminate = (
-            isinstance(state.get("end"), dict) and state["end"].get("terminate") is True
-        )
+        is_terminate = isinstance(state.get("end"), dict) and state["end"].get("terminate") is True
         if is_end or is_terminate:
             terminal_states += 1
 
@@ -446,7 +446,9 @@ def main(argv: list[str] | None = None) -> int:
         errors = sum(1 for f in all_findings if f.severity == "ERROR")
         warnings = sum(1 for f in all_findings if f.severity == "WARNING")
         if all_findings:
-            print(f"\nsdd_swf_lint: {errors} error(s), {warnings} warning(s) in {len(target_files)} file(s)")
+            print(
+                f"\nsdd_swf_lint: {errors} error(s), {warnings} warning(s) in {len(target_files)} file(s)"
+            )
 
     if any(f.severity == "ERROR" for f in all_findings):
         return EXIT_FINDINGS

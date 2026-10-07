@@ -83,7 +83,9 @@ class ReviewReportParity(unittest.TestCase):
                 self.assertEqual(validate(report, self.schema), [], name)
 
     def test_governance_schema_validates_runner_fixtures(self):
-        self.assertTrue(GOV_SCHEMA_PATH.is_file(), "Missing framework/governance/review_report.schema.json")
+        self.assertTrue(
+            GOV_SCHEMA_PATH.is_file(), "Missing framework/governance/review_report.schema.json"
+        )
         for name, report in self.reports.items():
             with self.subTest(fixture=name):
                 self.assertEqual(validate(report, self.gov_schema), [], name)

@@ -7,9 +7,6 @@ from pathlib import Path
 
 from sdd_doc_lint.swf_lint import (
     EXIT_CLEAN,
-    EXIT_FINDINGS,
-    extract_workflow,
-    lint_file,
     lint_workflow_dict,
     main,
 )

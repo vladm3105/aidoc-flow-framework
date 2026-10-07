@@ -166,7 +166,9 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         self.assertIn("REV-09-CHG", content)
 
     def test_expected_review_workflows_exist(self):
-        self.assertTrue(REVIEW_WORKFLOWS_DIR.is_dir(), "Missing governance/workflows/review directory")
+        self.assertTrue(
+            REVIEW_WORKFLOWS_DIR.is_dir(), "Missing governance/workflows/review directory"
+        )
         for wf_name in EXPECTED_REVIEW_WORKFLOWS:
             with self.subTest(review_workflow=wf_name):
                 wf_path = REVIEW_WORKFLOWS_DIR / wf_name
