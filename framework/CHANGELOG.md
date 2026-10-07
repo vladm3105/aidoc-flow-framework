@@ -11,7 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.0 |
+| Framework Version | 0.90.1 |
+
+## [0.90.1] — 2026-10-07
+
+### Fixed — Framework Audit Discrepancies Remediation (C1 Maintenance, CHG-77 + IPLAN-77)
+
+- **Template Schema Compliance**: Provided valid sample default values in `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` (`report_id`, `target_artifact_id`, `layer`, `created_at`, `SPEC-01.yaml` location) resolving strict schema validation errors against `review_report.schema.json` and instance format single source of truth.
+- **Test Runner Portability**: Added root `pytest.ini` configuring `pythonpath = .` to eliminate `ModuleNotFoundError` during test collection across standard test runners.
+- **Fixture Schema Synchronization**: Synchronized `tests/conformance/fixtures/review/review_report.schema.json` with canonical governance schema (`review_report.schema.json`).
+- **Governance Indices & Documentation**: Indexed `DURABLE_EXECUTION_STANDARD.md`, `REVIEW_WORKFLOW_STANDARD.md`, all 9 per-layer review workflows (`workflows/review/`), and templates (`templates/`) in `framework/governance/README.md` and `framework/README.md`.
+- **Link Hygiene**: Repaired non-resolving placeholder link in `AIDOC-QA-PROTOCOL-TEMPLATE.md`.
+- **Version Bump**: Bumped framework version to `0.90.1` and extended `OLD_VERSIONS` in `hooks/sync-version-refs.sh` with `0.90.0`.
 
 ## [0.90.0] — 2026-10-07
 

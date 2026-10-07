@@ -17,7 +17,7 @@ description: >-
   entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
 
 metadata:
-  framework_version: "0.90.0"
+  framework_version: "0.90.1"
   workflow_type: "governance-change-request"
   governed_layer: "09_CHG"
 

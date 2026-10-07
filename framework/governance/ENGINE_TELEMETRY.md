@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.0 |
+| Framework Version | 0.90.1 |
 
 Engine-agnostic recommendations for **how a conforming engine emits
 observability telemetry** so that traces from different engines are mutually

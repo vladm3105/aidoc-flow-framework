@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SDD review-team unified report",
+  "description": "The engine-agnostic unified review report both runners (Hermes saga + Claude Code plugin review-team) normalise to. Encodes the synthesis output of framework/governance/REVIEW_TEAM.md: an advisory readiness score, coverage, the deterministic gate, and the reduced findings.",
+  "type": "object",
+  "required": ["target_artifact_id", "review_mode", "readiness_score", "coverage", "gate", "findings"],
+  "properties": {
+    "target_artifact_id": {"type": "string"},
+    "review_mode": {"type": "string", "enum": ["team", "sequential", "single_pass"]},
+    "readiness_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "coverage": {
+      "type": "object",
+      "required": ["ran", "missing", "coverage_ratio", "low_confidence"],
+      "properties": {
+        "ran": {"type": "array", "items": {"type": "string"}},
+        "missing": {"type": "array", "items": {"type": "string"}},
+        "coverage_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "low_confidence": {"type": "boolean"}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "description": "Deterministic: structural sdd_doc_lint floor AND no unresolved P0/P1. The readiness_score is advisory above this floor.",
+      "required": ["structural_pass", "no_blocking", "passed"],
+      "properties": {
+        "structural_pass": {"type": "boolean"},
+        "no_blocking": {"type": "boolean"},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "priority", "location", "message", "recommendation"],
+        "properties": {
+          "id": {"type": "string"},
+          "priority": {"type": "string", "enum": ["P0", "P1", "P2", "P3"]},
+          "location": {"type": "string"},
+          "message": {"type": "string"},
+          "recommendation": {"type": "string"},
+          "personas": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

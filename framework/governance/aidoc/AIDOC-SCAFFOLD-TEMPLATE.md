@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | <your name> |
-| Framework Version | 0.90.0 |
+| Framework Version | 0.90.1 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides

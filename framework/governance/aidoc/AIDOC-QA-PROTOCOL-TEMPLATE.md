@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.0 |
+| Framework Version | 0.90.1 |
 
 **Scope:** Acceptance Testing, Staging Verification & Defect Reporting for `[Project Name]`
 **Governing Rules:** `GOVERNANCE_WORKFLOW_STANDARD.md`, `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`
@@ -105,7 +105,7 @@ Upon successful PR merge into `dev`, the delivering agent completes the delivery
      - Implemented user payment timeout handling per SPEC-042.
      - Added integration test coverage exercising gateway timeouts.
    - **Verification Evidence:**
-     - CI Suite: [Run #12345](url) — GREEN
+     - CI Suite: [Run #12345](https://ci.example.com/runs/12345) — GREEN
      - Acceptance Suite: 14 scenarios passed, 0 failed.
    - **Artifact Links:**
      - `docs/sdd/06_SPEC/SPEC-042.yaml`

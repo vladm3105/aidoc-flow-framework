@@ -1,0 +1,170 @@
+# =============================================================================
+#  CHG-77: Framework Audit Discrepancies Remediation (Templates, Indices, Test Config)
+# =============================================================================
+#  Flow: F2 direct (DIR2C, C1 non-normative hygiene & tooling configuration).
+#  Authorizing IPLAN: framework/archive/CHG-77/IPLAN-77.yaml
+#  Entry Gate: GATE-CODE.
+#  Scope: Fix template schema validation, add pytest.ini, sync fixture schema,
+#         update README indices, and repair placeholder markdown links.
+# =============================================================================
+
+id: CHG-77
+title: "Framework Audit Discrepancies Remediation (Templates, Governance Indices, Test Config, and Link Hygiene)"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-07"
+  framework_version: "0.90.0"
+
+  change_level:
+    value: C1
+
+  change_source:
+    value: direct
+
+  entry_gate:
+    value: GATE-CODE
+
+  semver_impact:
+    value: patch
+
+  version_action:
+    value: bump
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-77"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-07T00:00:00Z"
+  date_approved: "2026-10-07T00:00:00Z"
+  date_implemented: "2026-10-07T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-07T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: 'yes, proceed with CHG' to remediate audit discrepancies"
+  supersedes:
+    - "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml (framework/archive/CHG-77/REVIEW_REPORT-TEMPLATE.yaml)"
+    - "framework/governance/README.md (framework/archive/CHG-77/governance-README.md)"
+    - "framework/README.md (framework/archive/CHG-77/framework-README.md)"
+    - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md (framework/archive/CHG-77/AIDOC-QA-PROTOCOL-TEMPLATE.md)"
+    - "tests/conformance/fixtures/review/review_report.schema.json (framework/archive/CHG-77/review_report.schema.json)"
+    - "framework/CHANGELOG.md (framework/archive/CHG-77/CHANGELOG.md)"
+    - "framework/VERSION (framework/archive/CHG-77/VERSION)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: |
+    Remediate framework audit discrepancies found during the 0.90.0 holistic audit:
+    (1) REVIEW_REPORT-TEMPLATE.yaml: provide schema-valid sample values (report_id, target_artifact_id, layer, created_at)
+        so the template validates against review_report.schema.json while retaining instructional comments;
+    (2) pytest.ini: create root test configuration with pythonpath = . to eliminate test collection ModuleNotFoundError;
+    (3) tests/conformance/fixtures/review/review_report.schema.json: synchronize fixture with canonical governance schema;
+    (4) framework/governance/README.md & framework/README.md: index DURABLE_EXECUTION_STANDARD.md, REVIEW_WORKFLOW_STANDARD.md,
+        the 9 review workflows in workflows/review/, and templates in governance README and layout trees;
+    (5) AIDOC-QA-PROTOCOL-TEMPLATE.md: replace non-resolving (url) link placeholder with code-formatted tag.
+  why: "Ensure 100% schema compliance across templates, test runner portability without environment overrides, and complete documentation indexing of recently added durable multi-agent standards."
+  trigger: "Comprehensive repository audit following 0.90.0 durable execution standard and graph review flows release."
+  scope:
+    in:
+      - "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml: schema-valid sample values"
+      - "pytest.ini: root pytest configuration setting pythonpath = ."
+      - "tests/conformance/fixtures/review/review_report.schema.json: fixture schema sync"
+      - "framework/governance/README.md: index missing standards, review workflows, templates"
+      - "framework/README.md: update governance overview and directory layout"
+      - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md: link placeholder fix"
+    out:
+      - "No breaking changes to framework spec (SemVer keep at 0.90.0)"
+      - "No changes to core linters or runtime contracts"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle: []
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-77/IPLAN-77.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-77.yaml under framework/archive/CHG-77/"
+      phase: "iplan_creation"
+      artifact: "IPLAN-77"
+      status: Completed
+    - step: "Update REVIEW_REPORT-TEMPLATE.yaml with schema-valid sample values"
+      phase: "documentation_sync"
+      artifact: "REVIEW_REPORT-TEMPLATE.yaml"
+      status: Completed
+    - step: "Create root pytest.ini configuring pythonpath = ."
+      phase: "documentation_sync"
+      artifact: "pytest.ini"
+      status: Completed
+    - step: "Sync test fixture review_report.schema.json with governance schema"
+      phase: "documentation_sync"
+      artifact: "tests/conformance/fixtures/review/review_report.schema.json"
+      status: Completed
+    - step: "Update framework/governance/README.md and framework/README.md index tables"
+      phase: "documentation_sync"
+      artifact: "framework/governance/README.md"
+      status: Completed
+    - step: "Fix placeholder markdown link in AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      phase: "documentation_sync"
+      artifact: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      status: Completed
+  files_modified:
+    - "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml"
+    - "pytest.ini"
+    - "tests/conformance/fixtures/review/review_report.schema.json"
+    - "framework/governance/README.md"
+    - "framework/README.md"
+    - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+    - "framework/CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-77"
+    changes: "Authorizing change record for framework audit remediation (this file)"
+  - id: "IPLAN-77"
+    changes: "Authorizing IPLAN (framework/archive/CHG-77/IPLAN-77.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-CODE
+  approver: "Founder / Lead Architect"
+  date: "2026-10-07T00:00:00Z"
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-77/CHG-77.yaml"
+    - "python3 -c 'import json, yaml, jsonschema; jsonschema.validate(yaml.safe_load(open(\"framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml\")), json.load(open(\"framework/governance/review_report.schema.json\")))'"
+    - "pytest sdd_doc_lint/tests/ (without PYTHONPATH=.)"
+    - "pytest tests/unit/ (without PYTHONPATH=.)"
+    - "pytest tests/conformance/ -k 'review or governance' (without PYTHONPATH=.)"
