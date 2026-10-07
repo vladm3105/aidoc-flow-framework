@@ -12,6 +12,7 @@ from _spec import FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
 WORKFLOWS_DIR = GOVERNANCE / "workflows"
+REVIEW_WORKFLOWS_DIR = WORKFLOWS_DIR / "review"
 
 EXPECTED_WORKFLOWS = [
     "chg-request-flow.sw.yaml",
@@ -27,6 +28,18 @@ EXPECTED_WORKFLOWS = [
     "ears-requirements-validation.sw.yaml",
     "prd-feature-decomposition.sw.yaml",
     "brd-business-validation.sw.yaml",
+]
+
+EXPECTED_REVIEW_WORKFLOWS = [
+    "brd-review-remediation.sw.yaml",
+    "prd-review-remediation.sw.yaml",
+    "ears-review-remediation.sw.yaml",
+    "bdd-review-remediation.sw.yaml",
+    "adr-review-remediation.sw.yaml",
+    "spec-review-remediation.sw.yaml",
+    "tdd-review-remediation.sw.yaml",
+    "iplan-review-remediation.sw.yaml",
+    "chg-review-remediation.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -140,6 +153,122 @@ class GovernanceWorkflowsTest(unittest.TestCase):
                 self.assertGreater(
                     terminal_states, 0, f"{wf_name} must contain at least one terminal state"
                 )
+
+    def test_review_workflow_standard_document_present(self):
+        doc = GOVERNANCE / "REVIEW_WORKFLOW_STANDARD.md"
+        self.assertTrue(doc.is_file(), "Missing REVIEW_WORKFLOW_STANDARD.md")
+        content = doc.read_text(encoding="utf-8")
+        self.assertIn('specVersion: "0.8"', content)
+        self.assertIn("REV-PASS", content)
+        self.assertIn("REV-AUTO", content)
+        self.assertIn("REV-CHG", content)
+        self.assertIn("REV-01-BRD", content)
+        self.assertIn("REV-09-CHG", content)
+
+    def test_expected_review_workflows_exist(self):
+        self.assertTrue(
+            REVIEW_WORKFLOWS_DIR.is_dir(), "Missing governance/workflows/review directory"
+        )
+        for wf_name in EXPECTED_REVIEW_WORKFLOWS:
+            with self.subTest(review_workflow=wf_name):
+                wf_path = REVIEW_WORKFLOWS_DIR / wf_name
+                self.assertTrue(wf_path.is_file(), f"Missing review workflow file: {wf_name}")
+
+    def test_review_workflow_schema_and_graph_integrity(self):
+        for wf_name in EXPECTED_REVIEW_WORKFLOWS:
+            with self.subTest(review_workflow=wf_name):
+                wf_path = REVIEW_WORKFLOWS_DIR / wf_name
+                with wf_path.open(encoding="utf-8") as f:
+                    data = yaml.safe_load(f)
+
+                self.assertIsInstance(data, dict, f"{wf_name} must parse as a YAML mapping")
+                self.assertIn("id", data, f"{wf_name} missing 'id'")
+                self.assertIn("name", data, f"{wf_name} missing 'name'")
+                self.assertEqual(
+                    data.get("specVersion"), "0.8", f"{wf_name} must target specVersion 0.8"
+                )
+                self.assertIn("start", data, f"{wf_name} missing 'start' state")
+                self.assertIn("states", data, f"{wf_name} missing 'states' list")
+
+                states = data["states"]
+                self.assertIsInstance(states, list, f"{wf_name} 'states' must be a list")
+                self.assertGreater(len(states), 0, f"{wf_name} must declare at least one state")
+
+                state_names = {s["name"] for s in states if isinstance(s, dict) and "name" in s}
+                self.assertIn(
+                    data["start"],
+                    state_names,
+                    f"{wf_name} start state '{data['start']}' not found in states",
+                )
+
+                terminal_states = 0
+                for state in states:
+                    s_name = state.get("name", "<unnamed>")
+                    s_type = state.get("type")
+                    self.assertIn(
+                        s_type,
+                        VALID_STATE_TYPES,
+                        f"{wf_name} state '{s_name}' has invalid type '{s_type}'",
+                    )
+
+                    if "transition" in state:
+                        target = state["transition"]
+                        self.assertIn(
+                            target,
+                            state_names,
+                            f"{wf_name} state '{s_name}' transitions to undefined state '{target}'",
+                        )
+
+                    if s_type == "switch":
+                        conditions = state.get("dataConditions", [])
+                        for cond in conditions:
+                            if "transition" in cond:
+                                self.assertIn(
+                                    cond["transition"],
+                                    state_names,
+                                    f"{wf_name} switch condition '{cond.get('name')}' transitions to undefined state",
+                                )
+                        default_trans = state.get("defaultCondition", {}).get("transition")
+                        if default_trans:
+                            self.assertIn(
+                                default_trans,
+                                state_names,
+                                f"{wf_name} switch defaultCondition transitions to undefined state",
+                            )
+
+                    if "compensatedBy" in state:
+                        comp_target = state["compensatedBy"]
+                        self.assertIn(
+                            comp_target,
+                            state_names,
+                            f"{wf_name} state '{s_name}' compensatedBy undefined state '{comp_target}'",
+                        )
+
+                    if state.get("end") is True or (
+                        isinstance(state.get("end"), dict) and state["end"].get("terminate") is True
+                    ):
+                        terminal_states += 1
+
+                self.assertGreater(
+                    terminal_states, 0, f"{wf_name} must contain at least one terminal state"
+                )
+
+    def test_workflow_linter_passes_all_workflows(self):
+        from sdd_doc_lint.swf_lint import lint_path
+
+        for wf_name in EXPECTED_WORKFLOWS:
+            with self.subTest(core_workflow=wf_name):
+                wf_path = WORKFLOWS_DIR / wf_name
+                findings = lint_path(wf_path)
+                errors = [f for f in findings if f.severity == "ERROR"]
+                self.assertEqual(errors, [], f"swf_lint found errors in {wf_name}: {errors}")
+
+        for wf_name in EXPECTED_REVIEW_WORKFLOWS:
+            with self.subTest(review_workflow=wf_name):
+                wf_path = REVIEW_WORKFLOWS_DIR / wf_name
+                findings = lint_path(wf_path)
+                errors = [f for f in findings if f.severity == "ERROR"]
+                self.assertEqual(errors, [], f"swf_lint found errors in {wf_name}: {errors}")
 
     def test_diagram_standards_synchronization(self):
         diag_standards = (GOVERNANCE / "DIAGRAM_STANDARDS.md").read_text(encoding="utf-8")

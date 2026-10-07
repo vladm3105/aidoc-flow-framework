@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.4 |
+| Framework Version | 0.89.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -85,9 +85,20 @@ framework/governance/
 │   ├── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
 │   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │   ├── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
-│   └── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
+│   ├── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
+│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-09)
+│       ├── brd-review-remediation.sw.yaml    # Layer 01 BRD review remediation saga (REV-01-BRD)
+│       ├── prd-review-remediation.sw.yaml    # Layer 02 PRD review remediation saga (REV-02-PRD)
+│       ├── ears-review-remediation.sw.yaml   # Layer 03 EARS review remediation saga (REV-03-EARS)
+│       ├── bdd-review-remediation.sw.yaml    # Layer 04 BDD review remediation saga (REV-04-BDD)
+│       ├── adr-review-remediation.sw.yaml    # Layer 05 ADR review remediation saga (REV-05-ADR)
+│       ├── spec-review-remediation.sw.yaml   # Layer 06 SPEC review remediation saga (REV-06-SPEC)
+│       ├── tdd-review-remediation.sw.yaml    # Layer 07 TDD review remediation saga (REV-07-TDD)
+│       ├── iplan-review-remediation.sw.yaml  # Layer 08 IPLAN review remediation saga (REV-08-IPLAN)
+│       └── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
+├── REVIEW_WORKFLOW_STANDARD.md               # Normative specification for graph-based review sagas
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
 ├── SEED_TO_MODULE_DECOMPOSITION.md           # Prose guide embedding decomposition graph
 ├── WORKTREE_FLOW.md                          # Prose guide embedding worktree graph
@@ -323,3 +334,6 @@ When a pull request merges into the target integration branch (`dev`), the deliv
 - **2026-10-06 — Pass 11 (Tripartite Separation of Concerns & Issue Closure Contract)**:
   - *Gap found*: Lack of clear boundaries between DEV, SDET, and QA personas, creating risks of QA modifying production code during acceptance test runs. Missing formal contract for post-merge issue closure reports.
   - *Fix*: Codified Section 8 Tripartite Engineering Architecture with strict non-code-modifying invariant for QA, and formalized Section 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
+- **2026-10-07 — Pass 12 (Graph-Based Review Sagas & Dedicated Structural Linter)**:
+  - *Gap found*: Review and remediation flows were only defined at a macro level (`review-remediation-flow.sw.yaml`), lacking dedicated per-layer workflows matching `REVIEW_CREWS.yaml`, a review-to-CHG handover contract, and a dedicated structural workflow linter.
+  - *Fix*: Created `REVIEW_WORKFLOW_STANDARD.md`, implemented `sdd_swf_lint` (`sdd_doc_lint/swf_lint.py`), authored 9 per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`) in `framework/governance/workflows/review/`, expanded `review_report.schema.json` with `chg_handover`, and registered workflows in Section 2.

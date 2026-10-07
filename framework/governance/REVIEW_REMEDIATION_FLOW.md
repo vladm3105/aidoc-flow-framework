@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.4 |
+| Framework Version | 0.89.0 |
 
 The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -172,6 +172,111 @@ stateDiagram-v2
 | `ApproveArtifact` | `operation` (end) | Seals review journal as `CLOSED`, permits downstream layer authoring |
 | `EscalateToFounder` | `operation` (end) | Transitions saga to `ESCALATED`, halts autonomous looping, alerts maintainer |
 | `EmitPartialTimeoutCheckpoint` | `operation` (end) | Transitions saga to `PARTIAL_TIMEOUT`, writes durable checkpoint journal |
+
+## Refined & Hardened Architectural Blueprints
+
+To guarantee industrial-grade robustness and zero unhandled failure modes across multi-agent review lifecycles, the review and remediation architecture is hardened around four formal operational pillars:
+
+```mermaid
+---
+title: Refined & Hardened Multi-Agent Review Architecture
+---
+flowchart TD
+    Start([Artifact Under Review]) --> Dispatch["Dispatch Review Crew<br/>(Parallel Fan-Out per REVIEW_CREWS.yaml)"]
+    
+    Dispatch --> QuorumCheck{"Quorum Check<br/>Coverage >= 80%?"}
+    QuorumCheck -- No --> RevQuor["REV-QUOR<br/>Quorum Starvation Failure"]
+    RevQuor --> Escalate([Escalate to Maintainer])
+    
+    QuorumCheck -- Yes --> TimeoutCheck{"Wall-Clock Check<br/>Elapsed < Soft Deadline?"}
+    TimeoutCheck -- No --> RevTime["REV-TIME<br/>Partial Timeout Checkpoint"]
+    RevTime --> Checkpoint([Persist Journal & Exit])
+    
+    TimeoutCheck -- Yes --> Synthesize["Synthesize Persona Lenses<br/>(Deterministic Reduce + Findings)"]
+    Synthesize --> GateCheck{"Gate Floor Check<br/>structural_pass == true<br/>AND blocking == 0?"}
+    
+    GateCheck -- PASS --> RevPass["REV-PASS<br/>Quality Gate Passed"]
+    RevPass --> Approve([Approved / Promoted])
+    
+    GateCheck -- FAIL --> ForkCheck{"Lifecycle Status Fork<br/>Draft vs Approved?"}
+    
+    ForkCheck -- "status == Draft" --> IterCheck{"Iteration Cap Check<br/>Iteration < Max (3)?"}
+    IterCheck -- Cap Exceeded --> RevEscl["REV-ESCL<br/>Iteration Exhaustion"]
+    RevEscl --> Escalate
+    
+    IterCheck -- Under Cap --> RevAuto["REV-AUTO<br/>In-Cycle Author Remediation"]
+    RevAuto --> ApplyPatch["Author Applies Fixes<br/>(Compensated by Rollback)"]
+    ApplyPatch --> VerifyPatch{"Verify Structural<br/>Integrity?"}
+    VerifyPatch -- Clean --> Dispatch
+    VerifyPatch -- Malformed --> RevRoll["REV-ROLL<br/>Saga Rollback Compensation"]
+    RevRoll --> Escalate
+    
+    ForkCheck -- "status == Approved" --> RevChg["REV-CHG<br/>Governed CHG Request Handover"]
+    RevChg --> GenerateReport["Generate REVIEW_REPORT<br/>(chg_handover block populated)"]
+    GenerateReport --> AuthorizeCHG["Route via CHG_REQUEST_FLOWS.md<br/>(CHG Request + Scoped IPLAN)"]
+    AuthorizeCHG --> SubFlow([Handover to CHG Workflow])
+```
+
+### 1. The Dual-Path Remediation Fork (In-Cycle vs Governed CHG)
+
+A critical failure mode in naive agent workflows is treating drafting defects and baseline defects identically:
+- **In-Cycle Drafting Remediation (`REV-AUTO`)**: When an artifact is undergoing initial drafting (`artifact.status == "Draft"`), defects detected during review are remediated directly within the review cycle by the designated layer author (per `REVIEW_CREWS.yaml`). The saga permits at most 2 remediation passes (3 review cycles total) under circuit breaker `CB-1`.
+- **Governed Change Request Remediation (`REV-CHG`)**: Once an artifact has passed review, achieved `Approved` status, or been merged into the integration baseline, it is **immutable** to silent in-place edits. Any defects discovered subsequently (e.g. during downstream layer reviews, cross-artifact consistency audits, or pre-merge gates) CANNOT be patched autonomously in-cycle. The review engine MUST halt and trigger `REV-CHG`:
+  1. Emit a conforming Review Report ([`REVIEW_REPORT-TEMPLATE.yaml`](templates/REVIEW_REPORT-TEMPLATE.yaml)) with a populated `chg_handover` envelope.
+  2. Map all blocking findings into the `validation_findings` of a new remediation IPLAN.
+  3. Route the change through the authorized change flow ([`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) — typically `CODE2C`, `DIR2C`, or `SEED2C`).
+
+### 2. Formal Traversal Codes Taxonomy
+
+Every execution path through a review saga yields exactly one deterministic traversal code:
+
+| Traversal Code | Classification | Trigger Condition | System Action | Terminal State |
+|---|---|---|---|---|
+| **`REV-PASS`** | Clean Pass | Gate floor met (`structural_pass: true` AND zero blocking findings). | Seal review journal as `CLOSED`; mark artifact `Approved`; allow downstream layer progression. | `ApproveArtifact` |
+| **`REV-AUTO`** | Autonomous Fix | Gate floor failed on an artifact in `Draft` status within iteration cap. | Author applies localized patches for blocking findings; increments iteration counter; dispatches re-review. | `DispatchReviewCrew` |
+| **`REV-CHG`** | Governed Handover | Gate floor failed on an immutable baseline artifact (`status: "Approved"`). | Emits structured review report with `chg_handover`; triggers authorizing CHG request and remediation IPLAN. | `EmitCHGRemediationHandover` |
+| **`REV-TIME`** | Graceful Timeout | Elapsed wall-clock reaches `soft_deadline_seconds` (300s buffer before OS timeout). | Flushes in-flight lens evaluations to durable journal; marks status `PARTIAL_TIMEOUT`; exits 0 for resumption. | `EmitPartialTimeoutCheckpoint` |
+| **`REV-QUOR`** | Quorum Failure | Review crew reports < 80% total weight or misses mandatory specialists. | Flags `low_confidence: true`; halts autonomous sign-off; prevents silent pass with incomplete perspectives. | `EscalateToFounder` |
+| **`REV-ESCL`** | Exhaustion Halt | Saga reaches iteration cap (3 cycles / 2 remediation passes) without converging. | Flags saga as `ESCALATED`; halts autonomous looping (`CB-1`); alerts human maintainer with unpassed findings. | `EscalateToFounder` |
+| **`REV-ROLL`** | Saga Rollback | Remediation patch breaks structural integrity or introduces syntax corruptions. | Executes `RollbackRemediationPatch`; reverts workspace dirty changes; aborts cycle with escalation. | `RollbackRemediationPatch` |
+
+### 3. Executable Review Sagas Catalog (`framework/governance/workflows/review/`)
+
+The framework ships dedicated CNCF Serverless Workflow v0.8 definitions for every governed layer, binding the author and review crew from [`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml):
+
+| Flow Code | Governed Layer | Canonical Workflow File | Designated Author | Review Crew Personas (Weights) |
+|---|---|---|---|---|
+| `REV-01-BRD` | `01_BRD` | [`brd-review-remediation.sw.yaml`](workflows/review/brd-review-remediation.sw.yaml) | `business_analyst` | architect (30), business_analyst (30), auditor (20), chaos_engineer (12), security_engineer (8) |
+| `REV-02-PRD` | `02_PRD` | [`prd-review-remediation.sw.yaml`](workflows/review/prd-review-remediation.sw.yaml) | `product_owner` | product_owner (30), architect (25), tech_lead (20), auditor (10), chaos_engineer (8), security_engineer (7) |
+| `REV-03-EARS` | `03_EARS` | [`ears-review-remediation.sw.yaml`](workflows/review/ears-review-remediation.sw.yaml) | `requirements_specialist` | requirements_specialist (35), tech_lead (25), qa_lead (20), chaos_engineer (12), security_engineer (8) |
+| `REV-04-BDD` | `04_BDD` | [`bdd-review-remediation.sw.yaml`](workflows/review/bdd-review-remediation.sw.yaml) | `qa_lead` | qa_lead (35), tech_lead (25), chaos_engineer (14), operator (10), auditor (10), security_engineer (6) |
+| `REV-05-ADR` | `05_ADR` | [`adr-review-remediation.sw.yaml`](workflows/review/adr-review-remediation.sw.yaml) | `architect` | architect (35), tech_lead (25), security_engineer (12), operator (10), auditor (10), chaos_engineer (8) |
+| `REV-06-SPEC` | `06_SPEC` | [`spec-review-remediation.sw.yaml`](workflows/review/spec-review-remediation.sw.yaml) | `architect` | architect (30), tech_lead (30), integration_lead (20), chaos_engineer (10), security_engineer (10) |
+| `REV-07-TDD` | `07_TDD` | [`tdd-review-remediation.sw.yaml`](workflows/review/tdd-review-remediation.sw.yaml) | `qa_lead` | qa_lead (35), tech_lead (25), chaos_engineer (10), security_engineer (10), operator (10), auditor (10) |
+| `REV-08-IPLAN` | `08_IPLAN` | [`iplan-review-remediation.sw.yaml`](workflows/review/iplan-review-remediation.sw.yaml) | `tech_lead` | tech_lead (30), architect (25), operator (15), integration_lead (12), auditor (10), chaos_engineer (8) |
+| `REV-09-CHG` | `09_CHG` | [`chg-review-remediation.sw.yaml`](workflows/review/chg-review-remediation.sw.yaml) | `integration_lead` | integration_lead (30), architect (20), chaos_engineer (15), operator (15), auditor (10), security_engineer (10) |
+
+*Note on Layer 10 (EVAL):* Layer 10 is not crew-scored with weighted personas; it is verdict-graded via `10_IPVERIFY` playbooks and governed by [`eval-verification-run.sw.yaml`](workflows/eval-verification-run.sw.yaml).
+
+### 4. Review Report to CHG Handover Contract
+
+When `REV-CHG` triggers, the review findings transition seamlessly into change governance via the canonical schema ([`review_report.schema.json`](review_report.schema.json)):
+
+```yaml
+chg_handover:
+  required: true
+  recommended_flow: CODE2C          # SDD2C | SEED2C | DIR2C | CODE2C
+  target_artifact_id: SPEC-01
+  impacted_layers:
+    - 06_SPEC
+    - 07_TDD
+  justification: "Post-merge structural defect in component interaction contract requires governed C1/C2 change."
+  remediation_ip_manifest:
+    - docs/sdd/06_SPEC/SPEC-01.yaml
+    - docs/sdd/07_TDD/TDD-01.yaml
+```
+
+This ensures that no autonomous agent can apply out-of-band patches to production specifications without complete auditability and gate enforcement.
 
 ## Trigger points
 
@@ -362,7 +467,10 @@ or vice versa. Both must pass for a merge.
 - `DOC_GOVERNANCE_CORE.md` — governance principles and the readiness-gate baseline.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
 - `REVIEW_SAGA.md` — lifecycle saga, state transitions, and journal schema for review runs.
+- `REVIEW_WORKFLOW_STANDARD.md` — graph-based review flows specification, traversal taxonomy, and review-to-CHG handover contract.
 - `workflows/review-remediation-flow.sw.yaml` — canonical CNCF Serverless Workflow state machine.
+- `workflows/review/` — per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`).
+- `review_report.schema.json` & `templates/REVIEW_REPORT-TEMPLATE.yaml` — structured review report schema and template with CHG handover.
 - `GOVERNANCE_WORKFLOW_STANDARD.md` — normative specification for CNCF Serverless Workflow adoption.
 - `DIAGRAM_STANDARDS.md` — visualization standards and Mermaid syntax for governance workflows.
 - `chg/` — the change-management overlay (the `pre_merge`/gate machinery for changes).

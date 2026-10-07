@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: operator
 weight: 15
 agent: devops-release-engineer
-framework_spec_version: "0.88.4"
+framework_spec_version: "0.89.0"
 ---
 # operator lens — CHG layer
 

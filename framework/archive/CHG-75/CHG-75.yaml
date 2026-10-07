@@ -1,0 +1,172 @@
+# =============================================================================
+#  CHG-75: Graph-Based Review Flows, SAGA Workflows, Report Template & swf_lint
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-07"
+  framework_version: "0.89.0"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-75"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-07T00:00:00Z"
+  date_approved: "2026-10-07T00:00:00Z"
+  date_implemented: "2026-10-07T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-07T00:00:00Z"
+    verdict: Approved
+    evidence: "User prompt in session: 'address the gaps if needed and start implementation via CHG. Add Refined & Hardened Architectural Blueprints to the framefork governancxe documentations'"
+  supersedes:
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md (framework/archive/CHG-75/REVIEW_REMEDIATION_FLOW.md)"
+    - "framework/governance/REVIEW_SAGA.md (framework/archive/CHG-75/REVIEW_SAGA.md)"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md (framework/archive/CHG-75/GOVERNANCE_WORKFLOW_STANDARD.md)"
+    - "framework/governance/DIAGRAM_STANDARDS.md (framework/archive/CHG-75/DIAGRAM_STANDARDS.md)"
+    - "framework/governance/workflows/review-remediation-flow.sw.yaml (framework/archive/CHG-75/review-remediation-flow.sw.yaml)"
+    - "hooks/sdd-doc-review.sh (framework/archive/CHG-75/sdd-doc-review.sh)"
+    - "tests/conformance/test_governance_workflows.py (framework/archive/CHG-75/test_governance_workflows.py)"
+    - "tests/conformance/test_review_report_parity.py (framework/archive/CHG-75/test_review_report_parity.py)"
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Graph-Based Review Flows, SAGA Workflows, Report Template & swf_lint"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-07T00:00:00Z"
+  summary: |
+    Comprehensive specification, workflow graph implementation, and structural linting for SDD review flows:
+    (1) REVIEW_WORKFLOW_STANDARD.md: author dedicated governance standard formalizing graph-based review flows, SAGA mechanics, per-layer crew bindings, and CHG handover;
+    (2) REVIEW_REMEDIATION_FLOW.md & REVIEW_SAGA.md: add Refined & Hardened Architectural Blueprints, flow router (REV-PASS, REV-AUTO, REV-CHG, REV-ESC, REV-TO, REV-ROLL), and CHG handover protocol;
+    (3) review_report.schema.json & REVIEW_REPORT-TEMPLATE.yaml: graduate and formalize the review report schema and author a canonical template linking review findings directly to authorizing CHG requests;
+    (4) REVIEW-SWF-TEMPLATE.yaml & CHG-SWF-TEMPLATE.yaml: author workflow templates for review sagas and change control flows;
+    (5) Per-layer review workflows: author declarative CNCF Serverless Workflows (REV-01-BRD through REV-09-CHG) under framework/governance/workflows/review/ matching REVIEW_CREWS.yaml;
+    (6) sdd_doc_lint/swf_lint.py: implement standalone deterministic structural linter for CNCF Serverless Workflow graphs and embedded templates;
+    (7) hooks/sdd-doc-review.sh: decouple advisory hook from retired plugin slash commands (/aidoc-flow:doc-*-audit) to engine-agnostic guidance;
+    (8) Conformance & Ratification: update test suites, ratify Decision GD-69, record release notes in CHANGELOG.md, and bump framework specification version to 0.89.0 (C2 MINOR).
+  rationale: |
+    While the framework specifies a quality loop and saga states, executable declarative graphs were previously confined to a single exemplar workflow (review-remediation-flow.sw.yaml) with hardcoded branches that did not reflect the layer-specific crews in REVIEW_CREWS.yaml.
+    Furthermore, no standalone structural linter validated .sw.yaml workflow graphs outside pytest, no review report template existed to translate failed review findings into authorizing CHG requests, and advisory hooks still referenced retired plugin commands.
+    This change resolves these gaps by establishing full graph completeness, structural linting, and formal review-to-CHG handover.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/REVIEW_WORKFLOW_STANDARD.md: New normative standard for graph-based review flows"
+    - "framework/governance/review_report.schema.json: Graduated and expanded review report schema"
+    - "framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml: Canonical template for review reports with CHG handover"
+    - "framework/governance/templates/REVIEW-SWF-TEMPLATE.yaml: Template for review saga workflows"
+    - "framework/governance/templates/CHG-SWF-TEMPLATE.yaml: Template for change control workflows"
+    - "framework/governance/workflows/review/: Dedicated per-layer review workflows (REV-01-BRD through REV-09-CHG)"
+    - "sdd_doc_lint/swf_lint.py: Standalone structural linter for CNCF Serverless Workflow graphs"
+    - "sdd_doc_lint/tests/test_swf_lint.py: Comprehensive test suite for swf_lint"
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md: Refined & Hardened Architectural Blueprints, flow router, and CHG handover"
+    - "framework/governance/REVIEW_SAGA.md: Align with Review Workflow Standard"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md: Index new standard and workflow files"
+    - "framework/governance/DIAGRAM_STANDARDS.md: Index review workflow diagrams"
+    - "hooks/sdd-doc-review.sh: Decouple advisory hook from retired plugin slash commands"
+    - "tests/conformance/test_governance_workflows.py: Update expected workflows list"
+    - "tests/conformance/test_review_report_parity.py: Update schema path to framework/governance"
+    - "framework/governance/DECISIONS.md: Ratify Decision GD-69"
+    - "framework/CHANGELOG.md: Release notes under [0.89.0]"
+    - "hooks/sync-version-refs.sh: Add 0.88.4 to OLD_VERSIONS"
+    - "framework/VERSION: Bump version to 0.89.0"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-75/IPLAN-75.yaml"
+  steps:
+    - step: "Update framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      archive_path: "framework/archive/CHG-75/REVIEW_REMEDIATION_FLOW.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Update framework/governance/REVIEW_SAGA.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_SAGA.md"
+      archive_path: "framework/archive/CHG-75/REVIEW_SAGA.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-75/GOVERNANCE_WORKFLOW_STANDARD.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Update framework/governance/DIAGRAM_STANDARDS.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DIAGRAM_STANDARDS.md"
+      archive_path: "framework/archive/CHG-75/DIAGRAM_STANDARDS.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Update framework/governance/workflows/review-remediation-flow.sw.yaml"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/workflows/review-remediation-flow.sw.yaml"
+      archive_path: "framework/archive/CHG-75/review-remediation-flow.sw.yaml"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Author authorizing IPLAN-75.yaml under framework/archive/CHG-75/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-75/IPLAN-75.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-75/CHG-75.yaml (exit 0, clean)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/"
+    - "python3 -m pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-07T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Self-review of CHG-75 specification and implementation plan"
+      verdict: "APPROVED"

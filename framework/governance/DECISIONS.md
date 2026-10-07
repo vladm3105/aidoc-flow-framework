@@ -15,11 +15,58 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.28 |
+| Version | 1.29 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.4 |
+| Framework Version | 0.89.0 |
+
+---
+
+## GD-69 — Declarative Graph-Based Review Flows, Hardened Review Architecture Blueprints, Dedicated Structural Workflow Linter (`sdd_swf_lint`), and Review Report to CHG Handover Contract (CHG-75, 0.89.0 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Codify declarative workflow specifications and architectural blueprints for SDD review flows across all layers (01_BRD through 09_CHG) and the governance lifecycle, eliminating platform coupling and closing review remediation gaps. Provide a dedicated structural workflow linter (`sdd_swf_lint`) for CNCF Serverless Workflow DSL v0.8 definitions, establish canonical 6-traversal review taxonomy (`REV-PASS`, `REV-AUTO`, `REV-CHG`, `REV-TIME`, `REV-QUOR`, `REV-ESCL`, `REV-ROLL`), author layer-specific review sagas matching `REVIEW_CREWS.yaml`, and define a standardized Review Report schema and template with a formal `chg_handover` envelope linking review findings directly to remediating CHG requests.
+- **Decision**:
+  1. **Refined & Hardened Architectural Blueprints**:
+     - Codified comprehensive ASCII architectural blueprints in `REVIEW_REMEDIATION_FLOW.md` detailing the 5 core stages of review and remediation: Stage 1 (Review Intake & Crew Dispatch), Stage 2 (Parallel Multi-Persona Audit & Finding Collection), Stage 3 (Synthesis & Deterministic Gate Floor Evaluation), Stage 4 (Dual-Path Remediation Routing), and Stage 5 (Terminal Convergence).
+     - Defined the formal 6-traversal taxonomy table governing review transitions: `REV-PASS` (Clean Approval), `REV-AUTO` (Auto-Remediate / In-Band Loop), `REV-CHG` (CHG Escalation / Structural Path), `REV-TIME` (Timeout / Partial Synthesis), `REV-QUOR` (Quorum Failure Escalation), `REV-ESCL` (Iteration Exhaustion / Hard Blocker Escalation), and `REV-ROLL` (Rejection / Revert).
+  2. **Dedicated Structural Workflow Linter (`sdd_swf_lint`)**:
+     - Implemented `sdd_doc_lint/swf_lint.py` enforcing rules `SWF-L001` through `SWF-L007`:
+       - `SWF-L001`: Mandatory root fields (`id`, `name`, `version`, `specVersion`, `start`, `states`).
+       - `SWF-L002`: CNCF Serverless Workflow specVersion compliance (`0.8`).
+       - `SWF-L003`: Valid start state existence.
+       - `SWF-L004`: State completeness & type validity (`operation`, `switch`, `parallel`, `inject`, `sleep`, `event`).
+       - `SWF-L005`: Transition reference validity (all `transition` targets and `dataConditions` targets exist).
+       - `SWF-L006`: Terminal state existence (at least one state with `end: true`).
+       - `SWF-L007`: Reachability & cycle safety (every state reachable from start).
+     - Authored dedicated unit test suite `sdd_doc_lint/tests/test_swf_lint.py` with 10 comprehensive test cases.
+  3. **Dedicated Per-Layer Review & Remediation Workflows**:
+     - Authored 9 layer-specific CNCF Serverless Workflow DSL v0.8 definitions under `framework/governance/workflows/review/`:
+       - `REV-01-BRD` (`brd-review-remediation.sw.yaml`)
+       - `REV-02-PRD` (`prd-review-remediation.sw.yaml`)
+       - `REV-03-EARS` (`ears-review-remediation.sw.yaml`)
+       - `REV-04-BDD` (`bdd-review-remediation.sw.yaml`)
+       - `REV-05-ADR` (`adr-review-remediation.sw.yaml`)
+       - `REV-06-SPEC` (`spec-review-remediation.sw.yaml`)
+       - `REV-07-TDD` (`tdd-review-remediation.sw.yaml`)
+       - `REV-08-IPLAN` (`iplan-review-remediation.sw.yaml`)
+       - `REV-09-CHG` (`chg-review-remediation.sw.yaml`)
+     - Each workflow models the exact multi-persona crew composition, required quorum, and checklist gates from `REVIEW_CREWS.yaml`.
+  4. **Canonical Review Report Schema, Template & CHG Handover Contract**:
+     - Authored JSON Schema `framework/governance/review_report.schema.json` validating review reports, structured findings (`finding_id`, `layer`, `category`, `severity`, `priority`, `location`, `remediation_route`), and `chg_handover` metadata.
+     - Authored canonical template `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` with explicit `chg_handover` envelope linking findings directly to CHG classification (`SDD2C`, `DIR2C`, `SEED2C`, `CODE2C`, `CODE2S`, `HOTFIX`).
+     - Authored template definitions `REVIEW-SWF-TEMPLATE.yaml` and `CHG-SWF-TEMPLATE.yaml` for standardized workflow authoring.
+  5. **Governance Documentation & Standards Synchronization**:
+     - Authored `framework/governance/REVIEW_WORKFLOW_STANDARD.md` establishing the graph specification standards, state model, and validation rules.
+     - Synchronized `REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, and `DIAGRAM_STANDARDS.md`.
+     - Updated `hooks/sdd-doc-review.sh` to decouple from platform slash-commands while retaining conformance audit tokens.
+  6. **Conformance Suite Parity & Validation**:
+     - Updated `tests/conformance/test_governance.py` EXPECTED_FILES to include all 14 new governance artifacts.
+     - Updated `tests/conformance/test_governance_workflows.py` to validate all 9 layer workflows via `sdd_swf_lint`.
+     - Authored `tests/conformance/test_review_report_parity.py` to ensure schema parity.
+     - Bumped framework version to `0.89.0` and synced all references.
 
 ---
 
