@@ -31,10 +31,10 @@ metadata:
     value: GATE-CODE
 
   semver_impact:
-    value: null
+    value: patch
 
   version_action:
-    value: keep
+    value: bump
 
 # =============================================================================
 # Section 1: Change Control
@@ -48,8 +48,8 @@ change_control:
   change_level: C1
   change_source: direct
   entry_gate: GATE-CODE
-  semver_impact: null
-  version_action: keep
+  semver_impact: patch
+  version_action: bump
   author: "Framework Maintainer"
   date_proposed: "2026-10-07T00:00:00Z"
   date_approved: "2026-10-07T00:00:00Z"
@@ -66,6 +66,7 @@ change_control:
     - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md (framework/archive/CHG-77/AIDOC-QA-PROTOCOL-TEMPLATE.md)"
     - "tests/conformance/fixtures/review/review_report.schema.json (framework/archive/CHG-77/review_report.schema.json)"
     - "framework/CHANGELOG.md (framework/archive/CHG-77/CHANGELOG.md)"
+    - "framework/VERSION (framework/archive/CHG-77/VERSION)"
 
 # =============================================================================
 # Section 2: Change Description

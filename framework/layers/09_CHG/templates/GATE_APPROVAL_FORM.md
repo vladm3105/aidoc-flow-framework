@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.0 |
+| Framework Version | 0.90.1 |
 
 
 > **CHG Reference**: CHG-XX
