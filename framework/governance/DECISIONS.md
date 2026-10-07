@@ -15,11 +15,37 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.26 |
+| Version | 1.27 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
+
+---
+
+## GD-67 — Linter Completeness Hardening, Hook Fixes, Dual-Layer Graph Token Harmonization, and Stale Info Purge (CHG-73, 0.88.3 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Complete comprehensive deep review of the whole framework repository, resolving Issue #895, hardening the CHG linter per-artifact lifecycle checks, adding Layer 10 EVAL to trace graph primitives, correcting bash hook em-dash mismatch, harmonizing residual legacy flow tokens (`F1`–`F4`, `Type-R`) with primary graph nomenclature across all documentation surfaces, and purging stale references.
+- **Decision**:
+  1. **Linter Completeness Hardening (CHG-L006 / Issue #895)**:
+     - Updated `sdd_doc_lint/chg_lint.py` to enforce per-artifact coverage loop in `check_sdd_lifecycle_completeness` (CHG-L006), verifying that every SDD document declared in `artifacts_modified` has an explicit entry in `sdd_lifecycle`.
+     - Code files (`_is_code_path`) and IPLAN files are explicitly exempted, while direct leaf changes under `DIR2C` (`iplan_to_code`) are exempt from requiring `sdd_lifecycle`.
+     - Modernized CHG-L004 and CHG-L014 error messages to cite primary graph traversal codes (`DIR2C`, `HOTFIX`, `CODE2S`, `SEED2C`, `CODE2C`, `SDD2C`).
+     - Added 3 regression test cases in `sdd_doc_lint/tests/test_chg_lint.py` validating full vs subset lifecycle coverage and code path exemptions.
+  2. **Trace Graph Layer 10 EVAL Support**:
+     - Updated `sdd_doc_lint/trace_graph.py` to add `"EVAL"` to `KNOWN_LAYERS` and assign `LAYER_INDEX["EVAL"] = 10`, enabling `@eval:` cross-layer tag scanning in the trace graph engine.
+  3. **Hook Hardening & Audit Reference Harmonization**:
+     - Fixed `hooks/pre_push_check.sh` founder-OK skip guidance strings in lines 244 and 258 to carry the required em-dash `—` matching line 228 regex.
+     - Harmonized self-review audit reference to `OPS-0065`.
+     - Updated dead `CLAUDE.md` reference to `AGENTS.md`.
+  4. **Residual Legacy Token Harmonization & Stale Info Purge**:
+     - Harmonized residual `F1`–`F4` and `Type-R` references with canonical dual-layer graph nomenclature (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`) across `AGENTS.md`, root `README.md`, `framework/README.md`, `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/governance/SEED_CONTRACT.md`, `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`, `framework/templates/SEED-TEMPLATE.md`, `framework/governance/README.md`, `framework/governance/LINT_RULES.md`, and `docs/SUPPORT.md`.
+     - Preserved backward-compatible parenthetical qualifiers where required for conformance assertion compatibility.
+  5. **Parity and Versioning**:
+     - Maintained 100% byte-parity between `framework/governance/chg` and `framework/layers/09_CHG`.
+     - Bumped framework version to `0.88.3` and updated `hooks/sync-version-refs.sh` `OLD_VERSIONS` array with `0.88.2`.
 
 ---
 

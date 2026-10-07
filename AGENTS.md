@@ -125,10 +125,10 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 1. Create a CHG document — do NOT write code first
 2. Complete §3.4 checklist BEFORE writing the CHG
 3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
-4. Declare SDD scope before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
+4. Declare SDD scope before code (SDD-first — SDD2C/SEED2C [F1/F3] only; DIR2C [F2] carries an empty lifecycle, CODE2C [F4] leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
 5. Create IPLAN with code steps (not in CHG)
 
-Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).
+Classify first: HOTFIX (Emergency) → CODE2S (Type-R) → CODE2C (F4) → SEED2C (F3) → DIR2C (F2) → SDD2C (F1) — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, modernized in 0.88.0+).
 
 If user says "build", "implement", "add feature" → stop, create CHG first.
 Exception (only one): seed-phase drafting before the first BRD is authored against seed vN
@@ -144,7 +144,7 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
 - CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
-- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
+- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names DIR2C/SEED2C/CODE2C [F2/F3/F4])
 - CHG-L014: Seed/module coverage (§3.1.3) — upstream/midstream/design/spec/reconciliation touches need `seed_scope` / `module_lifecycle` (GOV-020)
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - CHG-L017: Premature step completion (§3.4.1 E28) — no `Completed` step on a `Proposed` / `Approved` CHG

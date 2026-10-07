@@ -84,6 +84,7 @@ def _run(script: Path, *args: str, env: dict | None = None) -> subprocess.Comple
         capture_output=True,
         text=True,
         timeout=120,
+        stdin=subprocess.DEVNULL,
         env=env or dict(os.environ),
     )
 

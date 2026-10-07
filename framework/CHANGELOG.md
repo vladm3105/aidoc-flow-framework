@@ -7,11 +7,33 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.16 |
+| Version | 1.17 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
+
+## [0.88.3] — 2026-10-06
+
+### Changed — Linter Completeness Hardening, Hook Fixes, Dual-Layer Graph Token Harmonization, and Stale Info Purge (C2 Spec, CHG-73 + IPLAN-73, Decision GD-67)
+
+- **Linter Completeness Hardening (CHG-L006 / Issue #895)**:
+  - Hardened `sdd_doc_lint/chg_lint.py` per-artifact coverage loop in `check_sdd_lifecycle_completeness` (CHG-L006) to enforce that every SDD document listed in `artifacts_modified` has an explicit entry in `sdd_lifecycle`.
+  - Added explicit exemptions for code files (`_is_code_path`), IPLAN files, and changes under direct flow (`DIR2C` / `iplan_to_code`).
+  - Modernized diagnostic messages in CHG-L004 and CHG-L014 to cite dual-layer graph flow codes (`DIR2C`, `HOTFIX`, `CODE2S`, `SEED2C`, `CODE2C`, `SDD2C`).
+  - Added regression test suite in `sdd_doc_lint/tests/test_chg_lint.py` covering subset vs full coverage and code file exemptions.
+- **Trace Graph Layer 10 EVAL Support**:
+  - Registered `"EVAL"` in `KNOWN_LAYERS` and set `LAYER_INDEX["EVAL"] = 10` in `sdd_doc_lint/trace_graph.py`, allowing `@eval:` cross-layer tags to be properly parsed and indexed.
+- **Hook Hardening & Audit Reference Harmonization**:
+  - Fixed em-dash `—` in lines 244 and 258 of `hooks/pre_push_check.sh` ensuring copy-pasted founder-OK skip strings conform to the validation regex on line 228.
+  - Harmonized self-review audit references to `OPS-0065`.
+  - Updated retired `CLAUDE.md` link to `AGENTS.md`.
+- **Residual Legacy Flow Token Harmonization & Stale Info Purge**:
+  - Harmonized residual `F1`–`F4` and `Type-R` references with canonical dual-layer graph nomenclature (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`) across `AGENTS.md`, root `README.md`, `framework/README.md`, `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/governance/SEED_CONTRACT.md`, `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`, `framework/templates/SEED-TEMPLATE.md`, `framework/governance/README.md`, `framework/governance/LINT_RULES.md`, and `docs/SUPPORT.md`.
+  - Maintained backward-compatible qualifiers for conformance test assertion stability.
+- **Parity and Versioning**:
+  - Maintained 100% byte-parity between `framework/governance/chg` and `framework/layers/09_CHG`.
+  - Bumped framework version to `0.88.3` and updated `hooks/sync-version-refs.sh` `OLD_VERSIONS` array with `0.88.2`.
 
 ## [0.88.2] — 2026-10-06
 

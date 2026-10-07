@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -183,10 +183,11 @@ for the full gate definition.
 ### Request flows
 
 Classify-then-route detail for the diagram above lives in
-[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06): **F1** greenfield
-(full chain), **F2** direct request (no SDD cascade), **F3** brownfield behavior change (SDD-first restart),
-**F4** bugfix on an implemented IPLAN (CHG-05 vehicle), plus Emergency and Type-R yield paths.
-C1 note (F2.2, ratified CHG-12): every C1 rides a C1 CHG + scoped IPLAN, every author;
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06; modernized in 0.88.0+):
+the 6 traversal-path graph lifecycles — **SDD2C** greenfield (F1 full chain), **DIR2C** direct request (F2 no SDD cascade),
+**SEED2C** brownfield behavior change (F3 SDD-first restart), **CODE2C** bugfix on an implemented IPLAN (F4 CHG-05 vehicle),
+**CODE2S** reconciliation (Type-R backward flow), and **HOTFIX** (Emergency production path).
+C1 note (F2.2 / DIR2C, ratified CHG-12): every C1 rides a C1 CHG + scoped IPLAN, every author;
 sole exception seed-phase drafting pre-first-BRD.
 
 ### Document lifecycle tracking

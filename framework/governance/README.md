@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -26,8 +26,8 @@ Changes to any governance document follow the CHG overlay — specifically
 **GATE-SPEC** for changes to `framework/` itself. The process:
 classify → archive originals → update → verify → record in CHG. See
 [`layers/09_CHG/`](../layers/09_CHG/) for the full change management layer.
-Which flow a change takes — F1 greenfield, F2 direct, F3 brownfield, F4 bugfix,
-or the Emergency / Type-R yield paths — is routed by
+Which flow a change takes — HOTFIX (Emergency), CODE2S (Type-R), CODE2C (F4),
+SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 [`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
 
 ## Documents
@@ -63,7 +63,7 @@ or the Emergency / Type-R yield paths — is routed by
 | `MODULE_LAYOUT.md` | The module structure and organization conventions for the framework. |
 | `NOTICES.md` | Important notices, deprecations, and breaking changes across framework versions. |
 | `SELF_LEARNING.md` | Self-learning governance loop — how the framework captures and applies lessons learned. |
-| `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06) — the classify→route table for change requests (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix) plus Emergency and Type-R yield paths, and the C1/IPLAN-gate ruling. |
+| `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06), modernized in 0.88.0+ — the classify→route table for change requests across the 6 graph traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C), and the C1/IPLAN-gate ruling. |
 | `CI_AUTONOMOUS_PR_STANDARD.md` | Engine-agnostic CI and autonomous change-integration rules — the unified harness, latency tiers, required-check conclusiveness (anti-deadlock), two-pass independent review, merge-conflict authority classes, and anti-blind closure (GD-42). |
 
 ## CNCF Serverless Workflows (`workflows/`)
@@ -80,7 +80,7 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `spec-choreography-contract.sw.yaml` | Layer 06 SPEC | Distributed component interaction verification, schema compatibility checks, dead-letter routing, and compensating transactions. |
 | `tdd-test-execution.sw.yaml` | Layer 07 TDD | Red-Green-Refactor cycle loops, fixture lifecycle isolation, regression test gating, and fixture rollback compensation. |
 | `seed-to-module-decomposition.sw.yaml` | Architecture | Triple-Lens decomposition (Structure, Trust Boundaries, Process/Sequence) from Tier 1 Seed Vision into Tier 2 C4-L2 Module Containers. |
-| `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification (F1-F4), gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
+| `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification across 6 graph traversal paths, gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
 | `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
 | `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |

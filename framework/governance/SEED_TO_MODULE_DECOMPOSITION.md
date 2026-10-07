@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
@@ -148,9 +148,9 @@ All modules must classify data entities using this standard 4-tier taxonomy:
 
 ## 5. Lifecycle & Governance Rules
 
-1. **Bootstrap Timing (F1)**:
+1. **Bootstrap Timing (SDD2C / F1)**:
    - During new project onboarding, the Seed-to-Module decomposition runs immediately after Seed drafting and BEFORE the first BRD is authored (`SEED_CONTRACT.md` R1).
-2. **Seed Supersede Timing (F3 Phase 0b)**:
+2. **Seed Supersede Timing (SEED2C / F3 Phase 0b)**:
    - When a Seed document is superseded (e.g., architecture direction changes or new environmental realities emerge), the architect runs Phase 0b Module Synchronization following this 5-step methodology before any downstream SDD documents are amended.
 3. **Template Mandate**:
    - Every module document must adhere to [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).

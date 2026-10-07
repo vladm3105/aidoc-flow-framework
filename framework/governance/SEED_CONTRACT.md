@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.88.2 |
+| Framework Version | 0.88.3 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -108,7 +108,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.88.2"
+  framework_version: "0.88.3"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:
@@ -217,7 +217,7 @@ When a seed gap review triggers a new SDD iteration:
 ## End-to-End Supersede Lifecycle (Seed → Module → SDD)
 
 When environmental realities or architectural vision shift mid-lifecycle, the update
-executes under an F3 Change Request through the ordered cascade:
+executes under a SEED2C (F3) Change Request through the ordered cascade:
 
 1. **Phase 0a — `seed_scope: supersede`:**
    - The affected seed file's `vN` is archived to `docs/sdd/09-CHG/archive/{CHG-ID}/seed/`.

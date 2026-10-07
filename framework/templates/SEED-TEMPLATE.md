@@ -1,15 +1,20 @@
 ---
 document_control:
   document_id: "SEED-<slug>"                     # e.g., SEED-auth-architecture
-  version: "1.1"                                 # SemVer (must be near top for regex parse)
+  version: "1.2"                                 # SemVer (must be near top for regex parse)
   status: Approved                               # Draft | Approved | Superseded
   author: "human: <architect/stakeholder> (+ ai-agent: <id>)"
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
-  framework_version: "0.88.2"
+  framework_version: "0.88.3"
   c4_level: "c4-l1"
   supersedes: []                                 # e.g., ["seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.0.md)"]
   revision_history:
+    - version: "1.2"
+      date: "YYYY-MM-DD"
+      author: "human: <name>"
+      chg_ref: "CHG-73"
+      description: "Synchronize seed tier contract callout with SEED2C (F3) graph nomenclature"
     - version: "1.1"
       date: "YYYY-MM-DD"
       author: "human: <name>"
@@ -25,7 +30,7 @@ document_control:
 # SEED: <Title / Domain Name>
 
 > **Seed Tier Contract ([`SEED_CONTRACT.md`](../governance/SEED_CONTRACT.md)):**  
-> Seed documents reside at `<project>/seed/` (Tier 1 Inputs). They are **not** SDD chain artifacts, carry no element IDs, and are frozen per version once absorbed. Changed assumptions are superseded (`vN → vN+1`) via F3 Change Requests (Phase 0a `seed_scope`). Decomposes into C4-L2 modules via [`SEED_TO_MODULE_DECOMPOSITION.md`](../governance/SEED_TO_MODULE_DECOMPOSITION.md).
+> Seed documents reside at `<project>/seed/` (Tier 1 Inputs). They are **not** SDD chain artifacts, carry no element IDs, and are frozen per version once absorbed. Changed assumptions are superseded (`vN → vN+1`) via SEED2C (F3) Change Requests (Phase 0a `seed_scope`). Decomposes into C4-L2 modules via [`SEED_TO_MODULE_DECOMPOSITION.md`](../governance/SEED_TO_MODULE_DECOMPOSITION.md).
 
 ---
 

@@ -1,0 +1,256 @@
+# =============================================================================
+#  CHG-73: Linter Completeness Hardening, Hook Fixes, and Governance Stale-Info Purge
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-06"
+  framework_version: "0.88.3"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-73"
+  status: Implemented
+  flow: sdd_to_code
+  flow_code: SDD2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-06T00:00:00Z"
+  date_approved: "2026-10-06T00:00:00Z"
+  date_implemented: "2026-10-06T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-06T00:00:00Z"
+    verdict: Approved
+    evidence: "User request in session: 'yes, create a CHG to fix all findings and pay especially atention to clean up stale info avoiding misunderstanding in the future or incorrect implementations'"
+  supersedes:
+    - "framework/governance/LINT_RULES.md (framework/archive/CHG-73/LINT_RULES.md)"
+    - "framework/governance/SEED_CONTRACT.md (framework/archive/CHG-73/SEED_CONTRACT.md)"
+    - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md (framework/archive/CHG-73/SEED_TO_MODULE_DECOMPOSITION.md)"
+    - "framework/templates/SEED-TEMPLATE.md (framework/archive/CHG-73/SEED-TEMPLATE.md)"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (framework/archive/CHG-73/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)"
+    - "framework/governance/README.md (framework/archive/CHG-73/gov-README.md)"
+    - "framework/README.md (framework/archive/CHG-73/framework-README.md)"
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Linter Completeness Hardening, Hook Fixes, and Governance Stale-Info Purge"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-06T00:00:00Z"
+  summary: |
+    Comprehensive quality and consistency hardening across linters, hooks, and governance entry surfaces:
+    (1) Fix Issue #895 in sdd_doc_lint/chg_lint.py: enforce per-artifact coverage loop in CHG-L006 so every modified SDD document in artifacts_modified must have an sdd_lifecycle step, excluding non-SDD code files and IPLAN documents; modernize legacy error strings; add regression tests;
+    (2) Support Layer 10 EVAL in sdd_doc_lint/trace_graph.py (@eval: tag regex and layer indexing);
+    (3) Fix hooks/pre_push_check.sh: add missing em-dash in founder-OK prompt lines 244 & 258 matching line 228 validation; harmonize audit references to OPS-0065; update retired CLAUDE.md URL;
+    (4) Purge and harmonize residual legacy flow tokens (F1-F4, Type-R) with primary dual-layer graph nomenclature (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) across AGENTS.md, root README.md, framework/README.md, SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, SEED_CONTRACT.md, SEED_TO_MODULE_DECOMPOSITION.md, SEED-TEMPLATE.md, governance README.md, and LINT_RULES.md;
+    (5) Clarify cross-repo links in docs/SUPPORT.md for standalone checkouts;
+    (6) Bump framework version to 0.88.3, ratify Decision GD-67, and record release notes.
+  rationale: |
+    Following deep repository review, multiple latent defects and inconsistencies were uncovered:
+    1. Issue #895: CHG-L006 only checked if any sdd_lifecycle step existed, allowing partial coverage gaps where modified SDD documents lacked archive/rewrite steps.
+    2. hooks/pre_push_check.sh emitted prompt instructions for founder OK that failed its own regex check due to a missing em-dash, and referenced outdated OPS-0069 and dead CLAUDE.md links.
+    3. Despite the adoption of the dual-layer traversal-path graph nomenclature in CHG-72, core orientation documents (AGENTS.md, README.md, SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, SEED contracts) still presented legacy shorthand (F1-F4, Type-R) in isolation, risking agent misunderstanding or non-compliant routing.
+    4. Trace graph primitives in trace_graph.py omitted Layer 10 EVAL, preventing @eval: references in IPLAN documents from being parsed by the trace regex.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "sdd_doc_lint/chg_lint.py: Fix Issue #895 (CHG-L006 per-artifact coverage loop), filter code/IPLAN artifacts, modernize legacy strings to graph nomenclature"
+    - "sdd_doc_lint/tests/test_chg_lint.py: Add regression tests for CHG-L006 per-artifact completeness and code-artifact exemptions"
+    - "sdd_doc_lint/trace_graph.py: Add EVAL to KNOWN_LAYERS and TAG regex"
+    - "hooks/pre_push_check.sh: Fix founder-OK em-dash, harmonize OPS-0065 references, update CLAUDE.md link"
+    - "AGENTS.md: Harmonize governance gate rules with dual-layer graph codes (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)"
+    - "README.md & framework/README.md: Align flow routing sections with 6 graph traversal paths"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md: Align flow routing overview with graph nomenclature"
+    - "framework/governance/SEED_CONTRACT.md & SEED_TO_MODULE_DECOMPOSITION.md & framework/templates/SEED-TEMPLATE.md: Update F1/F3 references to SDD2C/SEED2C"
+    - "framework/governance/LINT_RULES.md: Strengthen CHG-L006/GOV-014 contract description and update flow code references"
+    - "docs/SUPPORT.md: Add note clarifying cross-repo links in standalone checkouts"
+    - "framework/governance/DECISIONS.md: Ratify Decision GD-67"
+    - "framework/CHANGELOG.md: Release notes under [0.88.3]"
+  backward_compatible: true
+  dependencies:
+    - "sdd_doc_lint/chg_lint.py"
+    - "tests/conformance/test_chg_flows_router.py"
+
+# =============================================================================
+# Section 4: Document Lifecycle & Supersedes Tracking
+# =============================================================================
+
+supersedes:
+  - document: "framework/governance/LINT_RULES.md"
+    current_version: "1.3"
+    new_version: "1.4"
+    archive_path: "framework/archive/CHG-73/LINT_RULES.md"
+    changes: "Strengthen CHG-L006 and GOV-014 contract description to enforce per-artifact coverage loop; update flow code descriptions"
+  - document: "framework/governance/SEED_CONTRACT.md"
+    current_version: "1.3"
+    new_version: "1.4"
+    archive_path: "framework/archive/CHG-73/SEED_CONTRACT.md"
+    changes: "Update F3 reference to SEED2C (F3) brownfield change request"
+  - document: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-73/SEED_TO_MODULE_DECOMPOSITION.md"
+    changes: "Update F1 and F3 references to SDD2C (F1) and SEED2C (F3)"
+  - document: "framework/templates/SEED-TEMPLATE.md"
+    current_version: "1.1"
+    new_version: "1.2"
+    archive_path: "framework/archive/CHG-73/SEED-TEMPLATE.md"
+    changes: "Update F3 reference in seed tier contract callout to SEED2C (F3)"
+  - document: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-73/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    changes: "Update overview section to introduce the 6 graph traversal paths alongside legacy shorthand"
+  - document: "framework/governance/README.md"
+    current_version: "1.4"
+    new_version: "1.5"
+    archive_path: "framework/archive/CHG-73/gov-README.md"
+    changes: "Update Document Lifecycle and Document list to describe graph traversal flows"
+  - document: "framework/README.md"
+    current_version: "1.3"
+    new_version: "1.4"
+    archive_path: "framework/archive/CHG-73/framework-README.md"
+    changes: "Update change flow descriptions to highlight the 6 traversal-path graph lifecycles"
+
+# =============================================================================
+# Section 5: Implementation Lifecycle Steps
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Update LINT_RULES.md with strengthened CHG-L006/GOV-014 per-artifact contract and graph codes"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/LINT_RULES.md"
+      archive_path: "framework/archive/CHG-73/LINT_RULES.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Update SEED_CONTRACT.md with SEED2C (F3) graph flow notation"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SEED_CONTRACT.md"
+      archive_path: "framework/archive/CHG-73/SEED_CONTRACT.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Update SEED_TO_MODULE_DECOMPOSITION.md with SDD2C (F1) and SEED2C (F3) notation"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+      archive_path: "framework/archive/CHG-73/SEED_TO_MODULE_DECOMPOSITION.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update SEED-TEMPLATE.md with SEED2C (F3) notation"
+      phase: "sdd_lifecycle"
+      artifact: "framework/templates/SEED-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-73/SEED-TEMPLATE.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update SPEC_DRIVEN_DEVELOPMENT_GUIDE.md with graph traversal paths"
+      phase: "sdd_lifecycle"
+      artifact: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      archive_path: "framework/archive/CHG-73/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/governance/README.md with graph traversal flows"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/README.md"
+      archive_path: "framework/archive/CHG-73/gov-README.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Update framework/README.md with 6 traversal-path graph lifecycles"
+      phase: "sdd_lifecycle"
+      artifact: "framework/README.md"
+      archive_path: "framework/archive/CHG-73/framework-README.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Author authorizing IPLAN-73.yaml under framework/archive/CHG-73/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-73/IPLAN-73.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+  artifacts_modified:
+    - id: "LINT_RULES.md"
+      file: "framework/governance/LINT_RULES.md"
+      change_type: "modified"
+    - id: "SEED_CONTRACT.md"
+      file: "framework/governance/SEED_CONTRACT.md"
+      change_type: "modified"
+    - id: "SEED_TO_MODULE_DECOMPOSITION.md"
+      file: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+      change_type: "modified"
+    - id: "SEED-TEMPLATE.md"
+      file: "framework/templates/SEED-TEMPLATE.md"
+      change_type: "modified"
+    - id: "SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      file: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      change_type: "modified"
+    - id: "gov-README.md"
+      file: "framework/governance/README.md"
+      change_type: "modified"
+    - id: "framework-README.md"
+      file: "framework/README.md"
+      change_type: "modified"
+    - id: "chg_lint.py"
+      file: "sdd_doc_lint/chg_lint.py"
+      change_type: "modified"
+    - id: "trace_graph.py"
+      file: "sdd_doc_lint/trace_graph.py"
+      change_type: "modified"
+    - id: "pre_push_check.sh"
+      file: "hooks/pre_push_check.sh"
+      change_type: "modified"
+    - id: "test_consumer_scripts.py"
+      file: "tests/conformance/test_consumer_scripts.py"
+      change_type: "modified"
+
+# =============================================================================
+# Section 6: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  test_suites:
+    - command: "PYTHONPATH=. pytest sdd_doc_lint/tests/"
+      purpose: "Verify linter unit tests and new CHG-L006 regression tests"
+    - command: "PYTHONPATH=. pytest tests/conformance/"
+      purpose: "Verify all 528 conformance assertions remain 100% green"
+    - command: "PYTHONPATH=. pytest tests/acceptance/ tests/unit/"
+      purpose: "Verify acceptance and unit suites"
+    - command: "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-73/CHG-73.yaml"
+      purpose: "Verify CHG-73 validity against all CHG-L rules"
+    - command: "pre-commit run --all-files"
+      purpose: "Verify all 20 pre-commit hooks pass cleanly"
