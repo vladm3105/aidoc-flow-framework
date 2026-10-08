@@ -12,7 +12,7 @@ metadata:
   document_type: "iplan-document"
   purpose: implementation
   last_updated: "2026-10-07"
-  framework_version: "0.90.1"
+  framework_version: "0.90.2"
   source_chg: "CHG-78"
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   tags:
@@ -39,7 +39,7 @@ document_control:
   last_updated: "2026-10-07T00:00:00Z"
   author: "Framework Maintainer"
   complexity: 1
-  estimated_files: 7
+  estimated_files: 9
   session_count: 1
 
 # =============================================================================
@@ -85,8 +85,20 @@ file_manifest:
       session: 1
       verified: true
     - path: "framework/CHANGELOG.md"
-      description: "Record release notes under [0.90.1] Fixed / Changed section"
+      description: "Record release notes under [0.90.2] Changed section"
       order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump framework/VERSION to 0.90.2 per GATE-SPEC-E005"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Extend OLD_VERSIONS with 0.90.1"
+      order: 9
       status: DONE
       session: 1
       verified: true

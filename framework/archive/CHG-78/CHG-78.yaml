@@ -50,8 +50,9 @@ change_control:
   change_level: C1
   change_source: direct
   entry_gate: GATE-CODE
-  semver_impact: none
-  version_action: keep
+  semver_impact: patch
+  version_action: bump
+  target_version: "0.90.2"
   author: "Framework Maintainer"
   date_proposed: "2026-10-07T00:00:00Z"
   date_approved: "2026-10-07T00:00:00Z"
@@ -69,6 +70,8 @@ change_control:
     - "docs/ADAPTATION-GUIDE.md (framework/archive/CHG-78/ADAPTATION-GUIDE.md)"
     - "docs/STARTUP_HANDOFF.md (framework/archive/CHG-78/STARTUP_HANDOFF.md)"
     - "framework/CHANGELOG.md (framework/archive/CHG-78/CHANGELOG.md)"
+    - "framework/VERSION (framework/archive/CHG-78/VERSION)"
+    - "hooks/sync-version-refs.sh (framework/archive/CHG-78/sync-version-refs.sh)"
 
 # =============================================================================
 # Section 2: Change Description
@@ -157,6 +160,14 @@ implementation:
       phase: "documentation_sync"
       artifact: "framework/CHANGELOG.md"
       status: Completed
+    - step: "Bump framework/VERSION to 0.90.2 per GATE-SPEC-E005"
+      phase: "documentation_sync"
+      artifact: "framework/VERSION"
+      status: Completed
+    - step: "Extend OLD_VERSIONS with 0.90.1 in hooks/sync-version-refs.sh"
+      phase: "documentation_sync"
+      artifact: "hooks/sync-version-refs.sh"
+      status: Completed
   files_modified:
     - "framework/governance/ADAPTATION_SURFACE.yaml"
     - "framework/governance/ADAPTATION.md"
@@ -165,6 +176,8 @@ implementation:
     - "docs/ADAPTATION-GUIDE.md"
     - "docs/STARTUP_HANDOFF.md"
     - "framework/CHANGELOG.md"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
 
 artifacts_modified:
   - id: "CHG-78"

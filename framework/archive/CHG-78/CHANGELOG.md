@@ -11,9 +11,18 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.1 |
+| Framework Version | 0.90.2 |
 
-## [0.90.1] — 2026-10-07
+## [0.90.2] — 2026-10-07
+
+### Changed — Project Kickoff Preparation & Adaptation Alignment (C1 Maintenance, CHG-78 + IPLAN-78)
+
+- **Adaptation Cascade Rule Completion**: Completed `cascade_rule` in `framework/governance/ADAPTATION_SURFACE.yaml` to declare EVAL upstream baseline (`EVAL=[ears, bdd, tdd, iplan]`) and reduction (`[ears, tdd, iplan]`) when BDD is skipped; clarified 8-layer document authoring split in comments.
+- **Adaptation Profile Schema & Working Agreement**: Synchronized §2 profile example in `framework/governance/ADAPTATION.md` to `schema_version: "1.1.0"`; updated §11 enforcement table to mandate project-level `AGENTS.md` (retiring stale `CLAUDE.md` citations); added copy-pasteable minimal `AGENTS.md` starter skeleton for consuming projects.
+- **Profile Skeleton Refinement**: Added `# EVAL: 90` to sample `audit_threshold` block in `framework/governance/PROFILE-TEMPLATE.yaml` and clarified the 10-layer cascade in `active_layers` commentary.
+- **Scaffold Template Blueprints**: Synchronized `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` to enumerate blueprints 7 & 8 (`DURABLE_EXECUTION_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`).
+- **Onboarding Guide Hardening**: Updated `docs/ADAPTATION-GUIDE.md` to version 0.90.1; established `framework/scripts/install.sh` and `BOOTSTRAP.md` as the primary automated onboarding path; indexed blueprints 9 & 10; added `AGENTS.md` project working agreement setup guide.
+- **Modern Startup Handoff**: Prepended Section 0 (Project Kickoff Quickstart 0.90.1) in `docs/STARTUP_HANDOFF.md` providing step-by-step new project onboarding while preserving historical migration sections 1–5 for `DECISIONS.md` citation integrity.
 
 ### Fixed — Framework Audit Discrepancies Remediation (C1 Maintenance, CHG-77 + IPLAN-77)
 

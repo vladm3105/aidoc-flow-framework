@@ -11,9 +11,9 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.1 |
+| Framework Version | 0.90.2 |
 
-## [0.90.1] — 2026-10-07
+## [0.90.2] — 2026-10-07
 
 ### Changed — Project Kickoff Preparation & Adaptation Alignment (C1 Maintenance, CHG-78 + IPLAN-78)
 
