@@ -23,20 +23,17 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVA
   - **Tier 3 (Deterministic Services)**: Executes isolated worktrees ([`WORKTREE_FLOW.md`](../framework/governance/WORKTREE_FLOW.md)), compilation, linters (`sdd_doc_lint`, `sdd_swf_lint`), and test suites.
 - **The Golden Rule**: *Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.*
 
-### 0.2 Quickstart: 6 Steps to Launch a New Project
+### 0.2 Quickstart: 5 Steps to Launch a New Project
 
 #### Step 1: Deploy `.aidoc/` via Automated Installer
 
 From the framework repository or clone, run [`framework/scripts/install.sh`](../framework/scripts/install.sh):
 
 ```bash
-# Option A: Production deployment from local clone (self-contained pin, offline-capable):
-framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
-
-# Option B: Production deployment from published git release tag:
+# Production deployment (pinned allowlist copy, self-contained):
 framework/scripts/install.sh <project-dir> --canon framework/v0.90.2 --kind pin
 
-# Option C: Shared development deployment (persistent symlink to shared checkout):
+# Or symlink to a persistent shared framework checkout:
 framework/scripts/install.sh <project-dir> --canon framework/v0.90.2 --kind symlink --shared /path/to/framework
 ```
 
@@ -70,51 +67,22 @@ Before writing ANY code for a feature, enhancement, or bug fix:
 
 #### Step 4: Instantiate Operational Governance Blueprints
 
-Instantiate the required operational blueprints under `<project>/.aidoc/project/governance/` (see [`docs/ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.1):
+Copy the required governance blueprints under `<project>/.aidoc/project/governance/` (see [`docs/ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.1):
 
-```bash
-mkdir -p <project>/.aidoc/project/governance
-
-# Copy blueprints from the vendored framework:
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md \
-   <project>/.aidoc/project/governance/CHG_EXECUTION_FLOW.md
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md \
-   <project>/.aidoc/project/governance/CI_SMART_ROUTING.md
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md \
-   <project>/.aidoc/project/governance/CONFLICT_RESOLUTION.md
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md \
-   <project>/.aidoc/project/governance/SELF_REVIEW_LOOP.md
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md \
-   <project>/.aidoc/project/governance/QA_PROTOCOL.md
-cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md \
-   <project>/.aidoc/project/governance/BROWSER_TESTING.md
-cp <project>/.aidoc/framework/framework/governance/DURABLE_EXECUTION_STANDARD.md \
-   <project>/.aidoc/project/governance/DURABLE_EXECUTION.md
-cp <project>/.aidoc/framework/framework/governance/REVIEW_WORKFLOW_STANDARD.md \
-   <project>/.aidoc/project/governance/REVIEW_WORKFLOWS.md
-```
+1. `CHG_EXECUTION_FLOW.md` (autonomous 8-step lifecycle, circuit breakers)
+2. `CI_SMART_ROUTING.md` (anti-deadlock invariant, required check routing)
+3. `CONFLICT_RESOLUTION.md` (forward merges, auto-merge re-arming)
+4. `SELF_REVIEW_LOOP.md` (dual-stage multi-lens review)
+5. `QA_PROTOCOL.md` (tripartite roles, closing reports)
+6. `BROWSER_TESTING.md` (headless testing, port sandboxing)
+7. `DURABLE_EXECUTION.md` (3-tier orchestration, thin state, saga rollback)
+8. `REVIEW_WORKFLOWS.md` (graph review flows, structural review reports)
 
 #### Step 5: Author Initial Seed & First Cycle
 
-Scaffold the initial seed document and Layer 1 BRD:
-
-```bash
-mkdir -p <project>/seed <project>/docs/sdd/01_BRD/BRD-01
-cp <project>/.aidoc/framework/framework/templates/SEED-TEMPLATE.md <project>/seed/SEED-01.md
-```
-
-1. Fill out `<project>/seed/SEED-01.md` with stakeholder requirements.
+1. Author initial stakeholder requirements under `<project>/seed/` using [`framework/templates/SEED-TEMPLATE.md`](../framework/templates/SEED-TEMPLATE.md).
 2. Decompose seed into architecture domains per [`SEED_TO_MODULE_DECOMPOSITION.md`](../framework/governance/SEED_TO_MODULE_DECOMPOSITION.md).
 3. Author Layer 1 `BRD` (`docs/sdd/01_BRD/BRD-01/BRD-01.yaml`) to initiate the formal SDD chain.
-
-#### Step 6: Verify Project Scaffolding Health
-
-Validate the newly scaffolded project environment before creating the initial commit:
-
-```bash
-# Test change linting capability
-python3 <project>/.aidoc/framework/framework/sdd_doc_lint/chg_lint.py --help
-```
 
 ---
 
