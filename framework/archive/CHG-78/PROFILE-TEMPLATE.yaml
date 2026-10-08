@@ -53,15 +53,13 @@ metadata:
 #   SPEC: 90
 #   TDD: 90
 #   IPLAN: 90
-#   EVAL: 90
 
 # active_layers restricts the cascade to a subset of the 10 layers.
 # Mandatory layers cannot be disabled (see ADAPTATION_SURFACE.yaml
-# `layers.skippable`, which permits dropping only BDD and/or ADR).
-# Disabling a skippable layer applies the cascade rule.
+# `layers.skippable`). Disabling a skippable layer applies the cascade rule.
 # Default: all 10 layers active.
 #
-# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
 
 # section_toggles disables template-declared OPTIONAL sections.
 # Required sections are not toggleable — toggling them is out of surface

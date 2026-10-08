@@ -48,7 +48,7 @@ A project declares its adaptation in a profile file:
 Minimal shape:
 
 ```yaml
-schema_version: "1.1.0"      # the ADAPTATION_SURFACE.yaml schema it targets
+schema_version: "1.0.0"      # the ADAPTATION_SURFACE.yaml schema it targets
 active_layers: [BRD, PRD, EARS, SPEC, TDD, IPLAN]
 section_toggles:
   ADR: { security: on }
@@ -403,32 +403,15 @@ When adapting the framework, consuming projects MUST propagate these enforcement
 
 | Step | What | Required |
 |------|------|----------|
-| 1 | Add governance gate to project `AGENTS.md` (§3.4 — NON-NEGOTIABLE) | Yes |
+| 1 | Add governance gate to project CLAUDE.md (§3.4 — NON-NEGOTIABLE) | Yes |
 | 2 | Add session-start verification checklist (10 items, before any code work) | Yes |
-| 3 | Add §3.4.1 CHG post-creation validation to project `DOC_GOVERNANCE_CORE.md` (inherited via discovery) | Yes |
-| 4 | Install framework hooks (`ch-gate-check.sh` in `hooks.json` PreCommit) | Yes |
+| 3 | Add §3.4.1 CHG post-creation validation to project DOC_GOVERNANCE_CORE.md | Yes |
+| 4 | Install framework hooks (ch-gate-check.sh in hooks.json PreCommit) | Yes |
 | 5 | Verify enforcement works (test: say "build" → agent stops at gate) | Yes |
 
-These steps ensure defense-in-depth: `AGENTS.md` (prompt-level working agreement), hooks (tool-level),
-skills (process-level), and `DOC_GOVERNANCE_CORE.md` (documentation-level) all enforce
+These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
+skills (process-level), and DOC_GOVERNANCE_CORE.md (documentation-level) all enforce
 the CHG gate independently.
-
-### Project Working Agreement (`AGENTS.md`) Starter Skeleton
-
-Consuming projects should commit an `AGENTS.md` file at project root orienting all AI coding agents:
-
-```markdown
-# AGENTS.md — Working Agreement for AI Coding Agents
-
-## Governance Gate (Non-Negotiable)
-
-Before writing ANY code for a feature, enhancement, or bug fix:
-1. Stop: Check if an authorizing Change Request (CHG) exists under `.aidoc/` or `chg/`. If not, create a CHG document first.
-2. Complete the CHG creation checklist before writing code.
-3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
-4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`. Never work directly on `main` or `dev`.
-5. Run automated verification suites and linters locally before pushing. Never bypass hooks (`--no-verify` is forbidden).
-```
 
 ## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform
 

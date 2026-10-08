@@ -1,0 +1,115 @@
+# =============================================================================
+#  IPLAN-78: Project Kickoff Preparation & Adaptation Alignment
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-78/CHG-78.yaml (F2 direct, C1, Implemented)
+#  Source: Whole-repo onboarding audit for version 0.90.1.
+# =============================================================================
+
+doc_id: IPLAN-78
+title: "Project Kickoff Preparation, Adaptation Alignment, and Onboarding Blueprint Hardening"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-07"
+  framework_version: "0.90.1"
+  source_chg: "CHG-78"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - governance-alignment
+    - project-kickoff
+    - adaptation
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-78"
+  source_chg: "CHG-78"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: N/A (direct audit remediation under CHG-78; no SPEC component)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+  last_updated: "2026-10-07T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 7
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/ADAPTATION_SURFACE.yaml"
+      description: "Declare EVAL upstream in cascade_rule and clarify 8-layer document authoring partition in comments"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ADAPTATION.md"
+      description: "Update §2 profile schema_version to 1.1.0, update §11 enforcement table to AGENTS.md, and add AGENTS.md starter snippet"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/PROFILE-TEMPLATE.yaml"
+      description: "Add # EVAL: 90 to sample audit_threshold and clarify active_layers 10-layer model"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Enumerate blueprints 7 & 8 (Durable Multi-Agent Execution Standard and Graph Review Workflows) under Autonomous Standards"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Bump version to 0.90.1, establish install.sh as primary automated path, index blueprints 9 & 10, add AGENTS.md guidance"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/STARTUP_HANDOFF.md"
+      description: "Prepend Section 0 Project Kickoff Quickstart 0.90.1 while preserving sections 1-5 verbatim"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.90.1] Fixed / Changed section"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-78/CHG-78.yaml"
+      description: "Authorizing change record (this vehicle)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-78/IPLAN-78.yaml"
+      description: "Implementation plan (this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Verification Commands
+# =============================================================================
+
+verification:
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-78/CHG-78.yaml"
+    - "pytest tests/conformance/test_governance.py"
+    - "pytest tests/unit/"
+    - "pytest tests/conformance/"
