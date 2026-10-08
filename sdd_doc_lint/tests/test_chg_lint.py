@@ -48,6 +48,15 @@ def _base_chg(**overrides):
             "approver": "Self",
             "approval_date": "2026-09-17T00:00:00",
         },
+        "decision": {
+            "decision_id": "DEC-CHG-99",
+            "title": "Base test decision",
+            "status": "Ratified",
+            "context": "Base test context",
+            "choice": "Adopt base test choice",
+            "consequences": "Allows unit tests to pass",
+            "alternatives_considered": [],
+        },
         "change_description": {"what": "x", "why": "x", "trigger": "x"},
         "implementation": {
             "steps": [
@@ -1151,6 +1160,44 @@ class DocumentationSyncPhaseTests(unittest.TestCase):
             path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
             errors, _, _ = chg_lint.lint_chg(path)
             self.assertEqual([e for e in errors if "CHG-L005" in e], [])
+
+
+class TestChgL018DecisionBlock(unittest.TestCase):
+    """CHG-L018: mandatory decision block checks."""
+
+    def test_missing_decision_section_errors(self):
+        chg = _base_chg()
+        del chg["decision"]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertIn("CHG-L018: decision section missing", errors)
+
+    def test_decision_section_not_dict_errors(self):
+        chg = _base_chg(decision="not a dict")
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertIn("CHG-L018: decision section must be a dictionary", errors)
+
+    def test_decision_missing_required_fields_errors(self):
+        chg = _base_chg(decision={"decision_id": "DEC-CHG-99", "title": ""})
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            matching = [e for e in errors if "CHG-L018: decision section missing or empty" in e]
+            self.assertEqual(len(matching), 1)
+            self.assertIn("title", matching[0])
+            self.assertIn("choice", matching[0])
+            self.assertIn("consequences", matching[0])
+
+    def test_valid_decision_passes(self):
+        chg = _base_chg()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L018" in e], [])
+            self.assertIn("CHG-L018: formal decision block present and complete", passes)
 
 
 class UsageExitTests(unittest.TestCase):

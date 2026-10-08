@@ -1,9 +1,24 @@
-# Decisions — repo working log
+# Decisions — repo working log (RETIRED)
 
-Non-obvious choices made during implementation work. ISO-stamped, newest first.
-Spec-governance decisions live in `framework/governance/DECISIONS.md` (GD series,
-plus the retired D-series annex); this file records repo-process choices that
-do not belong in the spec.
+> [!IMPORTANT]
+> **`plans/DECISIONS.md` is retired per Decision DEC-CHG-80 / GD-71.**
+> All future decisions — repository operational choices, procedural rules, and spec
+> architectures alike — are now authored and tracked directly inside their authorizing
+> Change Requests (`CHG-NN.yaml` / `framework/archive/CHG-NN/` Section 1B `decision:` block).
+> The historical entries below (D-0065 through D-0086) are preserved strictly for citation,
+> workflow reference, and git permalink integrity. **Do not add new entries here.**
+> Ratified spec and governance decisions graduate to `framework/governance/DECISIONS.md`.
+
+## Document Control
+
+| Field | Value |
+|---|---|
+| Status | Retired / Tombstone |
+| Retired In | CHG-80 (0.91.0) |
+| Author | Framework Maintainer |
+| Successor Surface | Change Requests (`CHG-NN.yaml`) + `framework/governance/DECISIONS.md` |
+
+---
 
 ## 2026-09-30 — D-0086: agent auto-merge authorized by default on own green PRs (#812)
 

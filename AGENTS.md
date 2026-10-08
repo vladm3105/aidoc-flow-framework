@@ -232,7 +232,7 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 |---|---|
 | Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
-| Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
+| Decisions | Change Requests (`CHG-*.yaml`) + `framework/governance/DECISIONS.md`; `plans/DECISIONS.md` is a retired tombstone |
 | Plans | `plans/<NAME>-PLAN.md` |
 | Changelog | `framework/CHANGELOG.md` (live record, GATE-SPEC-E008) — root `CHANGELOG.md` is a frozen tombstone carrying the documented `gh` query, not maintained per-PR — no `ROADMAP.md` exists |
 | Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |

@@ -52,6 +52,9 @@ Checks:
   CHG-L017: Premature step completion (§3.4.1 E28) — on a `Proposed` /
     `Approved` CHG no `implementation.steps[]` entry may be `Completed`;
     `In-Progress` and beyond pass (executor's record, reviewer lens).
+  CHG-L018: Mandatory formal decision block (DECISION_WORKFLOW.md) — every
+    CHG must carry a non-empty `decision` section with `decision_id`, `title`,
+    `choice`, and `consequences`.
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -84,7 +87,7 @@ VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Com
 # Rule IDs this linter can emit. Imported by the catalog guard
 # (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
 # sync with framework/governance/LINT_RULES.md (#715).
-CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 18))
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 19))
 
 
 def check_status_lifecycle(
@@ -992,6 +995,7 @@ def lint_chg(
     check_seed_module_lifecycle(data, errors, warnings, passes)
     check_lifecycle_attribution(data, errors, warnings, passes)
     check_premature_step_completion(data, errors, warnings, passes)
+    check_decision_block(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -1325,6 +1329,41 @@ def check_premature_step_completion(
         )
         return
     passes.append(f"CHG-L017: no premature Completed steps (status={status})")
+
+
+def check_decision_block(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L018: Mandatory formal decision block (DECISION_WORKFLOW.md).
+
+    Every CHG document must carry a non-empty `decision` mapping with
+    `decision_id`, `title`, `choice`, and `consequences`. Big changes articulate
+    full architectural invariants and alternatives; small fixes provide a concise
+    1-2 sentence choice and rationale.
+    """
+    decision = data.get("decision")
+    if decision is None:
+        errors.append("CHG-L018: decision section missing")
+        return
+
+    if not isinstance(decision, dict):
+        errors.append("CHG-L018: decision section must be a dictionary")
+        return
+
+    required_fields = ["decision_id", "title", "choice", "consequences"]
+    missing = []
+    for field in required_fields:
+        val = decision.get(field)
+        if val is None or (isinstance(val, str) and not val.strip()):
+            missing.append(field)
+
+    if missing:
+        errors.append(
+            f"CHG-L018: decision section missing or empty required field(s): {', '.join(missing)}"
+        )
+        return
+
+    passes.append("CHG-L018: formal decision block present and complete")
 
 
 def main(argv: list[str] | None = None) -> int:

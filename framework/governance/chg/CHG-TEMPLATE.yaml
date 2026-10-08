@@ -127,6 +127,35 @@ change_control:
                    # - "SPEC-02 (docs/sdd/09-CHG/archive/CHG-NN/06_SPEC/SPEC-02.yaml)"
 
 # =============================================================================
+# Section 1B: Formal Decision (MANDATORY for all CHGs)
+# =============================================================================
+
+decision:
+  _guidance: |
+    MANDATORY PROCESS GATE — Every change request must articulate a formal decision,
+    regardless of size (C1, C2, C3, or Emergency).
+    - Big architectural / spec changes: complete context, choice rationale, invariants, and alternatives.
+    - Small fixes / doc syncs: concise 1-2 sentence statement of the choice made and why alternatives were rejected.
+    Enforced by linter check CHG-L018.
+
+  decision_id: "DEC-CHG-NN"        # Format: DEC-CHG-{NN}
+  title: "[Formal title of the decision]"
+  status: "Ratified"               # Proposed | Ratified | Superseded
+
+  context: |
+    [What situation, defect, or requirement forced this decision?]
+
+  choice: |
+    [What was selected/implemented? Be precise about the rule or architecture.]
+
+  consequences: |
+    [What invariants does this enforce? What is now enabled or constrained?]
+
+  alternatives_considered:
+    - option: "[Alternative approach A]"
+      rationale_rejected: "[Why this was rejected]"
+
+# =============================================================================
 # Section 2: Change Description
 # =============================================================================
 
@@ -507,6 +536,12 @@ creation_checklist:
       gap_prevented: "Detailed code steps in CHG"
       _mandatory: true
 
+    - id: 15
+      check: "Mandatory formal decision block"
+      description: "Every CHG must carry a non-empty `decision` block with `decision_id`, `title`, `choice`, and `consequences`. Major changes document trade-offs and alternatives; small fixes state concise 1-2 sentence choice and rationale. Enforced by CHG-L018."
+      gap_prevented: "Decisions lost or disconnected from change requests"
+      _mandatory: true
+
 # =============================================================================
 # Section 7: Post-Creation Validation (§3.4.1)
 # =============================================================================
@@ -539,6 +574,8 @@ validation:
     - ears_ids_exist: "[verify: every EARS ID exists in actual document]"
     - bdd_ids_exist: "[verify: every BDD ID exists in actual document]"
     - no_seed_as_sdd: "[verify: no architecture seed docs referenced as SDD]"
+  decision_block:
+    - decision_present: "[verify: decision section exists with non-empty decision_id, title, choice, and consequences]"
   scope:
     - governance_only: "[verify: CHG contains only SDD lifecycle + IPLAN creation]"
     - no_code_steps: "[verify: NO code implementation steps in CHG]"

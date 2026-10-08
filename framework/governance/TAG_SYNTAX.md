@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.2 |
+| Framework Version | 0.91.0 |
 
 Per-layer punctuation, cardinality, and worked examples for the `@<layer>:`
 trace tags. This is the **form** reference; the normative rules live elsewhere

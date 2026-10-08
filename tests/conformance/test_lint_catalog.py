@@ -64,8 +64,8 @@ class LintCatalogAgreement(unittest.TestCase):
         module = _load("chg_lint", CHG_LINT)
         self.assertEqual(
             set(module.CODES),
-            {f"CHG-L{i:03d}" for i in range(1, 18)},
-            "chg_lint owns exactly CHG-L001–L017",
+            {f"CHG-L{i:03d}" for i in range(1, 19)},
+            "chg_lint owns exactly CHG-L001–L018",
         )
         catalog = _catalog_text()
         for code in sorted(module.CODES):
