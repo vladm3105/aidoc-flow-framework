@@ -14,7 +14,7 @@ metadata:
   description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-10-07"
-  framework_version: "0.90.1"
+  framework_version: "0.90.2"
 
 # The single input an engine reads at runtime. The user-global file is an
 # authoring-time seed only (merged into the project profile, not read at
@@ -194,6 +194,13 @@ knobs:
 
 # -----------------------------------------------------------------------------
 # Layer split — which layers a project may opt out of.
+#
+# Partitions the 8 sequential document authoring layers (ARTIFACTS):
+# mandatory layers anchor the intent -> plan spine and cannot be disabled;
+# skippable layers may be disabled in .aidoc/profile.yaml via active_layers.
+# Outside this 8-layer authoring partition, Layer 09 (CHG, on-demand governance
+# overlay) and Layer 10 (EVAL, testing/verification terminal) are non-optional
+# framework fixtures and cannot be disabled.
 # -----------------------------------------------------------------------------
 layers:
   mandatory: [BRD, PRD, EARS, SPEC, TDD, IPLAN]
@@ -204,11 +211,13 @@ cascade_rule: >
   layer (declared in LAYER_REGISTRY.yaml; see REVIEW_TEAM.md §Necessary
   upstream + transitive trace): BRD=[], PRD=[brd], EARS=[prd], BDD=[ears],
   ADR=[ears, bdd], SPEC=[ears, bdd, adr], TDD=[ears, bdd, adr, spec],
-  IPLAN=[spec, tdd]. Lineage to layers above this set is discoverable
-  transitively via the @-tag chain, not via cumulative redeclaration.
+  IPLAN=[spec, tdd], EVAL=[ears, bdd, tdd, iplan]. Lineage to layers above
+  this set is discoverable transitively via the @-tag chain, not via
+  cumulative redeclaration.
 
   Disabling a skippable layer further shrinks the baseline — removes the
   layer from the required_tags + can_reference set of every downstream
   layer that would otherwise read it, so traceability stays internally
-  consistent. Traceability and audit consumers must not demand a reference
-  to, or flag the absence of, a disabled layer.
+  consistent (e.g. disabling BDD shrinks EVAL's necessary-upstream set
+  to [ears, tdd, iplan]). Traceability and audit consumers must not demand
+  a reference to, or flag the absence of, a disabled layer.

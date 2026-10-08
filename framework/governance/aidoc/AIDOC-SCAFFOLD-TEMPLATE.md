@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | <your name> |
-| Framework Version | 0.90.1 |
+| Framework Version | 0.90.2 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -90,7 +90,7 @@ This project pins **aidoc-flow-framework X.Y.Z** (declared in
 
 ## Autonomous Execution & Operational Standards
 
-Autonomous agents operate under six core project governance blueprints initialized under `<project>/.aidoc/project/governance/`:
+Autonomous agents operate under eight core project governance blueprints initialized under `<project>/.aidoc/project/governance/`:
 
 1. **CHG Execution Flow (`CHG_EXECUTION_FLOW.md`):**
    Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.
@@ -104,6 +104,10 @@ Autonomous agents operate under six core project governance blueprints initializ
    Copy [`framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`](AIDOC-QA-PROTOCOL-TEMPLATE.md). Codifies the Tripartite Engineering Architecture, the strict non-code-modifying invariant for QA, and post-merge closing reports.
 6. **Browser Testing (`BROWSER_TESTING.md`):**
    Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](AIDOC-BROWSER-TESTING-TEMPLATE.md). Codifies headless browser execution, multi-worktree port sandboxing, and trace/screenshot artifact retention.
+7. **Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION.md`):**
+   Derived from [`framework/governance/DURABLE_EXECUTION_STANDARD.md`](../DURABLE_EXECUTION_STANDARD.md). Codifies the 3-Tier Execution Architecture (Tier 1 Durable Workflows, Tier 2 Cognitive Reasoning Graphs, Tier 3 Deterministic Services), Thin-State payload discipline ($\le 2$ KB), SAGA reverse compensations, and deterministic rollback.
+8. **Graph-Based Review Flows & Review Report Schema (`REVIEW_WORKFLOWS.md`):**
+   Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](../REVIEW_WORKFLOW_STANDARD.md) and [`review_report.schema.json`](../review_report.schema.json). Codifies structured multi-persona review flows, workflow linting (`sdd_swf_lint`), deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
 
 ## Seed tier bootstrapping
 
