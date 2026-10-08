@@ -1,0 +1,178 @@
+# =============================================================================
+#  CHG-80: Mandatory Decision Tracking in Change Requests & Deprecation of plans/DECISIONS.md
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance)
+#  Pre-cleared: Founder approved in session (2026-10-07)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-07"
+  framework_version: "0.91.0"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-80"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-07T00:00:00Z"
+  date_approved: "2026-10-07T00:00:00Z"
+  date_implemented: "2026-10-07T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-07T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: 'Yes, it's approved. Also, update or add new documentation in the government's guidance as decision-making document in /mnt/e/dev/aidoc-framework/framework/governance'"
+  supersedes:
+    - "framework/governance/chg/CHG-TEMPLATE.yaml (framework/archive/CHG-80/CHG-TEMPLATE.yaml)"
+    - "framework/governance/DECISION_WORKFLOW.md (framework/archive/CHG-80/DECISION_WORKFLOW.md)"
+    - "plans/DECISIONS.md (framework/archive/CHG-80/DECISIONS.md)"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-80)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-80"
+  title: "Mandatory Decision Tracking in Change Requests and Retirement of plans/DECISIONS.md"
+  status: "Ratified"
+  context: |
+    Decisions were previously fragmented across three surfaces (plans/DECISIONS.md for repo-process,
+    framework/governance/DECISIONS.md for spec governance, and sdd/05_ADR for project architecture).
+    Because change requests (CHGs) lacked a mandatory decision block, decisions were disconnected from
+    the change management flow, plans/DECISIONS.md suffered drift, and reviewers could not inspect
+    decision rationale directly in the change vehicle.
+  choice: |
+    1. Make the `decision:` block mandatory in CHG-TEMPLATE.yaml and its Layer 09 mirror for all change requests.
+    2. Enforce presence and non-emptiness of decision_id, title, choice, and consequences via linter rule CHG-L018.
+    3. Retire plans/DECISIONS.md as a frozen tombstone, preserving historical records D-0065..D-0086 for permalink integrity.
+    4. Modernize framework/governance/DECISION_WORKFLOW.md to codify the unified decision model and threshold matrix.
+    5. Register GD-71 / DEC-CHG-80 in framework/governance/DECISIONS.md.
+  consequences: |
+    - Every future change request (C1, C2, C3, Emergency) MUST articulate a formal decision.
+    - Automated linter (sdd_doc_lint/chg_lint.py) rejects any CHG missing a decision block.
+    - plans/DECISIONS.md accepts no new entries; decisions live in CHGs and graduate to framework/governance/DECISIONS.md.
+  alternatives_considered:
+    - option: "Keep plans/DECISIONS.md as a live log and manually update it on every PR"
+      rationale_rejected: "Prone to drift and human error; repeatedly forgotten in recent releases."
+    - option: "Make decision block optional in CHG-TEMPLATE.yaml"
+      rationale_rejected: "Fails to guarantee that every change request records its architectural or procedural rationale."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Mandatory Decision Tracking in Change Requests, Deprecation of plans/DECISIONS.md, and CHG Linter Guard"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-07T00:00:00Z"
+  summary: |
+    Integrate decision-making directly into the change management flow:
+    (1) CHG-TEMPLATE.yaml: Add mandatory `decision:` block with decision_id, title, status, context, choice, consequences, and alternatives_considered;
+    (2) Layer 09 Mirror: Synchronize framework/layers/09_CHG/CHG-TEMPLATE.yaml to maintain 100% byte-parity;
+    (3) plans/DECISIONS.md: Retire file as a frozen tombstone with prominent deprecation banner and pointer to CHGs;
+    (4) DECISION_WORKFLOW.md: Modernize governance standard to document the 4-tier decision model, CHG decision lifecycle, threshold matrix, and retirement of plans/DECISIONS.md;
+    (5) Linter Guard (CHG-L018): Implement automated check in sdd_doc_lint/chg_lint.py ensuring decision block is populated;
+    (6) Conformance & Rules: Update framework/governance/LINT_RULES.md, tests/conformance/test_lint_catalog.py, and unit tests;
+    (7) AGENTS.md: Update Working Agreement 'Where state lives' and Governance PRs definitions;
+    (8) Ratify Decision GD-71 (DEC-CHG-80) in framework/governance/DECISIONS.md, bump framework version to 0.91.0, and record release notes.
+  rationale: |
+    Eliminates split-brain decision records, guarantees complete auditability of every change request,
+    and provides developers and AI agents with a single, governed mechanism to track all decisions.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/chg/CHG-TEMPLATE.yaml: Add mandatory decision block"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml: Keep 100% byte-identical"
+    - "plans/DECISIONS.md: Deprecate and mark as retired tombstone"
+    - "framework/governance/DECISION_WORKFLOW.md: Document decision-making procedure and threshold matrix"
+    - "sdd_doc_lint/chg_lint.py: Implement CHG-L018"
+    - "sdd_doc_lint/tests/test_chg_lint.py: Unit tests for CHG-L018"
+    - "framework/governance/LINT_RULES.md: Document CHG-L018 / GOV-022"
+    - "tests/conformance/test_lint_catalog.py: Update CODES bounds to include CHG-L018"
+    - "tests/acceptance/fixtures/layer_09_chg/valid/CHG-01_golden.yaml: Add decision block for acceptance parity"
+    - "AGENTS.md: Update Where state lives and Governance PR definitions"
+    - "framework/governance/DECISIONS.md: Ratify GD-71 / DEC-CHG-80"
+    - "framework/VERSION: Bump to 0.91.0"
+    - "framework/CHANGELOG.md: Release notes for 0.91.0"
+    - "hooks/sync-version-refs.sh: Add 0.90.2 to OLD_VERSIONS"
+    - "tests/conformance/test_required_section_sets.py: Update CHG required sections pin to 13 and add decision"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-80/IPLAN-80.yaml"
+  steps:
+    - step: "Update framework/governance/chg/CHG-TEMPLATE.yaml and framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-80/CHG-TEMPLATE.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/DECISION_WORKFLOW.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DECISION_WORKFLOW.md"
+      archive_path: "framework/archive/CHG-80/DECISION_WORKFLOW.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Update plans/DECISIONS.md"
+      phase: "sdd_lifecycle"
+      artifact: "plans/DECISIONS.md"
+      archive_path: "framework/archive/CHG-80/DECISIONS.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Author authorizing IPLAN-80.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-80/IPLAN-80.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-80/CHG-80.yaml (exit 0, clean)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "python3 -m pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-07T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-80 proposal and governance plan"
+      verdict: "APPROVED"

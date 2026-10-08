@@ -15,11 +15,41 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.30 |
+| Version | 1.31 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.2 |
+| Framework Version | 0.91.0 |
+
+---
+
+## GD-71 — Mandatory Decision Tracking in Change Requests (`DEC-CHG-NN`), Retirement of `plans/DECISIONS.md`, and Structural Linter Guard (`CHG-L018`) (CHG-80, 0.91.0 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Eliminate the architectural disconnect between Change Requests (CHGs) and decision records, cure long-term drift in `plans/DECISIONS.md` (unmodified since D-0086), provide 100% auditability linking change diffs to formal decisions, retire the secondary repo decision scratchpad into a frozen tombstone, and establish an automated structural linter rule (`CHG-L018`) ensuring no future change request lands without a declared decision.
+- **Decision**:
+  1. **Mandatory Formal Decision Block in `CHG-TEMPLATE.yaml`**:
+     - Embedded Section 1B (`decision:`) as a mandatory top-level section in `framework/governance/chg/CHG-TEMPLATE.yaml` and its Layer 09 mirror `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintained at 100% byte-parity).
+     - Required fields: `decision_id` (`DEC-CHG-NN`), `title`, `status`, `context`, `choice`, `consequences`, and `alternatives_considered`.
+     - Standardized sizing guidelines: C2/C3 changes provide detailed architectural trade-offs and invariants; C1 changes provide concise 1–2 sentence statements of the selected approach and rejected alternatives.
+     - Added Item 15 to `creation_checklist` and `decision_block` to post-creation `validation`.
+  2. **Retirement of `plans/DECISIONS.md`**:
+     - Retired `plans/DECISIONS.md` as a frozen tombstone per this decision, following the same governance procedure used for `plans/FRAMEWORK-TODO.md` and root `CHANGELOG.md`.
+     - Historical entries (`D-0065` through `D-0086`) are preserved strictly for citation and git permalink integrity; no new entries are permitted.
+     - Working agreement `AGENTS.md` updated to direct all future decision tracking to Change Requests (`CHG-NN.yaml`) and this register.
+  3. **Modernization of `DECISION_WORKFLOW.md`**:
+     - Updated Document Control to v1.4 (Framework Version 0.91.0).
+     - Codified the 4-Tier Decision Model: Tier 1 (Seed / Suggestions), Tier 2 (Module / Invariants), Tier 3 (SDD ADR / System Architecture), and Tier 4 (CHG Decision / Change Governance).
+     - Formalized the Decision Threshold Matrix governing when decisions graduate to `framework/governance/DECISIONS.md`.
+  4. **Dedicated Structural Linter Rule (`CHG-L018` / `GOV-022`)**:
+     - Implemented `check_decision_block` in `sdd_doc_lint/chg_lint.py` enforcing rule `CHG-L018`.
+     - Fails with exit code 1 if `decision` is absent, not a mapping, or lacks non-empty `decision_id`, `title`, `choice`, or `consequences`.
+     - Updated `framework/governance/LINT_RULES.md`, `tests/conformance/test_lint_catalog.py`, and authored unit tests in `sdd_doc_lint/tests/test_chg_lint.py`.
+  5. **Acceptance and Golden Parity**:
+     - Updated `tests/acceptance/fixtures/layer_09_chg/valid/CHG-01_golden.yaml` to include the mandatory `decision:` block, maintaining 100% golden template compliance.
+  6. **Versioning**:
+     - Bumped framework version to `0.91.0` (C2 Spec Minor) across `framework/VERSION`, synced document control tables, and extended `hooks/sync-version-refs.sh` `OLD_VERSIONS` with `0.90.2`.
 
 ---
 

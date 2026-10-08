@@ -7,11 +7,34 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.20 |
+| Version | 1.21 |
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.2 |
+| Framework Version | 0.91.0 |
+
+## [0.91.0] — 2026-10-07
+
+### Added — Mandatory Decision Tracking in Change Requests (`DEC-CHG-NN`), Deprecation of `plans/DECISIONS.md`, and Structural Linter Guard (`CHG-L018`) (C2 Spec, CHG-80 + IPLAN-80, Decision GD-71)
+
+- **Mandatory Formal Decision Block in Change Requests**:
+  - Embedded Section 1B (`decision:`) as a mandatory top-level section in `framework/governance/chg/CHG-TEMPLATE.yaml` and mirror `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintained at 100% byte-parity).
+  - Required fields: `decision_id` (`DEC-CHG-NN`), `title`, `status`, `context`, `choice`, `consequences`, and `alternatives_considered`.
+  - Added Item 15 to `creation_checklist` and `decision_block` to post-creation `validation`.
+- **Deprecation and Retirement of `plans/DECISIONS.md`**:
+  - Retired `plans/DECISIONS.md` as a frozen tombstone, preserving historical records `D-0065` through `D-0086` for citation and permalink integrity while forbidding new entries.
+  - Working agreement `AGENTS.md` updated to direct all future decision tracking to Change Requests (`CHG-NN.yaml`) and `framework/governance/DECISIONS.md`.
+- **Modernization of `DECISION_WORKFLOW.md`**:
+  - Updated Document Control to v1.4 (Framework Version 0.91.0).
+  - Codified the 4-Tier Decision Model: Tier 1 (Seed / Suggestions), Tier 2 (Module / Invariants), Tier 3 (SDD ADR / System Architecture), and Tier 4 (CHG Decision / Change Governance).
+  - Formalized the Decision Threshold Matrix governing when decisions graduate to `framework/governance/DECISIONS.md`.
+- **Structural Linter Guard (`CHG-L018` / `GOV-022`)**:
+  - Implemented `check_decision_block` in `sdd_doc_lint/chg_lint.py` enforcing rule `CHG-L018` (fails with code 1 if `decision` is absent, not a mapping, or lacks non-empty `decision_id`, `title`, `choice`, or `consequences`).
+  - Documented rule in `framework/governance/LINT_RULES.md`, updated `tests/conformance/test_lint_catalog.py`, and added unit test suite `TestChgL018DecisionBlock` in `sdd_doc_lint/tests/test_chg_lint.py`.
+- **Acceptance Parity**:
+  - Updated acceptance golden fixture `tests/acceptance/fixtures/layer_09_chg/valid/CHG-01_golden.yaml` with the mandatory `decision:` block.
+- **Versioning**:
+  - Bumped framework version to `0.91.0` (C2 Spec Minor) across `framework/VERSION`, synced document control tables, and extended `hooks/sync-version-refs.sh` `OLD_VERSIONS` with `0.90.2`.
 
 ## [0.90.2] — 2026-10-07
 

@@ -1,37 +1,44 @@
-# Decision Workflow: Seed vs Module vs SDD ADR
+# Decision Workflow: Architecture, Governance, and Change Request Decisions
 
 ## Document Control
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.2 |
+| Framework Version | 0.91.0 |
 
 
-Defines the authorship boundary between seed, module, and SDD decision layers.
-This document prevents duplication between seed suggestions and SDD formal
-decisions. It is engine-agnostic — it constrains the artifacts, not any
-platform's runtime.
+Defines the authorship boundaries, lifecycle, and decision-making procedures across
+seed, module, SDD architectural decision records (Layer 05 ADR), and Change Requests (Layer 09 CHG).
+This document prevents duplication, eliminates split-brain registries, and ensures every architectural
+and governance choice is formally tracked by its authorizing change vehicle. It is engine-agnostic —
+it constrains the artifacts and state machines, not any platform's runtime.
 
 ## Purpose
 
-The SDD chain has three distinct tiers where decisions are recorded, each with
-a different author, content scope, and lifecycle. Confusion about which tier
-owns which decision causes duplication, stale documents, and rework. This
-document clarifies the boundaries.
+The SDD framework has four distinct tiers where decisions are recorded, each with
+a different author, content scope, and lifecycle:
+1. **Initial Suggestions**: Seed documents explore options before development starts.
+2. **Living Source of Truth**: Modules refine invariants and constraints.
+3. **Project System Architecture**: SDD ADRs (Layer 05) select concrete system components.
+4. **Change Request Governance**: Every Change Request (`CHG-NN`) articulates a formal decision record (`DEC-CHG-NN`).
 
-## Three-Tier Decision Model
+Clarifying these boundaries eliminates duplication, prevents stale documents, and ensures complete
+auditability between code diffs and architectural choices.
+
+## Four-Tier Decision Model
 
 ```
-Seed (architect)          Module (product owner)        SDD ADR (dev team)
-─────────────────         ──────────────────────        ───────────────────
-Suggestions               ALL source material            ONE selected option
-2-3 options               Refined decisions              Formal decision
-Options + rationale       Invariants + constraints       Context-Decision-Consequences
-Frozen per version (GD-36) Living document                Versioned per CHG
+Tier 1: Seed             Tier 2: Module           Tier 3: SDD ADR          Tier 4: CHG Decision
+(Architect)              (Product Owner)          (Dev Team)               (Change Author / Agent)
+────────────────         ──────────────────       ───────────────          ───────────────────────
+Suggestions              ALL source material      ONE selected option      FORMAL change decision
+2-3 options              Refined decisions        Formal architecture      Context + Choice + Invariants
+Options + rationale      Invariants + constraints Context-Decision-Conseq  Every CHG (C1, C2, C3, EMG)
+Frozen per version       Living document          Versioned per CHG        Mandatory in CHG Section 1B
 ```
 
 ### Tier 1: Seed Documents
@@ -60,8 +67,7 @@ Frozen per version (GD-36) Living document                Versioned per CHG
 - **Author:** Product owner, refined by development team
 - **Content:** ALL source material for a module — overview, refined decisions,
   invariants, constraints, seed references, business rules, acceptance criteria
-- **Location:** `<project>/modules/MODULE-NN_name.md` (can have multiple files
-  per module)
+- **Location:** `<project>/modules/MODULE-NN_name.md` (can have multiple files per module)
 - **Lifecycle:** Living document, updated as understanding evolves
 
 **What module docs contain:**
@@ -75,10 +81,6 @@ Frozen per version (GD-36) Living document                Versioned per CHG
 
 **Module is the single source of truth.** Everything needed to write a BRD for
 this module lives in the module doc.
-
-**Multi-file modules:** If a module grows beyond ~1000 lines, split into:
-- `MODULE-NN_overview.md` — overview, principles, constraints
-- `MODULE-NN_<topic>.md` — specific subsystems
 
 ### Tier 3: SDD ADR (Layer 5)
 
@@ -99,28 +101,73 @@ this module lives in the module doc.
 - Business requirements (that's in the BRD)
 - Implementation details (that's in the SPEC)
 
-## Rules
+### Tier 4: Change Request Decision Record (`DEC-CHG-NN`)
 
-1. **No separate seed ADR files.** Decisions live in modules. The
-   `seed/adr/` directory contains web-specific ADRs from the original seed —
-   it is not a template for creating new seed ADR files.
+- **Author:** Change request author (human engineer or autonomous AI agent)
+- **Content:** Formal decision record embedded in the Change Request Section 1B
+- **Location:** Embedded in `CHG-NN.yaml` (archived under `docs/sdd/09-CHG/archive/CHG-NN/` or `framework/archive/CHG-NN/`)
+- **Lifecycle:** Authored during CHG proposal, reviewed in PR, locked upon merge; spec-affecting decisions graduate to `framework/governance/DECISIONS.md`
 
-2. **Module is the bridge.** Seed → Module → SDD. The module refines seed
-   suggestions into constraints and invariants. The SDD ADR selects one
-   approach from the module's options.
+**What CHG Decision records contain:**
+- `decision_id`: Unambiguous identifier tied 1:1 to the change vehicle (e.g. `DEC-CHG-80`)
+- `title`: Concise summary of the decision
+- `status`: Lifecycle status (`Proposed` | `Ratified` | `Superseded`)
+- `context`: Defect, operational challenge, or requirement driving the decision
+- `choice`: Concrete architectural, operational, or procedural rule adopted
+- `consequences`: Invariants enforced, downstream constraints, and capabilities enabled
+- `alternatives_considered`: Alternative designs considered and explicit rationale for rejection
 
-3. **SDD ADR selects, doesn't re-survey.** The ADR's "Alternatives Considered"
-   section briefly lists options (from the module/seed), but the full analysis
-   stays in the seed. The ADR focuses on the selected option and its
-   consequences.
+---
 
-4. **Seed claims go to BRD, not ADR.** The BRD's `seed_disposition:` section
-   accounts for every seed claim (absorbed/rejected/deferred). The ADR doesn't
-   need its own seed disposition.
+## Mandatory Decision Tracking in Change Requests (CHGs)
 
-5. **Module can reference archived ADRs.** If a seed doc references an archived
-   ADR (e.g., ADR-14), the module carries that reference forward. The SDD ADR
-   (Layer 5) creates a fresh decision, not a copy of the archived one.
+To eliminate unrecorded architectural drift, **every Change Request MUST carry a populated `decision:` block in Section 1B of `CHG-TEMPLATE.yaml`**. There are no exceptions for small changes.
+
+### Sizing and Rigor Guidelines
+
+| Change Scope | Required Detail in `decision:` block | Example |
+|---|---|---|
+| **Major / Spec / Architectural (C3 / C2 Spec)** | Complete Context, Choice, Invariants, and explicit Alternatives with rejection rationale. | GD-70 / DEC-CHG-76 (3-Tier Durable Execution Standard) |
+| **Operational / Policy (C2 / C1 Repo)** | Clear Context and Choice defining the repo rule or workflow behavior; alternatives noted. | DEC-CHG-80 (Mandatory CHG decisions; retirement of plans/DECISIONS.md) |
+| **Minor / Leaf Doc Sync / Bugfix (C1 / DIR2C / CODE2C)** | Concise 1–2 sentence statement of the choice made and why the alternative (e.g., status quo or workaround) was rejected. | DEC-CHG-79 (Harden startup quickstart commands; reject online-only installation) |
+
+### Linter Enforcement (`CHG-L018`)
+
+The structural linter `sdd_doc_lint/chg_lint.py` automatically enforces rule **`CHG-L018`** (governance alias `GOV-022`) on every CHG document:
+- The top-level `decision` section must be present and formatted as a mapping.
+- The fields `decision_id`, `title`, `choice`, and `consequences` must be present and non-empty.
+- Any CHG lacking this block or carrying placeholder empty fields fails validation with exit code 1.
+
+---
+
+## Decision Surfaces and Deprecation of `plans/DECISIONS.md`
+
+Historically, decisions were split between `plans/DECISIONS.md` (repo working log) and `framework/governance/DECISIONS.md` (spec governance). This created confusion, drift, and forgotten logs.
+
+### Deprecation and Tombstone Policy
+
+1. **`plans/DECISIONS.md` is RETIRED**:
+   - The file is converted into a permanent, frozen tombstone per Decision `DEC-CHG-80`.
+   - Historical records (`D-0065` through `D-0086`) remain in place strictly to preserve permalinks, CI workflow citations, and git history.
+   - **No new entries may be authored in `plans/DECISIONS.md`.**
+2. **Primary Authoring Surface**:
+   - Every decision is authored directly in its authorizing Change Request (`CHG-NN.yaml`).
+3. **Master Normative Spec Register**:
+   - Framework specification changes (`change_source: spec` passing `GATE-SPEC`) graduate to `framework/governance/DECISIONS.md` as ratified entries (e.g., `GD-71 — Title (DEC-CHG-80)`).
+
+---
+
+## Decision Threshold Matrix
+
+| CHG Classification | Primary Decision Location | Graduation to `framework/governance/DECISIONS.md`? | Project SDD ADR Required? |
+|---|---|---|---|
+| **C3 Major Spec Change** | Embedded in `CHG-NN.yaml` | **Yes** (Ratified GD entry) | No (Framework spec level) |
+| **C2 Spec / Workflow Standard** | Embedded in `CHG-NN.yaml` | **Yes** (Ratified GD entry) | No (Framework spec level) |
+| **C2 / C1 Repo Operational Policy** | Embedded in `CHG-NN.yaml` | No (Remains in CHG archive) | No |
+| **C1 Maintenance / Scoped Leaf Sync** | Embedded in `CHG-NN.yaml` (concise) | No (Remains in CHG archive) | No |
+| **Consuming Project System Architecture** | Embedded in project `CHG-NN.yaml` | No | **Yes** (Authored as `sdd/05_ADR/ADR-NN.yaml`) |
+
+---
 
 ## Authorship Matrix
 
@@ -132,6 +179,9 @@ this module lives in the module doc.
 | SDD ADR | Dev team | ONE selected architecture | Versioned per CHG |
 | SPEC | Dev team | Implementation specification | Versioned per CHG |
 | IPLAN | Dev team | Execution plan | Completed when code is green |
+| CHG Decision | Change author (human or AI) | Concrete change decision, invariants, consequences | Locked on CHG merge |
+
+---
 
 ## Executable CNCF Decision Ratification Flow
 
@@ -189,12 +239,17 @@ stateDiagram-v2
 | `DecisionActiveTerminal` | `inject` (end) | Terminal active state certifying decision is in active, locked enforcement |
 | `RejectDecision` | `operation` (end) | Terminal rejection state recording rationale and setting status to Rejected |
 
+---
+
 ## Cross-References
 
 - `SEED_CONTRACT.md` — Seed lifecycle, disposition rules, and supersede flow
 - `framework/templates/SEED-TEMPLATE.md` — Canonical seed document template
 - `DOC_GOVERNANCE_CORE.md` — Version bumping, template policy
 - `DECISIONS.md` — Authoritative record of ratified framework governance decisions
+- `plans/DECISIONS.md` — Retired repository working log (frozen tombstone)
+- `framework/governance/chg/CHG-TEMPLATE.yaml` — Canonical Change Request template with mandatory Section 1B `decision:` block
+- `framework/governance/LINT_RULES.md` — Enforces `CHG-L018` mandatory decision check
 - `workflows/decision-ratification-flow.sw.yaml` — Canonical CNCF Serverless Workflow state machine
 - `GOVERNANCE_WORKFLOW_STANDARD.md` — Normative specification for CNCF Serverless Workflow adoption
 - `DIAGRAM_STANDARDS.md` — Visualization standards and Mermaid syntax for governance workflows

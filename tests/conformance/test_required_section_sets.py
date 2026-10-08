@@ -56,7 +56,7 @@ EXPECTED = {
     "SPEC": 8,
     "TDD": 7,
     "IPLAN": 3,
-    "CHG": 12,
+    "CHG": 13,
     "EVAL": 7,
 }
 
@@ -164,6 +164,7 @@ SECTIONS: dict[str, frozenset] = {
             "change_control",
             "change_description",
             "creation_checklist",
+            "decision",
             "document_control",
             "emergency_change",
             "gate_approval",
