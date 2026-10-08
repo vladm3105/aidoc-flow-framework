@@ -22,7 +22,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.1 |
+| Framework Version | 0.90.2 |
 
 ## 1. Overview
 

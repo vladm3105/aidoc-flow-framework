@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.1 |
+| Framework Version | 0.90.2 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
