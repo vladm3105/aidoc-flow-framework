@@ -10,6 +10,7 @@
 > Ratified spec and governance decisions graduate to `framework/governance/DECISIONS.md`.
 
 ## Document Control
+
 | Field | Value |
 |---|---|
 | Status | Retired / Tombstone |
