@@ -47,6 +47,16 @@ VALID_STATE_TYPES = frozenset(
     }
 )
 
+CODES = {
+    "SWF-L001": "CNCF DSL Spec Compliance — must declare id, name, specVersion 0.8, start, states",
+    "SWF-L002": "Valid State Types — state type must be in approved allowlist",
+    "SWF-L003": "Deterministic Terminal State — at least one state must declare end: true or terminate: true",
+    "SWF-L004": "DAG Transition & Reachability — all transitions must target declared states; no dead ends",
+    "SWF-L005": "SAGA Compensation Integrity — compensatedBy must target defined operation state",
+    "SWF-L006": "Parallel Branch Completeness — branches must have unique names and actions",
+    "SWF-L007": "Review Crew Parity — layer review workflows must match REVIEW_CREWS.yaml personas",
+}
+
 
 @dataclass
 class Finding:

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.1 |
+| Framework Version | 0.91.2 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -79,12 +79,13 @@ framework/
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
   LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
                          evidence preserved verbatim; era caveats in header).
-  layers/                The 10 layer definitions — one folder per layer, each
-                         with standard and workflow templates ({TYPE}-TEMPLATE.yaml
-                         and {TYPE}-SWF-TEMPLATE.yaml), a normative workflow
-                         standard ({TYPE}_WORKFLOW_STANDARD.md), a README, and
-                         an index template (08_IPLAN also carries PLAN_STANDARD.md
-                         and IPLAN-ECOSYSTEM.md).
+  layers/                The 10 layer definitions — one folder per layer (01_BRD
+                         through 10_EVAL). Artifact layers (01–07) contain both
+                         document and CNCF SWF templates ({TYPE}-TEMPLATE.yaml and
+                         {TYPE}-SWF-TEMPLATE.yaml) and standards ({TYPE}_WORKFLOW_STANDARD.md);
+                         governance layers (08_IPLAN, 09_CHG, 10_EVAL) house operational
+                         workflows under `framework/governance/workflows/` and standards
+                         under `framework/governance/`.
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 11 folders:
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL

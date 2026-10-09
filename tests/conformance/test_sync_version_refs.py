@@ -22,6 +22,7 @@ from _spec import FRAMEWORK, REPO_ROOT
 HOOK = REPO_ROOT / "hooks" / "sync-version-refs.sh"
 PLAYBOOKS = FRAMEWORK / "playbooks"
 VERSION_FILE = FRAMEWORK / "VERSION"
+DOCS = REPO_ROOT / "docs"
 
 SPEC_FORM = re.compile(r'framework_spec_version: "(\d+\.\d+\.\d+)"')
 META_FORM = re.compile(r'framework_version: "(\d+\.\d+\.\d+)"')
@@ -88,6 +89,19 @@ class SyncVersionRefsCoverage(unittest.TestCase):
         self.assertFalse(
             stray,
             f"swept-form pins missing from OLD_VERSIONS: {stray} — extend the list",
+        )
+
+    def test_docs_metadata_pins_covered(self):
+        """Every metadata/document-control pin under docs/ is current or listed."""
+        allowed = _old_versions() | {_current()}
+        stray = {
+            version: files
+            for version, files in _literals(DOCS, (META_FORM, ROW_FORM)).items()
+            if version not in allowed
+        }
+        self.assertFalse(
+            stray,
+            f"swept-form pins in docs/ missing from OLD_VERSIONS: {stray} — extend the list",
         )
 
     def test_hook_syntax_valid(self):

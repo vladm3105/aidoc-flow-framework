@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.1 |
+| Framework Version | 0.91.2 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -214,3 +214,15 @@ nothing emits it the row says **Reserved**.
 | `EVAL-COV-004` | An EVAL `coverage_matrix.summary.total` does not match the actual count of entries in `coverage_matrix.entries` (parsed via YAML parser). Counts must be recomputed after final YAML write, not set before. Added after a pilot project's EVAL-01/02 both had wrong counts. | error | `EVAL-TEMPLATE.yaml` §coverage_matrix |
 | `EVAL-ID-001` | An EVAL test case `id` does not follow the `EVAL.NN.SS.xxxx` element ID format (per `ID_NAMING_STANDARDS.md`). The ID is independent from the source — source type and source document are tracked via `source_type` and `source_id` fields only. The old dash-in-ID format (`EVAL-01.TDD-01.4d64`) is incorrect. | error | `EVAL-TEMPLATE.yaml` §id_standard |
 | `EVAL-SRC-001` | An EVAL `test_design` entry has a missing or incomplete source reference. Each test case must have exactly one `source_type` and one `source_id` (or neither for non-source-derived tests). Create separate test cases for each source element. | error | `EVAL-TEMPLATE.yaml` §id_standard, §test_design |
+ 
+## CNCF Serverless Workflow (SWF-L001–L007)
+ 
+| ID | Meaning | Severity | Contract |
+|----|---------|----------|----------|
+| `SWF-L001` | CNCF DSL Spec Compliance — workflow definitions must declare `id`, `name`, `specVersion` 0.8, `start`, and non-empty `states` mapping. | error | `DURABLE_EXECUTION_STANDARD.md`, `CNCF Serverless Workflow v0.8` |
+| `SWF-L002` | Valid State Types — every state's `type` must belong to the approved CNCF allowlist (`operation`, `switch`, `parallel`, `callback`, `event`, `sleep`, `inject`, `foreach`). | error | `DURABLE_EXECUTION_STANDARD.md` |
+| `SWF-L003` | Deterministic Terminal State — workflow state graphs must declare at least one terminal state (`end: true` or `terminate: true`). | error | `DURABLE_EXECUTION_STANDARD.md` §3 |
+| `SWF-L004` | DAG Transition & Reachability — all state transitions (`transition`, `defaultCondition`, `dataConditions[].transition`) must target valid declared states with no orphaned dead-ends. | error | `DURABLE_EXECUTION_STANDARD.md` §3 |
+| `SWF-L005` | SAGA Compensation Integrity — states declaring `compensatedBy` must target a defined operation state responsible for rollback. | error | `DURABLE_EXECUTION_STANDARD.md` §4 (SAGA reversibility) |
+| `SWF-L006` | Parallel Branch Completeness — parallel state branches must define unique branch names and non-empty action definitions. | error | `DURABLE_EXECUTION_STANDARD.md` §2 |
+| `SWF-L007` | Review Crew Parity — review workflow action personas and crew functions must strictly match the definitions in `REVIEW_CREWS.yaml`. | error | `REVIEW_WORKFLOW_STANDARD.md`, `REVIEW_CREWS.yaml` |

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.4 |
+| Version | 2.5 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-09 |
 | Author | <your name> |
-| Framework Version | 0.91.1 |
+| Framework Version | 0.91.2 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -90,7 +90,7 @@ This project pins **aidoc-flow-framework X.Y.Z** (declared in
 
 ## Autonomous Execution & Operational Standards
 
-Autonomous agents operate under eight core project governance blueprints initialized under `<project>/.aidoc/project/governance/`:
+Autonomous agents operate under eight core project governance blueprints initialized under `<project>/.aidoc/project/governance/` (mirroring `docs/ADAPTATION-GUIDE.md` §4.1):
 
 1. **CHG Execution Flow (`CHG_EXECUTION_FLOW.md`):**
    Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.

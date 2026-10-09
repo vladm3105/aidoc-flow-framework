@@ -85,7 +85,7 @@ finding, and `codeql` has no findings gate at all.
 **Configured in `.pre-commit-config.yaml`**, run on `git commit` and again in
 CI, where `pre-commit.yml` runs the same hooks over the whole tree (see also [`CONTRIBUTING.md`](CONTRIBUTING.md#secret-scanning--where-each-pass-runs)):
 
-- **bandit** — Python security linter, scoped to `archive/platforms/hermes/src/`
+- **bandit** — Python security linter, scoped to `sdd_doc_lint/`
   and `tests/`.
 - **detect-secrets** (baselined in `.secrets.baseline`) +
   **detect-private-key** — secret scanning.
@@ -94,8 +94,8 @@ CI, where `pre-commit.yml` runs the same hooks over the whole tree (see also [`C
 `stages: [manual]`, so it scans `tests/conformance/requirements.txt` only when
 invoked explicitly.
 
-A repository-wide `exclude:` hides `legacy/`, `framework/` and the plugin's
-vendored copy of the spec from **every** hook in that file, both secret
+A repository-wide `exclude:` hides `framework/archive/` and `framework/`
+from **every** hook in that file, both secret
 scanners included. Secrets under those paths are covered instead by
 `secret-scan.yml`, which scans the full history and is not subject to the
 exclude.
@@ -133,4 +133,4 @@ gh api repos/vladm3105/aidoc-flow-framework   --jq '.security_and_analysis | to_
 *Status:* enabling both was decided on 2026-08-29 (issue #467). The REST API
 **accepts the write and does not apply it** — a `PATCH` returns `200` with the
 values unchanged — so the change has to be made in the repository's
-Settings → Code security UI. Recorded in `plans/DECISIONS.md`.
+Settings → Code security UI. Recorded in `framework/governance/DECISIONS.md` (historical citation `plans/DECISIONS.md`).

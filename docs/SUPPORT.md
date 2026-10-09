@@ -89,8 +89,7 @@ Three sections on one page:
   polls via Google Drive MCP every ~15 minutes.
 
 The Contact-us channel routes through the AI Team's intake workflow —
-see
-[`../../operations/docs/SUPPORT_INTAKE.md`](../../operations/docs/SUPPORT_INTAKE.md)
+see `operations/docs/SUPPORT_INTAKE.md` (in the multi-repo umbrella workspace)
 for the full design. Short version: a two-stage classifier (Python
 prefilter then Claude Haiku 4.5 LLM) drops spam, then the AI Team
 drafts a substantive reply for the maintainer to review and notifies
@@ -113,21 +112,21 @@ Gmail draft for the maintainer to review.
 
 Design and implementation are documented at:
 
-> *Note: Cross-repo links (`../../operations/`, `../../business/`) resolve in the multi-repo workspace structure.*
+> *Note: Cross-repo documentation lives in the multi-repo umbrella workspace (`operations/` and `business/`).*
 
-- [`../../operations/docs/SUPPORT_INTAKE.md`](../../operations/docs/SUPPORT_INTAKE.md)
+- `operations/docs/SUPPORT_INTAKE.md`
   — operations-side intake design (Forms→Sheet schema, classifier
   cascade, per-class routing, escalation rules, notification fan-out).
-- [`../../operations/ops/iplans/IPLAN-0009_support-intake-implementation.md`](../../operations/ops/iplans/IPLAN-0009_support-intake-implementation.md)
+- `operations/ops/iplans/IPLAN-0009_support-intake-implementation.md`
   — the implementation plan (steps A4–C3, claim ledger, review log).
-- [`../../operations/ops/iplans/IPLAN-0008_support-channels.md`](../../operations/ops/iplans/IPLAN-0008_support-channels.md)
+- `operations/ops/iplans/IPLAN-0008_support-channels.md`
   — the original cross-repo coordination IPLAN (Phase 1 design;
   superseded by IPLAN-0009 for Phase 2).
-- [`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md)
+- `business/docs/SUPPORT_STRATEGY.md`
   — channel × audience × SLA × pricing-tier policy.
 
 There are no contractual SLAs — the intent windows in
-[`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md)
+`business/docs/SUPPORT_STRATEGY.md`
 §3 are best-effort. If you need a contact channel and don't have
 GitHub, the form is the canonical path.
 
@@ -135,7 +134,7 @@ GitHub, the form is the canonical path.
 
 | Channel | When you'll hear back |
 |---|---|
-| GitHub Issues (any of channels 1–3) | Triage queue; aiming for a substantive reply per the windows in [`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md) §3 (bug: 2 business days; feature: 5 business days; chat: 3 business days) |
+| GitHub Issues (any of channels 1–3) | Triage queue; aiming for a substantive reply per the windows in `business/docs/SUPPORT_STRATEGY.md` §3 (bug: 2 business days; feature: 5 business days; chat: 3 business days) |
 | Web-site Contact-us (Google Form) | Google Forms confirmation page is the visitor's only ack; substantive reply per the same windows (commercial inquiries `sales` class targeted at 1 business day) |
 
 These are intent windows, not contractual SLAs. The OSS project runs
