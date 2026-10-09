@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 
 **Scope:** Autonomous End-to-End CHG Processing for `[Project Name]`
 **Governing Rules:** `AGENTS.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, `CI_AUTONOMOUS_PR_STANDARD.md`, `DOC_GOVERNANCE_CORE.md`
@@ -43,7 +43,7 @@ This specification standardizes this end-to-end engine, eliminating the governan
 7. **Live DEV Deployment & Smoke Verification:** Code modifying runtime services, database schemas, or infrastructure configurations must be deployed to the DEV environment and verified with live smoke tests before claiming completion.
 8. **Monotonic Status Progression:** CHG and IPLAN step statuses move strictly forward (`Pending` → `In-Progress` → `Completed` / `Implemented` → `Verified`). Statuses must never regress.
 9. **Layer 10 EVAL Closeout Gate:** An IPLAN reaches `status: Verified` and a CHG reaches `status: Completed` only upon the production of an authentic Evaluation Report (`docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml`) with verdict `PASS` (for deployable changes).
-10. **Universal CHG Tracking Invariant (HARD BLOCK):** ANY activity that makes changes to the project (code, configuration, database schemas/migrations, frontend assets, tests, or governance/documentation) MUST be authorized and tracked via a formal CHG request. Pure research, exploratory diagnostics, read-only code/log investigation, or inquiry tasks are the sole un-gated exception.
+10. **Universal CHG Tracking Invariant (HARD BLOCK):** ANY activity that makes changes to the project (code, configuration, database schemas/migrations, frontend assets, tests, or governance/documentation) MUST be authorized and tracked via formal CHG flows (CHG request). Pure research, exploratory diagnostics, read-only code/log investigation, or inquiry tasks are the sole un-gated exception.
 11. **Standardized 8-Step Lifecycle Sequencing Invariant (HARD BLOCK):** Changes must execute in strict sequence: Step #1 (CHG Creation) MUST occur prior to modifying any project files. Seed Docs (Tier 1) and Module Docs (Tier 2) updates occur ONLY in Step #5 after Step #4 formal approval. Modifying seed or module docs before CHG approval is strictly prohibited.
 12. **Mandatory Seed & Module Document Versioning Invariant (HARD BLOCK):** As soon as seed documents are improved/evolved or module documents are updated, all documents must have explicit versioning (`Version: X.Y`, `Status`, `Date`, `Authoring CHG`, `Revision History`) and be registered in master index registries.
 13. **Approval Authority Matrix & Verifiable Evidence:** Change weight and blast radius govern who holds authority to approve changes (Step #4) and auto-merge PRs (Step #6):

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 
 | Field | Value |
 |---|---|
@@ -19,6 +19,17 @@
 
 > **Ratified 0.57.0 (CHG-06).** All §7 deltas landed: `direct` is a valid template value, the F2.2
 > ruling governs §3.13, and CHG-L013/GOV-018 enforces the router.
+
+### 0.1 Terminology: CHG Flows, CHG Requests, and CHG Graphs
+
+**"CHG flows"** is the framework's standard umbrella terminology for change management and routing workflows. Across framework documentation and operational execution, **CHG flow**, **CHG request**, and **CHG graph** are equivalent, complementary terms:
+
+- **CHG flow**: the procedural / operational lifecycle routing any change (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) from trigger to verification.
+- **CHG request / CHG**: the governance vehicle and transactional authorization initiating an artifact or codebase modification (`CHG-NN.yaml`).
+- **CHG graph**: the declarative state machine topology (`chg-request-flow.sw.yaml` and mermaid state diagrams) executing or modeling the change routing logic.
+- **Change Record**: the post-completion audit document (`CHG-NN` with `status: Implemented` or `Completed`).
+
+In framework operations and agent prompts, **CHG flow == CHG request == CHG graph**: they refer to the unified change management architecture.
 
 ## 1. Flow selector (normative router)
 

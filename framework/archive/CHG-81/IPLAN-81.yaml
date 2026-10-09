@@ -1,0 +1,168 @@
+# =============================================================================
+#  IPLAN-81: Standardization of CHG Flows Terminology and Conceptual Equivalence
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-81/CHG-81.yaml (DIR2C, C1 Governance, Implemented)
+#  Source: Terminology standardization and conceptual equivalence alignment
+# =============================================================================
+
+doc_id: IPLAN-81
+title: "Standardization of CHG Flows Terminology and Conceptual Equivalence"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-09"
+  framework_version: "0.91.1"
+  source_chg: "CHG-81"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - terminology-standardization
+    - chg-flows
+    - governance
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-81"
+  source_chg: "CHG-81"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: framework/governance/chg/README.md"
+  status: "Completed"
+  version: "1.0"
+  date_created: "2026-10-09T00:00:00Z"
+  date_completed: "2026-10-09T00:00:00Z"
+  last_updated: "2026-10-09T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 9
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/chg/README.md"
+      description: "Add Terminology Standards section codifying CHG flows, CHG request, and CHG graph"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Keep 100% byte-parity with governance copy"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ID_NAMING_STANDARDS.md"
+      description: "Update CHG entry and add terminology conventions"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "Add terminology equivalence callout"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "Align initiating terminology to CHG flows (CHG requests)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      description: "Align invariant phrasing to formal CHG flows (CHG request)"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump framework version to 0.91.1"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record 0.91.1 release notes for CHG-81"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Extend OLD_VERSIONS with 0.91.0"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+
+execution_steps:
+  - step: 1
+    action: "Update framework/governance/chg/README.md with Terminology Standards section"
+    files:
+      - "framework/governance/chg/README.md"
+    commands: []
+    status: Completed
+  - step: 2
+    action: "Copy framework/governance/chg/README.md to framework/layers/09_CHG/README.md and verify byte parity"
+    files:
+      - "framework/layers/09_CHG/README.md"
+    commands:
+      - "cmp framework/governance/chg/README.md framework/layers/09_CHG/README.md"
+    status: Completed
+  - step: 3
+    action: "Update framework/governance/ID_NAMING_STANDARDS.md"
+    files:
+      - "framework/governance/ID_NAMING_STANDARDS.md"
+    commands: []
+    status: Completed
+  - step: 4
+    action: "Update framework/governance/CHG_REQUEST_FLOWS.md"
+    files:
+      - "framework/governance/CHG_REQUEST_FLOWS.md"
+    commands: []
+    status: Completed
+  - step: 5
+    action: "Update framework/layers/08_IPLAN/README.md and AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+    files:
+      - "framework/layers/08_IPLAN/README.md"
+      - "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+    commands: []
+    status: Completed
+  - step: 6
+    action: "Run full verification battery"
+    files: []
+    commands:
+      - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-81/CHG-81.yaml"
+      - "pytest tests/conformance/test_chg_flows_router.py"
+      - "pytest tests/conformance/"
+      - "bash hooks/pre_push_check.sh"
+    status: Completed
+
+# =============================================================================
+# Section 4: Verification & Testing
+# =============================================================================
+
+verification:
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-81/CHG-81.yaml"
+    - "cmp framework/governance/chg/README.md framework/layers/09_CHG/README.md"
+    - "pytest tests/conformance/test_chg_flows_router.py"
+    - "pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh"
+  expected_results:
+    - "chg_lint passes with 0 errors, 0 warnings"
+    - "cmp returns exit 0 (100% byte identical)"
+    - "all conformance tests pass"
+    - "pre_push_check passes"

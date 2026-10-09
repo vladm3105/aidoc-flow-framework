@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 
 SDD artifacts and adaptation profiles are produced by AI agents from upstream
 documents, dependency metadata, and human prompts — content the agent does not

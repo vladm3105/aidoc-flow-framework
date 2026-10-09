@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 
 ## Document IDs
 
@@ -26,6 +26,18 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential n
 | IPLAN | IPLAN | IPLAN-01 |
 | CHG | CHG | CHG-01 |
 | EVAL | EVAL | EVAL-01 |
+
+### CHG Flows and Change Record Conventions
+
+For artifact prefix `CHG`, the framework standardizes on **CHG flows** as the umbrella terminology, with the following conceptual equivalence:
+
+- **CHG flows**: the general umbrella naming for change management and routing workflows.
+- **CHG flow**: the procedural / operational lifecycle routing any change (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C).
+- **CHG request / CHG**: the document identifier (`CHG-NN`) and transactional governance vehicle.
+- **CHG graph**: the declarative state machine (`chg-request-flow.sw.yaml`) and workflow graph routing the change.
+- **Change Record**: the post-completion audit document (`CHG-NN` with `status: Implemented` or `Completed`).
+
+In framework operations and agent interactions, **CHG flow == CHG request == CHG graph**: they refer to the unified change architecture across its procedural, transactional, and declarative representations.
 
 ### Cross-layer cardinality (CLEANUP-PR-F item 18)
 

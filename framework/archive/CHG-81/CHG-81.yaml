@@ -1,0 +1,172 @@
+# =============================================================================
+#  CHG-81: Standardization of CHG Flows Terminology and Conceptual Equivalence
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Documentation)
+#  Pre-cleared: Founder approved in session (2026-10-09)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-09"
+  framework_version: "0.91.1"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-81"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-09T00:00:00Z"
+  date_approved: "2026-10-09T00:00:00Z"
+  date_implemented: "2026-10-09T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-09T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: 'agree. update the docs with your recomendations as needed. Let's use \"CHG flows\" as general naming for the changes requests as the framework terminilogy' and 'CHG flow is equal CHG request is equal CHG graph etc'"
+  supersedes:
+    - "framework/governance/chg/README.md (framework/archive/CHG-81/README.md)"
+    - "framework/governance/ID_NAMING_STANDARDS.md (framework/archive/CHG-81/ID_NAMING_STANDARDS.md)"
+    - "framework/governance/CHG_REQUEST_FLOWS.md (framework/archive/CHG-81/CHG_REQUEST_FLOWS.md)"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-81)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-81"
+  title: "Standardization of CHG Flows Terminology and Conceptual Equivalence"
+  status: "Ratified"
+  context: |
+    The framework employs Change Requests (CHGs) as its primary change management and routing mechanism.
+    Prior documentation used 'CHG request', 'Change Request', 'CHG flows', and workflow state machines
+    without explicitly codifying their conceptual relationships and naming hierarchy.
+  choice: |
+    1. Codify 'CHG flows' as the standard framework umbrella naming for change management and routing workflows.
+    2. Formally declare the conceptual equivalence across complementary architectural facets:
+       CHG flow (procedural / lifecycle routing: HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) ==
+       CHG request (governance vehicle and transactional authorization) ==
+       CHG graph (declarative state machine / CNCF Serverless Workflow DSL definition and state diagram).
+    3. Maintain 'CHG document' / 'Change Record' as the concrete metadata document (CHG-NN.yaml) capturing lifecycle state and decisions.
+    4. Update framework/governance/chg/README.md (and its byte-identical mirror framework/layers/09_CHG/README.md),
+       framework/governance/ID_NAMING_STANDARDS.md, framework/governance/CHG_REQUEST_FLOWS.md, and related surfaces.
+  consequences: |
+    - Developers and AI coding agents have unambiguous guidance on terminology: 'CHG flows' is the general framework term.
+    - 'CHG flow', 'CHG request', and 'CHG graph' are explicitly recognized as equivalent expressions of the unified change architecture.
+    - No breaking changes to existing filenames (e.g., CHG_REQUEST_FLOWS.md, CHG-TEMPLATE.yaml, chg_lint.py) or historical records.
+  alternatives_considered:
+    - option: "Designate 'CHG request' as a deprecated anti-pattern"
+      rationale_rejected: "Overly pedantic; 'CHG request' is widely understood and naturally denotes the transactional governance vehicle."
+    - option: "Rename all files containing 'chg_request' across the repository"
+      rationale_rejected: "High blast radius and breaking churn with zero functional benefit."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Standardization of CHG Flows Terminology and Conceptual Equivalence"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-09T00:00:00Z"
+  summary: |
+    Codify 'CHG flows' as the standard umbrella framework terminology for change control workflows,
+    and establish explicit conceptual equivalence between 'CHG flow' (procedural lifecycle), 'CHG request'
+    (governance vehicle), and 'CHG graph' (declarative workflow state machine).
+  rationale: |
+    Eliminates ambiguity in framework documentation, aligns developer and agent mental models,
+    and establishes clear naming discipline while preserving complete backward compatibility.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/chg/README.md: Add Terminology Standards section"
+    - "framework/layers/09_CHG/README.md: Maintain 100% byte-parity with governance copy"
+    - "framework/governance/ID_NAMING_STANDARDS.md: Update CHG entry and document conventions"
+    - "framework/governance/CHG_REQUEST_FLOWS.md: Add terminology equivalence callout"
+    - "framework/layers/08_IPLAN/README.md: Align initiating terminology to CHG flows (CHG requests)"
+    - "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md: Align invariant phrasing"
+  in_scope:
+    - "Documenting 'CHG flows' as the umbrella framework terminology"
+    - "Documenting conceptual equivalence between CHG flow, CHG request, and CHG graph"
+    - "Keeping governance and layer mirrors byte-identical"
+  out_of_scope:
+    - "Global file renames of existing tools, templates, or scripts"
+    - "Modifying historical archive files or past changelogs"
+    - "Framework version bump (SemVer impact: none, version_action: keep)"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-81/IPLAN-81.yaml"
+  steps:
+    - step: "Update framework/governance/chg/README.md and framework/layers/09_CHG/README.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/chg/README.md"
+      archive_path: "framework/archive/CHG-81/README.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Update framework/governance/ID_NAMING_STANDARDS.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ID_NAMING_STANDARDS.md"
+      archive_path: "framework/archive/CHG-81/ID_NAMING_STANDARDS.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update framework/governance/CHG_REQUEST_FLOWS.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CHG_REQUEST_FLOWS.md"
+      archive_path: "framework/archive/CHG-81/CHG_REQUEST_FLOWS.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Author authorizing IPLAN-81.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-81/IPLAN-81.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-81/CHG-81.yaml (exit 0, clean)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "pytest tests/conformance/test_chg_flows_router.py"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-09T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-81 proposal and governance plan"
+      verdict: "APPROVED"

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 | Authority | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` |
 
 This document establishes the normative standard for **graph-based review, remediation, and gating workflows** across the SDD framework. It specifies the declarative CNCF Serverless Workflow state machines (DSL v0.8 YAML), per-layer review crews, SAGA compensation mechanics, playbook evaluation graphs, and the deterministic handover protocol connecting review findings to authorizing Change Requests (CHGs).

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
 
 The `.aidoc/` directory is the project customization layer for every project
 that uses the framework. This directory holds the governance documents for
