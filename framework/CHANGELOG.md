@@ -7,11 +7,36 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.22 |
+| Version | 1.23 |
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.1 |
+| Framework Version | 0.91.2 |
+
+## [0.91.2] — 2026-10-09
+
+### Changed — Comprehensive Framework Audit Remediation, Tooling Robustness & Catalog Synchronization (C1 Maintenance, CHG-82 + IPLAN-82, Decision DEC-CHG-82)
+
+- **Version Synchronization & Onboarding Alignment (F-01, F-02)**:
+  - Bumped framework version to `0.91.2` across `framework/VERSION` and propagated across all playbooks, layers, and documentation.
+  - Expanded `hooks/sync-version-refs.sh` discovery sweep to include `docs/` (`ADAPTATION-GUIDE.md`, `STARTUP_HANDOFF.md`, `PROJECT.md`), extended `OLD_VERSIONS` with `0.91.1`, and swept bootstrap `--canon` and `Live Framework Version` patterns to prevent documentation version drift.
+  - Updated `README.md` post-cutover spec citation to `0.91.2`.
+  - Added `test_docs_metadata_pins_covered` to `tests/conformance/test_sync_version_refs.py`.
+- **CNCF Serverless Workflow Linter Catalog & Conformance (F-03)**:
+  - Formally cataloged rules `SWF-L001` through `SWF-L007` in `framework/governance/LINT_RULES.md`.
+  - Exported `CODES` registry in `sdd_doc_lint/swf_lint.py`.
+  - Added `test_swf_codes_catalogued` to `tests/conformance/test_lint_catalog.py`, including `swf_lint` in catalog agreement assertions.
+  - Documented `swf_lint.py` in `AGENTS.md` under automated validation tooling.
+- **Skill Shadowing Diagnostic Hardening (F-04)**:
+  - Hardened `framework/skills/_shared/scripts/check-skill-shadowing.sh` to gracefully exit clean with an advisory note when `USER_CONFIG_ROOT` is unset.
+  - Guarded missing user directories so nonexistent subfolders do not produce false-positive script errors during agent startup.
+- **CHG Decision Block Linter Scoping (F-09)**:
+  - Updated `sdd_doc_lint/chg_lint.py` so `CHG-L018` exempts historical pre-CHG-80 archive records (< CHG-80) without weakening mandatory decision enforcement on active and new change requests.
+- **Documentation Parity & Link Hygiene (F-05, F-06, F-07, F-08)**:
+  - Cleaned up `SECURITY.md` (scoped Bandit to `sdd_doc_lint/` and `tests/`, removed non-existent exclusions, cited `framework/governance/DECISIONS.md`).
+  - Replaced broken relative umbrella links in `docs/SUPPORT.md` with multi-repo workspace references.
+  - Harmonized blueprint numbering (1–8) between `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` and `docs/ADAPTATION-GUIDE.md` §4.1, separating operational automations under a dedicated heading.
+  - Refined layer catalog descriptions in `framework/README.md` to clarify the architectural placement of governance layers (08_IPLAN, 09_CHG, 10_EVAL).
 
 ## [0.91.1] — 2026-10-09
 

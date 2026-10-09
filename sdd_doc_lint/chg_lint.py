@@ -1342,6 +1342,14 @@ def check_decision_block(
     1-2 sentence choice and rationale.
     """
     decision = data.get("decision")
+    change_ctrl = data.get("change_control")
+    chg_ctrl_id = change_ctrl.get("chg_id", "") if isinstance(change_ctrl, dict) else ""
+    chg_id = str(data.get("change_id") or chg_ctrl_id)
+    m = re.match(r"^CHG-(\d+)$", chg_id)
+    if m and int(m.group(1)) < 80:
+        passes.append("CHG-L018: decision block skipped for historical pre-CHG-80 archive record")
+        return
+
     if decision is None:
         errors.append("CHG-L018: decision section missing")
         return

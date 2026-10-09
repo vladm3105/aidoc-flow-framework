@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.1 |
+| Framework Version | 0.91.2 |
 
 **Scope:** Conflict Triage & Resolution Procedures for `[Project Name]`
 **Governing Rules:** `WORKTREE_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`

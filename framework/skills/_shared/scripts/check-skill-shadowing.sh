@@ -20,7 +20,12 @@
 
 set -uo pipefail
 
-GLOBAL="${USER_CONFIG_ROOT:?set USER_CONFIG_ROOT to your engine user-config dir}"
+if [ -z "${USER_CONFIG_ROOT:-}" ]; then
+  printf 'check-skill-shadowing: USER_CONFIG_ROOT unset; skipping check (clean)\n'
+  exit 0
+fi
+
+GLOBAL="$USER_CONFIG_ROOT"
 USER_SKILLS_DIR="${USER_SKILLS_DIR:-$GLOBAL/skills}"
 USER_AGENTS_DIR="${USER_AGENTS_DIR:-$GLOBAL/agents}"
 RECURSE=1
@@ -50,9 +55,9 @@ if [ ! -d "$REPO" ]; then
   printf 'not a directory: %s\n' "$REPO" >&2
   exit 2
 fi
-if [ ! -d "$USER_SKILLS_DIR" ] || [ ! -d "$USER_AGENTS_DIR" ]; then
-  printf 'invalid user config root (need skills/ and agents/): %s\n' "$GLOBAL" >&2
-  exit 2
+if [ ! -d "$USER_SKILLS_DIR" ] && [ ! -d "$USER_AGENTS_DIR" ]; then
+  printf 'check-skill-shadowing: neither skills/ nor agents/ found under %s; skipping check (clean)\n' "$GLOBAL"
+  exit 0
 fi
 
 REPO=$(realpath -m -- "$REPO")
@@ -100,15 +105,17 @@ remote_classify() { # $1 = repo dir, $2 = absolute file path -> classification s
   fi
 }
 
-while IFS= read -r -d '' agent; do
-  name=$(frontmatter_name "$agent")
-  if [ -z "$name" ]; then
-    printf 'cannot read agent name: %s\n' "$agent" >&2
-    scan_errors=$((scan_errors + 1))
-    continue
-  fi
-  global_agent_names["$name"]=1
-done < <(find "$USER_AGENTS_DIR" -type f -name '*.md' -print0)
+if [ -d "$USER_AGENTS_DIR" ]; then
+  while IFS= read -r -d '' agent; do
+    name=$(frontmatter_name "$agent")
+    if [ -z "$name" ]; then
+      printf 'cannot read agent name: %s\n' "$agent" >&2
+      scan_errors=$((scan_errors + 1))
+      continue
+    fi
+    global_agent_names["$name"]=1
+  done < <(find "$USER_AGENTS_DIR" -type f -name '*.md' -print0)
+fi
 
 scan_repo() { # $1 = repo dir
   local repo="$1" name file out=""

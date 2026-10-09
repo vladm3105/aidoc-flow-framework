@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.90.2 |
+| Framework Version | 0.91.2 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,10 +33,10 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.90.2 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind pin
 
 # Or symlink to a persistent shared framework checkout:
-framework/scripts/install.sh <project-dir> --canon framework/v0.90.2 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind symlink --shared /path/to/framework
 ```
 
 `install.sh` automates the ordered 5-step procedure from `BOOTSTRAP.md`:
@@ -128,23 +128,27 @@ To prevent fragmented or ad-hoc project setups, instantiate the following core g
 6. **End-to-End Browser Testing & Visual Verification (`.aidoc/project/governance/BROWSER_TESTING.md`)**:
    Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](../framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md). Establishes headless browser automation (Playwright), multi-worktree port and container sandboxing, accessible locator prioritization, and diagnostic artifact collection (traces, videos, screenshots).
 
-7. **Automated Evaluation Report Ingestion**:
-   For Layer 10 closeouts, projects maintain a deterministic evaluation generator (e.g. `scripts/test/generate_eval_report.py`). It ingests machine-readable test run summaries (e.g. `test-results/summary.json` output by `pytest`, `go-test`, or `playwright`) and BDD tag verifications, outputting the immutable `docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` artifact required to advance IPLAN to `Verified` and CHG to `Completed`.
-
-8. **Client Hooks Integration (`hooks/hooks.json`)**:
-   Projects bind the framework's advisory hooks into their local agent configurations:
-   - `PostToolUse` (matcher: `Write|Edit`): invokes `hooks/sdd-doc-review.sh` to provide immediate feedback on structural SDD requirements.
-   - `PreCommit` (matcher: `.*`): invokes `hooks/ch-gate-check.sh` and `hooks/pre_push_check.sh` to enforce the zero `--no-verify` invariant locally before commits reach remote CI.
-
-9. **Durable Multi-Agent Execution Standard (`.aidoc/project/governance/DURABLE_EXECUTION.md`)**:
+7. **Durable Multi-Agent Execution Standard (`.aidoc/project/governance/DURABLE_EXECUTION.md`)**:
    Derived from [`framework/governance/DURABLE_EXECUTION_STANDARD.md`](../framework/governance/DURABLE_EXECUTION_STANDARD.md). Codifies the 3-Tier Execution Architecture:
    - **Tier 1 (Durable Workflow / Control Plane)**: Plain deterministic workflow managing control flow, approval gates, durable waits, and SAGA reverse compensations. Never calls LLMs.
    - **Tier 2 (Cognitive Graphs / Reasoning Plane)**: Cyclical reasoning graphs (review, fix, explore) where nodes propose artifacts to external storage without direct filesystem or git mutations.
    - **Tier 3 (Deterministic Effect & Verification Services)**: Idempotent activities managing git workspaces, compilers, linters, and tests.
    Enforces Thin State ($\le 2$ KB payload), zero LLM in rollback, and the Order Guard Invariant (`git worktree remove` before deleting branches).
 
-10. **Graph-Based Review Flows & Review Report Schema (`.aidoc/project/governance/REVIEW_WORKFLOWS.md`)**:
-    Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](../framework/governance/REVIEW_WORKFLOW_STANDARD.md) and [`framework/governance/review_report.schema.json`](../framework/governance/review_report.schema.json). Codifies structured multi-persona review flows, workflow linting via `sdd_swf_lint`, deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
+8. **Graph-Based Review Flows & Review Report Schema (`.aidoc/project/governance/REVIEW_WORKFLOWS.md`)**:
+   Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](../framework/governance/REVIEW_WORKFLOW_STANDARD.md) and [`framework/governance/review_report.schema.json`](../framework/governance/review_report.schema.json). Codifies structured multi-persona review flows, workflow linting via `sdd_swf_lint`, deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
+
+### Operational Automations & Client Integrations
+
+In addition to the eight governance blueprints above, consumer projects instantiate two key operational automations:
+
+- **Automated Evaluation Report Ingestion**:
+  For Layer 10 closeouts, projects maintain a deterministic evaluation generator (e.g. `scripts/test/generate_eval_report.py`). It ingests machine-readable test run summaries (e.g. `test-results/summary.json` output by `pytest`, `go-test`, or `playwright`) and BDD tag verifications, outputting the immutable `docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` artifact required to advance IPLAN to `Verified` and CHG to `Completed`.
+
+- **Client Hooks Integration (`hooks/hooks.json`)**:
+  Projects bind the framework's advisory hooks into their local agent configurations:
+  - `PostToolUse` (matcher: `Write|Edit`): invokes `hooks/sdd-doc-review.sh` to provide immediate feedback on structural SDD requirements.
+  - `PreCommit` (matcher: `.*`): invokes `hooks/ch-gate-check.sh` and `hooks/pre_push_check.sh` to enforce the zero `--no-verify` invariant locally before commits reach remote CI.
 
 ## 4.2 Establish the Project Working Agreement (`AGENTS.md`)
 

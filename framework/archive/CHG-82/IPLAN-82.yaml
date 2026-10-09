@@ -1,0 +1,167 @@
+# =============================================================================
+#  IPLAN-82: Comprehensive Framework Audit Remediation & Tooling Robustness
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-82/CHG-82.yaml (DIR2C, C1 Governance, Implemented)
+#  Source: Post-audit remediation across documentation, linters, and hooks
+# =============================================================================
+
+doc_id: IPLAN-82
+title: "Comprehensive Framework Audit Remediation, Tooling Robustness, and Catalog Synchronization"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-09"
+  framework_version: "0.91.2"
+  source_chg: "CHG-82"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - audit-remediation
+    - tooling-robustness
+    - linter-catalog
+    - governance
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-82"
+  source_chg: "CHG-82"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: framework/governance/LINT_RULES.md"
+  status: "Completed"
+  version: "1.0"
+  date_created: "2026-10-09T00:00:00Z"
+  date_completed: "2026-10-09T00:00:00Z"
+  last_updated: "2026-10-09T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 17
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/VERSION"
+      description: "Bump framework version to 0.91.2"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Expand sweep to docs/ and extend OLD_VERSIONS with 0.91.1"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/STARTUP_HANDOFF.md"
+      description: "Update framework version references to 0.91.2"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Update version to 0.91.2 and harmonize blueprint citations"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "README.md"
+      description: "Update post-cutover spec tracking version to 0.91.2"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/LINT_RULES.md"
+      description: "Catalog SWF-L001 through SWF-L007 rules"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/swf_lint.py"
+      description: "Export CODES registry for SWF lint rules"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_lint_catalog.py"
+      description: "Add test_swf_codes_catalogued conformance check"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_sync_version_refs.py"
+      description: "Add docs/ document-control version verification"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/skills/_shared/scripts/check-skill-shadowing.sh"
+      description: "Graceful handling and fallback when USER_CONFIG_ROOT is unset"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "Exempt pre-CHG-80 historical archive records from CHG-L018"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "SECURITY.md"
+      description: "Update Bandit scope, remove dead excludes, cite governance decisions"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/SUPPORT.md"
+      description: "Clean up broken relative umbrella links"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Harmonize blueprint numbering with ADAPTATION-GUIDE.md"
+      order: 14
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/README.md"
+      description: "Clarify governance layer placement (layers 08..10)"
+      order: 15
+      status: DONE
+      session: 1
+      verified: true
+    - path: "AGENTS.md"
+      description: "Document swf_lint.py under automated validation tooling"
+      order: 16
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record 0.91.2 release notes for CHG-82"
+      order: 17
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Log & Verification Commands
+# =============================================================================
+
+execution_commands:
+  pre_implementation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-82/CHG-82.yaml"
+  verification:
+    - "pytest tests/conformance/test_lint_catalog.py"
+    - "pytest tests/conformance/test_sync_version_refs.py"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/"
+    - "pre-commit run --all-files"
+    - "bash hooks/pre_push_check.sh"

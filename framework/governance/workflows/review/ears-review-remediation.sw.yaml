@@ -16,7 +16,7 @@ description: >-
   deterministic gate floor evaluation, and author remediation.
 
 metadata:
-  framework_version: "0.91.1"
+  framework_version: "0.91.2"
   governed_layer: "03_EARS"
   workflow_type: "governance-review-saga"
   flow_code: "REV-03-EARS"
