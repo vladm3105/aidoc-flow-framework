@@ -4,9 +4,9 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
 | Framework Version | 0.91.0 |
 
@@ -22,20 +22,6 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
 **Canonical home**: the canonical CHG template lives at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; the governance copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical` (gates) and `test_readme_copies_identical` (READMEs).
-
-## Terminology Standards: CHG Flows, CHG Requests, and CHG Graphs
-
-The framework adopts **CHG flows** as the standard umbrella naming for all change management and routing workflows. Across framework specifications, templates, and agent operations, the terms **CHG flow**, **CHG request**, and **CHG graph** are equivalent, complementary designations representing the same change system from distinct architectural perspectives:
-
-| Term | Architectural Perspective | Definition & Role |
-|------|---------------------------|-------------------|
-| **CHG flow** | Procedural / Lifecycle Routing | The operational change traversal and lifecycle path (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) governing how changes move from trigger to verification. |
-| **CHG request** | Governance / Transactional Vehicle | The formal change request and authorization mechanism initiating an artifact or codebase modification (`CHG-NN.yaml` metadata, entry gate, scope, and decision). |
-| **CHG graph** | Declarative / State Machine | The declarative workflow topology and state machine definition (such as `chg-request-flow.sw.yaml` and mermaid state diagrams) executing or modeling the change routing logic. |
-| **CHG document / Change Record** | Historical / Audit Record | The concrete metadata document (`CHG-NN.yaml`), which acts as an active request during authoring and transitions to an immutable Change Record once Implemented/Completed. |
-
-> [!NOTE]
-> In day-to-day framework operations, discussions, and agent prompts, **CHG flow == CHG request == CHG graph**: they refer to the unified change management architecture. "CHG flows" serves as the general collective terminology for all change routing and execution paths.
 
 ## What CHG Is and Is Not
 
