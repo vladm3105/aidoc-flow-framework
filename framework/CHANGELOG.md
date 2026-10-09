@@ -7,11 +7,28 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.21 |
+| Version | 1.22 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.0 |
+| Framework Version | 0.91.1 |
+
+## [0.91.1] — 2026-10-09
+
+### Changed — Standardization of CHG Flows Terminology & Conceptual Equivalence (C1 Maintenance, CHG-81 + IPLAN-81, Decision DEC-CHG-81)
+
+- **CHG Flows Umbrella & Conceptual Equivalence**:
+  - Codified **CHG flows** as the standard umbrella naming for change management and routing workflows across framework specifications, templates, and agent guidance.
+  - Formally established conceptual equivalence across complementary architectural facets:
+    $$\text{CHG flow (procedural lifecycle)} \equiv \text{CHG request (governance vehicle)} \equiv \text{CHG graph (declarative state machine)}$$
+  - Clarified that `CHG document` and `Change Record` represent the concrete metadata document (`CHG-NN.yaml`) before and after completion.
+- **Documentation & Mirror Parity**:
+  - Added §Terminology Standards: CHG Flows, CHG Requests, and CHG Graphs to `framework/governance/chg/README.md` and maintained 100% byte-parity with `framework/layers/09_CHG/README.md`.
+  - Added §CHG Flows and Change Record Conventions to `framework/governance/ID_NAMING_STANDARDS.md`.
+  - Added §0.1 Terminology callout to `framework/governance/CHG_REQUEST_FLOWS.md`.
+  - Aligned initiating and tracking invariant phrasing across `framework/layers/08_IPLAN/README.md` and `framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`.
+- **Versioning**:
+  - Bumped framework version to `0.91.1` across `framework/VERSION`, synced document control tables, and extended `hooks/sync-version-refs.sh` `OLD_VERSIONS` with `0.91.0`.
 
 ## [0.91.0] — 2026-10-07
 

@@ -12,7 +12,7 @@ metadata:
   document_type: "iplan-document"
   purpose: implementation
   last_updated: "2026-10-09"
-  framework_version: "0.91.0"
+  framework_version: "0.91.1"
   source_chg: "CHG-81"
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   tags:
@@ -39,7 +39,7 @@ document_control:
   last_updated: "2026-10-09T00:00:00Z"
   author: "Framework Maintainer"
   complexity: 1
-  estimated_files: 6
+  estimated_files: 9
   session_count: 1
 
 # =============================================================================
@@ -81,6 +81,24 @@ file_manifest:
     - path: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
       description: "Align invariant phrasing to formal CHG flows (CHG request)"
       order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump framework version to 0.91.1"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record 0.91.1 release notes for CHG-81"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Extend OLD_VERSIONS with 0.91.0"
+      order: 9
       status: DONE
       session: 1
       verified: true
