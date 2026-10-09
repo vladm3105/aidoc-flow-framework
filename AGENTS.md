@@ -113,7 +113,7 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   independently (`docs/PROJECT.md` §2; platform streams retired); tag rules
   in `docs/TAGGING.md` — `vX.Y.Z` (project), `framework/vX.Y.Z`; `VERSION`
   files hold bare SemVer.
-- **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.7 order guard: `worktree remove` BEFORE branch delete, §4).
+- **One task, one worktree.** Feature/defect work runs in a per-task `git worktree` + branch (`feature/<issue-or-chg>-<slug>`), never in the main checkout; main checkout stays on `dev`. See `framework/governance/WORKTREE_FLOW.md` (§1 invariants, §3.8 order guard: `worktree remove` BEFORE branch delete, §4).
 - **Autonomous implementation.** Routine implementation runs without human in the loop — branch, build, self-review, merge on green. Reserve confirmation for important or structural decisions: releases, destructive unmerged-work deletion, and any rule below that names a human.
 - **Never bypass verification.** `--no-verify` (or any hook-bypass flag, skip-verification, or admin override) on commit, push, or merge is forbidden — a red hook means fix the cause in the worktree and re-run to green, never route around it.
 - **Verify subagent writes; share branches.** After a subagent reports file writes, read back at least 3 specific changes before trusting `success` (phantom success has occurred). Subagents share the parent's branch and never mint their own; parallel writers need isolated worktrees.
@@ -125,10 +125,10 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 1. Create a CHG document — do NOT write code first
 2. Complete §3.4 checklist BEFORE writing the CHG
 3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
-4. Declare SDD scope before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
+4. Declare SDD scope before code (SDD-first — SDD2C/SEED2C [F1/F3] only; DIR2C [F2] carries an empty lifecycle, CODE2C [F4] leaves the parent SDD standing): Seed → Module → SDD layers (SPEC/TDD/ADR/EARS/BDD as touched) — never jump from CHG approval straight to IPLAN/code with zero SDD steps (CHG-L005)
 5. Create IPLAN with code steps (not in CHG)
 
-Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).
+Classify first: HOTFIX (Emergency) → CODE2S (Type-R) → CODE2C (F4) → SEED2C (F3) → DIR2C (F2) → SDD2C (F1) — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, modernized in 0.88.0+).
 
 If user says "build", "implement", "add feature" → stop, create CHG first.
 Exception (only one): seed-phase drafting before the first BRD is authored against seed vN
@@ -144,11 +144,14 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
 - CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
-- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
+- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names DIR2C/SEED2C/CODE2C [F2/F3/F4])
 - CHG-L014: Seed/module coverage (§3.1.3) — upstream/midstream/design/spec/reconciliation touches need `seed_scope` / `module_lifecycle` (GOV-020)
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - CHG-L017: Premature step completion (§3.4.1 E28) — no `Completed` step on a `Proposed` / `Approved` CHG
-- Full catalog (L006–L017, BGF-00..07, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
+- CHG-L018: Mandatory decision block (§1B, GD-71) — every CHG must carry a non-empty `decision:` mapping
+- Full catalog (L001–L018, BGF-00..07, SWF-L001..L007, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
+
+**Automated Workflow validation:** Run `python3 -m sdd_doc_lint.swf_lint [--warn-exit] <path>` to check declarative CNCF Serverless Workflow state machines (`SWF-L001`–`SWF-L007`).
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
@@ -204,7 +207,7 @@ self-review it adversarially before every push. Non-governance PRs (code,
 tests, docs-only) have no surface cap. The definition lives here;
 `.github/PULL_REQUEST_TEMPLATE.md` carries a copy.
 
-All feature/defect work runs in a per-task worktree + branch (`WORKTREE_FLOW.md` §3.2) — the main checkout stays on `dev` and is never branch-switched for feature work. There is no quick-path exception: single-shot edits use the same worktree flow. Post-merge cleanup removes the worktree BEFORE deleting the branch (§3.7 order guard).
+All feature/defect work runs in a per-task worktree + branch (`WORKTREE_FLOW.md` §3.2) — the main checkout stays on `dev` and is never branch-switched for feature work. There is no quick-path exception: single-shot edits use the same worktree flow. Post-merge cleanup removes the worktree BEFORE deleting the branch (§3.8 order guard).
 
 ### Watching your PR
 
@@ -220,9 +223,9 @@ Auto-merge is authorized by default: on a PR you opened, once all required check
 
 Merge conflicts: never force-push, never rebase a pushed branch — `git fetch origin dev && git merge origin/dev` in the worktree. Additive conflicts (changelogs, indexes, non-overlapping edits) resolve directly; semantic conflicts (logic, migrations, policy, deletions) mean `git merge --abort` and escalate to the human. After pushing the resolution, confirm auto-merge is still armed (`gh pr view <N> --json autoMergeRequest`) and re-enable if cleared.
 
-Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -D` — the squash-only convention defeats `-d`'s ancestry guard, so the merge-commit-on-target check is the safety) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.7 order guard). Never delete a branch whose unique work is unverified on its target (under squash-only, "merged" is a PR fact, not ancestry — the merge-commit-on-target check is the proof).
+Delete merged branches by default: `--delete-branch` removes the remote at merge time; afterwards remove the worktree first (`git worktree remove …` from the main checkout), then switch to `dev`, fast-forward, and delete the local branch (`git branch -D` — the squash-only convention defeats `-d`'s ancestry guard, so the merge-commit-on-target check is the safety) once the merge commit is on `dev` — worktree removal always precedes branch deletion, never the reverse (§3.8 order guard). Never delete a branch whose unique work is unverified on its target (under squash-only, "merged" is a PR fact, not ancestry — the merge-commit-on-target check is the proof).
 
-Stale-branch sweep: a branch whose work is implemented must not linger past the session that landed it. Sweep at session end (`git fetch --prune` first): own branches only unless the user names others, never a branch with an open PR, worktree removal before branch deletion (§3.7). Merged branches die per the paragraph above once the local tip is confirmed to hold nothing beyond the merged head (`git branch -D` local, `git push origin --delete` remote). A branch closed-as-superseded dies only with in-session human OK after the verification is reported: every unique commit's substance diffed onto a named landing commit on the target — a closed PR alone is not proof. Promotion (`dev`/`staging`/`main`) and protected (`legacy-*`/`archive/*`) branches are never touched.
+Stale-branch sweep: a branch whose work is implemented must not linger past the session that landed it. Sweep at session end (`git fetch --prune` first): own branches only unless the user names others, never a branch with an open PR, worktree removal before branch deletion (§3.8). Merged branches die per the paragraph above once the local tip is confirmed to hold nothing beyond the merged head (`git branch -D` local, `git push origin --delete` remote). A branch closed-as-superseded dies only with in-session human OK after the verification is reported: every unique commit's substance diffed onto a named landing commit on the target — a closed PR alone is not proof. Promotion (`dev`/`staging`/`main`) and protected (`legacy-*`/`archive/*`) branches are never touched.
 
 When a required check fails, fix every error: diagnose from the failed logs, fix on the PR branch, push, and re-watch from the new head (confirm `headRefOid` — a previous run's green is not this commit's). Never merge while red. Stop and report to the human when the same check fails twice after a fix attempt, or when the fix reaches beyond the PR's scope.
 
@@ -232,7 +235,7 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 |---|---|
 | Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
-| Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
+| Decisions | Change Requests (`CHG-*.yaml`) + `framework/governance/DECISIONS.md`; `plans/DECISIONS.md` is a retired tombstone |
 | Plans | `plans/<NAME>-PLAN.md` |
 | Changelog | `framework/CHANGELOG.md` (live record, GATE-SPEC-E008) — root `CHANGELOG.md` is a frozen tombstone carrying the documented `gh` query, not maintained per-PR — no `ROADMAP.md` exists |
 | Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |

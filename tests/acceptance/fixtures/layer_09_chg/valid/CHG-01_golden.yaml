@@ -26,6 +26,16 @@ change_control:
   date_approved: null
   date_implemented: null
   supersedes: []
+decision:
+  decision_id: "DEC-CHG-01"
+  title: "Acceptance Golden Fixture Decision"
+  status: "Ratified"
+  context: "Acceptance testing fixture context."
+  choice: "Adopt golden fixture configuration for automated validation."
+  consequences: "Enables deterministic acceptance testing for Layer 09."
+  alternatives_considered:
+    - option: "Omit decision block"
+      rationale_rejected: "Violates mandatory decision schema (CHG-L018)"
 change_description:
   summary: "Acceptance fixture: minimal C1 direct change with an IPLAN reference."
   why: "Fixture only."

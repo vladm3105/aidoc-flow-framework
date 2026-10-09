@@ -1,0 +1,467 @@
+# =============================================================================
+#  CHG-70: Pre-Production Framework Verification, CNCF Workflow Reconciliation,
+#  CI Blueprint Hardening, and 0.88.1 Release Cut-Off Preparation
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-06"
+  framework_version: "0.88.1"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-70"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-06T00:00:00Z"
+  date_approved: "2026-10-06T00:00:00Z"
+  date_implemented: "2026-10-06T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-06T00:00:00Z"
+    verdict: Approved
+    evidence: "User request in session: 'do deep review of the framework after all changes to identify any gaps, bug or inconcistencies. make the framework ready for the release cut off'"
+  supersedes:
+    - "docs/ADAPTATION-GUIDE.md (framework/archive/CHG-70/ADAPTATION-GUIDE.md)"
+    - "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md (framework/archive/CHG-70/AIDOC-CI-SMART-ROUTING-TEMPLATE.md)"
+    - "framework/governance/workflows/chg-request-flow.sw.yaml (framework/archive/CHG-70/chg-request-flow.sw.yaml)"
+    - "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml (framework/archive/CHG-70/worktree-pr-lifecycle.sw.yaml)"
+    - "framework/governance/README.md (framework/archive/CHG-70/governance-README.md)"
+    - "framework/governance/aidoc/README.md (framework/archive/CHG-70/aidoc-README.md)"
+    - "framework/governance/WORKTREE_FLOW.md (framework/archive/CHG-70/WORKTREE_FLOW.md)"
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md (framework/archive/CHG-70/REVIEW_REMEDIATION_FLOW.md)"
+    - "framework/governance/DECISION_WORKFLOW.md (framework/archive/CHG-70/DECISION_WORKFLOW.md)"
+    - "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md (framework/archive/CHG-70/BRD_WORKFLOW_STANDARD.md)"
+    - "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md (framework/archive/CHG-70/PRD_WORKFLOW_STANDARD.md)"
+    - "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md (framework/archive/CHG-70/EARS_WORKFLOW_STANDARD.md)"
+    - "framework/layers/10_EVAL/README.md (framework/archive/CHG-70/10_EVAL-README.md)"
+    - "framework/governance/DIAGRAM_STANDARDS.md (framework/archive/CHG-70/DIAGRAM_STANDARDS.md)"
+    - "framework/governance/aidoc/AIDOC.md (framework/archive/CHG-70/AIDOC.md)"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md (framework/archive/CHG-70/AIDOC-SCAFFOLD-TEMPLATE.md)"
+    - "framework/layers/08_IPLAN/README.md (framework/archive/CHG-70/08_IPLAN-README.md)"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (framework/archive/CHG-70/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)"
+    - "hooks/sync-version-refs.sh (framework/archive/CHG-70/sync-version-refs.sh)"
+    - "AGENTS.md (framework/archive/CHG-70/AGENTS.md)"
+    - "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md (framework/archive/CHG-70/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md)"
+    - "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md (framework/archive/CHG-70/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md)"
+    - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md (framework/archive/CHG-70/AIDOC-QA-PROTOCOL-TEMPLATE.md)"
+    - "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md (framework/archive/CHG-70/AIDOC-BROWSER-TESTING-TEMPLATE.md)"
+    - "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md (framework/archive/CHG-70/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md)"
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Pre-Production Framework Verification, CNCF Workflow Reconciliation, CI Blueprint Hardening, and 0.88.1 Release Cut-Off Preparation"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-06T00:00:00Z"
+  summary: "Comprehensive remediation of pre-production findings across the 5 review lenses (Security, Correctness, Docs, Portability, Governance) to cut release 0.88.1: fixes fatal CI gate bash loop syntax and missing permissions in AIDOC-CI-SMART-ROUTING-TEMPLATE.md, addresses ADAPTATION-GUIDE.md phantom v1.2 claims and missing blueprints, corrects broken template references in chg-request-flow.sw.yaml, fixes worktree-pr-lifecycle infinite polling loop on merge conflicts, updates governance README workflow inventories, aligns prose diagrams and tables with CNCF state machines in REVIEW_REMEDIATION_FLOW.md and DECISION_WORKFLOW.md, updates WORKTREE_FLOW.md cleanup order and AGENTS.md section references (§3.7 -> §3.8), corrects layer numbering in early SDD workflow standards, standardizes Document Control blocks across all adaptation templates, and reconciles circuit breaker taxonomy in DECISIONS.md and CHANGELOG.md."
+  rationale: |
+    Rigorous pre-production review of the SDD framework across recent changes (v0.88.0 and preceding CNCF workflow / adaptation additions) identified 10 key categories of defects, inconsistencies, and release blockers:
+    1. AIDOC-CI-SMART-ROUTING-TEMPLATE.md had a syntax defect in the aggregate status check step (dropped loop variable, unconditional exit 1) that would fail 100% of CI runs on adopting repositories, plus missing top-level permissions.
+    2. docs/ADAPTATION-GUIDE.md was never properly updated on disk (claimed v1.2 in CHANGELOG/DECISIONS, but is v1.1 on disk), omitted all 5 new 0.88.0 blueprints, contained contradictory advice on templates/scripts, and had invalid discovery fallback paths.
+    3. chg-request-flow.sw.yaml cited a nonexistent post-mortem template path.
+    4. worktree-pr-lifecycle.sw.yaml lacked a transition for .pr.mergeable == 'CONFLICTING', resulting in an infinite polling loop on merge conflicts.
+    5. Governance READMEs drifted out of sync with actual workflow files on disk.
+    6. REVIEW_REMEDIATION_FLOW.md and DECISION_WORKFLOW.md Mermaid diagrams and prose tables cited phantom states differing from their normative CNCF Serverless Workflow state machines.
+    7. WORKTREE_FLOW.md cleanup command order deleted the local branch before checking out and pulling dev, and AGENTS.md cited drifted section §3.7 instead of §3.8.
+    8. Early SDD workflow standards (01_BRD, 02_PRD, 03_EARS) had an ASCII layer chain omitting CHG (09) and misnumbering Code as (09).
+    9. The 5 new 0.88.0 adaptation blueprints lacked standard Document Control blocks.
+    10. Circuit breaker taxonomy in DECISIONS.md and CHANGELOG.md drifted from the ratified table in GOVERNANCE_WORKFLOW_STANDARD.md §6.
+    Resolving these items restores complete consistency and prepares the framework for release 0.88.1.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "docs/ADAPTATION-GUIDE.md: Add Document Control v1.2, incorporate all 5 new blueprints, correct fallback paths and update advice"
+    - "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md: Fix shell variable loop syntax and add top-level permissions"
+    - "framework/governance/workflows/chg-request-flow.sw.yaml: Fix post-mortem template path"
+    - "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml: Add CONFLICTING check state and fix section reference"
+    - "framework/governance/README.md: Reconcile CNCF workflows table and section references"
+    - "framework/governance/aidoc/README.md: Reconcile templates table with all 5 new blueprints"
+    - "framework/governance/WORKTREE_FLOW.md: Fix cleanup order and embed companion Mermaid state machine"
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md: Reconcile Mermaid diagram and state table with CNCF workflow"
+    - "framework/governance/DECISION_WORKFLOW.md: Reconcile Mermaid diagram and state table with CNCF workflow"
+    - "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md: Correct layer chain numbering"
+    - "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md: Correct layer chain numbering"
+    - "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md: Correct layer chain numbering"
+    - "framework/layers/10_EVAL/README.md: Correct date"
+    - "framework/governance/DIAGRAM_STANDARDS.md: Correct frontmatter version"
+    - "framework/governance/aidoc/AIDOC.md: Correct discovery fallback path"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md: Correct discovery fallback path"
+    - "framework/layers/08_IPLAN/README.md: Add docs subtype to list"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md: Add Layer 10 EVAL to necessary-upstream list"
+    - "hooks/sync-version-refs.sh: Add 0.88.0 to OLD_VERSIONS"
+    - "AGENTS.md: Update §3.7 to §3.8 order guard references"
+    - "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md: Add standard Document Control"
+    - "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md: Add standard Document Control"
+    - "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md: Add standard Document Control"
+    - "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md: Add standard Document Control"
+    - "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md: Add standard Document Control"
+    - "framework/governance/DECISIONS.md: Ratify Decision GD-64, reconcile CB-1..CB-6 table"
+    - "framework/VERSION: Bump to 0.88.1"
+    - "framework/CHANGELOG.md: Document 0.88.1 release, reconcile CB-1..CB-6 table"
+  backward_compatible: true
+  dependencies:
+    - "sdd_doc_lint/chg_lint.py"
+    - "tests/conformance/test_governance.py"
+
+# =============================================================================
+# Section 4: Document Lifecycle & Supersedes Tracking
+# =============================================================================
+
+supersedes:
+  - document: "docs/ADAPTATION-GUIDE.md"
+    current_version: "1.1"
+    new_version: "1.2"
+    archive_path: "framework/archive/CHG-70/ADAPTATION-GUIDE.md"
+    changes: "Add Document Control v1.2, incorporate all 5 new blueprints, correct fallback paths and update advice"
+  - document: "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+    changes: "Fix shell variable loop syntax and add top-level permissions"
+  - document: "framework/governance/workflows/chg-request-flow.sw.yaml"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/chg-request-flow.sw.yaml"
+    changes: "Fix post-mortem template path"
+  - document: "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/worktree-pr-lifecycle.sw.yaml"
+    changes: "Add CONFLICTING check state and fix section reference"
+  - document: "framework/governance/README.md"
+    current_version: "1.3"
+    new_version: "1.4"
+    archive_path: "framework/archive/CHG-70/governance-README.md"
+    changes: "Reconcile CNCF workflows table and section references"
+  - document: "framework/governance/aidoc/README.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/aidoc-README.md"
+    changes: "Reconcile templates table with all 5 new blueprints"
+  - document: "framework/governance/WORKTREE_FLOW.md"
+    current_version: "1.1"
+    new_version: "1.2"
+    archive_path: "framework/archive/CHG-70/WORKTREE_FLOW.md"
+    changes: "Fix cleanup order and embed companion Mermaid state machine"
+  - document: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-70/REVIEW_REMEDIATION_FLOW.md"
+    changes: "Reconcile Mermaid diagram and state table with CNCF workflow"
+  - document: "framework/governance/DECISION_WORKFLOW.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/DECISION_WORKFLOW.md"
+    changes: "Reconcile Mermaid diagram and state table with CNCF workflow"
+  - document: "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-70/BRD_WORKFLOW_STANDARD.md"
+    changes: "Correct layer chain numbering"
+  - document: "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-70/PRD_WORKFLOW_STANDARD.md"
+    changes: "Correct layer chain numbering"
+  - document: "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-70/EARS_WORKFLOW_STANDARD.md"
+    changes: "Correct layer chain numbering"
+  - document: "framework/layers/10_EVAL/README.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/10_EVAL-README.md"
+    changes: "Correct date"
+  - document: "framework/governance/DIAGRAM_STANDARDS.md"
+    current_version: "1.10"
+    new_version: "1.11"
+    archive_path: "framework/archive/CHG-70/DIAGRAM_STANDARDS.md"
+    changes: "Correct frontmatter version"
+  - document: "framework/governance/aidoc/AIDOC.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC.md"
+    changes: "Correct discovery fallback path"
+  - document: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    current_version: "2.3"
+    new_version: "2.4"
+    archive_path: "framework/archive/CHG-70/AIDOC-SCAFFOLD-TEMPLATE.md"
+    changes: "Correct discovery fallback path"
+  - document: "framework/layers/08_IPLAN/README.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/08_IPLAN-README.md"
+    changes: "Add docs subtype to list"
+  - document: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    current_version: "1.1"
+    new_version: "1.2"
+    archive_path: "framework/archive/CHG-70/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    changes: "Add Layer 10 EVAL to necessary-upstream list"
+  - document: "hooks/sync-version-refs.sh"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/sync-version-refs.sh"
+    changes: "Add 0.88.0 to OLD_VERSIONS"
+  - document: "AGENTS.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AGENTS.md"
+    changes: "Update §3.7 to §3.8 order guard references"
+  - document: "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+    changes: "Add standard Document Control"
+  - document: "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+    changes: "Add standard Document Control"
+  - document: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+    changes: "Add standard Document Control"
+  - document: "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+    changes: "Add standard Document Control"
+  - document: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-70/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+    changes: "Add standard Document Control"
+
+# =============================================================================
+# Section 5: Implementation Lifecycle Steps
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Update docs/ADAPTATION-GUIDE.md with Document Control v1.2, incorporate all 5 new blueprints, correct fallback paths and update advice"
+      phase: "sdd_lifecycle"
+      artifact: "docs/ADAPTATION-GUIDE.md"
+      archive_path: "framework/archive/CHG-70/ADAPTATION-GUIDE.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md fixing shell loop syntax and adding permissions"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/workflows/chg-request-flow.sw.yaml fixing post-mortem template path"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      archive_path: "framework/archive/CHG-70/chg-request-flow.sw.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/workflows/worktree-pr-lifecycle.sw.yaml adding CONFLICTING check state and updating section reference"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml"
+      archive_path: "framework/archive/CHG-70/worktree-pr-lifecycle.sw.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/README.md reconciling CNCF workflows table and section references"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/README.md"
+      archive_path: "framework/archive/CHG-70/governance-README.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Update framework/governance/aidoc/README.md reconciling templates table with all 5 new blueprints"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/README.md"
+      archive_path: "framework/archive/CHG-70/aidoc-README.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/WORKTREE_FLOW.md fixing cleanup order and embedding companion Mermaid diagram"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/WORKTREE_FLOW.md"
+      archive_path: "framework/archive/CHG-70/WORKTREE_FLOW.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update framework/governance/REVIEW_REMEDIATION_FLOW.md reconciling Mermaid diagram and table with CNCF workflow"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      archive_path: "framework/archive/CHG-70/REVIEW_REMEDIATION_FLOW.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/governance/DECISION_WORKFLOW.md reconciling Mermaid diagram and table with CNCF workflow"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DECISION_WORKFLOW.md"
+      archive_path: "framework/archive/CHG-70/DECISION_WORKFLOW.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md correcting layer chain numbering"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-70/BRD_WORKFLOW_STANDARD.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md correcting layer chain numbering"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-70/PRD_WORKFLOW_STANDARD.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md correcting layer chain numbering"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-70/EARS_WORKFLOW_STANDARD.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update framework/layers/10_EVAL/README.md correcting date"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/10_EVAL/README.md"
+      archive_path: "framework/archive/CHG-70/10_EVAL-README.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/DIAGRAM_STANDARDS.md correcting frontmatter version"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DIAGRAM_STANDARDS.md"
+      archive_path: "framework/archive/CHG-70/DIAGRAM_STANDARDS.md"
+      current_version: "1.10"
+      new_version: "1.11"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC.md correcting discovery fallback path"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC.md"
+      archive_path: "framework/archive/CHG-70/AIDOC.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md correcting discovery fallback path"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-SCAFFOLD-TEMPLATE.md"
+      current_version: "2.3"
+      new_version: "2.4"
+      status: Completed
+    - step: "Update framework/layers/08_IPLAN/README.md adding docs subtype to list"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/08_IPLAN/README.md"
+      archive_path: "framework/archive/CHG-70/08_IPLAN-README.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md adding Layer 10 EVAL to necessary-upstream list"
+      phase: "sdd_lifecycle"
+      artifact: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      archive_path: "framework/archive/CHG-70/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update hooks/sync-version-refs.sh adding 0.88.0 to OLD_VERSIONS"
+      phase: "sdd_lifecycle"
+      artifact: "hooks/sync-version-refs.sh"
+      archive_path: "framework/archive/CHG-70/sync-version-refs.sh"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update AGENTS.md updating §3.7 to §3.8 order guard references"
+      phase: "sdd_lifecycle"
+      artifact: "AGENTS.md"
+      archive_path: "framework/archive/CHG-70/AGENTS.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md adding Document Control"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md adding Document Control"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md adding Document Control"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md adding Document Control"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md adding Document Control"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-70/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Author authorizing IPLAN-70.yaml under framework/archive/CHG-70/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-70/IPLAN-70.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  suite: conformance
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-70/CHG-70.yaml"
+    - "pytest tests/conformance/test_governance.py"
+    - "pytest tests/conformance/test_ci_autonomous_pr_standard.py"
+    - "pre-commit run --all-files"
+  evidence:
+    conformance_suite: "PASS"

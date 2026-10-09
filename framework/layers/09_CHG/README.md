@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 ## Overview
@@ -22,6 +22,20 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 **Workflow**: Any artifact change → Classify (C1/C2/C3/Emergency) → Route to entry gate → Assess impact → Update artifacts → Verify → Record in CHG document
 
 **Canonical home**: the canonical CHG template lives at `framework/governance/chg/CHG-TEMPLATE.yaml` (CHG-08 #667). The layer copy at `framework/layers/09_CHG/` is kept byte-identical; the governance copy wins on conflict. The 8 `gates/` files are mirrored the same way (#700): both mirrors sit three levels under `framework/`, so gate-file links must be authored up-three-then-down (e.g. `../../../layers/08_IPLAN/README.md`) to resolve in both copies — pinned by `test_gate_copies_identical` (gates) and `test_readme_copies_identical` (READMEs).
+
+## Terminology Standards: CHG Flows, CHG Requests, and CHG Graphs
+
+The framework adopts **CHG flows** as the standard umbrella naming for all change management and routing workflows. Across framework specifications, templates, and agent operations, the terms **CHG flow**, **CHG request**, and **CHG graph** are equivalent, complementary designations representing the same change system from distinct architectural perspectives:
+
+| Term | Architectural Perspective | Definition & Role |
+|------|---------------------------|-------------------|
+| **CHG flow** | Procedural / Lifecycle Routing | The operational change traversal and lifecycle path (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) governing how changes move from trigger to verification. |
+| **CHG request** | Governance / Transactional Vehicle | The formal change request and authorization mechanism initiating an artifact or codebase modification (`CHG-NN.yaml` metadata, entry gate, scope, and decision). |
+| **CHG graph** | Declarative / State Machine | The declarative workflow topology and state machine definition (such as `chg-request-flow.sw.yaml` and mermaid state diagrams) executing or modeling the change routing logic. |
+| **CHG document / Change Record** | Historical / Audit Record | The concrete metadata document (`CHG-NN.yaml`), which acts as an active request during authoring and transitions to an immutable Change Record once Implemented/Completed. |
+
+> [!NOTE]
+> In day-to-day framework operations, discussions, and agent prompts, **CHG flow == CHG request == CHG graph**: they refer to the unified change management architecture. "CHG flows" serves as the general collective terminology for all change routing and execution paths.
 
 ## What CHG Is and Is Not
 
@@ -45,7 +59,7 @@ When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** b
 ```
 CHG (authorize only)
   ↓
-Phase 0: SDD Document Updates (FIRST — before ANY code work; for F3 ordered modules-first: 0a seed_scope (no-change | supersede | create) + ledger re-point, 0b affected-module sync + review checkpoint, then SDD archive → rewrite → bump — see CHG_REQUEST_FLOWS.md §4)
+Phase 0: SDD Document Updates (FIRST — before ANY code work; for SEED2C ordered modules-first: 0a seed_scope (no-change | supersede | create) + ledger re-point, 0b affected-module sync + review checkpoint, then SDD archive → rewrite → bump — see CHG_REQUEST_FLOWS.md §4)
   1. Archive current SDD versions to docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/
   2. Rewrite each SDD document as clean v2 (upper layers first: PRD → SPEC → IPLAN)
   3. Update supersedes field with archive paths
@@ -98,10 +112,10 @@ Phase 2: Code Implementation (driven by IPLAN)
 
 | Level | Scope | Gate Required | Process |
 |-------|-------|---------------|---------|
-| C1 | Typo, formatting, clarification (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE (scoped IPLAN) | Fix → IPLAN → commit |
+| C1 | Typo, formatting, clarification (every C1: C1 CHG + scoped IPLAN per F2.2 / DIR2C flow, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE (scoped IPLAN) | Fix → IPLAN → commit |
 | C2 | Section update, requirement refinement | Peer review | Assess impact → update → verify |
 | C3 | Cross-layer change, new requirements | Formal gate | Full CHG process |
-| Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
+| Emergency | Critical production issue (HOTFIX flow) | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
 
 **Note**: For `change_source: spec` (GATE-SPEC), change_level must be >= C2 (never C1 per GATE-SPEC-E003). Major `semver_impact` requires C3.
 
@@ -119,7 +133,7 @@ exist; defining one would be a governance change with cross-gate blast radius,
 not a one-line fix (#784, declined Option B).
 
 Solo-project C3 `Self (C3 — Technical Lead)` is the human owner approving, not
-an AI precedent. Routine-tier and F2 flows carry no human approval gate and
+an AI precedent. Routine-tier and DIR2C flows carry no human approval gate and
 are unaffected by this rule.
 
 ## Change Source Routing
@@ -133,43 +147,56 @@ are unaffected by this rule.
 | External (business) | GATE-01 | Regulatory, compliance, partner demands |
 | External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues (bubble-up) |
-| Reconciliation (Backward) | GATE-CODE | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination, Type-R §3.1.2) |
-| Direct | GATE-CODE | Human/AI-agent request, no behavior change (F2 — no SDD cascade) |
+| Reconciliation (Backward) | GATE-CODE | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination, CODE2S / code_to_sdd — §3.1.2) |
+| Direct | GATE-CODE | Human/AI-agent request, no behavior change (DIR2C / iplan_to_code — no SDD cascade) |
 | Spec | GATE-SPEC | Change to the `framework/` spec itself (meta — orthogonal) |
 
 ## Request Flows
 
-Classify-then-route detail (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
-paths): `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
+Classify-then-route detail across dual-layer graph flows: `framework/governance/CHG_REQUEST_FLOWS.md` (canonical). Router order:
+`HOTFIX` (`hotfix`) → `CODE2S` (`code_to_sdd`) → `CODE2C` (`code_to_code`) → `SEED2C` (`seed_to_code`) → `DIR2C` (`iplan_to_code`) → `SDD2C` (`sdd_to_code`).
 
 ---
 
-## Dual Lifecycle: Forward vs. Backward Propagation
+## The 6 Traversal-Path Graph Lifecycles
 
-The framework governs changes through two complementary lifecycle flows.
-SDD-first (§3.1.1) is the default; Type-R (§3.1.2) is the bounded exception
-for code that verifiably leads docs — never a routine alternative, and never
-a path for Emergency-qualifying work (which keeps its post-mortem).
+The framework governs changes across **6 discrete graph traversal paths** matching runtime orchestration engines (LangGraph and Rust Rig):
 
-### 1. Forward Flow (Design-First — Traditional)
-
+### 1. `HOTFIX` (`hotfix`) — Emergency Bypass Flow
 ```
-BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7) → IPLAN(L8) → Code
+Production Incident → Rapid Fix / Rollback → Deploy → Retrospective CHG + Post-Mortem (within 48h)
 ```
+Critical production fixes that bypass normal gates under incident commander authorization.
 
-Planned features and architecture changes. Requirements originate upstream,
-specs update first, the IPLAN defines execution, code implements the plan.
-
-### 2. Backward Flow (Reconciliation-First — Type-R)
-
+### 2. `CODE2S` (`code_to_sdd`) — Code-to-Doc Reconciliation Flow
 ```
 Verified Codebase (gates green) → CHG (reconciliation) → Reverse-Authored IPLAN → Upstream SDD Chain (TDD → SPEC → BDD → EARS)
 ```
+Non-emergency empirical work (integration discovery, browser-authored suites, flakiness remediation). The frozen codebase is ground truth; the reverse-authored IPLAN bridges it to the SDD chain.
 
-Non-emergency empirical work (integration discovery, browser-authored suites,
-flakiness remediation). The frozen codebase is ground truth; the
-reverse-authored IPLAN bridges it to the SDD chain; guardrails (freeze, green
-gates first, no new unverified code mid-reconciliation) hold throughout.
+### 3. `CODE2C` (`code_to_code`) — Closed-IPLAN Defect Repair Flow
+```
+Closed IPLAN Defect → Bugfix CHG → Scoped Bugfix IPLAN → Author Reproducing Test → Fix Code → Verify Regression Suite
+```
+Repairs output of a completed IPLAN without altering parent artifacts (`IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml`).
+
+### 4. `SEED2C` (`seed_to_code`) — Multi-Tier Macro-Decomposition Flow
+```
+Seed Scope (0a) → Module Container Sync (0b) → SDD Cascade (L1-L7) → IPLAN (L8) → Code
+```
+Brownfield architectural additions and requirement contract changes initiating from Seed Vision and Module tier.
+
+### 5. `DIR2C` (`iplan_to_code`) — Direct Fast-Lane Flow
+```
+CHG (direct) → Scoped IPLAN (sdd_lifecycle: []) → Implement Edits → Verification Lints/Build → Commit
+```
+Direct changes for governance sync, documentation, scripts, tooling, and refactoring with no upstream SDD requirements.
+
+### 6. `SDD2C` (`sdd_to_code`) — Greenfield Full Forward Cascade Flow
+```
+BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7) → IPLAN(L8) → Code
+```
+Greenfield new product capability cascade where requirements originate upstream and drive forward implementation.
 
 ---
 
@@ -267,10 +294,15 @@ Each CHG document contains 7 sections (8 for Emergency):
 | 2. Change Description | What changed, why, trigger |
 | 3. Impact Assessment | Affected layers, cascade direction, risk level, traceability |
 | 4. Implementation | SDD lifecycle steps first, then IPLAN creation/update |
-| 5. Verification | Automated tests and manual checks with methods |
+| 5. Verification & Testing Plan | Automated tests, manual checks, and structured testing_plan |
 | 6. Gate Approval | Gate reference, approver, date, conditions |
 | 7. Rollback Plan | Strategy, steps, estimated effort |
 | 8. Emergency Change | (Conditional) Emergency ID, severity, post-mortem tracking |
+
+
+### Standard Testing Plan (`testing_plan:`)
+
+For changes modifying source code, schemas, or runtime configuration, `CHG-TEMPLATE.yaml` introduces an optional but strongly recommended `testing_plan:` top-level block. It specifies the multi-tier test matrix (`unit`, `integration`, `e2e_api`, `e2e_ui`, `static`), BDD scenario mappings, and runtime isolation rules upfront, ensuring that verification criteria are locked and reviewed before code is written.
 
 ## Gate System
 

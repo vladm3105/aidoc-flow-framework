@@ -10,7 +10,7 @@
 #   2. yamllint (skipped-with-notice if not installed)
 #   3. actionlint on .github/workflows/*.yml (skipped-with-notice if absent)
 #   4. shellcheck (skipped-with-notice if not installed)
-#   5. OPS-0069 audit-trail phrase check (mandatory; scans commit range)
+#   5. OPS-0065 audit-trail phrase check (mandatory; scans commit range)
 #   6. Test suites: tests/conformance + tests/unit + sdd_doc_lint/tests
 #      (fail-closed when python3 + suite deps resolve, skipped-with-notice
 #      otherwise — CI_AUTONOMOUS_PR_STANDARD.md Invariant 1 parity: the same
@@ -21,13 +21,13 @@
 # `scripts/pre_push_check_<repo>.sh` that sources this canon + adds its
 # own. Wrapper preserves this script's rc-accumulator pattern.
 #
-# OPS-0069 says: this hook does NOT — and cannot — perform the mandatory
+# OPS-0065 says: this hook does NOT — and cannot — perform the mandatory
 # multi-agent SELF-REVIEW for you. That is an agent step (dispatch the
 # diff-class-matched sub-agents and fold their findings). The hook
 # requires a proof-of-dispatch AUDIT-TRAIL PHRASE in one of the pushed
 # commits' messages — a paper trail, not a review substitute.
 #
-# NO env-var escape hatch (matches OPS-0069 removal of
+# NO env-var escape hatch (matches OPS-0065 removal of
 # SKIP_LOCAL_AI_REVIEW). Only bypass path: `git push --no-verify` (git
 # primitive; caught by CI belt-and-suspenders `audit-trail-check.yml`).
 #
@@ -71,9 +71,9 @@ rc=0
 have() { command -v "$1" >/dev/null 2>&1; }
 exists() { [ -f "$1" ]; }
 filter() {
-  local pat="$1" f
+  local pat="$1" excl="${2:-}" f
   for f in "${CHANGED[@]:-}"; do
-    [ -n "$f" ] && [[ "$f" =~ $pat ]] && exists "$f" && printf '%s\n' "$f"
+    [ -n "$f" ] && [[ "$f" =~ $pat ]] && { [ -z "$excl" ] || [[ ! "$f" =~ $excl ]]; } && exists "$f" && printf '%s\n' "$f"
   done
 }
 
@@ -86,7 +86,8 @@ run() {
 }
 
 # --- 1. markdownlint ---
-mapfile -t FILES < <(filter '\.md$')
+# Exclude framework/, .agents/skills/, and fixtures per .markdownlintignore and .pre-commit-config.yaml
+mapfile -t FILES < <(filter '\.md$' '^(framework/|\.agents/skills/|tests/conformance/fixtures/)')
 if [ "${#FILES[@]}" -gt 0 ]; then
   if have markdownlint-cli2; then
     run "markdownlint" markdownlint-cli2
@@ -131,7 +132,7 @@ if [ "${#FILES[@]}" -gt 0 ]; then
   fi
 fi
 
-# --- 5. OPS-0069 audit-trail phrase check ---
+# --- 5. OPS-0065 audit-trail phrase check ---
 #
 # Every push must carry an audit-trail line in the NEW commits' messages
 # proving that either (a) the OPS-0065 diff-class sub-agents were
@@ -200,7 +201,7 @@ while IFS= read -r author; do
   esac
 done <<< "$push_authors"
 if [ "$bot_only" = 1 ] && [ -n "$push_authors" ]; then
-  echo "  ℹ️  OPS-0069 audit-trail check SKIPPED (bot-authored range: $push_authors)."
+  echo "  ℹ️  OPS-0065 audit-trail check SKIPPED (bot-authored range: $push_authors)."
   audit_ok=1
 else
   # Exemption 2: revert commits — if EVERY commit in range starts with
@@ -217,7 +218,7 @@ else
     esac
   done < <(git log --format=%s "$commit_range" 2>/dev/null)
   if [ "$revert_only" = 1 ] && [ "$non_revert_found" = 1 ]; then
-    echo "  ℹ️  OPS-0069 audit-trail check SKIPPED (revert-only range)."
+    echo "  ℹ️  OPS-0065 audit-trail check SKIPPED (revert-only range)."
     audit_ok=1
   else
     audit_ok=0
@@ -231,9 +232,9 @@ else
   fi
 fi
 if [ "$range_empty" = 1 ]; then
-  echo "  ℹ️  OPS-0069 audit-trail check SKIPPED (empty push range $commit_range — nothing new to audit)."
+  echo "  ℹ️  OPS-0065 audit-trail check SKIPPED (empty push range $commit_range — nothing new to audit)."
 elif [ "$audit_ok" -ne 1 ]; then
-  echo "::error::no OPS-0069 audit-trail phrase found in any commit in the push range ($commit_range)."
+  echo "::error::no OPS-0065 audit-trail phrase found in any commit in the push range ($commit_range)."
   echo
   echo "Every push MUST carry one of these phrases in a commit message body:"
   echo
@@ -241,28 +242,25 @@ elif [ "$audit_ok" -ne 1 ]; then
   echo "    Multi-agent self-review per OPS-0065 (<agents>): <verdict summary>"
   echo
   echo "  Founder-OK skip case (only with in-session authorization):"
-  echo "    Self-review skipped per founder OK <reason>"
+  echo "    Self-review skipped per founder OK — <reason>"
   echo
   echo "Options to unblock this push:"
   echo "  (1) Dispatch the OPS-0065 diff-class-matched sub-agents by invoking"
   echo "      your AI-agent tool (Claude Code Agent() / Codex agents / etc.),"
   echo "      one call per matched agent-type (code-reviewer, documentation-"
   echo "      specialist, security-auditor, silent-failure-hunter, etc. — see"
-  echo "      https://github.com/vladm3105/aidoc-flow-operations/blob/main/CLAUDE.md"
-  echo "      § 'Multi-agent automated review' for the diff-class → agent map)."
+  echo "      AGENTS.md / working agreement for details)."
   echo "      Fold their findings, THEN amend HEAD:"
   echo "        git commit --amend"
   echo "        # in the editor, append a line to the commit body:"
   echo "        #   Multi-agent self-review per OPS-0065 (<agents>): <verdict summary>"
   echo "  (2) Get founder authorization to skip AND amend HEAD to add the"
-  echo "      'Self-review skipped per founder OK <reason>' line to the commit"
+  echo "      'Self-review skipped per founder OK — <reason>' line to the commit"
   echo "      body via 'git commit --amend'."
   echo
-  echo "See https://github.com/vladm3105/aidoc-flow-operations/blob/main/ops/DECISIONS.md"
-  echo "→ OPS-0069 for the full rule."
   rc=1
 else
-  echo "  ✅ OPS-0069 audit-trail present in push range."
+  echo "  ✅ OPS-0065 audit-trail present in push range."
 fi
 
 # --- 6. Test suites (Invariant 1 parity) ---
@@ -283,7 +281,7 @@ fi
 
 echo "════════════════════════════════════════════════════════════════════"
 if [ "$rc" = 0 ]; then
-  echo "✅ local pre-push checks passed (including OPS-0069 audit-trail check)."
+  echo "✅ local pre-push checks passed (including OPS-0065 audit-trail check)."
 else
   echo "❌ local pre-push checks FAILED — do not push until fixed."
 fi

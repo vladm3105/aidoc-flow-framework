@@ -23,9 +23,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-#: The 8 SDD layers in chain order; index (1-based) gives the layer's depth.
-KNOWN_LAYERS = ("BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN")
-LAYER_INDEX = {name: i + 1 for i, name in enumerate(KNOWN_LAYERS)}
+#: The SDD layers in chain order; index (1-based) gives the layer's depth.
+KNOWN_LAYERS = ("BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN", "EVAL")
+LAYER_INDEX = {name: (10 if name == "EVAL" else i + 1) for i, name in enumerate(KNOWN_LAYERS)}
 
 #: Every `@<layer>: <value>` token. The value capture terminates on whitespace, a
 #: pipe, OR a quote. The pipe keeps a multi-tag line (`@brd: X | @brd: Z`) yielding

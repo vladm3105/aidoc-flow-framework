@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 ## C4 Model Position
@@ -19,7 +19,7 @@ IPLAN is part of the **Implementation Bridge** (L7-L8, no C4 level). It is the e
 
 Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per SPEC component. Each IPLAN declares the file creation order (test-first from TDD), provides executable bash commands, tracks session progress across stateless executor calls, and maintains an audit trail from specification to delivered files.
 
-IPLAN is Layer 8 of the unified SDD chain. The chain is initiated by modules/seed for new features, or by CHG requests for all changes. The execution model is the same in both cases.
+IPLAN is Layer 8 of the unified SDD chain. The chain is initiated by modules/seed for new features, or by CHG flows (CHG requests) for all changes. The execution model is the same in both cases.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
@@ -57,7 +57,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 ## IPLAN Subtypes
 
 `document_control.subtype` selects which section set an IPLAN carries
-(`code_build | deploy | combined | audit_fix | bugfix`; default `combined` for
+(`code_build | deploy | combined | audit_fix | bugfix | docs`; default `combined` for
 pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
 breaking instance-format change; a future `devops` direction (infrastructure +
 cutover under one umbrella) is noted but not adopted.
@@ -79,6 +79,8 @@ cutover under one umbrella) is noted but not adopted.
   files; the parent plan is never touched. See `IPLAN-TEMPLATE.yaml`
   `document_control` guidance for the normative step order, rollback markers,
   naming pattern, and no-fix-on-fix rule.
+- **docs** — documentation-only and governance implementation plans without code
+  touches (added in 0.72.0). C1 docs changes ride a C1 CHG + scoped docs-subtype IPLAN.
 
 ## IPLAN Baseline
 

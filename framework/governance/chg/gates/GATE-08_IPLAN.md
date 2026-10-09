@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 > **Position**: Between design/test and Layer 8 (IPLAN)
@@ -76,9 +76,9 @@ Before entering GATE-08, the change request must satisfy:
 
 | Check ID | Description | Severity | Validation |
 |----------|-------------|----------|------------|
-| GATE-08-E001 | IPLAN must have complete file manifest | ERROR | File list matches SPEC component scope |
+| GATE-08-E001 | IPLAN must have complete file manifest | ERROR | File list matches SPEC component scope (or change scope for DIR2C) |
 | GATE-08-E002 | Test-first order: test files before implementation files | ERROR | Parse file manifest order |
-| GATE-08-E003 | IPLAN must reference upstream SPEC and TDD | ERROR | `@spec:` and `@tdd:` tags present |
+| GATE-08-E003 | IPLAN must reference upstream SPEC and TDD (SDD2C, SEED2C) | ERROR | `@spec:` and `@tdd:` tags present (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Session handoff protocol documented | ERROR | State variable section present |
 
 ### 3.2 Warning Checks (Non-Blocking)
@@ -135,7 +135,7 @@ To pass GATE-08, the change must satisfy:
 | File manifest complete | Yes | Yes | Yes |
 | Test-first order verified | Yes | Yes | Yes |
 | Session handoff documented | Yes | Yes | Yes |
-| Upstream traceability tags present | Yes | Yes | Yes |
+| Upstream traceability tags present (SDD2C/SEED2C) | Yes | Yes | Yes |
 
 ### 5.1 Exit Checklist
 
@@ -144,7 +144,7 @@ To pass GATE-08, the change must satisfy:
 - [ ] GATE-08-W* checks reviewed
 - [ ] File manifest is complete and ordered
 - [ ] Test files precede implementation files
-- [ ] @spec and @tdd tags present
+- [ ] @spec and @tdd tags present (or DIR2C exemption documented)
 - [ ] Session handoff protocol documented
 - [ ] Approvals obtained per matrix
 - [ ] Ready for code generation
@@ -154,10 +154,11 @@ To pass GATE-08, the change must satisfy:
 
 After passing GATE-08:
 
-| Scenario | Next Step |
-|----------|-----------|
-| Standard flow | Proceed to GATE-CODE for implementation |
-| IPLAN-only fix (C1) | Direct to code generation |
+| Flow / Traversal Path | Next Step |
+|-----------------------|-----------|
+| **SDD2C** / **SEED2C** (Standard SDD) | Proceed to GATE-CODE for implementation |
+| **DIR2C** (Direct-to-Code / C1 fix) | Proceed to GATE-CODE with relaxed traceability |
+| **CODE2C** / **HOTFIX** (Code-to-Code / Hotfix) | Direct entry at GATE-CODE (IPLAN execution-only) |
 | File manifest update | Regenerate affected code files |
 
 ### 6.1 Routing Flowchart
@@ -205,7 +206,7 @@ Code generation failure
 |------|----------|-------------|------------|
 | GATE-08-E001 | Completeness | File manifest incomplete | Add missing files to manifest |
 | GATE-08-E002 | Order | Test files not before implementation files | Reorder manifest: tests first |
-| GATE-08-E003 | Traceability | Missing @spec/@tdd tags | Add upstream traceability tags |
+| GATE-08-E003 | Traceability | Missing @spec/@tdd tags | Add upstream traceability tags (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Handoff | Session handoff protocol missing | Document state variables and resume protocol |
 | GATE-08-W001 | Size | File manifest too large | Split into multiple IPLANS per sub-component |
 | GATE-08-W002 | Contracts | Shared interface without contract | Define implementation contract |
@@ -237,6 +238,9 @@ transitively through the chain, not cited locally:
 
 @spec: SPEC-XX (Component Definition)
 @tdd: TDD-XX (Test Cases)
+
+*Note*: For direct implementation plans (`DIR2C` / `iplan_to_code`), upstream `@spec:` and `@tdd:`
+tags are optional; the `@chg:` reference satisfies traceability.
 ```
 
 ---

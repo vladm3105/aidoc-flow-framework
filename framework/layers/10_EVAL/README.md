@@ -6,9 +6,9 @@
 |-------|-------|
 | Version | 2.0 |
 | Status | Approved |
-| Last Updated | 2026-10-27 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 ## Overview
 

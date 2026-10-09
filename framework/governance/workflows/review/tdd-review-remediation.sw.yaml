@@ -1,0 +1,234 @@
+# =============================================================================
+#  REV-07-TDD: Test-Driven Development Review & Remediation Workflow
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: framework/governance/REVIEW_WORKFLOW_STANDARD.md
+#  Governs: Layer 07 (TDD) Review Saga per REVIEW_CREWS.yaml
+# =============================================================================
+
+id: tdd-review-remediation-flow
+name: TDD Review and Remediation Quality Loop
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Layer 07 (TDD) review remediation saga orchestrating crew fan-out
+  (qa_lead, tech_lead, chaos_engineer, security_engineer, operator, auditor),
+  deterministic gate floor evaluation, and author remediation.
+
+metadata:
+  framework_version: "0.91.2"
+  governed_layer: "07_TDD"
+  workflow_type: "governance-review-saga"
+  flow_code: "REV-07-TDD"
+
+start: PrepareReviewCrew
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Prepare Review Run Context
+  # -----------------------------------------------------------------------------
+  - name: PrepareReviewCrew
+    type: inject
+    data:
+      status: "PREPARED"
+      iteration: 1
+      max_iterations: 3
+      threshold_score: 90.0
+      structural_pass: false
+      soft_deadline_seconds: 600
+      layer: "07_TDD"
+      author: "qa_lead"
+    transition: DispatchReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 2: Multi-Persona Crew Fan-Out (REVIEW_CREWS.yaml: TDD)
+  # -----------------------------------------------------------------------------
+  - name: DispatchReviewCrew
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: QaLeadLensBranch
+        actions:
+          - name: ExecuteQaLeadLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "qa_lead"
+                weight: 35
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/qa_lead.md"
+      - name: TechLeadLensBranch
+        actions:
+          - name: ExecuteTechLeadLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "tech_lead"
+                weight: 25
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/tech_lead.md"
+      - name: ChaosLensBranch
+        actions:
+          - name: ExecuteChaosLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "chaos_engineer"
+                weight: 10
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/chaos_engineer.md"
+      - name: SecurityLensBranch
+        actions:
+          - name: ExecuteSecurityLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "security_engineer"
+                weight: 10
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/security_engineer.md"
+      - name: OperatorLensBranch
+        actions:
+          - name: ExecuteOperatorLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "operator"
+                weight: 10
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/operator.md"
+      - name: AuditorLensBranch
+        actions:
+          - name: ExecuteAuditorLens
+            functionRef:
+              refName: evaluateLensPlaybook
+              arguments:
+                persona: "auditor"
+                weight: 10
+                artifact_id: "${ .artifact_id }"
+                playbook_ref: "framework/playbooks/07_TDD/auditor.md"
+    transition: CheckBreakCircuit
+
+  # -----------------------------------------------------------------------------
+  # State 3: Wall-Clock Break-Circuit Checkpoint
+  # -----------------------------------------------------------------------------
+  - name: CheckBreakCircuit
+    type: switch
+    dataConditions:
+      - name: TimeoutExceeded
+        condition: "${ .elapsed_seconds >= .soft_deadline_seconds }"
+        transition: EmitPartialTimeoutCheckpoint
+    defaultCondition:
+      transition: SynthesizeFindingsAndScore
+
+  # -----------------------------------------------------------------------------
+  # State 4: Synthesize Findings & Compute Score
+  # -----------------------------------------------------------------------------
+  - name: SynthesizeFindingsAndScore
+    type: operation
+    actions:
+      - name: ReduceCrewFindings
+        functionRef:
+          refName: reduceFindingsAndCalculateScore
+          arguments:
+            branches: "${ .branches }"
+            artifact_id: "${ .artifact_id }"
+            layer: "07_TDD"
+    transition: EvaluateQualityGate
+
+  # -----------------------------------------------------------------------------
+  # State 5: Evaluate Quality Gate Floor
+  # -----------------------------------------------------------------------------
+  - name: EvaluateQualityGate
+    type: switch
+    dataConditions:
+      - name: GatePassed
+        condition: "${ .structural_pass == true and .blocking_findings == 0 }"
+        transition: ApproveArtifact
+      - name: IterationCapReached
+        condition: "${ .iteration >= .max_iterations }"
+        transition: EscalateToFounder
+    defaultCondition:
+      transition: EnterRemediationCycle
+
+  # -----------------------------------------------------------------------------
+  # State 6: Remediation by Author (qa_lead)
+  # -----------------------------------------------------------------------------
+  - name: EnterRemediationCycle
+    type: operation
+    compensatedBy: RollbackRemediationPatch
+    actions:
+      - name: ApplyRemediationPatches
+        functionRef:
+          refName: remediateFindings
+          arguments:
+            author: "qa_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+      - name: IncrementIterationCounter
+        functionRef:
+          refName: incrementCounter
+          arguments:
+            counter: "${ .iteration }"
+    transition: VerifyRemediationPatch
+
+  # -----------------------------------------------------------------------------
+  # State 7: Verify Patch Structural Integrity
+  # -----------------------------------------------------------------------------
+  - name: VerifyRemediationPatch
+    type: operation
+    actions:
+      - name: RunStructuralLinter
+        functionRef:
+          refName: validateStructuralIntegrity
+          arguments:
+            artifact_id: "${ .artifact_id }"
+    transition: DispatchReviewCrew
+
+  # -----------------------------------------------------------------------------
+  # State 8: Saga Compensation Handler
+  # -----------------------------------------------------------------------------
+  - name: RollbackRemediationPatch
+    type: operation
+    actions:
+      - name: RevertDirtyChanges
+        functionRef:
+          refName: revertPatches
+          arguments:
+            artifact_id: "${ .artifact_id }"
+            iteration: "${ .iteration }"
+    transition: EscalateToFounder
+
+  # -----------------------------------------------------------------------------
+  # Terminal States
+  # -----------------------------------------------------------------------------
+  - name: ApproveArtifact
+    type: operation
+    actions:
+      - name: SealReviewJournal
+        functionRef:
+          refName: sealJournalClosed
+          arguments:
+            status: "CLOSED"
+    end: true
+
+  - name: EscalateToFounder
+    type: operation
+    actions:
+      - name: RecordEscalationJournal
+        functionRef:
+          refName: recordEscalation
+          arguments:
+            status: "ESCALATED"
+    end:
+      terminate: true
+
+  - name: EmitPartialTimeoutCheckpoint
+    type: operation
+    actions:
+      - name: PersistPartialCheckpoint
+        functionRef:
+          refName: persistCheckpointJournal
+          arguments:
+            status: "PARTIAL_TIMEOUT"
+    end: true

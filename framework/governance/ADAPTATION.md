@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -48,7 +48,7 @@ A project declares its adaptation in a profile file:
 Minimal shape:
 
 ```yaml
-schema_version: "1.0.0"      # the ADAPTATION_SURFACE.yaml schema it targets
+schema_version: "1.1.0"      # the ADAPTATION_SURFACE.yaml schema it targets
 active_layers: [BRD, PRD, EARS, SPEC, TDD, IPLAN]
 section_toggles:
   ADR: { security: on }
@@ -149,7 +149,7 @@ Honored by: **authoring** and **audit**.
 ### 4.6 `quality_loop_max_iterations`
 
 The default cap on review→remediate cycles before the saga transitions to
-`PARTIAL_TIMEOUT` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
+`ESCALATED` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
 1–10; a value outside the range is treated as malformed and falls back to the
 default (`3`). An engine reading it from the profile must handle
 missing-file / missing-field / malformed-value by falling back to the default.
@@ -213,7 +213,7 @@ Honored by: **audit**.
 
 How many patch→verify cycles an execution task runs before it stops
 retrying. The saga lifecycle already bounds *review* loops
-(`quality_loop_max_iterations` → `PARTIAL_TIMEOUT`); this is the matching
+(`quality_loop_max_iterations` → `ESCALATED`); this is the matching
 bound for *execution* attempts, which otherwise retry unboundedly. Range
 1–10 (`3` default, mirroring the review-loop cap); out-of-range values are
 malformed and fall back to the default. This bounds the loop; it does not
@@ -403,12 +403,56 @@ When adapting the framework, consuming projects MUST propagate these enforcement
 
 | Step | What | Required |
 |------|------|----------|
-| 1 | Add governance gate to project CLAUDE.md (§3.4 — NON-NEGOTIABLE) | Yes |
+| 1 | Add governance gate to project `AGENTS.md` (§3.4 — NON-NEGOTIABLE) | Yes |
 | 2 | Add session-start verification checklist (10 items, before any code work) | Yes |
-| 3 | Add §3.4.1 CHG post-creation validation to project DOC_GOVERNANCE_CORE.md | Yes |
-| 4 | Install framework hooks (ch-gate-check.sh in hooks.json PreCommit) | Yes |
+| 3 | Add §3.4.1 CHG post-creation validation to project `DOC_GOVERNANCE_CORE.md` (inherited via discovery) | Yes |
+| 4 | Install framework hooks (`ch-gate-check.sh` in `hooks.json` PreCommit) | Yes |
 | 5 | Verify enforcement works (test: say "build" → agent stops at gate) | Yes |
 
-These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
-skills (process-level), and DOC_GOVERNANCE_CORE.md (documentation-level) all enforce
+These steps ensure defense-in-depth: `AGENTS.md` (prompt-level working agreement), hooks (tool-level),
+skills (process-level), and `DOC_GOVERNANCE_CORE.md` (documentation-level) all enforce
 the CHG gate independently.
+
+### Project Working Agreement (`AGENTS.md`) Starter Skeleton
+
+Consuming projects should commit an `AGENTS.md` file at project root orienting all AI coding agents:
+
+```markdown
+# AGENTS.md — Working Agreement for AI Coding Agents
+
+## Governance Gate (Non-Negotiable)
+
+Before writing ANY code for a feature, enhancement, or bug fix:
+1. Stop: Check if an authorizing Change Request (CHG) exists under `.aidoc/` or `chg/`. If not, create a CHG document first.
+2. Complete the CHG creation checklist before writing code.
+3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
+4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`. Never work directly on `main` or `dev`.
+5. Run automated verification suites and linters locally before pushing. Never bypass hooks (`--no-verify` is forbidden).
+```
+
+## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform
+
+Consuming platforms deploying autonomous agent runtimes MUST implement the engine-agnostic
+**3-Tier Execution Architecture** codified in [`DURABLE_EXECUTION_STANDARD.md`](DURABLE_EXECUTION_STANDARD.md):
+
+1. **Tier 1: Durable Workflow (Orchestration & SAGA Engine)**:
+   - Owns process durability, crash replay determinism, timeout budgets, and reverse-order SAGA rollback.
+   - Example platform engines: Temporal, Restate, Hatchet, DBOS, or native CNCF Serverless Workflow runners.
+2. **Tier 2: Graph-Based Cognitive Flows (Reasoning & Review Loops)**:
+   - Owns cognitive deliberation, multi-persona review fan-out ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml)), and diagnostic fixer loops.
+   - Example platform engines: LangGraph, AutoGen, CrewAI, or custom directed cognitive graphs.
+3. **Tier 3: Deterministic Effect & Verification Services (Physical Execution)**:
+   - Owns isolated workspace lifecycle ([`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)), compilation, deterministic linting (`sdd_doc_lint`, `sdd_swf_lint`), and test suites.
+
+### The Invariant Rule for Consuming Platforms:
+> **Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.**
+>
+> - Graphs *propose*.
+> - Services *apply and verify*.
+> - Durable Workflows *orchestrate, compensate, gate, and advance*.
+
+### Key Implementation Invariants for Adapters:
+- **Thin State**: Durable workflows pass URIs, IDs, and status codes ($\le 2$ KB) only. Large artifacts (diffs, plans, logs) live in the project's external artifact store.
+- **Deterministic Quality Gate Floor**: Promotion/merge authorization strictly requires `structural_pass == true` and `blocking_findings == 0` (zero P0/P1 blockers). Advisory scores and narrative summaries must not flap the binary gate.
+- **Deterministic Rollback**: No generative model is ever used to undo git state. Rollback is performed exclusively by deterministic services (`git worktree remove` before `git branch -D`).
+- **Dual-Path Remediation**: In-band micro-fixes operate in a bounded loop ($\le 3$ iterations, `REV-AUTO`). Structural or contract failures emit a formal `ReviewReport` (`review_report.schema.json`) with `chg_handover` metadata and escalate to change management (`REV-CHG`).

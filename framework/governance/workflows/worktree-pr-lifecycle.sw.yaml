@@ -120,6 +120,8 @@ states:
         transition: DiagnoseAndFixChecks
       - condition: "${ .checks.pending > 0 }"
         transition: AwaitCheckSettlement
+      - condition: "${ .pr.mergeable == 'CONFLICTING' }"
+        transition: ResolveMergeConflict
       - condition: "${ .checks.all_passed == true and .pr.mergeable == 'CLEAN' }"
         transition: EnableAutoMerge
     defaultCondition:
@@ -133,6 +135,24 @@ states:
           refName: sleepSeconds
           arguments:
             seconds: 15
+    transition: WatchPRChecks
+
+  - name: ResolveMergeConflict
+    type: operation
+    actions:
+      - name: fetchAndMergeDev
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git fetch origin dev && git merge origin/dev"
+      - name: checkConflictClassification
+        functionRef:
+          refName: evaluateConflictClass
+      - name: pushResolutionAndRearm
+        functionRef:
+          refName: runGitCommand
+          arguments:
+            command: "git push origin feature/<slug>"
     transition: WatchPRChecks
 
   - name: DiagnoseAndFixChecks
@@ -164,7 +184,7 @@ states:
             command: "gh pr merge <pr> --auto --squash --delete-branch"
     transition: OrderGuardedCleanup
 
-  # --- Step 8: §3.7 Order-Guarded Cleanup & Issue Closeout ---
+  # --- Step 8: §3.8 Order-Guarded Cleanup & Issue Closeout ---
   - name: OrderGuardedCleanup
     type: operation
     actions:

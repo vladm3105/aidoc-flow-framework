@@ -1,0 +1,214 @@
+# =============================================================================
+#  ADAPTATION_SURFACE.yaml — closed knob registry for project adaptation
+# =============================================================================
+#  Authority: PRIMARY STANDARD for the adaptation surface (see ADAPTATION.md).
+#  Engine-agnostic. Tools and the conformance suite parse this file; the prose
+#  contract lives in ADAPTATION.md.
+#
+#  Closed set: only knobs listed under `knobs` are honored. Anything else is
+#  ignored by a conforming engine.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
+  authority: "framework/governance/ADAPTATION.md"
+  last_updated: "2026-09-07"
+  framework_version: "0.88.3"
+
+# The single input an engine reads at runtime. The user-global file is an
+# authoring-time seed only (merged into the project profile, not read at
+# runtime) — see ADAPTATION.md §3.
+profile:
+  runtime_input: ".aidoc/profile.yaml"
+  user_global_seed: "~/.aidoc/profile.yaml"
+  schema_version_field: "schema_version"
+
+# Consumer roles are engine-agnostic; each engine maps its own tools to them.
+consumer_roles:
+  authoring: "creates an artifact"
+  audit: "runs a quality gate over an artifact"
+  traceability: "checks cross-references between artifacts"
+  scaffolding: "creates the project structure"
+
+# -----------------------------------------------------------------------------
+# Knobs (15). `id_format` is deferred — see ADAPTATION.md §9 (Out of scope).
+# -----------------------------------------------------------------------------
+knobs:
+  - name: active_layers
+    type: "list[layer]"
+    consumers: [scaffolding, traceability, audit]
+    constraint: >
+      May disable only layers in layers.skippable; mandatory layers cannot be
+      disabled. Disabling a skippable layer applies the cascade_rule.
+    default: "all 10 layers active"
+
+  - name: section_toggles
+    type: "map[layer, map[section, bool]]"
+    consumers: [authoring, audit]
+    constraint: >
+      Applies only to template-declared OPTIONAL sections. Required sections are
+      not toggleable (out of surface, ignored).
+    default: "template defaults"
+
+  - name: audit_threshold
+    type: "map[layer, integer]"
+    consumers: [audit]
+    constraint: >
+      Raise-only: a value must be >= the framework default for that layer.
+      A lower value is out of surface and ignored (never weakens a gate).
+    default: "each layer's framework-defined default"
+
+  - name: glossary
+    type: "map[string, string]"
+    consumers: [authoring]
+    constraint: >
+      Applied to generated prose only. Audits do not enforce terminology in v1.
+    default: "{}"
+
+  - name: review_mode
+    type: "enum(team, single_pass)"
+    consumers: [authoring, audit]
+    constraint: >
+      Selects review/remediation depth (see REVIEW_TEAM.md): `team` runs the
+      multi-persona crew; `single_pass` runs one agent applying every lens. Never
+      weakens the gate — the deterministic structural floor plus no-unresolved-
+      P0/P1 holds in either mode.
+    default: "team"
+
+  - name: quality_loop_max_iterations
+    type: "integer"
+    consumers: [audit]
+    constraint: >
+      Default iteration cap (see REVIEW_REMEDIATION_FLOW.md §Iteration cap):
+      maximum review→remediate cycles before saga transitions to
+      PARTIAL_TIMEOUT. Range 1-10; values outside the range are treated as
+      malformed and fall back to the default. Engines reading from
+      `.aidoc/profile.yaml` must handle missing-file / missing-field /
+      malformed-value paths by falling back to the default.
+    default: 3
+
+  - name: ci_bindings
+    type: "map[string, string]"
+    consumers: [scaffolding]
+    constraint: >
+      Binds CI_AUTONOMOUS_PR_STANDARD.md invariants to platform mechanics:
+      verification-tier latency ceilings (Invariant 2), required checks and
+      branch policy (Invariant 3), runners, workflows, and the integration
+      branch. Values are platform-specific and opaque to the framework;
+      unset keys fall through to framework defaults. Never weakens a gate —
+      ceilings keep the static < integration < promotion ordering.
+    default: "{}"
+
+  - name: exec_max_files
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Maximum distinct files a single execution task may create or modify.
+      Range 1-100; values outside the range are treated as malformed and
+      fall back to the default. Engines reading from `.aidoc/profile.yaml`
+      must handle missing-file / missing-field / malformed-value paths by
+      falling back to the default. A cap only — it never widens any gate.
+    default: 8
+
+  - name: exec_max_diff_lines
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Maximum added-plus-removed lines in a single execution task's diff.
+      Range 1-10000; values outside the range are treated as malformed and
+      fall back to the default. Engines reading from `.aidoc/profile.yaml`
+      must handle missing-file / missing-field / malformed-value paths by
+      falling back to the default. A cap only — it never widens any gate.
+    default: 600
+
+  - name: exec_protected_paths
+    type: "list[string]"
+    consumers: [authoring, audit]
+    constraint: >
+      Path prefixes (repository-relative, e.g. `framework/archive/`, `.git/`)
+      an execution task must never write. Entries must be non-empty strings;
+      non-string or blank entries are ignored. Additive to engine built-ins
+      only — listing a path never unprotects anything. An empty list means
+      no project-level additions. Engines reading from `.aidoc/profile.yaml`
+      must handle missing-file / missing-field / malformed-value paths by
+      falling back to the default.
+    default: []
+
+  - name: exec_test_timeout_s
+    type: "integer"
+    consumers: [audit]
+    constraint: >
+      Per-test-command wall-clock ceiling in seconds. Range 30-3600; values
+      outside the range are treated as malformed and fall back to the
+      default. Engines reading from `.aidoc/profile.yaml` must handle
+      missing-file / missing-field / malformed-value paths by falling back
+      to the default. A ceiling only — it never weakens any gate.
+    default: 300
+
+  - name: exec_max_attempts
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Maximum patch→verify cycles before an execution task stops retrying.
+      Range 1-10; values outside the range are treated as malformed and
+      fall back to the default. Engines reading from `.aidoc/profile.yaml`
+      must handle missing-file / missing-field / malformed-value paths by
+      falling back to the default. This bounds the loop; it does not weaken
+      any gate.
+    default: 3
+
+  - name: exec_token_budget
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Total model-token budget per execution task, retries included. Range
+      10000-2000000; values outside the range are treated as malformed and
+      fall back to the default. Engines reading from `.aidoc/profile.yaml`
+      must handle missing-file / missing-field / malformed-value paths by
+      falling back to the default. A budget only — it never widens any gate.
+    default: 200000
+
+  - name: exec_wall_clock_budget_s
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Total wall-clock budget in seconds per execution task, retries
+      included. Range 60-14400; values outside the range are treated as
+      malformed and fall back to the default. Engines reading from
+      `.aidoc/profile.yaml` must handle missing-file / missing-field /
+      malformed-value paths by falling back to the default. A budget only —
+      it never widens any gate.
+    default: 1800
+
+  - name: exec_failure_summary_lines
+    type: "integer"
+    consumers: [authoring, audit]
+    constraint: >
+      Fixed size in lines of the failure summary carried across retries, so
+      retried context stays compact. Range 5-200; values outside the range
+      are treated as malformed and fall back to the default. Engines reading
+      from `.aidoc/profile.yaml` must handle missing-file / missing-field /
+      malformed-value paths by falling back to the default.
+    default: 30
+
+# -----------------------------------------------------------------------------
+# Layer split — which layers a project may opt out of.
+# -----------------------------------------------------------------------------
+layers:
+  mandatory: [BRD, PRD, EARS, SPEC, TDD, IPLAN]
+  skippable: [BDD, ADR]
+
+cascade_rule: >
+  The default required_tags baseline is the necessary-upstream set per
+  layer (declared in LAYER_REGISTRY.yaml; see REVIEW_TEAM.md §Necessary
+  upstream + transitive trace): BRD=[], PRD=[brd], EARS=[prd], BDD=[ears],
+  ADR=[ears, bdd], SPEC=[ears, bdd, adr], TDD=[ears, bdd, adr, spec],
+  IPLAN=[spec, tdd]. Lineage to layers above this set is discoverable
+  transitively via the @-tag chain, not via cumulative redeclaration.
+
+  Disabling a skippable layer further shrinks the baseline — removes the
+  layer from the required_tags + can_reference set of every downstream
+  layer that would otherwise read it, so traceability stays internally
+  consistent. Traceability and audit consumers must not demand a reference
+  to, or flag the absence of, a disabled layer.

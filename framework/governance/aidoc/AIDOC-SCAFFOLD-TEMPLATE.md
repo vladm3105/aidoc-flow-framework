@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.1 |
+| Version | 2.5 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-09 |
 | Author | <your name> |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -30,8 +30,8 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 │   ├── profile.yaml         # project profile — adaptation knobs
 │   ├── framework → ...      # symlink to shared framework (canonical path)
 │   ├── project/             # project-specific overrides
-│   │   ├── governance/      # rule overrides (same structure as framework/)
-│   │   │   └── ...
+│   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
+│   │   │   └── CHG_EXECUTION_FLOW.md
 │   │   ├── layers/          # template overrides (same structure as framework/)
 │   │   │   └── ...
 │   │   └── playbooks/       # playbook overrides (same structure as framework/)
@@ -62,7 +62,7 @@ When the agent reads a template, rule, or playbook:
 
 1. Check `.aidoc/project/{same-path}` first
 2. If the file exists there, use it (project override)
-3. If not, fall back to `.aidoc/framework/{same-path}` (shared framework)
+3. If not, fall back to `.aidoc/framework/framework/{same-path}` (or `.aidoc/framework/{same-path}` if pointing directly at the framework root)
 
 ## Framework symlink
 
@@ -86,6 +86,28 @@ the override contract and constraints.
 This project pins **aidoc-flow-framework X.Y.Z** (declared in
 `profile.yaml` as `framework_version`).
 
+
+
+## Autonomous Execution & Operational Standards
+
+Autonomous agents operate under eight core project governance blueprints initialized under `<project>/.aidoc/project/governance/` (mirroring `docs/ADAPTATION-GUIDE.md` §4.1):
+
+1. **CHG Execution Flow (`CHG_EXECUTION_FLOW.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.
+2. **CI Smart Routing (`CI_SMART_ROUTING.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md`](AIDOC-CI-SMART-ROUTING-TEMPLATE.md). Codifies the Anti-Deadlock Invariant (zero trigger-level path filtering on required checks) and internal path-filter job routing.
+3. **Conflict Resolution (`CONFLICT_RESOLUTION.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`](AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md). Codifies Class 1 additive vs Class 2 semantic conflict handling, zero force-pushes, and mandatory auto-merge re-arming.
+4. **Self-Review Loop (`SELF_REVIEW_LOOP.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`](AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md). Codifies the Two-Stage Review & Fix loop (Stage A specs vs Stage B PRs), strict independence (Judge $\neq$ Generator), and the 4-lens rubric.
+5. **QA Protocol (`QA_PROTOCOL.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`](AIDOC-QA-PROTOCOL-TEMPLATE.md). Codifies the Tripartite Engineering Architecture, the strict non-code-modifying invariant for QA, and post-merge closing reports.
+6. **Browser Testing (`BROWSER_TESTING.md`):**
+   Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](AIDOC-BROWSER-TESTING-TEMPLATE.md). Codifies headless browser execution, multi-worktree port sandboxing, and trace/screenshot artifact retention.
+7. **Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION.md`):**
+   Derived from [`framework/governance/DURABLE_EXECUTION_STANDARD.md`](../DURABLE_EXECUTION_STANDARD.md). Codifies the 3-Tier Execution Architecture (Tier 1 Durable Workflows, Tier 2 Cognitive Reasoning Graphs, Tier 3 Deterministic Services), Thin-State payload discipline ($\le 2$ KB), SAGA reverse compensations, and deterministic rollback.
+8. **Graph-Based Review Flows & Review Report Schema (`REVIEW_WORKFLOWS.md`):**
+   Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](../REVIEW_WORKFLOW_STANDARD.md) and [`review_report.schema.json`](../review_report.schema.json). Codifies structured multi-persona review flows, workflow linting (`sdd_swf_lint`), deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
 
 ## Seed tier bootstrapping
 

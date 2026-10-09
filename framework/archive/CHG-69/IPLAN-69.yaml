@@ -1,0 +1,120 @@
+# =============================================================================
+#  IPLAN-69: Upstream Enterprise Hybrid CI Invariants, Autonomous PR Conflict
+#  Resolution, 2-Stage Review Loop, Tripartite Engineering Architecture, and
+#  Consumer Adaptation Scaffolding
+# =============================================================================
+
+id: IPLAN-69
+title: "Implementation Plan: Upstream Enterprise Hybrid CI Invariants, Autonomous PR Conflict Resolution, 2-Stage Review Loop, Tripartite Engineering Architecture, and Consumer Adaptation Scaffolding"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.0"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "Completed"
+  chg_reference: "CHG-69"
+  created_at: "2026-10-06T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+      description: "Anti-Deadlock Invariant for required status checks, internal job-level smart routing, single unified test harness invariant, and concentric latency budgets"
+      order: 1
+      status: DONE
+    - path: "framework/governance/WORKTREE_FLOW.md"
+      description: "Autonomous PR Conflict Resolution Protocol (Class 1 vs Class 2, git merge origin/dev, auto-merge re-arming) and multi-worktree port isolation"
+      order: 2
+      status: DONE
+    - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      description: "2-Stage Review & Fix Loop (Proposal vs Implementation PR), 4-Lens Rubric, and Technical Verification Authority"
+      order: 3
+      status: DONE
+    - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      description: "Tripartite Engineering Architecture (DEV vs SDET vs QA), Strict Non-Code-Modifying Invariant for QA, and Post-Merge Issue Closure Report Contract"
+      order: 4
+      status: DONE
+    - path: "framework/AI_ASSISTANT_RULES.md"
+      description: "Subagent Prompt ID Grounding Invariant and EARS syntax distinction (WHILE vs IF)"
+      order: 5
+      status: DONE
+    - path: "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md"
+      description: "Test Failure Taxonomy (infra_error vs failed) and TDD-IPLAN consistency rules"
+      order: 6
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+      description: "New operational scaffolding template for CI smart routing in multi-stack projects"
+      order: 7
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+      description: "New operational scaffolding template for autonomous PR conflict resolution"
+      order: 8
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+      description: "New operational scaffolding template for 2-stage self-review loop"
+      order: 9
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      description: "New operational scaffolding template for autonomous QA engineering protocol"
+      order: 10
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+      description: "New operational scaffolding template for Playwright browser testing and EARS DOM mapping"
+      order: 11
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Update scaffold file inventory and mapping to include all 5 new governance templates"
+      order: 12
+      status: DONE
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Update adaptation guidance with complete governance scaffolding references"
+      order: 13
+      status: DONE
+    - path: "tests/conformance/test_governance.py"
+      description: "Register 5 new templates in EXPECTED_FILES"
+      order: 14
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record Decision GD-63"
+      order: 15
+      status: DONE
+    - path: "framework/VERSION"
+      description: "Bump framework version 0.87.0 -> 0.88.0"
+      order: 16
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "Document 0.88.0 release"
+      order: 17
+      status: DONE
+
+execution_steps:
+  - id: STEP-01
+    action: "Update CI_AUTONOMOUS_PR_STANDARD.md with Anti-Deadlock Invariant, internal smart routing, and single unified test harness"
+    expected_output: "CI standard updated with zero top-level path filter invariant and concentric latency budgets"
+  - id: STEP-02
+    action: "Update WORKTREE_FLOW.md with Autonomous PR Conflict Resolution Protocol and port isolation"
+    expected_output: "Worktree flow updated with conflict classes, git merge origin/dev rule, and re-arming auto-merge"
+  - id: STEP-03
+    action: "Update REVIEW_REMEDIATION_FLOW.md with 2-Stage Review Loop, 4-Lens Rubric, and Technical Verification Authority"
+    expected_output: "Review flow updated with Proposal vs PR review stages and 4-lens rubric"
+  - id: STEP-04
+    action: "Update GOVERNANCE_WORKFLOW_STANDARD.md with Tripartite Engineering Architecture and QA Non-Editing Rule"
+    expected_output: "Tripartite architecture (DEV/SDET/QA) and post-merge issue closure report contract codified"
+  - id: STEP-05
+    action: "Update AI_ASSISTANT_RULES.md with Subagent Prompt ID Grounding and EARS syntax distinction"
+    expected_output: "Assistant rules updated with literal upstream ID grounding and WHILE vs IF rule"
+  - id: STEP-06
+    action: "Update TDD_WORKFLOW_STANDARD.md with Test Failure Taxonomy and TDD-IPLAN consistency rules"
+    expected_output: "TDD standard updated with infra_error vs failed taxonomy and cross-layer rules"
+  - id: STEP-07
+    action: "Author the 5 new operational scaffolding templates under framework/governance/aidoc/"
+    expected_output: "AIDOC-CI-SMART-ROUTING-TEMPLATE.md, AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md, AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md, AIDOC-QA-PROTOCOL-TEMPLATE.md, and AIDOC-BROWSER-TESTING-TEMPLATE.md created"
+  - id: STEP-08
+    action: "Update AIDOC-SCAFFOLD-TEMPLATE.md and docs/ADAPTATION-GUIDE.md"
+    expected_output: "Scaffolding inventory updated with all 5 new governance blueprints"
+  - id: STEP-09
+    action: "Register new templates in test_governance.py, record Decision GD-63 in DECISIONS.md, bump VERSION to 0.88.0, and update CHANGELOG.md"
+    expected_output: "Version pinned to 0.88.0, conformance tests green"
+  - id: STEP-10
+    action: "Run full conformance suite and pre-commit checks"
+    expected_output: "Zero failures across all test suites"

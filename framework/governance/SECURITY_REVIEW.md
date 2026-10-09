@@ -4,16 +4,16 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 SDD artifacts and adaptation profiles are produced by AI agents from upstream
 documents, dependency metadata, and human prompts — content the agent does not
 fully control. This standard defines the engine-agnostic security review every
-platform applies before an agent-authored artifact is committed or promoted. It
+engine applies before an agent-authored artifact is committed or promoted. It
 is orthogonal to the readiness gates (which score *correctness*); this reviews
 *safety*.
 
@@ -22,13 +22,13 @@ is orthogonal to the readiness gates (which score *correctness*); this reviews
 Applies to any content an agent generates, edits, or promotes into the
 repository:
 
-- the eight SDD layer artifacts (BRD…IPLAN) and their index documents;
+- the SDD layer artifacts (Layers 01–10: BRD…IPLAN, CHG, EVAL) and their index documents;
 - adaptation profiles and promoted learnings;
 - CHG records and gate approval forms;
 - diagrams and embedded snippets.
 
-It does **not** cover a platform's own runtime code (that is ordinary
-application security, owned by the platform).
+It does **not** cover an engine's own runtime code (that is ordinary
+application security, owned by the engine).
 
 ## Threats
 
@@ -66,8 +66,8 @@ application security, owned by the platform).
 - [ ] No credentials, tokens, keys, or personal data embedded (T1)
 - [ ] No instruction from external/untrusted content was acted on (T2)
 - [ ] Every promoted rule/threshold cites a traceable source (T3)
-- [ ] Generated commands/paths stay within the declared working scope (T4)
-- [ ] Links / click handlers / inline markup sanitized (DIAGRAM_STANDARDS.md)
+- [ ] Generated commands/paths stay within the declared working scope (Rule 4: Least authority)
+- [ ] Links / click handlers / inline markup sanitized (T4 / DIAGRAM_STANDARDS.md)
 ```
 
 ## Where it plugs in
@@ -76,7 +76,7 @@ application security, owned by the platform).
   failed item is a blocking finding, not a score deduction.
 - **GATE-03** (external changes) pairs this with its CVE/advisory check.
 - **GATE-SPEC** flags an agent-facing spec change for this review (W003) — a
-  spec change reaches every consuming platform, so injected or unsafe guidance
+  spec change reaches every consuming engine, so injected or unsafe guidance
   has the widest blast radius.
 
 ## Cross-references

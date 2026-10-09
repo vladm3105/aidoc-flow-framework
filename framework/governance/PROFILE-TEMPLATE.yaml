@@ -20,10 +20,10 @@
 # =============================================================================
 
 metadata:
-  schema_version: "1.0.0"
+  schema_version: "1.1.0"
   authority: "framework/governance/ADAPTATION.md"
-  last_updated: "2026-09-07"
-  framework_version: "0.86.1"
+  last_updated: "2026-10-07"
+  framework_version: "0.91.2"
   # project_name: "<your project>"
   framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
 
@@ -53,13 +53,15 @@ metadata:
 #   SPEC: 90
 #   TDD: 90
 #   IPLAN: 90
+#   EVAL: 90
 
 # active_layers restricts the cascade to a subset of the 10 layers.
 # Mandatory layers cannot be disabled (see ADAPTATION_SURFACE.yaml
-# `layers.skippable`). Disabling a skippable layer applies the cascade rule.
+# `layers.skippable`, which permits dropping only BDD and/or ADR).
+# Disabling a skippable layer applies the cascade rule.
 # Default: all 10 layers active.
 #
-# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]
 
 # section_toggles disables template-declared OPTIONAL sections.
 # Required sections are not toggleable — toggling them is out of surface
@@ -78,7 +80,7 @@ metadata:
 #   "p95": "95th percentile"
 
 # quality_loop_max_iterations caps review→remediate cycles before the saga
-# transitions to PARTIAL_TIMEOUT (see REVIEW_REMEDIATION_FLOW.md §Iteration cap).
+# transitions to ESCALATED (see REVIEW_REMEDIATION_FLOW.md §Iteration cap).
 # Range 1-10; a value outside the range is treated as malformed and falls back
 # to the default. This bounds the loop; it does not weaken any gate.
 # Default: 3.

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-30 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 Engine-agnostic rules for continuous integration and autonomous merging of
 reviewed changes. This standard fixes the integration topology the SDD layers
@@ -54,9 +54,12 @@ suites disagree about what "passing" means.
 Concretely: the same test entry points, the same static checks, and the
 same secret scans run locally and remotely. Routing (which subset runs
 where — see Invariant 3) selects subsets of the one suite; it never
-selects a different suite. Verification doubles that bypass real code
-paths (in-memory fakes standing in for real services where the contract
-requires the real behavior) are forbidden in both halves.
+selects a different suite. The Zero-Mock Invariant holds across all tiers:
+synthetic in-memory mocks, stubs, or simulated response generators that
+bifurcate local execution from integration pipeline behavior are strictly
+prohibited. Verification doubles that bypass real code paths (in-memory
+fakes standing in for real services where the contract requires the real
+behavior) hide boundary regressions and are forbidden in both halves.
 
 ### Invariant 2 — Concentric verification latency budgets
 
@@ -72,9 +75,20 @@ feedback stays fast and slow assurance stays out of the inner loop:
    and migration dry-runs. Runs at promotion out of the integration
    branch, never as a per-edit gate.
 
+Concentric Latency Targets:
+- Tier 1: Inner loop / static verification (< 15 seconds)
+- Tier 2: Integration / pull request gate (< 45 seconds)
+- Tier 3: Promotion / clean-room gate (2 to 4 minutes)
+
 Each consumer pins its own ceilings in its adaptation profile; the
 invariant is the three-tier shape and the ordering (static < integration
 < promotion), not the exact numbers.
+
+Signoff Attestation Contract:
+Verification runs produce an authoritative, machine-readable summary
+artifact certifying that the change passed local pre-flight gates before
+push. Pushes carry verifiable attestation metadata confirming that the
+working tree was clean and all mandatory checks reported a passing verdict.
 
 ### Invariant 3 — Required checks report conclusively (anti-deadlock)
 
@@ -84,12 +98,26 @@ run — because trigger scoping excluded the changed paths, because the
 pipeline was skipped, or because the verdict was never posted — deadlocks
 the merge request: the policy waits for a status that will never arrive.
 
+The Anti-Deadlock Invariant:
+Pipelines providing REQUIRED status checks on protected branches MUST NEVER
+employ trigger-level path filtering. Top-level trigger scoping that filters
+by changed paths causes the platform orchestrator to skip execution entirely
+when changes fall outside the pattern. Branch protection rules observing
+unreported contexts mark the request as permanently pending ("waiting for
+status to be reported"), deadlocking merge automation and demanding manual
+administrative override.
+
 Therefore:
 
-- Trigger scoping MUST NOT silently drop required checks. If a pipeline
-  narrows execution by changed paths, the narrowing happens INSIDE the
-  pipeline (per-job routing with an explicit fast-pass verdict), never at
-  the trigger level where the platform reports "never ran".
+- Trigger scoping MUST remain path-unfiltered at the trigger definition level,
+  executing unconditionally on every change request to protected branches.
+- Change detection and smart routing MUST happen INSIDE the pipeline at the
+  job or step level (comparing changed files against the base reference).
+- In non-impacted stacks, the job or step posts an immediate, conclusive
+  fast-pass success verdict within seconds (< 10s) rather than skipping.
+- Change detection MUST fail closed: any exception during diff evaluation,
+  missing reference baseline, or ambiguous path mapping forces fallback to
+  full verification suite execution.
 - Every required check context posts either a full-suite result (paths
   impacted) or an explicit fast-pass success (paths not impacted,
   typically in seconds). "No verdict" is never a legal outcome.
@@ -198,3 +226,7 @@ No step numbering is introduced into CHG governance by this standard.
   workflows, branch policies, and latency ceilings.
 - `CHG_REQUEST_FLOWS.md` — F3/spec vehicle class authorizing this
   standard (framework self-change).
+- `GOVERNANCE_WORKFLOW_STANDARD.md` §6 — the Multi-Tier Circuit Breakers
+  Matrix (CB-1 through CB-6) standardizing review iterations, CI polling
+  watchdog deadlines, retry caps, monotonic state progression, and manifest
+  boundaries.

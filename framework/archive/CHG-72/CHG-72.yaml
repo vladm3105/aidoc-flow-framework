@@ -1,0 +1,237 @@
+# =============================================================================
+#  CHG-72: Framework-Wide Naming Standards & IPLAN Multi-Topology Graph Alignment
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-06"
+  framework_version: "0.88.2"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-72"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-06T00:00:00Z"
+  date_approved: "2026-10-06T00:00:00Z"
+  date_implemented: "2026-10-06T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-06T00:00:00Z"
+    verdict: Approved
+    evidence: "User request in session: '/plan fix all these issues' - plan approved via policy"
+  supersedes:
+    - "framework/governance/ID_NAMING_STANDARDS.md (framework/archive/CHG-72/ID_NAMING_STANDARDS.md)"
+    - "framework/governance/IPLAN_WORKFLOW_STANDARD.md (framework/archive/CHG-72/IPLAN_WORKFLOW_STANDARD.md)"
+    - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml (framework/archive/CHG-72/IPLAN-SWF-TEMPLATE.yaml)"
+    - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml (framework/archive/CHG-72/IPLAN-TEMPLATE.yaml)"
+    - "framework/governance/workflows/chg-request-flow.sw.yaml (framework/archive/CHG-72/chg-request-flow.sw.yaml)"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml (framework/archive/CHG-72/CHG-TEMPLATE.yaml)"
+    - "framework/governance/chg/README.md (framework/archive/CHG-72/chg-README.md)"
+    - "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md (framework/archive/CHG-72/GATE-CODE_IMPLEMENTATION.md)"
+    - "framework/governance/chg/gates/GATE-08_IPLAN.md (framework/archive/CHG-72/GATE-08_IPLAN.md)"
+    - "framework/governance/chg/gates/GATE_INTERACTION_DIAGRAM.md (framework/archive/CHG-72/GATE_INTERACTION_DIAGRAM.md)"
+    - "framework/governance/chg/templates/GATE_APPROVAL_FORM.md (framework/archive/CHG-72/GATE_APPROVAL_FORM.md)"
+    - "framework/governance/chg/gates/GATE_ERROR_CATALOG.md (framework/archive/CHG-72/GATE_ERROR_CATALOG.md)"
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Framework-Wide Naming Standards & IPLAN Multi-Topology Graph Alignment"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-06T00:00:00Z"
+  summary: "Complete the clean-break transition to the dual-layer traversal-path graph nomenclature (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) across all remaining governance, standard, and template surfaces: (1) ID_NAMING_STANDARDS.md: add graph flow identifiers, graph codes, serverless workflow files (*.sw.yaml), and workflow state/action naming rules; (2) IPLAN_WORKFLOW_STANDARD.md: break the monolithic sdd_to_code assumption, codify DAG topologies for all 6 traversal paths, relax @spec/@tdd for DIR2C, and add flow/flow_code to the Hybrid Envelope; (3) IPLAN templates: sync document_control with flow and flow_code fields; (4) chg-request-flow.sw.yaml: purge residual legacy string in line 6; (5) framework/governance/chg/ and framework/layers/09_CHG/: purge all retired alphanumeric tokens (F1-F4, Type-R), expand README with 6-path topologies, align GATE-CODE and GATE-08 routing, add Flow/Flow Code to GATE_APPROVAL_FORM, and embed Mermaid sequence diagram in GATE_INTERACTION_DIAGRAM."
+  rationale: |
+    Following Decision GD-65, CHG classification was modernized to graph traversal nomenclature. However, naming standards and Layer 08 execution planning remained unaligned:
+    1. ID_NAMING_STANDARDS.md lacked formal rules for graph flow identifiers and workflow state/action names.
+    2. IPLAN_WORKFLOW_STANDARD.md enforced an overly strict requirement that all implementation plans must bridge from SPEC/TDD to code, which broke direct-to-code (DIR2C) changes and mischaracterized bugfix repairs (CODE2C) and backward reconciliation (CODE2S).
+    3. Comments and guides across the CHG ecosystem still retained retired legacy alphanumeric tokens (F1-F4, Type-R), violating the framework's clean-break policy.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/ID_NAMING_STANDARDS.md: Add Graph Flow & Code Naming Standards, update File Naming table with *.sw.yaml, and define workflow state/action conventions"
+    - "framework/governance/IPLAN_WORKFLOW_STANDARD.md: Define universal Layer 08 execution across all 6 graph flows, relax @spec/@tdd for DIR2C, add flow/flow_code to Hybrid Envelope, and update LangGraph adapter pattern"
+    - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml & IPLAN-TEMPLATE.yaml: Add flow and flow_code fields to document_control"
+    - "framework/governance/workflows/chg-request-flow.sw.yaml: Purge residual (Emergency, Type-R, F1-F4) in line 6 description"
+    - "framework/governance/chg/ & framework/layers/09_CHG/: Cleanse comments of legacy tokens in CHG-TEMPLATE.yaml, expand README to document the 6 traversal-path graph lifecycles, align GATE-CODE and GATE-08 routing, update GATE_APPROVAL_FORM with Flow/Flow Code, and add Mermaid diagram to GATE_INTERACTION_DIAGRAM"
+    - "framework/governance/DECISIONS.md: Ratify Decision GD-66"
+    - "framework/CHANGELOG.md: Release notes under [0.88.2]"
+  backward_compatible: true
+  dependencies:
+    - "sdd_doc_lint/chg_lint.py"
+    - "tests/conformance/test_chg_flows_router.py"
+
+# =============================================================================
+# Section 4: Document Lifecycle & Supersedes Tracking
+# =============================================================================
+
+supersedes:
+  - document: "framework/governance/ID_NAMING_STANDARDS.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/ID_NAMING_STANDARDS.md"
+    changes: "Add Graph Flow & Code Naming Standards, update File Naming table with *.sw.yaml, and define workflow state/action conventions"
+  - document: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    current_version: "1.1"
+    new_version: "1.2"
+    archive_path: "framework/archive/CHG-72/IPLAN_WORKFLOW_STANDARD.md"
+    changes: "Define universal Layer 08 execution across all 6 graph flows, relax @spec/@tdd for DIR2C, add flow/flow_code to Hybrid Envelope, and update LangGraph adapter pattern"
+  - document: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/IPLAN-SWF-TEMPLATE.yaml"
+    changes: "Add flow and flow_code fields to document_control with traversal guidance comments"
+  - document: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+    current_version: "2.0"
+    new_version: "2.1"
+    archive_path: "framework/archive/CHG-72/IPLAN-TEMPLATE.yaml"
+    changes: "Add flow and flow_code fields to document_control"
+  - document: "framework/governance/workflows/chg-request-flow.sw.yaml"
+    current_version: "1.2"
+    new_version: "1.3"
+    archive_path: "framework/archive/CHG-72/chg-request-flow.sw.yaml"
+    changes: "Purge residual legacy string (Emergency, Type-R, F1-F4) in line 6 description"
+  - document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    current_version: "2.5"
+    new_version: "2.6"
+    archive_path: "framework/archive/CHG-72/CHG-TEMPLATE.yaml"
+    changes: "Purge residual F1-F4 and Type-R references in comments across sections 1.2, 1.3, 3, 4A, 4B, and 8"
+  - document: "framework/governance/chg/README.md"
+    current_version: "1.10"
+    new_version: "1.11"
+    archive_path: "framework/archive/CHG-72/chg-README.md"
+    changes: "Replace Dual Lifecycle section with the 6 Traversal-Path Graph Lifecycles and modernize all remaining text"
+  - document: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/GATE-CODE_IMPLEMENTATION.md"
+    changes: "Update §1.3 and §6.3 to CODE2S / code_to_sdd, and add explicit DIR2C fast-lane routing"
+  - document: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/GATE-08_IPLAN.md"
+    changes: "Clarify that GATE-08-E003 applies to SDD2C and SEED2C cascades; document DIR2C and CODE2C entry directly at GATE-CODE"
+  - document: "framework/governance/chg/gates/GATE_INTERACTION_DIAGRAM.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/GATE_INTERACTION_DIAGRAM.md"
+    changes: "Add Mermaid stateDiagram-v2 illustrating the 6 graph traversal paths"
+  - document: "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/GATE_APPROVAL_FORM.md"
+    changes: "Add Flow and Flow Code fields, add Reconciliation and Direct to Change Source, and add Emergency to Change Level"
+  - document: "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+    current_version: "1.0"
+    new_version: "1.1"
+    archive_path: "framework/archive/CHG-72/GATE_ERROR_CATALOG.md"
+    changes: "Link EMG-* error codes to HOTFIX flow and add cross-reference for automated CHG lint rules"
+
+# =============================================================================
+# Section 5: Implementation Lifecycle Steps
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Update ID_NAMING_STANDARDS.md with graph flows, codes, *.sw.yaml, and state/action naming rules"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ID_NAMING_STANDARDS.md"
+      archive_path: "framework/archive/CHG-72/ID_NAMING_STANDARDS.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Update IPLAN_WORKFLOW_STANDARD.md with multi-topology execution and relaxed DIR2C rules"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-72/IPLAN_WORKFLOW_STANDARD.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update IPLAN-SWF-TEMPLATE.yaml and IPLAN-TEMPLATE.yaml adding flow and flow_code fields"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-72/IPLAN-SWF-TEMPLATE.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Purge residual legacy string in chg-request-flow.sw.yaml"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      archive_path: "framework/archive/CHG-72/chg-request-flow.sw.yaml"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Update CHG ecosystem across governance and layer mirrors (CHG-TEMPLATE, README, GATE-CODE, GATE-08, GATE_INTERACTION_DIAGRAM, GATE_APPROVAL_FORM, GATE_ERROR_CATALOG)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-72/CHG-TEMPLATE.yaml"
+      current_version: "2.5"
+      new_version: "2.6"
+      status: Completed
+    - step: "Author authorizing IPLAN-72.yaml under framework/archive/CHG-72/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-72/IPLAN-72.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 6: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-72/CHG-72.yaml (exit 0, clean)"
+    - "diff -r framework/governance/chg framework/layers/09_CHG (exit 0, byte-identical)"
+    - "pytest tests/conformance/ (exit 0, 528+ passing)"
+    - "pre-commit run --all-files (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-06T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Self-review of CHG-72 specification and implementation plan"
+      verdict: "APPROVED"
+    - date: "2026-10-06T00:00:00Z"
+      reviewer: "judge"
+      action: "Adversarial verification of clean-break graph nomenclature across governance surfaces"
+      verdict: "APPROVED"
+
+# =============================================================================
+# Section 6: Rollback Plan
+# =============================================================================
+
+rollback_plan:
+  steps:
+    - "Restore files from framework/archive/CHG-72/ snapshots"
+    - "Re-run sync-version-refs.sh and verify conformance test suite"

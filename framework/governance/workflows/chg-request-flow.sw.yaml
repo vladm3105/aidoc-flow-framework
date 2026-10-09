@@ -3,7 +3,7 @@ name: Change Request Governance Flow
 version: "1.0"
 specVersion: "0.8"
 description: >-
-  Normative state machine governing change classification (Emergency, Type-R, F1-F4),
+  Normative state machine governing change classification (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C),
   gate transitions (GATE-01 through GATE-CODE, GATE-SPEC), SDD cascades, IPLAN authoring,
   and landing verification per CHG_REQUEST_FLOWS.md and AGENTS.md.
 start: ClassifyChangeTrigger
@@ -16,30 +16,43 @@ states:
         functionRef:
           refName: runClassificationRouter
           arguments:
-            flow_order: ["Emergency", "Type-R", "F4", "F3", "F2", "F1"]
+            flow_order:
+              - "hotfix"
+              - "code_to_sdd"
+              - "code_to_code"
+              - "seed_to_code"
+              - "iplan_to_code"
+              - "sdd_to_code"
+            flow_codes:
+              - "HOTFIX"
+              - "CODE2S"
+              - "CODE2C"
+              - "SEED2C"
+              - "DIR2C"
+              - "SDD2C"
             governance_contract: "framework/governance/CHG_REQUEST_FLOWS.md"
     transition: RouteByClassification
 
   - name: RouteByClassification
     type: switch
     dataConditions:
-      - condition: "${ .classification == 'Emergency' }"
-        transition: ExecuteEmergencyFix
-      - condition: "${ .classification == 'Type-R' }"
-        transition: ReconcileCodebase
-      - condition: "${ .classification == 'F4' }"
-        transition: InitiateBugfixFlow
-      - condition: "${ .classification == 'F3' }"
-        transition: InitiateBrownfieldFlow
-      - condition: "${ .classification == 'F2' }"
-        transition: InitiateDirectRequestFlow
-      - condition: "${ .classification == 'F1' }"
-        transition: InitiateGreenfieldFlow
+      - condition: "${ .flow == 'hotfix' || .flow_code == 'HOTFIX' }"
+        transition: ExecuteHotfix
+      - condition: "${ .flow == 'code_to_sdd' || .flow_code == 'CODE2S' }"
+        transition: ExecuteCodeToSdd
+      - condition: "${ .flow == 'code_to_code' || .flow_code == 'CODE2C' }"
+        transition: ExecuteCodeToCode
+      - condition: "${ .flow == 'seed_to_code' || .flow_code == 'SEED2C' }"
+        transition: ExecuteSeedToCode
+      - condition: "${ .flow == 'iplan_to_code' || .flow_code == 'DIR2C' }"
+        transition: ExecuteIplanToCode
+      - condition: "${ .flow == 'sdd_to_code' || .flow_code == 'SDD2C' }"
+        transition: ExecuteSddToCode
     defaultCondition:
       transition: EscalateUnknownTrigger
 
-  # --- Non-Flow Path: Emergency ---
-  - name: ExecuteEmergencyFix
+  # --- Traversal Path: HOTFIX (hotfix) ---
+  - name: ExecuteHotfix
     type: operation
     actions:
       - name: deployHotfix
@@ -55,11 +68,11 @@ states:
           refName: draftPostMortemAndCHG
           arguments:
             deadline_hours: 48
-            template: "framework/templates/POST_MORTEM-TEMPLATE.md"
+            template: "framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md"
     end: true
 
-  # --- Non-Flow Path: Type-R Reconciliation ---
-  - name: ReconcileCodebase
+  # --- Traversal Path: CODE2S (code_to_sdd) ---
+  - name: ExecuteCodeToSdd
     type: operation
     actions:
       - name: reverseEngineerSpecs
@@ -69,8 +82,8 @@ states:
             order: ["Code", "TDD", "SPEC", "BDD", "EARS"]
     end: true
 
-  # --- Flow F2: Direct Request ---
-  - name: InitiateDirectRequestFlow
+  # --- Traversal Path: DIR2C (iplan_to_code) ---
+  - name: ExecuteIplanToCode
     type: operation
     actions:
       - name: authorDirectCHG
@@ -129,8 +142,8 @@ states:
     end:
       terminate: true
 
-  # --- Flow F4: Bugfix on Implemented IPLAN ---
-  - name: InitiateBugfixFlow
+  # --- Traversal Path: CODE2C (code_to_code) ---
+  - name: ExecuteCodeToCode
     type: operation
     actions:
       - name: authorBugfixCHG
@@ -172,8 +185,8 @@ states:
           refName: markCompletedAndAudit
     end: true
 
-  # --- Flow F3: Brownfield Behavior Change ---
-  - name: InitiateBrownfieldFlow
+  # --- Traversal Path: SEED2C (seed_to_code) ---
+  - name: ExecuteSeedToCode
     type: operation
     actions:
       - name: authorBrownfieldCHG
@@ -201,8 +214,8 @@ states:
     end:
       terminate: true
 
-  # --- Flow F1: Greenfield Development ---
-  - name: InitiateGreenfieldFlow
+  # --- Traversal Path: SDD2C (sdd_to_code) ---
+  - name: ExecuteSddToCode
     type: operation
     actions:
       - name: authorGreenfieldCHG

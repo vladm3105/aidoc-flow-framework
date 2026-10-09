@@ -1,0 +1,78 @@
+# =============================================================================
+#  IPLAN-79: Startup Handoff Hardening & Onboarding Command Completeness
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-79/CHG-79.yaml (F2 direct, C1, Implemented)
+#  Source: docs/STARTUP_HANDOFF.md hardening for new project kickoff.
+# =============================================================================
+
+doc_id: IPLAN-79
+title: "Startup Handoff Hardening, Blueprint Copy Commands, and Kickoff Verification"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-07"
+  framework_version: "0.90.2"
+  source_chg: "CHG-79"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - startup-handoff
+    - project-kickoff
+    - documentation-hardening
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-79"
+  source_chg: "CHG-79"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: N/A (direct non-normative documentation hardening under CHG-79)"
+  status: Completed
+  version: "1.0"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+  last_updated: "2026-10-07T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 3
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "docs/STARTUP_HANDOFF.md"
+      description: "Harden Section 0 with explicit installer flags, blueprint copy commands, and health verification checks"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-79/CHG-79.yaml"
+      description: "Authorizing change record (this vehicle)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-79/IPLAN-79.yaml"
+      description: "Implementation plan (this file)"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Verification Commands
+# =============================================================================
+
+verification:
+  commands:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-79/CHG-79.yaml"
+    - "npx markdownlint-cli2 docs/STARTUP_HANDOFF.md"
+    - "bash hooks/pre_push_check.sh origin/dev HEAD"

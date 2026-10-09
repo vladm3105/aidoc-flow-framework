@@ -52,6 +52,9 @@ Checks:
   CHG-L017: Premature step completion (§3.4.1 E28) — on a `Proposed` /
     `Approved` CHG no `implementation.steps[]` entry may be `Completed`;
     `In-Progress` and beyond pass (executor's record, reviewer lens).
+  CHG-L018: Mandatory formal decision block (DECISION_WORKFLOW.md) — every
+    CHG must carry a non-empty `decision` section with `decision_id`, `title`,
+    `choice`, and `consequences`.
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -84,7 +87,7 @@ VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Com
 # Rule IDs this linter can emit. Imported by the catalog guard
 # (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
 # sync with framework/governance/LINT_RULES.md (#715).
-CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 18))
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 19))
 
 
 def check_status_lifecycle(
@@ -257,7 +260,7 @@ def check_iplan_reference(
 
     if not has_iplan:
         errors.append(
-            "CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); F2 files a scoped IPLAN, F4 a bugfix-subtype IPLAN"
+            "CHG-L004: no IPLAN reference found — code-touching scope needs an IPLAN (GOV-019); DIR2C (F2) files a scoped IPLAN, CODE2C (F4) a bugfix-subtype IPLAN"
         )
     else:
         passes.append("CHG-L004: IPLAN reference found")
@@ -354,19 +357,82 @@ def check_sdd_lifecycle_completeness(
 ) -> None:
     """CHG-L006: sdd_lifecycle steps must exist when SDD documents are modified (§3.4.1 C16)."""
     modified = data.get("implementation", {})
-    artifacts: list[dict[str, Any]] = []
+    raw_artifacts: list[dict[str, Any]] = []
     if isinstance(modified, dict):
         raw = modified.get("artifacts_modified", [])
         if isinstance(raw, list):
-            artifacts = [a for a in raw if isinstance(a, dict)]
+            raw_artifacts = [a for a in raw if isinstance(a, dict)]
+
+    sdd_artifacts: list[dict[str, Any]] = []
+    for a in raw_artifacts:
+        file_path = str(a.get("file", ""))
+        art_id = str(a.get("id", ""))
+        if _is_code_path(file_path):
+            continue
+        if "IPLAN" in art_id.upper() or "IPLAN" in file_path.upper():
+            continue
+        sdd_artifacts.append(a)
+
     steps = _sdd_lifecycle_steps(data)
-    if artifacts and not steps:
+    if not sdd_artifacts:
+        passes.append(
+            "CHG-L006: SDD lifecycle completeness check passed (no modified SDD documents declared)"
+        )
+        return
+
+    if not steps:
         errors.append(
-            f"CHG-L006: {len(artifacts)} artifact(s) in artifacts_modified but no "
+            f"CHG-L006: {len(sdd_artifacts)} artifact(s) in artifacts_modified but no "
             "implementation.steps with phase 'sdd_lifecycle' — every modified SDD "
             "document needs an archive → rewrite → supersedes → version-bump step"
         )
         return
+
+    step_targets: set[str] = set()
+    for s in steps:
+        art = str(s.get("artifact") or "").strip()
+        if art:
+            step_targets.add(art)
+            step_targets.add(Path(art).stem)
+            if "_" in art:
+                step_targets.add(art.split("_")[0])
+            if "." in art:
+                parts = art.split(".")
+                if len(parts) >= 2:
+                    step_targets.add(f"{parts[0]}-{parts[1]}")
+        arch = str(s.get("archive_path") or "").strip()
+        if arch:
+            step_targets.add(arch)
+            step_targets.add(Path(arch).stem)
+            if "_" in Path(arch).stem:
+                step_targets.add(Path(arch).stem.split("_")[0])
+
+    missing: list[str] = []
+    for a in sdd_artifacts:
+        art_id = str(a.get("id") or "").strip()
+        file_path = str(a.get("file") or "").strip()
+        stem = Path(file_path).stem if file_path else ""
+
+        matched = False
+        candidates = {c for c in (art_id, file_path, stem) if c}
+        for c in candidates:
+            if c in step_targets:
+                matched = True
+                break
+            if any(c in st or st in c for st in step_targets if len(st) >= 3):
+                matched = True
+                break
+
+        if not matched:
+            missing.append(art_id or file_path or "unnamed artifact")
+
+    if missing:
+        errors.append(
+            "CHG-L006: artifacts_modified lists documents missing from sdd_lifecycle steps: "
+            + ", ".join(sorted(missing))
+        )
+        return
+
     passes.append("CHG-L006: SDD lifecycle completeness check passed")
 
 
@@ -929,6 +995,7 @@ def lint_chg(
     check_seed_module_lifecycle(data, errors, warnings, passes)
     check_lifecycle_attribution(data, errors, warnings, passes)
     check_premature_step_completion(data, errors, warnings, passes)
+    check_decision_block(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -963,6 +1030,40 @@ def check_flow_misclassification(
             if fallback not in (None, "null", ""):
                 source = fallback
 
+    flow = control.get("flow")
+    flow_code = control.get("flow_code")
+    valid_flows = {
+        "hotfix",
+        "code_to_sdd",
+        "code_to_code",
+        "seed_to_code",
+        "iplan_to_code",
+        "sdd_to_code",
+    }
+    valid_flow_codes = {"HOTFIX", "CODE2S", "CODE2C", "SEED2C", "DIR2C", "SDD2C"}
+    flow_code_map = {
+        "hotfix": "HOTFIX",
+        "code_to_sdd": "CODE2S",
+        "code_to_code": "CODE2C",
+        "seed_to_code": "SEED2C",
+        "iplan_to_code": "DIR2C",
+        "sdd_to_code": "SDD2C",
+    }
+    if flow is not None and str(flow).strip() not in ("", "null"):
+        if flow not in valid_flows:
+            errors.append(f"CHG-L013: invalid flow '{flow}'. Must be one of {sorted(valid_flows)}")
+    if flow_code is not None and str(flow_code).strip() not in ("", "null"):
+        if flow_code not in valid_flow_codes:
+            errors.append(
+                f"CHG-L013: invalid flow_code '{flow_code}'. Must be one of {sorted(valid_flow_codes)}"
+            )
+    if flow in flow_code_map and flow_code in valid_flow_codes:
+        if flow_code_map[flow] != flow_code:
+            errors.append(
+                f"CHG-L013: flow '{flow}' does not match flow_code '{flow_code}' "
+                f"(expected '{flow_code_map[flow]}')"
+            )
+
     impl = data.get("implementation", {})
     steps: list[dict[str, Any]] = []
     artifacts: list[dict[str, Any]] = []
@@ -995,15 +1096,15 @@ def check_flow_misclassification(
     if source == "feedback" and not has_iplan_ref:
         errors.append(
             "CHG-L013: code/script manifest with source feedback but no IPLAN reference — "
-            "post-completion repairs require a bugfix-subtype IPLAN (parent_iplan + source_chg, F4); "
+            "post-completion repairs require a bugfix-subtype IPLAN (parent_iplan + source_chg, CODE2C/F4); "
             "pre-completion fixes belong on the active IPLAN itself"
         )
         return
     errors.append(
         "CHG-L013: code/script manifest with empty SDD lifecycle but change_source is not "
         f"'direct' and no IPLAN reference (source={source}) — suspected misclassified flow: "
-        "F2 needs source direct + scoped IPLAN, F3 needs the SDD cascade, "
-        "F4 needs a bugfix-subtype IPLAN with parent_iplan"
+        "DIR2C (F2) needs source direct + scoped IPLAN, SEED2C (F3) needs the SDD cascade, "
+        "CODE2C (F4) needs a bugfix-subtype IPLAN with parent_iplan"
     )
 
 
@@ -1107,8 +1208,8 @@ def check_seed_module_lifecycle(
         )
     if problems:
         errors.append(
-            "CHG-L014: F3 change touches seed/module docs without lifecycle coverage "
-            "(GOV-020) — suspected F3 Phase 0a/0b omission: " + "; ".join(problems)
+            "CHG-L014: SEED2C (F3) change touches seed/module docs without lifecycle coverage "
+            "(GOV-020) — suspected SEED2C (F3) Phase 0a/0b omission: " + "; ".join(problems)
         )
         return
     passes.append("CHG-L014: seed/module touches covered by seed_scope/module_lifecycle")
@@ -1228,6 +1329,49 @@ def check_premature_step_completion(
         )
         return
     passes.append(f"CHG-L017: no premature Completed steps (status={status})")
+
+
+def check_decision_block(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L018: Mandatory formal decision block (DECISION_WORKFLOW.md).
+
+    Every CHG document must carry a non-empty `decision` mapping with
+    `decision_id`, `title`, `choice`, and `consequences`. Big changes articulate
+    full architectural invariants and alternatives; small fixes provide a concise
+    1-2 sentence choice and rationale.
+    """
+    decision = data.get("decision")
+    change_ctrl = data.get("change_control")
+    chg_ctrl_id = change_ctrl.get("chg_id", "") if isinstance(change_ctrl, dict) else ""
+    chg_id = str(data.get("change_id") or chg_ctrl_id)
+    m = re.match(r"^CHG-(\d+)$", chg_id)
+    if m and int(m.group(1)) < 80:
+        passes.append("CHG-L018: decision block skipped for historical pre-CHG-80 archive record")
+        return
+
+    if decision is None:
+        errors.append("CHG-L018: decision section missing")
+        return
+
+    if not isinstance(decision, dict):
+        errors.append("CHG-L018: decision section must be a dictionary")
+        return
+
+    required_fields = ["decision_id", "title", "choice", "consequences"]
+    missing = []
+    for field in required_fields:
+        val = decision.get(field)
+        if val is None or (isinstance(val, str) and not val.strip()):
+            missing.append(field)
+
+    if missing:
+        errors.append(
+            f"CHG-L018: decision section missing or empty required field(s): {', '.join(missing)}"
+        )
+        return
+
+    passes.append("CHG-L018: formal decision block present and complete")
 
 
 def main(argv: list[str] | None = None) -> int:

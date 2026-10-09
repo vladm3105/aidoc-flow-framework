@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 `REVIEW_REMEDIATION_FLOW.md` defines *when* review/remediation fire (the trigger
 points) and *what* an engine must surface (findings, readiness score, remediation
@@ -67,6 +67,8 @@ lens_score: 0-100           # this lens's readiness assessment
 - `sequential`: each persona sees prior slots — richer cross-talk, more costly.
 - `single_pass`: one agent applies every lens in one pass — the lightweight
   fallback for cost-constrained or single-agent environments.
+
+Collectively, `independent` and `sequential` are referred to as multi-persona **`team`** mode.
 
 ## Operations — three shapes, one team
 
@@ -152,7 +154,7 @@ The rule is **citation-driven**: PRDs with no downstream threshold
 cites pass automatically (the section is OPTIONAL). The 4 downstream
 audit engines (BDD/TDD/SPEC/ADR) ingest TH-RES-001 findings as
 blocking-findings sources via the structural-lint floor (per
-`REVIEW_REMEDIATION_FLOW.md` §"Structural floor checks").
+`REVIEW_REMEDIATION_FLOW.md` §"Light conformance contract").
 
 Component decomposition is currently a PRD subsection (Option A,
 2026-06-11). A future promotion to a first-class `02b_DECOMP` layer
@@ -221,8 +223,9 @@ Four categories:
 untouched (its prior "+security" sub-role moves out to the dedicated
 `security_engineer` lens). Total weights sum to 100 per crew. Rebalancing
 happens through a follow-up CHG, not silently. Conformance asserts the
-weights in `REVIEW_CREWS.yaml` are mirrored exactly in the agent briefs'
-per-layer tables; drift between the two is a test failure.
+weights in `REVIEW_CREWS.yaml` sum to 100 per crew and match the layer coverage
+invariants (`tests/conformance/test_review_team.py`); drift or invalid weight
+allocations are caught by automated conformance tests.
 
 The numeric allocations themselves live in `REVIEW_CREWS.yaml` (the single
 source of truth); this section codifies the *rules* by which those numbers
@@ -238,7 +241,7 @@ are chosen, so future rebalances have a stable framework.
 
 ## Playbooks
 
-Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; 58 files total across the 10 layers, 53 of them declaring a layer+lens pair).
+Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; 69 files total across the playbooks tree, including per-layer READMEs and lens playbooks).
 
 ### Why
 

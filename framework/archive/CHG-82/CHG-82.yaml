@@ -1,0 +1,191 @@
+# =============================================================================
+#  CHG-82: Comprehensive Framework Audit Remediation & Tooling Robustness
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Tooling Maintenance)
+#  Pre-cleared: Founder approved in session (2026-10-09)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-09"
+  framework_version: "0.91.2"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-82"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-09T00:00:00Z"
+  date_approved: "2026-10-09T00:00:00Z"
+  date_implemented: "2026-10-09T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-09T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: Comprehensive deep audit remediation of 9 repository findings across documentation, hooks, linter catalogs, and blueprints"
+  supersedes:
+    - "framework/governance/LINT_RULES.md (framework/archive/CHG-82/LINT_RULES.md)"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md (framework/archive/CHG-82/AIDOC-SCAFFOLD-TEMPLATE.md)"
+    - "framework/README.md (framework/archive/CHG-82/README.md)"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-82)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-82"
+  title: "Comprehensive Framework Audit Remediation, Tooling Robustness, and Catalog Synchronization"
+  status: "Ratified"
+  context: |
+    Following significant framework evolution (CHG-72 through CHG-81 covering CNCF SWF adoption across all layers,
+    durable multi-agent execution standards, and mandatory decision tracking), a comprehensive audit uncovered
+    nine latent discrepancies: stale version references across onboarding docs (F-01), hook scope limitation in
+    sync-version-refs.sh skipping docs/ (F-02), uncatalogued CNCF SWF linter rules (SWF-L001..SWF-L007) in LINT_RULES.md
+    and missing conformance test guards (F-03), skill shadowing fatal failure when USER_CONFIG_ROOT is unset (F-04),
+    stale platform/exclude citations in SECURITY.md (F-05), dead umbrella relative links in docs/SUPPORT.md (F-06),
+    blueprint numbering misalignment between AIDOC-SCAFFOLD-TEMPLATE.md and ADAPTATION-GUIDE.md (F-07),
+    specification structure phrasing in framework/README.md (F-08), and CHG-L018 linter retroactivity over historical
+    archived change requests prior to CHG-80 (F-09).
+  choice: |
+    1. Synchronize and bump framework version to 0.91.2 across framework/VERSION, updating document control tables.
+    2. Expand hooks/sync-version-refs.sh sweep to include docs/ (ADAPTATION-GUIDE.md, STARTUP_HANDOFF.md), extend
+       OLD_VERSIONS with 0.91.1, and sweep literal forms to eliminate future documentation version drift.
+    3. Formally catalog rules SWF-L001 through SWF-L007 in framework/governance/LINT_RULES.md, add swf_lint.py CODES
+       registry, add test_swf_codes_catalogued in tests/conformance/test_lint_catalog.py, and document in AGENTS.md.
+    4. Harden framework/skills/_shared/scripts/check-skill-shadowing.sh to gracefully exit clean
+       with an advisory note when USER_CONFIG_ROOT is unset, preventing agent startup failures.
+    5. Update sdd_doc_lint/chg_lint.py so CHG-L018 skips historical pre-CHG-80 archive snapshots without weakening active enforcement.
+    6. Modernize SECURITY.md (scoping Bandit to sdd_doc_lint/ and tests/, citing framework/governance/DECISIONS.md),
+       sanitize dead relative umbrella paths in docs/SUPPORT.md, harmonize blueprint enumeration in AIDOC-SCAFFOLD-TEMPLATE.md,
+       and clarify governance workflow placement in framework/README.md.
+  consequences: |
+    - All 9 audit findings are remediated in a single, coherent, fully traced change.
+    - Automated tooling (hooks, linters, conformance tests) guards all new rules and paths against future regression.
+    - Zero breaking changes to existing consumer APIs, directory structures, or workflows.
+  alternatives_considered:
+    - option: "Split into multiple PRs (tooling vs docs)"
+      rationale_rejected: "All 9 findings stem from the same holistic audit baseline and have minimal cross-cutting blast radius."
+    - option: "Retain USER_CONFIG_ROOT hard exit in check-skill-shadowing.sh"
+      rationale_rejected: "Causes fatal startup blocks for agents whose runtime environments do not pre-export engine config paths."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Comprehensive Framework Audit Remediation, Tooling Robustness, and Catalog Synchronization"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-09T00:00:00Z"
+  summary: |
+    Remediate nine post-CHG-81 audit findings across documentation, tooling, linters, and governance catalogs.
+    Propagate framework version 0.91.2, catalog SWF linter rules, harden scripts against unset environment variables,
+    and eliminate stale references and broken links.
+  rationale: |
+    Maintains rigorous quality, conformance, and operational integrity for all human contributors and autonomous AI agents.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/LINT_RULES.md: Catalog SWF-L001..SWF-L007 rules"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md: Harmonize blueprint numbering"
+    - "framework/README.md: Clarify governance layer placement"
+    - "hooks/sync-version-refs.sh: Expand discovery sweep to docs/ and extend OLD_VERSIONS"
+    - "tests/conformance/test_lint_catalog.py: Guard SWF rules against swf_lint.py"
+    - "tests/conformance/test_sync_version_refs.py: Guard docs/ metadata version references"
+    - "sdd_doc_lint/swf_lint.py: Export CODES registry"
+    - "sdd_doc_lint/chg_lint.py: Handle historical pre-CHG-80 records in CHG-L018"
+    - "framework/skills/_shared/scripts/check-skill-shadowing.sh: Graceful fallback for unset USER_CONFIG_ROOT"
+    - "docs/STARTUP_HANDOFF.md: Update version references to 0.91.2"
+    - "docs/ADAPTATION-GUIDE.md: Update version references to 0.91.2"
+    - "README.md: Update post-cutover spec citation to 0.91.2"
+    - "SECURITY.md: Update Bandit scope, clean excludes, cite governance decisions"
+    - "docs/SUPPORT.md: Remove broken relative links"
+    - "AGENTS.md: Document swf_lint.py under automated validation"
+    - "framework/VERSION: Bump to 0.91.2"
+    - "framework/CHANGELOG.md: Record 0.91.2 release notes"
+  in_scope:
+    - "Remediating all 9 audit findings F-01 through F-09"
+    - "Keeping all test suites, linters, and pre-commit hooks 100% green"
+  out_of_scope:
+    - "Modifying historical archive files prior to CHG-82"
+    - "Modifying frozen tombstone files"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-82/IPLAN-82.yaml"
+  steps:
+    - step: "Catalog SWF-L001..SWF-L007 rules in LINT_RULES.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/LINT_RULES.md"
+      archive_path: "framework/archive/CHG-82/LINT_RULES.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Align blueprint numbering in AIDOC-SCAFFOLD-TEMPLATE.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      archive_path: "framework/archive/CHG-82/AIDOC-SCAFFOLD-TEMPLATE.md"
+      current_version: "2.4"
+      new_version: "2.5"
+      status: Completed
+    - step: "Clarify governance layer placement in framework/README.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/README.md"
+      archive_path: "framework/archive/CHG-82/README.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Author authorizing IPLAN-82.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-82/IPLAN-82.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-82/CHG-82.yaml (exit 0, clean)"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/"
+    - "pytest tests/conformance/test_lint_catalog.py"
+    - "pytest tests/conformance/test_sync_version_refs.py"
+    - "pre-commit run --all-files (all 11 hooks green)"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-09T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-82 proposal and governance plan"
+      verdict: "APPROVED"

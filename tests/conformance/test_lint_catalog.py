@@ -15,12 +15,14 @@ stops a reader from mistaking documentation for enforcement.
 
 import importlib.util
 import re
+import sys
 import unittest
 
 from _spec import FRAMEWORK, REPO_ROOT
 
 CHG_LINT = REPO_ROOT / "sdd_doc_lint" / "chg_lint.py"
 BUGFIX_LINT = REPO_ROOT / "sdd_doc_lint" / "bugfix_lint.py"
+SWF_LINT = REPO_ROOT / "sdd_doc_lint" / "swf_lint.py"
 CATALOG = FRAMEWORK / "governance" / "LINT_RULES.md"
 IMPL_DIRS = (REPO_ROOT / "sdd_doc_lint", REPO_ROOT / "hooks")
 
@@ -31,6 +33,7 @@ _ID_TOKEN = re.compile(r"`([A-Z]{2,}(?:-[A-Z0-9]+)+|[A-Z]+[0-9]{2,}[A-Z0-9-]*)`"
 def _load(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -64,8 +67,8 @@ class LintCatalogAgreement(unittest.TestCase):
         module = _load("chg_lint", CHG_LINT)
         self.assertEqual(
             set(module.CODES),
-            {f"CHG-L{i:03d}" for i in range(1, 18)},
-            "chg_lint owns exactly CHG-L001–L017",
+            {f"CHG-L{i:03d}" for i in range(1, 19)},
+            "chg_lint owns exactly CHG-L001–L018",
         )
         catalog = _catalog_text()
         for code in sorted(module.CODES):
@@ -85,11 +88,25 @@ class LintCatalogAgreement(unittest.TestCase):
             with self.subTest(code=code):
                 self.assertIn(f"`{code}`", catalog, f"{code} emitted but absent from LINT_RULES.md")
 
+    def test_swf_codes_catalogued(self):
+        """Every SWF-L ID the workflow linter owns appears in LINT_RULES.md."""
+        module = _load("swf_lint", SWF_LINT)
+        self.assertEqual(
+            set(module.CODES),
+            {f"SWF-L{i:03d}" for i in range(1, 8)},
+            "swf_lint owns exactly SWF-L001–L007",
+        )
+        catalog = _catalog_text()
+        for code in sorted(module.CODES):
+            with self.subTest(code=code):
+                self.assertIn(f"`{code}`", catalog, f"{code} emitted but absent from LINT_RULES.md")
+
     def test_catalog_rows_grounded(self):
         """Every catalogued row ID is emitted, aliased, or reserved (#715)."""
         chg = _load("chg_lint", CHG_LINT)
         bgf = _load("bugfix_lint", BUGFIX_LINT)
-        owned = set(chg.CODES) | set(bgf.CODES)
+        swf = _load("swf_lint", SWF_LINT)
+        owned = set(chg.CODES) | set(bgf.CODES) | set(swf.CODES)
         impl = _impl_text()
         rows = _row_map()
         self.assertTrue(rows, "no rule rows parsed from LINT_RULES.md")

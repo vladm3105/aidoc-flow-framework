@@ -15,11 +15,288 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.22 |
+| Version | 1.31 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
+
+---
+
+## GD-71 — Mandatory Decision Tracking in Change Requests (`DEC-CHG-NN`), Retirement of `plans/DECISIONS.md`, and Structural Linter Guard (`CHG-L018`) (CHG-80, 0.91.0 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Eliminate the architectural disconnect between Change Requests (CHGs) and decision records, cure long-term drift in `plans/DECISIONS.md` (unmodified since D-0086), provide 100% auditability linking change diffs to formal decisions, retire the secondary repo decision scratchpad into a frozen tombstone, and establish an automated structural linter rule (`CHG-L018`) ensuring no future change request lands without a declared decision.
+- **Decision**:
+  1. **Mandatory Formal Decision Block in `CHG-TEMPLATE.yaml`**:
+     - Embedded Section 1B (`decision:`) as a mandatory top-level section in `framework/governance/chg/CHG-TEMPLATE.yaml` and its Layer 09 mirror `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintained at 100% byte-parity).
+     - Required fields: `decision_id` (`DEC-CHG-NN`), `title`, `status`, `context`, `choice`, `consequences`, and `alternatives_considered`.
+     - Standardized sizing guidelines: C2/C3 changes provide detailed architectural trade-offs and invariants; C1 changes provide concise 1–2 sentence statements of the selected approach and rejected alternatives.
+     - Added Item 15 to `creation_checklist` and `decision_block` to post-creation `validation`.
+  2. **Retirement of `plans/DECISIONS.md`**:
+     - Retired `plans/DECISIONS.md` as a frozen tombstone per this decision, following the same governance procedure used for `plans/FRAMEWORK-TODO.md` and root `CHANGELOG.md`.
+     - Historical entries (`D-0065` through `D-0086`) are preserved strictly for citation and git permalink integrity; no new entries are permitted.
+     - Working agreement `AGENTS.md` updated to direct all future decision tracking to Change Requests (`CHG-NN.yaml`) and this register.
+  3. **Modernization of `DECISION_WORKFLOW.md`**:
+     - Updated Document Control to v1.4 (Framework Version 0.91.0).
+     - Codified the 4-Tier Decision Model: Tier 1 (Seed / Suggestions), Tier 2 (Module / Invariants), Tier 3 (SDD ADR / System Architecture), and Tier 4 (CHG Decision / Change Governance).
+     - Formalized the Decision Threshold Matrix governing when decisions graduate to `framework/governance/DECISIONS.md`.
+  4. **Dedicated Structural Linter Rule (`CHG-L018` / `GOV-022`)**:
+     - Implemented `check_decision_block` in `sdd_doc_lint/chg_lint.py` enforcing rule `CHG-L018`.
+     - Fails with exit code 1 if `decision` is absent, not a mapping, or lacks non-empty `decision_id`, `title`, `choice`, or `consequences`.
+     - Updated `framework/governance/LINT_RULES.md`, `tests/conformance/test_lint_catalog.py`, and authored unit tests in `sdd_doc_lint/tests/test_chg_lint.py`.
+  5. **Acceptance and Golden Parity**:
+     - Updated `tests/acceptance/fixtures/layer_09_chg/valid/CHG-01_golden.yaml` to include the mandatory `decision:` block, maintaining 100% golden template compliance.
+  6. **Versioning**:
+     - Bumped framework version to `0.91.0` (C2 Spec Minor) across `framework/VERSION`, synced document control tables, and extended `hooks/sync-version-refs.sh` `OLD_VERSIONS` with `0.90.2`.
+
+---
+
+## GD-70 — Durable Multi-Agent Execution Architecture Standard (3-Tier Model) & Layer-Specific Execution Guidance for IPLAN, CHG, and EVAL (CHG-76, 0.90.0 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Codify an engine-agnostic 3-tier runtime execution architecture for running autonomous, high-assurance Specification-Driven Development (SDD) multi-agent systems with durable state, cognitive reasoning graphs, and deterministic side effects without vendor lock-in (`D-0013`). Define the operational invariants separating durable orchestrator state from artifact storage, formalize SAGA compensation rules (no LLM in rollback; worktree remove before branch delete), establish capacity budgeting, and define concrete execution guidance specifically for IPLAN (Layer 08), CHG (Layer 09), and EVAL (Layer 10).
+- **Decision**:
+  1. **Normative Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION_STANDARD.md`)**:
+     - Codified the 3-tier architectural separation:
+       - **Tier 1 (Run Workflow / Durable Control Plane)**: Plain deterministic workflow code managing control flow, human gates, zero-cost durable waits, SAGA compensation stack, bounded loops, and lifecycle status. Never invokes LLMs directly.
+       - **Tier 2 (Cognitive Graphs / Reasoning Plane)**: Cyclical reasoning graphs (plan, explore, diagnose, review, patch) where every node calling an LLM runs as an orchestrator activity with structured schemas. Proposes artifacts to the store; never mutates filesystem or git directly.
+       - **Tier 3 (Deterministic Effect & Verification Services)**: Unambiguous, idempotent activities managing git workspaces, compilers, linters, tests, and publishing. Failures are returned structured values, never unhandled exceptions.
+     - **The Golden Rule**: *"Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows."*
+  2. **Role Taxonomy & Contract (`RoleSpec`)**:
+     - Formalized three engine-agnostic role kinds:
+       - `graph`: Cognitive reasoning node/subgraph with explicit LLM model alias and bounded loops.
+       - `executor`: Heartbeated external agent CLI runner in isolated worktree with strict execution timeout.
+       - `service`: Plain deterministic activity for filesystem/git/verification tooling with idempotent compensation.
+  3. **SAGA Invariants & Safe Rollback**:
+     - Strict rule: **No LLM in Rollback**. SAGA compensations are purely deterministic code executed in reverse order (LIFO).
+     - **Order Guard Invariant (`WORKTREE_FLOW.md` §3.8)**: SAGA teardown MUST execute `git worktree remove` *before* deleting the branch (`git branch -D` or remote deletion).
+  4. **Thin-State Orchestration & Artifact Store Separation**:
+     - Workflow state plane carries compact metadata only ($\le 2$ KB: URIs, IDs, exit codes, summaries).
+     - Large artifacts (plans, logs, full AST diffs, test outputs) reside strictly in the data plane (artifact store).
+  5. **Layer-Specific Durable Execution Architecture (IPLAN, CHG, EVAL)**:
+     - **Layer 08 (IPLAN)**: Workspace lifecycle as Tier 3 service; step-by-step patch application with pre-registered SAGA compensation; heartbeated agent CLI crash recovery; worktree teardown order guard.
+     - **Layer 09 (CHG)**: Strict 5-state lifecycle state machine; zero-cost durable human approval gates (`wait_condition`); automated gate validation suites (GATE-01..GATE-SPEC); PR landing and branch promotion coordination.
+     - **Layer 10 (EVAL / IPVERIFY)**: Automated parallel test suite execution; ephemeral fixture provisioning with guaranteed SAGA teardown; multi-persona review crew fan-out across `agents` pool; deterministic quality gate floor (`structural_pass == true && blocking_findings == 0`); dual-path routing and `ReviewReport` `chg_handover`.
+  6. **Runtime Adaptation & Governance Indexing**:
+     - Added Section 12 to `framework/governance/ADAPTATION.md` detailing the reference runtime implementation pattern.
+     - Indexed `DURABLE_EXECUTION_STANDARD.md` across `GOVERNANCE_WORKFLOW_STANDARD.md` and test suite `tests/conformance/test_governance.py`.
+
+---
+
+## GD-69 — Declarative Graph-Based Review Flows, Hardened Review Architecture Blueprints, Dedicated Structural Workflow Linter (`sdd_swf_lint`), and Review Report to CHG Handover Contract (CHG-75, 0.89.0 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Codify declarative workflow specifications and architectural blueprints for SDD review flows across all layers (01_BRD through 09_CHG) and the governance lifecycle, eliminating platform coupling and closing review remediation gaps. Provide a dedicated structural workflow linter (`sdd_swf_lint`) for CNCF Serverless Workflow DSL v0.8 definitions, establish canonical 6-traversal review taxonomy (`REV-PASS`, `REV-AUTO`, `REV-CHG`, `REV-TIME`, `REV-QUOR`, `REV-ESCL`, `REV-ROLL`), author layer-specific review sagas matching `REVIEW_CREWS.yaml`, and define a standardized Review Report schema and template with a formal `chg_handover` envelope linking review findings directly to remediating CHG requests.
+- **Decision**:
+  1. **Refined & Hardened Architectural Blueprints**:
+     - Codified comprehensive ASCII architectural blueprints in `REVIEW_REMEDIATION_FLOW.md` detailing the 5 core stages of review and remediation: Stage 1 (Review Intake & Crew Dispatch), Stage 2 (Parallel Multi-Persona Audit & Finding Collection), Stage 3 (Synthesis & Deterministic Gate Floor Evaluation), Stage 4 (Dual-Path Remediation Routing), and Stage 5 (Terminal Convergence).
+     - Defined the formal 6-traversal taxonomy table governing review transitions: `REV-PASS` (Clean Approval), `REV-AUTO` (Auto-Remediate / In-Band Loop), `REV-CHG` (CHG Escalation / Structural Path), `REV-TIME` (Timeout / Partial Synthesis), `REV-QUOR` (Quorum Failure Escalation), `REV-ESCL` (Iteration Exhaustion / Hard Blocker Escalation), and `REV-ROLL` (Rejection / Revert).
+  2. **Dedicated Structural Workflow Linter (`sdd_swf_lint`)**:
+     - Implemented `sdd_doc_lint/swf_lint.py` enforcing rules `SWF-L001` through `SWF-L007`:
+       - `SWF-L001`: Mandatory root fields (`id`, `name`, `version`, `specVersion`, `start`, `states`).
+       - `SWF-L002`: CNCF Serverless Workflow specVersion compliance (`0.8`).
+       - `SWF-L003`: Valid start state existence.
+       - `SWF-L004`: State completeness & type validity (`operation`, `switch`, `parallel`, `inject`, `sleep`, `event`).
+       - `SWF-L005`: Transition reference validity (all `transition` targets and `dataConditions` targets exist).
+       - `SWF-L006`: Terminal state existence (at least one state with `end: true`).
+       - `SWF-L007`: Reachability & cycle safety (every state reachable from start).
+     - Authored dedicated unit test suite `sdd_doc_lint/tests/test_swf_lint.py` with 10 comprehensive test cases.
+  3. **Dedicated Per-Layer Review & Remediation Workflows**:
+     - Authored 9 layer-specific CNCF Serverless Workflow DSL v0.8 definitions under `framework/governance/workflows/review/`:
+       - `REV-01-BRD` (`brd-review-remediation.sw.yaml`)
+       - `REV-02-PRD` (`prd-review-remediation.sw.yaml`)
+       - `REV-03-EARS` (`ears-review-remediation.sw.yaml`)
+       - `REV-04-BDD` (`bdd-review-remediation.sw.yaml`)
+       - `REV-05-ADR` (`adr-review-remediation.sw.yaml`)
+       - `REV-06-SPEC` (`spec-review-remediation.sw.yaml`)
+       - `REV-07-TDD` (`tdd-review-remediation.sw.yaml`)
+       - `REV-08-IPLAN` (`iplan-review-remediation.sw.yaml`)
+       - `REV-09-CHG` (`chg-review-remediation.sw.yaml`)
+     - Each workflow models the exact multi-persona crew composition, required quorum, and checklist gates from `REVIEW_CREWS.yaml`.
+  4. **Canonical Review Report Schema, Template & CHG Handover Contract**:
+     - Authored JSON Schema `framework/governance/review_report.schema.json` validating review reports, structured findings (`finding_id`, `layer`, `category`, `severity`, `priority`, `location`, `remediation_route`), and `chg_handover` metadata.
+     - Authored canonical template `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` with explicit `chg_handover` envelope linking findings directly to CHG classification (`SDD2C`, `DIR2C`, `SEED2C`, `CODE2C`, `CODE2S`, `HOTFIX`).
+     - Authored template definitions `REVIEW-SWF-TEMPLATE.yaml` and `CHG-SWF-TEMPLATE.yaml` for standardized workflow authoring.
+  5. **Governance Documentation & Standards Synchronization**:
+     - Authored `framework/governance/REVIEW_WORKFLOW_STANDARD.md` establishing the graph specification standards, state model, and validation rules.
+     - Synchronized `REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`, and `DIAGRAM_STANDARDS.md`.
+     - Updated `hooks/sdd-doc-review.sh` to decouple from platform slash-commands while retaining conformance audit tokens.
+  6. **Conformance Suite Parity & Validation**:
+     - Updated `tests/conformance/test_governance.py` EXPECTED_FILES to include all 14 new governance artifacts.
+     - Updated `tests/conformance/test_governance_workflows.py` to validate all 9 layer workflows via `sdd_swf_lint`.
+     - Authored `tests/conformance/test_review_report_parity.py` to ensure schema parity.
+     - Bumped framework version to `0.89.0` and synced all references.
+
+---
+
+## GD-68 — Review Flows & Saga Governance Hardening, Deterministic Quality Gate Floor, Iteration Cap Terminal State, and Adaptation Surface Parity (CHG-74, 0.88.4 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-07
+- **Driver**: Resolve review flow and saga lifecycle gaps identified across `REVIEW_CREWS.yaml`, `REVIEW_REMEDIATION_FLOW.md`, `REVIEW_SAGA.md`, `REVIEW_TEAM.md`, `SECURITY_REVIEW.md`, `review-remediation-flow.sw.yaml`, `ADAPTATION_SURFACE.yaml`, `ADAPTATION.md`, `PROFILE-TEMPLATE.yaml`, and `GOVERNANCE_WORKFLOW_STANDARD.md`. Eliminate platform-era references, establish deterministic quality gate floor rules, correct saga transition scopes and terminal states, align CB-1 arithmetic with the 3-cycle review iteration cap, and harmonize priority-to-severity mappings.
+- **Decision**:
+  1. **Deterministic Gate Floor Standard**:
+     - Codified that the normative gate authorizing promotion/merge requires deterministic structural lint passage (`structural_pass == true`) and zero unresolved blocking findings (`blocking_findings == 0` / zero `P0`/`P1`).
+     - Established that numeric readiness scores (e.g. >= 90) and narrative summaries serve as advisory calibration and enrichment above the deterministic floor, eliminating stochastic pass/fail flapping across model runs.
+     - Updated CNCF Serverless Workflow `review-remediation-flow.sw.yaml` condition to `${ .structural_pass == true and .blocking_findings == 0 }`.
+  2. **Review Saga Lifecycle & Terminal State Correction**:
+     - Updated `REVIEW_SAGA.md` Transition Table to allow `SYNTHESIZED` to transition to `CLOSED` (gate passed), `FANOUT_STARTED` (next iteration crew dispatch), `ESCALATED` (iteration cap exhausted or unresolvable blocking findings), or `PARTIAL_TIMEOUT` (soft deadline checkpoint).
+     - Standardized `ESCALATED` as the canonical terminal state for iteration cap exhaustion across `REVIEW_REMEDIATION_FLOW.md`, `ADAPTATION_SURFACE.yaml` (`quality_loop_max_iterations`), `ADAPTATION.md` §4.6 and §4.12, and `PROFILE-TEMPLATE.yaml`, reserving `PARTIAL_TIMEOUT` strictly for wall-clock deadline checkpoints.
+     - Updated `SPEC_TRANSITIONS` in `tests/conformance/test_saga_lifecycle_parity.py` to maintain parity.
+  3. **Circuit Breaker CB-1 Arithmetic Harmonization**:
+     - Harmonized the default iteration cap of 3 review cycles to explicitly accommodate at most 2 remediation passes (Review 1 → Fix 1 → Review 2 → Fix 2 → Review 3 → Escalate), aligning `REVIEW_REMEDIATION_FLOW.md` and `GOVERNANCE_WORKFLOW_STANDARD.md` §6 Table CB-1.
+  4. **Review Team & Crews Specification Hardening**:
+     - Purged platform-era notes from `REVIEW_CREWS.yaml`, documented default quorum contracts, and codified Layer 10 EVAL grading criteria.
+     - Purged retired agent-brief tests reference from `REVIEW_TEAM.md`, updated playbook file count to 69, clarified multi-persona `team` mode vs `single_pass`, and corrected section cross-references.
+     - Established bidirectional mapping table between finding Priority (`P0`–`P3`) and Severity (`critical`–`acknowledged`).
+     - Fixed pre-push hook path to `hooks/pre_push_check.sh` and harmonized audit reference to `OPS-0065`.
+  5. **Security Review & Engine Agnosticism**:
+     - Expanded `SECURITY_REVIEW.md` scope to cover all SDD layers (01–10: BRD through EVAL), replaced platform references with engine terminology, and corrected checklist threat/rule tags.
+  6. **Versioning**:
+     - Bumped framework version to `0.88.4` and extended `OLD_VERSIONS` in `hooks/sync-version-refs.sh` with `0.88.3`.
+
+---
+
+## GD-67 — Linter Completeness Hardening, Hook Fixes, Dual-Layer Graph Token Harmonization, and Stale Info Purge (CHG-73, 0.88.3 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Complete comprehensive deep review of the whole framework repository, resolving Issue #895, hardening the CHG linter per-artifact lifecycle checks, adding Layer 10 EVAL to trace graph primitives, correcting bash hook em-dash mismatch, harmonizing residual legacy flow tokens (`F1`–`F4`, `Type-R`) with primary graph nomenclature across all documentation surfaces, and purging stale references.
+- **Decision**:
+  1. **Linter Completeness Hardening (CHG-L006 / Issue #895)**:
+     - Updated `sdd_doc_lint/chg_lint.py` to enforce per-artifact coverage loop in `check_sdd_lifecycle_completeness` (CHG-L006), verifying that every SDD document declared in `artifacts_modified` has an explicit entry in `sdd_lifecycle`.
+     - Code files (`_is_code_path`) and IPLAN files are explicitly exempted, while direct leaf changes under `DIR2C` (`iplan_to_code`) are exempt from requiring `sdd_lifecycle`.
+     - Modernized CHG-L004 and CHG-L014 error messages to cite primary graph traversal codes (`DIR2C`, `HOTFIX`, `CODE2S`, `SEED2C`, `CODE2C`, `SDD2C`).
+     - Added 3 regression test cases in `sdd_doc_lint/tests/test_chg_lint.py` validating full vs subset lifecycle coverage and code path exemptions.
+  2. **Trace Graph Layer 10 EVAL Support**:
+     - Updated `sdd_doc_lint/trace_graph.py` to add `"EVAL"` to `KNOWN_LAYERS` and assign `LAYER_INDEX["EVAL"] = 10`, enabling `@eval:` cross-layer tag scanning in the trace graph engine.
+  3. **Hook Hardening & Audit Reference Harmonization**:
+     - Fixed `hooks/pre_push_check.sh` founder-OK skip guidance strings in lines 244 and 258 to carry the required em-dash `—` matching line 228 regex.
+     - Harmonized self-review audit reference to `OPS-0065`.
+     - Updated dead `CLAUDE.md` reference to `AGENTS.md`.
+  4. **Residual Legacy Token Harmonization & Stale Info Purge**:
+     - Harmonized residual `F1`–`F4` and `Type-R` references with canonical dual-layer graph nomenclature (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`) across `AGENTS.md`, root `README.md`, `framework/README.md`, `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/governance/SEED_CONTRACT.md`, `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`, `framework/templates/SEED-TEMPLATE.md`, `framework/governance/README.md`, `framework/governance/LINT_RULES.md`, and `docs/SUPPORT.md`.
+     - Preserved backward-compatible parenthetical qualifiers where required for conformance assertion compatibility.
+  5. **Parity and Versioning**:
+     - Maintained 100% byte-parity between `framework/governance/chg` and `framework/layers/09_CHG`.
+     - Bumped framework version to `0.88.3` and updated `hooks/sync-version-refs.sh` `OLD_VERSIONS` array with `0.88.2`.
+
+---
+
+## GD-66 — Complete Graph Governance Alignment, Purge of Legacy Flow Tokens, and Multi-Path IPLAN/Gate Standard Re-Architecture (CHG-72, 0.88.2 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Complete end-to-end framework alignment with the Dual-Layer Traversal-Path Graph Nomenclature ratified in GD-65 (CHG-71). Ensure all governance standards, workflow definitions, IPLAN execution envelopes, CHG templates, gate definitions, error catalogs, and decision guides eliminate lingering legacy tokens (`F1`–`F4`, `Type-R`) in favor of canonical graph traversal paths (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`). Re-architect IPLAN and Gate 08 to govern all 6 traversal paths, establishing direct leaf fast-lane rules for `DIR2C` (`iplan_to_code`).
+- **Decision**:
+  1. **Purge of Lingering Legacy Tokens**:
+     - Systematically eliminated lingering references to `F1`–`F4` and `Type-R` across `CHG-TEMPLATE.yaml` (governance and Layer 09 mirror), `framework/governance/chg/README.md`, `GATE-CODE_IMPLEMENTATION.md`, and CNCF workflow router descriptions (`workflows/chg-request-flow.sw.yaml`).
+     - Established 100% byte-parity between `framework/governance/chg/` and `framework/layers/09_CHG/`.
+  2. **Multi-Path IPLAN Standard Re-Architecture (`IPLAN_WORKFLOW_STANDARD.md`)**:
+     - Re-architected Section 1 from governing single "Waterfall vs Feedback" dichotomy to comprehensively governing all 6 graph traversal paths (`HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`).
+     - Added `flow` and `flow_code` to the IPLAN Hybrid Document Envelope (YAML header) matching CHG and CNCF workflow schemas.
+     - Codified DIR2C / Fast-Lane rules: relaxed Rule 2 (`@spec` interface) and Rule 4 (`@tdd` test) for direct tasks (`DIR2C` / `iplan_to_code`), allowing isolated doc/tool changes to enter execution without artificial upstream spec dependencies.
+     - Added Section 4.1 formalizing DAG topologies across `SDD2C` (Linear Cascade), `CODE2C` (Intra-Tier Loop), `DIR2C` (Direct Execution), and `CODE2S` (Bubble-Up Reversal).
+     - Modernized Section 5 execution engine adapter pattern with explicit LangGraph state channel schemas.
+  3. **ID & Naming Standards Formalization (`ID_NAMING_STANDARDS.md`)**:
+     - Added Section 1.5 defining the canonical Graph Flow & Code Naming Standards.
+     - Registered CNCF Serverless Workflow files (`*.sw.yaml`) and workflow templates (`-SWF-TEMPLATE.yaml`) in the formal File Naming table.
+     - Formalized Section 4 Workflow State and Action Naming Conventions (`PascalCase` for states, `camelCase` for actions).
+  4. **Gate System & Error Catalog Synchronization**:
+     - Updated `GATE-08_IPLAN.md` to exempt `DIR2C` from `GATE-08-E003` (`@spec` / `@tdd` presence) and provide multi-path routing rules.
+     - Updated `GATE-CODE_IMPLEMENTATION.md` to formally route reverse cascade bubbles under `CODE2S` (`code_to_sdd`) and direct execution under `DIR2C` (`iplan_to_code`).
+     - Updated `GATE_INTERACTION_DIAGRAM.md` with an embedded Mermaid `stateDiagram-v2` illustrating all 6 graph traversal paths across the gate system.
+     - Updated `GATE_APPROVAL_FORM.md` with explicit `Flow`, `Flow Code`, and expanded `Change Source` / `Change Level` fields.
+     - Updated `GATE_ERROR_CATALOG.md` linking emergency codes `EMG-*` to `HOTFIX` and cross-referencing automated `sdd_doc_lint` checks (`CHG-L013` / `GOV-018`).
+
+---
+
+## GD-65 — Dual-Layer Traversal-Path Graph Nomenclature for LangGraph & Rust Rig (CHG-71, 0.88.1 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Modernize framework change request classification from legacy alphanumeric tokens (`F1`–`F4`, `Type-R`, `Emergency`) to an engine-ready Dual-Layer Traversal-Path Graph Nomenclature tailored for autonomous LangGraph (Python/TypeScript) and Rust Rig (`rig-core`) execution engines, while eliminating long-term abbreviation collision risks.
+- **Decision**:
+  1. **Dual-Layer Nomenclature Standard**:
+     - **Canonical Runtime Identifiers (`snake_case`)**: `hotfix`, `code_to_sdd`, `code_to_code`, `seed_to_code`, `iplan_to_code`, `sdd_to_code`. Maps 1:1 to Python function names, LangGraph state channels, and Rust Serde `rename_all = "snake_case"` without runtime translation overhead.
+     - **Unambiguous Graph Codes (5–6 character mnemonic `X2Y` tags)**: `HOTFIX`, `CODE2S`, `CODE2C`, `SEED2C`, `DIR2C`, `SDD2C`. Avoids 3-letter collisions with hardware and business domains (e.g. `I2C` hardware bus, `D2C` direct-to-consumer), provides uniform visual scanning, and establishes unambiguous branch/PR/metric keys.
+  2. **Topological Traversal Semantics**:
+     - `HOTFIX` (`hotfix`): `Code` $\rightarrow$ `Prod` (post-hoc `Doc`) emergency path.
+     - `CODE2S` (`code_to_sdd`): `Code` $\rightarrow$ `IPLAN` $\rightarrow$ `SDD` backward reverse reconciliation.
+     - `CODE2C` (`code_to_code`): `Defect` $\rightarrow$ `IPLAN` $\rightarrow$ `Code` intra-tier bugfix on parent IPLAN.
+     - `SEED2C` (`seed_to_code`): `Seed` $\rightarrow$ `Module` $\rightarrow$ `SDD` $\rightarrow$ `Code` full multi-tier chain.
+     - `DIR2C` (`iplan_to_code`): `IPLAN` $\rightarrow$ `Code` / `Docs` direct scoped leaf change.
+     - `SDD2C` (`sdd_to_code`): `BRD` $\rightarrow$ `PRD` $\rightarrow$ ... $\rightarrow$ `Code` greenfield SDD layer cascade.
+  3. **Templates & Schemas Synchronized**: Added explicit `flow` and `flow_code` fields to `change_control` in `framework/governance/chg/CHG-TEMPLATE.yaml` and mirror `framework/layers/09_CHG/CHG-TEMPLATE.yaml`.
+  4. **CNCF Serverless Workflow & Diagram Parity**: Updated `framework/governance/workflows/chg-request-flow.sw.yaml` router switch and PascalCase execution states (`ExecuteHotfix`, `ExecuteCodeToSdd`, `ExecuteCodeToCode`, `ExecuteSeedToCode`, `ExecuteIplanToCode`, `ExecuteSddToCode`), and updated companion Mermaid diagram in `CHG_REQUEST_FLOWS.md`.
+  5. **Static Linter & Conformance Guard**: Updated `sdd_doc_lint/chg_lint.py` (CHG-L013 / GOV-018) to validate `flow` and `flow_code` enums and parity, and extended `tests/conformance/test_chg_flows_router.py` with `DualLayerGraphNomenclatureAgreement`.
+
+---
+
+## GD-64 — Pre-Production Verification, CNCF Workflow Reconciliation, CI Blueprint Hardening, and Release 0.88.1 Cut-Off Preparation (CHG-70, 0.88.1 PATCH)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Formalize findings, bugfixes, and specification consistency alignments identified during comprehensive pre-production 5-lens review prior to the release cut-off (CHG-70).
+- **Decision**:
+  1. **Document Control & Metadata Synchronization**: Synchronized Document Control tables across all governance files (`README.md`, `WORKTREE_FLOW.md`, `REVIEW_REMEDIATION_FLOW.md`, `DECISION_WORKFLOW.md`, `DIAGRAM_STANDARDS.md`, `AIDOC.md`, `AIDOC-SCAFFOLD-TEMPLATE.md`, `08_IPLAN/README.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, and all 6 adaptation blueprint templates) to Framework Version 0.88.1. Corrected future date in `10_EVAL/README.md`.
+  2. **CNCF Serverless Workflow & Diagram Parity**: Reconciled governance workflow inventory in `framework/governance/README.md` to reflect all 13 active workflows on disk. Embedded companion visual Mermaid state diagrams in `WORKTREE_FLOW.md`, `REVIEW_REMEDIATION_FLOW.md`, and `DECISION_WORKFLOW.md` matching their normative `.sw.yaml` specifications.
+  3. **Worktree & PR Lifecycle Hardening**: Added explicit merge conflict handling (`ResolveMergeConflict` state) to `workflows/worktree-pr-lifecycle.sw.yaml`. Reordered worktree cleanup sequence in `WORKTREE_FLOW.md` §3.8 and updated order guard cross-references in `AGENTS.md` and `governance/README.md`.
+  4. **CI Smart Routing & Adaptation Scaffolding Hardening**: Hardened `AIDOC-CI-SMART-ROUTING-TEMPLATE.md` with `permissions: contents: read` and fixed bash loop variable syntax. Reconciled `docs/ADAPTATION-GUIDE.md` §4.1 inventory with all 5 new blueprints and harmonized fallback discovery paths.
+  5. **Layer Chain & Enum Completeness**: Reconciled layer chains in `01_BRD`, `02_PRD`, and `03_EARS` workflow standards to include Layer 09 CHG. Added `docs` subtype to `08_IPLAN/README.md` subtype specification. Added Layer 10 EVAL upstream dependency mapping to `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
+  6. **Circuit Breakers Taxonomy Reconciliation**: Reconciled CB-1 through CB-6 multi-tier circuit breakers in `DECISIONS.md` (GD-62) and `CHANGELOG.md` with the ratified definitions in `GOVERNANCE_WORKFLOW_STANDARD.md` §6.
+  7. **Release Hook Synchronization**: Updated `hooks/sync-version-refs.sh` `OLD_VERSIONS` array to include `0.88.0` for automated version propagation conformance.
+
+---
+
+## GD-63 — Upstream b-local-privy Governance Adaptation Patterns, Anti-Deadlock CI, Worktree Conflict Resolution, Tripartite Separation of Concerns, and Project Adaptation Scaffolding (CHG-69, 0.88.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Upstream proven operational governance patterns from live production project (`b-local-privy` Issue #923) into the framework core, addressing deadlocks in required status checks, non-standardized merge conflict resolution in autonomous PR flows, lack of tripartite separation of concerns between DEV, SDET, and QA, missing test failure taxonomy, and providing 5 new adaptation scaffolding blueprints for new projects.
+- **Decision**:
+  1. **Anti-Deadlock Invariant & CI Smart Routing**: Codified in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` Document Control v1.2. Prohibits trigger-level path filtering (`paths:`, `paths-ignore:`) on required status checks to prevent perpetual pending deadlocks on doc/governance PRs; mandates internal job/step smart change detection with fail-closed default, the Zero-Mock Invariant, concentric latency targets (<15s, <45s, 2-4m), and machine-readable signoff attestations.
+  2. **Worktree Autonomous PR Conflict Resolution Protocol**: Codified in `framework/governance/WORKTREE_FLOW.md` Document Control v1.1. Establishes Class 1 (Deterministic/Additive) vs Class 2 (Semantic/Architectural) conflict taxonomy, mandates forward branch merges (`git merge origin/dev` in worktree with 0 force-pushes), auto-merge re-arming mandate, circuit breakers (CB-5.1 single attempt, CB-5.2 zero semantic guessing), and multi-worktree port & container sandboxing.
+  3. **Two-Stage Review & Fix Architecture**: Codified in `framework/governance/REVIEW_REMEDIATION_FLOW.md` Document Control v1.2. Formalizes Stage A (Proposal/Spec Review) vs Stage B (Implementation PR Review), strict independence (Judge $\neq$ Generator, fresh context isolation), 4-lens rubric (Correctness, Anti-Mock, Governance, Security), and Technical Verification Authority vs Fiduciary & Scope Authorization.
+  4. **Tripartite Engineering Architecture & QA Invariant**: Codified in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` Document Control v1.3 §8. Establishes clear separation between DEV, SDET, and QA personas, with a strict HARD BLOCK prohibiting QA from modifying production application or test code. Formalizes §8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
+  5. **EARS Grammar & Subagent Prompt Grounding**: Codified in `framework/AI_ASSISTANT_RULES.md` Document Control v1.3. Enforces EARS distinction (`WHILE` for normal operating states vs `IF` for error/fault conditions) and mandates literal upstream element ID passing in subagent prompts.
+  6. **TDD Failure Taxonomy & IPLAN Invariants**: Codified in `framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md` Document Control v1.1 §5. Distinguishes application defects (`failed`) from environment crashes (`infra_error`), and establishes 1:1 status propagation, file ownership, and identifier agreement between TDD and IPLAN.
+  7. **New Project Adaptation Scaffolding Blueprints**: Authored 5 new production scaffolding templates under `framework/governance/aidoc/`:
+     - `AIDOC-CI-SMART-ROUTING-TEMPLATE.md`
+     - `AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`
+     - `AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`
+     - `AIDOC-QA-PROTOCOL-TEMPLATE.md`
+     - `AIDOC-BROWSER-TESTING-TEMPLATE.md`
+  8. **Scaffolding Inventory & Adaptation Guidance**: Updated `AIDOC-SCAFFOLD-TEMPLATE.md` (v2.3) and `docs/ADAPTATION-GUIDE.md` (v1.2) incorporating the 6 operational blueprints.
+  9. **Conformance Testing**: Registered all 5 new templates in `tests/conformance/test_governance.py` (`EXPECTED_FILES`).
+  10. **Engine-Agnostic Purity (D-0013 / GD-06)**: Retained generic vendor-neutral phrasing in core framework specifications; concrete ecosystem tooling (GitHub Actions, Docker Compose, Playwright, pytest) isolated cleanly within the adaptation scaffolding templates.
+
+---
+
+## GD-62 — Upstream autonomous execution flow patterns, multi-tier circuit breakers, structured testing plans, and project adaptation scaffolding (CHG-68, 0.87.0 MINOR)
+
+- **Status**: Ratified
+- **Date**: 2026-10-06
+- **Driver**: Upstream proven operational patterns from production projects (`b-local-privy` Issue #894) into the framework core: embedding the missing companion Mermaid `stateDiagram-v2` diagram in `CHG_REQUEST_FLOWS.md`, formalizing multi-tier circuit breakers (CB-1 through CB-6), formalizing Layer 10 terminal evaluation gates, introducing structured `testing_plan` schemas in CHG templates, providing an operational execution handbook template (`AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`), and enhancing project adaptation guidance.
+- **Decision**:
+  1. Embed the companion Mermaid `stateDiagram-v2` diagram with intent header `@diagram: state-chg-request-flow` in `framework/governance/CHG_REQUEST_FLOWS.md`, achieving complete 1-to-1 visual parity with the normative CNCF Serverless Workflow state machine `workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md`.
+  2. Formalize the Multi-Tier Circuit Breakers Matrix in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §6, standardizing failure detection, threshold budgets, fallback strategies, and recovery actions across:
+     - `CB-1: Review-Fix Iteration Breaker` (Max 2 remediation passes)
+     - `CB-2: CI Polling Deadline` (15 minutes (60 cycles @ 15s))
+     - `CB-3: CI Failure Remediation Cap` (Exactly 1 retry attempt)
+     - `CB-4: Monotonic Phase State Invariant` (0 regressions allowed)
+     - `CB-5: Git Divergence & Conflict Lock` (0 force-pushes allowed)
+     - `CB-6: Scope Boundary Escort` (Out-of-manifest file edit)
+  3. Formalize the Layer 10 Terminal Lifecycle Gate Contract in `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` §7 and `framework/governance/DOC_GOVERNANCE_CORE.md` §4.1: transitions from `IPLAN: Completed` to `IPLAN: Verified` and `CHG: Implemented` to `CHG: Completed` strictly require an authentic Layer 10 evaluation report (`EVAL-{NN}-RPT-001.yaml`) with `verdict: PASS` and 0 failures.
+  4. Cross-reference the Circuit Breakers Matrix in `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` §2.1.
+  5. Introduce a structured `testing_plan:` schema block in both `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` (maintaining byte-identity), specifying unit, integration, e2e_api, e2e_ui, static, bdd_mapping, and isolation_rules, and document in both `README.md` copies.
+  6. Author `framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` as the canonical operational execution handbook scaffold for consumer projects implementing autonomous AI agent development flows.
+  7. Update `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` and `docs/ADAPTATION-GUIDE.md` incorporating concrete `.aidoc/project` blueprints, evaluation ingestion patterns, and client tool hook bindings (`hooks/hooks.json`).
+  8. Engine-agnostic purity (D-0013 / GD-06): retain generic vendor-neutral phrasing without tying the framework specification to any proprietary orchestrator, runtime platform, or task runner.
 
 ---
 

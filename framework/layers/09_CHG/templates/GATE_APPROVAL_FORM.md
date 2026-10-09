@@ -16,11 +16,11 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 > **CHG Reference**: CHG-XX
@@ -35,9 +35,11 @@ custom_fields:
 |-------|-------|
 | **CHG ID** | CHG-XX |
 | **Change Title** | {Brief title} |
-| **Change Level** | C1 / C2 / C3 |
-| **Change Source** | Upstream / Midstream / Design / Execution / External / Feedback / Spec |
-| **Entry Gate** | GATE-01 / GATE-03 / GATE-06 / GATE-08 / GATE-CODE / GATE-SPEC |
+| **Flow** | `hotfix` / `code_to_sdd` / `code_to_code` / `seed_to_code` / `iplan_to_code` / `sdd_to_code` |
+| **Flow Code** | `HOTFIX` / `CODE2S` / `CODE2C` / `SEED2C` / `DIR2C` / `SDD2C` |
+| **Change Level** | C1 / C2 / C3 / Emergency |
+| **Change Source** | Upstream / Midstream / Design / Execution / External / Feedback / Reconciliation / Direct / Spec |
+| **Entry Gate** | GATE-01 / GATE-03 / GATE-06 / GATE-08 / GATE-CODE / GATE-SPEC / EMERGENCY |
 | **SemVer Impact** | major / minor / patch (`Spec` change_source only) |
 | **Requested By** | {Name} |
 | **Request Date** | {YYYY-MM-DDTHH:MM:SS} |
@@ -136,7 +138,7 @@ custom_fields:
 |-------|--------|-------|
 | GATE-08-E001: File manifest complete | [ ] Pass / [ ] Fail | |
 | GATE-08-E002: Test-first order enforced | [ ] Pass / [ ] Fail | |
-| GATE-08-E003: @spec/@tdd tags present | [ ] Pass / [ ] Fail | |
+| GATE-08-E003: @spec/@tdd tags present (or DIR2C exemption) | [ ] Pass / [ ] Fail / [ ] N/A | |
 | GATE-08-E004: Session handoff documented | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
@@ -219,6 +221,7 @@ custom_fields:
 | **C1** | Self-approval (author) |
 | **C2** | PO + TL (GATE-01), TL + Domain (GATE-03), TL (GATE-06), TL (GATE-08), TL + QA (GATE-CODE) |
 | **C3** | Full board per gate + stakeholder |
+| **Emergency** | Incident Commander |
 
 ### 4.2 Approvals
 

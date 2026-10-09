@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 | Field | Value |
 |---|---|
@@ -20,35 +20,150 @@
 > **Ratified 0.57.0 (CHG-06).** All §7 deltas landed: `direct` is a valid template value, the F2.2
 > ruling governs §3.13, and CHG-L013/GOV-018 enforces the router.
 
+### 0.1 Terminology: CHG Flows, CHG Requests, and CHG Graphs
+
+**"CHG flows"** is the framework's standard umbrella terminology for change management and routing workflows. Across framework documentation and operational execution, **CHG flow**, **CHG request**, and **CHG graph** are equivalent, complementary terms:
+
+- **CHG flow**: the procedural / operational lifecycle routing any change (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) from trigger to verification.
+- **CHG request / CHG**: the governance vehicle and transactional authorization initiating an artifact or codebase modification (`CHG-NN.yaml`).
+- **CHG graph**: the declarative state machine topology (`chg-request-flow.sw.yaml` and mermaid state diagrams) executing or modeling the change routing logic.
+- **Change Record**: the post-completion audit document (`CHG-NN` with `status: Implemented` or `Completed`).
+
+In framework operations and agent prompts, **CHG flow == CHG request == CHG graph**: they refer to the unified change management architecture.
+
 ## 1. Flow selector (normative router)
 
 Every artifact change MUST be classified into exactly one flow — or into a governed non-flow path (Emergency,
 Type-R) that yields to its own section — before a CHG is authored. Classify in this order — the first matching
 row wins:
 
-| # | Flow | Trigger | `change_source` | `change_level` | Entry gate | SDD cascade? | IPLAN shape | Verification |
-|---|---|---|---|---|---|---|---|---|
-| F1 | Greenfield development | New product / new layer chain, no prior implementation | `upstream` | C3 | GATE-01 | Yes — full 10-layer authoring per §3.1.1 | Full (all code steps, full manifest) | EVAL cycles + live closeout (deployable — §3.3 rule 10) |
-| F2 | Direct request | Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling) | `direct` (new — see §3) | C1 (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) | Scoped (manifest + steps only, §3.3) | Covering tests + verification commands in the scoped IPLAN; static closeout, no deploy/EVAL owed (non-deployable — §3.3 rule 10) |
-| F3 | Brownfield behavior change | Product design or behavior change to an implemented product | `upstream` / `midstream` / `design` (by lowest affected layer) | C2 / C3 (C3 if cross-layer or new requirements) | GATE-01 / 03 / 06 (by source) | Yes — modules-first restart per §4 (0a seed_scope, 0b affected-module sync + review checkpoint, 0c SDD cascade over affected layers and everything below) | Full, referencing NEW SDD versions (authored only after the checkpoint passes) | EVAL cycles + live closeout (deployable — §3.3 rule 10) |
-| F4 | Bugfix on implemented IPLAN | Defect found in EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN | `feedback` | C1 CHG (CHG-05 vehicle) | GATE-CODE | No (parent SDD stands; fix-IPLAN carries `validation_findings`) | Bugfix-subtype (`parent_iplan` + `source_chg`, repair-scoped manifest, rollback) | Regression suite + parent revision entry; runtime fixes close live (§3.3 rule 10) |
-| — | Emergency (non-flow path) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | Document within 48h + post-mortem | Fix IPLAN post-hoc per `09_CHG/README.md` (Emergency rows) + `templates/POST_MORTEM-TEMPLATE.md` (post-mortem ≤48h) | Post-mortem verification; deployable fixes close live (§3.3 rule 10) |
-| — | Type-R reconciliation (non-flow path) | Verified working codebase preceding its specs (non-emergency empirical work) | `reconciliation` | C2 typical (classify by cascade breadth) | GATE-CODE | Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2 | Reverse-authored (ground truth from code) | §3.1.2 Phase-3 battery; runtime touches close live (§3.3 rule 10) |
+| Code | Flow Identifier | Traversal Path | Trigger | `change_source` | `change_level` | Entry Gate | SDD Cascade? | IPLAN Shape | Verification |
+|:---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| **HOTFIX** | `hotfix` | `Code` $\rightarrow$ `Prod` (post-hoc `Doc`) | Critical production issue requiring fix before authorization | `Emergency` level | Emergency | Post-hoc | None (retroactive document within 48h + post-mortem) | Fix IPLAN post-hoc per `09_CHG/README.md` + `POST_MORTEM-TEMPLATE.md` | Post-mortem verification; deployable fixes close live (§3.3 rule 10) |
+| **CODE2S** | `code_to_sdd` | `Code` $\rightarrow$ `IPLAN` $\rightarrow$ `SDD` | Verified working codebase preceding its specs (non-emergency empirical work) | `reconciliation` | C2 typical | GATE-CODE | Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2 | Reverse-authored (ground truth from code) | §3.1.2 Phase-3 battery; runtime touches close live (§3.3 rule 10) |
+| **CODE2C** | `code_to_code` | `Defect` $\rightarrow$ `IPLAN` $\rightarrow$ `Code` | Defect found in EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN | `feedback` | C1 CHG (CHG-05 vehicle) | GATE-CODE | No (parent SDD stands; fix-IPLAN carries `validation_findings`) | Bugfix-subtype (`parent_iplan` + `source_chg`, repair-scoped manifest, rollback) | Regression suite + parent revision entry; runtime fixes close live (§3.3 rule 10) |
+| **SEED2C** | `seed_to_code` | `Seed` $\rightarrow$ `Module` $\rightarrow$ `SDD` $\rightarrow$ `Code` | Product design or behavior change to an implemented product (Full Multi-Tier Chain) | `upstream` / `midstream` / `design` / `spec` | C2 / C3 (C3 if cross-layer or new requirements) | GATE-01 / 03 / 06 / GATE-SPEC | Yes — modules-first restart per §4 (0a seed_scope, 0b affected-module sync + review checkpoint, 0c SDD cascade over affected layers and everything below) | Full, referencing NEW SDD versions (authored only after checkpoint passes) | EVAL cycles + live closeout (deployable — §3.3 rule 10) |
+| **DIR2C** | `iplan_to_code` | `IPLAN` $\rightarrow$ `Code` / `Docs` | Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling) | `direct` | C1 (every C1: C1 CHG + scoped IPLAN per F2.2, every author; sole exception seed-phase drafting pre-first-BRD) | GATE-CODE | No (`sdd_lifecycle: []`) | Scoped (manifest + steps only, §3.3) | Covering tests + verification commands in scoped IPLAN; static closeout (non-deployable — §3.3 rule 10) |
+| **SDD2C** | `sdd_to_code` | `BRD` $\rightarrow$ `PRD` $\rightarrow$ ... $\rightarrow$ `Code` | New product / new layer chain, no prior implementation (SDD Layer Chain) | `upstream` | C3 | GATE-01 | Yes — full 10-layer authoring per §3.1.1 (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code→EVAL) | Full (all code steps, full manifest) | EVAL cycles + live closeout (deployable — §3.3 rule 10) |
 
-## 2. F1 — Greenfield development
+*(Legacy Aliases: `HOTFIX` $\leftrightarrow$ Emergency, `CODE2S` $\leftrightarrow$ Type-R, `CODE2C` $\leftrightarrow$ F4, `SEED2C` $\leftrightarrow$ F3, `DIR2C` $\leftrightarrow$ F2, `SDD2C` $\leftrightarrow$ F1).*
+
+### 1.1 Change Request Governance State Machine (CNCF Serverless Workflow Parity)
+
+Normative visual representation maintaining 1-to-1 parity with `framework/governance/workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md` §Governance State Machines & Workflow Graphs:
+
+<!--
+diagram_type: state
+scope_boundary: chg_request_flows
+upstream_refs: [chg-request-flow.sw.yaml]
+downstream_refs: [DOC_GOVERNANCE_CORE.md]
+-->
+<!-- @diagram: state-chg-request-flow -->
+```mermaid
+stateDiagram-v2
+    [*] --> ClassifyChangeTrigger
+    ClassifyChangeTrigger --> RouteByClassification: inspectScope
+
+    state RouteByClassification <<choice>>
+    RouteByClassification --> HOTFIX: hotfix (HOTFIX)
+    RouteByClassification --> CODE2S: code_to_sdd (CODE2S)
+    RouteByClassification --> CODE2C: code_to_code (CODE2C)
+    RouteByClassification --> SEED2C: seed_to_code (SEED2C)
+    RouteByClassification --> DIR2C: iplan_to_code (DIR2C)
+    RouteByClassification --> SDD2C: sdd_to_code (SDD2C)
+    RouteByClassification --> EscalateUnknownTrigger: Unknown
+
+    %% 1. HOTFIX Path
+    state "HOTFIX: Execute Immediate Fix" as HOTFIX
+    state "HOTFIX: Author Post-Mortem (<=48h)" as DraftEmergencyPostMortem
+    HOTFIX --> DraftEmergencyPostMortem: deployHotfix
+    DraftEmergencyPostMortem --> [*]
+
+    %% 2. CODE2S Path
+    state "CODE2S: Reconcile Codebase to Specs" as CODE2S
+    CODE2S --> [*]: reverseSDDCascade
+
+    %% 3. CODE2C Path
+    state "CODE2C: Author C1 Bugfix CHG" as CODE2C
+    state "CODE2C: Author Bugfix IPLAN" as AuthorBugfixIPLAN
+    state "CODE2C: Patch Defect & Regressions" as ExecuteBugfix
+    state "CODE2C: Bugfix Closeout" as BugfixCloseout
+    CODE2C --> AuthorBugfixIPLAN: draftCHGDocument
+    AuthorBugfixIPLAN --> ExecuteBugfix: draftBugfixIPLAN
+    ExecuteBugfix --> BugfixCloseout: regressionSuiteGreen
+    BugfixCloseout --> [*]
+
+    %% 4. SEED2C Path
+    state "SEED2C: Author Brownfield CHG" as SEED2C
+    state SeedModuleSyncCheckpoint <<choice>>
+    state "SEED2C: Execute SDD Cascade" as ExecuteSDDCascade
+    state "SEED2C: Reject Checkpoint" as RejectBrownfieldGate
+    SEED2C --> SeedModuleSyncCheckpoint: draftBrownfieldCHG
+    SeedModuleSyncCheckpoint --> ExecuteSDDCascade: seed_scope & module_sync approved
+    SeedModuleSyncCheckpoint --> RejectBrownfieldGate: unreviewed/out-of-sync
+    RejectBrownfieldGate --> [*]: terminate
+
+    %% 5. DIR2C Path
+    state "DIR2C: Author C1 Direct CHG" as DIR2C
+    state ValidateCHGDirect <<choice>>
+    state "DIR2C: Author Scoped IPLAN" as AuthorScopedIPLAN
+    state "DIR2C: Execute Direct Edits & Tests" as ExecuteDirectChanges
+    state "DIR2C: Direct Closeout" as DirectCloseout
+    state "DIR2C: Reject CHG Direct" as RejectCHGDirect
+    DIR2C --> ValidateCHGDirect: lintCHG
+    ValidateCHGDirect --> AuthorScopedIPLAN: lint clean (0 errors)
+    ValidateCHGDirect --> RejectCHGDirect: lint errors
+    AuthorScopedIPLAN --> ExecuteDirectChanges: draftScopedIPLAN
+    ExecuteDirectChanges --> DirectCloseout: tests green
+    DirectCloseout --> [*]
+    RejectCHGDirect --> [*]: terminate
+
+    %% 6. SDD2C Path
+    state "SDD2C: Author Greenfield CHG (C3)" as SDD2C
+    state "SDD2C: Await GATE-01 Approval" as AwaitGate01Approval
+    state EvaluateGate01Approval <<choice>>
+    state "SDD2C: Execute 10-Layer SDD Cascade" as ExecuteFullSDDCascade
+    state "SDD2C: Reject Gate" as RejectGreenfieldGate
+    SDD2C --> AwaitGate01Approval: draftGreenfieldCHG
+    AwaitGate01Approval --> EvaluateGate01Approval: GateApprovalEvent
+    EvaluateGate01Approval --> ExecuteFullSDDCascade: approved == true
+    EvaluateGate01Approval --> RejectGreenfieldGate: rejected / timeout
+    RejectGreenfieldGate --> [*]: terminate
+
+    %% Implementation & Closeout (Shared SDD2C / SEED2C)
+    state "Author Full IPLAN (In Progress)" as AuthorFullIPLAN
+    state "Execute Implementation & Tests" as ExecuteFullImplementation
+    state EvaluateGateCode <<choice>>
+    state "Execute Layer 10 EVAL & Closeout" as ExecuteEVALAndCloseout
+    state "Reject Code Gate" as RejectCodeGate
+
+    ExecuteSDDCascade --> AuthorFullIPLAN
+    ExecuteFullSDDCascade --> AuthorFullIPLAN
+    AuthorFullIPLAN --> ExecuteFullImplementation: draftFullIPLAN
+    ExecuteFullImplementation --> EvaluateGateCode: testSuiteRun
+    EvaluateGateCode --> ExecuteEVALAndCloseout: PASS (0 failed tests)
+    EvaluateGateCode --> RejectCodeGate: tests failed / lint errors
+    ExecuteEVALAndCloseout --> [*]: terminal report PASS
+    RejectCodeGate --> [*]: terminate
+
+    %% Unknown Escalation
+    EscalateUnknownTrigger --> [*]: alertAdmin
+```
+
+## 2. SDD2C (sdd_to_code / F1) — Greenfield SDD layer cascade
 
 The initial 10-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code/Docs/Scripts → EVAL → Verified).
 `change_source: upstream`, `change_level: C3` (cross-layer by construction; `gate_approval.approver` required before status leaves `Proposed` per GOV-012),
 entry GATE-01. SDD-first order (§3.1.1) applies end to end: no IPLAN before the SDD versions it references exist;
 no code before an `In Progress` IPLAN exists (§3.13). This flow is fully governed today; it is named here so the
-router is total — authors MUST NOT file greenfield work as F2 or F4 to dodge the cascade.
+router is total — authors MUST NOT file greenfield work as `DIR2C` (F2) or `CODE2C` (F4) to dodge the cascade.
 
-## 3. F2 — Direct request
+## 3. DIR2C (iplan_to_code / F2) — Direct leaf request
 
 A change request from a human or another AI agent that is NOT related to a previous IPLAN implementation and does
 NOT change product behavior: documentation edits, hook/script/tooling tweaks (`hooks/`, `framework/scripts/`,
 `sdd_doc_lint/` tooling), template typo fixes, non-normative prose. No full SDD chain is required because there is
-no SDD contract at stake — but every F2 change is traced: a C1 CHG + scoped IPLAN for every author (agents and
+no SDD contract at stake — but every `DIR2C` change is traced: a C1 CHG + scoped IPLAN for every author (agents and
 humans), no direct-commit path (CHG-12, issues #772/#773). The sole exception is seed-phase drafting before the
 first BRD is authored against seed vN (SEED_CONTRACT R1) — when no other documents exist yet, there is nothing
 to trace against.
@@ -61,7 +176,7 @@ used: it requires upstream gates passed and TDD test cases defined unconditional
 which a cascade-free change cannot satisfy. `External` MUST NOT be used for direct requests: `External (business)` routes to GATE-01 and
 `External (technical)` to GATE-03 with multi-layer cascades (regulatory, CVE, dependency, 3rd-party API) —
 routing a script tweak through either would mandate a phantom cascade. If the requester cites a regulation, CVE,
-or vendor-API change, the flow is NOT F2 (reclassify: External → F3-shaped cascade).
+or vendor-API change, the flow is NOT `DIR2C` (reclassify: External → `SEED2C`-shaped cascade).
 
 **F2.2 — C1 ruling (always-traced; CHG-12).** The template's old C1 row ("None — direct commit") is
 retired. Every C1 requires a C1 CHG + scoped IPLAN, for every author (agents and humans):
@@ -74,32 +189,32 @@ retired. Every C1 requires a C1 CHG + scoped IPLAN, for every author (agents and
   `source_chg` naming the C1 CHG, manifest covering every touched file, covering test cases for code).
   "Small diff" is not an exemption; the IPLAN is what makes small diffs auditable.
 - Normative-text C1 (a one-line governance/template fix that changes a contract): C1 CHG + scoped IPLAN; the
-  prose change itself ships in the same diff. (This is how §7-type one-line fixes avoid full F3 ceremony
+  prose change itself ships in the same diff. (This is how §7-type one-line fixes avoid full `SEED2C` ceremony
   without evading review.)
 - Sole exception (all bullets): seed-phase drafting before the first BRD is authored against seed vN
   (SEED_CONTRACT R1) — pre-first-BRD drafting with no other documents in existence ships without a CHG/IPLAN.
 
 **F2.3 — Minimal shapes.** The C1 CHG carries: change control (`direct`, C1), `sdd_lifecycle: []` (EMPTY —
-any entry reclassifies the change to F1/F3) PAIRED WITH SDD-free `artifacts_modified` (GOV-014 binds the two:
-no SDD document may appear in `artifacts_modified` unless the lifecycle lists it — for F2 both are empty of
+any entry reclassifies the change to `SDD2C`/`SEED2C`) PAIRED WITH SDD-free `artifacts_modified` (GOV-014 binds the two:
+no SDD document may appear in `artifacts_modified` unless the lifecycle lists it — for `DIR2C` both are empty of
 SDD), implementation steps limited to IPLAN creation, and the requester citation (who asked, verbatim ask or
 link — carried in the change description; no new template field). The scoped IPLAN carries: manifest,
 steps/commands, covering test cases (REQUIRED for code-touching changes — GATE-CODE entry demands test cases
 exist for changed code; verification commands alone do not satisfy entry), and verification commands;
 SDD-trace sections stay empty by construction. Anything
-larger than this shape is NOT F2.
+larger than this shape is NOT `DIR2C`.
 
 **F2.4 — Misclassification guard (lint).** A CHG with a code/script manifest AND (`sdd_lifecycle: []` without
-`source: direct`, OR no IPLAN reference, OR no `parent_iplan` where F4 applies) fails lint — candidate
-GOV-018, see §7. The failure message MUST name the suspected correct flow (F2/F3/F4) so the author reclassifies
+`source: direct`, OR no IPLAN reference, OR no `parent_iplan` where `CODE2C` applies) fails lint — candidate
+GOV-018, see §7. The failure message MUST name the suspected correct flow (`DIR2C`/`SEED2C`/`CODE2C`) so the author reclassifies
 instead of force-passing. Known limit (pass 2): the guard is SYNTACTIC — a behavior change filed with a
-well-formed F2 shape (source `direct` + scoped IPLAN + code manifest) lints green. Semantic misclassification
+well-formed `DIR2C` shape (source `direct` + scoped IPLAN + code manifest) lints green. Semantic misclassification
 relies on human review of the requester citation (§F2.3) and the rejected-candidate record (§6, router rule).
 Untraced changes (commits riding no CHG/IPLAN at all) are caught the same way: the PR reviewer verifies every
 commit against the authorizing CHG/IPLAN manifest (CHG-12 enforcement decision) — branch protection forces
 every change through a PR, so the review gate is total. GOV-018 stays syntactic by design (see LINT_RULES.md).
 
-## 4. F3 — Brownfield behavior change
+## 4. SEED2C (seed_to_code / F3) — Brownfield behavior change (full multi-tier chain)
 
 A product design or behavior change to an implemented product restarts the full SDD chain at the lowest affected
 layer: source `upstream` (BRD/PRD-level) / `midstream` (EARS/BDD/ADR) / `design` (SPEC/TDD), level C2 (single-layer
@@ -116,10 +231,10 @@ or `supersede` (a changed assumption archives the affected seed file's vN and au
 rewritten in place (SEED_CONTRACT R1, frozen per version); a stale seed assumption is superseded, not
 edited away. Every supersede re-points or re-disposes the BRD ledger rows pinned (`seed_version`) to the archived version
 in the same CHG lifecycle. `change_source: spec` (framework self-changes:
-templates/governance/registry/VERSION, GATE-SPEC, level ≥ C2 per GATE-SPEC-E003) is the special case of F3 where
-the "product" is the framework itself. F3 MUST NOT be filed as F2 (no SDD
+templates/governance/registry/VERSION, GATE-SPEC, level ≥ C2 per GATE-SPEC-E003) is the special case of `SEED2C` where
+the "product" is the framework itself. `SEED2C` MUST NOT be filed as `DIR2C` (no SDD
 cascade) even when the diff looks small: behavior change without SDD update is the exact defect §3.1.1 exists to
-prevent. F3 MUST NOT be filed as F4: F4 repairs output to match standing SDD; F3 changes what the SDD promises.
+prevent. `SEED2C` MUST NOT be filed as `CODE2C`: `CODE2C` repairs output to match standing SDD; `SEED2C` changes what the SDD promises.
 
 **Phase 0b — module_lifecycle (sync affected modules only).** Every module the change touches is archived and
 synced in the same CHG lifecycle as the SDD rewrites — version/date/changelog header, scope and invariants
@@ -133,32 +248,28 @@ seed file landed, or supersede archived + bumped with ledger rows re-pointed), e
 No SDD lifecycle step runs and no IPLAN is authored until this checkpoint passes — an IPLAN written against
 unreviewed modules references a chain that is not actual. The checkpoint verdict is recorded in the CHG.
 
-## 5. F4 — Bugfix on implemented IPLAN
+## 5. CODE2C (code_to_code / F4) — Bugfix on implemented IPLAN
 
 A defect found during EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN, is
 repaired exclusively through the CHG-05 vehicle (0.56.0, canon — `LINT_RULES.md:131` GOV-013 carve-out): the parent
 stays immutable (no reopening, no backward transitions); a C1 CHG authorizes; a scoped bugfix-subtype IPLAN
 (`parent_iplan` + `source_chg`, `In Progress`, repair-scoped manifest, rollback with PENDING→DONE/SKIPPED markers)
 satisfies §3.13 as the governed path, not an exemption. Source is `feedback` (production/user-originated defect);
-`execution` (IPLAN-level correction pre-completion) stays on the parent IPLAN itself and never becomes F4.
-No-fix-on-fix: a failed attempt runs rollback; retry is a new sibling citing `prior_attempts`. F4 MUST NOT be used
-for behavior change (that's F3) or for defects in `Draft`/`Approved`/`In Progress` plans (fix on the active IPLAN
+`execution` (IPLAN-level correction pre-completion) stays on the parent IPLAN itself and never becomes `CODE2C`.
+No-fix-on-fix: a failed attempt runs rollback; retry is a new sibling citing `prior_attempts`. `CODE2C` MUST NOT be used
+for behavior change (that's `SEED2C`) or for defects in `Draft`/`Approved`/`In Progress` plans (fix on the active IPLAN
 itself — the AGENTS.md exception — no CHG required).
 
 ## 6. Router procedure (replaces ad-hoc classification)
 
-1. Critical production issue requiring fix before authorization? → **Emergency path** (fix → deploy → document
-   + post-mortem within 48h). The router yields. F2 is never the speed lane for production incidents.
-2. Verified working codebase preceding its specs (non-emergency empirical work)? → **Type-R**: §3.1.2 governs
-   (reverse-authored IPLAN, GATE-CODE, Phase-3 battery). The router yields; F1 MUST NOT claim it.
-3. Is there a defect traceable to a `Completed`/`Verified` IPLAN? → **F4**.
-4. Does the change alter product behavior, requirements, specs, or test contracts? → **F3** (at the lowest affected layer; framework self-change → F3/spec).
-5. Is there any prior IPLAN this change relates to, or any SDD contract at stake? If neither: **F2 with C1 CHG + scoped IPLAN** (code/script-touching AND docs-only non-normative alike, every author — CHG-12). Sole exception: seed-phase drafting before the first BRD is authored against seed vN (no flow, no CHG).
-6. Otherwise → **F1** (new chain) — the default for anything that reaches IPLAN without a parent.
+1. Critical production issue requiring fix before authorization? → **`HOTFIX` (`hotfix` / Emergency path)** (fix → deploy → document + post-mortem within 48h). The router yields. `DIR2C` is never the speed lane for production incidents.
+2. Verified working codebase preceding its specs (non-emergency empirical work)? → **`CODE2S` (`code_to_sdd` / Type-R)**: §3.1.2 governs (reverse-authored IPLAN, GATE-CODE, Phase-3 battery). The router yields; `SDD2C` MUST NOT claim it.
+3. Is there a defect traceable to a `Completed`/`Verified` IPLAN? → **`CODE2C` (`code_to_code` / F4)** (repair-scoped manifest, parent SDD stands).
+4. Does the change alter product behavior, requirements, specs, or test contracts? → **`SEED2C` (`seed_to_code` / F3)** (full multi-tier chain: Seed→Module→SDD→IPLAN→Code; framework self-change → `SEED2C`/`spec`).
+5. Is there any prior IPLAN this change relates to, or any SDD contract at stake? If neither: → **`DIR2C` (`iplan_to_code` / F2 with C1 CHG + scoped IPLAN)** (code/script-touching AND docs-only non-normative alike, every author — CHG-12). Sole exception: seed-phase drafting before the first BRD is authored against seed vN (no flow, no CHG).
+6. Otherwise → **`SDD2C` (`sdd_to_code` / F1)** (new SDD chain, L1–L10) — the default for anything that reaches IPLAN without a parent.
 
-Steps 1–6 are ordered as a decision list: Emergency first (safety), Type-R second (chronology), F4 third (narrowest
-flow), behavior fourth, direct fifth, greenfield default. When two rows seem to match, the EARLIER row wins;
-record the rejected candidate and one-line rationale in the CHG so reclassification is auditable.
+Steps 1–6 are ordered as a decision list: `HOTFIX` first (safety), `CODE2S` second (chronology), `CODE2C` third (narrowest flow), `SEED2C` fourth (full chain), `DIR2C` fifth (scoped leaf), `SDD2C` sixth (greenfield default). When two rows seem to match, the EARLIER row wins; record the rejected candidate and one-line rationale in the CHG so reclassification is auditable.
 
 ## 7. Ratification deltas (REQUIRED before this document takes effect)
 

@@ -1,0 +1,242 @@
+# =============================================================================
+#  IPLAN-SWF-TEMPLATE.yaml — Executable Implementation Plan (CNCF v0.8 DSL)
+# =============================================================================
+#  SDD Layer 8 — Mandatory execution bridge from SPEC/TDD to source code
+#  Adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs,
+#  deterministic gate switches, and native saga rollback compensation.
+# =============================================================================
+
+doc_id: IPLAN-NN
+title: "[Implementation Plan Title]"
+
+# =============================================================================
+# Template Metadata (SDD Envelope)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "iplan-document"
+  layer: 8
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  total_sections: 6
+  last_updated: "2026-10-05"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+    - cncf-workflow
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-NN"
+  subtype: workflow  # code_build | deploy | combined | workflow | audit_fix | bugfix | docs
+  source_spec: "@spec: SPEC-NN"
+  status: Draft  # Draft | Approved | In Progress | Completed | Verified
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Engineer / AI Persona]"
+  complexity: 2
+  estimated_files: 5
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest (Static Inventory)
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "src/component.py"
+      description: "Source code implementation fulfilling SPEC contracts"
+      order: 1
+      status: PENDING
+      session: 1
+      verified: false
+    - path: "tests/unit/test_component.py"
+      description: "Unit test suite covering TDD assertions"
+      order: 2
+      status: PENDING
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 2b: TDD↔IPLAN Consistency Tracking
+# =============================================================================
+
+tdd_consistency:
+  status: complete  # complete | partial | not-applicable
+  tdd_ref: "@tdd: TDD.NN.01.0001"
+  coverage_percentage: 100
+
+# =============================================================================
+# Section 3: Executable Workflow Graph (CNCF Serverless Workflow v0.8)
+# =============================================================================
+
+workflow:
+  id: iplan-nn-workflow
+  name: "Component Execution Workflow"
+  version: "1.0"
+  specVersion: "0.8"
+  start: Step1_PreFlightCheck
+
+  states:
+    # --- Step 1: Pre-flight Verification ---
+    - name: Step1_PreFlightCheck
+      type: operation
+      actions:
+        - name: verifyGitWorkspace
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git status --porcelain"
+      transition: Step2_SnapshotOriginals
+
+    # --- Step 2: Pre-change Snapshots ---
+    - name: Step2_SnapshotOriginals
+      type: operation
+      actions:
+        - name: snapshotFiles
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "mkdir -p archive/CHG-NN/ && cp src/component.py archive/CHG-NN/"
+      transition: Step3_ImplementTestsFirst
+
+    # --- Step 3: Test Implementation (TDD First) ---
+    - name: Step3_ImplementTestsFirst
+      type: operation
+      compensatedBy: CleanupTestFiles
+      actions:
+        - name: writeUnitTests
+          metadata:
+            "@spec": "SPEC-NN"
+            "@tdd": "TDD.NN.01.0001"
+          functionRef:
+            refName: writeFileContent
+            arguments:
+              target_file: "tests/unit/test_component.py"
+              persona: "qa_lead"
+      transition: Step4_ImplementSourceCode
+
+    # --- Step 4: Source Implementation ---
+    - name: Step4_ImplementSourceCode
+      type: operation
+      compensatedBy: RollbackSourceFiles
+      actions:
+        - name: writeComponentLogic
+          metadata:
+            "@spec": "SPEC-NN"
+            "@req": "PRD-NN.FR-01"
+          functionRef:
+            refName: editFileContent
+            arguments:
+              target_file: "src/component.py"
+              persona: "developer"
+      transition: Step5_VerifyImplementationSuite
+
+    # --- Step 5: Verification Gate Check ---
+    - name: Step5_VerifyImplementationSuite
+      type: operation
+      actions:
+        - name: runPytest
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "pytest tests/unit/test_component.py"
+        - name: runLinters
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "ruff check src/component.py"
+      transition: EvaluateVerificationGate
+
+    - name: EvaluateVerificationGate
+      type: switch
+      dataConditions:
+        - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
+          transition: Step6_CommitAndSignoff
+      defaultCondition:
+        transition: TriggerSagaRollback
+
+    # --- Step 6: Terminal Success ---
+    - name: Step6_CommitAndSignoff
+      type: operation
+      actions:
+        - name: stageAndCommit
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git add src/ tests/ && git commit -m 'feat: implement component per IPLAN-NN'"
+      end: true
+
+    # --- Saga Compensation Handlers (Executable Rollbacks) ---
+    - name: TriggerSagaRollback
+      type: operation
+      actions:
+        - name: logFailure
+          functionRef:
+            refName: logError
+            arguments:
+              message: "Verification tests failed. Triggering automated saga rollback."
+      transition: RollbackSourceFiles
+
+    - name: RollbackSourceFiles
+      type: operation
+      actions:
+        - name: revertSource
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git checkout HEAD -- src/component.py"
+      transition: CleanupTestFiles
+
+    - name: CleanupTestFiles
+      type: operation
+      actions:
+        - name: removeTest
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "rm -f tests/unit/test_component.py"
+      end:
+        terminate: true
+
+# =============================================================================
+# Section 4: Implementation Contracts & Invariants
+# =============================================================================
+
+implementation_contracts:
+  invariants:
+    - "Component satisfies all SPEC-NN algorithmic invariants"
+    - "No global mutable state outside the instantiated component scope"
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+
+session_handoff:
+  current_phase: "Ready for Execution"
+  completed_states: []
+  pending_states:
+    - "Step1_PreFlightCheck"
+    - "Step2_SnapshotOriginals"
+    - "Step3_ImplementTestsFirst"
+    - "Step4_ImplementSourceCode"
+    - "Step5_VerifyImplementationSuite"
+    - "Step6_CommitAndSignoff"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+
+traceability:
+  upstream:
+    - "@spec: SPEC-NN"
+    - "@tdd: TDD.NN.01.0001"
+  downstream:
+    - "@code: src/component.py"
+    - "@test: tests/unit/test_component.py"

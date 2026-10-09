@@ -131,7 +131,7 @@ layer="$(printf '%s' "$artifact" | tr '[:upper:]' '[:lower:]' 2>/dev/null)"
 # its length.
 safe_base="$(printf '%s' "$base" | tr -d '<>' 2>/dev/null | tr -d '[:cntrl:]' 2>/dev/null |
   cut -c1-200 2>/dev/null)"
-msg="Edited a ${artifact} document (<untrusted-filename>${safe_base}</untrusted-filename>). Per the framework review→remediation→gate loop (on_author): run /aidoc-flow:doc-${layer}-audit to score readiness before promoting downstream; if it scores below the gate, /aidoc-flow:doc-${layer}-fixer remediates."
+msg="Edited a ${artifact} document (<untrusted-filename>${safe_base}</untrusted-filename>). Per the framework review→remediation→gate loop (on_author): evaluate playbooks and sdd_doc_lint via doc-${layer}-audit to score readiness before promoting downstream; if it scores below the gate, doc-${layer}-fixer remediates."
 
 # ── Structural findings (verbose, adopted projects only) ─────────────────────
 # `adopted` is a NOISE gate, not a trust boundary: every signal it reads is

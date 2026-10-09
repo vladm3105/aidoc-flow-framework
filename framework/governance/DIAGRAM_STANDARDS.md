@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.10"
+  version: "1.11"
 ---
 
 # Diagram Standards
@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |---|---|
-| Version | 1.11 |
+| Version | 1.12 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -254,7 +254,7 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml` and `framework/governance/workflows/review/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), 9 per-layer review & remediation flows (`workflows/review/*.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.
@@ -269,7 +269,7 @@ Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDia
 
 | Aspect | Workflow Specification |
 |---|---|
-| Governance Workflows | `framework/governance/workflows/<slug>.sw.yaml` (CNCF v0.8 YAML) |
+| Governance Workflows | `framework/governance/workflows/<slug>.sw.yaml` and `workflows/review/<slug>.sw.yaml` (CNCF v0.8 YAML) |
 | Implementation Workflows | `framework/layers/08_IPLAN/<slug>.yaml` (`workflow:` block) |
 | Behavioral Workflows | `framework/layers/04_BDD/<slug>.yaml` (`workflow:` block) |
 | Test Execution Workflows | `framework/layers/07_TDD/<slug>.yaml` (`workflow:` block) |
@@ -278,7 +278,7 @@ Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDia
 | Requirements Validation Workflows | `framework/layers/03_EARS/<slug>.yaml` (`requirements.workflow_definition:` block) |
 | Product Decomposition Workflows | `framework/layers/02_PRD/<slug>.yaml` (`component_decomposition.workflow_definition:` block) |
 | Business Validation Workflows | `framework/layers/01_BRD/<slug>.yaml` (`value_stream_mapping.workflow_definition:` block) |
-| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`, `SPEC_WORKFLOW_STANDARD.md`, `ADR_WORKFLOW_STANDARD.md`, `EARS_WORKFLOW_STANDARD.md`, `PRD_WORKFLOW_STANDARD.md`, `BRD_WORKFLOW_STANDARD.md` |
+| Standards Authority | `GOVERNANCE_WORKFLOW_STANDARD.md`, `REVIEW_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`, `SPEC_WORKFLOW_STANDARD.md`, `ADR_WORKFLOW_STANDARD.md`, `EARS_WORKFLOW_STANDARD.md`, `PRD_WORKFLOW_STANDARD.md`, `BRD_WORKFLOW_STANDARD.md` |
 | Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
 | Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 

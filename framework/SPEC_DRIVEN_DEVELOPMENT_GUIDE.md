@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.3 |
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 ## Overview
@@ -36,10 +36,11 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | L9 | CHG | Change management overlay — gates, versioning, audit trail | Any | — |
 | L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
 
-The forward chain above is the **F1 greenfield** flow. Subsequent changes do not all repeat it: behavior changes
-restart the chain from the lowest affected layer (**F3** brownfield, SDD-first), defects in completed work repair
-through the scoped bugfix vehicle (**F4**, parent immutable), and small direct requests skip the SDD cascade
-(**F2**). Which flow a change takes is routed by
+The forward chain above is the **SDD2C greenfield** (F1) flow. Subsequent changes do not all repeat it: behavior changes
+restart the chain from the lowest affected layer (**SEED2C** brownfield / F3, SDD-first), defects in completed work repair
+through the scoped bugfix vehicle (**CODE2C** / F4, parent immutable), backward reconciliation maps existing code (**CODE2S** / Type-R),
+emergency production fixes route via **HOTFIX** (Emergency), and small direct requests skip the SDD cascade
+(**DIR2C** / F2). Which flow a change takes is routed by
 [`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
 
 ## Necessary-upstream traceability
@@ -59,6 +60,7 @@ ADR:   @ears @bdd
 SPEC:  @ears @bdd @adr
 TDD:   @ears @bdd @adr @spec
 IPLAN: @spec @tdd
+EVAL:  @ears @bdd @tdd @iplan
 ```
 
 `required_tags` is the minimum trace-resolution set; a layer MAY carry extra

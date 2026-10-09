@@ -125,7 +125,7 @@ ARCHIVE_EXCL="archive/CHG-"
 # release on every MINOR bump (#663) — the conformance pin
 # (tests/conformance/test_sync_version_refs.py) fails if a swept-form
 # literal in the tree is missing from this list.
-OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1 0.68.2 0.68.3 0.68.4 0.68.5 0.68.6 0.69.0 0.70.0 0.70.1 0.70.2 0.70.3 0.71.0 0.72.0 0.72.1 0.72.2 0.73.0 0.74.0 0.75.0 0.76.0 0.77.0 0.78.0 0.79.0 0.80.0 0.81.0 0.82.0 0.83.0 0.84.0 0.85.0 0.86.0"
+OLD_VERSIONS="0.50.0 0.51.0 0.52.0 0.53.0 0.53.1 0.53.2 0.53.3 0.54.0 0.55.0 0.56.0 0.57.0 0.57.1 0.58.0 0.59.0 0.59.1 0.59.2 0.60.0 0.61.0 0.61.1 0.61.2 0.61.3 0.61.4 0.61.5 0.61.6 0.61.7 0.61.8 0.62.0 0.62.1 0.62.2 0.62.3 0.62.4 0.62.5 0.62.6 0.62.7 0.63.0 0.64.0 0.65.0 0.65.1 0.65.2 0.67.0 0.67.1 0.68.0 0.68.1 0.68.2 0.68.3 0.68.4 0.68.5 0.68.6 0.69.0 0.70.0 0.70.1 0.70.2 0.70.3 0.71.0 0.72.0 0.72.1 0.72.2 0.73.0 0.74.0 0.75.0 0.76.0 0.77.0 0.78.0 0.79.0 0.80.0 0.81.0 0.82.0 0.83.0 0.84.0 0.85.0 0.86.0 0.86.1 0.87.0 0.88.0 0.88.1 0.88.2 0.88.3 0.88.4 0.89.0 0.90.0 0.90.1 0.90.2 0.91.0 0.91.1"
 
 # --- playbook frontmatter pins (Step 6 of CLEANUP-001 pins these at 0.53.3) ---
 # NUL-delimited throughout (#830-3): a newline in a filename must not split
@@ -148,7 +148,7 @@ for old in $OLD_VERSIONS; do
   # ERE — \| is a GNU extension). The old || join held empty alternatives
   # that matched every file; sweep's literal re-match hid it (#886).
   _old_esc="${old//./[.]}"
-  _meta_pat="${_meta_pat}framework_version: \"${_old_esc}\"|[|] Framework Version [|] ${_old_esc} [|]"
+  _meta_pat="${_meta_pat}framework_version: \"${_old_esc}\"|[|] Framework Version [|] ${_old_esc} [|]|--canon framework/v${_old_esc}|Live Framework Version: ${_old_esc}|Quickstart [(]Version ${_old_esc}[)]"
 done
 while IFS= read -r -d '' f; do
   rel="${f#"$REPO_ROOT"/}"
@@ -159,8 +159,11 @@ while IFS= read -r -d '' f; do
   for old in $OLD_VERSIONS; do
     sweep "$rel" "framework_version: \"$old\"" "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
     sweep "$rel" "| Framework Version | $old |" "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
+    sweep "$rel" "--canon framework/v$old" "--canon framework/v$FRAMEWORK_VERSION" 5 || true
+    sweep "$rel" "Live Framework Version: $old." "Live Framework Version: $FRAMEWORK_VERSION." 5 || true
+    sweep "$rel" "Quickstart (Version $old)" "Quickstart (Version $FRAMEWORK_VERSION)" 5 || true
   done
-done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" 2>/dev/null || true)
+done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" "$REPO_ROOT/docs/" 2>/dev/null || true)
 
 if [ "$rc" -ne 0 ]; then
   echo "sync-version-refs: one or more files refused (see above)" >&2

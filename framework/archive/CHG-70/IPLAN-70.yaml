@@ -1,0 +1,169 @@
+# =============================================================================
+#  IPLAN-70: Pre-Production Framework Verification, CNCF Workflow Reconciliation,
+#  CI Blueprint Hardening, and 0.88.1 Release Cut-Off Preparation
+# =============================================================================
+
+id: IPLAN-70
+title: "Implementation Plan: Pre-Production Framework Verification, CNCF Workflow Reconciliation, CI Blueprint Hardening, and 0.88.1 Release Cut-Off Preparation"
+metadata:
+  schema_version: "2.0"
+  framework_version: "0.88.1"
+  document_type: "iplan-document"
+  layer: 8
+  author: "Framework Maintainer"
+  status: "Completed"
+  chg_reference: "CHG-70"
+  created_at: "2026-10-06T00:00:00Z"
+
+file_manifest:
+  files:
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Document Control v1.2, incorporate 5 new blueprints into §4.1, correct discovery fallback paths, resolve contradictory update advice"
+      order: 1
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md"
+      description: "Fix shell variable loop syntax in aggregate status check and add permissions: contents: read"
+      order: 2
+      status: DONE
+    - path: "framework/governance/workflows/chg-request-flow.sw.yaml"
+      description: "Correct post-mortem template reference path to framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md"
+      order: 3
+      status: DONE
+    - path: "framework/governance/workflows/worktree-pr-lifecycle.sw.yaml"
+      description: "Add .pr.mergeable == 'CONFLICTING' condition and ResolveMergeConflict state; update step 8 comment to §3.8"
+      order: 4
+      status: DONE
+    - path: "framework/governance/README.md"
+      description: "Reconcile CNCF workflows table with 13 actual files on disk; update §3.7 to §3.8 in worktree description"
+      order: 5
+      status: DONE
+    - path: "framework/governance/aidoc/README.md"
+      description: "Add all 5 new blueprints to templates inventory table"
+      order: 6
+      status: DONE
+    - path: "framework/governance/WORKTREE_FLOW.md"
+      description: "Reorder §3.8 cleanup commands (pull dev before branch delete) and embed companion Mermaid state machine"
+      order: 7
+      status: DONE
+    - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      description: "Align Mermaid diagram and prose state table with review-remediation-flow.sw.yaml"
+      order: 8
+      status: DONE
+    - path: "framework/governance/DECISION_WORKFLOW.md"
+      description: "Align Mermaid diagram and prose state table with decision-ratification-flow.sw.yaml"
+      order: 9
+      status: DONE
+    - path: "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+      description: "Correct ASCII layer chain numbering to include Layer 09 CHG"
+      order: 10
+      status: DONE
+    - path: "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+      description: "Correct ASCII layer chain numbering to include Layer 09 CHG"
+      order: 11
+      status: DONE
+    - path: "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+      description: "Correct ASCII layer chain numbering to include Layer 09 CHG"
+      order: 12
+      status: DONE
+    - path: "framework/layers/10_EVAL/README.md"
+      description: "Correct date from future 2026-10-27 to 2026-10-06"
+      order: 13
+      status: DONE
+    - path: "framework/governance/DIAGRAM_STANDARDS.md"
+      description: "Synchronize frontmatter version from 1.10 to 1.11"
+      order: 14
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC.md"
+      description: "Correct fallback path to .aidoc/framework/framework/{same-path}"
+      order: 15
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      description: "Correct fallback path to .aidoc/framework/framework/{same-path}"
+      order: 16
+      status: DONE
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "Add docs to subtype list"
+      order: 17
+      status: DONE
+    - path: "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+      description: "Add Layer 10 EVAL to necessary-upstream list"
+      order: 18
+      status: DONE
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.88.0 to OLD_VERSIONS"
+      order: 19
+      status: DONE
+    - path: "AGENTS.md"
+      description: "Update §3.7 order guard references to §3.8 order guard"
+      order: 20
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md"
+      description: "Add standard Document Control block (v1.1)"
+      order: 21
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md"
+      description: "Add standard Document Control block (v1.1)"
+      order: 22
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md"
+      description: "Add standard Document Control block (v1.1)"
+      order: 23
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md"
+      description: "Add standard Document Control block (v1.1)"
+      order: 24
+      status: DONE
+    - path: "framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+      description: "Add standard Document Control block (v1.1)"
+      order: 25
+      status: DONE
+    - path: "framework/governance/DECISIONS.md"
+      description: "Record Decision GD-64 and reconcile CB-1..CB-6 table"
+      order: 26
+      status: DONE
+    - path: "framework/VERSION"
+      description: "Bump bare SemVer from 0.88.0 to 0.88.1"
+      order: 27
+      status: DONE
+    - path: "framework/CHANGELOG.md"
+      description: "Document 0.88.1 release and reconcile CB-1..CB-6 table"
+      order: 28
+      status: DONE
+
+execution_steps:
+  - id: STEP-01
+    action: "Update AIDOC-CI-SMART-ROUTING-TEMPLATE.md with shell loop syntax fix and permissions"
+    expected_output: "Zero CI syntax errors; permissions: contents: read added"
+  - id: STEP-02
+    action: "Update ADAPTATION-GUIDE.md with Document Control v1.2, 5 blueprints, and discovery paths"
+    expected_output: "Complete alignment with 0.88.0 and 0.88.1 releases"
+  - id: STEP-03
+    action: "Update chg-request-flow.sw.yaml with valid post-mortem template path"
+    expected_output: "Template path resolves on disk"
+  - id: STEP-04
+    action: "Update worktree-pr-lifecycle.sw.yaml with CONFLICTING state handling"
+    expected_output: "Zero infinite polling on PR merge conflicts"
+  - id: STEP-05
+    action: "Update governance READMEs and inventories"
+    expected_output: "CNCF workflows and templates tables fully accurate"
+  - id: STEP-06
+    action: "Reconcile REVIEW_REMEDIATION_FLOW.md and DECISION_WORKFLOW.md with CNCF state machines"
+    expected_output: "Zero phantom states; 1-to-1 visual and tabular parity"
+  - id: STEP-07
+    action: "Fix WORKTREE_FLOW.md cleanup command order and AGENTS.md section citations"
+    expected_output: "dev branch pulled before branch deletion; §3.8 references intact"
+  - id: STEP-08
+    action: "Correct layer numbering in 01_BRD, 02_PRD, and 03_EARS standards"
+    expected_output: "CHG (09) represented in layer chain; Code not labeled 09"
+  - id: STEP-09
+    action: "Standardize Document Control tables across all 5 new blueprints and execution flow"
+    expected_output: "Document Control blocks present with v1.0 and framework version 0.88.1"
+  - id: STEP-10
+    action: "Update minor metadata and doc fixes (10_EVAL date, DIAGRAM_STANDARDS version, IPLAN docs subtype, SPEC guide EVAL upstream)"
+    expected_output: "All metadata fully synchronized"
+  - id: STEP-11
+    action: "Record Decision GD-64 in DECISIONS.md and update CHANGELOG.md; reconcile CB table"
+    expected_output: "GD-64 ratified, release 0.88.1 documented, circuit breaker table unified"
+  - id: STEP-12
+    action: "Bump framework/VERSION to 0.88.1 and update sync-version-refs.sh"
+    expected_output: "framework/VERSION reads 0.88.1"

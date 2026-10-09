@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.10 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -85,9 +85,21 @@ framework/governance/
 │   ├── adr-decision-analysis.sw.yaml         # Layer 05 architectural trade-off analysis & multi-criteria evaluation
 │   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │   ├── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
-│   └── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
+│   ├── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
+│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-09)
+│       ├── brd-review-remediation.sw.yaml    # Layer 01 BRD review remediation saga (REV-01-BRD)
+│       ├── prd-review-remediation.sw.yaml    # Layer 02 PRD review remediation saga (REV-02-PRD)
+│       ├── ears-review-remediation.sw.yaml   # Layer 03 EARS review remediation saga (REV-03-EARS)
+│       ├── bdd-review-remediation.sw.yaml    # Layer 04 BDD review remediation saga (REV-04-BDD)
+│       ├── adr-review-remediation.sw.yaml    # Layer 05 ADR review remediation saga (REV-05-ADR)
+│       ├── spec-review-remediation.sw.yaml   # Layer 06 SPEC review remediation saga (REV-06-SPEC)
+│       ├── tdd-review-remediation.sw.yaml    # Layer 07 TDD review remediation saga (REV-07-TDD)
+│       ├── iplan-review-remediation.sw.yaml  # Layer 08 IPLAN review remediation saga (REV-08-IPLAN)
+│       └── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
+├── REVIEW_WORKFLOW_STANDARD.md               # Normative specification for graph-based review sagas
+├── DURABLE_EXECUTION_STANDARD.md              # Normative specification for 3-tier durable multi-agent architecture
 ├── CHG_REQUEST_FLOWS.md                      # Prose guide embedding chg-request-flow graph
 ├── SEED_TO_MODULE_DECOMPOSITION.md           # Prose guide embedding decomposition graph
 ├── WORKTREE_FLOW.md                          # Prose guide embedding worktree graph
@@ -227,7 +239,64 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 
 ---
 
-## 6. Review Log
+---
+
+## 6. Multi-Tier Circuit Breakers (Anti-Infinite Loop System)
+
+To guarantee that autonomous execution never enters an uncontrolled loop, exhausts compute, or cascades errors, any conforming multi-agent engine enforces six non-negotiable circuit breakers:
+
+| Breaker | Threshold | Trigger Condition | System Action | Governing Framework Standard |
+| :--- | :--- | :--- | :--- | :--- |
+| **CB-1: Review-Fix Iteration Breaker** | Max 2 remediation passes (3 review cycles) | Pass 2 remediation unpassed or iteration cap (3 cycles) reached | **HALT.** Escalate to human founder with exact dissenting findings and proposed alternatives. | `REVIEW_REMEDIATION_FLOW.md` §Iteration cap, `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 4 |
+| **CB-2: CI Polling Deadline** | 15 minutes (60 cycles @ 15s) | Required status checks remain pending, queued, or running after 15 minutes | **HALT.** Abort polling, diagnose stuck workflow run via platform API, and alert human founder. | `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 3, `AGENTS.md` §Watching your PR |
+| **CB-3: CI Failure Remediation Cap** | Exactly 1 retry attempt | Required CI status checks fail on pull request | **REMEDIATE ONCE.** Pull run logs, apply targeted fix on feature branch, re-verify locally, push commit. If checks fail a second time, **HALT** immediately. | `AGENTS.md` §Non-negotiables, `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 4 |
+| **CB-4: Monotonic Phase State Invariant** | 0 regressions allowed | Attempt to modify a `Completed` step or regress CHG/IPLAN status | **FATAL REJECT.** Completed steps are immutable. Post-implementation defects must be addressed via new follow-up issue/CHG. | `DOC_GOVERNANCE_CORE.md` §3.3 (CHG-L017), `CHG_REQUEST_FLOWS.md` |
+| **CB-5: Git Divergence & Conflict Lock** | 0 force-pushes allowed | Remote integration branch diverges during feature work (`DIRTY` / `CONFLICTING`) | Merge cleanly from updated `origin/dev`. Autonomous resolution authorized for Class 1 (Deterministic/Additive) conflicts. If Class 2 (Semantic/Architectural) conflicts occur, abort merge and **HALT** immediately. | `CI_AUTONOMOUS_PR_STANDARD.md` Invariant 5 |
+| **CB-6: Scope Boundary Escort** | Out-of-manifest file edit | Implementation requires touching files not listed in IPLAN `file_manifest` | **HALT.** Do not write to unauthorized files. Update IPLAN or submit feedback issue. | `DOC_GOVERNANCE_CORE.md` §3.13 (IPLAN Gate), `WORKTREE_FLOW.md` |
+
+---
+
+## 7. Layer 10 Terminal Lifecycle Gate Contract
+
+Change Requests and Implementation Plans conclude deterministically through the Layer 10 Evaluation gate:
+1. **Deployable Changes (Code, Schemas, Configurations, Runtime Touches):**
+   - **IPLAN Transition (`Completed` → `Verified`):** Permitted only upon the generation and commit of an authentic Layer 10 Terminal Evaluation Report (`docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml` or equivalent) with `verdict: PASS` and zero failed test cases.
+   - **CHG Transition (`Implemented` → `Completed`):** Permitted only when the terminal evaluation report is committed and merged into the integration branch (`dev`).
+2. **Non-Deployable Changes (Documentation, SDD-Only, Governance, Tooling Scripts):**
+   - Non-deployable changes bypass live deployment and evaluation reports (`CHG_REQUEST_FLOWS.md` §3.3 rule 10).
+   - Closes directly via a clean governance sync pull request advancing status to `Completed` once static linting (`chg_lint`, pre-commit) and dual independent review passes succeed.
+
+---
+
+## 8. Tripartite Engineering Architecture & Separation of Concerns
+
+Conforming multi-agent project implementations separate software delivery responsibilities across three autonomous, non-overlapping engineering roles:
+
+| Engineering Role | Primary Mandate | Allowed File Mutations | Prohibited Actions |
+|---|---|---|---|
+| **DEV (Developer / Author)** | Implements features, refactors architecture, fixes code defects | Production codebase, internal unit test fixtures, authorized IPLAN `file_manifest` targets | Approving own changes, self-merging without green status checks, modifying QA acceptance suites |
+| **SDET (Software Development Engineer in Test)** | Authors automated test harnesses, mock fixtures, synthetic test runners, and performance benchmarks | Test suites (`tests/*`), test scaffolding, CI testing scripts, benchmark harnesses | Directly mutating production application logic to force tests to pass |
+| **QA (Quality Assurance & Acceptance Verifier)** | Executes independent user-journey acceptance tests, end-to-end browser scenarios, compliance audits | Verification reports, test run logs, QA issue comments, failure reproduction artifacts | **HARD BLOCK: Zero production or test code mutations** (QA observes, tests, and reports; never writes fixes) |
+
+### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA)
+
+To prevent conflict of interest, test dilution, and cosmetic patching:
+1. **Observation & Verification Only:** QA personas and acceptance runners operate in a read-only capacity with respect to production codebases and test harness implementation.
+2. **Zero In-Place Fixes:** When an acceptance test fails, QA agents MUST NOT modify code or adjust assertions to mask the defect.
+3. **Defect Ticket & Repro Generation:** QA agents capture structured reproduction evidence (logs, DOM snapshots, network traces, failing payloads), formulate an actionable defect finding, and surface it back to the DEV persona or open a governed issue.
+
+### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract
+
+When a pull request merges into the target integration branch (`dev`), the delivering agent MUST close the loop by posting an explicit Implementation and Verification Report on the associated tracking issue before closing it:
+
+1. **Deterministic Close Reference:** PR descriptions must carry explicit `Closes #N` or `Fixes #N` keywords for each resolved issue.
+2. **Post-Merge Closing Comment:** The delivering agent must post a closing comment to the issue documenting:
+   - **Delivered Scope:** Concrete summary of implemented features or bug fixes.
+   - **Verification Evidence:** Green CI run links or IDs, test execution summary, and merge commit SHA on `origin/dev`.
+   - **Artifact Links:** Clickable links to updated SDD artifacts (SPEC, IPLAN, EVAL report).
+3. **Safe Publishing Mechanics:** Agents must author comment bodies via files (`gh issue comment <N> --body-file <file>`), verifying that the comment published with non-zero length.
+
+## 9. Review Log
 
 - **2026-10-05 — Pass 1 (Architectural Integrity & Primitives)**:
   - *Gap found*: Lack of formal human-in-the-loop primitive for founder OK gates in `AGENTS.md`.
@@ -260,3 +329,12 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 - **2026-10-05 — Pass 8 (Step 9 PRD Product Decomposition & Feature Prioritization Standard)**:
   - *Gap found*: Multi-container feature decomposition, RICE prioritization, and quantitative acceptance threshold validation lacked formal CNCF Serverless Workflow modeling.
   - *Fix*: Registered `prd-feature-decomposition.sw.yaml` in Section 2, added Layer 02 PRD workflow domain separation entry in Section 1, and documented Pass 8 in Review Log.
+- **2026-10-06 — Pass 10 (Autonomous Circuit Breakers & Terminal EVAL Gate)**:
+  - *Gap found*: Circuit breaker thresholds (review-fix caps, CI polling timeouts, CI failure retries, git conflict classes, monotonic step locks) were dispersed across multiple documents without a unified operational matrix.
+  - *Fix*: Codified Section 6 Multi-Tier Circuit Breakers Matrix (CB-1 through CB-6) and formalized Section 7 Layer 10 Terminal Lifecycle Gate Contract.
+- **2026-10-06 — Pass 11 (Tripartite Separation of Concerns & Issue Closure Contract)**:
+  - *Gap found*: Lack of clear boundaries between DEV, SDET, and QA personas, creating risks of QA modifying production code during acceptance test runs. Missing formal contract for post-merge issue closure reports.
+  - *Fix*: Codified Section 8 Tripartite Engineering Architecture with strict non-code-modifying invariant for QA, and formalized Section 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
+- **2026-10-07 — Pass 12 (Graph-Based Review Sagas & Dedicated Structural Linter)**:
+  - *Gap found*: Review and remediation flows were only defined at a macro level (`review-remediation-flow.sw.yaml`), lacking dedicated per-layer workflows matching `REVIEW_CREWS.yaml`, a review-to-CHG handover contract, and a dedicated structural workflow linter.
+  - *Fix*: Created `REVIEW_WORKFLOW_STANDARD.md`, implemented `sdd_swf_lint` (`sdd_doc_lint/swf_lint.py`), authored 9 per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`) in `framework/governance/workflows/review/`, expanded `review_report.schema.json` with `chg_handover`, and registered workflows in Section 2.

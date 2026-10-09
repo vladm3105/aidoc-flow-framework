@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 | Authority | Decision GD-59 (framework/governance/DECISIONS.md) |
 
 ---
@@ -19,7 +19,7 @@ This specification establishes the **normative standard** for modeling Layer 03 
 
 In the 10-layer SDD framework:
 ```text
-BRD (01) → PRD (02) → EARS (03) → BDD (04) → ADR (05) → SPEC (06) → TDD (07) → IPLAN (08) → Code (09) → EVAL (10)
+BRD (01) → PRD (02) → EARS (03) → BDD (04) → ADR (05) → SPEC (06) → TDD (07) → IPLAN (08) → Code → CHG (09) → EVAL (10)
                       ^^^^^^^^^
                       This Layer
 ```

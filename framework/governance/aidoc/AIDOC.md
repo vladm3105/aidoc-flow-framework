@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 `.aidoc/` is the **project customization layer** for every project that uses the
 framework. It holds the project profile (adaptation knobs) and project-specific
@@ -120,7 +120,7 @@ When an engine reads a template, rule, or playbook:
 
 1. Check `.aidoc/project/{same-path}` first
 2. If the file exists there, use it (project override)
-3. If not, fall back to `.aidoc/framework/{same-path}` (shared framework)
+3. If not, fall back to `.aidoc/framework/framework/{same-path}` (or `.aidoc/framework/{same-path}` if pointing directly at the framework root)
 
 This is the same pattern as software: project-local config overrides
 global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).

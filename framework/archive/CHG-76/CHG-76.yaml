@@ -1,0 +1,139 @@
+# =============================================================================
+#  CHG-76: Durable Multi-Agent Execution Architecture Standard (Durable Workflows + Cognitive Graphs)
+# =============================================================================
+
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-07"
+  framework_version: "0.90.0"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-76"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-07T00:00:00Z"
+  date_approved: "2026-10-07T00:00:00Z"
+  date_implemented: "2026-10-07T00:00:00Z"
+  gate_approval:
+    approver: "Founder / Lead Architect"
+    date: "2026-10-07T00:00:00Z"
+    verdict: Approved
+    evidence: "User prompt in session: 'yes, proceed' to unify approach into Durable Workflows and Graph-Based Flows"
+  supersedes:
+    - "framework/governance/ADAPTATION.md (framework/archive/CHG-76/ADAPTATION.md)"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md (framework/archive/CHG-76/GOVERNANCE_WORKFLOW_STANDARD.md)"
+    - "tests/conformance/test_governance.py (framework/archive/CHG-76/test_governance.py)"
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Durable Multi-Agent Execution Architecture Standard (Durable Workflows + Cognitive Graphs)"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-07T00:00:00Z"
+  summary: |
+    Establish the engine-agnostic 3-tier runtime execution architecture for autonomous SDD multi-agent engineering:
+    (1) DURABLE_EXECUTION_STANDARD.md: author comprehensive normative standard establishing the 3-tier model:
+        Tier 1 (Durable Workflows - control, SAGA, crash recovery, durable waits, replay determinism),
+        Tier 2 (Graph-Based Cognitive Flows - reasoning, exploration, multi-persona auditing, diagnostic loops),
+        Tier 3 (Deterministic Effect & Verification Services - isolated worktrees, compilers, linters, tests, git);
+    (2) Formalize The Golden Rule: 'Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows';
+    (3) Unified Role Taxonomy (RoleSpec): kind: graph | executor | service with execution options, quotas, and bounded loops;
+    (4) CNCF Serverless Workflow (.sw.yaml) compilation contract to durable workflows and cognitive graph nodes;
+    (5) Dual-Path Remediation contract: REV-AUTO (in-band loop <= 3) vs REV-CHG (durable workflow escalation + ReviewReport);
+    (6) ADAPTATION.md: introduce Section 12 defining the 3-tier reference runtime execution architecture for consuming projects;
+    (7) GOVERNANCE_WORKFLOW_STANDARD.md: index the Durable Execution Standard;
+    (8) Conformance & Ratification: update test_governance.py, ratify Decision GD-70, record release notes in CHANGELOG.md, and bump framework specification version to 0.90.0 (C2 MINOR).
+  rationale: |
+    The framework specifies machine-executable declarative governance via CNCF Serverless Workflows (.sw.yaml),
+    but previously lacked an engine-agnostic standard defining how runtime platforms execute these workflows with durable crash recovery,
+    saga compensation, cognitive reasoning loops, and deterministic effects without vendor lock-in (e.g. Temporal, LangGraph, Restate, Hatchet).
+    This change resolves that gap by establishing the normative 3-tier architecture standard and adaptation blueprint.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/DURABLE_EXECUTION_STANDARD.md: New normative standard for durable multi-agent execution"
+    - "framework/governance/ADAPTATION.md: Reference runtime execution architecture"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md: Index new standard"
+    - "tests/conformance/test_governance.py: Add DURABLE_EXECUTION_STANDARD.md to EXPECTED_FILES"
+    - "framework/governance/DECISIONS.md: Ratify Decision GD-70"
+    - "framework/CHANGELOG.md: Release notes under [0.90.0]"
+    - "hooks/sync-version-refs.sh: Add 0.89.0 to OLD_VERSIONS"
+    - "framework/VERSION: Bump version to 0.90.0"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-76/IPLAN-76.yaml"
+  steps:
+    - step: "Update framework/governance/ADAPTATION.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ADAPTATION.md"
+      archive_path: "framework/archive/CHG-76/ADAPTATION.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Update framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-76/GOVERNANCE_WORKFLOW_STANDARD.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Author authorizing IPLAN-76.yaml under framework/archive/CHG-76/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-76/IPLAN-76.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-76/CHG-76.yaml (exit 0, clean)"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests -v"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/"
+    - "python3 -m pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-07T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Self-review of CHG-76 specification and implementation plan"
+      verdict: "APPROVED"

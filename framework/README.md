@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -79,12 +79,13 @@ framework/
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
   LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
                          evidence preserved verbatim; era caveats in header).
-  layers/                The 10 layer definitions — one folder per layer, each
-                         with standard and workflow templates ({TYPE}-TEMPLATE.yaml
-                         and {TYPE}-SWF-TEMPLATE.yaml), a normative workflow
-                         standard ({TYPE}_WORKFLOW_STANDARD.md), a README, and
-                         an index template (08_IPLAN also carries PLAN_STANDARD.md
-                         and IPLAN-ECOSYSTEM.md).
+  layers/                The 10 layer definitions — one folder per layer (01_BRD
+                         through 10_EVAL). Artifact layers (01–07) contain both
+                         document and CNCF SWF templates ({TYPE}-TEMPLATE.yaml and
+                         {TYPE}-SWF-TEMPLATE.yaml) and standards ({TYPE}_WORKFLOW_STANDARD.md);
+                         governance layers (08_IPLAN, 09_CHG, 10_EVAL) house operational
+                         workflows under `framework/governance/workflows/` and standards
+                         under `framework/governance/`.
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 11 folders:
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL
@@ -96,10 +97,12 @@ framework/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
     README.md
-  governance/            Governance rules; the CNCF Serverless Workflow catalog
-                         (workflows/*.sw.yaml and GOVERNANCE_WORKFLOW_STANDARD.md);
-                         the CHG change-management overlay (gates incl. GATE-SPEC,
-                         the framework-spec change gate; templates); the project
+  governance/            Governance rules; the 3-tier runtime execution architecture
+                         (DURABLE_EXECUTION_STANDARD.md); the CNCF Serverless Workflow
+                         catalog (workflows/*.sw.yaml, review workflows in workflows/review/,
+                         and GOVERNANCE_WORKFLOW_STANDARD.md); workflow/report templates
+                         (templates/); the CHG change-management overlay (gates incl.
+                         GATE-SPEC, the framework-spec change gate; templates); the project
                          adaptation surface (ADAPTATION.md + ADAPTATION_SURFACE.yaml);
                          and DECISIONS.md, the spec-level decision register.
                          See governance/README.md.
@@ -183,10 +186,11 @@ for the full gate definition.
 ### Request flows
 
 Classify-then-route detail for the diagram above lives in
-[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06): **F1** greenfield
-(full chain), **F2** direct request (no SDD cascade), **F3** brownfield behavior change (SDD-first restart),
-**F4** bugfix on an implemented IPLAN (CHG-05 vehicle), plus Emergency and Type-R yield paths.
-C1 note (F2.2, ratified CHG-12): every C1 rides a C1 CHG + scoped IPLAN, every author;
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06; modernized in 0.88.0+):
+the 6 traversal-path graph lifecycles — **SDD2C** greenfield (F1 full chain), **DIR2C** direct request (F2 no SDD cascade),
+**SEED2C** brownfield behavior change (F3 SDD-first restart), **CODE2C** bugfix on an implemented IPLAN (F4 CHG-05 vehicle),
+**CODE2S** reconciliation (Type-R backward flow), and **HOTFIX** (Emergency production path).
+C1 note (F2.2 / DIR2C, ratified CHG-12): every C1 rides a C1 CHG + scoped IPLAN, every author;
 sole exception seed-phase drafting pre-first-BRD.
 
 ### Document lifecycle tracking

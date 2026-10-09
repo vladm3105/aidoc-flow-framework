@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -94,7 +94,24 @@ When an unhandled exception or assertion failure occurs during execution, the or
 
 ---
 
-## 5. Automated Test Execution Suite Runner (`tdd-test-execution.sw.yaml`)
+## 5. Test Failure Taxonomy & Cross-Layer Invariants
+
+To avoid misclassifying environment problems as code regressions and to ensure strict traceability, conforming test runners and agents enforce a two-tier failure taxonomy and cross-layer consistency rules:
+
+### 5.1 Failure Taxonomy (`failed` vs `infra_error`)
+
+| Failure Class | Root Cause | Diagnosis Signal | Agent Action |
+|---|---|---|---|
+| **`failed` (Assertion / Contract Failure)** | Application logic regression, unmet precondition, unexpected return value, schema violation | Assertion error, test framework failure diff, 4xx HTTP response | Triaged by DEV persona; investigate code logic, review SPEC/EARS contracts, apply targeted bugfix |
+| **`infra_error` (Environmental / Harness Failure)** | Database down, container unreachable, port collision (`EADDRINUSE`), missing credentials, runner timeout | Connection refused, process killed (SIGKILL/SIGTERM), disk full, socket error | Triaged by SDET or environment supervisor; verify compose services, inspect container logs, retry once without code edits |
+
+### 5.2 TDD $\leftrightarrow$ IPLAN Cross-Layer Consistency Invariants
+
+1. **Status Propagation Alignment:** A TDD test case cannot transition to `passed` in verification artifacts if the corresponding implementation step in the active IPLAN is `NOT_STARTED` or failing.
+2. **Strict File Ownership:** Test files declared in Layer 07 TDD MUST map directly to file entries in the authorizing IPLAN `file_manifest` with `type: test`.
+3. **Signature & Identifier Agreement:** Function names, route endpoints, and parameter types tested in TDD cases must match character-for-character with Layer 06 SPEC contracts and IPLAN implementation task specifications.
+
+## 6. Automated Test Execution Suite Runner (`tdd-test-execution.sw.yaml`)
 
 While individual TDD documents specify component tests, suite-level execution is governed by [`tdd-test-execution.sw.yaml`](../../governance/workflows/tdd-test-execution.sw.yaml):
 
@@ -120,7 +137,7 @@ graph TD
 
 ---
 
-## 6. Dual-Template Selection Discipline
+## 7. Dual-Template Selection Discipline
 
 Authors choose between two canonical templates based on test complexity:
 
@@ -134,7 +151,7 @@ Authors choose between two canonical templates based on test complexity:
 
 ---
 
-## 7. Graph Integrity Rules
+## 8. Graph Integrity Rules
 
 1. **Acyclicity (DAG Guarantee)**: Main execution lines must be strictly acyclic. The only allowed backward transition is the explicit flaky retry loop bounded by `max_retries`.
 2. **Deterministic Terminal States**: Every execution path must reach either a success terminal state (`end: true`) or a quarantined failure state (`end: { terminate: true }`).
@@ -144,7 +161,7 @@ Authors choose between two canonical templates based on test complexity:
 
 ---
 
-## 8. Zero-Runtime LangGraph Adapter Pattern
+## 9. Zero-Runtime LangGraph Adapter Pattern
 
 Declarative TDD workflows compile dynamically into LangGraph state graphs without bundling runtime code:
 
@@ -159,3 +176,13 @@ def compile_tdd_workflow(swf_data: dict) -> StateGraph:
     # Wire transitions, conditional branches, and saga compensations
     return graph.compile()
 ```
+
+---
+
+## 10. Review Log
+
+- **2026-10-05 — Pass 1 (Initial Ratification)**:
+  - Ratified hybrid envelope architecture, Arrange-Act-Assert mapping, and suite runner workflow (`tdd-test-execution.sw.yaml`).
+- **2026-10-06 — Pass 2 (Failure Taxonomy & IPLAN Invariants)**:
+  - *Gap found*: Lack of formal distinction between application assertion failures and infrastructure crashes, causing agents to attempt code fixes for database timeouts. Missing cross-layer consistency checks with IPLAN.
+  - *Fix*: Codified Section 5 Test Failure Taxonomy (`failed` vs `infra_error`) and Section 5.2 TDD $\leftrightarrow$ IPLAN Cross-Layer Consistency Invariants.

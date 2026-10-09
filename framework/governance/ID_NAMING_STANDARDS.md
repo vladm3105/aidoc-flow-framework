@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 ## Document IDs
 
@@ -26,6 +26,18 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential n
 | IPLAN | IPLAN | IPLAN-01 |
 | CHG | CHG | CHG-01 |
 | EVAL | EVAL | EVAL-01 |
+
+### CHG Flows and Change Record Conventions
+
+For artifact prefix `CHG`, the framework standardizes on **CHG flows** as the umbrella terminology, with the following conceptual equivalence:
+
+- **CHG flows**: the general umbrella naming for change management and routing workflows.
+- **CHG flow**: the procedural / operational lifecycle routing any change (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C).
+- **CHG request / CHG**: the document identifier (`CHG-NN`) and transactional governance vehicle.
+- **CHG graph**: the declarative state machine (`chg-request-flow.sw.yaml`) and workflow graph routing the change.
+- **Change Record**: the post-completion audit document (`CHG-NN` with `status: Implemented` or `Completed`).
+
+In framework operations and agent interactions, **CHG flow == CHG request == CHG graph**: they refer to the unified change architecture across its procedural, transactional, and declarative representations.
 
 ### Cross-layer cardinality (CLEANUP-PR-F item 18)
 
@@ -61,6 +73,31 @@ irrelevant to your choice.
 declaring `@brd: BRD-01` when `PRD-01` already exists with the same
 upstream) MAY be valid siblings, not actual orphans. Validate the
 trace by tag resolution, not by number alignment.
+
+## Graph Flow & Code Naming Standards (Dual-Layer Nomenclature — GD-65, GD-66)
+
+The SDD framework governs change requests and multi-agent execution lifecycles using the **Dual-Layer Traversal-Path Graph Nomenclature** ratified in Decisions GD-65 and GD-66. Every change request (CHG) and implementation plan (IPLAN) declares its traversal path using two complementary fields in frontmatter / `document_control`:
+
+1. **Canonical Runtime Identifier (`flow`)**: A lowercase `snake_case` string identifying the specific transition path across the SDD graph. Directly maps to LangGraph state machine node/edge functions and Rust Rig (`rig-core`) orchestration primitives without runtime shims.
+2. **Mnemonic Graph Code (`flow_code`)**: An unambiguous 5–6 character uppercase identifier eliminating collisions with global hardware/domain acronyms (such as the I2C hardware bus or D2C commerce).
+
+| Graph Code (`flow_code`) | Runtime Identifier (`flow`) | Traversal Path | Engine Execution Semantics (LangGraph / Rust Rig) | Governance Lifecycle Meaning |
+|---|---|---|---|---|
+| `HOTFIX` | `hotfix` | Code (Rollback/Patch) → Post-Mortem | Immediate remediation node $\to$ retrospective CHG | Production emergency incident / hotfix |
+| `CODE2S` | `code_to_sdd` | Code → IPLAN → TDD → SPEC → BDD → EARS | Reverse-engineering state DAG | Code-to-doc reconciliation (Type-R) |
+| `CODE2C` | `code_to_code` | Code (Reproduction) → Code (Fix) | Defect reproduction node $\to$ patch $\to$ regression suite | Closed-IPLAN defect repair |
+| `SEED2C` | `seed_to_code` | Seed → Module → SDD → Code | Multi-tier macro-decomposition DAG | Brownfield / contract changes |
+| `DIR2C` | `iplan_to_code` | IPLAN → Code | Fast-lane task execution node | Direct changes (docs, chores, tools) |
+| `SDD2C` | `sdd_to_code` | BRD → PRD → ... → Code | Full SDD forward cascade DAG | Greenfield new capability |
+
+### Frontmatter Schema Constraints
+In both `CHG-TEMPLATE.yaml` and `IPLAN-SWF-TEMPLATE.yaml`, `flow` and `flow_code` are mandatory structured fields validated by static linters (`sdd_doc_lint` rule `CHG-L013` / `GOV-018`):
+```yaml
+document_control:
+  flow: sdd_to_code       # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: SDD2C        # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
+```
+The two fields must correspond 1:1 per the mapping table above. Mismatched pairs (e.g. `flow: sdd_to_code` with `flow_code: DIR2C`) are rejected by lint as hard errors.
 
 ## Element IDs
 
@@ -334,10 +371,12 @@ The `status:` field appears across different scopes with distinct legal-value en
 | File | Format | Example |
 |------|--------|---------|
 | Template | `{TYPE}-TEMPLATE.yaml` | `BRD-TEMPLATE.yaml` |
+| Executable Workflow Template | `{TYPE}-SWF-TEMPLATE.yaml` | `IPLAN-SWF-TEMPLATE.yaml` |
+| Governance Workflow | `{domain}-{process}.sw.yaml` | `chg-request-flow.sw.yaml` |
 | Index | `{TYPE}-00_index.md` (Layers 1-7, 9, 10) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
 | Document | `{TYPE}-NN_{slug}.yaml`, with carve-outs below | `BRD-01_kyc_onboarding.yaml` |
-| Bugfix IPLAN | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | `IPLAN-10_bugfix_09_slug.yaml` |
+| Bugfix IPLAN (CODE2C flow) | `IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml` | `IPLAN-10_bugfix_09_slug.yaml` |
 | README | `README.md` | — |
 
 Document carve-outs (the general slug form holds unless listed here — CHG-08 #669;
@@ -352,3 +391,13 @@ generic slug-allocation bullets, not normative filename rules):
 > **Extensions are authoritative in `../registry/LAYER_REGISTRY.yaml` `extensions`** — the
 > single normative source (GD-17). The table above states the values; it does not re-specify
 > them. The index row is the documented per-layer index carve-out, not an instance format.
+
+## Workflow State and Action Naming Conventions
+
+For executable state machines adhering to the CNCF Serverless Workflow DSL v0.8 (including `framework/governance/workflows/*.sw.yaml` and Layer 08 `IPLAN-SWF-TEMPLATE.yaml`):
+
+1. **Workflow Identifier (`id`)**: `kebab-case` string identifying the workflow definition (e.g. `chg-request-flow`, `worktree-pr-lifecycle`, `iplan-nn-workflow`).
+2. **State Name (`name`)**: `PascalCase` alphanumeric string indicating the specific execution phase or gate check (e.g. `ExecuteCodeToCode`, `EvaluateVerificationGate`, `Step1_PreFlightCheck`).
+3. **Action Name (`actions[].name`)**: `camelCase` identifier indicating the discrete tool, command, or sub-operation executed within an operation state (e.g. `writeComponentLogic`, `runPytest`, `revertSource`, `executeVerificationSuite`).
+4. **Function Reference (`functionRef.refName`)**: `camelCase` standard function reference matching framework runtime adapters (e.g. `runCommand`, `editFileContent`, `dispatchAgentPersona`).
+

@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.86.1 |
+| Framework Version | 0.91.2 |
 
 
 > **Position**: Between execution planning and Code (source code implementation)
@@ -48,7 +48,8 @@ IPLAN (L8) provides the execution plan: file manifest, creation order, session h
 
 - **Implementation**: Code development per IPLAN
 - **Feedback**: Production incidents, user-reported defects, performance issues
-- **Reconciliation (Type-R §3.1.2)**: Verified codebase propagating backward to a reverse-authored IPLAN and upstream SDD layers — entry requires frozen change set with green verification gates; Emergency-qualifying work stays on the Emergency path
+- **Direct (DIR2C / iplan_to_code)**: Direct changes (docs, tooling, scripts, chores) entering with a scoped IPLAN and `sdd_lifecycle: []`, bypassing upstream SDD gates
+- **Reconciliation (CODE2S / code_to_sdd)**: Verified codebase propagating backward to a reverse-authored IPLAN and upstream SDD layers — entry requires frozen change set with green verification gates; HOTFIX-qualifying work stays on the emergency path
 - **Cascade**: Implementation of upstream changes (GATE-01/03/06/08 passed)
 
 ## 2. Entry Criteria
@@ -160,10 +161,12 @@ After passing GATE-CODE:
 
 | Scenario | Next Step |
 |----------|-----------|
-| Standard fix | Merge to main branch |
-| C3 change | Post-deployment validation |
+| Standard fix / Forward cascade (`SDD2C`/`SEED2C`) | Merge to dev branch per WORKTREE_FLOW.md |
+| Direct change (`DIR2C`) | Merge to dev branch with scoped IPLAN verification |
+| Defect repair (`CODE2C`) | Merge to dev branch with regression test verification |
+| C3 change | Post-deployment validation & formal review |
 | Root cause requires upstream fix | Bubble up to GATE-08/06/03/01 |
-| Emergency hotfix | Fast-track with post-mortem |
+| Emergency hotfix (`HOTFIX`) | Fast-track deployment with mandatory post-mortem within 48h |
 
 ### 6.1 Root Cause Layer Detection
 
@@ -195,7 +198,7 @@ When root cause is upstream:
 4. **Cascade resolution**: Author and approve the upstream fix through the normal cascade down to Code.
 5. **Resume current CHG**: Unblock and verify the implementation change once the upstream CHG is ratified.
 
-### 6.3 Reconciliation (Type-R) Routing
+### 6.3 Reconciliation (CODE2S / code_to_sdd) Routing
 
 A `change_source: reconciliation` CHG enters here with the codebase as ground
 truth. The flow differs from bubble-up in one respect: the reverse-authored

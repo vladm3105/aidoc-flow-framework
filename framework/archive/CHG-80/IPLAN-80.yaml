@@ -1,0 +1,171 @@
+# =============================================================================
+#  IPLAN-80: Mandatory Decision Tracking in Change Requests & Deprecation of plans/DECISIONS.md
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-80/CHG-80.yaml (DIR2C, C2 Spec, Proposed)
+#  Source: Decision governance modernization and single-source-of-truth alignment
+# =============================================================================
+
+doc_id: IPLAN-80
+title: "Mandatory Decision Tracking in Change Requests & Deprecation of plans/DECISIONS.md"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-07"
+  framework_version: "0.91.0"
+  source_chg: "CHG-80"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - decision-governance
+    - chg-template
+    - linter-guard
+    - chg-l018
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-80"
+  source_chg: "CHG-80"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: framework/governance/DECISION_WORKFLOW.md"
+  status: "Completed"
+  version: "1.0"
+  date_created: "2026-10-07T00:00:00Z"
+  date_completed: "2026-10-07T00:00:00Z"
+  last_updated: "2026-10-07T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 2
+  estimated_files: 16
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "Add mandatory decision section and creation checklist items"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "Keep 100% byte-parity with governance copy"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "plans/DECISIONS.md"
+      description: "Add retirement tombstone header and preserve historical D-0065..D-0086 entries"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISION_WORKFLOW.md"
+      description: "Update to v1.4 (0.91.0), document 4-tier model, CHG decision tracking, and threshold matrix"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Ratify GD-71 / DEC-CHG-80 and update Document Control to v1.31 (0.91.0)"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/LINT_RULES.md"
+      description: "Document rule CHG-L018 and alias GOV-022"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "Implement CHG-L018 mandatory decision section check"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Unit tests for CHG-L018 and base fixture update"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_lint_catalog.py"
+      description: "Update CODES range to include CHG-L018"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/acceptance/fixtures/layer_09_chg/valid/CHG-01_golden.yaml"
+      description: "Add decision section to acceptance golden fixture"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "AGENTS.md"
+      description: "Update Where state lives and Governance PRs definitions"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump version to 0.91.0"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Record release notes under [0.91.0]"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.90.2 to OLD_VERSIONS"
+      order: 14
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/archive/CHG-80/CHG-80.yaml"
+      description: "Authorizing change request record"
+      order: 0
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_required_section_sets.py"
+      description: "Update CHG required sections pin to 13 and add decision"
+      order: 15
+      status: DONE
+      session: 1
+      verified: true
+
+# =============================================================================
+# Section 3: Execution Steps
+# =============================================================================
+
+execution:
+  phases:
+    - name: "Phase 1: Template and Governance Documentation Updates"
+      steps:
+        - "Update CHG-TEMPLATE.yaml and mirror with Section 1B decision block"
+        - "Tombstone plans/DECISIONS.md"
+        - "Modernize framework/governance/DECISION_WORKFLOW.md and DECISIONS.md (GD-71)"
+        - "Update AGENTS.md"
+    - name: "Phase 2: Linter Guard and Conformance Testing"
+      steps:
+        - "Implement CHG-L018 in sdd_doc_lint/chg_lint.py"
+        - "Document CHG-L018 in LINT_RULES.md"
+        - "Update tests/conformance/test_lint_catalog.py and sdd_doc_lint/tests/test_chg_lint.py"
+        - "Update acceptance fixture CHG-01_golden.yaml"
+    - name: "Phase 3: Version Bump and Verification"
+      steps:
+        - "Bump framework/VERSION to 0.91.0 and update CHANGELOG.md and sync-version-refs.sh"
+        - "Run sync-version-refs.sh"
+        - "Run test suites (unittest, conformance, chg_lint, pre_push_check)"

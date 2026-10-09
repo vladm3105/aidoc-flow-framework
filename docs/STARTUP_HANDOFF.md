@@ -1,6 +1,126 @@
-# Startup Handoff — AI Doc Flow Framework (extracted from migration session)
+# Project Startup Handoff & Kickoff Guide
 
-> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../CHANGELOG.md`](../CHANGELOG.md) (`../ROADMAP.md` and `../archive/platforms/claude-code-plugin/CHANGELOG.md` no longer exist — CHG-08 #670).
+> [!IMPORTANT]
+> **Live Framework Version: 0.91.2.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
+
+---
+
+## 0. Project Kickoff Quickstart (Version 0.91.2)
+
+### 0.1 The Modern SDD Framework at a Glance
+
+The framework defines an engine-agnostic, 10-layer Specification-Driven Development flow:
+
+```text
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
+```
+
+- **Autonomous Execution**: Routine development is executed by AI agents in isolated git worktrees without human micro-management.
+- **Governance Gate**: Any code write requires an authorizing Change Request (`CHG`) and Implementation Plan (`IPLAN`).
+- **3-Tier Multi-Agent Execution Architecture** ([`DURABLE_EXECUTION_STANDARD.md`](../framework/governance/DURABLE_EXECUTION_STANDARD.md)):
+  - **Tier 1 (Durable Workflows)**: Orchestrates saga compensations, human gates, zero-cost durable waits, and execution timeouts.
+  - **Tier 2 (Cognitive Graphs)**: Executes cyclical reasoning, review loops ([`REVIEW_WORKFLOW_STANDARD.md`](../framework/governance/REVIEW_WORKFLOW_STANDARD.md)), and diagnostic patches. Proposes artifacts without direct git mutation.
+  - **Tier 3 (Deterministic Services)**: Executes isolated worktrees ([`WORKTREE_FLOW.md`](../framework/governance/WORKTREE_FLOW.md)), compilation, linters (`sdd_doc_lint`, `sdd_swf_lint`), and test suites.
+- **The Golden Rule**: *Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.*
+
+### 0.2 Quickstart: 6 Steps to Launch a New Project
+
+#### Step 1: Deploy `.aidoc/` via Automated Installer
+
+From the framework repository or clone, run [`framework/scripts/install.sh`](../framework/scripts/install.sh):
+
+```bash
+# Option A: Production deployment from local clone (self-contained pin, offline-capable):
+framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
+
+# Option B: Production deployment from published git release tag:
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind pin
+
+# Option C: Shared development deployment (persistent symlink to shared checkout):
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind symlink --shared /path/to/framework
+```
+
+This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.
+
+#### Step 2: Configure Project Adaptation (`.aidoc/profile.yaml`)
+
+Review `<project>/.aidoc/profile.yaml` (seeded from `PROFILE-TEMPLATE.yaml`). Tune only the knobs your project needs:
+
+- `review_mode`: `team` (multi-persona crew fan-out) or `single_pass`.
+- `active_layers`: `[BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]` (dropping `BDD` or `ADR` applies the cascade rule).
+- `audit_threshold`: raise readiness score floors (raise-only, default 90).
+- `exec_*`: bounds on files (8), diff lines (600), token budgets (200k), and patch attempts (3).
+
+#### Step 3: Establish the Root Working Agreement (`<project>/AGENTS.md`)
+
+Create `<project>/AGENTS.md` to bind all AI coding agents to project governance:
+
+````markdown
+# AGENTS.md — Working Agreement for AI Coding Agents
+
+## Governance Gate (Non-Negotiable)
+
+Before writing ANY code for a feature, enhancement, or bug fix:
+1. Stop: Create an authorizing Change Request (CHG) first.
+2. Complete the §3.4 CHG creation checklist before writing code.
+3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
+4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`.
+5. Run automated verification suites locally before pushing. Never bypass hooks (`--no-verify` is forbidden).
+````
+
+#### Step 4: Instantiate Operational Governance Blueprints
+
+Instantiate the required operational blueprints under `<project>/.aidoc/project/governance/` (see [`docs/ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.1):
+
+```bash
+mkdir -p <project>/.aidoc/project/governance
+
+# Copy blueprints from the vendored framework:
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md \
+   <project>/.aidoc/project/governance/CHG_EXECUTION_FLOW.md
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md \
+   <project>/.aidoc/project/governance/CI_SMART_ROUTING.md
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md \
+   <project>/.aidoc/project/governance/CONFLICT_RESOLUTION.md
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md \
+   <project>/.aidoc/project/governance/SELF_REVIEW_LOOP.md
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md \
+   <project>/.aidoc/project/governance/QA_PROTOCOL.md
+cp <project>/.aidoc/framework/framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md \
+   <project>/.aidoc/project/governance/BROWSER_TESTING.md
+cp <project>/.aidoc/framework/framework/governance/DURABLE_EXECUTION_STANDARD.md \
+   <project>/.aidoc/project/governance/DURABLE_EXECUTION.md
+cp <project>/.aidoc/framework/framework/governance/REVIEW_WORKFLOW_STANDARD.md \
+   <project>/.aidoc/project/governance/REVIEW_WORKFLOWS.md
+```
+
+#### Step 5: Author Initial Seed & First Cycle
+
+Scaffold the initial seed document and Layer 1 BRD:
+
+```bash
+mkdir -p <project>/seed <project>/docs/sdd/01_BRD/BRD-01
+cp <project>/.aidoc/framework/framework/templates/SEED-TEMPLATE.md <project>/seed/SEED-01.md
+```
+
+1. Fill out `<project>/seed/SEED-01.md` with stakeholder requirements.
+2. Decompose seed into architecture domains per [`SEED_TO_MODULE_DECOMPOSITION.md`](../framework/governance/SEED_TO_MODULE_DECOMPOSITION.md).
+3. Author Layer 1 `BRD` (`docs/sdd/01_BRD/BRD-01/BRD-01.yaml`) to initiate the formal SDD chain.
+
+#### Step 6: Verify Project Scaffolding Health
+
+Validate the newly scaffolded project environment before creating the initial commit:
+
+```bash
+# Test change linting capability
+python3 <project>/.aidoc/framework/framework/sdd_doc_lint/chg_lint.py --help
+```
+
+---
+
+## Historical Archive: AI Doc Flow Framework Migration Brief (2026-05-20)
+
+> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../framework/CHANGELOG.md`](../framework/CHANGELOG.md).
 >
 > **Purpose:** Distill the business / startup ideas that surfaced during a
 > multi-phase technical-migration session into a self-contained brief a
