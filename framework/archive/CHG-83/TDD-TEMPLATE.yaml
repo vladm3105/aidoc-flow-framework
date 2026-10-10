@@ -1,0 +1,534 @@
+# TDD-TEMPLATE.yaml — Test-Driven Development Guide
+# SDD Layer 7 — Test case definitions from SPEC component contracts
+# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
+# Downstream: IPLAN (Layer 8), EVAL (Layer 10)
+
+doc_id: TDD-NN
+title: "[Test Plan Title]"
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "tdd-document"
+  layer: 7
+  total_sections: 7
+  last_updated: "2026-04-29"
+  deliverable_type: code
+  tags:
+    - tdd-document
+    - layer-7-artifact
+    - shared-architecture
+
+  c4_level:
+    _guidance: |
+      TDD is NOT a C4 level. It defines test cases that validate SPEC
+      (C4-L3 Component) contracts through test execution. C4-L4 (Code)
+      ownership belongs to the Code layer, referenced by IPLAN.
+    value: none
+
+  id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
+    _guidance: |
+      Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
+      document DOC-NN, element DOC.NN.SS.xxxx. TDD validates a single SPEC
+      *component*, so its @spec ref is document-level (SPEC-NN) by design;
+      traces to specific upstream elements (@adr/@bdd) use the element form.
+
+      All element IDs use content-derived hashes scoped to TDD content.
+      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002; shipped for BRD §7 only — byte-exact field extraction for this layer is Phase 2+). See `governance/ID_NAMING_STANDARDS.md`.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: TDD.01.04.f19c
+      Section segment: test cases live in Section 4, so authored test-case IDs
+      carry `04` as the {section_id}.
+
+      Hash algorithm (SHA256, 4-char hex) — the byte-exact input assembly and
+      the title/description normalization transform are the SINGLE SOURCE in
+      `governance/ID_NAMING_STANDARDS.md` ("Hash algorithm" section,
+      PROVISIONAL-IDS-002). Do NOT re-specify the normalization here — cross-ref
+      the authority so the verifier (`rehash --check`), any future generator,
+      and hand authors converge on one contract.
+        Shape: hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]
+        Scope: from TDD content, NOT upstream SPEC/ADR/BDD content.
+        Collision: extend 4 -> 8 chars if duplicate detected.
+        Field extraction: defined for BRD §7 only (PROVISIONAL-IDS-002 Phase 1).
+          A TDD test case declares `name` / `spec_ref` / `target` / `test_file` /
+          `test_function` and carries no `title` or `description` field, so which
+          case field supplies each hash input is deliberately NOT defined here —
+          naming one would be a new normative contract, not a drift fix. Until
+          Phase 2+ defines it, a TDD element ID is a stable opaque string of the
+          shape above, not a recomputable hash.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  status: Draft
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author]"
+  component: "[Component Name]"
+  iplan_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  _guidance: |
+    IPLAN-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    Upstream: SPEC (Layer 6) defines the component contract.
+    TDD defines test cases that validate SPEC compliance.
+
+# =============================================================================
+# Section 2: Test Strategy
+# =============================================================================
+test_strategy:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Comprehensive test strategy defining HOW tests are written, organized,
+    and executed. This section is the bridge between TDD test definitions
+    and IPLAN implementation. IPLANs reference these conventions when
+    generating test files.
+
+    Test strategy must align with SPEC's `language:` and `test_framework:`
+    declarations. Do NOT re-pin a language here — reference SPEC ownership.
+
+  # Test types and their purposes
+  test_types:
+    unit:
+      purpose: "Validate individual functions, methods, and data model constraints"
+      scope: "Single function or method in isolation"
+      dependencies: "Mocked/stubbed external dependencies"
+      execution: "Fast (<1s per test), runs in CI on every commit"
+      file_pattern: "<unit test path, per the @spec language>"
+      naming_convention: "test_<function_name>_<scenario>_<expected>"
+      example:
+        python: "test_authenticate_valid_credentials_returns_token"
+        go: "TestAuthenticate_ValidCredentials_ReturnsToken"
+        typescript: "test_authenticate_validCredentials_returnsToken"
+
+    integration:
+      purpose: "Validate component interactions, state transitions, and error handling"
+      scope: "Multiple components working together"
+      dependencies: "Real dependencies where possible, mocked external services"
+      execution: "Moderate (1-10s per test), runs in CI nightly"
+      file_pattern: "<integration test path, per the @spec language>"
+      naming_convention: "test_<component>_<interaction>_<outcome>"
+      example:
+        python: "test_auth_service_rejects_expired_token"
+        go: "TestAuthService_RejectsExpiredToken"
+        typescript: "test_authService_rejectsExpiredToken"
+
+    e2e:
+      purpose: "Validate full workflows mapped from BDD scenarios"
+      scope: "End-to-end user journeys"
+      dependencies: "Real services or test containers"
+      execution: "Slow (10-60s per test), runs before deploy"
+      file_pattern: "<end-to-end test path, per the @spec language>"
+      naming_convention: "test_<workflow>_<step>_<outcome>"
+      example:
+        python: "test_user_registration_complete_flow"
+        go: "TestUserRegistration_CompleteFlow"
+        typescript: "test_userRegistration_completeFlow"
+
+    security:
+      purpose: "Validate security controls and vulnerability resistance"
+      scope: "Authentication, authorization, input validation"
+      dependencies: "Real or simulated attack vectors"
+      execution: "Runs in CI and before deploy"
+      file_pattern: "<security test path, per the @spec language>"
+      naming_convention: "test_<vulnerability_type>_<defense>_<outcome>"
+      example:
+        python: "test_sql_injection_parameterized_query_blocks"
+        go: "TestSQLInjection_ParameterizedQuery_Blocks"
+        typescript: "test_sqlInjection_parameterizedQuery_blocks"
+
+  # Mock and stub strategy
+  mock_strategy:
+    _guidance: |
+      Define when to use mocks vs stubs vs real dependencies.
+      Mocks verify interactions; stubs provide canned responses.
+    unit_tests:
+      - "Mock all external services (databases, APIs, message queues)"
+      - "Mock time-dependent functions for deterministic tests"
+      - "Use dependency injection for testable design"
+    integration_tests:
+      - "Use real database with test data (SQLite/in-memory for speed)"
+      - "Mock external APIs not under test"
+      - "Use test containers for external services when possible"
+    e2e_tests:
+      - "Use real services or full test containers"
+      - "Only mock services outside the system boundary"
+
+  # Test data management
+  test_data:
+    _guidance: |
+      Define how test data is created, managed, and cleaned up.
+    fixtures:
+      - "Use factory functions for test data creation"
+      - "Each test creates its own data (no shared state)"
+      - "Clean up after each test ( tearDown / defer )"
+    factories:
+      - "Define test data factories for each domain object"
+      - "Factories should produce valid data by default"
+      - "Allow overrides for specific test scenarios"
+    seeds:
+      - "Use database seeds for integration test setup"
+      - "Seeds must be idempotent (safe to run multiple times)"
+      - "Document all seed data in test fixtures"
+
+  # Test execution strategy
+  execution_strategy:
+    _guidance: |
+      Define when and how tests are executed in the development workflow.
+    local_development:
+      - "Run unit tests on every file save (watch mode)"
+      - "Run integration tests before committing"
+      - "Run full suite before pushing"
+    ci_pipeline:
+      - "Unit tests: every commit (fast feedback)"
+      - "Integration tests: every PR (nightly for speed)"
+      - "E2E tests: before merge to main"
+      - "Security tests: weekly + before release"
+    pre_merge:
+      - "All unit tests pass"
+      - "All integration tests pass"
+      - "Code coverage meets threshold"
+      - "No new security vulnerabilities"
+
+  # Test pyramiddistribution:
+    unit: 70
+    integration: 20
+    e2e: 10
+  diagram: |
+    flowchart TD
+        subgraph "70% Unit Tests"
+            UT[Test individual functions/methods in isolation]
+        end
+        subgraph "20% Integration Tests"
+            IT[Test component interactions and contracts]
+        end
+        subgraph "10% E2E Tests"
+            E2E[Test full user workflows from BDD scenarios]
+        end
+        UT --> IT --> E2E
+
+# =============================================================================
+# Section 3: BDD Scenario to Test Mapping
+# =============================================================================
+test_mapping:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Each BDD scenario maps to one or more test types.
+    Test file paths declare where tests will be written.
+    TDD ORDER: test files must exist before implementation files
+    (enforced by the AI when generating code from this document).
+
+    ACCEPTANCE PAIRING (normative — GD-08): every BDD scenario MUST be named
+    here in a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` field (in a
+    rendered Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying
+    the test-case id). A scenario that appears only in the §7 traceability block
+    is NOT paired and fires `ACC01` (governance/LINT_RULES.md; warning in build,
+    error in gate-code). Do NOT try to satisfy the gate by listing scenarios in
+    the traceability block — pair each to a real test case.
+  scenarios:
+    - bdd_scenario: "@bdd: BDD.NN.03.xxxx"
+      description: "[Scenario name from BDD]"
+      tests:
+        - type: unit
+          file: "<unit test path, per the @spec language>"
+          function: "<unit test function name>"
+          status: pending
+        - type: integration
+          file: "<integration test path, per the @spec language>"
+          function: "<integration test function name>"
+          status: pending
+        - type: e2e
+          file: "<end-to-end test path, per the @spec language>"
+          function: "<end-to-end test function name>"
+          status: pending
+
+  coverage_table:
+    columns: [BDD Scenario, Unit, Integration, E2E, Total]
+    rows: []
+
+# =============================================================================
+# Section 4: Test Case Definitions
+# =============================================================================
+test_cases:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Detailed test case specifications derived from SPEC interfaces,
+    data models, and behavior contracts. Each test case defines inputs,
+    expected outputs, and edge case coverage.
+
+    Test cases are organized by SPEC component contract:
+    - Unit tests validate individual interfaces and data models (SPEC Sections 3-4)
+    - Integration tests validate component interactions and behavior (SPEC Section 5)
+    - E2E tests validate full workflows mapped from BDD scenarios
+
+    Test-file paths and test-function names follow the conventions of the
+    language and framework declared in `@spec: SPEC-NN` (SPEC owns `language:`).
+    Do NOT re-pin a language here — write the placeholder in the form the
+    project's own toolchain uses.
+
+    IPLAN INTEGRATION: These test cases are referenced by IPLAN file_manifest
+    entries via `tdd_ref` field. When IPLAN generates test files, it uses:
+    - `test_file` path from this section
+    - `test_function` name from this section
+    - Test logic derived from `inputs` and `expected_output` fields
+
+  unit_tests:
+    _guidance: |
+      Validate individual functions, methods, and data model constraints from SPEC Sections 3-4.
+
+      UNIT TEST PRINCIPES:
+      - Test ONE thing per test function
+      - Use descriptive names: test_<function>_<scenario>_<expected>
+      - Arrange-Act-Assert (AAA) pattern
+      - Mock external dependencies
+      - Test both happy path and error cases
+      - Each test should be independent (no shared state)
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<unit test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx | @tdd: TDD.NN.04.yyyy"
+      ```
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        spec_ref: "@spec: SPEC-NN"
+        target: "[function_name | ClassName.method_name]"
+        test_file: "<unit test path, per the @spec language>"
+        test_function: "<unit test function name>"
+        inputs:
+          - name: "[param_name]"
+            type: "[Type]"
+            value: "[concrete test value]"
+        expected_output:
+          type: "[ReturnType | ExceptionType]"
+          value: "[concrete expected value]"
+        edge_cases:
+          - condition: "[boundary/null/empty condition]"
+            expected: "[expected behavior]"
+
+  integration_tests:
+    _guidance: |
+      Validate component interactions, state transitions, and error handling from SPEC Section 5.
+
+      INTEGRATION TEST PRINCIPLES:
+      - Test component boundaries and contracts
+      - Use real database (SQLite/in-memory) where possible
+      - Mock external services not under test
+      - Test error propagation across components
+      - Verify state transitions are correct
+      - Test with realistic data volumes
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<integration test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx"
+      ```
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        spec_ref: "@spec: SPEC-NN"
+        contract: "[interface or behavior contract from SPEC]"
+        test_file: "<integration test path, per the @spec language>"
+        test_function: "<integration test function name>"
+        setup:
+          - "[dependency or mock setup]"
+        action:
+          description: "[what triggers the interaction]"
+        expected_state:
+          - "[expected system state after interaction]"
+        error_paths:
+          - condition: "[error condition]"
+            expected_error: "[ErrorType]"
+
+  e2e_tests:
+    _guidance: |
+      Validate full workflows mapped from BDD scenarios.
+
+      E2E TEST PRINCIPLES:
+      - Test complete user journeys from BDD scenarios
+      - Use real services or test containers
+      - Include setup and teardown for each test
+      - Test happy path AND critical error paths
+      - Set appropriate timeouts for slow operations
+      - Clean up test data after each run
+
+      BDD MAPPING: Each e2e test MUST map to a BDD scenario via `bdd_ref` field.
+      This is normative (GD-08) and enforced by lint rule ACC01.
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<e2e test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx"
+      ```
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        bdd_ref: "@bdd: BDD.NN.03.xxxx"
+        spec_ref: "@spec: SPEC-NN"
+        test_file: "<end-to-end test path, per the @spec language>"
+        test_function: "<end-to-end test function name>"
+        workflow:
+          - step: 1
+            action: "[user/system action]"
+            expected: "[visible result]"
+          - step: 2
+            action: "[next action]"
+            expected: "[next result]"
+        timeout_seconds: 30
+        cleanup: "[cleanup actions after test]"
+
+  security_tests:
+    _guidance: "Optional — include only if SPEC or ADR mandates security testing."
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Security test name]"
+        spec_ref: "@spec: SPEC-NN"
+        threat: "[OWASP category or threat model ref]"
+        test_file: "<security test path, per the @spec language>"
+        test_function: "<security test function name>"
+        inputs:
+          - name: "[input name]"
+            type: "[Type]"
+            value: "[malicious/edge test value]"
+        expected_result:
+          type: "rejection | sanitization | error"
+          value: "[expected secure behavior]"
+
+# =============================================================================
+# Section 5: Test Thresholds
+# =============================================================================
+thresholds:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Quality gates per test type. CI must enforce these.
+
+    IPLAN VERIFICATION: These thresholds are used during IPLAN validation
+    (EVAL cycles — IPLAN-VERIFY-TEMPLATE.yaml is tombstoned, see
+    layers/08_IPLAN/README.md Validation Workflow). If tests don't meet
+    thresholds, findings are recorded as P0/P1 severity and must be fixed
+    before Verified status.
+  unit:
+    coverage_target: ">=90%"
+    pass_criteria:
+      - "All unit tests pass"
+      - "No skipped tests"
+      - "No test timeouts"
+    fail_action: "Block merge; fix or document exception"
+    verification_note: "IPLAN verification checks all unit tests pass before Completed status"
+  integration:
+    coverage_target: ">=85%"
+    pass_criteria:
+      - "All integration tests pass"
+      - "Contract validation passes"
+      - "No flaky tests (3 consecutive runs)"
+    fail_action: "Block merge"
+    verification_note: "IPLAN verification runs integration tests before Verified status"
+  e2e:
+    coverage_target: ">=75% of happy paths"
+    timeout_budget: "<=300s"
+    pass_criteria:
+      - "All critical path scenarios pass"
+      - "No regression failures"
+      - "No flaky tests"
+    fail_action: "Block deploy to staging"
+    verification_note: "Optional for IPLAN verification unless SPEC requires e2e"
+  security:
+    _note: "Optional — include only if SPEC or ADR mandates security testing"
+    coverage_target: "All authentication/authorization paths"
+    pass_criteria:
+      - "No OWASP Top 10 vulnerabilities detected"
+    fail_action: "Block deploy"
+    verification_note: "Run security scans during IPLAN verification if applicable"
+
+# =============================================================================
+# Section 6: TDD Execution Order
+# =============================================================================
+tdd_order:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Declares the order AI must follow when generating code.
+    Test files are generated FIRST, implementation files SECOND.
+    This is the enforcement mechanism for test-driven development.
+
+    IPLAN INTEGRATION: IPLAN file_manifest follows this order:
+    - Test files appear BEFORE implementation files in manifest
+    - Each test file has `tdd_ref` linking to test cases above
+    - Status transitions: NOT_STARTED → IN_PROGRESS → DONE → verified
+
+    VERIFICATION WORKFLOW:
+    1. IPLAN generates test files (Phase 1)
+    2. Tests run and fail (Phase 2 - Red)
+    3. IPLAN generates implementation files (Phase 3)
+    4. Tests run and pass (Phase 4 - Green)
+    5. Code refactored, tests stay green (Phase 5)
+    6. IPLAN status: Completed → Verified after validation
+  phases:
+    - phase: 1
+      name: "Write Tests"
+      action: "Generate all test files from Sections 3-4 test mappings and cases"
+      output: "Test files at declared paths"
+    - phase: 2
+      name: "Run Tests (Red)"
+      action: "Execute tests; confirm they fail (no implementation yet)"
+      output: "Test failure report"
+    - phase: 3
+      name: "Implement"
+      action: "Generate implementation files; make tests pass"
+      output: "Implementation files"
+    - phase: 4
+      name: "Verify (Green)"
+      action: "Run tests; confirm all pass"
+      output: "Test pass report"
+    - phase: 5
+      name: "Refactor"
+      action: "Clean up code; tests remain green"
+      output: "Refactored code"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  tags:
+    - "@tdd: TDD-NN"
+  upstream:
+    spec_references:
+      - "@spec: SPEC-NN"
+    adr_references:
+      - "@adr: ADR.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+  downstream:
+    - type: IPLAN
+      layer: 8
+      description: "Implementation plan — test-first file generation order enforced"
+    - type: EVAL
+      layer: 10
+      description: "Evaluation — unit/smoke test coverage validation"
+  cross_links:
+    depends:
+      - "@depends: TDD-NN"
+    discoverability:
+      - "@discoverability: TDD-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
+
+  threshold_references:
+    _guidance: "Use the @threshold: convention. Do NOT reference PRD or ADR section numbers."
+    items:
+      - tag: "@threshold: PRD.NN.perf.category.key"
+        category: "Timing"
+        value: "[NN]ms"
+  health_score:
+    iplan_ready: "[X]%"
+    target_score: ">=90/100"  # advisory readability target, not a merge gate
+    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."

@@ -57,6 +57,15 @@ runtimes:
 3. **Volume Isolation:** Never share ephemeral test databases or writable cache
    volumes between concurrent worktrees.
 
+### 2.3 Sandboxed Agent Execution Profile
+
+For autonomous coding agents (Tier 3 execution) generating, modifying, or testing source code inside worktrees:
+1. **Syscall Sandboxing:** Use user-space Linux kernel virtualization (such as gVisor `runsc`) rather than raw host execution.
+2. **Network Isolation:** Execute coding tasks with network egress disabled (`--network=none`), preventing unauthorized outbound connections or exfiltration.
+3. **Least-Privilege Execution:** Run as non-root user (`USER 1000:1000`) with dropped capabilities (`--cap-drop=ALL`) and read-only root filesystems (`--read-only`), mounting only the specific worktree directory read-write.
+4. **Local Model Proxy Socket:** When the agent requires model inference, bind-mount a host UNIX domain socket (e.g. `/var/run/litellm.sock` `:rw`) rather than exposing open internet routing.
+5. **In-Memory Secret Provisioning:** Secrets are injected directly into process RAM at runtime using ephemeral machine identity runners (e.g. `infisical run`) rather than writing unencrypted `.env` files to disk.
+
 ## 3. Procedure & State Machine Lifecycle
 
 The following state machine governs the complete worktree and autonomous PR lifecycle, corresponding to normative workflow `workflows/worktree-pr-lifecycle.sw.yaml`:

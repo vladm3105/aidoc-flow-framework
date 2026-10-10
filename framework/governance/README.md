@@ -58,6 +58,7 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |
 | `ENGINE_TELEMETRY.md` | Vendor-neutral engine-telemetry guidance — standard span/attribute names (attempt, usage, cost, gate verdict + CHG/IPLAN correlation IDs), backend-agnostic, no SDK mandated. |
+| `RECOMMENDED_PLATFORM_STACK.md` | Recommended platform technology stack guidance — authoritative reference architecture connecting the vendor-neutral framework to Debian 13, Docker/gVisor, Temporal + LangGraph, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, and Langfuse. |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |

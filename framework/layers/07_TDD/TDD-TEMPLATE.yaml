@@ -143,6 +143,18 @@ test_strategy:
         go: "TestSQLInjection_ParameterizedQuery_Blocks"
         typescript: "test_sqlInjection_parameterizedQuery_blocks"
 
+    migration:
+      purpose: "Validate database DDL migrations, schema idempotency, and backward compatibility"
+      scope: "Database schema version upgrades and rollbacks"
+      dependencies: "Ephemeral containerized database instances matching production engine"
+      execution: "Runs in CI on PRs that touch database schemas"
+      file_pattern: "<migration test path, per the @spec language>"
+      naming_convention: "test_migration_<version>_<direction>_<outcome>"
+      example:
+        python: "test_migration_v20261010_up_applies_cleanly"
+        go: "TestMigration_V20261010_Up_AppliesCleanly"
+        typescript: "test_migration_v20261010_up_appliesCleanly"
+
   # Mock and stub strategy
   mock_strategy:
     _guidance: |
@@ -153,9 +165,10 @@ test_strategy:
       - "Mock time-dependent functions for deterministic tests"
       - "Use dependency injection for testable design"
     integration_tests:
-      - "Use real database with test data (SQLite/in-memory for speed)"
+      - "Use real database with test data (SQLite/in-memory for speed, or ephemeral testcontainers matching production engine)"
+      - "Verify database migration idempotency and backward compatibility"
       - "Mock external APIs not under test"
-      - "Use test containers for external services when possible"
+      - "Use test containers for external message queues and database services when possible"
     e2e_tests:
       - "Use real services or full test containers"
       - "Only mock services outside the system boundary"

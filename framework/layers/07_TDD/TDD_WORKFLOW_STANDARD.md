@@ -177,6 +177,12 @@ def compile_tdd_workflow(swf_data: dict) -> StateGraph:
     return graph.compile()
 ```
 
+### 9.2 Database Migration and Asynchronous Contract Testing
+
+When testing components that interact with persistent databases or asynchronous queues:
+1. **Database Migration Testing:** Test suites verifying database entities MUST test schema upgrades and rollbacks against ephemeral containerized instances of the target database engine, validating schema idempotency and backward compatibility.
+2. **Asynchronous Contract Testing:** Tests for event producers and consumers validate envelope conformance (CloudEvents v1.0), strongly-typed schema serialization, and message deduplication under simulated at-least-once delivery.
+
 ---
 
 ## 10. Review Log

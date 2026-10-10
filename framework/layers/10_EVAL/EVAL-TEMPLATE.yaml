@@ -144,6 +144,24 @@ evaluation_scope:
   coverage_target: 100
   environment: ci  # staging | ci | both
 
+  # Optional: For AI-assisted, LLM-as-a-judge, or agent workflows
+  prompt_manifest_traceability:
+    _guidance: |
+      For workflows evaluating generative or agentic outputs. Reference the prompt
+      manifest identifier and version tested.
+    manifest_id: "[prompt_manifest_id]"
+    manifest_version: "[X.Y.Z or commit hash]"
+
+  benchmark_datasets:
+    _guidance: |
+      For evaluation suites running against curated ground-truth datasets.
+    datasets:
+      - name: "[dataset_name]"
+        version: "[dataset_version]"
+        uri: "[s3://path/to/dataset or registry identifier]"
+        metric: "[relevance | faithfulness | task_completion | correctness]"
+        pass_threshold: ">=0.90"
+
 # =============================================================================
 # Section 3: Test Design
 # =============================================================================

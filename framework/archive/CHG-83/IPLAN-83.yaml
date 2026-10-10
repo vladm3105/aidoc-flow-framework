@@ -1,0 +1,177 @@
+# =============================================================================
+#  IPLAN-83: Platform Technology Stack Alignment & Scaffolding Blueprints
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-83/CHG-83.yaml (DIR2C, C1 Governance, Proposed/In-Progress)
+#  Source: Platform technology stack readiness across specs, governance, and blueprints
+# =============================================================================
+
+doc_id: IPLAN-83
+title: "Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-10"
+  framework_version: "0.91.2"
+  source_chg: "CHG-83"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - technology-stack-alignment
+    - platform-blueprints
+    - vendor-agnostic
+    - governance
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-83"
+  source_chg: "CHG-83"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: combined
+  source_spec: "@spec: framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+  status: "Completed"
+  version: "1.0"
+  date_created: "2026-10-10T00:00:00Z"
+  date_completed: "2026-10-10T00:00:00Z"
+  last_updated: "2026-10-10T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 3
+  estimated_files: 21
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+      description: "Dedicated platform reference architecture guide"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md"
+      description: "Temporal + LangGraph runtime operational blueprint"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md"
+      description: "Bytebase + PostgreSQL 18 schema migration blueprint"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md"
+      description: "NATS JetStream CloudEvents & Protobuf wire contract blueprint"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md"
+      description: "gVisor runsc sandbox execution profile blueprint"
+      order: 5
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md"
+      description: "Langfuse Prompt CMS & HyperDX observability blueprint"
+      order: 6
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+      description: "Add asynchronous event contracts and database standards"
+      order: 7
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md"
+      description: "Document event contracts and database standards"
+      order: 8
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+      description: "Add containerized DB testing and migration verification"
+      order: 9
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md"
+      description: "Document migration and event test strategies"
+      order: 10
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+      description: "Add prompt manifest traceability and evaluation metrics"
+      order: 11
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DURABLE_EXECUTION_STANDARD.md"
+      description: "Add cognitive heartbeat chunking protocol"
+      order: 12
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/WORKTREE_FLOW.md"
+      description: "Add sandboxed agent execution profile"
+      order: 13
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/ENGINE_TELEMETRY.md"
+      description: "Add prompt manifest and traceparent correlation"
+      order: 14
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/README.md"
+      description: "Index RECOMMENDED_PLATFORM_STACK.md"
+      order: 15
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/aidoc/README.md"
+      description: "Index new operational templates"
+      order: 16
+      status: DONE
+      session: 1
+      verified: true
+    - path: "docs/ADAPTATION-GUIDE.md"
+      description: "Cross-link platform stack guide"
+      order: 17
+      status: DONE
+      session: 1
+      verified: true
+    - path: "plans/TECHSTACK-ALIGNMENT-PLAN.md"
+      description: "Repository plan document per verified-planning"
+      order: 18
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_governance.py"
+      description: "Update EXPECTED_FILES to guard new platform architecture and blueprints"
+      order: 19
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/governance/DECISIONS.md"
+      description: "Document formal decision GD-72"
+      order: 20
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/CHANGELOG.md"
+      description: "Document CHG-83 platform technology stack alignment"
+      order: 21
+      status: DONE
+      session: 1
+      verified: true

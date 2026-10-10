@@ -7,13 +7,34 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.23 |
+| Version | 1.24 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
 | Framework Version | 0.91.2 |
 
-## [0.91.2] — 2026-10-09
+## [0.91.2] — 2026-10-10
+
+### Added — Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness & Scaffolding Blueprints (C1 Governance, CHG-83 + IPLAN-83, Decision DEC-CHG-83, GD-72)
+
+- **Platform Reference Architecture & Governance Guidance**:
+  - Published `framework/governance/RECOMMENDED_PLATFORM_STACK.md` defining the authoritative platform stack architecture (Debian 13, gVisor, Temporal, LangGraph, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, Langfuse) and complete 10-layer SDD mapping.
+  - Authored 5 production operational blueprints under `framework/governance/aidoc/`:
+    - `AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md`: Durable workflow activity adapter with cognitive heartbeat chunking.
+    - `AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md`: GitOps schema migrations, UUIDv7 monotonic primary keys, and vector indexing.
+    - `AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md`: At-least-once pub/sub message brokers with Protobuf wire contracts.
+    - `AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md`: Non-root, network-isolated container sandbox execution profile.
+    - `AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md`: Prompt manifest CMS and unified OpenTelemetry trace correlation.
+- **Vendor-Agnostic Core Specifications Enhancements**:
+  - Layer 06 SPEC: Added asynchronous event contracts and database standards schema fields to `SPEC-TEMPLATE.yaml` and documented them in `SPEC_WORKFLOW_STANDARD.md`.
+  - Layer 07 TDD: Added containerized DB testing and schema migration verification to `TDD-TEMPLATE.yaml` and documented them in `TDD_WORKFLOW_STANDARD.md`.
+  - Layer 10 EVAL: Added prompt manifest traceability, benchmark datasets, and evaluation metrics to `EVAL-TEMPLATE.yaml`.
+  - Durable Execution Standard: Added §7.1 Cognitive Heartbeat Chunking Protocol to `DURABLE_EXECUTION_STANDARD.md`.
+  - Worktree Flow: Added §2.3 Sandboxed Agent Execution Profile to `WORKTREE_FLOW.md`.
+  - Engine Telemetry: Added prompt manifest and `aidoc.traceparent` correlation attributes to `ENGINE_TELEMETRY.md`.
+- **Adaptation & Conformance Guarding**:
+  - Cross-linked platform stack architecture and blueprints in `docs/ADAPTATION-GUIDE.md`, `framework/governance/README.md`, and `framework/governance/aidoc/README.md`.
+  - Updated `EXPECTED_FILES` in `tests/conformance/test_governance.py` to prevent orphaned governance files and maintain 100% test coverage.
 
 ### Changed — Comprehensive Framework Audit Remediation, Tooling Robustness & Catalog Synchronization (C1 Maintenance, CHG-82 + IPLAN-82, Decision DEC-CHG-82)
 

@@ -28,6 +28,11 @@ bootstrap (`BOOTSTRAP.md`) and upgrade (`UPGRADE-RUNBOOK.md`) runbooks.
 | `AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md` | Multi-agent dual self-review protocol, four-lens rubric, and commit audit phrases. |
 | `AIDOC-QA-PROTOCOL-TEMPLATE.md` | Tripartite QA protocol, strict non-code-modifying hard block, and post-merge issue closure report contract. |
 | `AIDOC-BROWSER-TESTING-TEMPLATE.md` | Headless browser testing architecture, port/container sandboxing, and artifact collection. |
+| `AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md` | Temporal Python workflow orchestration and LangGraph Core reasoning activity integration. |
+| `AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md` | PostgreSQL 18 native UUIDv7 and Bytebase Model Context Protocol schema migration standard. |
+| `AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md` | CloudEvents v1.0 and Protobuf binary wire contract standard over NATS JetStream. |
+| `AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md` | gVisor `runsc` syscall sandboxing, non-root execution, and Infisical in-memory secret injection. |
+| `AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md` | Langfuse Prompt CMS, evaluation dataset integration, and HyperDX distributed tracing. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template for `.aidoc/profile.yaml` (in `governance/`). |
 | `BOOTSTRAP.md` | Step-by-step bootstrap procedure + shape validation for a new project's `.aidoc/`. |
 | `UPGRADE-RUNBOOK.md` | Consumer upgrade runbook: re-adopting a new `framework/VERSION`. |
