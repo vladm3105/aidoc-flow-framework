@@ -1,0 +1,73 @@
+# =============================================================================
+#  IPLAN-84: Root README Synchronization & Version Pin Conformance Guard
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-84/CHG-84.yaml (DIR2C, C1 Governance, Completed)
+# =============================================================================
+
+doc_id: IPLAN-84
+title: "Root README.md Synchronization & Version Pin Conformance Guard"
+
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-10-10"
+  framework_version: "0.91.3"
+  source_chg: "CHG-84"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - iplan-document
+    - documentation-reconciliation
+    - conformance-guard
+    - governance
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-84"
+  source_chg: "CHG-84"
+  flow: iplan_to_code
+  flow_code: DIR2C
+  subtype: docs
+  source_spec: "@spec: README.md"
+  status: "Completed"
+  version: "1.0"
+  date_created: "2026-10-10T00:00:00Z"
+  date_completed: "2026-10-10T00:00:00Z"
+  last_updated: "2026-10-10T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 4
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "README.md"
+      description: "Reconcile tracking spec version to 0.91.3, update workflow counts, index RECOMMENDED_PLATFORM_STACK.md"
+      order: 1
+      status: DONE
+      session: 1
+      verified: true
+    - path: "plans/TECHSTACK-ALIGNMENT-PLAN.md"
+      description: "Reconcile Document Control framework version to 0.91.3"
+      order: 2
+      status: DONE
+      session: 1
+      verified: true
+    - path: "tests/conformance/test_sync_version_refs.py"
+      description: "Add test_root_readme_spec_version_matches guard"
+      order: 3
+      status: DONE
+      session: 1
+      verified: true
+    - path: "plans/README-RECONCILIATION-PLAN.md"
+      description: "Implementation plan per verified-planning"
+      order: 4
+      status: DONE
+      session: 1
+      verified: true
