@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 
 Establishes the engine-agnostic 3-tier runtime execution architecture for running autonomous,
 high-assurance Specification-Driven Development (SDD) multi-agent systems with durable state,
@@ -180,6 +180,14 @@ Where:
 - Worst-Case Exhausted Run: $\approx 52$ activities ($\approx 330$ workflow events).
 - **Safety Margin**: A 330-event worst-case run consumes $\approx 3\%$ of standard platform warning thresholds (10,240 events), leaving vast headroom for multi-persona crew fan-out.
 - **Run Sizing Guardrail**: If an extraordinary run exceeds $5,000$ events, it MUST partition into **Child Workflows** or execute **Continue-As-New** carrying the task cache forward.
+
+### 7.1 Cognitive Loop Heartbeat & Event Compression Protocol
+
+To maintain the event budget above while executing deep multi-step agent reasoning:
+1. **Activity Event Compression Invariant:**
+   A multi-turn cognitive reasoning cycle (which may involve dozens of internal prompt invocations, tool evaluations, and reasoning steps) MUST compress into **exactly one activity event** in durable workflow history. Intermediate reasoning transcripts and message turns must NEVER be recorded as separate durable workflow events.
+2. **Periodic Heartbeat Protocol:**
+   Because cognitive reasoning can take several minutes, the executing activity MUST emit periodic heartbeats (recommended every 15–30 seconds) carrying current iteration and sub-step metadata. If an orchestrator does not receive a heartbeat within its configured heartbeat timeout window, it marks the attempt as timed out and executes standard retry policies.
 
 ---
 

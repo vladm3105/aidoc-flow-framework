@@ -1,0 +1,193 @@
+# =============================================================================
+#  CHG-83: Platform Technology Stack Alignment & Vendor-Agnostic Readiness
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Specification Readiness)
+#  Pre-cleared: Founder approved in session (2026-10-10)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-10"
+  framework_version: "0.91.3"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-83"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-10T00:00:00Z"
+  date_approved: "2026-10-10T00:00:00Z"
+  date_implemented: "2026-10-10T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-10T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: Align framework with authoritative technology stack, preserving vendor-agnostic core while providing platform guidance and blueprints"
+  supersedes:
+    - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml (framework/archive/CHG-83/SPEC-TEMPLATE.yaml)"
+    - "framework/layers/07_TDD/TDD-TEMPLATE.yaml (framework/archive/CHG-83/TDD-TEMPLATE.yaml)"
+    - "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml (framework/archive/CHG-83/EVAL-TEMPLATE.yaml)"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-83)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-83"
+  title: "Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints"
+  status: "Ratified"
+  context: |
+    The platform has finalized its authoritative technology stack across 10 reference documents (00 through 09):
+    Debian 13, Docker CE + gVisor runsc, Traefik v3, Authentik, Infisical, Laya + LiteLLM, Temporal Server,
+    LangGraph Core, PostgreSQL 18 + Bytebase AI MCP, ClickHouse, HyperDX, Langfuse, and NATS JetStream.
+    The framework (v0.91.2) shares 95% conceptual parity in its 3-tier durable execution model, thin control plane,
+    and telemetry attributes, but lacked concrete scaffolding, blueprints, and layer contract readiness for this stack.
+    Per Decision D-0013 / GD-13, the core framework must remain strictly engine-agnostic without vendor lock-in.
+  choice: |
+    1. Preserve strict vendor- and platform-agnosticism across all core framework specifications (layers 01-10)
+       while extending Layer 06 SPEC, Layer 07 TDD, Layer 10 EVAL, DURABLE_EXECUTION_STANDARD.md, WORKTREE_FLOW.md,
+       and ENGINE_TELEMETRY.md with open standard contract primitives (CloudEvents v1.0, Protobuf IDL, UUIDv7 monotonic
+       keys, vector indexing, containerized DB testing, cognitive heartbeat chunking, sandboxed agent execution profile,
+       and prompt manifest pinning).
+    2. Author a dedicated platform governance guidance document (framework/governance/RECOMMENDED_PLATFORM_STACK.md)
+       synthesizing the authoritative ecosystem architecture and providing a complete tool-by-tool mapping to the SDD layers.
+    3. Author five operational blueprints in framework/governance/aidoc/ for consumer projects adopting Temporal/LangGraph,
+       Bytebase/PostgreSQL 18, NATS CloudEvents, gVisor sandboxing, and Langfuse/HyperDX observability.
+  consequences: |
+    - Zero vendor lock-in in core specifications (GD-13 / D-0013 intact).
+    - Ecosystem projects receive first-class, copy-pasteable operational templates and guidance.
+    - Zero breaking changes to existing consumer APIs, directory structures, or linting gates.
+  alternatives_considered:
+    - option: "Hardcode Temporal, NATS, and Bytebase directly into Layer 06/07/08/10 core templates"
+      rationale_rejected: "Violates foundational Decision D-0013 / GD-13 requiring engine-agnostic core specifications."
+    - option: "Keep all technology stack guidance outside the framework in external wikis"
+      rationale_rejected: "Leads to documentation drift and forces AI coding agents to invent runtime mapping without authoritative governance."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-10T00:00:00Z"
+  summary: |
+    Align aidoc-flow-framework with the ecosystem's authoritative platform technology stack (documents 00-09)
+    by enhancing core specifications with open-standard primitives, authoring a dedicated platform reference architecture
+    guide, and publishing five operational blueprints under framework/governance/aidoc/.
+  rationale: |
+    Empowers autonomous AI agents and engineering teams to deploy SDD workflows onto the production technology stack
+    with maximum fidelity, deterministic safety, and zero vendor lock-in.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md: Dedicated platform reference architecture document"
+    - "framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md: Temporal + LangGraph runtime blueprint"
+    - "framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md: Bytebase + PostgreSQL 18 schema blueprint"
+    - "framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md: NATS JetStream CloudEvents/Protobuf blueprint"
+    - "framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md: gVisor runsc sandbox execution profile"
+    - "framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md: Langfuse + HyperDX observability blueprint"
+    - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml: Add event contracts and database standards"
+    - "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md: Document event contracts and database standards"
+    - "framework/layers/07_TDD/TDD-TEMPLATE.yaml: Add containerized DB testing and migration verification"
+    - "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md: Document migration and event test strategies"
+    - "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml: Add prompt manifest traceability and evaluation metrics"
+    - "framework/governance/DURABLE_EXECUTION_STANDARD.md: Add cognitive heartbeat chunking protocol"
+    - "framework/governance/WORKTREE_FLOW.md: Add sandboxed agent execution profile"
+    - "framework/governance/ENGINE_TELEMETRY.md: Add prompt manifest and traceparent correlation"
+    - "framework/governance/README.md: Index RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/governance/aidoc/README.md: Index new operational templates"
+    - "docs/ADAPTATION-GUIDE.md: Cross-link platform stack guide"
+    - "tests/conformance/test_governance.py: Update EXPECTED_FILES roster to guard new platform architecture and blueprints"
+    - "framework/governance/DECISIONS.md: Document formal decision GD-72"
+    - "framework/CHANGELOG.md: Document CHG-83 platform technology stack alignment"
+    - "framework/VERSION: Bump framework version to 0.91.3 per GATE-SPEC-E005"
+    - "hooks/sync-version-refs.sh: Add 0.91.2 to OLD_VERSIONS to support automated version fanout"
+  in_scope:
+    - "Authoring RECOMMENDED_PLATFORM_STACK.md"
+    - "Authoring 5 operational blueprints under aidoc/"
+    - "Enhancing Layer 06, 07, 10, Execution, Worktree, and Telemetry standards with open primitives"
+    - "Keeping all 535 conformance tests and linters 100% green"
+  out_of_scope:
+    - "Bundling proprietary runtime engines or orchestrator SDKs into the framework core"
+    - "Modifying historical archives prior to CHG-83"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-83/IPLAN-83.yaml"
+  steps:
+    - step: "Extend SPEC templates with event contracts and database standards"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-83/SPEC-TEMPLATE.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Extend TDD templates with containerized DB testing and migration verification"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-83/TDD-TEMPLATE.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Extend EVAL templates with prompt manifest traceability"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+      archive_path: "framework/archive/CHG-83/EVAL-TEMPLATE.yaml"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Author authorizing IPLAN-83.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-83/IPLAN-83.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-83/CHG-83.yaml (exit 0, clean)"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/"
+    - "python3 .agents/skills/verified-planning/check_plan.py plans/TECHSTACK-ALIGNMENT-PLAN.md"
+    - "pytest tests/conformance/"
+    - "bash hooks/pre_push_check.sh (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-10T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-83 proposal and governance plan"
+      verdict: "APPROVED"

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 
 Engine-agnostic recommendations for **how a conforming engine emits
 observability telemetry** so that traces from different engines are mutually
@@ -56,6 +56,8 @@ Attribute names on those spans:
 | `aidoc.cost_microcents` | Billed cost of the attempt in microcents (integer; absent when unknown — never estimate silently) | `4300` |
 | `aidoc.layer` | SDD layer the attempt or verdict concerns | `"SPEC"` |
 | `aidoc.verdict` | Gate outcome (`pass`, `pass_with_notes`, `fail`, `blocked`) — on `aidoc.gate_verdict` spans | `"pass"` |
+| `gen_ai.prompt.manifest_id` | Versioned prompt manifest identifier (absent when unmanaged) | `"review/security_auditor"` |
+| `gen_ai.prompt.version` | Prompt version identifier or hash | `"1.2.0"` |
 
 `gen_ai.*` names track the OpenTelemetry GenAI conventions; where that
 upstream renames an attribute, the upstream name wins and this table is
@@ -72,6 +74,8 @@ traces join across engines on the work — not on engine-local IDs:
 | `aidoc.chg_id` | Authorizing CHG (e.g. `"CHG-38"`); absent for pre-CHG seed drafting |
 | `aidoc.iplan_id` | Implementing IPLAN (e.g. `"IPLAN-38"`) |
 | `aidoc.eval_id` | EVAL document when the span serves an eval cycle |
+| `aidoc.traceparent` | W3C Trace Context traceparent joining distributed service traces |
+| `project.name` | Identifier of the active project or repository |
 
 Engines MUST NOT join on saga-journal internals (saga IDs, journal
 offsets): the journal is a local record, not a cross-engine key.

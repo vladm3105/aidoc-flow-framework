@@ -15,11 +15,31 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.31 |
+| Version | 1.32 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
+
+---
+
+## GD-72 — Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints (CHG-83, 0.91.3 C1 Governance)
+
+- **Status**: Ratified
+- **Date**: 2026-10-10
+- **Driver**: Align the framework with the ecosystem's authoritative platform technology stack (reference documents 00 through 09: Debian 13, Docker CE + gVisor runsc, Traefik v3, Authentik, Infisical, Laya + LiteLLM, Temporal Server, LangGraph Core, PostgreSQL 18 + Bytebase, ClickHouse, HyperDX, Langfuse, and NATS JetStream) while preserving strict vendor- and platform-agnostic core specifications per Decision D-0013 / GD-13.
+- **Decision**:
+  1. **Strict Engine-Agnostic Core Preservation**: Keep core specifications (`framework/layers/01_BRD` through `10_EVAL`) free of hardcoded vendor engine bindings and runtime dependencies.
+  2. **Open-Standard Layer Primitives**:
+     - Layer 06 SPEC: Extend with asynchronous event contracts (CloudEvents v1.0, Protobuf IDL) and relational database standards (UUIDv7 keys, vector embeddings, tenant isolation).
+     - Layer 07 TDD: Extend with containerized DB testing and automated schema migration verification.
+     - Layer 10 EVAL: Extend with prompt manifest pinning, evaluation datasets, and performance benchmarks.
+     - Durable Execution: Formalize the cognitive heartbeat chunking protocol (§7.1) for long-running agent tasks.
+     - Worktree Flow: Standardize the sandboxed agent execution profile (§2.3) with non-root least privilege and network isolation.
+     - Engine Telemetry: Standardize prompt manifest attributes and `aidoc.traceparent` correlation headers.
+  3. **Dedicated Platform Governance Reference Architecture**: Author `framework/governance/RECOMMENDED_PLATFORM_STACK.md` mapping the authoritative technology stack directly to each SDD layer.
+  4. **Production Scaffolding Blueprints**: Publish 5 operational blueprints under `framework/governance/aidoc/` (Temporal/LangGraph runtime, Bytebase/PostgreSQL schema, NATS CloudEvents, gVisor sandboxing, and Langfuse/HyperDX observability) ready for consumer projects to copy into `.aidoc/project/`.
+- **Consequences**: Production systems gain end-to-end operational guidance and copy-pasteable templates for the target technology stack without imposing proprietary lock-in on any framework consumer.
 
 ---
 

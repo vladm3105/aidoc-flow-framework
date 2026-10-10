@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,10 +33,10 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.3 --kind pin
 
 # Or symlink to a persistent shared framework checkout:
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.2 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.3 --kind symlink --shared /path/to/framework
 ```
 
 `install.sh` automates the ordered 5-step procedure from `BOOTSTRAP.md`:
@@ -192,9 +192,21 @@ Before writing ANY code for a feature, enhancement, or bug fix:
 
 A green lint run means every *emitted* rule passed — not that every
 governance contract holds. `framework/governance/LINT_RULES.md` carries
-Reserved rows (18: EVAL ×6, GOV-008/009/010/013/015 ×5, IPLAN01, REG01,
 TDD-SYNC-A–E ×5) — documented contracts with deliberately no emitting
 code. Checklist-gate or IPLAN-substance violations in that set pass
 silently; the backstop is reviewer judgment (the review crews and lenses),
 not a second lint pass. Do not invent emitters or reclassify Reserved
 rows to close this gap — the reservation is the contract.
+
+## 8. Recommended Platform Technology Stack
+
+For teams deploying new systems or standardizing runtime execution infrastructure, refer to the authoritative architecture guide:
+
+- [`framework/governance/RECOMMENDED_PLATFORM_STACK.md`](../framework/governance/RECOMMENDED_PLATFORM_STACK.md)
+  Authoritative open-source, Docker-native platform stack: Debian 13 (Linux 6.12+), gVisor (`runsc`), Temporal Server, LangGraph Core, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, and Langfuse.
+- Operational blueprints for this stack are ready to copy into `.aidoc/project/`:
+  - Temporal + LangGraph: `framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md`
+  - PostgreSQL 18 + Bytebase: `framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md`
+  - NATS CloudEvents + Protobuf: `framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md`
+  - gVisor Sandbox Profile: `framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md`
+  - Langfuse + HyperDX: `framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md`
