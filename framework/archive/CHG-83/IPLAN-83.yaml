@@ -12,7 +12,7 @@ metadata:
   document_type: "iplan-document"
   purpose: implementation
   last_updated: "2026-10-10"
-  framework_version: "0.91.2"
+  framework_version: "0.91.3"
   source_chg: "CHG-83"
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   tags:
@@ -40,7 +40,7 @@ document_control:
   last_updated: "2026-10-10T00:00:00Z"
   author: "Framework Maintainer"
   complexity: 3
-  estimated_files: 21
+  estimated_files: 23
   session_count: 1
 
 # =============================================================================
@@ -172,6 +172,18 @@ file_manifest:
     - path: "framework/CHANGELOG.md"
       description: "Document CHG-83 platform technology stack alignment"
       order: 21
+      status: DONE
+      session: 1
+      verified: true
+    - path: "framework/VERSION"
+      description: "Bump framework version to 0.91.3 per GATE-SPEC-E005"
+      order: 22
+      status: DONE
+      session: 1
+      verified: true
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.91.2 to OLD_VERSIONS to support automated version fanout"
+      order: 23
       status: DONE
       session: 1
       verified: true

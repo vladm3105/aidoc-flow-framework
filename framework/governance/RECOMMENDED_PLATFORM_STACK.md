@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 | Authority | [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-83](../archive/CHG-83/CHG-83.yaml) |
 
 ---

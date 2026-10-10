@@ -10,15 +10,15 @@ metadata:
   document_type: "chg-document"
   purpose: governance
   last_updated: "2026-10-10"
-  framework_version: "0.91.2"
+  framework_version: "0.91.3"
   change_level:
     value: C1
   change_source:
     value: direct
   semver_impact:
-    value: none
+    value: patch
   version_action:
-    value: keep
+    value: bump
   entry_gate:
     value: GATE-CODE
 
@@ -34,8 +34,8 @@ change_control:
   change_level: C1
   change_source: direct
   entry_gate: GATE-CODE
-  semver_impact: none
-  version_action: keep
+  semver_impact: patch
+  version_action: bump
   author: "Framework Maintainer"
   date_proposed: "2026-10-10T00:00:00Z"
   date_approved: "2026-10-10T00:00:00Z"
@@ -127,6 +127,8 @@ scope:
     - "tests/conformance/test_governance.py: Update EXPECTED_FILES roster to guard new platform architecture and blueprints"
     - "framework/governance/DECISIONS.md: Document formal decision GD-72"
     - "framework/CHANGELOG.md: Document CHG-83 platform technology stack alignment"
+    - "framework/VERSION: Bump framework version to 0.91.3 per GATE-SPEC-E005"
+    - "hooks/sync-version-refs.sh: Add 0.91.2 to OLD_VERSIONS to support automated version fanout"
   in_scope:
     - "Authoring RECOMMENDED_PLATFORM_STACK.md"
     - "Authoring 5 operational blueprints under aidoc/"

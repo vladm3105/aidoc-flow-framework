@@ -19,11 +19,11 @@ Newest first. Timestamps are ISO 8601 UTC.
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 
 ---
 
-## GD-72 — Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints (CHG-83, 0.91.2 C1 Governance)
+## GD-72 — Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness, and Scaffolding Blueprints (CHG-83, 0.91.3 C1 Governance)
 
 - **Status**: Ratified
 - **Date**: 2026-10-10

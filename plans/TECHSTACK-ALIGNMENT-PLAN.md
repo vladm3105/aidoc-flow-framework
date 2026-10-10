@@ -9,7 +9,7 @@
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
 | Framework Version | 0.91.2 |
-| Authority | [Decision D-0013 / GD-13](framework/governance/DECISIONS.md) & [CHG-83](framework/archive/CHG-83/CHG-83.yaml) |
+| Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md) & [CHG-83](../framework/archive/CHG-83/CHG-83.yaml) |
 
 ## Objective
 

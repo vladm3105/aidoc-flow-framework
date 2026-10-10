@@ -11,9 +11,9 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.3 |
 
-## [0.91.2] — 2026-10-10
+## [0.91.3] — 2026-10-10
 
 ### Added — Platform Technology Stack Alignment, Vendor-Agnostic Core Specifications Readiness & Scaffolding Blueprints (C1 Governance, CHG-83 + IPLAN-83, Decision DEC-CHG-83, GD-72)
 
@@ -35,6 +35,8 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 - **Adaptation & Conformance Guarding**:
   - Cross-linked platform stack architecture and blueprints in `docs/ADAPTATION-GUIDE.md`, `framework/governance/README.md`, and `framework/governance/aidoc/README.md`.
   - Updated `EXPECTED_FILES` in `tests/conformance/test_governance.py` to prevent orphaned governance files and maintain 100% test coverage.
+
+## [0.91.2] — 2026-10-09
 
 ### Changed — Comprehensive Framework Audit Remediation, Tooling Robustness & Catalog Synchronization (C1 Maintenance, CHG-82 + IPLAN-82, Decision DEC-CHG-82)
 
