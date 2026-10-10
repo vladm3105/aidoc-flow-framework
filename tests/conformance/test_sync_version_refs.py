@@ -113,6 +113,17 @@ class SyncVersionRefsCoverage(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_root_readme_spec_version_matches(self):
+        """Root README.md post-cutover tracking spec citation matches framework/VERSION."""
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        match = re.search(r"tracking framework spec \*\*`([^`]+)`\*\*", readme)
+        self.assertIsNotNone(match, "README.md missing tracking framework spec version pattern")
+        self.assertEqual(
+            match.group(1),
+            _current(),
+            f"README.md tracking spec version ({match.group(1)}) disagrees with framework/VERSION ({_current()})",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
