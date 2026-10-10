@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Version | 1.0 |
-| Status | Ready |
+| Status | SHIPPED — landed in 98f58af8 (PR #946) |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
 | Framework Version | 0.91.3 |
@@ -17,7 +17,7 @@ Reconcile root `README.md` and `plans/TECHSTACK-ALIGNMENT-PLAN.md` with live fra
 
 ## Status
 
-Ready for execution under Change Request `CHG-84` (C1 Documentation and Conformance Guard).
+SHIPPED: Landed in commit `98f58af8` under PR #946 (Change Request `CHG-84` / `IPLAN-84`).
 
 ## Scope
 

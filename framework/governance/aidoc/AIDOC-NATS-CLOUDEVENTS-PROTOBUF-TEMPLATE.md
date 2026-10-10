@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.3 |
+| Framework Version | 0.91.4 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [SPEC_WORKFLOW_STANDARD.md](../../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md) |
 
 Operational blueprint for specifying asynchronous inter-project message contracts
@@ -93,7 +93,7 @@ stream:
   max_bytes: 10737418240          # 10 GiB per project stream
   max_age: 604800000000000        # 7 days retention
   storage: "file"
-  replicas: 3                     # Clustered across 3 NATS nodes
+  replicas: 3                     # Clustered across 3 nodes (set replicas: 1 in single-node/dev/CI)
   duplicate_window: 120000000000  # 2-minute deduplication window
 ```
 
@@ -119,6 +119,7 @@ interfaces:
         schema_format: "Protobuf v3"
         schema_definition: "contracts/interexchange.proto#AgentTaskExecutionEvent"
         nats_subject: "proj.tasks.completed"
-        deduplication_header: "Nats-Msg-Id"
+        deduplication_key: "id" # Canonical CloudEvents UUIDv7 field (mapped to Nats-Msg-Id on wire)
         trace_propagation: "traceparent"
 ```
+

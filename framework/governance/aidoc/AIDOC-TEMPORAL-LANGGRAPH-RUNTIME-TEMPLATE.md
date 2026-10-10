@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.3 |
+| Framework Version | 0.91.4 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [DURABLE_EXECUTION_STANDARD.md](../DURABLE_EXECUTION_STANDARD.md) |
 
 Operational blueprint for translating declarative SDD Serverless Workflows (`.sw.yaml`)
@@ -58,7 +58,7 @@ from datetime import timedelta
 from typing import Any, Callable, Dict, List
 from temporalio import activity, workflow
 from temporalio.common import RetryPolicy
-from temporalio.exceptions import ActivityError
+from temporalio.exceptions import ActivityError, ApplicationError
 
 # ---------------------------------------------------------------------------
 # 1. LangGraph Heartbeat Handler

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.3 |
+| Framework Version | 0.91.4 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [ENGINE_TELEMETRY.md](../ENGINE_TELEMETRY.md) |
 
 Operational blueprint for managing prompt manifests, LLM-as-a-judge evaluation datasets,
@@ -147,7 +147,7 @@ processors:
     log_statements:
       - context: log
         statements:
-          - replace_pattern(body, "Bearer [a-zA-Z0-9_-]+", "Bearer [REDACTED]")
+          - replace_pattern(body, "Bearer [a-zA-Z0-9_.-]+", "Bearer [REDACTED]")
     trace_statements:
       - context: span
         statements:

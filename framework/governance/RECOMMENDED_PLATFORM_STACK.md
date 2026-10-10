@@ -8,8 +8,8 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.3 |
-| Authority | [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-83](../archive/CHG-83/CHG-83.yaml) |
+| Framework Version | 0.91.4 |
+| Authority | [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-83](../archive/CHG-83/CHG-83.yaml) |
 
 ---
 
@@ -127,10 +127,10 @@ The following table details how each phase of the SDD lifecycle maps to the reco
 
 ## 5. Adoption & Operational Blueprints
 
-To adapt a consumer project to this recommended platform stack, adopt the corresponding templates from [`framework/governance/aidoc/`](aidoc/):
+To adapt a consumer project to this recommended platform stack, adopt the corresponding templates from [`framework/governance/aidoc/`](aidoc/) as `.md` reference blueprints or extract their embedded implementation and configuration blocks:
 
-1. **Orchestration & Cognitive Flows:** Copy [`AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md`](aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md) into `.aidoc/project/runtime/temporal_langgraph.py`.
-2. **Database & Schema Governance:** Copy [`AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md`](aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md) into `.aidoc/project/database/bytebase_postgres.md`.
-3. **Asynchronous Messaging:** Copy [`AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md`](aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md) into `.aidoc/project/layers/06_SPEC/contracts/nats_cloudevents.proto`.
-4. **Agent Sandbox Profile:** Copy [`AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md`](aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md) into `.aidoc/project/security/gvisor_profile.yaml`.
-5. **Observability & Evaluation:** Copy [`AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md`](aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md) into `.aidoc/project/observability/telemetry_pipeline.yaml`.
+1. **Orchestration & Cognitive Flows:** Adopt [`AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md`](aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md) into `.aidoc/project/runtime/` (extract Section 3 into `temporal_langgraph.py`).
+2. **Database & Schema Governance:** Adopt [`AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md`](aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md) into `.aidoc/project/database/bytebase_postgres.md`.
+3. **Asynchronous Messaging:** Adopt [`AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md`](aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md) into `.aidoc/project/layers/06_SPEC/contracts/` (extract Section 2 into `nats_cloudevents.proto`).
+4. **Agent Sandbox Profile:** Adopt [`AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md`](aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md) into `.aidoc/project/security/` (extract Section 3 into `docker-compose.agent-runner.yaml` or Section 4 into task runner scripts).
+5. **Observability & Evaluation:** Adopt [`AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md`](aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md) into `.aidoc/project/observability/` (extract Section 4 into `otel_collector.yaml`).

@@ -1,0 +1,156 @@
+# =============================================================================
+#  CHG-85: Pre-Production Review Findings Remediation Batch
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Maintenance Batch)
+#  Pre-cleared: User instruction in session (2026-10-10)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-10"
+  framework_version: "0.91.4"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-85"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-10T00:00:00Z"
+  date_approved: "2026-10-10T00:00:00Z"
+  date_implemented: "2026-10-10T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-10T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: approved, continue (remediating 5-lens preprod findings)"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-85)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-85"
+  title: "Remediate Pre-Production Review Findings Across Platform Blueprints and Governance Records"
+  status: "Ratified"
+  context: |
+    The 5-lens pre-production review of the 0.91.2 -> 0.91.3 delta returned SHIP-WITH-FIXES, citing concrete
+    runtime, security, and documentation defects in the newly added platform blueprints (Temporal ApplicationError
+    NameError, OTel JWT regex omission, gVisor CLI noexec omission, invalid file copy instructions, missing
+    Postgres schema DDL, and missing release log trace for CHG-84).
+  choice: |
+    1. Update AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md to import ApplicationError from temporalio.exceptions.
+    2. Update AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md to include period matching in JWT Bearer token regex.
+    3. Update AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md to add noexec,nosuid to CLI runner /tmp mount, parameterize environment, and document runc escape valve.
+    4. Clarify Section 5 copy instructions and link Decision GD-72 in RECOMMENDED_PLATFORM_STACK.md.
+    5. Prepend CREATE SCHEMA IF NOT EXISTS xp; and document UUIDv7 LTS compatibility in AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md.
+    6. Document replicas: 1 fallback and canonical deduplication_key in AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md.
+    7. Add CHG-84 and CHG-85 entries under version [0.91.3] in framework/CHANGELOG.md.
+    8. Update plans/TECHSTACK-ALIGNMENT-PLAN.md and plans/README-RECONCILIATION-PLAN.md to Complete/Shipped.
+  consequences: |
+    - Runtime blueprints execute without NameError exceptions.
+    - JWT bearer tokens are fully redacted in observability collector pipelines.
+    - Adoption instructions provide clear, executable guidance without syntax errors.
+    - Release changelog preserves 100% paper trail across all commits.
+    - Zero breaking changes to core SDD specification.
+  alternatives_considered:
+    - option: "Ship 0.91.3 release immediately and defer fixes to a subsequent 0.91.4 patch"
+      rationale_rejected: "Rejected to prevent premature delivery of known broken imports and security redaction leaks to adopters."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Pre-Production Review Findings Remediation Batch"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-10T00:00:00Z"
+  summary: |
+    Remediate 7 concrete functional, security, and documentation findings identified during the 5-lens
+    pre-production review of the 0.91.2 -> 0.91.3 release delta prior to cutting framework release 0.91.3.
+  rationale: |
+    Guarantees production-ready blueprints, complete paper trail, and full specification integrity.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md"
+    - "framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md"
+    - "framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md"
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md"
+    - "framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md"
+    - "framework/CHANGELOG.md"
+    - "framework/VERSION"
+    - "README.md"
+    - "hooks/sync-version-refs.sh"
+    - "plans/TECHSTACK-ALIGNMENT-PLAN.md"
+    - "plans/README-RECONCILIATION-PLAN.md"
+  in_scope:
+    - "Fixing import error in Temporal runtime template"
+    - "Fixing regex pattern in OTel observability template"
+    - "Aligning mount flags and documenting escape valves in gVisor profile"
+    - "Clarifying adoption instructions in platform stack guide"
+    - "Fixing DDL schema in Bytebase Postgres template"
+    - "Adding single-node note in NATS template"
+    - "Recording CHG-84 and CHG-85 in CHANGELOG.md"
+    - "Marking plans complete"
+  out_of_scope:
+    - "Breaking spec changes"
+    - "SemVer version bumps (version remains 0.91.3)"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-85/IPLAN-85.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-85.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-85/IPLAN-85.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-85/CHG-85.yaml (exit 0, clean)"
+    - "python3 .agents/skills/verified-planning/check_plan.py plans/PREPROD-REMEDIATION-PLAN.md"
+    - "pre-commit run --all-files (exit 0, clean)"
+  audit_trail:
+    - date: "2026-10-10T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-85 proposal and verification plan"
+      verdict: "APPROVED"
