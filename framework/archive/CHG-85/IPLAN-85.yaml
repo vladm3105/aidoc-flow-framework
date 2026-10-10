@@ -1,0 +1,57 @@
+id: IPLAN-85
+chg_ref: "framework/archive/CHG-85/CHG-85.yaml"
+title: "Implementation Plan: Pre-Production Review Findings Remediation Batch"
+status: "Completed"
+author: "Framework Maintainer"
+created: "2026-10-10"
+completed: "2026-10-10"
+
+file_manifest:
+  - path: "framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md"
+    action: "MODIFIED"
+  - path: "framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md"
+    action: "MODIFIED"
+  - path: "framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md"
+    action: "MODIFIED"
+  - path: "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    action: "MODIFIED"
+  - path: "framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md"
+    action: "MODIFIED"
+  - path: "framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md"
+    action: "MODIFIED"
+  - path: "framework/CHANGELOG.md"
+    action: "MODIFIED"
+  - path: "plans/TECHSTACK-ALIGNMENT-PLAN.md"
+    action: "MODIFIED"
+  - path: "plans/README-RECONCILIATION-PLAN.md"
+    action: "MODIFIED"
+
+steps:
+  - step: 1
+    name: "Temporal runtime ApplicationError import"
+    status: "Completed"
+    details: "Add ApplicationError to temporalio.exceptions import list in AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md"
+  - step: 2
+    name: "OpenTelemetry JWT regex redaction repair"
+    status: "Completed"
+    details: "Update regex pattern to include period matching in AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md"
+  - step: 3
+    name: "Sandbox profile mount flags and escape valve"
+    status: "Completed"
+    details: "Add noexec,nosuid to CLI runner /tmp mount, parameterize environment, and document runc fallback in AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md"
+  - step: 4
+    name: "Adoption guide copy instructions and authority reference"
+    status: "Completed"
+    details: "Clarify section 5 blueprint copy instructions and cite GD-72 in RECOMMENDED_PLATFORM_STACK.md"
+  - step: 5
+    name: "Bytebase Postgres DDL schema and UUIDv7 notes"
+    status: "Completed"
+    details: "Prepend CREATE SCHEMA IF NOT EXISTS xp; and document UUIDv7 LTS compatibility in AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md"
+  - step: 6
+    name: "NATS JetStream replica and deduplication notes"
+    status: "Completed"
+    details: "Document replicas: 1 fallback and canonical deduplication_key in AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md"
+  - step: 7
+    name: "Changelog and plan status updates"
+    status: "Completed"
+    details: "Add CHG-84 and CHG-85 to framework/CHANGELOG.md and mark plans Complete/Shipped"

@@ -147,7 +147,7 @@ processors:
     log_statements:
       - context: log
         statements:
-          - replace_pattern(body, "Bearer [a-zA-Z0-9_-]+", "Bearer [REDACTED]")
+          - replace_pattern(body, "Bearer [a-zA-Z0-9_.-]+", "Bearer [REDACTED]")
     trace_statements:
       - context: span
         statements:

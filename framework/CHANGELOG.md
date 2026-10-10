@@ -36,6 +36,21 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
   - Cross-linked platform stack architecture and blueprints in `docs/ADAPTATION-GUIDE.md`, `framework/governance/README.md`, and `framework/governance/aidoc/README.md`.
   - Updated `EXPECTED_FILES` in `tests/conformance/test_governance.py` to prevent orphaned governance files and maintain 100% test coverage.
 
+### Changed — Pre-Production Review Findings Remediation Batch (C1 Maintenance, CHG-85 + IPLAN-85, Decision DEC-CHG-85)
+
+- **Temporal Runtime Exception Handling**: Added missing `ApplicationError` import to `temporalio.exceptions` in `framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md` to prevent uncaught `NameError` on verification gate failures.
+- **Observability Secret Sanitization**: Updated OpenTelemetry content sanitization regex in `framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md` to include periods (`Bearer [a-zA-Z0-9_.-]+`), ensuring complete redaction of standard 3-segment JWT tokens.
+- **Sandbox Profile Hardening & Escape Valves**: Added `noexec,nosuid` to the CLI runner `/tmp` mount in `framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md`, parameterized the Infisical environment, clarified host-level secret injection for strict `--network=none` isolation, and codified an explicit developer escape valve permitting `runc` in local/unprivileged CI environments with dropped capabilities.
+- **Platform Adoption Guidance & Authority**: Updated Section 5 of `framework/governance/RECOMMENDED_PLATFORM_STACK.md` to clarify adopting blueprints as `.md` specifications or extracting embedded code blocks, and linked ratifying Decision GD-72 in Document Control.
+- **Database DDL & Messaging Schema Polish**: Pre-created schema `xp` (`CREATE SCHEMA IF NOT EXISTS xp;`) in `AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md` with PostgreSQL 15–17 UUIDv7 LTS notes, and documented `replicas: 1` single-node fallback with canonical `deduplication_key` in `AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md`.
+- **Implementation Plans Lifecycle**: Reconciled `plans/TECHSTACK-ALIGNMENT-PLAN.md` and `plans/README-RECONCILIATION-PLAN.md` to `Status: Complete / Shipped`.
+
+### Changed — Root README Reconciliation & Version Pin Conformance Guard (C1 Documentation, CHG-84 + IPLAN-84, Decision DEC-CHG-84)
+
+- **Root README Synchronization**: Reconciled root `README.md` tracking framework spec version to `0.91.3`, updated declarative CNCF Serverless Workflow counts to 22 (13 core lifecycle + 9 review-remediation), and indexed `framework/governance/RECOMMENDED_PLATFORM_STACK.md`.
+- **Automated Conformance Guard**: Added `test_root_readme_spec_version_matches` to `tests/conformance/test_sync_version_refs.py` asserting that root `README.md` tracking spec citation matches `framework/VERSION` without exposing prose to regex clobbering.
+- **Plan Alignment**: Reconciled `plans/TECHSTACK-ALIGNMENT-PLAN.md` Document Control header to framework version `0.91.3`.
+
 ## [0.91.2] — 2026-10-09
 
 ### Changed — Comprehensive Framework Audit Remediation, Tooling Robustness & Catalog Synchronization (C1 Maintenance, CHG-82 + IPLAN-82, Decision DEC-CHG-82)

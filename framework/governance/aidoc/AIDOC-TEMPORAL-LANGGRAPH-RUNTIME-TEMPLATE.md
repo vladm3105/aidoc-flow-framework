@@ -58,7 +58,7 @@ from datetime import timedelta
 from typing import Any, Callable, Dict, List
 from temporalio import activity, workflow
 from temporalio.common import RetryPolicy
-from temporalio.exceptions import ActivityError
+from temporalio.exceptions import ActivityError, ApplicationError
 
 # ---------------------------------------------------------------------------
 # 1. LangGraph Heartbeat Handler

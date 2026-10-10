@@ -19,7 +19,7 @@ vector embeddings, and lossless audit ledgers managed via **Bytebase Schema Engi
 ## 1. PostgreSQL 18 Architectural Baseline
 
 1. **Native UUIDv7 Monotonic Primary Keys:**
-   PostgreSQL 18 includes native UUIDv7 generation. Eliminates extensions (`uuid-ossp`, `pgcrypto`) and provides time-ordered, index-friendly primary keys:
+   PostgreSQL 18 includes native UUIDv7 generation. Eliminates extensions and provides time-ordered, index-friendly primary keys *(for PostgreSQL 15–17 LTS environments, install `pg_uuidv7` via `CREATE EXTENSION IF NOT EXISTS "pg_uuidv7"; DEFAULT uuid_generate_v7()` or generate UUIDv7 at the application layer)*:
    ```sql
    id UUID PRIMARY KEY DEFAULT gen_random_uuid_v7()
    ```
@@ -33,6 +33,8 @@ vector embeddings, and lossless audit ledgers managed via **Bytebase Schema Engi
 3. **Lossless Wire Ledger (`xp.ledger`):**
    Partitioned monthly by timestamp or UUIDv7, storing exact wire `bytea` payloads immutably:
    ```sql
+   CREATE SCHEMA IF NOT EXISTS xp;
+
    CREATE TABLE xp.ledger (
        msg_id UUID NOT NULL,
        ts TIMESTAMPTZ NOT NULL,

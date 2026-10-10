@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Version | 1.0 |
-| Status | Ready |
+| Status | SHIPPED — landed in 0c3a6597 (PR #945) |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
 | Framework Version | 0.91.3 |
@@ -13,11 +13,11 @@
 
 ## Objective
 
-Align `aidoc-flow-framework` with our ecosystem's authoritative platform technology stack (defined across `/mnt/e/dev/technology_stack/` documents 00 through 09) while strictly preserving **engine-agnostic core specifications** under Decision D-0013 / GD-13.
+Align `aidoc-flow-framework` with our ecosystem's authoritative platform technology stack (defined across platform architecture reference documents 00 through 09) while strictly preserving **engine-agnostic core specifications** under Decision D-0013 / GD-13.
 
 ## Status
 
-Ready for execution under Change Request `CHG-83` (C1/DIR2C governance and specification readiness flow).
+SHIPPED: Landed in commit `0c3a6597` under PR #945 (Change Request `CHG-83` / `IPLAN-83`).
 
 ## Scope
 
