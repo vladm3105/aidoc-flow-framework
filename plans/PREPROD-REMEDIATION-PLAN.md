@@ -8,7 +8,7 @@
 | Status | Ready |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.3 |
+| Framework Version | 0.91.4 |
 | Authority | [Decision GD-72](../framework/governance/DECISIONS.md) & [CHG-85](../framework/archive/CHG-85/CHG-85.yaml) |
 
 ## Objective
@@ -46,7 +46,7 @@ Out of scope:
 | 3 | Sandbox CLI command omits noexec,nosuid on /tmp | --tmpfs /tmp | framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md:109 |
 | 4 | Copy instructions direct copying markdown to code | Orchestration & Cognitive Flows | framework/governance/RECOMMENDED_PLATFORM_STACK.md:132 |
 | 5 | Bytebase Postgres DDL lacks schema declaration | CREATE TABLE xp.ledger | framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md:36 |
-| 6 | Changelog 0.91.3 section omits CHG-84 | ## [0.91.3] | framework/CHANGELOG.md:16 |
+| 6 | Changelog 0.91.3 section omits CHG-84 | ## [0.91.3] | framework/CHANGELOG.md:27 |
 
 ## Review log
 
