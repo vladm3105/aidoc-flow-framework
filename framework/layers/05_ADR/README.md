@@ -8,8 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.5 |
-
+| Framework Version | 0.91.6 |
 
 ## Overview
 
@@ -43,7 +42,7 @@ Solution Space (Technology-Bound):
 | `ADR-TEMPLATE.yaml` | **Standard** — static template with embedded authoring guidance for atomic architectural decisions. |
 | `ADR-SWF-TEMPLATE.yaml` | **Workflow** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
 | `ADR_WORKFLOW_STANDARD.md` | **Normative Standard** — formal mapping of architecture decision evaluation primitives to CNCF Serverless Workflow state machines. |
-| `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project. |
+| `ADR-00_index.TEMPLATE.yaml` | ADR & Project Technology Stack Registry template — tracks planned/active ADRs and houses the canonical agent-readable technology inventory for security monitoring and automated updates. |
 
 ## Dual-Template Architecture
 

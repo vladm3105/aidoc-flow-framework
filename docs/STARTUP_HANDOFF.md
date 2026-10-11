@@ -1,11 +1,11 @@
 # Project Startup Handoff & Kickoff Guide
 
 > [!IMPORTANT]
-> **Live Framework Version: 0.91.5.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
+> **Live Framework Version: 0.91.6.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
 
 ---
 
-## 0. Project Kickoff Quickstart (Version 0.91.5)
+## 0. Project Kickoff Quickstart (Version 0.91.6)
 
 ### 0.1 The Modern SDD Framework at a Glance
 
@@ -34,10 +34,10 @@ From the framework repository or clone, run [`framework/scripts/install.sh`](../
 framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
 
 # Option B: Production deployment from published git release tag:
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.5 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.6 --kind pin
 
 # Option C: Shared development deployment (persistent symlink to shared checkout):
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.5 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.6 --kind symlink --shared /path/to/framework
 ```
 
 This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.

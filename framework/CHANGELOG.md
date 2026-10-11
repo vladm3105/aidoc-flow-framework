@@ -7,11 +7,29 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.26 |
+| Version | 1.27 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.5 |
+| Framework Version | 0.91.6 |
+
+## [0.91.6] — 2026-10-11
+
+### Added — Modernization of Layer 05 ADR Index to YAML with Embedded Project Technology Stack & Security Registry (C2 Spec, CHG-87 + IPLAN-87, Decision DEC-CHG-87, GD-74)
+
+- **ADR-00_index Modernization to YAML**:
+  - Authored canonical Layer 05 index template `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` (retiring legacy Markdown `ADR-00_index.TEMPLATE.md`), maintaining the 10 total index templates asserted by `test_index_template_lint.py`.
+  - Structured declarative YAML schemas for `adrs`, `backlog`, and `update_triggers`.
+- **Project Technology Stack & Security Monitoring Registry**:
+  - Embedded the canonical agent-readable technology registry within `ADR-00_index.TEMPLATE.yaml` under `technologies`.
+  - Codified security monitoring attributes: standard Package URLs (`purl`), Common Platform Enumerations (`cpe`), package ecosystem, vulnerability scanner targets (`trivy`, `osv`, `dependabot`), severity alert thresholds, and license compliance.
+  - Codified automated tool update policies: update tool (`renovate`, `dependabot`, `manual`), update cadence (`weekly`, `monthly`, `quarterly`), patch auto-merge authorization, and manifest bindings.
+- **Workflow Standards & Documentation Alignment**:
+  - Updated `framework/layers/05_ADR/README.md` to reference `ADR-00_index.TEMPLATE.yaml`.
+  - Added invariant `INV-ADR-07` to `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` requiring technology registry synchronization upon ADR acceptance.
+  - Updated `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` §2.5 to designate `ADR-00_index.yaml` as the project-level technology stack and security inventory.
+- **Decision Ratification**:
+  - Ratified Decision `GD-74` in `framework/governance/DECISIONS.md`.
 
 ## [0.91.5] — 2026-10-11
 

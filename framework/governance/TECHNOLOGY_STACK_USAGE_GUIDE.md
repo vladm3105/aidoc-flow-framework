@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.5 |
+| Framework Version | 0.91.6 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) |
 
 ---
@@ -16,9 +16,11 @@
 ## 1. Purpose & Relationship to Framework Core
 
 The **`aidoc-flow-framework`** establishes a 10-layer Specification-Driven Development (SDD) contract:
+
 ```text
 BRD (01) → PRD (02) → EARS (03) → BDD (04) → ADR (05) → SPEC (06) → TDD (07) → IPLAN (08) → Code → EVAL (10)
 ```
+
 Per **Decision D-0013 / GD-13**, the core specifications (`framework/layers/` and `framework/governance/`) are **strictly engine-agnostic and vendor-neutral**: they define lifecycles, interface schemas, declarative workflow graphs (`.sw.yaml`), and quality gates without tying consumers to proprietary software or commercial SaaS.
 
 To ensure consistency, resilience, and operational efficiency across all projects in our ecosystem (`/mnt/e/dev/*`), the organization defines an **Authoritative Platform Technology Stack** (documented under `/mnt/e/dev/technology_stack/` and synthesized in [`RECOMMENDED_PLATFORM_STACK.md`](RECOMMENDED_PLATFORM_STACK.md)).
@@ -56,43 +58,50 @@ Technology stack integration is not a single, isolated event; it operates as a *
 ```
 
 ### 2.1 Tier 0: Enterprise Platform Baseline (`/mnt/e/dev/technology_stack/`)
-* **Role:** The company-wide catalog of approved standards, shared multi-tenant infrastructure, and security baselines.
-* **Core Principle:** Shared infrastructure over per-repository sprawl. Projects connect to the central 3-node HA **PostgreSQL 18** cluster (isolated databases), central **Temporal** server (isolated namespaces), central **NATS JetStream** broker (isolated accounts), and central **ClickHouse** cluster.
-* **Execution Boundary:** Sandboxed agent execution runs under **Docker CE + gVisor (`runsc`)** with dropped capabilities and `--network=none`.
+
+- **Role:** The company-wide catalog of approved standards, shared multi-tenant infrastructure, and security baselines.
+- **Core Principle:** Shared infrastructure over per-repository sprawl. Projects connect to the central 3-node HA **PostgreSQL 18** cluster (isolated databases), central **Temporal** server (isolated namespaces), central **NATS JetStream** broker (isolated accounts), and central **ClickHouse** cluster.
+- **Execution Boundary:** Sandboxed agent execution runs under **Docker CE + gVisor (`runsc`)** with dropped capabilities and `--network=none`.
 
 ### 2.2 Tier 1: Seed Documents (`<project>/seed/`) — C4-L1 System Context
-* **Role:** Establishes project foundation, problem statement, and external platform context.
-* **Stack Integration:** In [`SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md) Section 2 (*Environmental Realities & Constraints*) and Section 5 (*Architectural Principles & Non-Negotiable Invariants*), the architect binds the project to the enterprise baseline.
-* **Rule:** The seed document declares platform constraints (e.g., *"System runs containerized in Docker with gVisor sandboxing and integrates with central PostgreSQL 18 and Temporal"*), but **does NOT select specific component libraries or internal schemas**.
+
+- **Role:** Establishes project foundation, problem statement, and external platform context.
+- **Stack Integration:** In [`SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md) Section 2 (*Environmental Realities & Constraints*) and Section 5 (*Architectural Principles & Non-Negotiable Invariants*), the architect binds the project to the enterprise baseline.
+- **Rule:** The seed document declares platform constraints (e.g., *"System runs containerized in Docker with gVisor sandboxing and integrates with central PostgreSQL 18 and Temporal"*), but **does NOT select specific component libraries or internal schemas**.
 
 ### 2.3 Tier 2: Module Specifications (`docs/modules/MODULE-NN_*`) — C4-L2 Container Boundaries
-* **Role:** Structural container modeling per [`SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md).
-* **Stack Integration:** Step 2 (*C4-L2 Container Definition*) maps bounded contexts into approved platform container archetypes:
+
+- **Role:** Structural container modeling per [`SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md).
+- **Stack Integration:** Step 2 (*C4-L2 Container Definition*) maps bounded contexts into approved platform container archetypes:
   - *Worker Container:* Temporal workflow worker or LangGraph activity executor.
   - *Persistence Container:* PostgreSQL 18 transactional database or ClickHouse OLAP store.
   - *Messaging Container:* NATS JetStream asynchronous publisher/subscriber.
-* **Rule:** Module documents identify container archetypes and trust boundaries (DFD-L2), but **defer concrete component interfaces and protocol definitions to SPEC (Layer 06)**.
+- **Rule:** Module documents identify container archetypes and trust boundaries (DFD-L2), but **defer concrete component interfaces and protocol definitions to SPEC (Layer 06)**.
 
 ### 2.4 Problem Space (Layers 01–04: BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD)
-* **Role:** Capture business outcomes, product scope, and behavioral contracts.
-* **Architecture Principle (Technology-Agnostic Requirements):** Requirements must define *WHAT* the user needs and *WHY*, never the internal implementation tool:
+
+- **Role:** Capture business outcomes, product scope, and behavioral contracts.
+- **Architecture Principle (Technology-Agnostic Requirements):** Requirements must define *WHAT* the user needs and *WHY*, never the internal implementation tool:
   - `01_BRD`: Captures business objectives and quality expectations. Enforces `BL-VENDOR-NAME-SCOPE`: capability titles must remain vendor-neutral (e.g. *"Requires scalable relational persistence with ACID guarantees"* rather than *"Must use PostgreSQL"*). Lists candidate topics in Section 8 `adr_topics`.
   - `02_PRD`: Decomposes capabilities into feature sets and elaborates `adr_topic_elaboration` without pre-selecting specific technologies.
   - `03_EARS`: Formulates testable, conditional requirements (WHEN/THE/SHALL/WITHIN), establishing latency budgets, throughput thresholds, and error conditions.
   - `04_BDD`: Formulates executable acceptance scenarios (Given-When-Then), modeling edge cases, network disruptions, and transactional failure modes.
 
 ### 2.5 The Selection Gate (Layer 05: ADR — AFTER BDD)
-* **Role:** The C4 decision bridge between Container (PRD) and Component (SPEC).
-* **Why After BDD?**  
+
+- **Role:** The C4 decision bridge between Container (PRD) and Component (SPEC).
+- **Why After BDD?**  
   Sound architectural decisions cannot be made in a vacuum. By placing technology selection immediately after BDD:
   1. The decision engine evaluates candidates against concrete behavioral failure scenarios (`@bdd`) and strict latency/throughput budgets (`@ears`).
   2. Candidate alternatives are drawn directly from the approved enterprise stack (`/mnt/e/dev/technology_stack/`).
   3. The decision evaluates trade-offs via quantitative **Multi-Criteria Decision Analysis (MCDA)** scoring across quality attributes (latency, resilience, operational cost, security).
   4. The ratified decision locks the exact technology choice with Context, Decision, and Consequences, unblocking technical specifications.
+  5. The ratified technology, version constraint, authorizing ADR reference, security monitoring metadata (PURL, CPE, scanners), and automated update policy are recorded directly into the project's canonical agent-readable [`ADR-00_index.yaml`](../layers/05_ADR/ADR-00_index.TEMPLATE.yaml) registry under `technologies`.
 
 ### 2.6 Solution Space (Layers 06–10: SPEC $\rightarrow$ TDD $\rightarrow$ IPLAN $\rightarrow$ Code $\rightarrow$ EVAL)
-* **Role:** Authoring implementation contracts and executing code within sandboxes.
-* **Stack Integration:**
+
+- **Role:** Authoring implementation contracts and executing code within sandboxes.
+- **Stack Integration:**
   - `06_SPEC`: Authors typed component interfaces, database schema migrations, and asynchronous event contracts (e.g., CloudEvents v1.0 / Protobuf over NATS JetStream, PostgreSQL 18 tables with UUIDv7 monotonic keys).
   - `07_TDD`: Defines test suites using ephemeral testcontainers running real PostgreSQL 18 and NATS JetStream instances for migration and contract verification.
   - `08_IPLAN`: Compiles execution DAGs into durable state machines with SAGA compensation rollbacks executed by Temporal.
@@ -168,6 +177,7 @@ sequenceDiagram
 ```
 
 ### The 4-Step Variance Procedure
+
 1. **Demonstrate Deficit in ADR:** The author drafts an ADR evaluating the standard platform component (e.g., PostgreSQL 18) and provides quantitative benchmarks proving it fails non-functional requirements (e.g., sub-millisecond graph traversals requiring Neo4j).
 2. **Strict Containment & Sandboxing:** The variance must specify how the non-standard technology is contained:
    - Must execute in an isolated container under gVisor (`runsc`).
