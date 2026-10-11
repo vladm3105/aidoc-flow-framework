@@ -178,7 +178,7 @@ Else:
 ### Step 9: Update EVAL-00 Index
 
 ```
-1. Update EVAL-00_index.md:
+1. Update EVAL-00_index.yaml:
    - Latest report for this EVAL
    - Latest verdict
    - Total cycles

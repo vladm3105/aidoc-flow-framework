@@ -1,0 +1,94 @@
+# SPEC-00_index.TEMPLATE.yaml — Technical Specification Index (template)
+# SDD Layer 6 — Master index and component interface registry for Technical Specifications
+#
+# Index template. Copy this file to SPEC-00_index.yaml in a project.
+# Dynamic registry — updated every time a SPEC is created, component interface modified,
+# or TDD pairing confirmed.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, component boundaries, backward coverage COV02),
+# see 06_SPEC/README.md and 06_SPEC/SPEC_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "spec-registry"
+  artifact_type: "SPEC-INDEX"
+  layer: 6
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_specs: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 06 SPECs)
+# =============================================================================
+# Master inventory of all authored Technical Specifications for the project.
+# Exactly one SPEC per logical architectural component.
+specs: []
+
+  # Template entry:
+  # - id: "SPEC-01"
+  #   component: "[Component Name]"
+  #   adr_ref: "ADR-01"         # Authorizing architecture decision record
+  #   tdd_target: "TDD-01"      # Downstream pairing test-driven development guide
+  #   status: "Draft"           # Draft | In Review | Approved | Implemented | Deprecated
+  #   tdd_ready_score: 0        # Score 0-100 (>=90 required for TDD gate)
+  #   interfaces_count: 0       # Number of declared API/interface contracts
+  #   file_path: "SPEC-01_[slug].yaml"
+  #   lead: "[System Architect / Tech Lead]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned SPECs)
+# =============================================================================
+# Future component specifications identified from ADR decisions and architecture roadmap.
+backlog: []
+
+  # Template entry:
+  # - id: "SPEC-02"             # Reserved sequential ID
+  #   component: "[Planned Component]"
+  #   source_adr: "ADR-02"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Scope boundary summary]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Coverage Contract (COV02)
+# =============================================================================
+# Backward-coverage contract: every upstream EARS/BDD element must be realized
+# by at least one downstream SPEC or TDD component.
+coverage_contract:
+  enforcer: "sdd_doc_lint finding COV02"
+  gate: "GATE-06 (Design & Test)"
+  realizing_map: "EARS/BDD -> SPEC/TDD"
+  c4_level: "c4-l3 (Component)"
+
+traceability_summary:
+  layer: 6
+  upstream_layers: [3, 4, 5]
+  upstream_artifacts: ["EARS", "BDD", "ADR"]
+  downstream_layer: 7
+  downstream_artifact: "TDD"
+  trace_contract: "ADR -> SPEC -> TDD"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_spec_created:
+    - "Add entry to specs with status: Draft and tdd_ready_score: 0"
+    - "Increment metadata.total_specs"
+    - "Remove corresponding entry from backlog if present"
+  on_status_change:
+    - "Update status and last_updated timestamp in specs"
+    - "When status moves to Approved, assert tdd_ready_score >= 90/100"
+  on_interface_updated:
+    - "Update interfaces_count in specs"
+    - "Verify bidirectional alignment with downstream TDD test contracts"

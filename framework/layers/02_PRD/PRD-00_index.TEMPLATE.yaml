@@ -1,0 +1,97 @@
+# PRD-00_index.TEMPLATE.yaml — Product Requirements Document Index (template)
+# SDD Layer 2 — Master index and threshold registry for all Product Requirements Documents
+#
+# Index template. Copy this file to PRD-00_index.yaml in a project.
+# Dynamic registry — updated every time a PRD is created, status changed,
+# or threshold definitions updated.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, status semantics, threshold registry),
+# see 02_PRD/README.md and 02_PRD/PRD_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "prd-registry"
+  artifact_type: "PRD-INDEX"
+  layer: 2
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_prds: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 02 PRDs)
+# =============================================================================
+# Master inventory of all authored Product Requirements Documents for the project.
+prds: []
+
+  # Template entry:
+  # - id: "PRD-01"
+  #   title: "[Product / Feature Area Title]"
+  #   status: "Draft"           # Draft | In Review | Approved | In Progress | Completed | Archived
+  #   related_brd: "BRD-01"     # Upstream BRD reference
+  #   features_count: 0         # Number of discrete feature blocks declared
+  #   priority: "High"          # High | Medium | Low
+  #   ears_ready_score: 0       # Quality score 0-100 (>=90 required for EARS gate)
+  #   file_path: "PRD-01_[slug].yaml"
+  #   lead: "[Product Owner / PM]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned PRDs)
+# =============================================================================
+# Future product specifications identified from BRD roadmap.
+backlog: []
+
+  # Template entry:
+  # - id: "PRD-02"              # Reserved sequential ID
+  #   title: "[Upcoming Feature Area]"
+  #   source_brd: "BRD-01"
+  #   priority: "High"          # High | Medium | Low
+  #   target_date: "YYYY-MM-DD"
+  #   notes: "[Scope hypothesis or feature summary]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Threshold Registry Integration
+# =============================================================================
+# Cross-cutting quantitative parameters cited via @threshold: across PRD requirements.
+thresholds: []
+
+  # Template entry:
+  # - key: "PRD.01.perf.api_timeout_p99"
+  #   category: "Performance"   # Performance | Quota | Transaction | Risk | RateLimit
+  #   value: "200ms"
+  #   description: "API p99 latency threshold under standard operating load"
+  #   cited_by: ["PRD-01"]
+  #   downstream_consumers: ["EARS-01", "SPEC-01"]
+
+traceability_summary:
+  layer: 2
+  upstream_layer: 1
+  upstream_artifact: "BRD"
+  downstream_layer: 3
+  downstream_artifact: "EARS"
+  trace_contract: "BRD -> PRD -> EARS"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_prd_created:
+    - "Add entry to prds with status: Draft and ears_ready_score: 0"
+    - "Increment metadata.total_prds"
+    - "Remove corresponding entry from backlog if present"
+  on_status_change:
+    - "Update status and last_updated timestamp in prds"
+    - "When status moves to Approved, assert ears_ready_score >= 90/100"
+  on_threshold_updated:
+    - "Update value, description, or cited_by list in thresholds"
+    - "Notify downstream EARS/SPEC agents of parameter change"

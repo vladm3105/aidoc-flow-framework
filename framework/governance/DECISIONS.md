@@ -15,11 +15,39 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.34 |
+| Version | 1.35 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
+
+---
+
+## GD-75 — Universal AI-First 5-Quadrant YAML Index Modernization Across All SDD Layers (CHG-88, 0.91.7 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Following the ratification of Decision GD-74 (modernizing Layer 05 ADR index to YAML with embedded technology registry) and the pre-existing Layer 08 YAML index (`IPLAN-00_index.TEMPLATE.yaml`), the remaining eight SDD layers (`01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `06_SPEC`, `07_TDD`, `09_CHG`, `10_EVAL`) retained legacy Markdown index templates (`*-00_index.TEMPLATE.md`). In an agentic, AI-first workflow, Markdown tables require brittle regex parsing and encourage dual-entry bookkeeping drift. Making machine-readable YAML the sole source of truth across all 10 SDD layers enables deterministic AI ingestion, automated cross-layer trace verification, and dynamic generation of human-facing documentation on demand.
+- **Decision**:
+  1. **Retirement of Remaining Markdown Index Templates**:
+     - Remove `*-00_index.TEMPLATE.md` across Layers 01, 02, 03, 04, 06, 07, 09, and 10.
+     - Archive pre-change Markdown index templates in `framework/archive/CHG-88/templates/`.
+     - Author canonical YAML index templates (`*-00_index.TEMPLATE.yaml`) across all eight layers, preserving the 10 total index templates asserted by `test_index_template_lint.py`.
+  2. **Canonical 5-Quadrant YAML Index Architecture**:
+     - Standardize all 10 SDD layer indices around the 5-Quadrant specification:
+       - **Quadrant 1 (Metadata)**: `schema_version: "1.0"`, `framework_version`, `document_type`, `artifact_type: "<LAYER>-INDEX"`, layer number, `status: "Active"`, and explicit `format_ssot` contract.
+       - **Quadrant 2 (Document Registry)**: Strongly typed collection of active layer instances (`brds`, `prds`, `requirements_documents`, `bdd_suites`, `adrs`, `specs`, `test_suites`, `plans`, `change_records`, `evaluations`).
+       - **Quadrant 3 (Backlog)**: Standardized `backlog: []` capturing planned modules, MVP cycles, future specifications, or candidate changes.
+       - **Quadrant 4 (Layer Intelligence & Cross-Layer Traceability)**: Domain-specific matrices, module taxonomies, quality thresholds, statement patterns, and verification tracks.
+       - **Quadrant 5 (Agent Update Triggers)**: Declarative lifecycle update policies defining when and how AI agents maintain index synchronization.
+  3. **Framework Registry & Standards Synchronization**:
+     - Update `framework/registry/LAYER_REGISTRY.yaml` header comments to document 100% YAML index templates across all 10 layers.
+     - Update layer READMEs and workflow standards to cite `*-00_index.TEMPLATE.yaml`.
+     - Update conformance mutation test `tests/conformance/test_instance_format_ssot.py` assertion to 4 sanctioned index mentions.
+- **Consequences**:
+  - Establishes a 100% unified, machine-readable YAML index foundation across all 10 SDD layers.
+  - Eliminates human/machine bookkeeping drift; AI agents generate human-facing views on-demand.
+  - Enables fully automated, deterministic cross-layer trace validation and lifecycle synchronization.
 
 ---
 

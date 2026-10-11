@@ -1,0 +1,147 @@
+# =============================================================================
+#  CHG-88: Universal AI-First 5-Quadrant YAML Index Modernization
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance Batch)
+#  Pre-cleared: User instruction in session (2026-10-11)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-11"
+  framework_version: "0.91.7"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-88"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-11T00:00:00Z"
+  date_approved: "2026-10-11T00:00:00Z"
+  date_implemented: "2026-10-11T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-11T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: convert into YAML index files on all layers: BRD, PRD etc having unified approach plus make the index files AI-friendly and AI-first. Option A (Staged Governance) Phase 2 approval."
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-88)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-88"
+  title: "Universal AI-First 5-Quadrant YAML Index Architecture Across All SDD Layers"
+  status: "Accepted"
+  context: |
+    Following the ratification of Decision GD-74 (modernizing Layer 05 ADR index to YAML with embedded technology
+    registry) and the pre-existing Layer 08 YAML index (IPLAN-00_index.TEMPLATE.yaml), the remaining eight SDD
+    layers (01_BRD, 02_PRD, 03_EARS, 04_BDD, 06_SPEC, 07_TDD, 09_CHG, 10_EVAL) retained legacy Markdown index
+    templates (*-00_index.TEMPLATE.md). In an agentic, AI-first workflow, Markdown tables require brittle regex
+    parsing and encourage dual-entry bookkeeping drift. Making machine-readable YAML the sole source of truth across
+    all 10 SDD layers enables deterministic AI ingestion, automated cross-layer trace verification, and dynamic
+    generation of human-facing documentation on demand.
+  choice: |
+    1. Modernize all remaining 8 layer index templates from Markdown (*-00_index.TEMPLATE.md) to YAML (*-00_index.TEMPLATE.yaml).
+    2. Establish a canonical 5-Quadrant YAML schema across all 10 layers:
+       - Quadrant 1: Metadata (schema_version: "1.0", framework_version, document_type, artifact_type: "<LAYER>-INDEX", format_ssot)
+       - Quadrant 2: Document Registry (typed collection of active layer instances)
+       - Quadrant 3: Backlog (planned, sketch, or proposed future work)
+       - Quadrant 4: Layer Intelligence & Cross-Layer Traceability (domain metrics, coverage matrices, quality gates)
+       - Quadrant 5: Agent Update Triggers (declarative lifecycle rules for automated index maintenance)
+    3. Archive pre-change Markdown templates under framework/archive/CHG-88/templates/.
+    4. Synchronize LAYER_REGISTRY.yaml header, layer READMEs, workflow standards, and root README.md.
+    5. Ratify Decision GD-75 in DECISIONS.md and advance framework spec version to 0.91.7.
+  consequences: |
+    - Complete format uniformity across all 10 SDD layer indices (100% YAML).
+    - Eliminates documentation drift between machine-readable schemas and human tables.
+    - AI agents can parse, validate, and maintain layer registries deterministically.
+    - Mutation test test_instance_format_ssot.py drops from 12 to 6 sanctioned index mentions.
+  alternatives_considered:
+    - option: "Option 1: Retain Markdown index templates for non-technical layers (BRD, PRD)"
+      rationale_rejected: "Rejected. Creates asymmetric parsing models where AI agents must maintain Markdown tables in business layers and YAML in technical layers."
+    - option: "Option 2: Dual Markdown and YAML files in each layer"
+      rationale_rejected: "Rejected. Dual files inevitably drift out of sync. Machine-readable YAML is the single source of truth; human views are rendered on-demand."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Universal AI-First 5-Quadrant YAML Index Modernization Across All SDD Layers"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-11T00:00:00Z"
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Modernize 8 remaining SDD layer indices to YAML and establish the universal 5-Quadrant AI-first index architecture"
+  touched_areas:
+    - "framework/layers/"
+    - "framework/registry/"
+    - "framework/governance/"
+  components:
+    - "BRD-00_index.TEMPLATE.yaml"
+    - "PRD-00_index.TEMPLATE.yaml"
+    - "EARS-00_index.TEMPLATE.yaml"
+    - "BDD-00_index.TEMPLATE.yaml"
+    - "SPEC-00_index.TEMPLATE.yaml"
+    - "TDD-00_index.TEMPLATE.yaml"
+    - "CHG-00_index.TEMPLATE.yaml"
+    - "EVAL-00_index.TEMPLATE.yaml"
+    - "LAYER_REGISTRY.yaml"
+    - "DECISIONS.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-88/IPLAN-88.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-88.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-88/IPLAN-88.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing"
+    - "test_index_template_lint.py passing with exactly 10 index templates"
+    - "test_instance_format_ssot.py passing with 6 sanctioned index mentions"
+    - "sdd_doc_lint clean with zero STRUCT01 or ID02 errors"
+    - "pytest conformance and acceptance green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

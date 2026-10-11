@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 
 
 ## Overview
@@ -386,7 +386,7 @@ modified file with its archive path.
 |------|---------|
 | `README.md` | This file — layer documentation with all CHG rules |
 | `CHG-TEMPLATE.yaml` | Unified CHG template — full authoring guidance with `_guidance`, `_antipatterns`, and structured `creation_checklist` |
-| `CHG-00_index.TEMPLATE.md` | Change registry template — tracks all CHG documents per project |
+| `CHG-00_index.TEMPLATE.yaml` | Change registry template — tracks all CHG documents per project in canonical 5-Quadrant YAML |
 | `gates/` | Gate definitions (GATE-01, 03, 06, 08, CODE, SPEC, error catalog, interaction diagram) |
 | `templates/` | Gate approval form and emergency post-mortem companion |
 

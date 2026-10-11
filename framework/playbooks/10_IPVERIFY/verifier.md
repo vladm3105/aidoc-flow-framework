@@ -106,7 +106,7 @@ Note: Verified = IMMUTABLE
 ### Step 6: Update EVAL-00 Index
 
 ```
-1. Update EVAL-00_index.md:
+1. Update EVAL-00_index.yaml:
    - Mark IPLAN as Verified
    - Record final cycle count
    - Record resolution metrics

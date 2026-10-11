@@ -28,7 +28,7 @@ This playbook enforces the ID naming standard and the one-source-per-test-case r
 ## Outputs
 
 - **EVAL document**: `docs/sdd/10_EVAL/EVAL-NN/EVAL-NN.yaml`
-- **Registered in**: `EVAL-00_index.md`
+- **Registered in**: `EVAL-00_index.yaml`
 
 ## ID Naming Standard
 
@@ -77,7 +77,7 @@ Create as many test cases as needed — one per source element.
 ### Step 2: Select EVAL Number
 
 ```
-1. Read EVAL-00_index.md
+1. Read EVAL-00_index.yaml
 2. Find the next-free EVAL number for this IPLAN
 3. Each IPLAN owns exactly ONE EVAL (1:1 mapping)
 4. EVAL-NN must not already exist
@@ -174,7 +174,7 @@ For each test case:
 ### Step 8: Register in EVAL-00 Index
 
 ```
-1. Open docs/sdd/10_EVAL/EVAL-00_index.md
+1. Open docs/sdd/10_EVAL/EVAL-00_index.yaml
 2. Add row to Document Registry table:
    | EVAL-NN | IPLAN-NN | eval_track | iplan_version | - | - | - | Draft | date |
 3. Update Eval Loop Summary:
@@ -207,5 +207,5 @@ For each test case:
 - [ ] Summary counts match entry counts
 - [ ] Quality thresholds set
 - [ ] Document follows EVAL-TEMPLATE.yaml structure
-- [ ] Registered in EVAL-00_index.md
+- [ ] Registered in EVAL-00_index.yaml
 - [ ] sdd_doc_lint passes with no errors

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 
 ## Overview
 
@@ -99,7 +99,7 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 **Templates**:
 - `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
 - `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
-- `EVAL-00_index.TEMPLATE.md` — master index template
+- `EVAL-00_index.TEMPLATE.yaml` — master index template in canonical 5-Quadrant YAML
 
 > Canon note: `EVAL-RPT-TEMPLATE.yaml` is tombstoned — it lacked §4
 > `test_results` and carried the banned `EVAL-NN.BDD-NN.TC-NN.NN` ID form.
@@ -130,7 +130,7 @@ flowchart LR
 
 ```
 docs/sdd/10_EVAL/
-  EVAL-00_index.md                          # master index
+  EVAL-00_index.yaml                         # master index
   EVAL-01/                                  # owns IPLAN-01
     EVAL-01.yaml                            # active strategy document
     reports/
@@ -239,4 +239,4 @@ been removed. Test strategy is per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
 |------|---------|
 | `EVAL-TEMPLATE.yaml` | Per-IPLAN evaluation strategy template |
 | `EVAL-REPORT-TEMPLATE.yaml` | Self-contained evaluation report template |
-| `EVAL-00_index.TEMPLATE.md` | Master index template |
+| `EVAL-00_index.TEMPLATE.yaml` | Master index template in canonical 5-Quadrant YAML |
