@@ -72,6 +72,12 @@ graph TB
     MainService -->|Encrypted TCP / Persistent State| PrimaryDB
 ```
 
+### 2.1 Container Archetype & Approved Stack Mapping
+- **Container Archetype:** [Ingress Gateway | Compute Worker | Event Broker | Relational Primary DB | Analytical Datastore | Workflow Orchestrator]
+- **Approved Stack Category:** [e.g. Platform Database Layer, Workflow Engine, Transport Broker per `TECHNOLOGY_STACK_USAGE_GUIDE.md`]
+- **Baseline Candidate(s):** [e.g. PostgreSQL 18, NATS JetStream, Temporal from `/mnt/e/dev/technology_stack/`]
+- **Selection Status:** Candidate baseline identified; formal binding ratified at downstream Layer 05 ADR.
+
 ---
 
 ## 3. Data Movement, Trust Boundaries & Sensitivity (DFD-L2)

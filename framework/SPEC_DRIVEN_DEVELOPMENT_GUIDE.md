@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 
 ## Overview
@@ -29,12 +29,15 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | L2 | PRD | Product features, user stories, ADR topics | BRD | EARS |
 | L3 | EARS | Formal requirements (WHEN-THE-SHALL-WITHIN) | PRD | BDD |
 | L4 | BDD | Executable acceptance scenarios (Given-When-Then) with spec_trace | EARS | ADR |
-| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | EARS, BDD | SPEC |
+| L5 | ADR | Architecture & technology selection gate (Context-Decision-Consequences) | EARS, BDD | SPEC |
 | L6 | SPEC | Component interfaces, data models, behavior contracts | EARS, BDD, ADR | TDD |
 | L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | EARS, BDD, ADR, SPEC | IPLAN |
 | L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | SPEC, TDD | Code |
 | L9 | CHG | Change management overlay — gates, versioning, audit trail | Any | — |
 | L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
+
+> **Technology Selection Gate ([`governance/TECHNOLOGY_STACK_USAGE_GUIDE.md`](governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)):**  
+> SDD enforces clean architectural separation: Layers 01–04 (**Problem Space**) remain technology-agnostic. Layer 05 (**ADR**) serves as the formal selection gate, evaluating options from `/mnt/e/dev/technology_stack` against EARS timing constraints and BDD failure scenarios via Multi-Criteria Decision Analysis (MCDA). Layers 06–10 (**Solution Space**) author concrete technology contracts, testcontainers, and implementations.
 
 The forward chain above is the **SDD2C greenfield** (F1) flow. Subsequent changes do not all repeat it: behavior changes
 restart the chain from the lowest affected layer (**SEED2C** brownfield / F3, SDD-first), defects in completed work repair

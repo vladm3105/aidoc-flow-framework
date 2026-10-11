@@ -23,7 +23,7 @@ metadata:
   description: "Per-layer review-team crews + scoring weights for the SDD flow"
   authority: "framework/governance/REVIEW_TEAM.md"
   last_updated: "2026-10-07"
-  framework_version: "0.91.4"
+  framework_version: "0.91.5"
 
 # Default collaboration mode when a crew/operation does not override it.
 default_mode: independent          # independent | sequential | single_pass
@@ -43,10 +43,10 @@ personas:
   - chaos_engineer                 # internal stability — failure paths, edge cases, resource exhaustion, recovery
   - security_engineer              # external threats — threat model, trust boundaries, abuse cases, controls
   - integration_lead               # cross-system, contracts, dependencies
-  - architect                      # structure, decisions, boundaries
+  - architect                      # structure, decisions, boundaries, technology stack catalog alignment
   - product_owner                  # product scope, user value, priorities
   - business_analyst               # business objectives, requirements clarity
-  - operator                       # operability, runtime, observability
+  - operator                       # operability, runtime, observability, platform infrastructure compatibility
   - auditor                        # compliance, traceability, completeness
   - drafter                        # generic author (used where no specialist fits)
   - fixer                          # generic remediation author

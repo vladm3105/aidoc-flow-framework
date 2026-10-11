@@ -1,0 +1,539 @@
+# =============================================================================
+#  BRD-SWF-TEMPLATE.yaml — Business Requirements Workflow Document (SDD Layer 01)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Workflow Subtype)
+#  Purpose: Hybrid Envelope template embedding CNCF Serverless Workflow v0.8
+#           for complex strategic initiatives, value stream mapping, ROI feasibility,
+#           and executive consensus gating
+#  Lifecycle: MVP → PROD → NEW MVP
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Downstream: PRD (Layer 2)
+#  Upstream: Strategic Business Intent / Enterprise Portfolio
+# =============================================================================
+
+id: BRD-NN
+doc_id: BRD-NN
+title: "[Business Requirements Workflow Title]"
+
+# =============================================================================
+# Template Metadata (Template Configuration)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "brd-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  layer: 1
+  lifecycle: mvp-prod-newmvp
+  total_sections: 16
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Structural validation performed via sdd_doc_lint (STRUCT01).
+      Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
+      PRD-Ready Score target >= 90/100 (advisory readiness target).
+    scoring_criteria:
+      strategic_clarity: "35% (SMART objectives, business drivers, vision statement)"
+      value_stream_completeness: "30% (operational capabilities, customer journey flow)"
+      economic_feasibility: "20% (quantified ROI, cost/benefit, payback duration)"
+      stakeholder_alignment: "15% (executive sponsors, governance RACI, approval gates)"
+
+  c4_level:
+    _guidance: |
+      BRD represents Context level in the C4 model. Content describes enterprise
+      environment, customer actors, operational systems, and business boundaries.
+    value: context
+
+  tags:
+    - brd-document
+    - layer-1-artifact
+    - workflow-subtype
+    - cncf-serverless-workflow
+
+  deliverable_type:
+    value: documentation
+
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control (Required Section 1/17)
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  _guidance: |
+    Document control metadata for BRD workflow document.
+  version: "1.0"
+  status: draft  # draft | in-review | approved | superseded
+  date_created: "2026-10-05"
+  last_updated: "2026-10-05"
+  author: "[Executive Sponsor / Lead Business Analyst]"
+  target_release: "[vX.Y.Z]"
+  review_history:
+    - version: "1.0"
+      date: "2026-10-05"
+      reviewer: "[Lead Business Analyst / Enterprise Architect]"
+      verdict: "Initial Workflow Draft"
+
+# =============================================================================
+# Section 2: Executive Summary (Required Section 2/17)
+# =============================================================================
+
+executive_summary:
+  _size_target: 300
+  _guidance: |
+    High-level overview of the strategic initiative, value proposition, and intended business impact.
+  initiative_name: "[Strategic Initiative Name]"
+  vision_statement: >-
+    [Concise statement defining the target business transformation and strategic intent]
+  core_value_proposition:
+    - "[Value Driver 1: e.g., Automated transaction reconciliation reducing settlement latency]"
+    - "[Value Driver 2: e.g., Elimination of manual auditing bottlenecks across distributed branches]"
+  target_horizon: "[e.g., Q1-Q4 FY2027]"
+
+# =============================================================================
+# Section 3: Introduction & Business Context (Required Section 3/17)
+# =============================================================================
+
+introduction:
+  _size_target: 250
+  _guidance: |
+    Contextual background, market conditions, and operational imperatives driving this initiative.
+  market_context: >-
+    [Description of industry dynamics, regulatory changes, or competitive pressures]
+  problem_statement: >-
+    [Clear articulation of the business bottleneck, inefficiency, or unmet market opportunity]
+  strategic_fit: >-
+    [Direct alignment with corporate goals, OKRs, and multi-year strategic pillars]
+
+# =============================================================================
+# Section 4: Business Objectives (Required Section 4/17)
+# =============================================================================
+
+business_objectives:
+  _size_target: 350
+  _guidance: |
+    SMART business objectives with quantifiable success metrics and strategic KPIs.
+  objectives:
+    - id: "BRD.01.04.obj1"
+      name: "AccelerateOrderProcessing"
+      statement: "Reduce end-to-end customer order processing time by 40% within 6 months of rollout."
+      kpi: "Mean order processing duration <= 3.5 minutes"
+      priority: P1
+    - id: "BRD.01.04.obj2"
+      name: "OperationalErrorReduction"
+      statement: "Eliminate manual reconciliation discrepancies, achieving 99.9% automated match rate."
+      kpi: "Discrepancy rate < 0.1%"
+      priority: P1
+
+# =============================================================================
+# Section 5: Project Scope (Required Section 5/17)
+# =============================================================================
+
+project_scope:
+  _size_target: 250
+  _guidance: |
+    In-scope operational capabilities and explicit out-of-scope boundaries.
+  in_scope:
+    - "[Capability 1: Ingestion and validation of digital customer purchase orders]"
+    - "[Capability 2: Automated risk assessment and credit approval orchestration]"
+    - "[Capability 3: Real-time ledger synchronization with enterprise ERP]"
+  out_of_scope:
+    - "[Deferred Item: Physical inventory warehouse logistics automation]"
+    - "[Deferred Item: Legacy mainframe transaction migration (Phase 2)]"
+
+# =============================================================================
+# Section 6: Stakeholders & Governance (Required Section 6/17)
+# =============================================================================
+
+stakeholders:
+  _size_target: 200
+  _guidance: |
+    Key business personas, executive sponsors, and operational stakeholders.
+  roster:
+    - role: "Executive Sponsor"
+      name: "[Sponsor Name / Title]"
+      responsibility: "Overall initiative budget approval and steering authority"
+    - role: "Business Lead"
+      name: "[Lead Name / Title]"
+      responsibility: "Domain requirement sign-off and operational readiness"
+    - role: "Product Manager"
+      name: "[PM Name / Title]"
+      responsibility: "PRD decomposition and backlog translation ownership"
+
+# =============================================================================
+# Section 7: Functional Requirements & Capabilities (Required Section 7/17)
+# =============================================================================
+
+functional_requirements:
+  _size_target: 400
+  _guidance: |
+    High-level business capabilities required to satisfy strategic objectives.
+  capabilities:
+    - id: "BRD.01.07.cap1"
+      name: "OrderValidationEngine"
+      description: "Business engine verifying customer eligibility, credit limits, and order line items."
+      supporting_objectives:
+        - "BRD.01.04.obj1"
+    - id: "BRD.01.07.cap2"
+      name: "AutomatedReconciliationService"
+      description: "Event-driven matching service reconciling banking settlements against merchant accounts."
+      supporting_objectives:
+        - "BRD.01.04.obj2"
+
+# =============================================================================
+# Section 8: Quality Expectations (Required Section 8/17)
+# =============================================================================
+
+quality_expectations:
+  _size_target: 200
+  _guidance: |
+    Enterprise-level quality expectations, availability bounds, and regulatory compliance rules.
+  expectations:
+    - category: "Availability"
+      target: "99.95% uptime during core business operating hours"
+    - category: "Auditability"
+      target: "100% immutable audit ledger retention for 7 years per regulatory mandate"
+    - category: "Scalability"
+      target: "Support peak transactional throughput of 5,000 orders/sec during holiday events"
+
+# =============================================================================
+# Section 9: Acceptance Criteria (Required Section 9/17)
+# =============================================================================
+
+acceptance_criteria:
+  _size_target: 250
+  _guidance: |
+    Measurable criteria required for business sign-off and progression to PRD.
+  criteria:
+    - id: "BRD.01.09.crit1"
+      description: "All automated order processing steps complete within SLA threshold"
+      validation_method: "Simulated load testing against representative order volumes"
+    - id: "BRD.01.09.crit2"
+      description: "Steering committee consensus sign-off obtained with zero open P1 objections"
+      validation_method: "Documented formal ratification form signed by executive sponsors"
+
+# =============================================================================
+# Section 10: Constraints & Assumptions (Required Section 10/17)
+# =============================================================================
+
+constraints_and_assumptions:
+  _size_target: 200
+  _guidance: |
+    Organizational, technical, financial, and regulatory constraints.
+  constraints:
+    - "[Constraint 1: Maximum capital expenditure budget capped at allocated FY allocation]"
+    - "[Constraint 2: Solution must comply with GDPR, CCPA, and SOC-2 Type II controls]"
+  assumptions:
+    - "[Assumption 1: Core enterprise authentication services remain available via OAuth2/OIDC]"
+    - "[Assumption 2: Downstream banking APIs support webhook notifications for settlement events]"
+
+# =============================================================================
+# Section 11: Risk Management (Required Section 11/17)
+# =============================================================================
+
+risk_management:
+  _size_target: 250
+  _guidance: |
+    Strategic, operational, and financial risk assessment with mitigation strategies.
+  risks:
+    - id: "RSK-01"
+      description: "Delays in vendor API access could postpone integration testing"
+      severity: High
+      likelihood: Medium
+      mitigation: "Establish mock vendor sandboxes for parallel capability development"
+    - id: "RSK-02"
+      description: "User adoption resistance among traditional manual operators"
+      severity: Medium
+      likelihood: High
+      mitigation: "Conduct comprehensive change management and phased training workshops"
+
+# =============================================================================
+# Section 12: Architectural Decision (ADR) Topics (Required Section 12/17)
+# =============================================================================
+
+adr_topics:
+  _size_target: 150
+  _guidance: |
+    Strategic technology topics requiring downstream architectural decision records in Layer 05 (ADR).
+  topics:
+    - topic: "Distributed Event Choreography vs Orchestration"
+      rationale: "Requires formal trade-off analysis between decoupled eventing and centralized workflow state"
+    - topic: "Reconciliation Ledger Storage Paradigm"
+      rationale: "Comparison between relational SQL audit tables and distributed append-only ledger"
+
+# =============================================================================
+# Section 13: Traceability (Required Section 13/17)
+# =============================================================================
+
+traceability:
+  _size_target: 150
+  _guidance: |
+    Upstream strategy lineage and downstream PRD contract handoff links.
+  tags:
+    - "@brd: BRD-NN"
+  upstream:
+    enterprise_strategy:
+      - "CORP-STRAT-2026-PILLAR-1"
+  downstream:
+    prd_targets:
+      - "PRD-NN"
+    ears_targets:
+      - "EARS-NN"
+
+# =============================================================================
+# Section 14: Diagrams (Required Section 14/17)
+# =============================================================================
+
+diagrams:
+  _size_target: 200
+  _guidance: |
+    Context diagrams, value stream maps, or C4 Level 1 system context views.
+  mermaid: |
+    graph TD
+      A[Customer Digital Channel] -->|Submits Order| B[Enterprise Order Boundary]
+      B -->|Reconciliation Stream| C[ERP Financial Ledger]
+      B -->|Risk Scoring| D[Credit Assessment Partner]
+      B -->|Event Stream| E[Operational Dashboard]
+
+# =============================================================================
+# Section 15: Approval & Sign-Off (Required Section 15/17)
+# =============================================================================
+
+approval:
+  _size_target: 150
+  _guidance: |
+    Formal sign-off approvals from key governance authorities.
+  approvals:
+    - role: "Executive Sponsor"
+      name: "[Name / Title]"
+      date: "2026-10-05"
+      status: "Approved"
+    - role: "Lead Enterprise Architect"
+      name: "[Name / Title]"
+      date: "2026-10-05"
+      status: "Approved"
+
+# =============================================================================
+# Section 16: Glossary (Required Section 16/17)
+# =============================================================================
+
+glossary:
+  _size_target: 150
+  _guidance: |
+    Domain terms and acronyms used in the business requirements document.
+  terms:
+    - term: "Value Stream"
+      definition: "The end-to-end collection of activities that create customer value."
+    - term: "ROI (Return on Investment)"
+      definition: "Performance measure evaluating the financial efficiency of the strategic investment."
+    - term: "SLA (Service Level Agreement)"
+      definition: "Contractual commitment between business entities regarding service performance."
+
+# =============================================================================
+# Section 17: Appendix (Required Section 17/17)
+# =============================================================================
+
+appendix:
+  _size_target: 150
+  _guidance: |
+    Supplementary documentation, financial cost models, and reference links.
+  references:
+    - title: "Enterprise Strategic Horizon 2026-2028"
+      uri: "https://internal.example.org/strategy/horizon-2026.pdf"
+    - title: "Financial Feasibility Model v2.4"
+      uri: "https://internal.example.org/finance/models/feasibility-v2.4.xlsx"
+
+# =============================================================================
+# Optional Section: Seed Disposition (Phase 0a)
+# =============================================================================
+
+seed_disposition:
+  _size_target: 100
+  _required: false
+  disposition: "No seed input required for greenfield strategic initiative."
+
+# =============================================================================
+# Optional Section: Value Stream Mapping & CNCF Workflow Definition
+# =============================================================================
+
+value_stream_mapping:
+  _size_target: 500
+  _required: false
+  value_streams:
+    - id: "VS-01"
+      name: "Customer Order Fulfillment Value Stream"
+      lead_time: "4.5 hours"
+      process_time: "12 minutes"
+      efficiency_ratio: 0.044
+    - id: "VS-02"
+      name: "Financial Settlement & Reconciliation Stream"
+      lead_time: "24 hours"
+      process_time: "45 seconds"
+      efficiency_ratio: 0.0005
+
+  workflow_definition:
+    id: brd-business-validation-graph
+    name: BRD Business Requirements Validation and Value Stream Graph
+    version: "1.0.0"
+    specVersion: "0.8"
+    start: IngestStrategicInitiative
+
+    events:
+      - name: ExecutiveSteeringApprovalEvent
+        type: org.aidoc.brd.steering.approved
+        source: /aidoc/steering/approval
+        correlation:
+          - contextAttributeName: initiativeId
+
+    functions:
+      - name: parseStrategicInitiative
+        operation: "urn:aidoc:functions:brd-parser#parse"
+        type: custom
+      - name: mapCustomerValueStream
+        operation: "urn:aidoc:functions:value-stream-analyzer#mapCustomerJourney"
+        type: custom
+      - name: mapCoreOperationsValueStream
+        operation: "urn:aidoc:functions:value-stream-analyzer#mapCoreOperations"
+        type: custom
+      - name: mapFinancialGovernanceValueStream
+        operation: "urn:aidoc:functions:value-stream-analyzer#mapFinancialGovernance"
+        type: custom
+      - name: evaluateRoiAndCostBenefit
+        operation: "urn:aidoc:functions:roi-evaluator#computeMetrics"
+        type: custom
+      - name: verifyStrategicObjectiveFit
+        operation: "urn:aidoc:functions:strategy-evaluator#verifyFit"
+        type: custom
+      - name: emitCanonicalBrdIds
+        operation: "urn:aidoc:functions:hasher#generateBrdIds"
+        type: custom
+      - name: notifyExecutiveSteeringCommittee
+        operation: "urn:aidoc:functions:notifier#notifySteeringCommittee"
+        type: custom
+      - name: purgeDownstreamInitiativeAllocations
+        operation: "urn:aidoc:functions:compensator#purgeAllocations"
+        type: custom
+
+    states:
+      - name: IngestStrategicInitiative
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: ingestInitiativePayload
+            functionRef:
+              refName: parseStrategicInitiative
+              arguments:
+                initiativeId: "${ .initiativeId }"
+                businessContext: "${ .executive_summary }"
+        transition: MapValueStreamCapabilities
+
+      - name: MapValueStreamCapabilities
+        type: parallel
+        completionType: allOf
+        branches:
+          - name: CustomerJourneyBranch
+            actions:
+              - name: analyzeCustomerStreamAction
+                functionRef:
+                  refName: mapCustomerValueStream
+                  arguments:
+                    stakeholders: "${ .stakeholders }"
+          - name: OperationalProcessBranch
+            actions:
+              - name: analyzeOperationalStreamAction
+                functionRef:
+                  refName: mapCoreOperationsValueStream
+                  arguments:
+                    scope: "${ .project_scope }"
+          - name: FinancialGovernanceBranch
+            actions:
+              - name: analyzeFinancialStreamAction
+                functionRef:
+                  refName: mapFinancialGovernanceValueStream
+                  arguments:
+                    assumptions: "${ .constraints_and_assumptions }"
+        transition: EvaluateRoiAndFeasibility
+
+      - name: EvaluateRoiAndFeasibility
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: computeRoiAction
+            functionRef:
+              refName: evaluateRoiAndCostBenefit
+              arguments:
+                objectives: "${ .business_objectives }"
+          - name: verifyAlignmentAction
+            functionRef:
+              refName: verifyStrategicObjectiveFit
+              arguments:
+                businessObjectives: "${ .business_objectives }"
+        transition: EvaluateStrategicAlignmentGate
+
+      - name: EvaluateStrategicAlignmentGate
+        type: switch
+        dataConditions:
+          - name: InitiativeApproved
+            condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
+            transition: RatifyBusinessSpecification
+          - name: ExecutiveReviewRequired
+            condition: "${ .requiresExecutiveReview == true }"
+            transition: AwaitSteeringCommitteeCallback
+        defaultCondition:
+          transition: RejectBusinessInitiative
+
+      - name: AwaitSteeringCommitteeCallback
+        type: callback
+        action:
+          name: notifyExecutiveAction
+          functionRef:
+            refName: notifyExecutiveSteeringCommittee
+            arguments:
+              initiativeId: "${ .initiativeId }"
+        eventRef: ExecutiveSteeringApprovalEvent
+        timeouts:
+          eventTimeout: PT72H
+        transition: EvaluateRoiAndFeasibility
+
+      - name: RatifyBusinessSpecification
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: emitBrdElementIdsAction
+            functionRef:
+              refName: emitCanonicalBrdIds
+              arguments:
+                initiativeId: "${ .initiativeId }"
+        end: true
+
+      - name: RejectBusinessInitiative
+        type: operation
+        compensatedBy: InvalidateStrategicInitiatives
+        actionMode: sequential
+        actions:
+          - name: recordInitiativeRejectionAction
+            functionRef:
+              refName: parseStrategicInitiative
+              arguments:
+                initiativeId: "${ .initiativeId }"
+                status: "REJECTED"
+        transition: InvalidateStrategicInitiatives
+
+      - name: InvalidateStrategicInitiatives
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: purgeAllocationsAction
+            functionRef:
+              refName: purgeDownstreamInitiativeAllocations
+              arguments:
+                initiativeId: "${ .initiativeId }"
+        end: true

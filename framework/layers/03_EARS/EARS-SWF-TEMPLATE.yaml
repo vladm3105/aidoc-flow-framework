@@ -354,6 +354,8 @@ quality_attributes:
     Measurable quality attributes supporting EARS requirements.
     All latency metrics specify p50/p95/p99 percentiles; non-latency bounds use
     concrete numeric values and units.
+    These quality attributes directly inform downstream Multi-Criteria Decision Analysis (MCDA)
+    utility scoring during technology selection in Layer 05 (ADR) per TECHNOLOGY_STACK_USAGE_GUIDE.md.
   performance:
     - id: "EARS.01.04.p401"
       statement: "THE transaction authorization engine SHALL process requests"

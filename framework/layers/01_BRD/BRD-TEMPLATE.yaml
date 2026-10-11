@@ -719,10 +719,11 @@ adr_topics:
     pre-decide the ADR).
       PASS: "Platform requires scalable relational storage with ACID compliance"
       FAIL: "MUST use PostgreSQL"
-    Scope (BL-VENDOR-NAME-SCOPE): vendor names ARE allowed in
-    `recommended_selection` — that field IS the decision record / the chosen
-    option. The "no vendor names" rule constrains the capability framing, not the
-    selection.
+    Scope (BL-VENDOR-NAME-SCOPE): vendor/technology names ARE allowed in
+    `recommended_selection` — that field records the candidate baseline or recommendation
+    prioritizing candidates from the approved technology stack (see
+    framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md). The "no vendor names" rule
+    constrains the capability framing, not the selection.
 
   topics:
     - id: "BRD.NN.08.xxxx"

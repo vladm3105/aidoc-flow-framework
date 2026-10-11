@@ -439,8 +439,9 @@ acceptance_criteria:
 constraints_and_assumptions:
   _size_target: 200
   technical_constraints:
-    - "Must deploy onto Kubernetes 1.29+ clusters"
-    - "Zero proprietary orchestrator dependencies in framework specification"
+    - "Must deploy onto Kubernetes 1.29+ clusters or containerized Linux hosts (Debian 13 / Docker CE / gVisor)"
+    - "Zero proprietary orchestrator dependencies in framework specification (Decision D-0013 / GD-13)"
+    - "All technology stack selections deferred to Layer 05 ADR per TECHNOLOGY_STACK_USAGE_GUIDE.md"
   assumptions:
     - "Network latency between ingress gateway and core services is under 2ms"
 

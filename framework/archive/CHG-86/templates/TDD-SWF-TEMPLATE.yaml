@@ -1,0 +1,226 @@
+# =============================================================================
+#  TDD-SWF-TEMPLATE.yaml — Machine-Executable TDD Workflow Template
+#  SDD Layer 7 — Test Case Definitions & Automated Test Orchestration
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
+#  Downstream: IPLAN (Layer 8), EVAL (Layer 10)
+#  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+# =============================================================================
+
+doc_id: TDD-NN
+title: "[Component Test Workflow]"
+
+# =============================================================================
+# SDD Document Envelope (Preserved for STRUCT01 / TAG01 Lint Compliance)
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "tdd-document"
+  layer: 7
+  total_sections: 7
+  last_updated: "YYYY-MM-DD"
+  deliverable_type: code
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - tdd-document
+    - layer-7-artifact
+    - shared-architecture
+    - cncf-workflow
+
+  c4_level:
+    _guidance: |
+      TDD is NOT a C4 level. It defines test cases that validate SPEC
+      (C4-L3 Component) contracts through test execution. C4-L4 (Code)
+      ownership belongs to the Code layer, referenced by IPLAN.
+    value: none
+
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _size_target: 100
+  status: Draft
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author / Persona]"
+  component: "[Component Name]"
+  subtype: workflow  # Declares the CNCF Serverless Workflow subtype
+  source_spec: "@spec: SPEC-NN"
+  iplan_ready_score: "[Score]/100"
+
+# =============================================================================
+# Section 2: Test Strategy
+# =============================================================================
+test_strategy:
+  _size_target: 400
+  frameworks:
+    unit: "pytest >= 8.0"
+    integration: "testcontainers >= 4.0"
+  isolation_strategy: "Hermetic containerized fixtures with automated teardown compensation"
+  flaky_policy:
+    max_retries: 3
+    backoff: "exponential-jitter"
+    quarantine_threshold: 2
+
+# =============================================================================
+# Section 3: BDD Scenario Mapping (GD-08 Acceptance Pairing)
+# =============================================================================
+bdd_scenario_mapping:
+  pairings:
+    - bdd_ref: "@bdd: BDD.01.01.0001"
+      test_case_ref: "TDD.NN.04.0001"
+      test_type: "integration"
+
+# =============================================================================
+# Section 4: Test Cases
+# =============================================================================
+test_cases:
+  cases:
+    - id: "TDD.NN.04.0001"
+      name: "test_stateful_operation_with_fixture"
+      test_type: "integration"
+      target: "src/component.py"
+      test_file: "tests/integration/test_component.py"
+      test_function: "test_component_state_mutation"
+      spec_ref: "@spec: SPEC-NN"
+      bdd_ref: "@bdd: BDD.01.01.0001"
+      threshold: "@threshold: SLA-LATENCY <= 200ms"
+
+# =============================================================================
+# Section 5: CNCF Serverless Workflow State Machine (specVersion: "0.8")
+# =============================================================================
+workflow:
+  id: tdd-nn-workflow
+  name: "Component Test Execution State Machine"
+  version: "1.0"
+  specVersion: "0.8"
+  description: "Machine-executable test workflow with fixture compensation and flaky retries"
+
+  start: ArrangeTestFixtures
+
+  states:
+    # --- Phase: Arrange (Compensable) ---
+    - name: ArrangeTestFixtures
+      type: operation
+      description: "Provisions test containers, seed data, and mock services"
+      compensatedBy: TeardownFixturesCompensation
+      actions:
+        - name: setupFixtures
+          functionRef:
+            refName: fixtureProvisioner
+            arguments:
+              component: "[Component Name]"
+              seedFile: "tests/fixtures/seed.sql"
+      transition: ActExecuteTests
+
+    # --- Phase: Act ---
+    - name: ActExecuteTests
+      type: operation
+      description: "Executes test runner against the provisioned environment"
+      actions:
+        - name: runTestSuite
+          functionRef:
+            refName: pytestRunner
+            arguments:
+              testFile: "tests/integration/test_component.py"
+              verbose: true
+      transition: AssertResults
+
+    # --- Phase: Assert ---
+    - name: AssertResults
+      type: switch
+      description: "Evaluates assertion outcomes, coverage, and threshold compliance"
+      dataConditions:
+        - name: AllAssertionsPassed
+          condition: "${ .testOutcome.failures == 0 and .testOutcome.duration_ms <= 200 }"
+          transition: NormalTeardown
+
+        - name: FlakyFailureWithinRetryLimit
+          condition: "${ .testOutcome.failures > 0 and .retryCount < 3 }"
+          transition: RetryBackoff
+
+      defaultCondition:
+        transition: QuarantineDefect
+
+    # --- Phase: Retry with Backoff ---
+    - name: RetryBackoff
+      type: operation
+      description: "Applies jittered exponential backoff before re-executing"
+      actions:
+        - name: incrementRetry
+          functionRef:
+            refName: retryTracker
+            arguments:
+              currentAttempt: "${ .retryCount }"
+      transition: ActExecuteTests
+
+    # --- Phase: Defect Quarantine ---
+    - name: QuarantineDefect
+      type: operation
+      description: "Logs failure receipt and quarantines broken test"
+      actions:
+        - name: logDefect
+          functionRef:
+            refName: defectQuarantineLogger
+            arguments:
+              testId: "TDD.NN.04.0001"
+              failureLog: "${ .testOutcome.error }"
+      transition: TestRunFailed
+
+    # --- Phase: Teardown Compensation ---
+    - name: TeardownFixturesCompensation
+      type: operation
+      description: "Rolls back dirty state and terminates containers on failure"
+      actions:
+        - name: rollbackDirtyState
+          functionRef:
+            refName: fixtureCleaner
+            arguments:
+              purgeDatabases: true
+      end: true
+
+    # --- Normal Teardown ---
+    - name: NormalTeardown
+      type: operation
+      description: "Hermetic teardown after successful run"
+      actions:
+        - name: cleanupResources
+          functionRef:
+            refName: fixtureCleaner
+            arguments:
+              purgeDatabases: false
+      transition: TestRunSucceeded
+
+    # --- Terminal States ---
+    - name: TestRunSucceeded
+      type: inject
+      description: "Terminal success state: test suite passed all assertions"
+      data:
+        verdict: "PASSED"
+      end: true
+
+    - name: TestRunFailed
+      type: inject
+      description: "Terminal failure state: test assertions failed after retries"
+      data:
+        verdict: "FAILED_QUARANTINED"
+      end:
+        terminate: true
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  spec_ref: "@spec: SPEC-NN"
+  bdd_refs:
+    - "@bdd: BDD.01.01.0001"
+  adr_refs:
+    - "@adr: ADR-01"

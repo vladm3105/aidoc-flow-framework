@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 | Authority | [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-83](../archive/CHG-83/CHG-83.yaml) |
 
 ---
@@ -103,6 +103,43 @@ The following table details how each phase of the SDD lifecycle maps to the reco
 │ 09    │ Code (Source & Diffs)    │ Tier 3 Sandboxed Execution  │ gVisor runsc + Infisical + uv   │
 │ 10    │ EVAL (Quality Gate)      │ Tier 2/3 Evaluation Gate    │ Langfuse Datasets + sdd_doc_lint│
 └───────┴──────────────────────────┴─────────────────────────────┴─────────────────────────────────┘
+```
+
+### 4.1 Progressive Refinement & Layer 05 Selection Gate
+
+Technology stack selection operates as a progressive refinement funnel governed by [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md):
+
+```mermaid
+flowchart TD
+    subgraph PROBLEM_SPACE["Problem Space (Technology-Agnostic)"]
+        direction TB
+        BRD["01_BRD: Business Drivers & ROI"]
+        PRD["02_PRD: Features & ADR Topics"]
+        EARS["03_EARS: Timing & Quality Constraints"]
+        BDD["04_BDD: Executable Behavioral Scenarios"]
+        BRD --> PRD --> EARS --> BDD
+    end
+
+    subgraph ENTERPRISE_GOVERNANCE["Enterprise Standard"]
+        STACK["/mnt/e/dev/technology_stack<br/>(Debian 13, PG18 HA, Temporal, NATS, gVisor, ClickHouse)"]
+    end
+
+    subgraph SELECTION_GATE["The Architectural & Technology Selection Gate"]
+        ADR["05_ADR: Architectural Decision Records<br/>• Upstream: @ears, @bdd<br/>• Context: Problem & Behavioral Constraints<br/>• Alternatives: Candidates from Company Stack<br/>• Decision: Formal Choice via MCDA Utility<br/>• Consequences: Downstream System Impacts"]
+    end
+
+    subgraph SOLUTION_SPACE["Solution Space (Technology-Bound)"]
+        direction TB
+        SPEC["06_SPEC: Component Schemas, DDL & API Contracts"]
+        TDD["07_TDD: Test Suites & Ephemeral Testcontainers"]
+        IPLAN["08_IPLAN: Build & Temporal Workflow DAG"]
+        CODE["Code: Implementation in gVisor Sandbox"]
+        SPEC --> TDD --> IPLAN --> CODE
+    end
+
+    BDD --> ADR
+    STACK -.->|Approved Paved Path| ADR
+    ADR --> SPEC
 ```
 
 ### Detailed Layer Blueprints

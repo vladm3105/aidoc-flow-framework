@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -180,8 +180,9 @@ def compile_tdd_workflow(swf_data: dict) -> StateGraph:
 ### 9.2 Database Migration and Asynchronous Contract Testing
 
 When testing components that interact with persistent databases or asynchronous queues:
-1. **Database Migration Testing:** Test suites verifying database entities MUST test schema upgrades and rollbacks against ephemeral containerized instances of the target database engine, validating schema idempotency and backward compatibility.
+1. **Database Migration Testing:** Test suites verifying database entities MUST test schema upgrades and rollbacks against ephemeral containerized instances of the target database engine (e.g. PostgreSQL 18), validating schema idempotency and backward compatibility.
 2. **Asynchronous Contract Testing:** Tests for event producers and consumers validate envelope conformance (CloudEvents v1.0), strongly-typed schema serialization, and message deduplication under simulated at-least-once delivery.
+3. **Approved Technology Stack Fixtures:** Integration test workflows MUST provision hermetic test fixtures matching the approved technology stack selected in Layer 05 ADR (e.g., PostgreSQL 18 testcontainers, NATS JetStream server fixtures, Temporal test environments) per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md).
 
 ---
 

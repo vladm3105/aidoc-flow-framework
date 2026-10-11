@@ -215,6 +215,8 @@ implementation_contracts:
   invariants:
     - "Component satisfies all SPEC-NN algorithmic invariants"
     - "No global mutable state outside the instantiated component scope"
+    - "Implementation strictly aligns with approved technology stack selected in Layer 05 ADR"
+    - "Distributed task activities orchestrate saga compensation rollbacks upon failure"
 
 # =============================================================================
 # Section 5: Session Handoff

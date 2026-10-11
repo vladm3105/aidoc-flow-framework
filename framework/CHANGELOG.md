@@ -7,11 +7,31 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.25 |
+| Version | 1.26 |
 | Status | Approved |
-| Last Updated | 2026-10-10 |
+| Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
+
+## [0.91.5] — 2026-10-11
+
+### Added — Enterprise Approved Technology Stack Governance, Progressive Refinement Funnel, and Layer 05 (ADR) Selection Gate (C2 Spec, CHG-86 + IPLAN-86, Decision DEC-CHG-86, GD-73)
+
+- **Normative Technology Stack Usage Guide**:
+  - Published `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` establishing the 4-tier Progressive Refinement Funnel (Tier 0 Enterprise Stack, Tier 1 Seed Vision, Tier 2 Module Decomposition, Tier 3 SDD Layer 05 Selection Gate).
+  - Codified the 4-step Stack Variance & Exception Procedure (Justification & Risk Assessment, Architecture Review Gate, Variance Documentation in ADR §10, Sunsetting / Convergence Plan).
+  - Detailed flow mappings for all 6 traversal paths (`SDD2C`, `SEED2C`, `CODE2S`, `DIR2C`, `CODE2C`, `HOTFIX`).
+- **Architectural Flow & Diagram Modernization**:
+  - Enhanced `RECOMMENDED_PLATFORM_STACK.md` with §4.1 Mermaid flowchart contrasting Problem Space (Layers 01–04) vs. Selection Gate (Layer 05) vs. Solution Space (Layers 06–08).
+  - Modernized `DECISION_WORKFLOW.md`, `SEED_TO_MODULE_DECOMPOSITION.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/layers/05_ADR/README.md`, and `adr-decision-analysis.sw.yaml`.
+- **Primary CNCF Serverless Workflow & Companion Templates Modernization**:
+  - Updated primary SWF templates (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) with candidate evaluation branches, container fixtures, and saga compensations.
+  - Synchronized companion static templates (`*-TEMPLATE.yaml`), `SEED-TEMPLATE.md`, and `MODULE-TEMPLATE.md` while strictly preserving pinned section sets (`STRUCT01`).
+- **Workflow Standards & Review Crew Alignment**:
+  - Updated normative workflow standards (`*_WORKFLOW_STANDARD.md` across Layers 01–08 and Governance).
+  - Enriched `REVIEW_CREWS.yaml` reviewer persona definitions (`architect` verifies technology stack alignment; `operator` verifies platform infrastructure compatibility).
+- **Decision Ratification**:
+  - Graduated Decision `GD-73` into `framework/governance/DECISIONS.md`.
 
 ## [0.91.4] — 2026-10-10
 

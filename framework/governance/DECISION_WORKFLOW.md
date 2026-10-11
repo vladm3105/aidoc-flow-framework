@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across
@@ -84,20 +84,20 @@ this module lives in the module doc.
 
 ### Tier 3: SDD ADR (Layer 5)
 
-- **Author:** Development team
-- **Content:** ONE selected architecture with Context-Decision-Consequences
+- **Author:** Development team (AI agent + human tech lead)
+- **Content:** ONE selected architecture and technology stack selection with Context-Decision-Consequences (the formal selection gate immediately after BDD per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md))
 - **Location:** `<project>/sdd/05_ADR/ADR-NN_name.yaml`
 - **Lifecycle:** Versioned per CHG (rewritten, not appended)
 
 **What SDD ADRs contain:**
-- "We chose option B (self-hosted Grafana stack)"
-- Context: why this decision matters
-- Decision: what was selected
-- Consequences: what this enables and constrains
-- Alternatives considered: briefly listed (not full analysis)
+- "We chose PostgreSQL 18 with native UUIDv7 and xp.ledger over ClickHouse for transactional ledger state"
+- Context: why this decision matters, citing upstream `@ears` timing constraints and `@bdd` failure scenarios
+- Decision: what was selected from the approved platform stack (`/mnt/e/dev/technology_stack/`)
+- Consequences: what this enables and constrains for downstream SPEC (Layer 06)
+- Alternatives considered: evaluated via quantitative MCDA utility scoring
 
 **What SDD ADRs do NOT contain:**
-- Full analysis of 2-3 options (that's in the seed)
+- Full preliminary analysis of 2-3 options (that's in the seed)
 - Business requirements (that's in the BRD)
 - Implementation details (that's in the SPEC)
 

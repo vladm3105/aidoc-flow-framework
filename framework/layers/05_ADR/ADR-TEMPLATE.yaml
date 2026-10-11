@@ -232,10 +232,12 @@ alternatives:
     The FULL analysis (pros/cons/cost) lives in the seed document.
     The ADR focuses on the selected option's consequences, not re-surveying alternatives.
 
-    Per governance/DECISION_WORKFLOW.md §3:
-      "SDD ADR selects, doesn't re-survey. The ADR's 'Alternatives Considered'
-      section briefly lists options (from the module/seed), but the full analysis
-      stays in the seed. The ADR focuses on the selected option and its consequences."
+    Per governance/DECISION_WORKFLOW.md §3 and TECHNOLOGY_STACK_USAGE_GUIDE.md:
+      "SDD ADR selects, doesn't re-survey. Layer 05 ADR is the formal Technology
+      Selection Gate immediately following BDD. Candidate alternatives are evaluated
+      primarily from the approved platform technology stack. If an off-stack candidate
+      is selected, Section 10 implementation_assessment must document the Variance /
+      Exception Justification approved by Architecture."
 
   _antipatterns:
     - "FAIL: duplicating seed analysis (pros/cons/cost) — that belongs in seed docs"

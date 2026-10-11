@@ -99,26 +99,43 @@ component_overview:
 interfaces:
   _size_target: 500
   exports:
-    - name: "[ClassName | HandlerFunction]"
-      type: "[class | async function | message_handler]"
-      signature: "[def handle_request(event: CloudEvent) -> ChoreographyReceipt:]"
-      description: "[Interface contract and invocation semantics]"
+    - name: "[ClassName | HandlerFunction | GrpcServicer]"
+      type: "[class | async function | message_handler | grpc_service]"
+      signature: "[def handle_request(event: CloudEvent) -> ChoreographyReceipt: | rpc ProcessCommand(CommandRequest) returns (CommandReceipt)]"
+      description: "[Interface contract, transport binding (gRPC/Protobuf, NATS JetStream, REST), and invocation semantics]"
       errors:
         - "[ErrorType]: [When raised or returned]"
+  event_contracts:
+    _guidance: |
+      For asynchronous event-driven interfaces. Specifies the event envelope
+      (CloudEvents v1.0 standard), wire format schema (Protobuf v3, Avro, or JSON Schema),
+      transport subject/topic (e.g. NATS JetStream, Kafka), and deduplication requirements.
+    events:
+      - name: "[EventName]"
+        type: "[domain.entity.action]"
+        envelope_standard: "CloudEvents v1.0"
+        schema_format: "[Protobuf v3 | JSON Schema | Avro]"
+        schema_definition: "[path/to/contract.proto or inline IDL]"
+        deduplication_key: "[field_name (e.g. id, message_id)]"
 
 # =============================================================================
 # Section 4: Data Models
 # =============================================================================
 data_models:
   _size_target: 400
+  _guidance: |
+    Define typed data structures passed through component interfaces.
+    For relational and persistent storage entities, specify monotonic time-ordered
+    primary keys (UUIDv7), immutable ledger fields, and Bytebase declarative DDL
+    migration requirements where applicable.
   models:
     - name: "[ModelName]"
-      type: "[dataclass | TypedDict | Pydantic BaseModel]"
+      type: "[dataclass | TypedDict | Pydantic BaseModel | Protobuf Message]"
       fields:
         - name: "[field_name]"
-          type: "[Type]"
+          type: "[Type (e.g. UUIDv7, Timestamp, String, Vector768)]"
           required: true
-          description: "[Field purpose]"
+          description: "[Field purpose, constraints, and validation]"
 
 # =============================================================================
 # Section 5: Behavior
@@ -302,6 +319,13 @@ implementation_notes:
     - "[Pattern — e.g., Saga orchestrator pattern with backward recovery]"
   performance_considerations:
     - "[Performance — e.g., Parallel branch timeout capped at 500ms]"
+  platform_stack_alignment:
+    _guidance: |
+      Ground component implementation in the approved technology stack (Layer 05 ADR selection).
+      Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18, NATS JetStream client,
+      Temporal workflow activities, LiteLLM proxy) while maintaining engine neutrality.
+    driver_bindings:
+      - "[Driver / SDK name and version pin]"
 
 # =============================================================================
 # Section 7: Downstream TDD Contracts

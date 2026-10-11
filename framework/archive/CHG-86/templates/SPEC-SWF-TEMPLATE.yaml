@@ -1,0 +1,356 @@
+# =============================================================================
+#  SPEC-SWF-TEMPLATE.yaml — Machine-Executable Technical Specification Template
+#  SDD Layer 6 — Technical Specification & Distributed Interaction Choreography
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+#  Downstream: TDD (Layer 7), IPLAN (Layer 8)
+#  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+# =============================================================================
+
+doc_id: SPEC-NN
+title: "[Technical Specification Title — Distributed Choreography Workflow]"
+
+# =============================================================================
+# SDD Document Envelope (Preserved for STRUCT01 / TAG01 Lint Compliance)
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "spec-document"
+  layer: 6
+  total_sections: 8
+  last_updated: "2026-10-05"
+  deliverable_type: code
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - spec-document
+    - layer-6-artifact
+    - shared-architecture
+    - cncf-workflow
+
+  c4_level:
+    _guidance: |
+      SPEC is Component level (C4-L3). Content must describe component
+      interfaces, data models, behavior contracts, and interaction choreography —
+      not architecture decisions (ADR) or code implementation (Code).
+    value: component
+
+  diagram_standard:
+    _guidance: |
+      SPEC is Component level (C4-L3):
+        - Component diagram: internal components, their interfaces and relationships
+        - Data flow (DFD-L3): data movement between components
+        - Sequence / Choreography diagrams: MUST include alt/else for error paths
+        - Distributed workflows: MUST model compensation rollbacks
+    tags:
+      - "@diagram: c4-l3"
+      - "@diagram: dfd-l3"
+
+  id_standard:
+    state: canonical
+    _guidance: |
+      Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
+        document  DOC-NN          (e.g. SPEC-01) — references a whole artifact
+        element   DOC.NN.SS.xxxx  (e.g. ADR.01.03.a1b2) — references one element
+
+_antipatterns:
+  - "FAIL: embedding C4-L4 code/class diagrams — belongs in the Code layer, not SPEC"
+  - "FAIL: restating ADR decisions instead of specifying component contracts"
+  - "FAIL: SQL/ORM schemas in data_models — define typed contracts, not storage"
+  - "FAIL: documenting one interface when the component exports several — list all"
+  - "FAIL: omitting saga compensation states for distributed/asynchronous operations"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _size_target: 100
+  status: Draft
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author]"
+  component: "[Distributed Component Name]"
+  subtype: workflow  # Declares the CNCF Serverless Workflow subtype
+  tdd_ready_score: "[Score]/100"
+
+# =============================================================================
+# Section 2: Component Overview
+# =============================================================================
+component_overview:
+  _size_target: 300
+  description: "[Component purpose, distributed role, and choreography boundaries]"
+  architecture_decision: "@adr: ADR.NN.03.xxxx"
+  diagram:
+    tags: ["@diagram: c4-l3", "@diagram: dfd-l3"]
+    mermaid: |
+      flowchart LR
+        Ingress[API Gateway / Event Ingress] --> Component[Choreographed Component]
+        Component --> ServiceA[Downstream Service A]
+        Component --> ServiceB[Downstream Service B]
+  language: "[Python | TypeScript | Go | Java | ...]"
+  dependencies:
+    - name: "[Dependency / Client SDK]"
+      version: "[>=X.Y.Z]"
+      purpose: "[Why needed]"
+
+# =============================================================================
+# Section 3: Interfaces
+# =============================================================================
+interfaces:
+  _size_target: 500
+  exports:
+    - name: "[ClassName | HandlerFunction]"
+      type: "[class | async function | message_handler]"
+      signature: "[def handle_request(event: CloudEvent) -> ChoreographyReceipt:]"
+      description: "[Interface contract and invocation semantics]"
+      errors:
+        - "[ErrorType]: [When raised or returned]"
+
+# =============================================================================
+# Section 4: Data Models
+# =============================================================================
+data_models:
+  _size_target: 400
+  models:
+    - name: "[ModelName]"
+      type: "[dataclass | TypedDict | Pydantic BaseModel]"
+      fields:
+        - name: "[field_name]"
+          type: "[Type]"
+          required: true
+          description: "[Field purpose]"
+
+# =============================================================================
+# Section 5: Behavior
+# =============================================================================
+behavior:
+  _size_target: 500
+  validation_rules:
+    - rule: "[Payload schema validation rule]"
+      source: "@ears: EARS.NN.03.xxxx"
+  state_transitions:
+    - from: "[State A]"
+      to: "[State B]"
+      trigger: "[CloudEvent / Message]"
+      source: "@bdd: BDD.NN.03.xxxx"
+  error_handling:
+    - condition: "[Downstream service failure / timeout]"
+      response: "[Trigger distributed saga rollback compensation]"
+      source: "@bdd: BDD.NN.03.xxxx"
+
+# =============================================================================
+# CNCF Serverless Workflow State Machine (specVersion: "0.8")
+# =============================================================================
+workflow:
+  id: spec-component-choreography
+  name: "Distributed Component Interaction & Choreography State Machine"
+  version: "1.0"
+  specVersion: "0.8"
+  description: >-
+    Machine-executable interaction sequence, asynchronous callback correlation,
+    and distributed saga compensation state machine for this technical specification.
+
+  start: IngestRequest
+
+  events:
+    - name: RequestReceivedEvent
+      type: "io.aidoc.spec.request"
+      source: "https://aidoc.io/spec/gateway"
+    - name: PartnerCallbackEvent
+      type: "io.aidoc.spec.callback"
+      source: "https://aidoc.io/spec/partner"
+      correlation:
+        - contextAttributeName: "correlationid"
+
+  states:
+    - name: IngestRequest
+      type: inject
+      description: "Ingests ingress event and initialises distributed correlation context"
+      data:
+        correlation_id: "req-c4l3-001"
+        is_valid: true
+        sla_met: true
+      transition: ValidateRequestPayload
+
+    - name: ValidateRequestPayload
+      type: switch
+      description: "Validates incoming payload against data models defined in §4"
+      dataConditions:
+        - name: PayloadValid
+          condition: "${ .is_valid == true }"
+          transition: ExecuteLocalStateChange
+      defaultCondition:
+        transition: RejectInvalidRequest
+
+    - name: RejectInvalidRequest
+      type: operation
+      description: "Terminates execution with 400 Bad Request rejection receipt"
+      actions:
+        - name: emitRejectionReceipt
+          functionRef:
+            refName: rejectionHandler
+      end:
+        terminate: true
+
+    - name: ExecuteLocalStateChange
+      type: operation
+      description: "Applies local state changes with undo compensation (§3, §5)"
+      compensatedBy: CompensateLocalState
+      actions:
+        - name: applyLocalState
+          functionRef:
+            refName: stateStore
+            arguments:
+              action: "apply"
+      transition: DispatchDownstreamCalls
+
+    - name: CompensateLocalState
+      type: operation
+      description: "Compensating transaction rolling back local state mutations"
+      actions:
+        - name: rollbackLocalState
+          functionRef:
+            refName: stateStore
+            arguments:
+              action: "rollback"
+      end: true
+
+    - name: DispatchDownstreamCalls
+      type: parallel
+      description: "Executes concurrent downstream service operations"
+      completionType: allOf
+      branches:
+        - name: CallSubsystemA
+          actions:
+            - name: invokeSubsystemA
+              functionRef:
+                refName: subsystemAClient
+        - name: CallSubsystemB
+          actions:
+            - name: invokeSubsystemB
+              functionRef:
+                refName: subsystemBClient
+      transition: AwaitPartnerCallback
+
+    - name: AwaitPartnerCallback
+      type: callback
+      description: "Awaits correlated asynchronous partner event callback"
+      action:
+        name: triggerPartnerAsyncCall
+        functionRef:
+          refName: partnerNotifier
+      eventRef: PartnerCallbackEvent
+      timeouts:
+        eventTimeout: "PT30S"
+      transition: EvaluateSLAThresholds
+
+    - name: EvaluateSLAThresholds
+      type: switch
+      description: "Evaluates latency and downstream health against @threshold: directives"
+      dataConditions:
+        - name: SLAVerified
+          condition: "${ .sla_met == true }"
+          transition: FinalizeChoreography
+      defaultCondition:
+        transition: CompensateDistributedSaga
+
+    - name: CompensateDistributedSaga
+      type: operation
+      description: "Coordinates backward recovery across distributed services on failure"
+      actions:
+        - name: executeSagaCompensation
+          functionRef:
+            refName: sagaCoordinator
+      transition: EmitFailureReceipt
+
+    - name: FinalizeChoreography
+      type: operation
+      description: "Commits transaction and publishes completion CloudEvent"
+      actions:
+        - name: commitTransaction
+          functionRef:
+            refName: transactionCommitter
+      transition: EmitSuccessReceipt
+
+    - name: EmitSuccessReceipt
+      type: operation
+      description: "Emits final success event and interaction receipt"
+      actions:
+        - name: emitSuccessEvent
+          functionRef:
+            refName: eventBroadcaster
+      end: true
+
+    - name: EmitFailureReceipt
+      type: operation
+      description: "Emits final compensated failure event and diagnostic receipt"
+      actions:
+        - name: emitFailureEvent
+          functionRef:
+            refName: eventBroadcaster
+      end:
+        terminate: true
+
+# =============================================================================
+# Section 6: Implementation Notes
+# =============================================================================
+implementation_notes:
+  _size_target: 300
+  constraints:
+    - "[Constraint — e.g., All external service calls must be idempotent]"
+  patterns:
+    - "[Pattern — e.g., Saga orchestrator pattern with backward recovery]"
+  performance_considerations:
+    - "[Performance — e.g., Parallel branch timeout capped at 500ms]"
+
+# =============================================================================
+# Section 7: Downstream TDD Contracts
+# =============================================================================
+tdd_contracts:
+  _size_target: 200
+  tdd_document: "@tdd: TDD-NN"
+  test_files:
+    - path: "tests/unit/test_component_handlers.py"
+      covers: "[Unit tests for exported interfaces in §3]"
+    - path: "tests/integration/test_choreography_saga.py"
+      covers: "[Integration tests for CNCF workflow and compensation sagas]"
+
+# =============================================================================
+# Section 8: Traceability
+# =============================================================================
+traceability:
+  _size_target: 100
+  tags:
+    - "@spec: SPEC-NN"
+  upstream:
+    adr_references:
+      - "@adr: ADR.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+  downstream:
+    - type: TDD
+      layer: 7
+      description: "Test case definitions validating SPEC contracts"
+    - type: IPLAN
+      layer: 8
+      description: "Implementation plan — bridges TDD to Code"
+    - type: CODE
+      description: "Source code implementation"
+  cross_links:
+    depends:
+      - "@depends: SPEC-NN"
+    discoverability:
+      - "@discoverability: SPEC-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
+
+  threshold_references:
+    items:
+      - tag: "@threshold: PRD.NN.perf.latency.p95"
+        category: "Timing"
+        value: "200ms"
+  health_score:
+    tdd_ready: "[X]%"
+    target_score: ">=90/100"
