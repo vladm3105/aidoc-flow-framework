@@ -9,6 +9,17 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: PRD (Layer 2)
 #  Upstream: Strategic Business Intent / Enterprise Portfolio
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (BRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Modeling multi-stream value flows, cross-department handoffs, or customer journeys
+#    - Orchestrating automated ROI feasibility evaluation and quantitative cost-benefit gates
+#    - Incorporating executive steering committee callbacks, formal sign-off events, or timeouts
+#    - Requiring automated strategic compensation (e.g. invalidating downstream initiative allocations)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (BRD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting single-capability business requirements, direct business processes, or focused enhancements
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: BRD-NN

@@ -1,9 +1,20 @@
 # =============================================================================
-#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD)
+#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD Layer 05)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable ADR template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable ADR template for linear decision records
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (ADR-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
+#    - Specifying architectural decisions where state machine orchestration is unnecessary overhead
+#  Use the primary template (ADR-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
+#    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
+#    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
+#    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators

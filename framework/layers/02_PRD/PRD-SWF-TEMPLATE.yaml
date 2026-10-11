@@ -9,6 +9,17 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: EARS (Layer 3)
 #  Upstream: BRD (Layer 1)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (PRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Modeling multi-container product decomposition (C4 Level 2), microservices, or distributed components
+#    - Orchestrating automated feature prioritization (MoSCoW/RICE) and quantitative threshold validation
+#    - Incorporating stakeholder scope negotiation callbacks, external product feedback events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream EARS/BDD artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (PRD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting straightforward, single-container initiatives, monolithic services, or linear feature sets
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: PRD-NN

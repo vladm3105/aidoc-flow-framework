@@ -4,6 +4,16 @@
 #  SDD Layer 8 — Mandatory execution bridge from SPEC/TDD to source code
 #  Adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs,
 #  deterministic gate switches, and native saga rollback compensation.
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (IPLAN-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Orchestrating multi-step codebase mutations, multi-file refactoring, or migrations
+#    - Requiring automated verification switch gates after each implementation task
+#    - Requiring native saga compensation (automated rollback commands if verification fails)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (IPLAN-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting straightforward, linear implementation checklists, docs-only changes, or single-file edits
+#    - State machine orchestration, automated verification switches, and saga rollbacks are not needed
 # =============================================================================
 
 doc_id: IPLAN-NN

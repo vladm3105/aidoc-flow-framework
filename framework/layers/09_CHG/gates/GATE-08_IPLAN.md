@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.8 |
+| Framework Version | 0.91.9 |
 
 
 > **Position**: Between design/test and Layer 8 (IPLAN)

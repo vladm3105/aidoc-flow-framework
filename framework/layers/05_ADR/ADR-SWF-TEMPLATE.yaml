@@ -11,9 +11,19 @@
 #    _antipatterns — common mistakes to avoid
 #    _note         — contextual clarification
 #    _example      — sample values for reference
-#
 #  Downstream: SPEC (Layer 6)
 #  Upstream: EARS (L3), BDD (L4)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (ADR-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
+#    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
+#    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
+#    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (ADR-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: ADR-NN

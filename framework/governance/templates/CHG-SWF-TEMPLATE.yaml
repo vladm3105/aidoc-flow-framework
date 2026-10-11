@@ -6,6 +6,15 @@
 #  Governs: framework/governance/CHG_REQUEST_FLOWS.md, AGENTS.md
 #  Purpose: Template for configuring change classification, gate routing,
 #           SDD cascades, and landing verification across the 6 traversal paths.
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (CHG-SWF-TEMPLATE.yaml — PRIMARY WORKFLOW STANDARD) when:
+#    - Orchestrating automated change request lifecycle state machines and gate routing
+#    - Executing automated SDD cascade traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)
+#    - Targeting autonomous AI agent execution or governance orchestrators (LangGraph/Temporal)
+#  Use the companion template (CHG-TEMPLATE.yaml — COMPANION DOCUMENT STANDARD) instead when:
+#    - Authoring individual change request documents (CHG-NN.yaml) recording proposed changes, decisions, and impact
+#    - Specifying human-authored or agent-filed change records without workflow state machine definition
 # =============================================================================
 
 id: "[change-scope]-chg-governance-flow"
@@ -17,7 +26,7 @@ description: >-
   entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
 
 metadata:
-  framework_version: "0.91.8"
+  framework_version: "0.91.9"
   workflow_type: "governance-change-request"
   governed_layer: "09_CHG"
 
