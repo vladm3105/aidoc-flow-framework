@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 
 
 ## C4 Model Position
@@ -121,4 +121,4 @@ Section 4 (cases)     tdd_ref links      Phase 1-5           (after validation)
 | `TDD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
 | `TDD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for stateful test execution and fixture sagas. |
 | `TDD_WORKFLOW_STANDARD.md` | Normative standard specifying Arrange/Act/Assert mapping to CNCF Serverless Workflow state primitives. |
-| `TDD-00_index.TEMPLATE.md` | TDD registry template — tracks planned and active TDDs per project |
+| `TDD-00_index.TEMPLATE.yaml` | TDD registry template — tracks planned and active TDDs and test suites per project in canonical 5-Quadrant YAML |

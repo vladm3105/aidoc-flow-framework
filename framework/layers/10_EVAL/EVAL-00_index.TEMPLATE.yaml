@@ -1,0 +1,96 @@
+# EVAL-00_index.TEMPLATE.yaml — Evaluation & QA Governance Index (template)
+# SDD Layer 10 — Master index and test strategy registry for Evaluation & QA Governance
+#
+# Index template. Copy this file to EVAL-00_index.yaml in a project.
+# Dynamic registry — updated every time an EVAL strategy is initialized,
+# eval report cycle executed, or PASS verdict rendered.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (1:1 IPLAN pairing, iterative cycle semantics, report structure),
+# see 10_EVAL/README.md and 10_EVAL/EVAL_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "eval-registry"
+  artifact_type: "EVAL-INDEX"
+  layer: 10
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_evaluations: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 10 EVALs)
+# =============================================================================
+# Master inventory of all evaluation governance strategies and verdict histories.
+# Exactly one EVAL directory and strategy per owning IPLAN (1:1 mapping).
+evaluations: []
+
+  # Template entry:
+  # - id: "EVAL-01"
+  #   owning_iplan: "IPLAN-01"  # 1:1 mapping with Layer 08 execution plan
+  #   track: "unit_smoke"       # unit_smoke | functional | integration | end_to_end
+  #   iplan_version: "1.0"
+  #   latest_verdict: "PENDING" # PENDING | PASS | FAIL | BLOCKED
+  #   cycles_count: 0           # Count of executed evaluation cycles (RPT snapshots)
+  #   open_findings_p0_p1: 0    # Must be 0 for PASS verdict and Verified IPLAN status
+  #   status: "Draft"           # Draft | In Progress | Completed | Verified
+  #   file_path: "EVAL-01/EVAL-01.yaml"
+  #   latest_report: null       # "EVAL-01/reports/EVAL-01-RPT-001.yaml"
+  #   lead: "[QA Lead / Test Auditor]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned Evaluations)
+# =============================================================================
+# Future evaluation strategies queued for completed or upcoming IPLANs.
+backlog: []
+
+  # Template entry:
+  # - id: "EVAL-02"             # Reserved sequential ID
+  #   owning_iplan: "IPLAN-02"
+  #   track: "functional"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Scope summary]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Evaluation Tracks
+# =============================================================================
+# Evaluation track taxonomy and quality gate thresholds.
+eval_tracks:
+  - track: "functional"
+    focus: "EARS and BDD acceptance criteria verification"
+    primary_sources: ["04_BDD", "03_EARS"]
+  - track: "unit_smoke"
+    focus: "TDD test case pass rates, code coverage, regression tests"
+    primary_sources: ["07_TDD", "08_IPLAN"]
+
+traceability_summary:
+  layer: 10
+  upstream_layer: 8
+  upstream_artifact: "IPLAN"
+  downstream_targets: ["CI/CD Pipelines", "Staging Gate", "Production Deployment"]
+  trace_contract: "IPLAN -> EVAL -> RPT -> verdict"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_eval_created:
+    - "Add entry to evaluations after owning IPLAN reaches Completed status"
+    - "Increment metadata.total_evaluations"
+    - "Remove corresponding entry from backlog if present"
+  on_cycle_executed:
+    - "Increment cycles_count in evaluations"
+    - "Record latest_report path and update open_findings_p0_p1"
+  on_verdict_rendered:
+    - "Set latest_verdict to PASS, FAIL, or BLOCKED"
+    - "When PASS, notify IPLAN agent that Verified status can be established"

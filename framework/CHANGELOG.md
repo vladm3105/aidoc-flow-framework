@@ -7,11 +7,28 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.27 |
+| Version | 1.28 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
+
+## [0.91.7] — 2026-10-11
+
+### Added — Universal AI-First 5-Quadrant YAML Index Modernization Across All SDD Layers (C2 Spec, CHG-88 + IPLAN-88, Decision DEC-CHG-88, GD-75)
+
+- **Universal 5-Quadrant YAML Index Architecture**:
+  - Modernized all remaining eight SDD layer index templates (`01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `06_SPEC`, `07_TDD`, `09_CHG`, `10_EVAL`) from legacy Markdown (`*-00_index.TEMPLATE.md`) to canonical, agent-readable YAML specifications (`*-00_index.TEMPLATE.yaml`).
+  - Standardized all 10 SDD layers around the unified 5-Quadrant schema: Quadrant 1 (Metadata & AI-First contract), Quadrant 2 (Document Registry), Quadrant 3 (Backlog & Roadmap), Quadrant 4 (Layer Intelligence & Cross-Layer Traceability), and Quadrant 5 (Agent Update Triggers).
+  - Codified the AI-first single source of truth contract: machine-readable YAML is the sole authoritative record; human-facing markdown views and reports are generated on-demand by AI agents.
+- **Historical Pre-Change Archive**:
+  - Preserved pre-change Markdown index templates in `framework/archive/CHG-88/templates/` (`BRD-00_index.TEMPLATE.md` through `EVAL-00_index.TEMPLATE.md`).
+- **Framework Registry & Standards Synchronization**:
+  - Updated `framework/registry/LAYER_REGISTRY.yaml` header comments to reflect 100% YAML index templates across all 10 layers.
+  - Updated layer READMEs and workflow standards across all layers to reference `*-00_index.TEMPLATE.yaml`.
+  - Updated conformance mutation test `tests/conformance/test_instance_format_ssot.py` to assert 6 sanctioned index mentions.
+- **Decision Ratification**:
+  - Ratified Decision `GD-75` in `framework/governance/DECISIONS.md`.
 
 ## [0.91.6] — 2026-10-11
 

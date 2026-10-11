@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 
 
 ## Overview
@@ -71,7 +71,7 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `BDD-TEMPLATE.yaml` | **Default** — full template with embedded `scenarios:` YAML guidance in `_example` fields. Self-documenting for AI agents. |
 | `BDD-SWF-TEMPLATE.yaml` | **Workflow subtype** — Hybrid Envelope housing a CNCF Serverless Workflow (v0.8) state machine for complex, stateful user journeys and saga rollback. |
 | `BDD_WORKFLOW_STANDARD.md` | Normative standard specifying Given/When/Then mapping to CNCF Serverless Workflow state primitives. |
-| `BDD-00_index.TEMPLATE.md` | BDD registry template — tracks planned and active BDD documents per project |
+| `BDD-00_index.TEMPLATE.yaml` | BDD registry template — tracks planned and active BDD documents and scenario suites per project in canonical 5-Quadrant YAML |
 
 ## Scenario Formats: Standard vs. Stateful Workflow
 

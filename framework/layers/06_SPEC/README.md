@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 
 
 ## C4 Model Position
@@ -96,5 +96,4 @@ The framework provides two complementary approaches to SPEC authoring:
 | `SPEC-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
 | `SPEC-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for distributed component choreography and saga compensation. |
 | `SPEC_WORKFLOW_STANDARD.md` | Normative standard specifying interface/event mapping to CNCF Serverless Workflow state primitives. |
-| `SPEC-MVP-TEMPLATE.yaml` | Minimal template for rapid prototyping. |
-| `SPEC-00_index.TEMPLATE.md` | SPEC registry template — tracks planned and active SPECs per project |
+| `SPEC-00_index.TEMPLATE.yaml` | SPEC registry template — tracks planned and active SPECs per project in canonical 5-Quadrant YAML |

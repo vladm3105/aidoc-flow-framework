@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.6 |
+| Framework Version | 0.91.7 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 
@@ -67,7 +67,7 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `BRD-TEMPLATE.yaml` | **Standard Declarative** — full template with embedded authoring guidance (`_guidance`, `_note`, `_example`, `_antipatterns` fields). Self-documenting for AI agents and focused/linear business capabilities. |
 | `BRD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope template embedding CNCF Serverless Workflow v0.8 state machines for complex value stream mapping, ROI feasibility, and executive steering consensus. |
 | `BRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining the mapping of business requirements primitives to CNCF state types, graph integrity invariants, and zero-runtime execution. |
-| `BRD-00_index.TEMPLATE.md` | BRD registry template — tracks planned and active BRDs per project. |
+| `BRD-00_index.TEMPLATE.yaml` | BRD registry template — tracks planned and active BRDs per project in canonical 5-Quadrant YAML. |
 
 ### Dual-Template Selection Matrix
 

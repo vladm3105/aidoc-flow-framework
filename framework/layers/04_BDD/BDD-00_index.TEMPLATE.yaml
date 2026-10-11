@@ -1,0 +1,92 @@
+# BDD-00_index.TEMPLATE.yaml — Behavior-Driven Development Index (template)
+# SDD Layer 4 — Master index and scenario registry for Behavior-Driven Development
+#
+# Index template. Copy this file to BDD-00_index.yaml in a project.
+# Dynamic registry — updated every time a BDD document is created, scenario added,
+# or verification status updated.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, scenario schema, necessary-upstream trace),
+# see 04_BDD/README.md and 04_BDD/BDD_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "bdd-registry"
+  artifact_type: "BDD-INDEX"
+  layer: 4
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_suites: 0
+  total_scenarios: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 04 BDD)
+# =============================================================================
+# Master inventory of all authored BDD test scenario suites for the project.
+bdd_suites: []
+
+  # Template entry:
+  # - id: "BDD-01"
+  #   feature: "[Feature Name / Capability]"
+  #   upstream_ears: ["EARS-01"] # Necessary upstream EARS document citations
+  #   scenarios_count: 0        # Count of Given-When-Then scenarios
+  #   status: "Draft"           # Draft | In Review | Approved | Implemented | Verified
+  #   bdd_ready_score: 0        # Score 0-100 (>=90 required for ADR gate)
+  #   file_path: "BDD-01_[slug].yaml"
+  #   lead: "[QA Lead / Tech Lead]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned BDD)
+# =============================================================================
+# Future behavior suites identified from EARS requirements.
+backlog: []
+
+  # Template entry:
+  # - id: "BDD-02"              # Reserved sequential ID
+  #   feature: "[Planned Feature Suite]"
+  #   source_ears: "EARS-02"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Scope summary]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Cross-Layer Traceability Matrix
+# =============================================================================
+# Upstream requirements realization and downstream decision/spec mapping rules.
+traceability:
+  upstream_contract: "EARS elements cited via ears: list on each scenario (element-level)"
+  downstream_contract: "ADR, SPEC, and TDD cite BDD scenarios via @bdd: tags"
+  realizing_layers: ["SPEC", "TDD", "EVAL"]
+  pairing_layers: ["TDD"]
+
+traceability_summary:
+  layer: 4
+  upstream_layer: 3
+  upstream_artifact: "EARS"
+  downstream_layer: 5
+  downstream_artifact: "ADR"
+  trace_contract: "EARS -> BDD -> ADR (Technology Selection Gate)"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_bdd_created:
+    - "Add entry to bdd_suites with status: Draft"
+    - "Increment metadata.total_suites"
+    - "Remove corresponding entry from backlog if present"
+  on_scenario_added:
+    - "Increment total_scenarios in metadata and scenarios_count in bdd_suites"
+    - "Validate element-level ears: references conform to EARS elements"
+  on_status_change:
+    - "Update status and last_updated timestamp in bdd_suites"
+    - "When status moves to Approved, assert bdd_ready_score >= 90/100"

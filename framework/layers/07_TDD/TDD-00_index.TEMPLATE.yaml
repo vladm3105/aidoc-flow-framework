@@ -1,0 +1,102 @@
+# TDD-00_index.TEMPLATE.yaml — Test-Driven Development Index (template)
+# SDD Layer 7 — Master index and test mapping registry for Test-Driven Development Guides
+#
+# Index template. Copy this file to TDD-00_index.yaml in a project.
+# Dynamic registry — updated every time a TDD document is created, test case mapped,
+# or paired IPLAN status changes.
+#
+# Index-sync rule (TDD-SYNC-E): The IPLAN index is the source of truth for IPLAN statuses.
+# When an IPLAN status changes, both this index and IPLAN-00_index must be updated
+# in the same change — never let the two indexes disagree about an IPLAN's status.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, test categories, IPLAN sync rule),
+# see 07_TDD/README.md and 07_TDD/TDD_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "tdd-registry"
+  artifact_type: "TDD-INDEX"
+  layer: 7
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_test_suites: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 07 TDD)
+# =============================================================================
+# Master inventory of all authored TDD test guides for the project.
+# Exactly one TDD guide per SPEC component.
+test_suites: []
+
+  # Template entry:
+  # - id: "TDD-01"
+  #   component: "[Component Name]"
+  #   spec_ref: "SPEC-01"       # Paired technical specification
+  #   bdd_refs: ["BDD-01"]      # Realized BDD test scenarios
+  #   adr_refs: ["ADR-01"]      # Architecture decision constraints
+  #   iplan_target: "IPLAN-01"  # Downstream execution plan
+  #   iplan_status: "Pending"   # Synced with IPLAN-00_index (TDD-SYNC-E)
+  #   iplan_ready_score: 0      # Score 0-100 (>=90 required for IPLAN gate)
+  #   test_cases_count: 0       # Total positive, negative, edge, and integration cases
+  #   status: "Draft"           # Draft | In Review | Approved | Implemented | Verified
+  #   file_path: "TDD-01_[slug].yaml"
+  #   lead: "[QA Lead / Test Engineer]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned TDD Guides)
+# =============================================================================
+# Future test guides identified from SPEC components.
+backlog: []
+
+  # Template entry:
+  # - id: "TDD-02"              # Reserved sequential ID
+  #   component: "[Component Name]"
+  #   source_spec: "SPEC-02"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Test scope hypothesis]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Quality Floors
+# =============================================================================
+# Quality thresholds and test coverage floors enforced across all test suites.
+quality_thresholds:
+  unit_test_coverage_floor: "85%"
+  branch_coverage_floor: "80%"
+  mutation_score_floor: "75%"
+  flakiness_tolerance: "0%"
+
+tdd_execution_cycle:
+  order: ["1. Red (failing test)", "2. Green (minimal passing code)", "3. Refactor (clean without behavior change)"]
+
+traceability_summary:
+  layer: 7
+  upstream_layer: 6
+  upstream_artifact: "SPEC"
+  downstream_layer: 8
+  downstream_artifact: "IPLAN"
+  trace_contract: "SPEC -> TDD -> IPLAN"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_tdd_created:
+    - "Add entry to test_suites with status: Draft and iplan_ready_score: 0"
+    - "Increment metadata.total_test_suites"
+    - "Remove corresponding entry from backlog if present"
+  on_status_change:
+    - "Update status and last_updated timestamp in test_suites"
+    - "When status moves to Approved, assert iplan_ready_score >= 90/100"
+  on_iplan_status_change:
+    - "Update iplan_status in test_suites to match IPLAN-00_index (TDD-SYNC-E)"
