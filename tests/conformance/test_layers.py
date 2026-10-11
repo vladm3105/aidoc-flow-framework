@@ -34,7 +34,9 @@ class LayerFiles(unittest.TestCase):
 
         Asserts that zero MVP templates exist anywhere under framework/layers/.
         """
-        mvp_files = sorted(p.relative_to(FRAMEWORK).as_posix() for p in FRAMEWORK.glob("layers/*/*-MVP-TEMPLATE.*"))
+        mvp_files = sorted(
+            p.relative_to(FRAMEWORK).as_posix() for p in FRAMEWORK.glob("layers/*/*-MVP-TEMPLATE.*")
+        )
         self.assertEqual(
             [],
             mvp_files,
