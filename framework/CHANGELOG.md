@@ -7,11 +7,25 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.28 |
+| Version | 1.29 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.7 |
+| Framework Version | 0.91.8 |
+
+## [0.91.8] — 2026-10-11
+
+### Removed — Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard (C2 Spec, CHG-89 + IPLAN-89, Decision DEC-CHG-89, GD-76)
+
+- **Retirement of Legacy MVP Template Tombstones**:
+  - Permanently removed all eight legacy `*-MVP-TEMPLATE.yaml` tombstone pointer files across layers 01 through 08 (`01_BRD` to `08_IPLAN`), eliminating obsolete artifacts created during the single-template unification in CHG-08 (#666).
+  - Preserved pre-change copies under `framework/archive/CHG-89/templates/` (`BRD-MVP-TEMPLATE.yaml` through `IPLAN-MVP-TEMPLATE.yaml`) for permanent auditability.
+- **Conformance Anti-Resurrection Guards**:
+  - Modernized `tests/conformance/test_seed_contract.py` (`test_mvp_template_not_resurrected`) to assert `BRD-MVP-TEMPLATE.yaml` does not exist.
+  - Modernized `tests/conformance/test_iplan_carrier.py` (`test_mvp_template_not_resurrected`) to assert `IPLAN-MVP-TEMPLATE.yaml` does not exist.
+  - Added `test_no_mvp_templates_exist` to `tests/conformance/test_layers.py` asserting zero `*-MVP-TEMPLATE.*` files exist across any layer folder under `framework/layers/`.
+- **Decision Ratification**:
+  - Ratified Decision `GD-76` in `framework/governance/DECISIONS.md`.
 
 ## [0.91.7] — 2026-10-11
 

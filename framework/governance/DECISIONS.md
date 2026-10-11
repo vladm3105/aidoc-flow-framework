@@ -15,11 +15,31 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.35 |
+| Version | 1.36 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.7 |
+| Framework Version | 0.91.8 |
+
+---
+
+## GD-76 — Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard (CHG-89, 0.91.8 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: In CHG-08 (#666), the framework unified around single canonical templates (`*-TEMPLATE.yaml`) across all SDD layers, leaving 11-line pointer tombstones (`*-MVP-TEMPLATE.yaml`) in layers 01 through 08. Following the completion of the universal YAML index modernization (CHG-87, CHG-88), these legacy tombstone files serve no active runtime or spec function and clutter layer directories. However, conformance test suites in `test_seed_contract.py` and `test_iplan_carrier.py` retained positive assertions verifying their existence as tombstones. This change permanently removes all 8 legacy MVP template tombstones, archives historical snapshots for audit continuity, and converts conformance tests into ironclad anti-resurrection guards.
+- **Decision**:
+  1. **Permanent Removal of Legacy MVP Tombstones**:
+     - Remove `*-MVP-TEMPLATE.yaml` across Layers 01 (`01_BRD`), 02 (`02_PRD`), 03 (`03_EARS`), 04 (`04_BDD`), 05 (`05_ADR`), 06 (`06_SPEC`), 07 (`07_TDD`), and 08 (`08_IPLAN`).
+     - Archive pre-change copies of all 8 tombstones under `framework/archive/CHG-89/templates/` for historical continuity.
+  2. **Conformance Anti-Resurrection Guards**:
+     - Convert `test_seed_contract.py:test_mvp_skeleton_is_tombstone` to `test_mvp_template_not_resurrected`, asserting `self.assertFalse(BRD_MVP_TEMPLATE.exists())`.
+     - Convert `test_iplan_carrier.py:test_mvp_skeleton_is_tombstone` to `test_mvp_template_not_resurrected`, asserting `self.assertFalse(path.exists())`.
+     - Add `test_no_mvp_templates_exist` to `tests/conformance/test_layers.py` asserting that zero `*-MVP-TEMPLATE.*` files exist across any layer folder under `framework/layers/`.
+- **Consequences**:
+  - Eliminates all obsolete MVP template pointer files from the active spec surface.
+  - Conformance test suites actively enforce that MVP templates cannot be resurrected.
+  - Canonical templates (`*-TEMPLATE.yaml`) remain the sole authorized authoring vehicle.
 
 ---
 
