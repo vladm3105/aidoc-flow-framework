@@ -1,0 +1,142 @@
+# =============================================================================
+#  CHG-89: Permanent Retirement of Legacy MVP Template Tombstones
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance Batch)
+#  Pre-cleared: User instruction in session (2026-10-11)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-11"
+  framework_version: "0.91.8"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-89"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-11T00:00:00Z"
+  date_approved: "2026-10-11T00:00:00Z"
+  date_implemented: "2026-10-11T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-11T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: clean up retired *MVP-TEMPLATE.yaml on each layer. Decision GD-76 ratified."
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-89)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-89"
+  title: "Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard"
+  status: "Accepted"
+  context: |
+    In CHG-08 (#666), the framework unified around single canonical templates (*-TEMPLATE.yaml)
+    across all SDD layers, leaving 11-line pointer tombstones (*-MVP-TEMPLATE.yaml) in layers 01 through 08.
+    Following the completion of the universal YAML index modernization (CHG-87, CHG-88), these legacy
+    tombstone files serve no active runtime or spec function. However, conformance test suites in
+    test_seed_contract.py and test_iplan_carrier.py retained positive assertions verifying their existence as tombstones.
+    This change permanently removes all 8 legacy MVP template tombstones, archives historical snapshots
+    for audit continuity, and converts conformance tests into ironclad anti-resurrection guards.
+  choice: |
+    1. Permanently remove all 8 legacy *-MVP-TEMPLATE.yaml tombstone files from framework/layers/01_BRD/ through 08_IPLAN/.
+    2. Archive historical snapshots of the retired tombstones under framework/archive/CHG-89/templates/ for audit continuity.
+    3. Modernize conformance test suites:
+       - Update test_seed_contract.py: convert test_mvp_skeleton_is_tombstone to test_mvp_template_not_resurrected (assert False).
+       - Update test_iplan_carrier.py: convert test_mvp_skeleton_is_tombstone to test_mvp_template_not_resurrected (assert False).
+       - Update test_layers.py: add test_no_mvp_templates_exist to assert that zero *-MVP-TEMPLATE.* files exist across any layer folder.
+    4. Ratify Decision GD-76 in framework/governance/DECISIONS.md.
+    5. Advance framework spec version to 0.91.8 and propagate version references.
+  consequences: |
+    - Zero legacy MVP template tombstone files remain in framework/layers/.
+    - Conformance test suites actively enforce that MVP templates cannot be resurrected.
+    - Preserves single source of truth across canonical templates (*-TEMPLATE.yaml).
+    - Full historical audit trail preserved under framework/archive/CHG-89/.
+  alternatives_considered:
+    - option: "Retain tombstones indefinitely"
+      rationale_rejected: "Leaves 8 dead pointer files cluttering layer directories; confuses new contributors."
+    - option: "Delete tombstones without anti-resurrection tests"
+      rationale_rejected: "Weakens conformance protection by leaving open the possibility of accidental template resurrection."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-11T00:00:00Z"
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Remove 8 legacy *-MVP-TEMPLATE.yaml tombstones, archive snapshots, and convert conformance tests to anti-resurrection guards"
+  authorizing_decision: "DEC-CHG-89"
+  affected_layers: [1, 2, 3, 4, 5, 6, 7, 8]
+  affected_documents:
+    - "BRD-MVP-TEMPLATE.yaml"
+    - "PRD-MVP-TEMPLATE.yaml"
+    - "EARS-MVP-TEMPLATE.yaml"
+    - "BDD-MVP-TEMPLATE.yaml"
+    - "ADR-MVP-TEMPLATE.yaml"
+    - "SPEC-MVP-TEMPLATE.yaml"
+    - "TDD-MVP-TEMPLATE.yaml"
+    - "IPLAN-MVP-TEMPLATE.yaml"
+    - "DECISIONS.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-89/IPLAN-89.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-89.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-89/IPLAN-89.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing"
+    - "test_seed_contract.py passing with anti-resurrection guard"
+    - "test_iplan_carrier.py passing with anti-resurrection guard"
+    - "test_layers.py passing with zero MVP templates assertion"
+    - "pytest conformance and acceptance green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

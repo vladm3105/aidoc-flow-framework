@@ -23,12 +23,23 @@ class LayerFiles(unittest.TestCase):
                     (folder / "README.md").is_file(),
                     f"missing README for {artifact}",
                 )
-                index_md = folder / f"{artifact}-00_index.TEMPLATE.md"
                 index_yaml = folder / f"{artifact}-00_index.TEMPLATE.yaml"
                 self.assertTrue(
-                    index_md.is_file() or index_yaml.is_file(),
-                    f"missing index template for {artifact}",
+                    index_yaml.is_file(),
+                    f"missing YAML index template for {artifact} (GD-75)",
                 )
+
+    def test_no_mvp_templates_exist(self):
+        """All 8 legacy *-MVP-TEMPLATE.yaml tombstones removed in CHG-89 (GD-76).
+
+        Asserts that zero MVP templates exist anywhere under framework/layers/.
+        """
+        mvp_files = sorted(p.relative_to(FRAMEWORK).as_posix() for p in FRAMEWORK.glob("layers/*/*-MVP-TEMPLATE.*"))
+        self.assertEqual(
+            [],
+            mvp_files,
+            f"MVP templates must not exist in framework/layers/ (GD-76): {mvp_files}",
+        )
 
 
 class LayerTemplateMetadata(unittest.TestCase):
