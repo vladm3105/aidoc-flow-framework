@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.5 |
+| Framework Version | 0.91.6 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 05 (Architecture Decision Records / ADR) architectural trade-off evaluations, multi-criteria decision analysis (MCDA), stakeholder RFC review callbacks, and decision ratification using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -27,6 +27,7 @@ Historically, ADR documents were authored exclusively as static YAML contracts i
 3. **Absence of Systematic Rejection Archival & Compensation**: When a proposed architecture fails viability thresholds or stakeholder consensus, the reasons and discarded candidate evaluations must be archived deterministically without contaminating active system models.
 4. **Agent Decision Drift in Autonomous SDD Lifecycles**: Autonomous AI coding agents evaluating architecture choices often skip alternative analysis, fail to compute quantitative trade-off metrics, or declare decisions without structured review gates.
 5. **Canonical Governance Runner**: The framework provides `framework/governance/workflows/adr-decision-analysis.sw.yaml` as the canonical CNCF Serverless Workflow state machine for executing multi-candidate trade-off analysis, MCDA utility scoring, and stakeholder RFC review loops.
+6. **Agent-Readable Project Technology Registry**: Layer 05 houses the canonical project-level technology stack and security inventory within [`ADR-00_index.yaml`](./ADR-00_index.TEMPLATE.yaml). Every ratified technology selection or variance is recorded directly into `ADR-00_index.yaml` with its authorizing ADR reference, Package URL (`purl`) / CPE security identifiers for CVE monitoring, and automated update policies (Dependabot, Renovate). This provides an unambiguous, agent-readable source of truth for CI scanners while enabling on-demand human report generation.
 
 ---
 
@@ -97,6 +98,7 @@ In workflow-driven ADR evaluations, candidate alternatives must be scored quanti
 $$\text{Utility}(C_i) = \sum_{k=1}^M w_k \cdot S(C_i, Q_k)$$
 
 Where:
+
 - $C_i$ is candidate alternative $i$.
 - $Q_k$ is quality attribute $k$ (e.g., latency, throughput, cost, security, resilience).
 - $w_k$ is the normalized weight of quality attribute $k$ ($\sum w_k = 1.0$).
@@ -190,7 +192,7 @@ Authors must select between the static template and the workflow template accord
 
 ## 8. Graph Invariants for Layer 05 ADR Workflows
 
-All CNCF Serverless Workflow state machines authored for Layer 05 ADR must satisfy 6 structural invariants:
+All CNCF Serverless Workflow state machines authored for Layer 05 ADR must satisfy 7 structural invariants:
 
 1. **INV-ADR-01 (Single Entrypoint)**: The workflow must declare a unique `start` state initiating context ingestion.
 2. **INV-ADR-02 (Deterministic Alternative Fan-out)**: If $\ge 2$ candidates are considered, candidate assessment must execute via a `parallel` state evaluating all candidates under identical quality attribute constraints.
@@ -198,6 +200,7 @@ All CNCF Serverless Workflow state machines authored for Layer 05 ADR must satis
 4. **INV-ADR-04 (Correlated RFC Callback)**: The RFC feedback loop must declare a `callback` state correlated on `proposalId` with an explicit ISO 8601 timeout.
 5. **INV-ADR-05 (Rejection Compensation Binding)**: Every rejection path must declare a compensating state via `compensatedBy` that cleanly archives evaluation records and purges temporary contexts.
 6. **INV-ADR-06 (Approved Stack Baseline Alignment)**: Each evaluated candidate must declare its platform stack classification (`APPROVED` vs `VARIANCE_REQUESTED`). Selections requiring variance must record formal exception sign-off prior to decision sealing.
+7. **INV-ADR-07 (Technology Registry Synchronization)**: Upon ratifying an ADR with category `Technology Selection` or `Infrastructure`, the ratified component, version constraint, authorizing ADR ID, security monitoring metadata (PURL/CPE/scanners), and automated update policy must be recorded in the project's canonical `ADR-00_index.yaml` registry under `technologies`.
 
 ---
 

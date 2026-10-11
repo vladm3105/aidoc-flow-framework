@@ -15,11 +15,37 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.33 |
+| Version | 1.34 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.5 |
+| Framework Version | 0.91.6 |
+
+---
+
+## GD-74 — Modernization of Layer 05 ADR Index to YAML (`ADR-00_index.TEMPLATE.yaml`) with Embedded Project Technology Stack & Security Registry (CHG-87, 0.91.6 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Under Decision GD-73, Layer 05 (05_ADR) was established as the formal Technology Selection Gate where abstract behavioral requirements meet concrete technological implementations. However, projects lacked a canonical, agent-readable registry recording all active technologies used in the project for automated security monitoring (SCA, CVE scanning, SBOM) and automated tool updates (Dependabot, Renovate). Maintaining duplicate human-readable Markdown tables and machine-readable manifests causes documentation drift. Modernizing ADR-00_index to a single, canonical YAML template (`ADR-00_index.TEMPLATE.yaml`) mirrors the pattern established in Layer 08 (`IPLAN-00_index.TEMPLATE.yaml`) and provides an unambiguous source of truth from which AI agents can generate any human report on-demand.
+- **Decision**:
+  1. **Retirement of Markdown Index Template**:
+     - Remove `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
+     - Author `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` as the canonical Layer 05 index specification, preserving the 10 total index templates asserted by `test_index_template_lint.py`.
+  2. **Unified Agent-Readable YAML Specification**:
+     - `metadata`: Schema version 1.0.0, layer 5, document_type `adr-registry`, artifact_type `ADR-INDEX`, tracking total ADRs and active technologies.
+     - `adrs`: Catalog of active, proposed, deprecated, and superseded ADRs.
+     - `backlog`: Backlog of planned architecture decisions identified from requirements.
+     - `technologies`: Active project technology stack registry housing:
+       - Architectural domain, enterprise stack tier (`Tier-0-Core`, `Approved-Contained`, `Specialized-Domain`, `Approved-Exception`), version constraints, and authorizing ADR citation.
+       - Security Monitoring: Package URL standard (`purl`), Common Platform Enumerations (`cpe`), package ecosystem, vulnerability scanner targets (`trivy`, `osv`, `dependabot`), severity alert thresholds, and license compliance.
+       - Automated Tool Updates: Update manager (`renovate`, `dependabot`, `manual`), update cadence, auto-merge patch flags, and manifest bindings.
+       - Lifecycle status (`Active`, `Evaluating`, `Deprecated`, `Sunset`).
+     - `update_triggers`: Explicit quality gate update triggers enforced at GATE-03 and GATE-SPEC.
+  3. **Normative Standards & Guide Alignment**:
+     - Update `framework/layers/05_ADR/README.md` to reference `ADR-00_index.TEMPLATE.yaml`.
+     - Update `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` with invariant `INV-ADR-07` mandating technology registry synchronization upon ADR acceptance.
+     - Update `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` §2.5 to cite `ADR-00_index.yaml` as the project-level technology stack and security inventory.
 
 ---
 

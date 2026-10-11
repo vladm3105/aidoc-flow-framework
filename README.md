@@ -313,8 +313,8 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.5`**.
-The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61) and aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
+the project is in **post-cutover development** tracking framework spec **`0.91.6`**.
+The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), and modernized the ADR index and technology stack registry to machine-readable YAML (Decision GD-74, Change Request CHG-87), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, automated SCA/CVE security tracking, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
 > *This overview is a point-in-time snapshot (as of 2026-10-11); it is not
 > wired into the version-sync hook. For live version state see `framework/VERSION`.*
