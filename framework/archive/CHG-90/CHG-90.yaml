@@ -1,0 +1,148 @@
+# =============================================================================
+#  CHG-90: Standardized Dual-Template Selection Guides Across Layers 01–08 and Governance
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance Batch)
+#  Pre-cleared: User instruction in session (2026-10-11)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-11"
+  framework_version: "0.91.9"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-90"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-11T00:00:00Z"
+  date_approved: "2026-10-11T00:00:00Z"
+  date_implemented: "2026-10-11T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-11T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: add comments in templates when to use each template. Decision GD-77 ratified."
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-90)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-90"
+  title: "Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance"
+  status: "Accepted"
+  context: |
+    The framework maintains dual-template support across Layers 01–08 and Governance (Layer 09 CHG):
+    primary machine-executable CNCF Serverless Workflow templates (*-SWF-TEMPLATE.yaml) and
+    companion static declarative templates (*-TEMPLATE.yaml).
+    While documented in layer READMEs and governance decisions (GD-61, GD-73), the template files
+    themselves lacked in-file selection guidance in their comment headers. Consequently, AI agents
+    and engineers inspecting layer folders lacked immediate, in-file guidance on which template
+    to choose for a given initiative.
+  choice: |
+    1. Author explicit, layer-tailored TEMPLATE SELECTION GUIDE comment blocks in the header of all
+       primary templates (*-SWF-TEMPLATE.yaml) across Layers 01–08 and Governance (09_CHG).
+    2. Author corresponding companion TEMPLATE SELECTION GUIDE comment blocks in the header of all
+       companion templates (*-TEMPLATE.yaml) across Layers 01–08 and Governance (09_CHG).
+    3. Maintain strict byte-identity between framework/governance/chg/CHG-TEMPLATE.yaml and
+       framework/layers/09_CHG/CHG-TEMPLATE.yaml.
+    4. Ratify Decision GD-77 in framework/governance/DECISIONS.md.
+    5. Advance framework spec version to 0.91.9 and propagate version references.
+  consequences: |
+    - AI agents and developers authoring new artifacts receive immediate, in-file guidance on template choice.
+    - Explicitly affirms *-SWF-TEMPLATE.yaml as the Primary Standard and *-TEMPLATE.yaml as Companion.
+    - Zero structural disruption to schema validation (sdd_doc_lint and swf_lint ignore YAML comments).
+    - Preserves engine-agnostic purity and dual-template discipline.
+  alternatives_considered:
+    - option: "Rely solely on layer README.md selection matrices"
+      rationale_rejected: "Forces agents to load extra files during generation, leading to accidental selection of static templates when SWF is preferred."
+    - option: "Add selection guide only to SWF templates"
+      rationale_rejected: "Leaves static companion templates ambiguous without explaining their role or pointing to SWF as primary."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-11T00:00:00Z"
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Add tailored TEMPLATE SELECTION GUIDE header blocks across all 18 layer and governance templates"
+  components_affected:
+    - "BRD-SWF-TEMPLATE.yaml"
+    - "BRD-TEMPLATE.yaml"
+    - "PRD-SWF-TEMPLATE.yaml"
+    - "PRD-TEMPLATE.yaml"
+    - "EARS-SWF-TEMPLATE.yaml"
+    - "EARS-TEMPLATE.yaml"
+    - "BDD-SWF-TEMPLATE.yaml"
+    - "BDD-TEMPLATE.yaml"
+    - "ADR-SWF-TEMPLATE.yaml"
+    - "ADR-TEMPLATE.yaml"
+    - "SPEC-SWF-TEMPLATE.yaml"
+    - "SPEC-TEMPLATE.yaml"
+    - "TDD-SWF-TEMPLATE.yaml"
+    - "TDD-TEMPLATE.yaml"
+    - "IPLAN-SWF-TEMPLATE.yaml"
+    - "IPLAN-TEMPLATE.yaml"
+    - "CHG-SWF-TEMPLATE.yaml"
+    - "CHG-TEMPLATE.yaml"
+    - "DECISIONS.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-90/IPLAN-90.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-90.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-90/IPLAN-90.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing"
+    - "swf_lint.py passing on all templates"
+    - "pytest conformance and acceptance green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

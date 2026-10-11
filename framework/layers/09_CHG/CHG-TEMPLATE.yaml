@@ -5,10 +5,19 @@
 #  framework/layers/09_CHG/CHG-TEMPLATE.yaml is kept byte-identical;
 #  this copy wins on any conflict.
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Document Authority: PRIMARY DOCUMENT STANDARD (single source of truth for CHG records)
 #  Purpose: Governance overlay for changes to SDD artifacts across all layers
 #  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts
 #  Framework: SDD — 10-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (CHG-TEMPLATE.yaml — DOCUMENT STANDARD) when:
+#    - Authoring individual change request documents (CHG-NN.yaml) recording proposed changes, decisions, and impact
+#    - Specifying human-authored or agent-filed change records without workflow state machine definition
+#  Use the companion template (CHG-SWF-TEMPLATE.yaml — WORKFLOW STANDARD) instead when:
+#    - Orchestrating automated change request lifecycle state machines and gate routing
+#    - Executing automated SDD cascade traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)
+#    - Targeting autonomous AI agent execution or governance orchestrators (LangGraph/Temporal)
 #
 #  ACTIVE COMPANION FILES (in this layer):
 #    gates/GATE-01_BUSINESS_PRODUCT.md             — business/product gate (L1-L2)

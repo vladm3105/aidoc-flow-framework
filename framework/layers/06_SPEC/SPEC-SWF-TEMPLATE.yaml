@@ -4,6 +4,16 @@
 #  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 #  Downstream: TDD (Layer 7), IPLAN (Layer 8)
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (SPEC-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Specifying distributed service interaction, event-driven choreography, or CloudEvent schemas
+#    - Orchestrating asynchronous webhook callbacks, concurrent service dispatches, or latency SLA checks
+#    - Requiring automated distributed saga compensation (backward recovery on downstream service failure)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Specifying atomic, in-process monolithic components, synchronous APIs, or pure algorithmic modules
+#    - State machine orchestration, asynchronous callbacks, and distributed compensations are not needed
 # =============================================================================
 
 doc_id: SPEC-NN

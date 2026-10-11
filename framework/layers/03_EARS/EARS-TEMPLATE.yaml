@@ -1,9 +1,20 @@
 # =============================================================================
-#  EARS-TEMPLATE.yaml — EARS Requirements (SDD)
+#  EARS-TEMPLATE.yaml — EARS Requirements (SDD Layer 03)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable EARS template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable EARS template for linear requirement statements
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (EARS-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-system requirements, linear feature sets, or tabular EARS clauses
+#    - Specifying formal requirement statements where state machine orchestration is unnecessary overhead
+#  Use the primary template (EARS-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
+#    - Orchestrating automated BDD-readiness score evaluation (>=90/100 threshold switch gates)
+#    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators

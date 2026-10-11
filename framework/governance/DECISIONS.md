@@ -15,11 +15,32 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.36 |
+| Version | 1.37 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.8 |
+| Framework Version | 0.91.9 |
+
+---
+
+## GD-77 — Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance (CHG-90, 0.91.9 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: The framework maintains dual-template support across Layers 01–08 and Governance (Layer 09 CHG): primary machine-executable CNCF Serverless Workflow templates (`*-SWF-TEMPLATE.yaml`) and companion static declarative templates (`*-TEMPLATE.yaml`). While documented in layer READMEs and governance decisions (GD-61, GD-73), the template files themselves lacked in-file selection guidance in their comment headers. Consequently, AI agents and engineers inspecting layer folders lacked immediate, in-file guidance on which template to choose for a given initiative.
+- **Decision**:
+  1. **Primary Template Selection Guide (`*-SWF-TEMPLATE.yaml`)**:
+     - Author tailored in-file selection guides in the header comment block of all primary workflow templates across Layers 01–08 (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) and Governance (`CHG-SWF-TEMPLATE.yaml`).
+     - Explicitly define the operational triggers for selecting SWF: distributed/multi-container architectures, asynchronous callbacks, steering/RFC reviews, and automated saga rollback compensation (`compensatedBy`).
+  2. **Companion Template Selection Guide (`*-TEMPLATE.yaml`)**:
+     - Author corresponding companion selection guides in the header comment block of all companion static templates across Layers 01–08 (`BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`, `BDD-TEMPLATE.yaml`, `ADR-TEMPLATE.yaml`, `SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml`, `IPLAN-TEMPLATE.yaml`) and Governance (`governance/chg/CHG-TEMPLATE.yaml`, `layers/09_CHG/CHG-TEMPLATE.yaml`).
+     - Clarify that companion templates are optimized for single-capability, monolithic in-process components, and linear specifications where state machine logic is unnecessary overhead.
+  3. **Preservation of Strict Byte Identity**:
+     - Maintain strict byte-identity between `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` per CHG-08 #667.
+- **Consequences**:
+  - Eliminates ambiguity for AI agents and human engineers when authoring new SDD documents.
+  - Formally codifies the primary vs. companion template hierarchy directly inside the templates.
+  - Zero structural risk to linters (YAML comments are ignored by both `sdd_doc_lint` and `swf_lint`).
 
 ---
 

@@ -1,9 +1,20 @@
 # =============================================================================
-#  BRD-TEMPLATE.yaml — Business Requirements Document (SDD)
+#  BRD-TEMPLATE.yaml — Business Requirements Document (SDD Layer 01)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable BRD template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable BRD template for linear business requirements
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (BRD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting single-capability business requirements, direct business processes, or focused enhancements
+#    - Specifying straightforward, linear requirements where state machine orchestration is unnecessary overhead
+#  Use the primary template (BRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-stream value flows, cross-department handoffs, or customer journeys
+#    - Orchestrating automated ROI feasibility evaluation and quantitative cost-benefit gates
+#    - Incorporating executive steering committee callbacks, formal sign-off events, or timeouts
+#    - Requiring automated strategic compensation (e.g. invalidating downstream initiative allocations)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators

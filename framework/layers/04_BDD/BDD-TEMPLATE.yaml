@@ -1,9 +1,20 @@
 # =============================================================================
-#  BDD-TEMPLATE.yaml — BDD Scenarios (SDD)
+#  BDD-TEMPLATE.yaml — BDD Scenarios (SDD Layer 04)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable BDD template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable BDD template for linear acceptance scenarios
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (BDD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting standard, linear Given/When/Then scenarios for atomic or monolithic features
+#    - Specifying behavioral acceptance criteria where state machine orchestration is unnecessary overhead
+#  Use the primary template (BDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling stateful behavioral workflows, multi-step customer journeys, or distributed event sequences
+#    - Mapping Given/When/Then to state machine primitives (inject/operation/event/switch)
+#    - Requiring automated saga compensation (backward rollback teardown on scenario failure)
+#    - Orchestrating asynchronous callbacks, webhook events, or external stimuli
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators

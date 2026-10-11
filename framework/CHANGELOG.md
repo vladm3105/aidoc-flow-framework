@@ -7,11 +7,26 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.29 |
+| Version | 1.30 |
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.8 |
+| Framework Version | 0.91.9 |
+
+## [0.91.9] — 2026-10-11
+
+### Added — Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance (C2 Spec, CHG-90 + IPLAN-90, Decision DEC-CHG-90, GD-77)
+
+- **Primary Workflow Template Selection Guides (`*-SWF-TEMPLATE.yaml`)**:
+  - Authored tailored in-file selection guides in the header comment block of all primary workflow templates across Layers 01–08 (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) and Governance (`CHG-SWF-TEMPLATE.yaml`).
+  - Explicitly documents when to choose SWF: multi-container/distributed architectures, asynchronous callbacks, steering/RFC reviews, and automated saga rollback compensation (`compensatedBy`).
+- **Companion Static Template Selection Guides (`*-TEMPLATE.yaml`)**:
+  - Authored corresponding companion selection guides in the header comment block of all companion static templates across Layers 01–08 (`BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`, `BDD-TEMPLATE.yaml`, `ADR-TEMPLATE.yaml`, `SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml`, `IPLAN-TEMPLATE.yaml`) and Governance (`governance/chg/CHG-TEMPLATE.yaml`, `layers/09_CHG/CHG-TEMPLATE.yaml`).
+  - Clarifies that companion templates are optimized for single-capability, monolithic in-process components, and linear specifications where state machine logic is unnecessary overhead.
+- **Strict Byte-Identity Preservation**:
+  - Maintained strict byte-identity between `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` per CHG-08 #667.
+- **Decision Ratification**:
+  - Ratified Decision `GD-77` in `framework/governance/DECISIONS.md`.
 
 ## [0.91.8] — 2026-10-11
 

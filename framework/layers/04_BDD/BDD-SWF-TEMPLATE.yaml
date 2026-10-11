@@ -16,9 +16,19 @@
 #    feature, traceability) for 100% compatibility with sdd_doc_lint.
 #    Inner 'workflow:' block houses a valid CNCF Serverless Workflow v0.8
 #    state machine for multi-step choreography, event stimuli, and saga rollback.
-#
 #  Downstream: ADR (Layer 5), TDD (Layer 7 via BDD scenario mapping)
 #  Upstream: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (BDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Modeling stateful behavioral workflows, multi-step customer journeys, or distributed event sequences
+#    - Mapping Given/When/Then to state machine primitives (inject/operation/event/switch)
+#    - Requiring automated saga compensation (backward rollback teardown on scenario failure)
+#    - Orchestrating asynchronous callbacks, webhook events, or external stimuli
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (BDD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting standard, linear Given/When/Then scenarios for atomic or monolithic features
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: BDD-NN

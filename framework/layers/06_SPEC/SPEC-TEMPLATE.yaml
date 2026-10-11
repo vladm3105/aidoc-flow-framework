@@ -1,7 +1,20 @@
-# SPEC-TEMPLATE.yaml — Unified Technical Specification
-# SDD Layer 6 — Implementation-ready specification
-# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
-# Downstream: TDD (Layer 7)
+# =============================================================================
+#  SPEC-TEMPLATE.yaml — Unified Technical Specification (SDD Layer 06)
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: Implementation-ready technical specification for atomic/monolithic components
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+#  Downstream: TDD (Layer 7)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Specifying atomic, in-process monolithic components, synchronous APIs, or pure algorithmic modules
+#    - Documenting data schemas, interface signatures, and algorithms without state machine orchestration
+#  Use the primary template (SPEC-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Specifying distributed service interaction, event-driven choreography, or CloudEvent schemas
+#    - Orchestrating asynchronous webhook callbacks, concurrent service dispatches, or latency SLA checks
+#    - Requiring automated distributed saga compensation (backward recovery on downstream service failure)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+# =============================================================================
 
 doc_id: SPEC-NN
 title: "[Technical Specification Title]"

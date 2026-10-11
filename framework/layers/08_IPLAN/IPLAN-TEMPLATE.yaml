@@ -1,11 +1,21 @@
-# IPLAN-TEMPLATE.yaml — Implementation Plan
-# SDD Layer 8 — Mandatory execution bridge from SPEC to source code
-# One IPLAN per SPEC component.
+# =============================================================================
+#  IPLAN-TEMPLATE.yaml — Implementation Plan (SDD Layer 08)
+# =============================================================================
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: Execution bridge from SPEC/TDD to source code for linear tasks
+#  One IPLAN per SPEC component. All IPLANs go through CHG (§3.0 unified flow).
+#  Registry: IPLAN-00_index.yaml tracks all plans.
 #
-# All IPLANs go through CHG (§3.0 unified flow).
-# Registry: IPLAN-00_index.yaml tracks all plans.
-#
-# IPLAN is the Layer 8 execution bridge from SPEC/TDD to code.
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (IPLAN-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, linear implementation checklists, docs-only changes, or single-file edits
+#    - Specifying task steps without state machine orchestration or automated rollback compensation
+#  Use the primary template (IPLAN-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Orchestrating multi-step codebase mutations, multi-file refactoring, or migrations
+#    - Requiring automated verification switch gates after each implementation task
+#    - Requiring native saga compensation (automated rollback commands if verification fails)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+# =============================================================================
 
 doc_id: IPLAN-NN
 title: "[Implementation Plan Title]"

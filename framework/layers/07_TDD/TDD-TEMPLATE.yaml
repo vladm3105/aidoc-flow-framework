@@ -1,7 +1,20 @@
-# TDD-TEMPLATE.yaml — Test-Driven Development Guide
-# SDD Layer 7 — Test case definitions from SPEC component contracts
-# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
-# Downstream: IPLAN (Layer 8), EVAL (Layer 10)
+# =============================================================================
+#  TDD-TEMPLATE.yaml — Test-Driven Development Guide (SDD Layer 07)
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: Test case definitions from SPEC component contracts for unit/isolated tests
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
+#  Downstream: IPLAN (Layer 8), EVAL (Layer 10)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (TDD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting isolated, atomic unit tests, static test matrices, or pure function assertions
+#    - Specifying test cases and assertions without state machine orchestration
+#  Use the primary template (TDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Orchestrating stateful test workflows, fixture lifecycles, or integration test suites
+#    - Mapping Arrange-Act-Assert phases to state machine primitives (inject/operation/switch)
+#    - Incorporating automated flaky failure backoff retries and saga teardown compensation
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+# =============================================================================
 
 doc_id: TDD-NN
 title: "[Test Plan Title]"

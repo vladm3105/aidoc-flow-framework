@@ -1,9 +1,20 @@
 # =============================================================================
-#  PRD-TEMPLATE.yaml — Product Requirements Document (SDD)
+#  PRD-TEMPLATE.yaml — Product Requirements Document (SDD Layer 02)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable PRD template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable PRD template for linear product requirements
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (PRD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-container initiatives, monolithic services, or linear feature sets
+#    - Specifying product requirements where state machine orchestration is unnecessary overhead
+#  Use the primary template (PRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-container product decomposition (C4 Level 2), microservices, or distributed components
+#    - Orchestrating automated feature prioritization (MoSCoW/RICE) and quantitative threshold validation
+#    - Incorporating stakeholder scope negotiation callbacks, external product feedback events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream EARS/BDD artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators

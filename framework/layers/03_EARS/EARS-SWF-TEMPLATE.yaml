@@ -8,6 +8,17 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: BDD (Layer 4)
 #  Upstream: PRD (Layer 2)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (EARS-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
+#    - Orchestrating automated BDD-readiness score evaluation (>=90/100 threshold switch gates)
+#    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (EARS-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting straightforward, single-system requirements, linear feature sets, or tabular EARS clauses
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: EARS-NN
