@@ -616,7 +616,9 @@ traceability:
   adr_topic_elaboration:
     _guidance: |
       Specify technical options for each BRD Section 8 topic so ADR can
-      evaluate them. Do NOT reference specific ADR numbers (ADR-01, etc.) — except a platform PRD MAY cite ADRs already decided (see the traceability guidance above).
+      evaluate them against the approved platform technology stack (see
+      framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md). Do NOT reference specific
+      ADR numbers (ADR-01, etc.) — except a platform PRD MAY cite ADRs already decided (see the traceability guidance above).
     topics:
       - topic: "[Topic from BRD Section 8]"
         brd_reference: "@brd: BRD.NN.08.xxxx"

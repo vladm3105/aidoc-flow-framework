@@ -131,22 +131,26 @@ decision:
 
 alternatives:
   _size_target: 200
+  _guidance: |
+    Evaluate 2-3 candidate alternatives drawn from the approved platform stack (/mnt/e/dev/technology_stack)
+    per TECHNOLOGY_STACK_USAGE_GUIDE.md. If a candidate is outside the approved stack, an architectural
+    variance must be documented and submitted to the review crew.
   considered:
     - id: "ADR.NN.04.xxxx"
-      name: "[Selected Option]"
+      name: "[Option A: Approved Platform Stack (e.g. PostgreSQL 18 with xp.ledger)]"
       selected: true
       source: "@seed: ARCH-NN"
-      decision: "Selected — [highest MCDA utility score]"
+      decision: "Selected — [highest MCDA utility score and full platform stack alignment]"
     - id: "ADR.NN.04.xxxx"
-      name: "[Alternative B]"
+      name: "[Alternative B: Alternative Approved Platform Component (e.g. ClickHouse OLAP)]"
       selected: false
       source: "@seed: ARCH-NN"
-      decision: "Rejected — [failed latency threshold]"
+      decision: "Rejected — [failed transactional consistency threshold]"
     - id: "ADR.NN.04.xxxx"
-      name: "[Alternative C]"
+      name: "[Alternative C: Architectural Variance (if applicable)]"
       selected: false
       source: "@seed: ARCH-NN"
-      decision: "Rejected — [cost exceeds operational budget]"
+      decision: "Rejected — [operational overhead exceeds benefit; standard stack sufficient]"
 
 # =============================================================================
 # Section 5: Consequences
@@ -222,6 +226,7 @@ architecture_flow:
               arguments:
                 adr_id: "ADR-NN"
                 quality_attributes: ["latency", "throughput", "cost", "security"]
+                approved_stack_baseline: "/mnt/e/dev/technology_stack"
         transition: EvaluateCandidatesConcurrently
 
       - name: EvaluateCandidatesConcurrently

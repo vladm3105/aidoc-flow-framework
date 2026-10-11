@@ -263,11 +263,13 @@ adr_topics:
   _size_target: 150
   _guidance: |
     Strategic technology topics requiring downstream architectural decision records in Layer 05 (ADR).
+    Per BL-VENDOR-NAME-SCOPE and TECHNOLOGY_STACK_USAGE_GUIDE.md, topic titles must describe business
+    capabilities rather than product names, while candidate evaluations reference the approved platform stack.
   topics:
     - topic: "Distributed Event Choreography vs Orchestration"
-      rationale: "Requires formal trade-off analysis between decoupled eventing and centralized workflow state"
+      rationale: "Requires formal trade-off analysis between decoupled eventing (NATS JetStream) and centralized workflow state (Temporal Server)"
     - topic: "Reconciliation Ledger Storage Paradigm"
-      rationale: "Comparison between relational SQL audit tables and distributed append-only ledger"
+      rationale: "Comparison between relational transactional tables (PostgreSQL 18 with xp.ledger) and append-only OLAP storage (ClickHouse)"
 
 # =============================================================================
 # Section 13: Traceability (Required Section 13/17)

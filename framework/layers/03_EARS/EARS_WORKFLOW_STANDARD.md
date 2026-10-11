@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 | Authority | Decision GD-59 (framework/governance/DECISIONS.md) |
 
 ---
@@ -107,6 +107,9 @@ All EARS workflow definitions (whether embedded in `EARS-SWF-TEMPLATE.yaml` or s
 ### Invariant E-WF05: Rejection Invalidation Compensation
 - Any state machine evaluating requirement validity MUST bind rejection states to an automated compensation action (`compensatedBy: InvalidateDownstreamArtifacts`).
 - The compensation action MUST flag or revoke any provisional downstream BDD, ADR, or SPEC artifacts derived from the rejected requirements.
+
+### Invariant E-WF06: Technology Selection Criteria Feed
+- Quality attributes, SLA bounds, and throughput constraints quantified in Section 4 (`quality_attributes`) must be formulated to feed directly as evaluation criteria and weighting parameters into Layer 05 ADR multi-criteria decision analysis (MCDA) across approved platform technology candidates ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
 
 ---
 

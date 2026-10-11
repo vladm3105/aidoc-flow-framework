@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 
 ## Overview
@@ -20,16 +20,20 @@ pattern. Each ADR addresses ONE decision, synthesizing inputs from EARS and BDD 
 
 ## C4 Model Position
 
-ADR is the **decision bridge** between Container (PRD) and Component (SPEC) — it does not have its own C4 level. ADR records architectural decisions that shape the Component-level design.
+ADR is the **decision bridge** between Container (PRD) and Component (SPEC) — it does not have its own C4 level. ADR records architectural decisions that shape the Component-level design and serves as the **formal technology selection gate** immediately after BDD (governed by [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
 
 ```text
-Context (BRD)    — business environment, actors, boundaries
-  └─ EARS/BDD    — formalize Context→Container transition
-Container (PRD)  — product features, functional blocks
-  └─ ADR         — decisions that shape Component architecture        ← this layer
-Component (SPEC) — component interfaces, data models, behavior contracts
-  └─ TDD         — test case definitions validating SPEC contracts
-  └─ IPLAN       — execution plan bridging TDD to Code
+Problem Space (Technology-Agnostic):
+  Context (BRD)    — business environment, actors, boundaries
+    └─ PRD         — product features, functional blocks, ADR topics
+    └─ EARS        — timing constraints, latency budgets, throughput SLAs
+    └─ BDD         — executable acceptance scenarios & failure modes
+Technology Selection Gate:
+  ADR (Layer 5)    — selects ONE architecture & stack choice via MCDA     ← this layer
+Solution Space (Technology-Bound):
+  Component (SPEC) — component interfaces, data models, behavior contracts
+    └─ TDD         — test case definitions validating SPEC contracts
+    └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files

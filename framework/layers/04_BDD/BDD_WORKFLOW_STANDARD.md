@@ -8,13 +8,15 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 ---
 
 ## 1. Architectural Motivation & Scope
 
 Layer 04 (Behavior-Driven Development, BDD) bridges formal business and system requirements (Layer 03 EARS) into executable acceptance criteria that downstream technical specifications (Layer 06 SPEC) and test contracts (Layer 07 TDD) fulfill.
+
+Importantly, BDD scenarios provide the behavioral validation suite and failure-mode test criteria used to evaluate candidate technologies at the immediately adjacent **Layer 05 ADR Technology Selection Gate** ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)). Candidate architectures from the approved platform stack must prove behavioral feasibility against the BDD acceptance matrix before final ADR ratification.
 
 Historically, BDD scenarios in the framework were authored as flat lists of Given-When-Then string triplets within [`BDD-TEMPLATE.yaml`](./BDD-TEMPLATE.yaml). While optimal for simple, deterministic, single-turn interactions, static lists present acute limitations when modeling modern cloud-native systems:
 

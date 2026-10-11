@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -53,8 +53,8 @@ To prevent conflation between repository governance policy and codebase mutation
 5. **Technical Specification Workflows (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`)**:
    Govern distributed component interactions, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
    Governed by [`framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`](../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md).
-6. **Architectural Decision Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
-   Govern multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and rejection archival sagas.
+6. **Architectural Decision & Technology Selection Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
+   Govern candidate technology stack evaluation from the approved catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md)), MCDA utility scoring, stakeholder RFC review loops, stack variance workflows, and rejection archival sagas.
    Governed by [`framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md`](../layers/05_ADR/ADR_WORKFLOW_STANDARD.md).
 7. **Requirements Validation Workflows (`framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml`)**:
    Govern requirement dependency DAG resolution, syntax verification, cross-requirement conflict detection, BDD-readiness gating, and invalidation compensation sagas.

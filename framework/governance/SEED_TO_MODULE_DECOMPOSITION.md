@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
@@ -21,21 +21,24 @@ into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
 The SDD framework separates initial human intent from formal development execution:
 
 ```
+Tier 0 Enterprise Baseline: Approved Tech Stack (/mnt/e/dev/technology_stack/)
+  │   • Master platform blueprint: Debian 13, Docker/gVisor, PG18 HA, Temporal, NATS, ClickHouse
+  ▼
 Tier 1 Inputs: Seed Documents (<project>/seed/)
   │   • C4-L1 System Context: external actors, platforms, strategic intent, invariants
   │   • Frozen per version (GD-36 / SEED_CONTRACT.md R1)
   ▼
 [Seed → Module Decomposition Flow] ◄── THIS SPECIFICATION
-  │   • Decomposes broad seed vision into bounded architectural subsystems
+  │   • Decomposes broad seed vision into bounded architectural subsystems (C4-L2 containers)
   ▼
 Tier 2 Domain Source: Module Layer (docs/modules/MODULE-NN_*)
-  │   • C4-L2 Container: deployable services, datastores, dependencies
+  │   • C4-L2 Container: deployable services, datastores, dependencies (mapped to approved archetypes)
   │   • DFD-L2 Data Movement: trust boundaries, data sensitivity (PII/secrets)
   │   • Sequence Choreography: sync/async workflows, failure & timeout paths
   │   • Living domain source of truth (MODULE_LAYOUT.md / MODULE-TEMPLATE.md)
   ▼
 Tier 2 SDD Execution: Formal 10-Layer Chain (docs/sdd/01_BRD → ...)
-      • Refines L1/L2 domains into C4-L3 Component (SPEC) and C4-L4 Code
+      • Problem Space (01-04) → Layer 05 ADR Selection Gate → Solution Space (06-10)
 ```
 
 Without a rigorous decomposition flow, teams either leap directly from broad vision into code,
@@ -101,9 +104,10 @@ flowchart TD
 4. Document the core responsibility, explicit in-scope items, and explicit out-of-scope boundaries handed off to peer modules.
 
 ### Step 2: Structural Container Modeling (C4-L2)
-1. Deconstruct the domain into its discrete executable units:
-   - Primary applications, API servers, background daemons, queue consumers.
-   - Dedicated persistence engines (relational DB, document store, cache, object storage).
+1. Deconstruct the domain into its discrete executable units mapped to approved platform container archetypes ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md)):
+   - Primary applications, API servers, background daemons, queue consumers (e.g. Temporal Workers, LangGraph Activities).
+   - Dedicated persistence engines (relational DB: PostgreSQL 18 HA with `xp.ledger`, analytical store: ClickHouse, cache: Redis 7, object storage: MinIO/S3).
+   - Messaging and event brokers (NATS JetStream clustered broker with CloudEvents v1.0).
    - Upstream clients and external third-party services.
 2. Render a native Mermaid `C4Container` or container flowchart tagged with `@diagram: c4-l2`.
 3. Adhere to the rule: **Do NOT embed C4-L3 Component or C4-L4 Code details** in the module. Keep the focus strictly at container boundaries.

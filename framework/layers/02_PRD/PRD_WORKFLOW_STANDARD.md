@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 | Authority | Decision GD-60 (framework/governance/DECISIONS.md) |
 
 ---
@@ -102,6 +102,9 @@ All PRD workflow definitions (whether embedded in `PRD-SWF-TEMPLATE.yaml` or sta
 ### Invariant P-WF05: Downstream Invalidation Compensation
 - Any state machine validating product initiatives MUST bind rejection states to an automated compensation action (`compensatedBy: InvalidateDownstreamArtifacts`).
 - The compensation action MUST revoke provisional downstream EARS requirements, BDD scenarios, ADRs, or SPEC interactions derived from the rejected features.
+
+### Invariant P-WF06: Approved Stack Candidate Elaboration
+- In Section 12/14 (`adr_topic_elaboration`), technical options proposed for evaluation must map to approved platform technology stack categories ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)), preparing concrete candidate inputs for Layer 05 ADR selection.
 
 ---
 

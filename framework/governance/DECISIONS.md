@@ -15,11 +15,39 @@ Newest first. Timestamps are ISO 8601 UTC.
 ## Document Control
 | Field | Value |
 |-------|-------|
-| Version | 1.32 |
+| Version | 1.33 |
 | Status | Approved |
-| Last Updated | 2026-10-10 |
+| Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
+
+---
+
+## GD-73 — Enterprise Approved Technology Stack Governance, Progressive Refinement Funnel, and Layer 05 (ADR) Technology Selection Gate (CHG-86, 0.91.5 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Formalize the integration of the enterprise approved technology stack catalog (`/mnt/e/dev/technology_stack/`) with the 10-layer SDD framework. Resolve architectural ambiguity by refuting an 11th "Technology Decision Record" (TDR) layer; establish Layer 05 (ADR) as the authoritative Technology Selection Gate following BDD; codify the Progressive Refinement Funnel from Tier 0 enterprise stack to concrete code contracts; and modernize all primary CNCF Serverless Workflow templates (`*-SWF-TEMPLATE.yaml`), companion static templates, and workflow standards across Layers 01–08.
+- **Decision**:
+  1. **Rejection of 11th SDD Layer**: Affirm the 10-layer SDD specification integrity (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL). Technology selection is an architectural decision; creating a dedicated "TDR" layer creates an artificial dichotomy, causes pipeline bloat, and breaks cross-layer traceability.
+  2. **Layer 05 ADR as the Formal Technology Selection Gate**:
+     - Upstream layers (BRD, PRD, EARS, BDD) define the problem space: business intent, functional scope, measurable quality attributes (SLAs), and behavioral scenarios without premature technology lock-in.
+     - Layer 05 ADR resolves the concrete technology stack by evaluating candidate options from the approved technology stack catalog via concurrent fan-out and multi-criteria decision analysis (MCDA).
+     - Downstream layers (SPEC, TDD, IPLAN, Code) inherit ratified technology contracts: wire interfaces (gRPC/Protobuf, CloudEvents v1.0), storage schemas (PostgreSQL 18 UUIDv7, Bytebase DDL migrations), event transport (NATS JetStream), and workflow orchestration (Temporal).
+  3. **Normative Technology Stack Usage Guide (`TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+     - Author `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` defining the 4-tier Progressive Refinement Funnel (Tier 0 Enterprise Stack, Tier 1 Seed Vision, Tier 2 Module Decomposition, Tier 3 SDD Layer 05 Selection Gate).
+     - Detail flow mappings across traversal paths (`SDD2C`, `SEED2C`, `CODE2S`, `DIR2C`, `CODE2C`, `HOTFIX`).
+     - Codify the 4-step Stack Variance & Exception Procedure (Justification & Risk Assessment, Architecture Review Gate, Variance Documentation in ADR §10, Sunsetting / Convergence Plan).
+  4. **Architectural Graphs & Flows Modernization**:
+     - Update `RECOMMENDED_PLATFORM_STACK.md` §4.1 with Mermaid flowchart illustrating Problem Space vs. Selection Gate vs. Solution Space.
+     - Update `DECISION_WORKFLOW.md`, `SEED_TO_MODULE_DECOMPOSITION.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/layers/05_ADR/README.md`, and `adr-decision-analysis.sw.yaml`.
+  5. **Template Modernization & Dual-Template Parity**:
+     - Update primary CNCF Serverless Workflow templates (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) with approved stack guidance, candidate evaluation branches, container fixtures, and saga compensations.
+     - Synchronize companion static templates (`*-TEMPLATE.yaml`) and seed/module templates while strictly preserving pinned section sets (`STRUCT01`).
+  6. **Workflow Standards & Review Crew Alignment**:
+     - Update normative standards (`*_WORKFLOW_STANDARD.md` across Layers 01–08 and Governance).
+     - Enrich `REVIEW_CREWS.yaml` reviewer persona definitions: `architect` verifies technology stack catalog alignment; `operator` verifies platform infrastructure compatibility.
+- **Consequences**: Teams systematically evaluate and bind enterprise-approved technologies without ad-hoc selections, while retaining strict engine neutrality (D-0013 / GD-13) and maintaining 100% backward compatibility across the 10-layer SDD specification.
 
 ---
 

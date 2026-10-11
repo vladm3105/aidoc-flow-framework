@@ -64,7 +64,7 @@ test_strategy:
   frameworks:
     unit: "pytest >= 8.0"
     integration: "testcontainers >= 4.0"
-  isolation_strategy: "Hermetic containerized fixtures with automated teardown compensation"
+  isolation_strategy: "Hermetic containerized fixtures (e.g. testcontainers with PostgreSQL 18 and NATS JetStream) with automated teardown compensation"
   flaky_policy:
     max_retries: 3
     backoff: "exponential-jitter"
@@ -118,7 +118,11 @@ workflow:
             refName: fixtureProvisioner
             arguments:
               component: "[Component Name]"
+              containerFixtures:
+                - "postgres:18-alpine"
+                - "nats:latest -js"
               seedFile: "tests/fixtures/seed.sql"
+              platformStackTier: "APPROVED"
       transition: ActExecuteTests
 
     # --- Phase: Act ---

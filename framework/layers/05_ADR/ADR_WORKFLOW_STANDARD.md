@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 05 (Architecture Decision Records / ADR) architectural trade-off evaluations, multi-criteria decision analysis (MCDA), stakeholder RFC review callbacks, and decision ratification using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -17,6 +17,8 @@ Establishes the normative standard for modeling, specifying, and orchestrating L
 ## 1. Purpose & Architectural Context
 
 In the 10-layer SDD specification, Layer 05 (ADR) serves as the architectural decision bridge between container-level product requirements (Layer 02 PRD, Layer 03 EARS, Layer 04 BDD) and component-level technical specifications (Layer 06 SPEC). ADR records evaluate competing candidate architectures, technology stacks, and structural designs to establish the foundational technical contracts for the system.
+
+Crucially, **Layer 05 ADR is the formal Technology Selection Gate** in the 10-layer SDD lifecycle. Upstream layers (BRD, PRD, EARS, BDD) operate strictly in the problem space, defining business intent, functional scope, measurable quality attributes, and behavioral scenarios without hard-coding technology choices. Layer 05 ADR ingests these requirements and resolves the concrete technology stack by evaluating candidate options from the company's approved technology stack catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)). Downstream layers (SPEC, TDD, IPLAN, Code) then inherit the ratified technology contracts (e.g. gRPC/Protobuf, PostgreSQL 18, NATS JetStream, Temporal). When off-stack technologies are evaluated, the ADR workflow orchestrates the formal 4-step Stack Variance & Exception Procedure.
 
 Historically, ADR documents were authored exclusively as static YAML contracts in [`ADR-TEMPLATE.yaml`](./ADR-TEMPLATE.yaml). While effective for straightforward decisions, static documentation encounters severe challenges in complex, distributed systems:
 
@@ -188,13 +190,14 @@ Authors must select between the static template and the workflow template accord
 
 ## 8. Graph Invariants for Layer 05 ADR Workflows
 
-All CNCF Serverless Workflow state machines authored for Layer 05 ADR must satisfy 5 structural invariants:
+All CNCF Serverless Workflow state machines authored for Layer 05 ADR must satisfy 6 structural invariants:
 
 1. **INV-ADR-01 (Single Entrypoint)**: The workflow must declare a unique `start` state initiating context ingestion.
 2. **INV-ADR-02 (Deterministic Alternative Fan-out)**: If $\ge 2$ candidates are considered, candidate assessment must execute via a `parallel` state evaluating all candidates under identical quality attribute constraints.
 3. **INV-ADR-03 (Quantitative Viability Gate)**: Selection of a candidate must pass through a `switch` state validating score thresholds before advancing to RFC review.
 4. **INV-ADR-04 (Correlated RFC Callback)**: The RFC feedback loop must declare a `callback` state correlated on `proposalId` with an explicit ISO 8601 timeout.
 5. **INV-ADR-05 (Rejection Compensation Binding)**: Every rejection path must declare a compensating state via `compensatedBy` that cleanly archives evaluation records and purges temporary contexts.
+6. **INV-ADR-06 (Approved Stack Baseline Alignment)**: Each evaluated candidate must declare its platform stack classification (`APPROVED` vs `VARIANCE_REQUESTED`). Selections requiring variance must record formal exception sign-off prior to decision sealing.
 
 ---
 

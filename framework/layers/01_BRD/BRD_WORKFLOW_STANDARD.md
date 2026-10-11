@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 ---
@@ -101,6 +101,9 @@ All BRD workflow definitions (whether embedded in `BRD-SWF-TEMPLATE.yaml` or sta
 ### Invariant B-WF05: Strategic Invalidation Compensation
 - Any state machine validating business initiatives MUST bind rejection or cancellation states to an automated compensation action (`compensatedBy: InvalidateStrategicInitiatives`).
 - The compensation action MUST revoke provisional downstream PRD draft allocations, reserved capacity, and portfolio slots.
+
+### Invariant B-WF06: Strategic Architecture Topic Framing
+- Section 8 (`adr_topics`) must frame required decisions as business capabilities rather than prematurely hardcoding specific technology vendors, while recording candidate baselines that prioritize options from the approved enterprise technology stack ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)) for downstream Layer 05 ADR evaluation.
 
 ---
 

@@ -198,6 +198,13 @@ implementation_notes:
     - "[Pattern — e.g., Repository pattern for data access]"
   performance_considerations:
     - "[Consideration — e.g., LRU cache for frequent reads]"
+  platform_stack_alignment:
+    _guidance: |
+      Ground component implementation in the approved technology stack (Layer 05 ADR selection).
+      Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18, NATS JetStream client,
+      Temporal workflow activities, LiteLLM proxy) while maintaining engine neutrality.
+    driver_bindings:
+      - "[Driver / SDK name and version pin]"
 
 # =============================================================================
 # Section 7: Downstream TDD Contracts

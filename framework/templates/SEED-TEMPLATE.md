@@ -6,7 +6,7 @@ document_control:
   author: "human: <architect/stakeholder> (+ ai-agent: <id>)"
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
-  framework_version: "0.91.4"
+  framework_version: "0.91.5"
   c4_level: "c4-l1"
   supersedes: []                                 # e.g., ["seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.0.md)"]
   revision_history:
@@ -43,7 +43,7 @@ document_control:
 
 ## 2. Environmental Realities & Constraints
 - **Business Context:** Target markets, resource boundaries, critical timeline assumptions.
-- **Technology & Infrastructure Baseline:** Existing platforms, external dependencies, system boundaries.
+- **Technology & Infrastructure Baseline:** Existing platforms, external dependencies, system boundaries, and Tier 0 enterprise technology stack baseline ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
 - **Regulatory, Compliance & Security Drivers:** Data residency, privacy constraints, compliance baselines.
 
 ---
@@ -106,7 +106,7 @@ flowchart LR
 ---
 
 ## 4. Options Considered & Trade-Off Analysis
-> *Note: Seed docs preserve the trade-off exploration. The formal choice is recorded downstream in the SDD ADR.*
+> *Note: Seed docs preserve the trade-off exploration. The formal technology selection is recorded downstream in the SDD ADR (Layer 05 Technology Selection Gate) evaluating approved platform stack candidates.*
 
 ### Option A: <Approach Name>
 - **Description:** Summary of how this approach works.

@@ -70,6 +70,7 @@ states:
             bdd_tags: "${ .upstream_bdd_tags }"
             quality_attributes: "${ .quality_attributes }"
             budget_constraints: "${ .budget_constraints }"
+            approved_stack_baseline: "${ .approved_stack_baseline }"
     transition: EvaluateCandidateAlternatives
 
   # -----------------------------------------------------------------------------
@@ -87,6 +88,7 @@ states:
               arguments:
                 candidate_id: "OPT-A"
                 candidate_name: "${ .candidates.option_a.name }"
+                stack_tier: "${ .candidates.option_a.stack_tier }"
                 latency_profile: "${ .candidates.option_a.latency }"
                 resilience_profile: "${ .candidates.option_a.resilience }"
                 cost_estimate: "${ .candidates.option_a.cost }"
@@ -98,6 +100,7 @@ states:
               arguments:
                 candidate_id: "OPT-B"
                 candidate_name: "${ .candidates.option_b.name }"
+                stack_tier: "${ .candidates.option_b.stack_tier }"
                 latency_profile: "${ .candidates.option_b.latency }"
                 resilience_profile: "${ .candidates.option_b.resilience }"
                 cost_estimate: "${ .candidates.option_b.cost }"
@@ -109,6 +112,7 @@ states:
               arguments:
                 candidate_id: "OPT-C"
                 candidate_name: "${ .candidates.option_c.name }"
+                stack_tier: "${ .candidates.option_c.stack_tier }"
                 latency_profile: "${ .candidates.option_c.latency }"
                 resilience_profile: "${ .candidates.option_c.resilience }"
                 cost_estimate: "${ .candidates.option_c.cost }"

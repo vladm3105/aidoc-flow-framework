@@ -1,0 +1,431 @@
+# =============================================================================
+#  EARS-SWF-TEMPLATE.yaml — EARS Workflow Requirements (SDD Layer 03)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Workflow Subtype)
+#  Purpose: Hybrid Envelope template embedding CNCF Serverless Workflow v0.8
+#           for complex requirement topologies, dependency DAGs, and BDD-readiness
+#  Lifecycle: MVP → PROD → NEW MVP
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Downstream: BDD (Layer 4)
+#  Upstream: PRD (Layer 2)
+# =============================================================================
+
+id: EARS-NN
+doc_id: EARS-NN
+title: "[Target Component/Feature Requirements Workflow]"
+
+# =============================================================================
+# Template Metadata (Template Configuration)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "ears-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  layer: 3
+  lifecycle: mvp-prod-newmvp
+  total_sections: 5
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Structural validation performed via sdd_doc_lint (STRUCT01).
+      Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
+      BDD-Ready Score target >= 90/100 (advisory readiness target).
+    criteria:
+      requirements_clarity: "40% (EARS syntax compliance, atomicity, quantifiability)"
+      testability: "35% (BDD translation feasibility, observable verification)"
+      quality_attributes: "15% (quantified latency/throughput/retry bounds)"
+      strategic_alignment: "10% (upstream PRD traceability, business alignment)"
+
+  c4_level:
+    _guidance: |
+      EARS is a refinement step formalizing the Context (BRD) to Container (PRD) transition.
+    value: none
+
+  tags:
+    - ears-document
+    - layer-3-artifact
+    - workflow-subtype
+    - cncf-serverless-workflow
+
+  deliverable_type:
+    value: code
+
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control (Required Section 1/6)
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  _guidance: |
+    Document control metadata for EARS workflow document.
+    Upstream linkage to source PRD via hash-based ID is required.
+  version: "1.0"
+  status: Draft
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "[Requirements Engineer]"
+  priority: P1
+  source_document: "@prd: PRD.01.09.a1b2"
+  bdd_ready_score: "92/100"
+
+  revision_history:
+    - version: "1.0"
+      date: "2026-10-05T00:00:00Z"
+      author: "[Name]"
+      changes: "Initial EARS workflow draft with embedded CNCF state machine"
+
+# =============================================================================
+# Section 2: Purpose and Context (Required Section 2/6)
+# =============================================================================
+
+purpose_and_context:
+  _size_target: 200
+  _guidance: |
+    Formalize PRD feature requirements into executable, stateful EARS statements
+    and dependency graphs. Specify operational scope, component boundaries, and
+    target orchestrators.
+  purpose: |
+    Convert upstream PRD product features into formal, atomic EARS requirement
+    statements and an executable dependency DAG orchestrated via CNCF Serverless
+    Workflow v0.8 to enforce syntax compliance, conflict resolution, and BDD-readiness.
+  scope: |
+    Covers the requirements topology, cross-component event triggers, persistent state
+    constraints, error recovery procedures, and upstream PRD traceability for the target
+    subsystem.
+  audience: |
+    Requirements specialists, system architects, QA automation engineers, and AI coding agents.
+
+# =============================================================================
+# Section 3: Requirements (Required Section 3/6)
+# =============================================================================
+
+requirements:
+  _size_target: 800
+  _guidance: |
+    Combines atomic EARS pattern statements with an embedded CNCF Serverless
+    Workflow state machine governing dependency resolution, DAG validation, and
+    BDD-readiness verification.
+
+  # ---------------------------------------------------------------------------
+  # Declarative EARS Requirement Definitions (5 Patterns)
+  # ---------------------------------------------------------------------------
+  event_driven:
+    - id: "EARS.01.03.e101"
+      name: "TransactionAuthorizationTrigger"
+      pattern: "Event-Driven"
+      statement: |
+        WHEN an authorization request is received from the payment gateway,
+        THE transaction processor SHALL validate token signatures and account balance
+        WITHIN 50ms (p95).
+      traceability: "@prd: PRD.01.09.a1b2"
+      priority: P1
+
+  state_driven:
+    - id: "EARS.01.03.s201"
+      name: "ActiveSessionKeepAlive"
+      pattern: "State-Driven"
+      statement: |
+        WHILE the client session remains authenticated and active,
+        THE session manager SHALL heartbeat authentication state with redis cluster
+        WITHIN 1000ms intervals.
+      traceability: "@prd: PRD.01.09.a1b2"
+      priority: P2
+
+  optional_feature:
+    - id: "EARS.01.03.o301"
+      name: "BiometricSecondaryAuth"
+      pattern: "Optional"
+      statement: |
+        WHERE multi-factor biometric authentication is enabled in user security settings,
+        THE authentication service SHALL prompt for FIDO2 biometric verification.
+      traceability: "@prd: PRD.01.09.a1b2"
+      priority: P3
+
+  unwanted_behavior:
+    - id: "EARS.01.03.u401"
+      name: "GatewayTimeoutFallback"
+      pattern: "Unwanted Behavior"
+      statement: |
+        IF the primary payment gateway fails to respond within 200ms,
+        THE transaction processor SHALL route payment to secondary failover processor
+        WITHIN 50ms.
+      traceability: "@prd: PRD.01.09.a1b2"
+      priority: P1
+
+  ubiquitous:
+    - id: "EARS.01.03.b501"
+      name: "AuditTrailImmutability"
+      pattern: "Ubiquitous"
+      statement: |
+        THE audit logging service SHALL record all state transitions to tamper-evident append-only ledger
+        for all financial operations.
+      traceability: "@prd: PRD.01.09.a1b2"
+      priority: P1
+
+  # ---------------------------------------------------------------------------
+  # Embedded CNCF Serverless Workflow State Machine Definition (v0.8 YAML)
+  # ---------------------------------------------------------------------------
+  workflow_definition:
+    id: ears-requirements-validation-graph
+    name: EARS Requirements Verification and DAG Analysis Graph
+    version: "1.0.0"
+    specVersion: "0.8"
+    start: ParseRequirementsStream
+
+    events:
+      - name: ClarificationFeedbackEvent
+        type: org.aidoc.ears.clarification.received
+        source: /aidoc/requirements/clarification
+        correlation:
+          - contextAttributeName: documentId
+
+    functions:
+      - name: parseEarsCatalog
+        operation: "urn:aidoc:functions:ears-parser#parse"
+        type: custom
+      - name: validateSyntaxRules
+        operation: "urn:aidoc:functions:syntax-checker#verify"
+        type: custom
+      - name: verifyDagAcyclicity
+        operation: "urn:aidoc:functions:dag-engine#checkAcyclic"
+        type: custom
+      - name: checkConflictMatrix
+        operation: "urn:aidoc:functions:conflict-checker#evaluate"
+        type: custom
+      - name: computeReadinessGate
+        operation: "urn:aidoc:functions:readiness#score"
+        type: custom
+      - name: emitCanonicalIds
+        operation: "urn:aidoc:functions:hasher#generate"
+        type: custom
+      - name: purgeDownstreamDrafts
+        operation: "urn:aidoc:functions:compensator#purgeDrafts"
+        type: custom
+
+    states:
+      - name: ParseRequirementsStream
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: parseCatalogAction
+            functionRef:
+              refName: parseEarsCatalog
+              arguments:
+                documentId: "${ .documentId }"
+                requirements: "${ .requirements }"
+        transition: ValidateSyntaxCompliance
+
+      - name: ValidateSyntaxCompliance
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: checkSyntaxAction
+            functionRef:
+              refName: validateSyntaxRules
+              arguments:
+                parsedList: "${ .parsedRequirements }"
+                enforceActorClause: true
+                enforceTimingClause: true
+        transition: EvaluateDependencyClusters
+
+      - name: EvaluateDependencyClusters
+        type: parallel
+        branches:
+          - name: CoreTransactionCluster
+            actions:
+              - name: checkCoreDag
+                functionRef:
+                  refName: verifyDagAcyclicity
+                  arguments:
+                    cluster: "transactions"
+          - name: AuthAndSecurityCluster
+            actions:
+              - name: checkSecurityDag
+                functionRef:
+                  refName: verifyDagAcyclicity
+                  arguments:
+                    cluster: "security"
+          - name: ErrorRecoveryCluster
+            actions:
+              - name: checkRecoveryDag
+                functionRef:
+                  refName: verifyDagAcyclicity
+                  arguments:
+                    cluster: "recovery"
+        completionType: allOf
+        transition: AnalyzeCrossRequirementConflicts
+
+      - name: AnalyzeCrossRequirementConflicts
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: detectCollisions
+            functionRef:
+              refName: checkConflictMatrix
+              arguments:
+                requirements: "${ .parsedRequirements }"
+          - name: scoreReadiness
+            functionRef:
+              refName: computeReadinessGate
+              arguments:
+                requirements: "${ .parsedRequirements }"
+                conflictCount: "${ .conflictCount }"
+        transition: EvaluateBddTransitionGate
+
+      - name: EvaluateBddTransitionGate
+        type: switch
+        dataConditions:
+          - name: ReadinessApproved
+            condition: "${ .readinessScore >= 90 and .conflictCount == 0 }"
+            transition: RatifyEarsRequirements
+          - name: AmbiguityDetected
+            condition: "${ .readinessScore >= 70 and .hasAmbiguity == true }"
+            transition: SolicitClarificationCallback
+        defaultCondition:
+          transition: RejectRequirementsSet
+
+      - name: SolicitClarificationCallback
+        type: callback
+        action:
+          name: notifyClarificationRequest
+          functionRef:
+            refName: checkConflictMatrix
+            arguments:
+              requirementId: "${ .documentId }"
+        eventRef: ClarificationFeedbackEvent
+        timeouts:
+          eventTimeout: PT24H
+        transition: ValidateSyntaxCompliance
+
+      - name: RatifyEarsRequirements
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: ratifyAndEmitAction
+            functionRef:
+              refName: emitCanonicalIds
+              arguments:
+                documentId: "${ .documentId }"
+        end:
+          terminate: true
+
+      - name: RejectRequirementsSet
+        type: operation
+        compensatedBy: RollbackDownstreamArtifacts
+        actionMode: sequential
+        actions:
+          - name: markRejected
+            functionRef:
+              refName: computeReadinessGate
+              arguments:
+                status: "rejected"
+        end:
+          terminate: true
+
+      - name: RollbackDownstreamArtifacts
+        type: operation
+        usedForCompensation: true
+        actionMode: sequential
+        actions:
+          - name: purgeDraftsAction
+            functionRef:
+              refName: purgeDownstreamDrafts
+              arguments:
+                documentId: "${ .documentId }"
+                affectedLayers: ["04_BDD", "05_ADR", "06_SPEC"]
+
+# =============================================================================
+# Section 4: Quality Attributes (Required Section 4/6)
+# =============================================================================
+
+quality_attributes:
+  _size_target: 400
+  _guidance: |
+    Measurable quality attributes supporting EARS requirements.
+    All latency metrics specify p50/p95/p99 percentiles; non-latency bounds use
+    concrete numeric values and units.
+  performance:
+    - id: "EARS.01.04.p401"
+      statement: "THE transaction authorization engine SHALL process requests"
+      metric: "Latency"
+      target: "p95 < 50ms, p99 < 150ms"
+      priority: P1
+      measurement: "End-to-end telemetry load test"
+
+  security:
+    - id: "EARS.01.04.s402"
+      statement: "THE authentication service SHALL verify bearer tokens using Ed25519"
+      control: "Cryptographic signature validation"
+      compliance: "FIPS 186-5"
+      priority: P1
+
+  reliability:
+    - id: "EARS.01.04.r403"
+      statement: "THE session management cluster SHALL maintain high availability"
+      metric: "Uptime"
+      target: "99.99%"
+      priority: P1
+
+# =============================================================================
+# Section 5: Traceability (Required Section 5/6)
+# =============================================================================
+
+traceability:
+  _size_target: 100
+  _guidance: |
+    Traceability mapping upstream to PRD and downstream to BDD scenarios.
+  tags:
+    - "@ears: EARS-NN"
+
+  upstream:
+    prd_references:
+      - "@prd: PRD.01.09.a1b2"
+
+  downstream_expected:
+    - type: BDD
+      layer: 4
+      description: "Stateful BDD scenarios generated from ratified EARS requirements"
+
+  cross_links:
+    depends:
+      - "@depends: EARS.01.03.e101"
+    chg:
+      - "@chg: CHG-63"
+
+  threshold_references:
+    items:
+      - tag: "@threshold: PRD.01.perf.auth.p95"
+        category: "Timing"
+        value: "50ms"
+
+  health_score:
+    bdd_ready: "92%"
+    prd_coverage: "100%"
+    target_score: ">=90/100"
+
+# =============================================================================
+# Section 6: Glossary (Required Section 6/6)
+# =============================================================================
+
+glossary:
+  _size_target: 100
+  _guidance: "Definitions of domain terms and workflow concepts."
+  terms:
+    - term: EARS
+      definition: "Easy Approach to Requirements Syntax"
+    - term: BDD-Ready
+      definition: "Readiness metric validating requirement clarity, testability, and traceability (threshold >=90%)"
+    - term: Dependency DAG
+      definition: "Directed Acyclic Graph modeling inter-requirement prerequisite constraints"
+    - term: CNCF Serverless Workflow
+      definition: "Vendor-neutral specification for orchestrating stateful distributed processes and DAGs"

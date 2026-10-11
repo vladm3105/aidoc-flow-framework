@@ -81,6 +81,8 @@ traceability:
     ears:
       - "EARS.NN.SS.xxxx"
   downstream:
+    adr_targets:
+      - "ADR.NN.02 (Behavioral scenarios & failure constraints informing technology selection)"
     tdd_targets:
       - "TDD.NN.SS.xxxx"
     spec_interfaces:

@@ -1,0 +1,422 @@
+# =============================================================================
+#  ADR-SWF-TEMPLATE.yaml — Architecture Decision Record Workflow (SDD)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Hybrid Envelope Architecture)
+#  Purpose: Machine-executable CNCF Serverless Workflow state machine embedded
+#           within a structurally conformant Layer 05 ADR envelope.
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream: SPEC (Layer 6)
+#  Upstream: EARS (L3), BDD (L4)
+# =============================================================================
+
+id: ADR-NN
+doc_id: ADR-NN
+title: "[Architecture Decision Title - CNCF Workflow Model]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "adr-document"
+  layer: 5
+  subtype: "workflow"
+  workflow_spec: "0.8"
+  workflow_engine: "cncf-serverless-workflow"
+  lifecycle: mvp-prod-newmvp
+  total_sections: 10
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Validation is performed by the platform's conformance tooling and sdd_doc_lint.
+      SPEC-Ready Score: >=90/100 is the advisory readability target.
+  c4_level:
+    value: none
+  diagram_standard:
+    _guidance: |
+      ADR uses architecture decision diagrams and embedded CNCF workflow state machines:
+        - REQUIRED: a decision/interaction `sequenceDiagram` with `@diagram: sequence-*` tag.
+        - REQUIRED: an embedded CNCF Serverless Workflow state machine under `architecture_flow.decision_workflow`.
+  tags:
+    - adr-document
+    - layer-5-artifact
+    - shared-architecture
+    - cncf-workflow
+  deliverable_type:
+    value: code
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  _guidance: |
+    ADR uses a distinct status lifecycle:
+      Proposed → Accepted → Deprecated → Superseded
+  status: Proposed
+  date: "YYYY-MM-DD"
+  decision_makers:
+    - "[Architect Name]"
+    - "[Tech Lead Name]"
+  author: "[Author Name]"
+  version: "1.0"
+  spec_ready_score: "[Score]/100"
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial ADR workflow proposal"
+
+# =============================================================================
+# Section 2: Context
+# =============================================================================
+
+context:
+  _size_target: 300
+  problem_statement: |
+    [What architectural problem or opportunity requires a decision?
+    Reference the originating BRD topic and PRD elaboration.]
+  business_driver: |
+    [Why does the business need this decision? Link to BRD objectives.]
+  key_constraints:
+    - "[Constraint 1 — budget, latency budget, scalability targets]"
+    - "[Constraint 2 — regulatory, compliance, operational isolation]"
+  technical_context: |
+    [Current system state, existing architecture, integration requirements.
+    Reference EARS timing constraints and BDD failure scenarios that
+    inform this decision.]
+
+# =============================================================================
+# Section 3: Decision
+# =============================================================================
+
+decision:
+  _size_target: 300
+  chosen_solution:
+    id: "ADR.NN.03.xxxx"
+    title: "[Chosen Solution Name]"
+    description: |
+      [Clear description of the selected approach and why it was chosen
+      over alternatives via the multi-criteria evaluation workflow.]
+  key_components:
+    - name: "[Component 1]"
+      role: "[What it does in the architecture]"
+    - name: "[Component 2]"
+      role: "[What it does]"
+  implementation_approach:
+    mvp_scope: |
+      [What is implemented in the current MVP cycle]
+    next_cycle_scope: |
+      [What is deferred to the next cycle]
+
+# =============================================================================
+# Section 4: Alternatives Considered
+# =============================================================================
+
+alternatives:
+  _size_target: 200
+  considered:
+    - id: "ADR.NN.04.xxxx"
+      name: "[Selected Option]"
+      selected: true
+      source: "@seed: ARCH-NN"
+      decision: "Selected — [highest MCDA utility score]"
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative B]"
+      selected: false
+      source: "@seed: ARCH-NN"
+      decision: "Rejected — [failed latency threshold]"
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative C]"
+      selected: false
+      source: "@seed: ARCH-NN"
+      decision: "Rejected — [cost exceeds operational budget]"
+
+# =============================================================================
+# Section 5: Consequences
+# =============================================================================
+
+consequences:
+  _size_target: 300
+  positive_outcomes:
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 1 — satisfies 99.9th percentile SLA]"
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 2 — zero-lock-in modularity]"
+  tradeoffs_and_risks:
+    - id: "ADR.NN.05.xxxx"
+      tradeoff: "[Trade-off or operational overhead]"
+      impact: Medium
+      mitigation: "[Automated canary rollout and metrics alerts]"
+  cost_estimate:
+    mvp_cost: "$[X,XXX]"
+    ongoing_monthly: "$[X,XXX]/month"
+    notes: "[Infrastructure and maintenance projections]"
+
+# =============================================================================
+# Section 6: Architecture Flow (Embedded CNCF Serverless Workflow DSL)
+# =============================================================================
+
+architecture_flow:
+  _size_target: 200
+  decision_sequence:
+    intent:
+      diagram_type: sequence
+      scope_boundary: "[decision interaction boundary]"
+      upstream_refs: "[BDD/PRD refs driving the decision]"
+      downstream_refs: "[SPEC components affected]"
+    tag: "@diagram: sequence-sync"
+    diagram:
+      type: sequenceDiagram
+      content: |
+        sequenceDiagram
+            participant Evaluator as Decision Engine
+            participant CandidateA as Candidate Option A
+            participant CandidateB as Candidate Option B
+            participant RFC as Stakeholder Crew
+            Evaluator->>CandidateA: Evaluate Quality Attributes
+            Evaluator->>CandidateB: Evaluate Quality Attributes
+            Evaluator->>RFC: Request Review & Feedback
+            RFC-->>Evaluator: Consensus Ratified
+
+  # Embedded CNCF Serverless Workflow (v0.8 YAML)
+  decision_workflow:
+    id: adr-decision-analysis-workflow
+    name: Architectural Decision Evaluation State Machine
+    version: "1.0"
+    specVersion: "0.8"
+    description: >-
+      CNCF Serverless Workflow orchestrating candidate evaluation, utility scoring,
+      and stakeholder ratification callbacks for this ADR.
+    start: IngestDecisionContext
+    events:
+      - name: StakeholderFeedbackEvent
+        type: org.aidoc.sdd.adr.stakeholder_feedback
+        source: /aidoc/governance/rfc
+        kind: consumed
+        correlation:
+          - attribute: proposalId
+    states:
+      - name: IngestDecisionContext
+        type: operation
+        actions:
+          - name: IngestConstraints
+            functionRef:
+              refName: aidoc:sdd:adr:ingestContext
+              arguments:
+                adr_id: "ADR-NN"
+                quality_attributes: ["latency", "throughput", "cost", "security"]
+        transition: EvaluateCandidatesConcurrently
+
+      - name: EvaluateCandidatesConcurrently
+        type: parallel
+        completionType: allOf
+        branches:
+          - name: EvaluateCandidateA
+            actions:
+              - name: ScoreOptionA
+                functionRef:
+                  refName: aidoc:sdd:adr:evaluateOption
+                  arguments:
+                    candidate_id: "OPT-A"
+          - name: EvaluateCandidateB
+            actions:
+              - name: ScoreOptionB
+                functionRef:
+                  refName: aidoc:sdd:adr:evaluateOption
+                  arguments:
+                    candidate_id: "OPT-B"
+        transition: ComputeUtilityScores
+
+      - name: ComputeUtilityScores
+        type: operation
+        actions:
+          - name: CalculateMCDAMatrix
+            functionRef:
+              refName: aidoc:sdd:adr:computeMCDA
+              arguments:
+                threshold_score: 80.0
+        transition: EvaluateViabilitySwitch
+
+      - name: EvaluateViabilitySwitch
+        type: switch
+        dataConditions:
+          - name: ViableCandidateSelected
+            condition: "${ .selected_candidate.utility_score >= 80.0 }"
+            transition: SolicitStakeholderRFC
+        defaultCondition:
+          transition: RejectAndArchive
+
+      - name: SolicitStakeholderRFC
+        type: callback
+        action:
+          name: SolicitRFC
+          functionRef:
+            refName: aidoc:sdd:adr:publishRFC
+            arguments:
+              proposalId: "ADR-NN"
+        eventRef: StakeholderFeedbackEvent
+        timeouts:
+          eventTimeout: "PT48H"
+        transition: EvaluateRFCFeedback
+
+      - name: EvaluateRFCFeedback
+        type: switch
+        dataConditions:
+          - name: ConsensusApproved
+            condition: "${ .feedback.status == \"APPROVED\" }"
+            transition: RatifyDecision
+        defaultCondition:
+          transition: RejectAndArchive
+
+      - name: RatifyDecision
+        type: operation
+        actions:
+          - name: SealDecision
+            functionRef:
+              refName: aidoc:sdd:adr:sealDecision
+              arguments:
+                adr_id: "ADR-NN"
+                status: "Accepted"
+        end: true
+
+      - name: RejectAndArchive
+        type: operation
+        compensatedBy: ArchiveRejection
+        actions:
+          - name: RecordRejection
+            functionRef:
+              refName: aidoc:sdd:adr:archiveProposal
+              arguments:
+                adr_id: "ADR-NN"
+                status: "Rejected"
+        end: true
+
+      - name: ArchiveRejection
+        type: operation
+        usedForCompensation: true
+        actions:
+          - name: CleanupContext
+            functionRef:
+              refName: aidoc:sdd:adr:cleanupContext
+
+  integration_points:
+    - system: "[System/Service]"
+      integration_type: "[REST | gRPC | Async | Event]"
+      purpose: "[Data flow description]"
+
+# =============================================================================
+# Section 7: Implementation Assessment
+# =============================================================================
+
+implementation_assessment:
+  _size_target: 300
+  mvp_phases:
+    - phase: "Phase 1 - Candidate Prototyping"
+      scope: "Benchmark candidate options in test sandbox"
+      risk: "Synthetic load may differ from production traffic"
+  rollback_plan:
+    strategy: "Revert component binding to predecessor architecture"
+    trigger: "P99 latency > 200ms in staging canary"
+    estimated_effort: "1 sprint"
+  monitoring_baseline:
+    - metric: "Service Latency P99"
+      target: "< 50ms"
+      alert_threshold: "> 100ms for 5m"
+
+# =============================================================================
+# Section 8: Verification
+# =============================================================================
+
+verification:
+  _size_target: 200
+  success_criteria:
+    - criterion: "Selected architecture satisfies SLA under 2x peak load"
+      measurement: "Load testing in staging environment"
+  bdd_scenario_refs:
+    scenarios:
+      - "@bdd: BDD.NN.03.xxxx"
+      - "@bdd: BDD.NN.03.yyyy"
+
+# =============================================================================
+# Section 9: Traceability
+# =============================================================================
+
+traceability:
+  _size_target: 100
+  tags:
+    - "@adr: ADR-NN"
+  upstream:
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+  downstream_expected:
+    - type: SPEC
+      layer: 6
+      description: "Technical specification implementing this architecture decision"
+  cross_links:
+    depends:
+      - "@depends: ADR-NN"
+    discoverability:
+      - "@discoverability: ADR-NN (workflow architecture decision)"
+    chg:
+      - "@chg: CHG-NN"
+  health_score:
+    spec_ready: "95%"
+    target_score: ">=90/100"
+
+# =============================================================================
+# Section 10: Related Decisions
+# =============================================================================
+
+related_decisions:
+  _size_target: 100
+  dependencies:
+    - adr: "ADR-01"
+      relationship: "Extends"
+      rationale: "Inherits base infrastructure deployment profile"
+  supersedes:
+    items: []
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  _size_target: 100
+  terms:
+    - term: ADR
+      definition: "Architecture Decision Record"
+    - term: MCDA
+      definition: "Multi-Criteria Decision Analysis"
+    - term: SPEC-Ready
+      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
+
+# =============================================================================
+# Appendix: MVP Lifecycle
+# =============================================================================
+
+appendix:
+  _size_target: 100
+  lifecycle:
+    _guidance: |
+      Each ADR represents ONE architecture decision in the MVP → PROD → NEW MVP cycle.
+      Workflow-subtype ADRs embed an executable CNCF Serverless Workflow state machine
+      for automated candidate evaluation and decision verification.

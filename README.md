@@ -313,10 +313,10 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.4`**.
-The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61) and aligned with the ecosystem's authoritative platform technology stack (Decision GD-72, Change Request CHG-83), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
+the project is in **post-cutover development** tracking framework spec **`0.91.5`**.
+The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61) and aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-10-10); it is not
+> *This overview is a point-in-time snapshot (as of 2026-10-11); it is not
 > wired into the version-sync hook. For live version state see `framework/VERSION`.*
 
 Development is tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);

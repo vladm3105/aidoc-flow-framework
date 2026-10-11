@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -72,7 +72,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.91.4"
+  framework_version: "0.91.5"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -190,6 +190,13 @@ Never leave gate failures unhandled or falling through to subsequent implementat
 ### Rule 6: Visual Graph Parity
 Every IPLAN workflow must maintain 1-to-1 parity with an embedded Mermaid `stateDiagram-v2`
 diagram in its companion documentation or planning record.
+
+### Rule 7: Approved Technology Stack Invariant Enforcement
+Every IPLAN workflow mutating production, test, or service code must enforce the approved
+technology stack contracts ratified in Layer 05 ADR and specified in SPEC/TDD. Code mutations
+must conform to target engine idioms (e.g., PostgreSQL 18 with UUIDv7 and Bytebase declarative
+migrations, NATS JetStream subjects, Temporal workflow activities with saga rollbacks, LiteLLM
+proxy clients) per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md).
 
 ---
 

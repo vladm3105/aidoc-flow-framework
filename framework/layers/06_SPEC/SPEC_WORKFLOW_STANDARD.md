@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.91.5 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -194,4 +194,7 @@ When specifying distributed components that persist state or exchange asynchrono
    - Persistent data structures in Section 4 (`data_models:`) specify monotonic time-ordered primary keys (such as UUIDv7) to preserve index locality on high-throughput stores.
    - For retrieval-augmented or semantic components, declare embedding dimensions, distance metrics (cosine, inner product, L2), and indexing strategies.
    - Schema modifications require versioned, idempotent declarative migrations tested for forward and backward compatibility.
+3. **Approved Technology Stack Realization:**
+   - Component contracts in Section 3 and Section 4 must realize the specific technology selections ratified in upstream Layer 05 ADR from the approved enterprise stack catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
+   - Bindings must detail concrete wire and storage idioms: PostgreSQL 18 with monotonic UUIDv7 keys and Bytebase declarative DDL migrations, NATS JetStream pub/sub subjects, gRPC Protobuf services, LiteLLM gateway integrations, and Temporal activity boundaries.
 

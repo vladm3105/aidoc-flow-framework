@@ -337,6 +337,9 @@ quality_attributes:
     Use @threshold: tags for values that may change:
       @threshold: PRD.NN.perf.api.p95
 
+    Technology Selection Impact: Quality attribute metrics directly define the evaluation
+    criteria and MCDA utility scoring weights for candidate technology selection at Layer 05 ADR.
+
   performance:
     - id: "EARS.NN.04.xxxx"
       statement: "THE [component] SHALL complete [operation]"
