@@ -21,7 +21,7 @@ from _spec import FRAMEWORK
 EARS = FRAMEWORK / "layers" / "03_EARS"
 TEMPLATE = EARS / "EARS-TEMPLATE.yaml"
 README = EARS / "README.md"
-INDEX = EARS / "EARS-00_index.TEMPLATE.md"
+INDEX = EARS / "EARS-00_index.TEMPLATE.yaml"
 
 # The five canonical pattern names (token check, case-insensitive).
 PATTERN_TOKENS = ("ubiquitous", "event", "state", "optional", "unwanted")
