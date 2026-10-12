@@ -125,6 +125,20 @@ interfaces:
       errors:
         - "[ErrorType]: [When raised]"
 
+  # Optional: Asynchronous Event Contracts (CloudEvents, Protobuf, Avro, JSON Schema)
+  event_contracts:
+    _guidance: |
+      For asynchronous event-driven interfaces. Specifies the event envelope
+      (e.g., CloudEvents v1.0), wire format schema (Protobuf, Avro, or JSON Schema),
+      and idempotency/deduplication requirements.
+    events:
+      - name: "[EventName]"
+        type: "[domain.entity.action]"
+        envelope_standard: "CloudEvents v1.0"
+        schema_format: "[Protobuf v3 | JSON Schema | Avro]"
+        schema_definition: "[path/to/contract.proto or inline IDL]"
+        deduplication_key: "[field_name (e.g. id, msg_id)]"
+
 # =============================================================================
 # Section 4: Data Models
 # =============================================================================
@@ -133,6 +147,9 @@ data_models:
   _guidance: |
     Define data structures passed through component interfaces.
     Use typed field definitions, not SQL/ORM.
+    For persistent or database entities, declare monotonic time-ordered primary keys
+    (e.g. UUIDv7 standard), vector embedding dimensions/metrics, and declarative
+    schema migration requirements where applicable.
   models:
     - name: "[ModelName]"
       type: "[dataclass | TypedDict | Pydantic BaseModel]"

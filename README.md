@@ -304,7 +304,7 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 | `hooks/ch-gate-check.sh` | PreCommit advisory hook (also pre-commit) — warns on code without an active CHG |
 | `hooks/sync-version-refs.sh` | Version synchronization hook — propagates framework version across playbooks and metadata |
-| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (12 cataloged workflows) |
+| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (22 cataloged workflows: 13 core lifecycle + 9 review-remediation) |
 
 The former platforms (Hermes MCP server, Claude Code plugin) were archived on
 2026-09-07 and their code has since been removed — no live platform code
@@ -313,10 +313,10 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.2`**.
-The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), establishing vendor-neutral declarative state machines and the Dual-Template Architecture. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
+the project is in **post-cutover development** tracking framework spec **`0.91.4`**.
+The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61) and aligned with the ecosystem's authoritative platform technology stack (Decision GD-72, Change Request CHG-83), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-10-09); it is not
+> *This overview is a point-in-time snapshot (as of 2026-10-10); it is not
 > wired into the version-sync hook. For live version state see `framework/VERSION`.*
 
 Development is tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
@@ -339,7 +339,8 @@ for the vulnerability-reporting policy.
 - [`framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`](framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) — end-to-end SDD practitioner guide covering dual-template architecture, structural linting, and saga rollback compensation.
 - [`framework/AI_ASSISTANT_RULES.md`](framework/AI_ASSISTANT_RULES.md) — instructions for AI coding assistants on selecting templates, respecting gates, and preventing drift.
 - [`framework/README.md`](framework/README.md) — the engine-agnostic SDD specification and layer architecture.
-- [`framework/governance/README.md`](framework/governance/README.md) — governance policies, change management (CHG), and catalog of 12 CNCF Serverless Workflows.
+- [`framework/governance/README.md`](framework/governance/README.md) — governance policies, change management (CHG), platform architecture, and catalog of CNCF Serverless Workflows.
+- [`framework/governance/RECOMMENDED_PLATFORM_STACK.md`](framework/governance/RECOMMENDED_PLATFORM_STACK.md) — authoritative platform reference architecture (Debian 13, gVisor, Temporal, LangGraph, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, Langfuse) and SDD layer mapping.
 - [`framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md`](framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md) — normative CNCF Serverless Workflow standard and catalog.
 - [`framework/governance/CHG_REQUEST_FLOWS.md`](framework/governance/CHG_REQUEST_FLOWS.md) — change request classification and flow routing across 6 traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C).
 - [`framework/governance/WORKTREE_FLOW.md`](framework/governance/WORKTREE_FLOW.md) — per-task worktree invariants and order guards.

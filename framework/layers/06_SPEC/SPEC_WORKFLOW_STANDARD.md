@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.2 |
+| Framework Version | 0.91.4 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -179,3 +179,19 @@ def compile_spec_choreography(workflow_yaml: dict) -> StateGraph:
     # Wire ingress, parallel branches, async callbacks, and saga compensations
     return graph.compile()
 ```
+
+---
+
+## 9. Event and Database Contracts Discipline
+
+When specifying distributed components that persist state or exchange asynchronous messages:
+1. **Asynchronous Event Contracts (`event_contracts:`):**
+   - Components that publish or consume asynchronous events declare their schema in Section 3 (`interfaces:`).
+   - Use the **CloudEvents v1.0** specification for the transport envelope (`id`, `source`, `type`, `time`, `datacontenttype`, `traceparent`).
+   - Wire contracts specify binary or strongly-typed serialization formats (Protocol Buffers, Avro, or JSON Schema) to ensure backward-compatible schema evolution.
+   - Senders and receivers specify deduplication keys (e.g., UUIDv7 message identifiers) to support at-least-once message delivery without duplicate side effects.
+2. **Database & Storage Contracts:**
+   - Persistent data structures in Section 4 (`data_models:`) specify monotonic time-ordered primary keys (such as UUIDv7) to preserve index locality on high-throughput stores.
+   - For retrieval-augmented or semantic components, declare embedding dimensions, distance metrics (cosine, inner product, L2), and indexing strategies.
+   - Schema modifications require versioned, idempotent declarative migrations tested for forward and backward compatibility.
+
