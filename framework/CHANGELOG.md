@@ -1,17 +1,26 @@
-# Changelog — SDD Framework
+# Changelog — SDD Framework (FROZEN — tombstone)
 
-All notable changes to the shared engine-agnostic specification are documented here.
-This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
+This log is no longer maintained per-PR (frozen 2026-10-13 by CHG-94 for
+founder decision: hand-maintaining it costs tokens and time while
+`framework/archive/CHG-*/` and GitHub issues/PRs already track every change).
+Do not add entries here.
 
-## Document Control
+The live records are:
+- Spec changes: `framework/archive/CHG-*/CHG-*.yaml` (machine-readable authoritative records).
+- Releases: GitHub Releases + `framework/VERSION`.
+- Everything else: the issue tracker (open and closed) plus git history.
 
-| Field | Value |
-|-------|-------|
-| Version | 1.33 |
-| Status | Approved |
-| Last Updated | 2026-10-13 |
-| Author | Framework Maintainer |
-| Framework Version | 0.91.12 |
+> **On-Demand Generation**: A release-specific CHANGELOG or release notes can
+> be generated from `framework/archive/CHG-*/` on demand during formal release
+> cut-offs if requested. AI agents and maintainers do not spend tokens maintaining
+> this file per-PR.
+
+Full history of this specification is preserved in git (`git log --follow -- framework/CHANGELOG.md`)
+and below for releases up to and including [0.91.12].
+
+---
+
+## Last Maintained State (Releases 0.50.0 through 0.91.12)
 
 ## [0.91.12] — 2026-10-13
 

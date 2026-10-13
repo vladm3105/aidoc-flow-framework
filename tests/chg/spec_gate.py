@@ -47,9 +47,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # Codes this script owns (the diff-aware half of GATE-SPEC). Imported by the
 # conformance guard so the script can't drift out of sync with the gate def.
+# GATE-SPEC-E008 (CHANGELOG.md update) was retired in CHG-94: framework/CHANGELOG.md
+# is a frozen tombstone, and change provenance is tracked by framework/archive/CHG-*/.
 CODES = {
     "GATE-SPEC-E005": "framework/VERSION must bump when framework/** changes",
-    "GATE-SPEC-E008": "framework/CHANGELOG.md must be updated alongside a framework/** change",
 }
 
 # Frozen history tier: repairing a dangling citation inside an already-archived
@@ -106,8 +107,6 @@ def evaluate(files: list[str]) -> list[str]:
     failures = []
     if "framework/VERSION" not in files:
         failures.append("GATE-SPEC-E005")
-    if "framework/CHANGELOG.md" not in files:
-        failures.append("GATE-SPEC-E008")
     return failures
 
 
@@ -135,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
 
     failures = evaluate(files)
     if not failures:
-        print(f"GATE-SPEC: framework/ change vs {base} — VERSION + CHANGELOG updated, OK.")
+        print(f"GATE-SPEC: framework/ change vs {base} — VERSION updated, OK.")
         if not any(f.startswith("archive/platforms/claude-code-plugin/framework/") for f in files):
             print(
                 "  reminder: re-sync the plugin's vendored bundle "

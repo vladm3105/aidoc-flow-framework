@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.12 |
+| Framework Version | 0.91.13 |
 
 
 > **CHG Reference**: CHG-XX
@@ -179,7 +179,7 @@ custom_fields:
 | GATE-SPEC-E005: `framework/VERSION` bumped (CI) | [ ] Pass / [ ] Fail | |
 | GATE-SPEC-E006: spec-version pins match (CI) | [ ] Pass / [ ] Fail | |
 | GATE-SPEC-E007: conformance suite green (CI) | [ ] Pass / [ ] Fail | |
-| GATE-SPEC-E008: `CHANGELOG.md` updated (CI) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E008: [RETIRED in CHG-94] `CHANGELOG.md` updated | [ ] Pass / [ ] Fail / [x] N/A | Retired; changelog generated on demand from CHG archives |
 
 **Warnings Addressed**:
 - [ ] GATE-SPEC-W001: `major` change has a per-consumer migration note
