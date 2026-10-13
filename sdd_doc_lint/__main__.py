@@ -34,7 +34,13 @@ from . import (
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sdd_doc_lint")
-    parser.add_argument("paths", nargs="+", help="file(s) or directory(ies) to lint")
+    parser.add_argument("paths", nargs="*", default=[], help="file(s) or directory(ies) to lint")
+    parser.add_argument(
+        "--profile",
+        type=Path,
+        default=None,
+        help="path to .aidoc/profile.yaml to validate against schema 1.1.0",
+    )
     parser.add_argument(
         "--registry",
         type=Path,
@@ -75,6 +81,21 @@ def main(argv: list[str] | None = None) -> int:
         "(ACTIVE-LAYERS-CASCADE-001)",
     )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+
+    if args.profile is not None:
+        from sdd_doc_lint.profile_lint import validate_profile
+
+        ok, errors = validate_profile(args.profile)
+        if ok:
+            print(f"✓ Profile {args.profile} conforms to schema 1.1.0 (valid adaptation knobs)")
+            return 0
+        print(f"✗ Profile {args.profile} failed schema 1.1.0 validation:", file=sys.stderr)
+        for err in errors:
+            print(f"  - {err}", file=sys.stderr)
+        return 1
+
+    if not args.paths:
+        parser.error("the following arguments are required: paths (or --profile)")
 
     override = None
     if args.active_layers is not None:
