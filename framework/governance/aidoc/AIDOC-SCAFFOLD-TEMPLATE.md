@@ -18,7 +18,7 @@ that take precedence over the framework's defaults.
 
 A consumer project structures files into four explicit tiers (`README.md`, `AIDOC.md`):
 
-```
+```text
 <project>/
 ├── seed/                    # Tier 1 Inputs: stakeholder vision & architecture options
 │   ├── 00_index.md          # Master seed index (optional)
@@ -42,7 +42,7 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 
 ## Directory structure (`.aidoc/`)
 
-```
+```text
 .aidoc/
 ├── profile.yaml             # project profile — adaptation knobs
 ├── framework → ...          # symlink to shared framework (canonical path)
