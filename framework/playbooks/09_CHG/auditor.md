@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.91.9"
+framework_spec_version: "0.91.10"
 ---
 # auditor lens — CHG layer
 

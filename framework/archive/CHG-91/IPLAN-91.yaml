@@ -8,11 +8,12 @@ id: "IPLAN-91"
 chg_id: "CHG-91"
 title: "Synchronize Recommended Platform Technology Stack with Enterprise Catalog (/home/ya/devd/technology_stack)"
 status: "Completed"
-framework_version: "0.91.9"
+framework_version: "0.91.10"
 
 file_manifest:
   - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
   - "framework/CHANGELOG.md"
+  - "framework/VERSION"
   - "framework/archive/CHG-91/CHG-91.yaml"
   - "framework/archive/CHG-91/IPLAN-91.yaml"
 

@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: security_engineer
 weight: 10
 agent: security-engineer
-framework_spec_version: "0.91.9"
+framework_spec_version: "0.91.10"
 ---
 # security_engineer lens — SPEC layer
 

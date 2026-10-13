@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.9 |
+| Framework Version | 0.91.10 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-91](../archive/CHG-91/CHG-91.yaml) |
 | Technology Stack Source | `/home/ya/devd/technology_stack` (Standard v2.0, codified across Specifications 00–19) |
 
