@@ -63,9 +63,11 @@ TARGET="$(cd "$TARGET" && pwd)"
 
 if [[ ! -e "$TARGET/.aidoc/framework" && ! -L "$TARGET/.aidoc/framework" ]]; then
   echo "==> Fresh install: deploying .aidoc on $TARGET (version: $VERSION, kind: $KIND)"
-  INSTALL_ARGS=("$TARGET" "--canon-dir" "$SCRIPT_DIR" "--kind" "$KIND")
+  INSTALL_ARGS=("$TARGET" "--kind" "$KIND")
   if [[ "$KIND" == "symlink" ]]; then
     INSTALL_ARGS+=("--shared" "$SHARED")
+  else
+    INSTALL_ARGS+=("--canon-dir" "$SCRIPT_DIR")
   fi
   "${SCRIPT_DIR}/framework/scripts/install.sh" "${INSTALL_ARGS[@]}" "${EXTRA_ARGS[@]}"
 else
