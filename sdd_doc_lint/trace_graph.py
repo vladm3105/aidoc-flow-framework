@@ -48,7 +48,9 @@ def doc_id_from_token(token: str) -> str | None:
     """Reduce an `@`-tag value to its host doc id (`TYPE-NN`).
 
     `BRD-01` → `BRD-01`; `BRD.01.07.6c3f` → `BRD-01`; anything else → `None`.
+    Strips trailing sentence punctuation (GAP-06).
     """
+    token = token.rstrip(".,:;!?)'\"")
     if DOC_FORM.match(token):
         return token
     if ELEM_FORM.match(token):
