@@ -51,7 +51,7 @@ metadata:
 
       ADR-Ready scoring criteria:
         Scenario coverage (40%): all EARS requirements have scenarios
-        Gherkin quality (25%): valid syntax, atomic scenarios, executable
+        Behavioral graph quality (25%): valid state transitions, atomic paths, executable
         Traceability (20%): necessary-upstream tag (@ears) present + resolves
         Edge case coverage (15%): error, recovery, parameterized scenarios
 
@@ -215,7 +215,7 @@ scenario_structure:
   _size_target: 800  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Scenarios are a FLAT YAML list under `scenarios:`, each discriminated by a
-    `type:` field (YAML-BDD-SCHEMA D-1/D-2) — no Gherkin `@`-tags. Required
+    `type:` field (YAML-BDD-SCHEMA D-1/D-2) — structured state transitions, no legacy Gherkin `@`-tags. Required
     fields per scenario:
       - id:       element id BDD.NN.03.xxxx (on migration, COPIED VERBATIM from
                   the source @scenario-id — never recomputed; keeps downstream
@@ -370,12 +370,16 @@ glossary:
   terms:
     - term: BDD
       definition: "Behavior-Driven Development"
-    - term: Gherkin
-      definition: "Structured syntax for executable test scenarios (Given-When-Then)"
+    - term: Behavioral Graph
+      definition: >-
+        Executable state machine graph (CNCF Serverless Workflow v0.8) or structured
+        YAML scenario defining state transitions, preconditions, actions, and assertions
     - term: ADR-Ready
       definition: "Score measuring BDD maturity for ADR transition (>=90%)"
-    - term: Scenario Outline
-      definition: "Parameterized Gherkin scenario with Examples table"
+    - term: Parameterized Scenario
+      definition: >-
+        Data-driven behavioral scenario defining input matrices and boundary
+        transitions across state graphs
     - term: "[Domain term]"
       definition: "[Definition]"
 

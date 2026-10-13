@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.14 |
+| Framework Version | 0.91.15 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across

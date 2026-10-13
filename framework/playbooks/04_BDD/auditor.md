@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.91.14"
+framework_spec_version: "0.91.15"
 ---
 # auditor lens — BDD layer
 
@@ -66,9 +66,8 @@ coverage tooling. Missing → P2 citing C2.
 **C3 — Scenario IDs follow `BDD.NN.SS.xxxx` per ID_NAMING_STANDARDS.** Every
 scenario must carry a unique `id:` value in the format `BDD.NN.SS.xxxx` where
 `NN` is the two-digit feature number, `SS` is the two-digit section number, and
-`xxxx` is a four-character content-derived hash. On migration from a legacy
-Gherkin document the `id:` is COPIED VERBATIM from the source `@scenario-id` —
-never recomputed — so downstream `@bdd:` citations stay stable. IDs that
+`xxxx` is a four-character content-derived hash. On migration from a legacy scenario document the `id:` is COPIED VERBATIM from
+the source `@scenario-id` — never recomputed — so downstream `@bdd:` citations stay stable. IDs that
 deviate from this format, collide, or were recomputed on migration cannot be
 reliably referenced in traceability matrices or change management records.
 Missing → P2 citing C3.
