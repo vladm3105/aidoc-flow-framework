@@ -1,0 +1,31 @@
+# =============================================================================
+#  IPLAN-98: Minimal Context Slicing Engine (sdd_doc_lint/slice.py)
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-98/CHG-98.yaml
+# =============================================================================
+
+id: "IPLAN-98"
+chg_id: "CHG-98"
+title: "Implement Minimal Context Slicing Engine in sdd_doc_lint"
+status: "Completed"
+framework_version: "0.91.16"
+
+file_manifest:
+  - "sdd_doc_lint/slice.py"
+  - "tests/test_slice.py"
+  - "framework/archive/CHG-98/CHG-98.yaml"
+  - "framework/archive/CHG-98/IPLAN-98.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-98.yaml and IPLAN-98.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Implement minimal context slicing engine in sdd_doc_lint/slice.py"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Implement test suite in tests/test_slice.py covering multi-tier traversal and formatting"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Validate CHG lint, run unit and conformance tests, and complete pre-push verification"
+    status: "Completed"
