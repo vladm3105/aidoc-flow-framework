@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-11 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.9 |
+| Framework Version | 0.91.10 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) |
 
 ---

@@ -1,0 +1,41 @@
+# =============================================================================
+#  IPLAN-91: Synchronize Recommended Platform Technology Stack with Enterprise Catalog
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-91/CHG-91.yaml
+# =============================================================================
+
+id: "IPLAN-91"
+chg_id: "CHG-91"
+title: "Synchronize Recommended Platform Technology Stack with Enterprise Catalog (/home/ya/devd/technology_stack)"
+status: "Completed"
+framework_version: "0.91.10"
+
+file_manifest:
+  - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+  - "framework/CHANGELOG.md"
+  - "framework/VERSION"
+  - "framework/archive/CHG-91/CHG-91.yaml"
+  - "framework/archive/CHG-91/IPLAN-91.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-91.yaml and IPLAN-91.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update RECOMMENDED_PLATFORM_STACK.md Document Control, Pillars, and Principles"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update Master Platform Technology Matrix with Complete Specifications 00-19"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update SDD 10-Layer Execution Mapping, Flowcharts, and Layer Blueprints"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Update Adoption Blueprints & Specifications Directory"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Update framework/CHANGELOG.md with CHG-91 record"
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Run chg_lint, test_governance, and test_spec_hygiene verification suites"
+    status: "Completed"

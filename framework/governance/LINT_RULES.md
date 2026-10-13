@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.9 |
+| Framework Version | 0.91.10 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact

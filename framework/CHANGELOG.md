@@ -7,11 +7,22 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.30 |
+| Version | 1.31 |
 | Status | Approved |
-| Last Updated | 2026-10-11 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.9 |
+| Framework Version | 0.91.10 |
+
+## [0.91.10] — 2026-10-13
+
+### Updated — Synchronize Recommended Platform Technology Stack with Enterprise Catalog (C1 Governance, CHG-91 + IPLAN-91, Decision DEC-CHG-91)
+
+- **Platform Technology Stack Reference Architecture (`RECOMMENDED_PLATFORM_STACK.md`)**:
+  - Updated authoritative enterprise catalog reference path to `/home/ya/devd/technology_stack` (Standard v2.0, Specifications 00–19).
+  - Modernized the Six Architectural Pillars and codified the Five Non-Negotiable Operational Tenets (three-layer orchestration, agent is not a principal, thin payloads, consolidated infrastructure, lossless audit fidelity).
+  - Expanded the Master Platform Technology Matrix to 37 components: added `agentd over tmux`, Cloudflare Tunnel, WezTerm + Sunshine / Moonlight remote desktop, Valkey 8 in-memory store, Apache Superset agentic BI (with Model Context Protocol and Playwright visual critic), Trivy supply-chain security, ast-grep/ruff, py-spy, k6/nats-bench/toxiproxy staging arsenal, Syft/Steampipe dynamic software inventory, and Debian 13 self-hosted ephemeral CI runner hardening.
+  - Updated SDD 10-layer execution mapping, progressive refinement flowchart, and added Tri-Environment Continuum (Dev, Stage, Prod) guidance.
+  - Published comprehensive directory of companion Specifications 00–19 and framework adoption blueprints.
 
 ## [0.91.9] — 2026-10-11
 
