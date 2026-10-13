@@ -93,25 +93,25 @@ This project pins **aidoc-flow-framework X.Y.Z** (declared in
 Autonomous agents operate under eight core project governance blueprints initialized under `<project>/.aidoc/project/governance/` (mirroring `docs/ADAPTATION-GUIDE.md` §4.1):
 
 1. **CHG Execution Flow (`CHG_EXECUTION_FLOW.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.
+   Copy [`framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md). Codifies the 8-step autonomous change lifecycle, tiered document versioning, and circuit breakers.
 2. **CI Smart Routing (`CI_SMART_ROUTING.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md`](AIDOC-CI-SMART-ROUTING-TEMPLATE.md). Codifies the Anti-Deadlock Invariant (zero trigger-level path filtering on required checks) and internal path-filter job routing.
+   Copy [`framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md). Codifies the Anti-Deadlock Invariant (zero trigger-level path filtering on required checks) and internal path-filter job routing.
 3. **Conflict Resolution (`CONFLICT_RESOLUTION.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`](AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md). Codifies Class 1 additive vs Class 2 semantic conflict handling, zero force-pushes, and mandatory auto-merge re-arming.
+   Copy [`framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md). Codifies Class 1 additive vs Class 2 semantic conflict handling, zero force-pushes, and mandatory auto-merge re-arming.
 4. **Self-Review Loop (`SELF_REVIEW_LOOP.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`](AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md). Codifies the Two-Stage Review & Fix loop (Stage A specs vs Stage B PRs), strict independence (Judge $\neq$ Generator), and the 4-lens rubric.
+   Copy [`framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md). Codifies the Two-Stage Review & Fix loop (Stage A specs vs Stage B PRs), strict independence (Judge $\neq$ Generator), and the 4-lens rubric.
 5. **QA Protocol (`QA_PROTOCOL.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`](AIDOC-QA-PROTOCOL-TEMPLATE.md). Codifies the Tripartite Engineering Architecture, the strict non-code-modifying invariant for QA, and post-merge closing reports.
+   Copy [`framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md). Codifies the Tripartite Engineering Architecture, the strict non-code-modifying invariant for QA, and post-merge closing reports.
 6. **Browser Testing (`BROWSER_TESTING.md`):**
-   Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](AIDOC-BROWSER-TESTING-TEMPLATE.md). Codifies headless browser execution, multi-worktree port sandboxing, and trace/screenshot artifact retention.
+   Copy [`framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md). Codifies headless browser execution, multi-worktree port sandboxing, and trace/screenshot artifact retention.
 7. **Durable Multi-Agent Execution Standard (`DURABLE_EXECUTION.md`):**
-   Derived from [`framework/governance/DURABLE_EXECUTION_STANDARD.md`](../DURABLE_EXECUTION_STANDARD.md). Codifies the 3-Tier Execution Architecture (Tier 1 Durable Workflows, Tier 2 Cognitive Reasoning Graphs, Tier 3 Deterministic Services), Thin-State payload discipline ($\le 2$ KB), SAGA reverse compensations, and deterministic rollback.
+   Derived from [`framework/governance/DURABLE_EXECUTION_STANDARD.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/DURABLE_EXECUTION_STANDARD.md). Codifies the 3-Tier Execution Architecture (Tier 1 Durable Workflows, Tier 2 Cognitive Reasoning Graphs, Tier 3 Deterministic Services), Thin-State payload discipline ($\le 2$ KB), SAGA reverse compensations, and deterministic rollback.
 8. **Graph-Based Review Flows & Review Report Schema (`REVIEW_WORKFLOWS.md`):**
-   Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](../REVIEW_WORKFLOW_STANDARD.md) and [`review_report.schema.json`](../review_report.schema.json). Codifies structured multi-persona review flows, workflow linting (`sdd_swf_lint`), deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
+   Derived from [`framework/governance/REVIEW_WORKFLOW_STANDARD.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/REVIEW_WORKFLOW_STANDARD.md) and [`review_report.schema.json`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/review_report.schema.json). Codifies structured multi-persona review flows, workflow linting (`sdd_swf_lint`), deterministic quality gate floors (`structural_pass == true && blocking_findings == 0`), and automated `chg_handover` metadata.
 
 ## Seed tier bootstrapping
 
 Initial human-authored requirements live under `<project>/seed/` before the first
 BRD is authored (`SEED_CONTRACT.md` R1). Seed documents explore options, trade-offs,
 and architectural invariants without carrying formal SDD element IDs. Initialize
-substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](../../templates/SEED-TEMPLATE.md).
+substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/templates/SEED-TEMPLATE.md).
