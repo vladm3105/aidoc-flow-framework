@@ -209,26 +209,26 @@ The enterprise platform architecture is codified across 20 companion specificati
 
 | Spec # | Specification Document | Primary Scope & Governed Architecture |
 |---|---|---|
-| **00** | [`00-architecture-summary.md`](file:///home/ya/devd/technology_stack/00-architecture-summary.md) | Unified Master Architecture Blueprint, Core Tenets & Two-Tier Ledger |
-| **01** | [`01-concept-temporal-langgraph.md`](file:///home/ya/devd/technology_stack/01-concept-temporal-langgraph.md) | Durable Orchestration, Cognitive Graphs & Long-Running Workflows |
-| **02** | [`02-implementation-temporal-langgraph.md`](file:///home/ya/devd/technology_stack/02-implementation-temporal-langgraph.md) | Reference Workers, Activities, Heartbeats & Sandbox Execution |
-| **03** | [`03-nats-interexchange-queue.md`](file:///home/ya/devd/technology_stack/03-nats-interexchange-queue.md) | Asynchronous Inter-Project Messaging & JetStream Event Buses |
-| **04** | [`04-interexchange-protocol.md`](file:///home/ya/devd/technology_stack/04-interexchange-protocol.md) | CloudEvents Envelope, I-JSON & Protobuf Wire Contracts |
-| **05** | [`05-database-stack.md`](file:///home/ya/devd/technology_stack/05-database-stack.md) | PostgreSQL 18, Two-Tier Ledgers (`xp.ledger`), Valkey 8 & ClickHouse |
-| **06** | [`06-security-rbac.md`](file:///home/ya/devd/technology_stack/06-security-rbac.md) | Role-Based Access Control, gVisor Sandboxing & Infisical Secrets |
-| **07** | [`07-review-findings.md`](file:///home/ya/devd/technology_stack/07-review-findings.md) | Architecture Decision Register & Resolved Tradeoffs (Findings 1–28) |
-| **08** | [`08-cli-agent-observability.md`](file:///home/ya/devd/technology_stack/08-cli-agent-observability.md) | Terminal Agent Tracing, HyperDX APM & Stage QA Gates |
-| **09** | [`09-authoritative-platform-technology-stack.md`](file:///home/ya/devd/technology_stack/09-authoritative-platform-technology-stack.md) | Authoritative Platform Stack, Approved Tools & Pinning |
-| **10** | [`10-multi-agent-terminal-architecture-and-logging.md`](file:///home/ya/devd/technology_stack/10-multi-agent-terminal-architecture-and-logging.md) | Multi-Agent Terminal Daemon (`agentd over tmux`) & Observability |
-| **11** | [`11-infrastructure-and-configuration-as-code.md`](file:///home/ya/devd/technology_stack/11-infrastructure-and-configuration-as-code.md) | IaC Standard, Universal 5-Profile Compose & Runner Hardening |
-| **12** | [`12-vpn-network-tailscale-and-on-demand-awg.md`](file:///home/ya/devd/technology_stack/12-vpn-network-tailscale-and-on-demand-awg.md) | Tailscale Primary Mesh & On-Demand AmneziaWG (AWG) Bastion |
-| **13** | [`13-domain-hosting-dns-and-cloudflare-tunnel.md`](file:///home/ya/devd/technology_stack/13-domain-hosting-dns-and-cloudflare-tunnel.md) | Cloudflare Tunnel Ingress, Zero Trust Access & Anycast DNS |
-| **14** | [`14-remote-desktop-sunshine-moonlight-tailscale.md`](file:///home/ya/devd/technology_stack/14-remote-desktop-sunshine-moonlight-tailscale.md) | Sunshine & Moonlight Remote Desktop over Tailscale (60–120 FPS) |
-| **15** | [`15-business-intelligence-superset-analytics-playwright.md`](file:///home/ya/devd/technology_stack/15-business-intelligence-superset%2dmcp-playwright.md) | Agentic Apache Superset with Model Context Protocol and Playwright Critic |
-| **16** | [`16-tri-environment-dev-stage-prod.md`](file:///home/ya/devd/technology_stack/16-tri-environment-dev-stage-prod.md) | Tri-Environment Continuum Matrix (Dev, Stage, Prod) |
-| **17** | [`17-technology-stack-surveillance-and-update-governance.md`](file:///home/ya/devd/technology_stack/17-technology-stack-surveillance-and-update-governance.md) | Technology Stack Surveillance, OSV.dev Scanning & Update Governance |
-| **18** | [`18-agentic-infrastructure-sentinel-and-self-healing.md`](file:///home/ya/devd/technology_stack/18-agentic-infrastructure-sentinel-and-self-healing.md) | Agentic Infrastructure Sentinel & Autonomous Self-Healing Governance |
-| **19** | [`19-software-inventory-syft-steampipe-superset.md`](file:///home/ya/devd/technology_stack/19-software-inventory-syft-steampipe-superset.md) | Dynamic Tri-Tier Software Inventory: Syft, Steampipe & Superset |
+| **00** | `00-architecture-summary.md` | Unified Master Architecture Blueprint, Core Tenets & Two-Tier Ledger |
+| **01** | `01-concept-temporal-langgraph.md` | Durable Orchestration, Cognitive Graphs & Long-Running Workflows |
+| **02** | `02-implementation-temporal-langgraph.md` | Reference Workers, Activities, Heartbeats & Sandbox Execution |
+| **03** | `03-nats-interexchange-queue.md` | Asynchronous Inter-Project Messaging & JetStream Event Buses |
+| **04** | `04-interexchange-protocol.md` | CloudEvents Envelope, I-JSON & Protobuf Wire Contracts |
+| **05** | `05-database-stack.md` | PostgreSQL 18, Two-Tier Ledgers (`xp.ledger`), Valkey 8 & ClickHouse |
+| **06** | `06-security-rbac.md` | Role-Based Access Control, gVisor Sandboxing & Infisical Secrets |
+| **07** | `07-review-findings.md` | Architecture Decision Register & Resolved Tradeoffs (Findings 1–28) |
+| **08** | `08-cli-agent-observability.md` | Terminal Agent Tracing, HyperDX APM & Stage QA Gates |
+| **09** | `09-authoritative-platform-technology-stack.md` | Authoritative Platform Stack, Approved Tools & Pinning |
+| **10** | `10-multi-agent-terminal-architecture-and-logging.md` | Multi-Agent Terminal Daemon (`agentd over tmux`) & Observability |
+| **11** | `11-infrastructure-and-configuration-as-code.md` | IaC Standard, Universal 5-Profile Compose & Runner Hardening |
+| **12** | `12-vpn-network-tailscale-and-on-demand-awg.md` | Tailscale Primary Mesh & On-Demand AmneziaWG (AWG) Bastion |
+| **13** | `13-domain-hosting-dns-and-cloudflare-tunnel.md` | Cloudflare Tunnel Ingress, Zero Trust Access & Anycast DNS |
+| **14** | `14-remote-desktop-sunshine-moonlight-tailscale.md` | Sunshine & Moonlight Remote Desktop over Tailscale (60–120 FPS) |
+| **15** | `15-business-intelligence-superset-analytics-playwright.md` | Agentic Apache Superset with Model Context Protocol and Playwright Critic |
+| **16** | `16-tri-environment-dev-stage-prod.md` | Tri-Environment Continuum Matrix (Dev, Stage, Prod) |
+| **17** | `17-technology-stack-surveillance-and-update-governance.md` | Technology Stack Surveillance, OSV.dev Scanning & Update Governance |
+| **18** | `18-agentic-infrastructure-sentinel-and-self-healing.md` | Agentic Infrastructure Sentinel & Autonomous Self-Healing Governance |
+| **19** | `19-software-inventory-syft-steampipe-superset.md` | Dynamic Tri-Tier Software Inventory: Syft, Steampipe & Superset |
 
 ### 5.2 Framework Adoption Blueprints
 
