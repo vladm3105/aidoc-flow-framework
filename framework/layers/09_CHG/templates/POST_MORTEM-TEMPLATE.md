@@ -24,7 +24,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.15 |
+| Framework Version | 0.91.16 |
 
 
 > **Incident**: {Brief description}

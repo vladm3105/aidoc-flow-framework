@@ -437,7 +437,7 @@ glossary:
     - term: EARS
       definition: "Easy Approach to Requirements Syntax"
     - term: BDD-Ready
-      definition: "Readiness metric validating requirement clarity, testability, and traceability (threshold >=90%)"
+      definition: "Binary topological verification confirming requirement clarity, testability, and 100% DAG completeness"
     - term: Dependency DAG
       definition: "Directed Acyclic Graph modeling inter-requirement prerequisite constraints"
     - term: CNCF Serverless Workflow

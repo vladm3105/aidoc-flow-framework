@@ -44,15 +44,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-      Scoring criteria:
-        Business clarity (40%): SMART objectives, capability definitions, acceptance criteria
-        Requirements maturity (35%): system boundaries, stakeholder requirements, problem statement
-        EARS translation readiness (20%): user journeys, quality attributes quantified
-        Strategic alignment (5%): domain references
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to a verified BRD document/element (zero dangling edges).
+        2. Strict Oracle Coverage: Every business capability and user journey maps to downstream EARS functional requirements.
+        3. Schema Compliance: Valid YAML syntax, required sections present, and atomic element IDs.
+      Heuristic percentage readiness scores (EARS-Ready >=90%) are retired in favor of binary topological validation.
 
   c4_level:
     _guidance: |

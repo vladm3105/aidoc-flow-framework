@@ -16,7 +16,7 @@ description: >-
   deterministic gate floor evaluation, and author remediation.
 
 metadata:
-  framework_version: "0.91.15"
+  framework_version: "0.91.16"
   governed_layer: "02_PRD"
   workflow_type: "governance-review-saga"
   flow_code: "REV-02-PRD"
@@ -30,7 +30,7 @@ states:
       status: "PREPARED"
       iteration: 1
       max_iterations: 3
-      threshold_score: 90.0
+      topological_pass: false
       structural_pass: false
       soft_deadline_seconds: 600
       layer: "02_PRD"

@@ -86,9 +86,10 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Author]"
   component: "[Component Name]"
-  iplan_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  iplan_ready_status: "[PASS | FAIL]"  # binary topological gate status evaluated by sdd_doc_lint
   _guidance: |
-    IPLAN-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    IPLAN-Ready Status: Binary topological verification (PASS / FAIL) computed by sdd_doc_lint.
+    Requires 100% DAG completeness and oracle realization without dangling citations or unmapped test fixtures.
     Upstream: SPEC (Layer 6) defines the component contract.
     TDD defines test cases that validate SPEC compliance.
 
@@ -555,6 +556,6 @@ traceability:
         category: "Timing"
         value: "[NN]ms"
   health_score:
-    iplan_ready: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    iplan_ready: "[PASS | FAIL]"
+    target_status: "PASS"  # deterministic binary topological gate, not a scalar percentage
+    _note: "Gating is binary — computed by sdd_doc_lint. The deterministic floor requires 100% DAG completeness and oracle realization."

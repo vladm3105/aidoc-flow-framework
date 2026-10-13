@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.15 |
+| Framework Version | 0.91.16 |
 
 ## Overview
 
@@ -69,10 +69,10 @@ Proposed → Accepted → Deprecated → Superseded
 
 (NOT Draft/In Review/Approved)
 
-| Status | SPEC-Ready Score | Meaning |
+| Status | Gating Criteria | Meaning |
 |---|---|---|
-| Proposed | 70-89% | Decision under evaluation |
-| Accepted | >=90% | Decision approved, ready for SPEC |
+| Proposed | Draft / Under Review | Decision under evaluation |
+| Accepted | Binary Topological Pass | Decision approved, 100% DAG completeness, ready for SPEC |
 | Deprecated | — | Decision no longer relevant |
 | Superseded | — | Replaced by newer ADR |
 

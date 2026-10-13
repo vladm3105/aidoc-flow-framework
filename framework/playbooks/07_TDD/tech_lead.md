@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: tech_lead
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.91.15"
+framework_spec_version: "0.91.16"
 ---
 # tech_lead lens — TDD layer
 

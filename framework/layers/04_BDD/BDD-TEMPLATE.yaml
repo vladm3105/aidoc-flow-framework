@@ -44,16 +44,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      ADR-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-
-      ADR-Ready scoring criteria:
-        Scenario coverage (40%): all EARS requirements have scenarios
-        Behavioral graph quality (25%): valid state transitions, atomic paths, executable
-        Traceability (20%): necessary-upstream tag (@ears) present + resolves
-        Edge case coverage (15%): error, recovery, parameterized scenarios
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to a verified EARS document/element (zero dangling edges).
+        2. Strict Oracle Coverage: Every EARS requirement has at least one behavioral state graph or scenario path, and every scenario maps to a downstream TDD failing test fixture prior to code implementation.
+        3. Behavioral Graph Quality: Valid state transitions, atomic execution paths, and executable preconditions/assertions.
+      Heuristic percentage readiness scores (ADR-Ready >=90%) are retired in favor of binary topological validation.
 
       Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.
       Use UTEST/ITEST for CI. BDD validates user acceptance criteria.
@@ -375,7 +371,9 @@ glossary:
         Executable state machine graph (CNCF Serverless Workflow v0.8) or structured
         YAML scenario defining state transitions, preconditions, actions, and assertions
     - term: ADR-Ready
-      definition: "Score measuring BDD maturity for ADR transition (>=90%)"
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream ADR/SPEC realization without dangling citations or uncovered scenarios
     - term: Parameterized Scenario
       definition: >-
         Data-driven behavioral scenario defining input matrices and boundary

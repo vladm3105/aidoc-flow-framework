@@ -422,7 +422,7 @@ glossary:
     - term: MCDA
       definition: "Multi-Criteria Decision Analysis"
     - term: SPEC-Ready
-      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
+      definition: "Binary topological verification confirming 100% DAG completeness and downstream SPEC realization"
 
 # =============================================================================
 # Appendix: MVP Lifecycle

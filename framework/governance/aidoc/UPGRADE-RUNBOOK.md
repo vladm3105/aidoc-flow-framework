@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.15 |
+| Framework Version | 0.91.16 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new

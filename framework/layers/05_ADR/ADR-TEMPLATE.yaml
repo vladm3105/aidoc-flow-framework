@@ -51,22 +51,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-
-      SPEC-Ready scoring criteria:
-        Decision completeness (30%): clear decision with rationale, alternatives evaluated
-        Architecture clarity (25%): required decision sequenceDiagram (@diagram: sequence-*) present, integration points defined
-        Consequence analysis (20%): positive outcomes, trade-offs, costs documented
-        Traceability (15%): upstream EARS/BDD tags complete
-        Verification (10%): success criteria defined, BDD cross-refs present
-
-      Status-to-score mapping:
-        >= 90%: Accepted
-        70-89%: Proposed
-        < 70%: Draft (significant work needed)
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to verified upstream EARS/BDD elements (zero dangling edges).
+        2. Strict Oracle Coverage: Every architectural decision is realized downstream by SPEC component contracts and TDD fixtures.
+        3. Architectural Rigor: Clear rationale, alternatives evaluated, sequenceDiagram (@diagram: sequence-*) present, and consequences analyzed.
+      Heuristic percentage readiness scores (SPEC-Ready >=90%) are retired in favor of binary topological validation.
 
   c4_level:
     _guidance: |
@@ -466,7 +456,9 @@ glossary:
     - term: ADR
       definition: "Architecture Decision Record"
     - term: SPEC-Ready
-      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream SPEC realization without dangling citations or unmapped decisions
     - term: "[Domain term]"
       definition: "[Definition]"
 
