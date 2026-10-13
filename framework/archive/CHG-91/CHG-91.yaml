@@ -1,0 +1,142 @@
+# =============================================================================
+#  CHG-91: Synchronize Recommended Platform Technology Stack with Enterprise Catalog
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Documentation Update)
+#  Pre-cleared: User instruction in session (2026-10-13)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.9"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: keep
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-91"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: keep
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      User instruction in session: update this doc to use tech stack
+      /home/ya/devd/technology_stack for this framework
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-91)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-91"
+  title: "Synchronize Recommended Platform Technology Stack with Enterprise Catalog (/home/ya/devd/technology_stack)"
+  status: "Ratified"
+  context: |
+    The framework's platform reference architecture document (RECOMMENDED_PLATFORM_STACK.md)
+    was established under CHG-83 and CHG-86 to bridge vendor-agnostic SDD contracts to production
+    runtimes. Since then, the enterprise technology stack standard (Standard v2.0 codified across
+    Specifications 00-19 in /home/ya/devd/technology_stack/) has formalized the full container-native
+    platform architecture: agentd over tmux, Cloudflare Tunnel zero-open-port edge ingress,
+    WezTerm + Sunshine/Moonlight remote desktop, Valkey 8 in-memory store, Apache Superset agentic
+    BI with Model Context Protocol and Playwright visual critic, two-tier lossless ledger xp.ledger,
+    and Debian 13 ephemeral CI hardening.
+  choice: |
+    1. Update RECOMMENDED_PLATFORM_STACK.md to reference /home/ya/devd/technology_stack as the
+       authoritative enterprise standard v2.0.
+    2. Expand Section 2 (The Six Architectural Pillars) to incorporate container-native tooling,
+       zero host pollution (platform-dev-tools:latest), two-tier lossless ledger (xp.ledger),
+       and the five operational tenets.
+    3. Modernize Section 3 (Master Platform Technology Matrix) from 18 to 35+ components, adding
+       agentd over tmux, Cloudflare Tunnel, WezTerm/Sunshine/Moonlight, Valkey 8, Apache Superset,
+       Trivy, ast-grep/ruff, py-spy, k6/nats-bench/toxiproxy, Syft/Steampipe dynamic inventory,
+       and Debian 13 self-hosted CI hardening.
+    4. Update Section 4 (SDD 10-Layer Execution Mapping) flowchart and layer blueprints to bind
+       the updated stack components across Problem Space (01-04), Selection Gate (05 ADR),
+       and Solution Space (06-10).
+    5. Update Section 5 (Adoption & Operational Blueprints) with the complete directory of
+       specifications 00-19.
+  consequences: |
+    - RECOMMENDED_PLATFORM_STACK.md perfectly mirrors the authoritative enterprise technology stack.
+    - Zero architectural drift between framework governance guidance and /home/ya/devd/technology_stack/.
+    - Retains 100% engine neutrality in framework/layers/ per Decision D-0013 / GD-13.
+    - Preserves engine token hygiene (no raw prohibited tokens in framework/).
+  alternatives_considered:
+    - option: "Only update the file path from /mnt/e/dev to /home/ya/devd without updating components"
+      rationale_rejected: >-
+        Leaves the platform reference architecture incomplete and omitting crucial
+        platform components like Cloudflare Tunnel, Valkey 8, Superset, and agentd.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Synchronize Recommended Platform Technology Stack with Enterprise Catalog (/home/ya/devd/technology_stack)"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Update framework/governance/RECOMMENDED_PLATFORM_STACK.md to use the authoritative enterprise
+    technology stack codified in /home/ya/devd/technology_stack/ (Standard v2.0, specs 00-19).
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Comprehensive synchronization of RECOMMENDED_PLATFORM_STACK.md with /home/ya/devd/technology_stack/"
+  components_affected:
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/CHANGELOG.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-91/IPLAN-91.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-91.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-91/IPLAN-91.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-91.yaml"
+    - "test_governance.py and test_spec_hygiene.py green"
+  audit_trail: "Multi-agent self-review per OPS-0065"
