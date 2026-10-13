@@ -4,12 +4,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-11 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.10 |
-| Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) |
+| Framework Version | 0.91.11 |
+| Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md) & [CHG-92](../archive/CHG-92/CHG-92.yaml) |
 
 ---
 
@@ -23,7 +23,7 @@ BRD (01) → PRD (02) → EARS (03) → BDD (04) → ADR (05) → SPEC (06) → 
 
 Per **Decision D-0013 / GD-13**, the core specifications (`framework/layers/` and `framework/governance/`) are **strictly engine-agnostic and vendor-neutral**: they define lifecycles, interface schemas, declarative workflow graphs (`.sw.yaml`), and quality gates without tying consumers to proprietary software or commercial SaaS.
 
-To ensure consistency, resilience, and operational efficiency across all projects in our ecosystem (`/mnt/e/dev/*`), the organization defines an **Authoritative Platform Technology Stack** (documented under `/mnt/e/dev/technology_stack/` and synthesized in [`RECOMMENDED_PLATFORM_STACK.md`](RECOMMENDED_PLATFORM_STACK.md)).
+To ensure consistency, resilience, and operational efficiency across all projects in our ecosystem, the organization defines an **Authoritative Platform Technology Stack** (documented in [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) and `/home/ya/devd/technology_stack/`, and synthesized in [`RECOMMENDED_PLATFORM_STACK.md`](RECOMMENDED_PLATFORM_STACK.md)).
 
 This guide defines **how and when** to use the approved platform technology stack within the SDD lifecycle. It establishes the **Progressive Refinement Model**, formalizes **Layer 05 (ADR, immediately after BDD)** as the authoritative technology selection gate, maps the stack across traversal flows (`SDD2C`, `SEED2C`, `CODE2S`), and establishes the **Architecture Variance & Exception Procedure**.
 
@@ -37,7 +37,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                PROGRESSIVE REFINEMENT FUNNEL                                     │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Tier 0: Enterprise Tech Stack (/mnt/e/dev/technology_stack)                                      │
+│ Tier 0: Enterprise Tech Stack (vladm3105/technology-stack / /home/ya/devd/technology_stack)     │
 │   • Global Approved Standard (Debian 13, Docker/gVisor, PG18 HA, Temporal, NATS, ClickHouse)   │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Tier 1: Seed Documents (<project>/seed/)                                                         │
@@ -57,7 +57,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Tier 0: Enterprise Platform Baseline (`/mnt/e/dev/technology_stack/`)
+### 2.1 Tier 0: Enterprise Platform Baseline ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack))
 
 - **Role:** The company-wide catalog of approved standards, shared multi-tenant infrastructure, and security baselines.
 - **Core Principle:** Shared infrastructure over per-repository sprawl. Projects connect to the central 3-node HA **PostgreSQL 18** cluster (isolated databases), central **Temporal** server (isolated namespaces), central **NATS JetStream** broker (isolated accounts), and central **ClickHouse** cluster.
@@ -93,7 +93,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
 - **Why After BDD?**  
   Sound architectural decisions cannot be made in a vacuum. By placing technology selection immediately after BDD:
   1. The decision engine evaluates candidates against concrete behavioral failure scenarios (`@bdd`) and strict latency/throughput budgets (`@ears`).
-  2. Candidate alternatives are drawn directly from the approved enterprise stack (`/mnt/e/dev/technology_stack/`).
+  2. Candidate alternatives are drawn directly from the approved enterprise stack ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) / `/home/ya/devd/technology_stack/`).
   3. The decision evaluates trade-offs via quantitative **Multi-Criteria Decision Analysis (MCDA)** scoring across quality attributes (latency, resilience, operational cost, security).
   4. The ratified decision locks the exact technology choice with Context, Decision, and Consequences, unblocking technical specifications.
   5. The ratified technology, version constraint, authorizing ADR reference, security monitoring metadata (PURL, CPE, scanners), and automated update policy are recorded directly into the project's canonical agent-readable [`ADR-00_index.yaml`](../layers/05_ADR/ADR-00_index.TEMPLATE.yaml) registry under `technologies`.
@@ -136,7 +136,7 @@ flowchart TD
     subgraph CODE2S_FLOW["Reverse Reconciliation (CODE2S)"]
         direction TB
         C_CODE["Existing Codebase Ground Truth"]
-        C_AUDIT["Audit Against /mnt/e/dev/technology_stack"]
+        C_AUDIT["Audit Against Enterprise Stack"]
         C_GAP{"Stack Conformance?"}
         C_SDD["Reconcile into SDD Docs (ADR/SPEC)"]
         C_DEBT["Log Non-Conformant Tech Debt"]
@@ -148,13 +148,13 @@ flowchart TD
 
 1. **Greenfield (`SDD2C`):** Strict forward chain. Upstream tiers (Seed/Module) declare container archetypes; problem space layers (01–04) remain technology-neutral; Layer 05 ADR selects and locks the stack; downstream layers (06–10) implement the stack.
 2. **Brownfield / Upgrades (`SEED2C`):** Triggered when an architectural baseline shifts (e.g. upgrading to PostgreSQL 18 or adopting NATS JetStream). Phase 0a updates Seed to vN+1, Phase 0b syncs affected Modules, and Phase 0c re-evaluates downstream ADRs.
-3. **Reverse Reconciliation (`CODE2S`):** Used when onboarding existing working codebases into SDD. The codebase is audited against `/mnt/e/dev/technology_stack/`. Conforming patterns are formalized into Layer 05 ADRs; non-conforming technologies are logged as technical debt and slated for migration.
+3. **Reverse Reconciliation (`CODE2S`):** Used when onboarding existing working codebases into SDD. The codebase is audited against the enterprise technology stack ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) / `/home/ya/devd/technology_stack/`). Conforming patterns are formalized into Layer 05 ADRs; non-conforming technologies are logged as technical debt and slated for migration.
 
 ---
 
 ## 4. Technology Stack Variance & Exception Governance
 
-A project MUST NOT adopt libraries, databases, or runtime infrastructure outside `/mnt/e/dev/technology_stack/` without an approved **Architecture Variance Request**.
+A project MUST NOT adopt libraries, databases, or runtime infrastructure outside the approved enterprise technology stack ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)) without an approved **Architecture Variance Request**.
 
 ```mermaid
 sequenceDiagram
@@ -198,7 +198,7 @@ Review crews evaluating SDD artifacts ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml))
 | **02 PRD** | `architect` | Section 14 `adr_topic_elaboration` specifies technical dimensions without pre-deciding final selections. |
 | **03 EARS** | `requirements_specialist` | Expresses timing, throughput, and error recovery SLAs necessary for MCDA scoring. |
 | **04 BDD** | `chaos_engineer` | Includes edge scenarios (network partition, timeouts, duplicate events) to validate candidate resilience. |
-| **05 ADR** | `architect` | Evaluates $\ge 2$ candidates from `/mnt/e/dev/technology_stack/`; computes MCDA utility scores; attaches variance if non-standard. |
+| **05 ADR** | `architect` | Evaluates $\ge 2$ candidates from the approved enterprise technology stack; computes MCDA utility scores; attaches variance if non-standard. |
 | **06 SPEC** | `tech_lead` | Adheres to platform contracts: typed interfaces, Protobuf schemas, UUIDv7 keys, and automated migration scripts. |
 | **07 TDD** | `qa_lead` | Uses ephemeral testcontainers for real database and message broker contract testing. |
 | **08 IPLAN**| `operator` | Workflow tasks map to Temporal activities carrying idempotent execution and SAGA rollbacks. |

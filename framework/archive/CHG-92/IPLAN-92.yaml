@@ -1,0 +1,32 @@
+# =============================================================================
+#  IPLAN-92: Reference Canonical Technology Stack GitHub Repository (vladm3105/technology-stack)
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-92/CHG-92.yaml
+# =============================================================================
+
+id: "IPLAN-92"
+chg_id: "CHG-92"
+title: "Reference Canonical Technology Stack GitHub Repository (vladm3105/technology-stack)"
+status: "Completed"
+framework_version: "0.91.11"
+
+file_manifest:
+  - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+  - "framework/CHANGELOG.md"
+  - "framework/VERSION"
+  - "framework/archive/CHG-92/CHG-92.yaml"
+  - "framework/archive/CHG-92/IPLAN-92.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-92.yaml and IPLAN-92.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update RECOMMENDED_PLATFORM_STACK.md with https://github.com/vladm3105/technology-stack reference"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Bump framework/VERSION to 0.91.11 and record in framework/CHANGELOG.md"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Propagate version pins with sync-version-refs.sh and verify deterministic test suites"
+    status: "Completed"
