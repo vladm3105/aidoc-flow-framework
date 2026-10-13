@@ -33,10 +33,10 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.1432100 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.14 --kind pin
 
 # Or symlink to a persistent shared framework checkout:
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.1432100 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.14 --kind symlink --shared /path/to/framework
 ```
 
 `install.sh` automates the ordered 5-step procedure from `BOOTSTRAP.md`:

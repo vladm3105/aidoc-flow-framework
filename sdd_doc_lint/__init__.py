@@ -686,7 +686,7 @@ def lint_text(
         # Trace tags: collect which upstream layers are referenced + validate the id form.
         for m in _TAG.finditer(line):
             seen_tags.add(m.group(1))
-            val = m.group(2).rstrip(".,:;!?)\'\"")
+            val = m.group(2).rstrip(".,:;!?)'\"")
             if not (doc_re.match(val) or elem_re.match(val)):
                 findings.append(
                     Finding(rel, i, "ID01", f"malformed trace-tag id '@{m.group(1)}: {val}'")
@@ -2110,7 +2110,7 @@ def _check_trace_resolution(
                 # artifact's own layer. Per TRACE-RES-FIXUP-001 Fix 1.
                 if my_layer_n and tag_layer_n and tag_layer_n > my_layer_n:
                     continue
-                value = m.group(2).rstrip(".,:;!?)\'\"")
+                value = m.group(2).rstrip(".,:;!?)'\"")
                 if not (doc_re.match(value) or elem_re.match(value)):
                     continue
                 # LINT-TRACE-RES-SINGLE-FILE: on a single-file run, only

@@ -148,7 +148,7 @@ for old in $OLD_VERSIONS; do
   # ERE — \| is a GNU extension). The old || join held empty alternatives
   # that matched every file; sweep's literal re-match hid it (#886).
   _old_esc="${old//./[.]}"
-  _meta_pat="${_meta_pat}framework_version: \"${_old_esc}\"|[|] Framework Version [|] ${_old_esc} [|]|--canon framework/v${_old_esc}|Live Framework Version: ${_old_esc}|Quickstart [(]Version ${_old_esc}[)]|tracking framework spec [*][*]\`${_old_esc}\`[*][*]"
+  _meta_pat="${_meta_pat}framework_version: \"${_old_esc}\"|[|] Framework Version [|] ${_old_esc} [|]|--canon framework/v${_old_esc} |Live Framework Version: ${_old_esc}|Quickstart [(]Version ${_old_esc}[)]|tracking framework spec [*][*]\`${_old_esc}\`[*][*]"
 done
 while IFS= read -r -d '' f; do
   rel="${f#"$REPO_ROOT"/}"
@@ -159,7 +159,7 @@ while IFS= read -r -d '' f; do
   for old in $OLD_VERSIONS; do
     sweep "$rel" "framework_version: \"$old\"" "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
     sweep "$rel" "| Framework Version | $old |" "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-    sweep "$rel" "--canon framework/v$old" "--canon framework/v$FRAMEWORK_VERSION" 5 || true
+    sweep "$rel" "--canon framework/v$old " "--canon framework/v$FRAMEWORK_VERSION " 5 || true
     sweep "$rel" "Live Framework Version: $old." "Live Framework Version: $FRAMEWORK_VERSION." 5 || true
     sweep "$rel" "Quickstart (Version $old)" "Quickstart (Version $FRAMEWORK_VERSION)" 5 || true
     sweep "$rel" "tracking framework spec **\`$old\`**" "tracking framework spec **\`$FRAMEWORK_VERSION\`**" 5 || true

@@ -34,10 +34,10 @@ From the framework repository or clone, run [`framework/scripts/install.sh`](../
 framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
 
 # Option B: Production deployment from published git release tag:
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.1432100 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.14 --kind pin
 
 # Option C: Shared development deployment (persistent symlink to shared checkout):
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.1432100 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.14 --kind symlink --shared /path/to/framework
 ```
 
 This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.
