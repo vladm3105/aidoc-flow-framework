@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: integration_lead
 weight: 20
 agent: solutions-architect
-framework_spec_version: "0.91.13"
+framework_spec_version: "0.91.14"
 ---
 # integration_lead lens — SPEC layer
 

@@ -313,7 +313,7 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.13`**.
+the project is in **post-cutover development** tracking framework spec **`0.91.14`**.
 The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), modernized the ADR index and technology stack registry to machine-readable YAML (Decision GD-74, Change Request CHG-87), established the **Universal AI-First 5-Quadrant YAML Index Architecture** across all 10 SDD layers (Decision GD-75, Change Request CHG-88), permanently retired legacy MVP template tombstones with conformance anti-resurrection guards (Decision GD-76, Change Request CHG-89), and codified in-file bidirectional Dual-Template Selection Guides across Layers 01–08 and Governance (Decision GD-77, Change Request CHG-90), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, automated SCA/CVE security tracking, deterministic agent ingestion, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
 > *This overview is a point-in-time snapshot (as of 2026-10-11); it is not

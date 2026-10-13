@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -79,6 +79,7 @@ framework/governance/
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
+│   ├── decision-migration-flow.sw.yaml       # Dual-channel decision migration & bifurcation flow
 │   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
 │   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
 │   ├── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
@@ -335,6 +336,7 @@ When a pull request merges into the target integration branch (`dev`), the deliv
 - **2026-10-06 — Pass 11 (Tripartite Separation of Concerns & Issue Closure Contract)**:
   - *Gap found*: Lack of clear boundaries between DEV, SDET, and QA personas, creating risks of QA modifying production code during acceptance test runs. Missing formal contract for post-merge issue closure reports.
   - *Fix*: Codified Section 8 Tripartite Engineering Architecture with strict non-code-modifying invariant for QA, and formalized Section 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
-- **2026-10-07 — Pass 12 (Graph-Based Review Sagas & Dedicated Structural Linter)**:
-  - *Gap found*: Review and remediation flows were only defined at a macro level (`review-remediation-flow.sw.yaml`), lacking dedicated per-layer workflows matching `REVIEW_CREWS.yaml`, a review-to-CHG handover contract, and a dedicated structural workflow linter.
-  - *Fix*: Created `REVIEW_WORKFLOW_STANDARD.md`, implemented `sdd_swf_lint` (`sdd_doc_lint/swf_lint.py`), authored 9 per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`) in `framework/governance/workflows/review/`, expanded `review_report.schema.json` with `chg_handover`, and registered workflows in Section 2.
+- **2026-10-13 — Pass 13 (Decision Migration & Bifurcation Workflow)**:
+  - *Gap found*: Retirement of monolithic decisions register (`framework/governance/DECISIONS.md`) required a formal state machine to govern the bifurcation of governance rules into executable workflows and change records into CHGs.
+  - *Fix*: Authored `decision-migration-flow.sw.yaml`, modernized `decision-ratification-flow.sw.yaml` to lock decisions into CHG envelopes, registered workflow in Section 2, and synchronized `DECISION_WORKFLOW.md`.
+

@@ -19,11 +19,11 @@ custom_fields:
 
 | Field | Value |
 |---|---|
-| Version | 1.12 |
+| Version | 1.13 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
 
 ## Mandatory Format: Mermaid Only
 
@@ -254,7 +254,7 @@ flowchart LR
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml` and `framework/governance/workflows/review/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), 9 per-layer review & remediation flows (`workflows/review/*.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml` and `framework/governance/workflows/review/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), 9 per-layer review & remediation flows (`workflows/review/*.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), decision migration (`decision-migration-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.

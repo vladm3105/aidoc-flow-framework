@@ -235,7 +235,7 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 |---|---|
 | Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
-| Decisions | Change Requests (`CHG-*.yaml`) + `framework/governance/DECISIONS.md`; `plans/DECISIONS.md` is a retired tombstone |
+| Decisions | Change Requests (`CHG-*.yaml`); `plans/DECISIONS.md` (CHG-80) and `framework/governance/DECISIONS.md` (CHG-95) are retired tombstones |
 | Plans | `plans/<NAME>-PLAN.md` |
 | Changelog | Retired tombstones (`framework/CHANGELOG.md` frozen in CHG-94, root `CHANGELOG.md` frozen in CHG-40) — live change records are `framework/archive/CHG-*/` + GitHub releases / PRs — no `ROADMAP.md` exists |
 | Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |

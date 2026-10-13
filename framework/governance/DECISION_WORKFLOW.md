@@ -3,12 +3,12 @@
 ## Document Control
 
 | Field | Value |
-|-------|-------|
-| Version | 1.4 |
+|---|---|
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across
@@ -106,7 +106,7 @@ this module lives in the module doc.
 - **Author:** Change request author (human engineer or autonomous AI agent)
 - **Content:** Formal decision record embedded in the Change Request Section 1B
 - **Location:** Embedded in `CHG-NN.yaml` (archived under `docs/sdd/09-CHG/archive/CHG-NN/` or `framework/archive/CHG-NN/`)
-- **Lifecycle:** Authored during CHG proposal, reviewed in PR, locked upon merge; spec-affecting decisions graduate to `framework/governance/DECISIONS.md`
+- **Lifecycle:** Authored during CHG proposal, reviewed in PR, locked upon merge; archived permanently in `framework/archive/CHG-NN/`. (Master markdown register `framework/governance/DECISIONS.md` retired in CHG-95 / GD-78; active rules codified in `workflows/*.sw.yaml`).
 
 **What CHG Decision records contain:**
 - `decision_id`: Unambiguous identifier tied 1:1 to the change vehicle (e.g. `DEC-CHG-80`)
@@ -140,32 +140,36 @@ The structural linter `sdd_doc_lint/chg_lint.py` automatically enforces rule **`
 
 ---
 
-## Decision Surfaces and Deprecation of `plans/DECISIONS.md`
+## Decision Surfaces and Deprecation of Legacy Monolithic Registers
 
-Historically, decisions were split between `plans/DECISIONS.md` (repo working log) and `framework/governance/DECISIONS.md` (spec governance). This created confusion, drift, and forgotten logs.
+Historically, decisions were split between `plans/DECISIONS.md` (repo working log) and `framework/governance/DECISIONS.md` (spec governance). This created confusion, drift, token bloat, and dual-maintenance overhead.
 
 ### Deprecation and Tombstone Policy
 
 1. **`plans/DECISIONS.md` is RETIRED**:
-   - The file is converted into a permanent, frozen tombstone per Decision `DEC-CHG-80`.
+   - The file is converted into a permanent, frozen tombstone per Decision `DEC-CHG-80` (GD-71).
    - Historical records (`D-0065` through `D-0086`) remain in place strictly to preserve permalinks, CI workflow citations, and git history.
    - **No new entries may be authored in `plans/DECISIONS.md`.**
-2. **Primary Authoring Surface**:
-   - Every decision is authored directly in its authorizing Change Request (`CHG-NN.yaml`).
-3. **Master Normative Spec Register**:
-   - Framework specification changes (`change_source: spec` passing `GATE-SPEC`) graduate to `framework/governance/DECISIONS.md` as ratified entries (e.g., `GD-71 — Title (DEC-CHG-80)`).
+2. **`framework/governance/DECISIONS.md` is RETIRED**:
+   - The file is converted into a permanent, frozen tombstone per Decision `DEC-CHG-95` (GD-78).
+   - Historical records (`GD-01` through `GD-77`) remain in place strictly to preserve permalinks, conformance test assertions, and git history.
+   - **No new entries may be authored in `framework/governance/DECISIONS.md`.**
+3. **Primary Authoring Surface for All Changes**:
+   - Every framework change authors its formal decision directly inside its authorizing Change Request (`CHG-NN.yaml` Section 1B `decision:` block) and archives it under `framework/archive/CHG-NN/`.
+4. **Primary Surface for Active Governance Rules & Invariants**:
+   - Active governance rules, state machines, and invariants are codified in declarative CNCF Serverless Workflows (`framework/governance/workflows/*.sw.yaml`), governance standards (`GOVERNANCE_WORKFLOW_STANDARD.md`, `CHG_REQUEST_FLOWS.md`, `WORKTREE_FLOW.md`), and layer specifications.
 
 ---
 
 ## Decision Threshold Matrix
 
-| CHG Classification | Primary Decision Location | Graduation to `framework/governance/DECISIONS.md`? | Project SDD ADR Required? |
+| Change Scope | Primary Decision Location | Master Monolithic Register? | Active Rule Encoding |
 |---|---|---|---|
-| **C3 Major Spec Change** | Embedded in `CHG-NN.yaml` | **Yes** (Ratified GD entry) | No (Framework spec level) |
-| **C2 Spec / Workflow Standard** | Embedded in `CHG-NN.yaml` | **Yes** (Ratified GD entry) | No (Framework spec level) |
-| **C2 / C1 Repo Operational Policy** | Embedded in `CHG-NN.yaml` | No (Remains in CHG archive) | No |
-| **C1 Maintenance / Scoped Leaf Sync** | Embedded in `CHG-NN.yaml` (concise) | No (Remains in CHG archive) | No |
-| **Consuming Project System Architecture** | Embedded in project `CHG-NN.yaml` | No | **Yes** (Authored as `sdd/05_ADR/ADR-NN.yaml`) |
+| **C3 Major Spec Change** | Embedded in `CHG-NN.yaml` (`framework/archive/CHG-*/`) | No (Retired Tombstone at GD-77) | Declarative CNCF Workflow (`*.sw.yaml`) + Spec |
+| **C2 Spec / Workflow Standard** | Embedded in `CHG-NN.yaml` (`framework/archive/CHG-*/`) | No (Retired Tombstone at GD-77) | Declarative CNCF Workflow (`*.sw.yaml`) + Spec |
+| **C2 / C1 Repo Operational Policy** | Embedded in `CHG-NN.yaml` (`framework/archive/CHG-*/`) | No (Retired Tombstone at GD-77) | Governance Markdown Standard / Linter Rule |
+| **C1 Maintenance / Scoped Leaf Sync** | Embedded in `CHG-NN.yaml` (`framework/archive/CHG-*/`) | No (Retired Tombstone at GD-77) | Leaf spec / Document Control |
+| **Consuming Project System Architecture** | Embedded in project `CHG-NN.yaml` | No | Project SDD ADR (`sdd/05_ADR/ADR-NN.yaml`) |
 
 ---
 
@@ -183,9 +187,52 @@ Historically, decisions were split between `plans/DECISIONS.md` (repo working lo
 
 ---
 
+## Executable CNCF Decision Migration Flow
+
+To permanently eliminate split-brain divergence and context bloat from monolithic markdown ledgers, the framework formalizes a dual-path decision migration lifecycle in:
+`framework/governance/workflows/decision-migration-flow.sw.yaml`.
+
+This workflow bifurcates legacy narrative decisions into their two native surfaces:
+1. **Governance Invariants**: Codified as declarative CNCF Serverless Workflows (`workflows/*.sw.yaml`), standards, and schemas.
+2. **Operational Change Records**: Codified as structured YAML Change Requests (`framework/archive/CHG-NN/CHG-NN.yaml` Section 1B).
+
+<!-- @diagram: flow-decision-migration-lifecycle -->
+```mermaid
+---
+title: Decision Migration & Bifurcation Flow
+---
+flowchart TD
+    A["Monolithic DECISIONS.md (Legacy)"] --> B{"Triage & Classify Decision Concern"}
+    
+    B -->|"Governance Rules & Invariants<br>(Circuit breakers, SAGAs, Order guards)"| C["Declarative Governance Workflows<br>(framework/governance/workflows/*.sw.yaml)"]
+    B -->|"Operational Change Records<br>(Context, Choice, Consequences, Diffs)"| D["Structured Change Requests<br>(framework/archive/CHG-NN/CHG-NN.yaml)"]
+    
+    C --> E["Deterministic Validation<br>(swf_lint / Conformance Suites)"]
+    D --> F["Schema Validation<br>(chg_lint CHG-L018)"]
+    
+    E --> G["Frozen Historical Tombstone<br>(framework/governance/DECISIONS.md GD-01..GD-77)"]
+    F --> G
+```
+
+### Migration State Mapping
+
+| Workflow State | CNCF State Type | Operational Semantics |
+|---|---|---|
+| `IngestDecisionRecord` | `operation` | Parses decision source and entry identifier |
+| `ClassifyDecisionConcern` | `switch` | Bifurcates entry into governance invariant rule vs. operational change record |
+| `CodifyGovernanceWorkflowGraph` | `operation` | Codifies governance rule into declarative `.sw.yaml` workflow and catalogs in standard |
+| `ValidateWorkflowWithSwfLint` | `operation` | Validates workflow definition via `sdd_swf_lint` (specVersion 0.8, reachability) |
+| `PopulateChangeRequestEnvelope` | `operation` | Embeds formal Context, Choice, Consequences, and Alternatives into `CHG-NN.yaml` Section 1B |
+| `ValidateChangeWithChgLint` | `operation` | Enforces structural rule `CHG-L018` via `chg_lint.py` |
+| `VerifyHistoricalTombstoneIntegrity` | `operation` | Asserts `framework/governance/DECISIONS.md` is sealed as read-only tombstone at GD-77 |
+| `DecisionMigrationTerminal` | `inject` (end) | Terminal success state certifying dual-channel migration completed |
+| `EscalateUnclassifiedDecision` | `operation` (end) | Terminal fallback state escalating ambiguous entries to human review |
+
+---
+
 ## Executable CNCF Decision Ratification Flow
 
-Decisions that alter framework governance or shared contracts (`DECISIONS.md`) pass through
+Decisions that alter framework governance or shared contracts pass through
 a formal ratification state machine. To guarantee procedural consistency and provide multi-agent
 graph orchestrators with deterministic state transitions, the ratification lifecycle is
 formalized in:
@@ -233,7 +280,7 @@ stateDiagram-v2
 | `ReviseDecisionDraft` | `operation` | Updates decision draft with review crew feedback before re-dispatching |
 | `FounderApprovalCallback` | `callback` | Suspends execution awaiting asynchronous human founder OK (`FounderDecisionApprovalEvent`) |
 | `CheckFounderDecision` | `switch` | Branches based on founder verdict (`APPROVED` vs declined) |
-| `LockDecisionAndStampRatification` | `operation` | Finalizes ratification, sets status to Locked, appends record to `framework/governance/DECISIONS.md` |
+| `LockDecisionAndStampRatification` | `operation` | Finalizes ratification, sets status to Locked, archives in `framework/archive/CHG-NN/CHG-NN.yaml`, and dispatches workflow sync if normative |
 | `MonitorDecisionLifecycle` | `switch` | Monitors whether the decision remains active or has been superseded by a newer decision |
 | `SupersedeDecision` | `operation` (end) | Marks decision as Superseded with pointer to replacing decision ID |
 | `DecisionActiveTerminal` | `inject` (end) | Terminal active state certifying decision is in active, locked enforcement |
@@ -246,11 +293,12 @@ stateDiagram-v2
 - `SEED_CONTRACT.md` — Seed lifecycle, disposition rules, and supersede flow
 - `framework/templates/SEED-TEMPLATE.md` — Canonical seed document template
 - `DOC_GOVERNANCE_CORE.md` — Version bumping, template policy
-- `DECISIONS.md` — Authoritative record of ratified framework governance decisions
-- `plans/DECISIONS.md` — Retired repository working log (frozen tombstone)
+- `DECISIONS.md` — Retired framework governance decisions register (frozen tombstone at GD-77)
+- `plans/DECISIONS.md` — Retired repository working log (frozen tombstone at D-0086)
 - `framework/governance/chg/CHG-TEMPLATE.yaml` — Canonical Change Request template with mandatory Section 1B `decision:` block
 - `framework/governance/LINT_RULES.md` — Enforces `CHG-L018` mandatory decision check
-- `workflows/decision-ratification-flow.sw.yaml` — Canonical CNCF Serverless Workflow state machine
+- `workflows/decision-migration-flow.sw.yaml` — Canonical CNCF Serverless Workflow state machine for decision migration
+- `workflows/decision-ratification-flow.sw.yaml` — Canonical CNCF Serverless Workflow state machine for decision ratification
 - `GOVERNANCE_WORKFLOW_STANDARD.md` — Normative specification for CNCF Serverless Workflow adoption
 - `DIAGRAM_STANDARDS.md` — Visualization standards and Mermaid syntax for governance workflows
 - `layers/09_CHG/gates/` — Gate definitions for CHG approval
