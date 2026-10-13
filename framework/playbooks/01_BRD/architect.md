@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: architect
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.91.16"
+framework_spec_version: "0.91.17"
 ---
 # architect lens — BRD layer
 

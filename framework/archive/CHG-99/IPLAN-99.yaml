@@ -8,7 +8,7 @@ id: "IPLAN-99"
 chg_id: "CHG-99"
 title: "Implement Invariant Guarding and Autonomous Escalation Workflow"
 status: "Completed"
-framework_version: "0.91.16"
+framework_version: "0.91.17"
 
 file_manifest:
   - "sdd_doc_lint/chg_lint.py"
@@ -17,6 +17,8 @@ file_manifest:
   - "tests/chg/test_chg_lint.py"
   - "framework/archive/CHG-99/CHG-99.yaml"
   - "framework/archive/CHG-99/IPLAN-99.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
 
 tasks:
   - id: "TASK-01"
