@@ -1,0 +1,140 @@
+# =============================================================================
+#  CHG-99: Invariant Guarding and Autonomous Escalation Workflow
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issue #968
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.16"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: none
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-99"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: none
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): implement TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN
+      Phase 3 Invariant Guarding & Autonomous Escalation (#962, #968)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-99)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-99"
+  title: "Implement Invariant Guarding (CHG-L019) and Bottom-Up Escalation Flow"
+  status: "Ratified"
+  context: |
+    Autonomous agents in multi-tier SDD environments encounter two systemic failure modes:
+    1. Contract Erosion via Fast-Path Abuse: An agent repeatedly applies "hotfixes" or
+       direct code changes (HOTFIX, CODE2C, DIR2C) that subtly alter public contracts or behavior
+       without updating upstream SPEC or BDD files.
+    2. Bottom-Up Feedback Lag: Execution failures in iplan-runner (such as third-party library
+       limitations or missing platform capabilities) require out-of-band manual intervention,
+       leaving the agent trapped in local retry loops instead of cleanly escalating an
+       architectural blocker back to ADR or SPEC.
+  choice: |
+    1. Implement CHG-L019 in sdd_doc_lint/chg_lint.py to enforce fast-path boundaries: any
+       fast-path change (HOTFIX, CODE2C, DIR2C) attempting to touch contract-bearing layers
+       (03_EARS, 04_BDD, 05_ADR, 06_SPEC) without an authorized SDD lifecycle update is rejected.
+    2. Document CHG-L019 in framework/governance/LINT_RULES.md and add test coverage in tests/chg/test_chg_lint.py.
+    3. Implement a declarative CNCF Serverless Workflow state machine in
+       framework/governance/workflows/iplan-escalation-flow.sw.yaml defining the bottom-up
+       architectural feedback saga:
+       - DetectExecutionBlocker -> ClassifyBlocker -> EscalateToArchitecture -> GenerateRemediationDraft.
+    4. Validate workflow with swf_lint.py.
+  consequences: |
+    - Prevents contract erosion by deterministically blocking fast-path modifications to public contracts.
+    - Provides autonomous AI agents with a standard, declarative workflow for halting fruitless local
+      retries and escalating architectural blockers back to ADR/SPEC.
+  alternatives_considered:
+    - option: "Advisory warnings on contract touches"
+      rationale_rejected: >-
+        Advisory warnings are routinely ignored by autonomous LLM agents in automated pipelines,
+        allowing contract drift to accumulate undetected.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Implement Invariant Guarding and Autonomous Escalation Workflow"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Implement Phase 3 of TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN: add CHG-L019 boundary guard
+    to chg_lint.py and author iplan-escalation-flow.sw.yaml Serverless Workflow saga.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Add CHG-L019 linter rule and author iplan-escalation-flow.sw.yaml"
+  components_affected:
+    - "sdd_doc_lint/chg_lint.py"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/workflows/iplan-escalation-flow.sw.yaml"
+    - "tests/chg/test_chg_lint.py"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-99/IPLAN-99.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-99.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-99/IPLAN-99.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-99.yaml"
+    - "swf_lint.py passing on iplan-escalation-flow.sw.yaml"
+    - "unittest passing on tests/chg/test_chg_lint.py"
+    - "pre-push check and conformance suite green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

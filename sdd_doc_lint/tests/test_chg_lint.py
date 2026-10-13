@@ -1200,6 +1200,86 @@ class TestChgL018DecisionBlock(unittest.TestCase):
             self.assertIn("CHG-L018: formal decision block present and complete", passes)
 
 
+class TestChgL019FastPathBoundaryGuard(unittest.TestCase):
+    """CHG-L019: fast-path boundary guard checks."""
+
+    def test_fast_path_touching_contract_without_sdd_fails(self):
+        chg = _base_chg(
+            change_control={
+                "chg_id": "CHG-99",
+                "status": "Implemented",
+                "flow": "iplan_to_code",
+                "flow_code": "DIR2C",
+                "change_level": "C1",
+                "change_source": "direct",
+                "author": "Framework Maintainer",
+                "date_proposed": "2026-10-13T00:00:00Z",
+                "date_approved": "2026-10-13T00:00:00Z",
+            },
+            scope={
+                "description": "Direct patch altering EARS requirements",
+                "components_affected": ["docs/03_EARS/EARS-01.md"],
+            },
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            matching = [e for e in errors if "CHG-L019" in e]
+            self.assertEqual(len(matching), 1)
+            self.assertIn("touches contract-bearing file(s)", matching[0])
+            self.assertIn("docs/03_EARS/EARS-01.md", matching[0])
+
+    def test_fast_path_touching_tooling_passes(self):
+        chg = _base_chg(
+            change_control={
+                "chg_id": "CHG-99",
+                "status": "Implemented",
+                "flow": "iplan_to_code",
+                "flow_code": "DIR2C",
+                "change_level": "C1",
+                "change_source": "direct",
+                "author": "Framework Maintainer",
+                "date_proposed": "2026-10-13T00:00:00Z",
+                "date_approved": "2026-10-13T00:00:00Z",
+            },
+            scope={
+                "description": "Tooling update",
+                "components_affected": ["sdd_doc_lint/slice.py"],
+            },
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L019" in e], [])
+            self.assertIn(
+                "CHG-L019: fast-path boundary guard passed (contract integrity preserved)", passes
+            )
+
+    def test_sdd_flow_passes(self):
+        chg = _base_chg(
+            change_control={
+                "chg_id": "CHG-99",
+                "status": "Implemented",
+                "flow": "sdd_to_code",
+                "flow_code": "SDD2C",
+                "change_level": "C2",
+                "change_source": "upstream",
+                "author": "Framework Maintainer",
+                "date_proposed": "2026-10-13T00:00:00Z",
+                "date_approved": "2026-10-13T00:00:00Z",
+            },
+            scope={
+                "description": "SDD cascade",
+                "components_affected": ["docs/03_EARS/EARS-01.md"],
+            },
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L019" in e], [])
+            self.assertIn("CHG-L019: non-fast-path change — boundary guard not applicable", passes)
+
+
 class UsageExitTests(unittest.TestCase):
     """`main()` returns 2 on usage errors (exit-code contract, #718)."""
 
