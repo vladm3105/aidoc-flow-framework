@@ -15,39 +15,33 @@ import json
 import re
 import sys
 from collections import deque
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 try:
-    from sdd_doc_lint._common import load_yaml_file, yaml
+    from sdd_doc_lint._common import yaml
     from sdd_doc_lint.trace_graph import (
         DOC_FORM,
         ELEM_FORM,
-        KNOWN_LAYERS,
         LAYER_INDEX,
         TAG,
         doc_id_from_token,
         emit_tags,
-        locate_doc,
     )
 except ImportError:
-    from _common import load_yaml_file, yaml
+    from _common import yaml
     from trace_graph import (
         DOC_FORM,
         ELEM_FORM,
-        KNOWN_LAYERS,
         LAYER_INDEX,
         TAG,
         doc_id_from_token,
         emit_tags,
-        locate_doc,
     )
 
 #: Regex matching element headings: e.g. `### EARS.01.03.aaaa Login response`
-_MD_HEADING_ELEM = re.compile(
-    r"^#{2,4}\s+([A-Z]+\.\d+\.\d+\.[a-f0-9]+)(?:\s+(.*))?$"
-)
+_MD_HEADING_ELEM = re.compile(r"^#{2,4}\s+([A-Z]+\.\d+\.\d+\.[a-f0-9]+)(?:\s+(.*))?$")
 #: Regex matching bold-prefixed element list items:
 #: `- **BRD.01.07.aaaa — Authenticated session** (P1): ...`
 #: `**ADR.01.03.a1b2** — Token-based authentication...`
@@ -195,7 +189,9 @@ class SddGraph:
                 try:
                     fm = yaml.safe_load(fm_text) if yaml else None
                     if isinstance(fm, dict):
-                        doc_id = str(fm.get("doc_id") or fm.get("id") or fm.get("artifact_id") or "").strip()
+                        doc_id = str(
+                            fm.get("doc_id") or fm.get("id") or fm.get("artifact_id") or ""
+                        ).strip()
                         if DOC_FORM.match(doc_id):
                             layer = doc_id.split("-")[0]
                             return doc_id, layer, LAYER_INDEX.get(layer, 0)
@@ -246,7 +242,9 @@ class SddGraph:
         self.add_node(doc_node)
 
         lines = text.splitlines()
-        elem_starts: list[tuple[int, str, str, str, str]] = []  # (line_idx, elem_id, title, inline_stmt, kind)
+        elem_starts: list[
+            tuple[int, str, str, str, str]
+        ] = []  # (line_idx, elem_id, title, inline_stmt, kind)
 
         for idx, line in enumerate(lines):
             # Check Heading element
@@ -265,7 +263,9 @@ class SddGraph:
                 elem_id = mb.group(1)
                 title = mb.group(2) or ""
                 rest = mb.group(3) or ""
-                if not title and (rest.startswith("—") or rest.startswith("–") or rest.startswith("-")):
+                if not title and (
+                    rest.startswith("—") or rest.startswith("–") or rest.startswith("-")
+                ):
                     rest = rest.lstrip("—–- ").strip()
                     title_part, _, stmt_part = rest.partition(".")
                     if stmt_part:
@@ -393,10 +393,19 @@ class SddGraph:
                         tags = emit_tags(obj_dump)
 
                         # Capture explicit references
-                        for ref_key in ("spec_ref", "bdd_ref", "adr_ref", "ears_ref", "prd_ref", "brd_ref"):
+                        for ref_key in (
+                            "spec_ref",
+                            "bdd_ref",
+                            "adr_ref",
+                            "ears_ref",
+                            "prd_ref",
+                            "brd_ref",
+                        ):
                             ref_val = str(obj.get(ref_key) or "").strip()
                             clean_ref = ref_val.split(":")[-1].strip().rstrip(".,:;!?)'\"")
-                            if clean_ref and (DOC_FORM.match(clean_ref) or ELEM_FORM.match(clean_ref)):
+                            if clean_ref and (
+                                DOC_FORM.match(clean_ref) or ELEM_FORM.match(clean_ref)
+                            ):
                                 if clean_ref not in tags:
                                     tags.append(clean_ref)
 
@@ -572,29 +581,33 @@ def format_yaml(
 
     for node in nodes:
         if node.type == "document":
-            docs_map.setdefault(node.id, {
-                "doc_id": node.id,
-                "layer": node.layer,
-                "layer_index": node.layer_n,
-                "path": node.path,
-                "elements": [],
-            })
+            docs_map.setdefault(
+                node.id,
+                {
+                    "doc_id": node.id,
+                    "layer": node.layer,
+                    "layer_index": node.layer_n,
+                    "path": node.path,
+                    "elements": [],
+                },
+            )
         elif node.type == "element":
-            doc_entry = docs_map.setdefault(node.doc_id, {
-                "doc_id": node.doc_id,
-                "layer": node.layer,
-                "layer_index": node.layer_n,
-                "path": node.path,
-                "elements": [],
-            })
+            doc_entry = docs_map.setdefault(
+                node.doc_id,
+                {
+                    "doc_id": node.doc_id,
+                    "layer": node.layer,
+                    "layer_index": node.layer_n,
+                    "path": node.path,
+                    "elements": [],
+                },
+            )
             elem_dict: dict[str, Any] = {"id": node.id}
             if node.title:
                 elem_dict["title"] = node.title
             if node.statement:
                 elem_dict["statement"] = node.statement
-            active_out = [
-                e.target for e in edges if e.source == node.id
-            ]
+            active_out = [e.target for e in edges if e.source == node.id]
             if active_out:
                 elem_dict["traces_to"] = active_out
             doc_entry["elements"].append(elem_dict)

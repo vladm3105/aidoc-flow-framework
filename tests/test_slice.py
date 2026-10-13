@@ -13,9 +13,7 @@ import unittest
 from pathlib import Path
 
 from sdd_doc_lint.slice import (
-    SddEdge,
     SddGraph,
-    SddNode,
     format_json,
     format_markdown,
     format_yaml,
