@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.14 |
+| Framework Version | 0.91.15 |
 
 
 ## Overview
@@ -19,22 +19,16 @@ SPEC sections for req-to-implementation traceability.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified
 
-## YAML vs Gherkin
+## Behavioral Graphs & Structured YAML vs Legacy Gherkin
 
-The framework uses **YAML-structured scenarios**, not Gherkin `.feature` files.
-This is a deliberate design choice:
+The framework uses **executable behavioral state graphs** ([CNCF Serverless Workflow v0.8 YAML](./BDD_WORKFLOW_STANDARD.md)) and **structured YAML scenarios**, not legacy Gherkin `.feature` narrative files or conversational examples.
+This is a deliberate architectural choice:
 
-- YAML scenarios carry per-scenario EARS element-level traceability (the `ears:`
-  list on each scenario), which Gherkin comments cannot encode formally.
-- YAML scenarios integrate with the framework's element-ID and `@`-tag system
-  (content-hash IDs, upstream/downstream cross-references).
-- YAML is directly machine-parsable by both the `sdd_doc_lint` validator and the
-  TDD mapping step (layer 7), avoiding brittle regex-based `.feature` parsing.
-- Gherkin is still supported as an **output format** for human-readable
-  summaries, but the authoritative representation is YAML. The authoritative
-  per-layer value is `extensions` in
-  [`../../registry/LAYER_REGISTRY.yaml`](../../registry/LAYER_REGISTRY.yaml) — the
-  single normative source (GD-17). This states the value; it does not re-specify it.
+- **Executable state graphs**: Complex asynchronous interactions, multi-step flows, and rollback sagas are represented as formal state machine graphs (`states: [inject, operation, switch, callback]`), which autonomous AI agents and execution engines execute deterministically.
+- **Element-level traceability**: YAML scenarios and workflow graphs carry per-scenario EARS element-level traceability (the `ears:` list on each scenario or state), which legacy Gherkin comments cannot encode formally.
+- **Content-hash ID integration**: Behavioral graphs and YAML scenarios integrate natively with the framework's element-ID and `@`-tag system (content-hash IDs `BDD.NN.SS.xxxx`, upstream/downstream cross-references).
+- **Machine-parsable schemas**: Structured YAML and CNCF workflow graphs are directly machine-parsable by the `sdd_doc_lint` validator, `swf_lint`, and downstream TDD mapping (Layer 07), avoiding brittle regex-based `.feature` parsing.
+- **Visual diagrams over text examples**: For human-readable reviews, behavioral paths are visualized using standard Mermaid diagrams (`@diagram: state-*` or `@diagram: flow-*`) rather than Gherkin narrative text. The authoritative per-layer value is `extensions` in [`../../registry/LAYER_REGISTRY.yaml`](../../registry/LAYER_REGISTRY.yaml) (GD-17).
 
 
 **Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use TDD (L7) unit/integration tests for CI.

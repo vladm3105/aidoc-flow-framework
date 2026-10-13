@@ -1,0 +1,40 @@
+# =============================================================================
+#  IPLAN-96: Standardize Layer 04 Terminology from Legacy Gherkin to Behavioral Graphs
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-96/CHG-96.yaml
+# =============================================================================
+
+id: "IPLAN-96"
+chg_id: "CHG-96"
+title: "Standardize Layer 04 Terminology from Legacy Gherkin to Behavioral Graphs"
+status: "Completed"
+framework_version: "0.91.15"
+
+file_manifest:
+  - "framework/layers/04_BDD/README.md"
+  - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+  - "framework/playbooks/04_BDD/auditor.md"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-96/CHG-96.yaml"
+  - "framework/archive/CHG-96/IPLAN-96.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-96.yaml and IPLAN-96.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update framework/layers/04_BDD/README.md to standardize on behavioral graphs and structured YAML"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update framework/layers/04_BDD/BDD-TEMPLATE.yaml quality scoring and glossary entries"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update framework/playbooks/04_BDD/auditor.md legacy migration citation"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Bump framework/VERSION to 0.91.15 and propagate via hooks/sync-version-refs.sh"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Run local pre-push checks, validate CHG lint, and confirm conformance suite green"
+    status: "Completed"
