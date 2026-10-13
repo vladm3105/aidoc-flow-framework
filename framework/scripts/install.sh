@@ -180,27 +180,41 @@ if [ -e "$AIDOC" ] && [ "$FORCE" = 1 ]; then
     if [ ! -t 0 ]; then
       refuse "not a TTY — pass --yes to confirm replacing $AIDOC non-interactively (or --dry-run to preview)"
     fi
-    printf '%s\n' "install.sh: WARNING: --force removes the existing $AIDOC wholesale (including .aidoc/project/ overrides)."
+    printf '%s\n' "install.sh: WARNING: --force replaces $AIDOC/framework (preserving profile.yaml and project overrides)."
     read -r -p "install.sh: proceed? [y/N] " ans || ans=""
     case "$ans" in [Yy]|[Yy][Ee][Ss]) ;; *) refuse "aborted by operator" ;; esac
   fi
-  run "rm -rf $AIDOC" rm -rf "$AIDOC"
+  # GAP-FW-02: Non-destructive replacement - remove only the framework payload
+  if [ -e "$AIDOC/framework" ]; then
+    run "rm -rf $AIDOC/framework" rm -rf "$AIDOC/framework"
+  fi
 fi
 run "mkdir -p $AIDOC" mkdir -p "$AIDOC"
-for src in "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md:$AIDOC/README.md" \
-           "framework/governance/PROFILE-TEMPLATE.yaml:$AIDOC/profile.yaml"; do
-  from="$CANON/${src%%:*}"; to="${src##*:}"
-  [ "$DRY_RUN" = 1 ] || [ -f "$from" ] || die "canon template missing: $from"
-  run "cp $from $to" cp "$from" "$to"
-done
-if [ "$DRY_RUN" != 1 ]; then
-  AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&|\\]/\\&/g')"
-  pinsub "$AIDOC/README.md" "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g"
-  pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
-  log "README placeholders filled (date=$TODAY author=$AUTHOR version=$VERSION)"
-  log "profile.yaml pinned at framework_version $VERSION"
+
+# Copy README only if missing
+if [ ! -f "$AIDOC/README.md" ]; then
+  src="framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+  [ "$DRY_RUN" = 1 ] || [ -f "$CANON/$src" ] || die "canon template missing: $CANON/$src"
+  run "cp $CANON/$src $AIDOC/README.md" cp "$CANON/$src" "$AIDOC/README.md"
+  if [ "$DRY_RUN" != 1 ]; then
+    AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&|\\]/\\&/g')"
+    pinsub "$AIDOC/README.md" "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g"
+  fi
+fi
+
+# Copy profile.yaml only if missing; if present, re-pin framework_version
+if [ ! -f "$AIDOC/profile.yaml" ]; then
+  src="framework/governance/PROFILE-TEMPLATE.yaml"
+  [ "$DRY_RUN" = 1 ] || [ -f "$CANON/$src" ] || die "canon template missing: $CANON/$src"
+  run "cp $CANON/$src $AIDOC/profile.yaml" cp "$CANON/$src" "$AIDOC/profile.yaml"
+  if [ "$DRY_RUN" != 1 ]; then
+    pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
+  fi
 else
-  log "(dry-run: placeholder fill + version pin skipped)"
+  if [ "$DRY_RUN" != 1 ]; then
+    pinsub "$AIDOC/profile.yaml" -E "s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$VERSION\"/"
+    log "existing profile.yaml preserved and re-pinned to $VERSION"
+  fi
 fi
 
 # BOOTSTRAP step 3: attach the framework (pin or symlink).
@@ -230,13 +244,21 @@ fi
 if readlink -f "$AIDOC/framework" >/dev/null 2>&1; then :;
 elif [ -e "$AIDOC/framework" ]; then :; # readlink -f missing (macOS): -e follows links too
 else die "smoke: .aidoc/framework does not resolve"; fi
-PINNED="$(sed -n -E 's/^  framework_version: "?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
+PINNED="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
 [ "$PINNED" = "$VERSION" ] || die "smoke: profile pins $PINNED, canon is $VERSION"
 SURFACE="$AIDOC/framework/framework/governance/ADAPTATION_SURFACE.yaml"
 [ -f "$SURFACE" ] || die "smoke: incomplete copy — ADAPTATION_SURFACE.yaml missing"
-if command -v python3 >/dev/null; then
+
+PY_RUNNER=""
+if command -v uv >/dev/null && uv run python -c "import yaml" >/dev/null 2>&1; then
+  PY_RUNNER="uv run python"
+elif command -v python3 >/dev/null; then
+  PY_RUNNER="python3"
+fi
+
+if [ -n "$PY_RUNNER" ]; then
   rc=0
-  python3 - "$AIDOC/profile.yaml" "$SURFACE" <<'EOF' || rc=$?
+  $PY_RUNNER - "$AIDOC/profile.yaml" "$SURFACE" <<'EOF' || rc=$?
 import sys
 try:
     import yaml

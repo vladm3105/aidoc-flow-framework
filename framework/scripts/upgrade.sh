@@ -131,7 +131,7 @@ if [ -n "$CANON_SHA" ]; then
   case "$CANON_SHA" in *[!0-9a-f]*) refuse "--canon-sha must be hex" ;; esac
 fi
 
-CURRENT="$(sed -n -E 's/^  framework_version: "?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
+CURRENT="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
 [ -n "$CURRENT" ] || die "no framework_version pin in $AIDOC/profile.yaml"
 
 SCRATCH=""
@@ -255,8 +255,8 @@ else
   fi
 fi
 if [ "$DRY_RUN" != 1 ]; then
-  pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$NEW\"/"
-  VERIFY="$(sed -n -E 's/^  framework_version: "?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
+  pinsub "$AIDOC/profile.yaml" -E "s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$NEW\"/"
+  VERIFY="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
   [ "$VERIFY" = "$NEW" ] || die "re-pin failed: profile reads $VERIFY, expected $NEW"
   log "profile.yaml re-pinned at framework_version $NEW (verified)"
 fi
