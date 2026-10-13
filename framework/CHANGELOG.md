@@ -7,11 +7,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.32 |
+| Version | 1.33 |
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.11 |
+| Framework Version | 0.91.12 |
+
+## [0.91.12] — 2026-10-13
+
+### Updated — Standardize Technology Stack References to Canonical GitHub Repository (C1 Governance, CHG-93 + IPLAN-93, Decision DEC-CHG-93)
+
+- **Platform Technology Stack Citations (`RECOMMENDED_PLATFORM_STACK.md`, `TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+  - Removed local workstation filesystem paths (`/home/ya/devd/technology_stack/`) from `RECOMMENDED_PLATFORM_STACK.md` and `TECHNOLOGY_STACK_USAGE_GUIDE.md`, standardizing exclusively on canonical repository citations for `https://github.com/vladm3105/technology-stack` (`vladm3105/technology-stack`).
+  - Standardized git clone instructions in Section 5.3 of `RECOMMENDED_PLATFORM_STACK.md` to clone into standard local destinations without personal workstation assumptions.
+  - Eliminated local environment leaks to preserve engine neutrality, agent autonomy across distributed environments, and portability.
 
 ## [0.91.11] — 2026-10-13
 

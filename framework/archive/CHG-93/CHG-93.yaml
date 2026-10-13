@@ -1,0 +1,131 @@
+# =============================================================================
+#  CHG-93: Standardize Technology Stack References to Canonical GitHub Repository
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Documentation Update)
+#  Pre-cleared: User instruction in session (2026-10-13)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.12"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-93"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      User instruction in session: RECOMMENDED_PLATFORM_STACK.md,
+      TECHNOLOGY_STACK_USAGE_GUIDE.md fix to use github repo instead of OS path
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-93)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-93"
+  title: "Standardize Technology Stack Citations to Canonical GitHub Repository"
+  status: "Ratified"
+  context: |
+    Previous updates cited both the canonical GitHub repository (vladm3105/technology-stack)
+    and a local workstation path (/home/ya/devd/technology_stack). Retaining hardcoded local OS
+    filesystem paths leaks personal workstation environment details into framework governance
+    specifications, violating engine neutrality and portability for autonomous agents operating
+    in distributed environments and ephemeral containers.
+  choice: |
+    1. Update RECOMMENDED_PLATFORM_STACK.md and TECHNOLOGY_STACK_USAGE_GUIDE.md to reference
+       the canonical GitHub repository (https://github.com/vladm3105/technology-stack)
+       exclusively instead of local OS filesystem paths.
+    2. Update git clone instructions to clone into standard local targets without assuming
+       personal workstation directories.
+  consequences: |
+    - Complete portability across local workstations, CI runners, and agent sandboxes.
+    - Zero host or personal filesystem leaks in framework governance documentation.
+    - Preserves engine neutrality in framework/layers/ per Decision D-0013 / GD-13.
+  alternatives_considered:
+    - option: "Retain local workstation paths alongside GitHub URLs"
+      rationale_rejected: >-
+        Leaks environment-specific paths into normative governance documents.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Standardize Technology Stack Citations to Canonical GitHub Repository"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Remove local OS filesystem paths from RECOMMENDED_PLATFORM_STACK.md and
+    TECHNOLOGY_STACK_USAGE_GUIDE.md, standardizing on the canonical GitHub repository
+    https://github.com/vladm3105/technology-stack.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Standardize platform technology stack references to canonical GitHub repository"
+  components_affected:
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    - "framework/CHANGELOG.md"
+    - "framework/VERSION"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-93/IPLAN-93.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-93.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-93/IPLAN-93.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-93.yaml"
+    - "test_governance.py and test_spec_hygiene.py green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

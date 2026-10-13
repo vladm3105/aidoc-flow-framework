@@ -1,0 +1,33 @@
+# =============================================================================
+#  IPLAN-93: Standardize Technology Stack Citations to Canonical GitHub Repository
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-93/CHG-93.yaml
+# =============================================================================
+
+id: "IPLAN-93"
+chg_id: "CHG-93"
+title: "Standardize Technology Stack Citations to Canonical GitHub Repository"
+status: "Completed"
+framework_version: "0.91.12"
+
+file_manifest:
+  - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+  - "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+  - "framework/CHANGELOG.md"
+  - "framework/VERSION"
+  - "framework/archive/CHG-93/CHG-93.yaml"
+  - "framework/archive/CHG-93/IPLAN-93.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-93.yaml and IPLAN-93.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update RECOMMENDED_PLATFORM_STACK.md and TECHNOLOGY_STACK_USAGE_GUIDE.md to use GitHub repository reference exclusively"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Bump framework/VERSION to 0.91.12 and record in framework/CHANGELOG.md"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Propagate version pins with sync-version-refs.sh and verify deterministic test suites"
+    status: "Completed"
