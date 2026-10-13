@@ -1,0 +1,40 @@
+# =============================================================================
+#  IPLAN-99: Invariant Guarding and Autonomous Escalation Workflow
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-99/CHG-99.yaml
+# =============================================================================
+
+id: "IPLAN-99"
+chg_id: "CHG-99"
+title: "Implement Invariant Guarding and Autonomous Escalation Workflow"
+status: "Completed"
+framework_version: "0.91.17"
+
+file_manifest:
+  - "sdd_doc_lint/chg_lint.py"
+  - "framework/governance/LINT_RULES.md"
+  - "framework/governance/workflows/iplan-escalation-flow.sw.yaml"
+  - "tests/chg/test_chg_lint.py"
+  - "framework/archive/CHG-99/CHG-99.yaml"
+  - "framework/archive/CHG-99/IPLAN-99.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "tests/conformance/test_governance.py"
+  - "tests/conformance/test_governance_workflows.py"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-99.yaml and IPLAN-99.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Implement CHG-L019 fast-path boundary guard in sdd_doc_lint/chg_lint.py"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Register CHG-L019 in framework/governance/LINT_RULES.md and add unit tests in tests/chg/test_chg_lint.py"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Author bottom-up feedback saga in framework/governance/workflows/iplan-escalation-flow.sw.yaml"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Validate CHG lint, swf_lint, and full test suite before submission"
+    status: "Completed"
