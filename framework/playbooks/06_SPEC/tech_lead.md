@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: tech_lead
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.91.10"
+framework_spec_version: "0.91.11"
 ---
 # tech_lead lens — SPEC layer
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.10 |
+| Framework Version | 0.91.11 |
 
 **Scope:** Two-Stage Review & Remediation Loop for `[Project Name]`
 **Governing Rules:** `REVIEW_REMEDIATION_FLOW.md`, `CI_AUTONOMOUS_PR_STANDARD.md`, `AGENTS.md`

@@ -7,11 +7,20 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 
 | Field | Value |
 |-------|-------|
-| Version | 1.31 |
+| Version | 1.32 |
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.10 |
+| Framework Version | 0.91.11 |
+
+## [0.91.11] — 2026-10-13
+
+### Updated — Reference Canonical Technology Stack GitHub Repository (C1 Governance, CHG-92 + IPLAN-92, Decision DEC-CHG-92)
+
+- **Platform Technology Stack Upstream Repository Linkage (`RECOMMENDED_PLATFORM_STACK.md`, `TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+  - Added canonical repository citations for `https://github.com/vladm3105/technology-stack` alongside local workstation path `/home/ya/devd/technology_stack/` across Document Control, Purpose, Technology Matrix intro, Mermaid progressive refinement flowchart, and Specification Directory.
+  - Added Section 5.3 to `RECOMMENDED_PLATFORM_STACK.md` documenting git clone instructions (`git clone https://github.com/vladm3105/technology-stack.git /home/ya/devd/technology_stack`) for developers and autonomous agents to obtain the actual technology stack specifications (00–19).
+  - Modernized `TECHNOLOGY_STACK_USAGE_GUIDE.md` to reference the canonical upstream repository and local development path across all tiers, eliminating legacy path references.
 
 ## [0.91.10] — 2026-10-13
 
