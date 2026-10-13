@@ -19,6 +19,8 @@ file_manifest:
   - "framework/archive/CHG-99/IPLAN-99.yaml"
   - "framework/VERSION"
   - "hooks/sync-version-refs.sh"
+  - "tests/conformance/test_governance.py"
+  - "tests/conformance/test_governance_workflows.py"
 
 tasks:
   - id: "TASK-01"

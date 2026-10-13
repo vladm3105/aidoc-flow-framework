@@ -22,6 +22,7 @@ EXPECTED_WORKFLOWS = [
     "review-remediation-flow.sw.yaml",
     "decision-ratification-flow.sw.yaml",
     "decision-migration-flow.sw.yaml",
+    "iplan-escalation-flow.sw.yaml",
     "bdd-acceptance-run.sw.yaml",
     "tdd-test-execution.sw.yaml",
     "spec-choreography-contract.sw.yaml",
