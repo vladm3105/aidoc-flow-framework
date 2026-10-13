@@ -32,8 +32,8 @@ class SpecGateGuard(unittest.TestCase):
         module = _load_spec_gate()
         self.assertEqual(
             set(module.CODES),
-            {"GATE-SPEC-E005", "GATE-SPEC-E008"},
-            "spec_gate owns exactly the two diff-aware GATE-SPEC codes",
+            {"GATE-SPEC-E005"},
+            "spec_gate owns the diff-aware GATE-SPEC-E005 code (E008 retired in CHG-94)",
         )
         catalog = CATALOG.read_text(encoding="utf-8")
         for code in module.CODES:
@@ -45,33 +45,21 @@ class SpecGateGuard(unittest.TestCase):
         module = _load_spec_gate()
         self.assertEqual(module.evaluate(["README.md", "platforms/x/SKILL.md"]), [])
 
-    def test_spec_change_without_version_or_changelog_fails(self):
+    def test_spec_change_without_version_fails(self):
         module = _load_spec_gate()
         failures = module.evaluate(["framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"])
-        self.assertEqual(set(failures), {"GATE-SPEC-E005", "GATE-SPEC-E008"})
+        self.assertEqual(failures, ["GATE-SPEC-E005"])
 
-    def test_compliant_spec_change_passes(self):
+    def test_compliant_spec_change_passes_without_changelog(self):
+        """Spec changes require only framework/VERSION (CHANGELOG is a frozen tombstone per CHG-94)."""
         module = _load_spec_gate()
         failures = module.evaluate(
             [
                 "framework/VERSION",
                 "framework/governance/ADAPTATION.md",
-                "framework/CHANGELOG.md",
             ]
         )
         self.assertEqual(failures, [])
-
-    def test_root_changelog_alone_does_not_satisfy_e008(self):
-        """The root log is a frozen tombstone (#836): only the framework log counts."""
-        module = _load_spec_gate()
-        failures = module.evaluate(
-            [
-                "framework/VERSION",
-                "framework/governance/ADAPTATION.md",
-                "CHANGELOG.md",
-            ]
-        )
-        self.assertEqual(failures, ["GATE-SPEC-E008"])
 
     def test_archive_only_change_is_not_a_spec_change(self):
         """Edits confined to framework/archive/** carry no VERSION obligation (#725)."""
@@ -95,7 +83,7 @@ class SpecGateGuard(unittest.TestCase):
                 "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md",
             ]
         )
-        self.assertEqual(set(failures), {"GATE-SPEC-E005", "GATE-SPEC-E008"})
+        self.assertEqual(failures, ["GATE-SPEC-E005"])
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.12 |
+| Framework Version | 0.91.13 |
 
 
 Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
@@ -158,7 +158,7 @@ protected-branch review.
 | GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped when normative `framework/**` changed (archive-tier-only repairs exempt) | Bump `framework/VERSION` per `semver_impact` |
 | GATE-SPEC-E006 | Conformance | Spec-version pins out of sync | Re-declare in-repo pins (`bash hooks/sync-version-refs.sh`) and re-run conformance |
 | GATE-SPEC-E007 | Conformance | Shared conformance suite failing | Fix the spec; never weaken a check |
-| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change (archive-tier-only repairs exempt) |
+| GATE-SPEC-E008 | Documentation | [RETIRED in CHG-94] `CHANGELOG.md` update requirement | Retired; `framework/CHANGELOG.md` frozen as tombstone; changelog generated on demand from CHG archives |
 
 ### 6b.2 Warnings (W)
 
