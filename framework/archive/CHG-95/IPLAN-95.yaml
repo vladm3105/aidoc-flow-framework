@@ -1,0 +1,48 @@
+# =============================================================================
+#  IPLAN-95: Retire and Tombstone framework/governance/DECISIONS.md
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-95/CHG-95.yaml
+# =============================================================================
+
+id: "IPLAN-95"
+chg_id: "CHG-95"
+title: "Retire and Tombstone framework/governance/DECISIONS.md"
+status: "Completed"
+framework_version: "0.91.14"
+
+file_manifest:
+  - "framework/governance/DECISIONS.md"
+  - "framework/governance/DECISION_WORKFLOW.md"
+  - "framework/governance/workflows/decision-migration-flow.sw.yaml"
+  - "framework/governance/workflows/decision-ratification-flow.sw.yaml"
+  - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+  - "framework/governance/DIAGRAM_STANDARDS.md"
+  - "framework/governance/README.md"
+  - "tests/conformance/test_governance_workflows.py"
+  - "AGENTS.md"
+  - "CONTRIBUTING.md"
+  - "README.md"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-95/CHG-95.yaml"
+  - "framework/archive/CHG-95/IPLAN-95.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-95.yaml and IPLAN-95.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Author decision-migration-flow.sw.yaml and update decision-ratification-flow.sw.yaml"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Tombstone framework/governance/DECISIONS.md with frozen notice, v1.38, and GD-78"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update DECISION_WORKFLOW.md with migration flow and ratification Mermaid diagrams"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Update GOVERNANCE_WORKFLOW_STANDARD.md, standards, and test_governance_workflows.py"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Bump framework/VERSION to 0.91.14, sync version references, and verify test suites"
+    status: "Completed"

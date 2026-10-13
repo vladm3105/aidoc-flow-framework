@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -104,7 +104,7 @@ framework/
                          (templates/); the CHG change-management overlay (gates incl.
                          GATE-SPEC, the framework-spec change gate; templates); the project
                          adaptation surface (ADAPTATION.md + ADAPTATION_SURFACE.yaml);
-                         and DECISIONS.md, the spec-level decision register.
+                         and DECISIONS.md, the spec-level decision register (retired tombstone).
                          See governance/README.md.
   archive/               Archived originals from CHG-modified documents.
                          Structure: archive/{CHG-ID}/ (vehicle files at

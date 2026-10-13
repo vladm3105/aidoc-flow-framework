@@ -1,25 +1,46 @@
-# Framework Governance Decisions
+# Framework Governance Decisions (RETIRED / TOMBSTONE)
 
-Durable record of decisions about the **shared specification** and its
-governance. The spec is the contract every platform implements, so decisions
-that shape it live here — with the spec — not inside any one platform and not
-only in a migration-time log. Spec-affecting entries from the project's
-migration decision log graduate here once change management governs the spec.
-
-A change to this file is itself a framework-spec change: it passes **GATE-SPEC**
-(`../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`) like any other change to the spec.
-
-Newest first. Timestamps are ISO 8601 UTC.
-
+> [!IMPORTANT]
+> **`framework/governance/DECISIONS.md` is RETIRED and FROZEN as a permanent tombstone per Decision DEC-CHG-95 / GD-78.**
+> 
+> The monolithic decisions register has been bifurcated into its two fundamental concerns:
+> 1. **Active Governance Rules & Invariants**: Migrated to executable CNCF Serverless Workflow state machines ([`framework/governance/workflows/*.sw.yaml`](workflows/)), governance standards ([`GOVERNANCE_WORKFLOW_STANDARD.md`](GOVERNANCE_WORKFLOW_STANDARD.md), [`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md), [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)), and layer specifications.
+> 2. **Operational Change Decisions & Evolution**: Authored and tracked directly in their authorizing Change Requests ([`framework/archive/CHG-*/CHG-*.yaml`](../archive/) Section 1B `decision:` block) and enforced by structural linter rule `CHG-L018`.
+> 
+> The historical entries below (**GD-01 through GD-77**) are preserved strictly for permanent citation, git permalink integrity, and conformance test backward compatibility. **Do not add new entries here.** All future framework changes author decisions in `CHG-NN.yaml`.
 
 ## Document Control
 | Field | Value |
-|-------|-------|
-| Version | 1.37 |
-| Status | Approved |
-| Last Updated | 2026-10-11 |
+|---|---|
+| Version | 1.38 |
+| Status | Retired / Tombstone |
+| Retired In | CHG-95 (0.91.14) |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
+| Successor Surfaces | `framework/governance/workflows/*.sw.yaml` (Governance Rules) + `framework/archive/CHG-*/` (Change Decisions) |
+
+---
+
+## GD-78 — Retirement and Tombstone of Governance Decisions Register & Migration to Executable Workflows and Change Requests (CHG-95, 0.91.14 C2 Spec)
+
+- **Status**: Ratified / Tombstone
+- **Date**: 2026-10-13
+- **Driver**: `framework/governance/DECISIONS.md` conflated two distinct concerns: (1) active governance rules and architectural invariants, and (2) historical change requests tracking framework evolution. This created a 3,200-line monolithic file that consumed excessive context tokens, introduced split-brain divergence against declarative workflow graphs (`.sw.yaml`), and duplicated information already captured in structured Change Requests (`CHG-NN.yaml` Section 1B `decision:` block). Following the retirement of `plans/DECISIONS.md` (CHG-80 / GD-71) and `framework/CHANGELOG.md` (CHG-94 / GD-78), this decision retires `framework/governance/DECISIONS.md` as a frozen historical tombstone.
+- **Decision**:
+  1. **Bifurcation of Concerns**:
+     - Active governance rules, state machines, and invariants are codified in declarative CNCF Serverless Workflows (`framework/governance/workflows/*.sw.yaml`), governance standards (`GOVERNANCE_WORKFLOW_STANDARD.md`, `CHG_REQUEST_FLOWS.md`), and layer specifications.
+     - Operational change decisions, rationale, context, and consequences are authored exclusively in `CHG-NN.yaml` Section 1B and archived under `framework/archive/CHG-NN/` (enforced by `CHG-L018`).
+  2. **Frozen Historical Tombstone**:
+     - Freeze `framework/governance/DECISIONS.md` as a read-only tombstone. Entries `GD-01` through `GD-77` are preserved intact for backward compatibility with citations and conformance tests. No future entries may be appended.
+  3. **Executable Decision Migration Flow**:
+     - Ratify CNCF Serverless Workflow `framework/governance/workflows/decision-migration-flow.sw.yaml` and companion Mermaid diagrams in `DECISION_WORKFLOW.md`.
+  4. **Ratification Flow Modernization**:
+     - Update `framework/governance/workflows/decision-ratification-flow.sw.yaml` State 7 to lock decisions in `CHG-NN.yaml` and dispatch governance workflow sync rather than appending to markdown registers.
+- **Consequences**:
+  - Eliminates 3,200-line maintenance overhead and context bloat across future AI agent interactions.
+  - Establishes single source of truth for governance rules in executable `.sw.yaml` graphs and for change rationale in `CHG-NN.yaml`.
+  - Zero disruption to existing conformance tests asserting historical GD citations.
 
 ---
 

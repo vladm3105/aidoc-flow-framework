@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.13 |
+| Framework Version | 0.91.14 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -61,7 +61,7 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `RECOMMENDED_PLATFORM_STACK.md` | Recommended platform technology stack guidance — authoritative reference architecture connecting the vendor-neutral framework to Debian 13, Docker/gVisor, Temporal + LangGraph, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, and Langfuse. |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
-| `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
+| `DECISIONS.md` | Retired register of decisions about the spec and its governance (frozen tombstone at GD-77). |
 | `submit-feedback` skill (`framework/skills/submit-feedback/`) | The filing workflow for framework friction found while applying the spec (the canonical reference of DOC_GOVERNANCE_CORE Principle 9). |
 | `DECISION_WORKFLOW.md` | The decision-making workflow — how governance decisions are proposed, reviewed, and ratified. |
 | `MODULE_LAYOUT.md` | The module structure and organization conventions for the framework. |
@@ -88,6 +88,7 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
 | `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
+| `decision-migration-flow.sw.yaml` | Governance | Dual-channel decision migration & bifurcation flow from monolithic registers to workflows and CHGs. |
 | `eval-verification-run.sw.yaml` | Layer 10 EVAL | Multi-tier test execution, structured error triage, threshold verification, and evidence bundling. |
 | `review/brd-review-remediation.sw.yaml` | Layer 01 BRD Review | Multi-persona parallel audit (business_analyst, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/prd-review-remediation.sw.yaml` | Layer 02 PRD Review | Multi-persona parallel audit (product_owner, tech_lead, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |

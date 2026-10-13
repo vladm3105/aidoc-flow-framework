@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Any
 
 try:
     import yaml
@@ -73,7 +72,9 @@ def validate_profile(path: Path) -> tuple[bool, list[str]]:
             active_set = {str(l).upper() for l in active}
             unknown = active_set - KNOWN_LAYERS
             if unknown:
-                errors.append(f"active_layers contains unknown layer(s): {', '.join(sorted(unknown))}")
+                errors.append(
+                    f"active_layers contains unknown layer(s): {', '.join(sorted(unknown))}"
+                )
             missing_mandatory = MANDATORY_LAYERS - active_set
             if missing_mandatory:
                 errors.append(
@@ -103,9 +104,7 @@ def validate_profile(path: Path) -> tuple[bool, list[str]]:
         if knob in data:
             val = data[knob]
             if not isinstance(val, int) or val < min_v or val > max_v:
-                errors.append(
-                    f"{knob} must be an integer between {min_v} and {max_v} (got {val})"
-                )
+                errors.append(f"{knob} must be an integer between {min_v} and {max_v} (got {val})")
 
     # 6. exec_protected_paths
     protected = data.get("exec_protected_paths")

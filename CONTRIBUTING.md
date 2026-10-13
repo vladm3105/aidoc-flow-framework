@@ -46,7 +46,7 @@ Together they handle: mechanical sync is invisible (just commit; the right files
 
 | Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
 |---|---|---|---|
-| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; authorizing `framework/archive/CHG-*/` change request (both changelogs are frozen tombstones; changelogs generated on demand from CHG archives) | playbook frontmatter, `framework_version` metadata, document-control rows | DECISIONS entry; CHG request record |
+| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; authorizing `framework/archive/CHG-*/` change request (both changelogs and DECISIONS registers are frozen tombstones; change rationale and decisions live in CHG archives) | playbook frontmatter, `framework_version` metadata, document-control rows | CHG request record |
 | **User-visible policy/rule** | `AGENTS.md` §Governance Gate; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
 | **Defect discovered** | Open GitHub issue with reproduction, blast radius, fix shape | — | issue body |
 | **Session milestone reached** | handoff narrative in PR description | — | handoff narrative (PRs landed, next item) |
@@ -60,7 +60,7 @@ If your change spans categories, do all the updates. The hooks above flag misses
 `check-docs-updated` prints a WARNING when:
 
 - Any of `framework/**`, `sdd_doc_lint/**`, `hooks/**`, `tests/**` is staged
-- AND no doc-of-record (`README.md`, `AGENTS.md`, `framework/VERSION`, `framework/governance/DECISIONS.md`) is staged
+- AND no doc-of-record (`README.md`, `AGENTS.md`, `framework/VERSION`) is staged
 
 Common false positives (warning is correct to ignore):
 

@@ -1,0 +1,155 @@
+# ===============================================================================
+# CNCF Serverless Workflow: Decision Migration & Bifurcation Flow
+# ===============================================================================
+# Specification: CNCF Serverless Workflow DSL v0.8 (YAML)
+# Standard Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+# Governs: framework/governance/DECISION_WORKFLOW.md, DECISIONS.md, workflows/*.sw.yaml
+# Runtime Architecture: Pure declarative YAML; zero runtime lock-in (D-0013)
+# ===============================================================================
+
+id: decision-migration-flow
+name: Decision Migration and Bifurcation Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Executable CNCF Serverless Workflow state machine orchestrating the migration and
+  bifurcation of legacy monolithic decisions from framework/governance/DECISIONS.md into
+  declarative governance workflow graphs (*.sw.yaml) and structured Change Requests (CHG-NN.yaml).
+
+start: IngestDecisionRecord
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Ingest Decision Record
+  # -----------------------------------------------------------------------------
+  - name: IngestDecisionRecord
+    type: operation
+    actions:
+      - name: ParseDecisionContent
+        functionRef:
+          refName: ingestDecisionEntry
+          arguments:
+            source: "${ .decision_source }"
+            entry_id: "${ .entry_id }"
+    transition: ClassifyDecisionConcern
+
+  # -----------------------------------------------------------------------------
+  # State 2: Classify Decision Concern
+  # -----------------------------------------------------------------------------
+  - name: ClassifyDecisionConcern
+    type: switch
+    dataConditions:
+      - name: IsGovernanceInvariantRule
+        condition: "${ .concern_type == 'governance_rule' }"
+        transition: CodifyGovernanceWorkflowGraph
+      - name: IsOperationalChangeRecord
+        condition: "${ .concern_type == 'operational_change' }"
+        transition: PopulateChangeRequestEnvelope
+    defaultCondition:
+      transition: EscalateUnclassifiedDecision
+
+  # -----------------------------------------------------------------------------
+  # State 3: Codify Governance Workflow Graph
+  # -----------------------------------------------------------------------------
+  - name: CodifyGovernanceWorkflowGraph
+    type: operation
+    actions:
+      - name: GenerateWorkflowDefinition
+        functionRef:
+          refName: authorServerlessWorkflow
+          arguments:
+            workflow_id: "${ .workflow_id }"
+            states: "${ .workflow_states }"
+            spec_version: "0.8"
+      - name: RegisterInGovernanceStandard
+        functionRef:
+          refName: updateWorkflowStandardCatalog
+          arguments:
+            catalog_file: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+            workflow_entry: "${ .workflow_id }"
+    transition: ValidateWorkflowWithSwfLint
+
+  # -----------------------------------------------------------------------------
+  # State 4: Validate Workflow With SwfLint
+  # -----------------------------------------------------------------------------
+  - name: ValidateWorkflowWithSwfLint
+    type: operation
+    actions:
+      - name: RunSwfLinter
+        functionRef:
+          refName: executeSwfLinter
+          arguments:
+            target_path: "framework/governance/workflows/${ .workflow_id }.sw.yaml"
+    transition: VerifyHistoricalTombstoneIntegrity
+
+  # -----------------------------------------------------------------------------
+  # State 5: Populate Change Request Envelope
+  # -----------------------------------------------------------------------------
+  - name: PopulateChangeRequestEnvelope
+    type: operation
+    actions:
+      - name: EmbedSection1BDecision
+        functionRef:
+          refName: formatChgDecisionBlock
+          arguments:
+            chg_id: "${ .chg_id }"
+            decision_id: "${ .decision_id }"
+            context: "${ .context }"
+            choice: "${ .choice }"
+            consequences: "${ .consequences }"
+            alternatives: "${ .alternatives_considered }"
+    transition: ValidateChangeWithChgLint
+
+  # -----------------------------------------------------------------------------
+  # State 6: Validate Change With ChgLint
+  # -----------------------------------------------------------------------------
+  - name: ValidateChangeWithChgLint
+    type: operation
+    actions:
+      - name: RunChgLinter
+        functionRef:
+          refName: executeChgLinter
+          arguments:
+            target_path: "framework/archive/${ .chg_id }/${ .chg_id }.yaml"
+            enforce_rule: "CHG-L018"
+    transition: VerifyHistoricalTombstoneIntegrity
+
+  # -----------------------------------------------------------------------------
+  # State 7: Verify Historical Tombstone Integrity
+  # -----------------------------------------------------------------------------
+  - name: VerifyHistoricalTombstoneIntegrity
+    type: operation
+    actions:
+      - name: AssertTombstoneSealed
+        functionRef:
+          refName: verifyTombstoneNotice
+          arguments:
+            tombstone_path: "framework/governance/DECISIONS.md"
+            frozen_at_entry: "GD-77"
+    transition: DecisionMigrationTerminal
+
+  # -----------------------------------------------------------------------------
+  # State 8: Terminal Success State
+  # -----------------------------------------------------------------------------
+  - name: DecisionMigrationTerminal
+    type: inject
+    data:
+      migration_status: "COMPLETED"
+      governance_channel: "CNCF_WORKFLOW_GRAPH"
+      change_channel: "CHG_ARCHIVE_ENVELOPE"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # State 9: Escalate Unclassified Decision (Fallback Terminal)
+  # -----------------------------------------------------------------------------
+  - name: EscalateUnclassifiedDecision
+    type: operation
+    actions:
+      - name: LogClassificationFailure
+        functionRef:
+          refName: reportTriageRequired
+          arguments:
+            entry_id: "${ .entry_id }"
+            reason: "Ambiguous decision type; requires human triage"
+    end:
+      terminate: true
