@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Version | 2.1 |
+| Version | 2.2 |
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.11 |
-| Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml) & [CHG-92](../archive/CHG-92/CHG-92.yaml) |
-| Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (local workspace: `/home/ya/devd/technology_stack`, Standard v2.0, Specifications 00–19) |
+| Framework Version | 0.91.12 |
+| Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
+| Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–19) |
 
 ---
 
@@ -24,7 +24,7 @@ quality gates, and review crews without tying projects to any proprietary softwa
 
 This document serves as the **authoritative platform governance guidance**. It defines our ecosystem's
 **recommended reference architecture**, mapping the vendor-agnostic framework contracts directly to our
-enterprise technology stack codified in the canonical upstream repository **[vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)** (local workspace: **`/home/ya/devd/technology_stack/`**, Standard v2.0). Projects adopting this stack use the operational blueprints in
+enterprise technology stack codified in the canonical upstream repository **[vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)** (Standard v2.0). Projects adopting this stack use the operational blueprints in
 [`framework/governance/aidoc/`](aidoc/) and companion specifications 00–19 to instantiate runtimes with zero architectural drift.
 
 ---
@@ -66,7 +66,7 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 
 ## 3. Master Platform Technology Matrix
 
-The following authoritative matrix synthesizes Specifications 00 through 19 from [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (local checkout: `/home/ya/devd/technology_stack/`):
+The following authoritative matrix synthesizes Specifications 00 through 19 from [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack):
 
 | Layer / Category | Platform Component | Version / Runtime | Core Role & Rationale | SDD Framework Contract |
 |---|---|---|---|---|
@@ -149,7 +149,7 @@ flowchart TD
     end
 
     subgraph ENTERPRISE_GOVERNANCE["Enterprise Standard"]
-        STACK["vladm3105/technology-stack<br/>(/home/ya/devd/technology_stack)<br/>(Debian 13, PG18 HA, Temporal, NATS, gVisor, ClickHouse, Cloudflare Tunnel, Tailscale+AWG, Valkey 8, Superset)"]
+        STACK["vladm3105/technology-stack<br/>(Debian 13, PG18 HA, Temporal, NATS, gVisor, ClickHouse, Cloudflare Tunnel, Tailscale+AWG, Valkey 8, Superset)"]
     end
 
     subgraph SELECTION_GATE["The Architectural & Technology Selection Gate"]
@@ -205,7 +205,7 @@ In adherence to Specification 16 (`16-tri-environment-dev-stage-prod.md`), SDD e
 
 ### 5.1 Authoritative Specification Directory
 
-The enterprise platform architecture is codified across 20 companion specifications in the canonical repository **[https://github.com/vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)** (local checkout: `/home/ya/devd/technology_stack/`):
+The enterprise platform architecture is codified across 20 companion specifications in the canonical repository **[https://github.com/vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)**:
 
 | Spec # | Specification Document | Primary Scope & Governed Architecture |
 |---|---|---|
@@ -247,5 +247,5 @@ To inspect, verify, or clone the live specifications (00–19) and container con
 
 ```bash
 # Clone the canonical technology stack repository
-git clone https://github.com/vladm3105/technology-stack.git /home/ya/devd/technology_stack
+git clone https://github.com/vladm3105/technology-stack.git
 ```

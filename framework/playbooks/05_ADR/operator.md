@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: operator
 weight: 10
 agent: devops-release-engineer
-framework_spec_version: "0.91.11"
+framework_spec_version: "0.91.12"
 ---
 # operator lens — ADR layer
 
