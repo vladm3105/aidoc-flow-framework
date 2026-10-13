@@ -1,0 +1,53 @@
+# =============================================================================
+#  IPLAN-97: Adopt Binary Topological Validation (BTV) Across SDD Layers
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-97/CHG-97.yaml
+# =============================================================================
+
+id: "IPLAN-97"
+chg_id: "CHG-97"
+title: "Adopt Binary Topological Validation Across Layer Templates and Sagas"
+status: "Completed"
+framework_version: "0.91.16"
+
+file_manifest:
+  - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+  - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+  - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+  - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+  - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/README.md"
+  - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+  - "framework/governance/workflows/review/brd-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/prd-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/ears-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/bdd-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/adr-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/spec-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/tdd-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/iplan-review-remediation.sw.yaml"
+  - "framework/governance/workflows/review/chg-review-remediation.sw.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-97/CHG-97.yaml"
+  - "framework/archive/CHG-97/IPLAN-97.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-97.yaml and IPLAN-97.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update Layer 01-07 templates and Section 5 glossaries to adopt Binary Topological Validation"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update review sagas in framework/governance/workflows/review/ to use topological_pass"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Bump framework/VERSION to 0.91.16 and propagate via hooks/sync-version-refs.sh"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Run local pre-push checks, validate CHG lint, swf_lint, and confirm conformance suite green"
+    status: "Completed"

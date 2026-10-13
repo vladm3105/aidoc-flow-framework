@@ -1,0 +1,152 @@
+# =============================================================================
+#  CHG-97: Adopt Binary Topological Validation (BTV) Across SDD Layers
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation / Spec Clarification)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issue #964
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.16"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-97"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): implement TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN
+      Phase 1 Binary Topological Validation (#962, #964)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-97)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-97"
+  title: "Adopt Binary Topological Validation and Retire Heuristic Percentage Readiness Scoring"
+  status: "Ratified"
+  context: |
+    Layer templates (01_BRD through 07_TDD) and review workflows historically included
+    subjective percentage readiness metrics (e.g., "ADR-Ready Score: >=90/100", with
+    arbitrary sub-weights like 40% coverage, 25% quality, 20% traceability, 15% edge cases).
+    In practice, autonomous LLM agents easily game qualitative text sections to self-report
+    compliant percentage cutoffs despite latent structural inconsistencies.
+    Meanwhile, the framework's actual structural linter (sdd_doc_lint) operates strictly on
+    binary topological graph completeness (COV01, COV02, ELEMENT-COVERAGE-001). The heuristic
+    percentage scoring text contradicts the deterministic linter floor and introduces
+    hallucination-inducing friction in agent prompts.
+  choice: |
+    1. Deprecate scalar percentage scoring and weighted heuristic formulas across Layer 01-07
+       templates (BRD, PRD, EARS, BDD, ADR, SPEC, TDD) and auditor playbooks.
+    2. Establish Binary Topological Validation (BTV) as the sole quality gating standard:
+       - Strict DAG Completeness (PASS / FAIL): 100% @-pointer resolution without dangling citations.
+       - Strict Oracle Coverage (PASS / FAIL): 100% EARS requirements realized downstream by BDD
+         behavioral state graphs, and 100% BDD scenarios realized by failing TDD test fixtures.
+    3. Update Section 5 Glossaries in EARS-TEMPLATE.yaml, BDD-TEMPLATE.yaml, ADR-TEMPLATE.yaml,
+       and companion SWF templates to redefine *-Ready terms as binary topological verification.
+    4. Update review sagas (framework/governance/workflows/review/*.sw.yaml) to replace legacy
+       threshold_score: 90.0 payload with topological_pass: true.
+    5. Bump framework/VERSION to 0.91.16 and propagate via hooks/sync-version-refs.sh.
+  consequences: |
+    - Eliminates qualitative percentage hallucinations and prompt confusion for AI agents.
+    - Fully synchronizes written template validation guidance with sdd_doc_lint's deterministic floor.
+    - 100% backward-compatible with sdd_doc_lint and existing test suites.
+  alternatives_considered:
+    - option: "Retain >=90% advisory scoring alongside binary gates"
+      rationale_rejected: >-
+        Retaining dual scoring maintains prompt bloat, confuses coding agents, and creates
+        split-brain divergence where an agent passes subjective text review but fails structural linting.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Adopt Binary Topological Validation Across Layer Templates and Sagas"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Retire heuristic percentage readiness scores across Layer 01-07 templates, playbooks,
+    glossaries, and review sagas in favor of deterministic Binary Topological Validation (BTV).
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Adopt Binary Topological Validation across SDD layers"
+  components_affected:
+    - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/README.md"
+    - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+    - "framework/governance/workflows/review/"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-97/IPLAN-97.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-97.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-97/IPLAN-97.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-97.yaml"
+    - "spec_gate.py passing with VERSION bump to 0.91.16"
+    - "swf_lint.py passing on modernized review sagas"
+    - "pre-push check and conformance suite green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

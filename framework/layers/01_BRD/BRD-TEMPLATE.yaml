@@ -50,12 +50,13 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers four checks:
-        structure      — required keys, element ID format, empty section detection
-        readiness score — advisory readiness target (PRD-Ready score; >=90/100, auditor-lens computed)
-        preflight      — environment / input readiness
-        consistency    — cross-document traceability
+      Validation is performed by the platform's conformance tooling (sdd_doc_lint).
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        structure    — required keys, element ID format, empty section detection
+        completeness — 100% element ID coverage and seed disposition realization (zero dangling edges)
+        preflight    — environment / input readiness
+        consistency  — cross-document forward traceability to PRD
+      Heuristic percentage readiness scores are retired in favor of binary topological validation.
   c4_level:
     _guidance: |
       SDD C4 map (10 layers):
