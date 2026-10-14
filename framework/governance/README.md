@@ -87,6 +87,11 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `seed-to-module-decomposition.sw.yaml` | Architecture | Triple-Lens decomposition (Structure, Trust Boundaries, Process/Sequence) from Tier 1 Seed Vision into Tier 2 C4-L2 Module Containers. |
 | `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification across 6 graph traversal paths, gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
 | `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
+| `multi-repo-contract-sync.sw.yaml` | Federated | Contract diff inspection, protobuf linting, behavioral state graph verification, breaking change detection, polyglot SDK generation, registry publication, and CloudEvent broadcast. |
+| `cross-project-ci-dispatch.sw.yaml` | Federated | Cross-repo CI verification dispatch, downstream subscriber test execution against candidate contracts, result aggregation, and pre-merge commit status gates. |
+| `context-slicing-generation.sw.yaml` | Federated | DAG context slicing (`aidoc slice`), scoped `@`-pointer resolution against cache/socket, topological sort graph acyclicity check, and minimal context digest compilation. |
+| `stack-policy-validation.sw.yaml` | Federated | Pre-implementation stack policy validation, runtime edition constraints, copyleft/commercial license detection, package allowlists, and AST boundary pattern scanning. |
+| `support-ticket-escalation.sw.yaml` | Federated | Agent blocker ingestion, failure category classification, corporate memory deflection/retry, upstream bug ticket creation, and operations maintainer escalation. |
 | `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
 | `decision-migration-flow.sw.yaml` | Governance | Dual-channel decision migration & bifurcation flow from monolithic registers to workflows and CHGs. |

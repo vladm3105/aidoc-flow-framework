@@ -1,0 +1,140 @@
+id: context-slicing-generation
+name: Context Slicing Engine DAG Traversal & Digest Compilation Workflow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing DAG context slicing (aidoc slice), cross-project contract
+  pointer resolution, graph acyclicity verification, and token-efficient context digest
+  compilation per MULTI_PROJECT_FEDERATED_STANDARD.md.
+start: IngestTaskReference
+
+states:
+  # --- Step 1: Ingest Target Task ---
+  - name: IngestTaskReference
+    type: operation
+    actions:
+      - name: parseTaskDefinition
+        functionRef:
+          refName: loadIplanTask
+          arguments:
+            task_id: "${ .target_task_id }"
+            iplan_path: "docs/sdd/08_IPLAN/"
+    transition: TraverseLocalArtifactDAG
+
+  # --- Step 2: Traverse Local SDD Dependency DAG ---
+  - name: TraverseLocalArtifactDAG
+    type: operation
+    actions:
+      - name: computeLocalClosure
+        functionRef:
+          refName: executeDfsClosure
+          arguments:
+            target_task_id: "${ .target_task_id }"
+            allowed_layers:
+              - "EARS"
+              - "BDD"
+              - "ADR"
+              - "SPEC"
+              - "TDD"
+    transition: InspectExternalPointers
+
+  - name: InspectExternalPointers
+    type: switch
+    dataConditions:
+      - condition: "${ .external_pointers.length > 0 }"
+        transition: ResolveExternalContractsFromCache
+    defaultCondition:
+      transition: ValidateGraphAcyclicity
+
+  # --- Step 3: Resolve Cross-Project Scoped Pointers ---
+  - name: ResolveExternalContractsFromCache
+    type: operation
+    actions:
+      - name: resolveScopedPointers
+        functionRef:
+          refName: queryContractCache
+          arguments:
+            cache_path: ".aidoc/contracts/cache/"
+            pointers: "${ .external_pointers }"
+            fallback_socket: "/run/aidoc/agent.sock"
+    transition: ValidateExternalResolution
+
+  - name: ValidateExternalResolution
+    type: switch
+    dataConditions:
+      - condition: "${ .unresolved_pointers.length == 0 }"
+        transition: ValidateGraphAcyclicity
+    defaultCondition:
+      transition: HandleUnresolvedContractPointers
+
+  - name: HandleUnresolvedContractPointers
+    type: operation
+    actions:
+      - name: reportMissingPointers
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "MISSING_CONTRACTS"
+            unresolved: "${ .unresolved_pointers }"
+            message: "Required external contract pointers could not be resolved from local cache or socket."
+    end:
+      terminate: true
+
+  # --- Step 4: Validate Graph Acyclicity (Topological Sort) ---
+  - name: ValidateGraphAcyclicity
+    type: operation
+    actions:
+      - name: runTopologicalSort
+        functionRef:
+          refName: checkGraphAcyclicity
+          arguments:
+            nodes: "${ .accumulated_subgraph }"
+    transition: EvaluateAcyclicity
+
+  - name: EvaluateAcyclicity
+    type: switch
+    dataConditions:
+      - condition: "${ .is_acyclic == true }"
+        transition: CompileContextDigest
+    defaultCondition:
+      transition: RejectCircularDependency
+
+  - name: RejectCircularDependency
+    type: operation
+    actions:
+      - name: failOnCycle
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "CIRCULAR_DEPENDENCY_DETECTED"
+            cycle_path: "${ .detected_cycle }"
+            message: "Fatal contract error: dependency graph contains cyclic references."
+    end:
+      terminate: true
+
+  # --- Step 5: Compile High-Density Context Digest ---
+  - name: CompileContextDigest
+    type: operation
+    actions:
+      - name: renderDigestOutput
+        functionRef:
+          refName: generateContextDigest
+          arguments:
+            target_task_id: "${ .target_task_id }"
+            ordered_closure: "${ .topological_order }"
+            output_cache_path: ".aidoc/cache/"
+    transition: SlicingCompleted
+
+  - name: SlicingCompleted
+    type: operation
+    actions:
+      - name: recordSlicingMetrics
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "SUCCESS"
+            digest_file: ".aidoc/cache/context_${ .target_task_id }.md"
+            token_count: "${ .estimated_token_count }"
+            compression_ratio: "${ .token_savings_percentage }"
+    end:
+      terminate: true

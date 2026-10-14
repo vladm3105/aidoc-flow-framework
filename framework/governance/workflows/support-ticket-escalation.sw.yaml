@@ -1,0 +1,165 @@
+id: support-ticket-escalation
+name: Support Ticket & Agent Blocker Escalation Workflow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing agent task blocker classification, corporate memory deflection,
+  automated self-remediation, upstream provider bug ticketing, and maintainer escalation
+  per MULTI_PROJECT_FEDERATED_STANDARD.md and support_ticket.proto.
+start: IngestBlockerContext
+
+states:
+  # --- Step 1: Ingest Blocker Context ---
+  - name: IngestBlockerContext
+    type: operation
+    actions:
+      - name: parseBlockerDetails
+        functionRef:
+          refName: extractBlockerData
+          arguments:
+            schema: "aidoc.v1.SupportTicketPayload"
+            required_fields:
+              - "blocked_task_id"
+              - "symptom_description"
+    transition: ClassifyBlockerCategory
+
+  # --- Step 2: Classify Blocker Category ---
+  - name: ClassifyBlockerCategory
+    type: operation
+    actions:
+      - name: determineBlockerCategory
+        functionRef:
+          refName: runBlockerClassifier
+          arguments:
+            categories:
+              - "AMBIGUOUS_SPEC"
+              - "UNSATISFIED_INVARIANT"
+              - "UPSTREAM_PROJECT_DEFECT"
+              - "ENVIRONMENT_FAILURE"
+              - "STACK_POLICY_VIOLATION"
+    transition: RouteByBlockerCategory
+
+  - name: RouteByBlockerCategory
+    type: switch
+    dataConditions:
+      - condition: "${ .category == 'UPSTREAM_PROJECT_DEFECT' }"
+        transition: DispatchUpstreamIssueTicket
+      - condition: "${ .category == 'STACK_POLICY_VIOLATION' }"
+        transition: TriggerPolicyRemediation
+    defaultCondition:
+      transition: QueryMemoryStore
+
+  # --- Branch: Stack Policy Remediation ---
+  - name: TriggerPolicyRemediation
+    type: operation
+    actions:
+      - name: rollbackUnapprovedChanges
+        functionRef:
+          refName: executePolicyRollback
+          arguments:
+            task_id: "${ .blocked_task_id }"
+            message: "Halting implementation due to unapproved dependency or license violation."
+    end:
+      terminate: true
+
+  # --- Branch: Upstream Repository Defect ---
+  - name: DispatchUpstreamIssueTicket
+    type: operation
+    actions:
+      - name: fileUpstreamGitHubIssue
+        functionRef:
+          refName: createCrossRepoIssue
+          arguments:
+            target_repo: "${ .upstream_repository }"
+            title: "Cross-Project Contract Defect: ${ .target_contract_pointer }"
+            body_template: "templates/UPSTREAM_DEFECT_ISSUE.md"
+            reproduction: "${ .failing_oracle_output }"
+    transition: ParkTaskWaitingUpstream
+
+  - name: ParkTaskWaitingUpstream
+    type: operation
+    actions:
+      - name: updateTaskStateBlocked
+        functionRef:
+          refName: recordTaskState
+          arguments:
+            task_id: "${ .blocked_task_id }"
+            state: "BLOCKED_ON_UPSTREAM"
+            blocker_ticket: "${ .ticket_id }"
+    end:
+      terminate: true
+
+  # --- Step 3: Query Memory Store for Deflection ---
+  - name: QueryMemoryStore
+    type: operation
+    actions:
+      - name: searchCorporateMemory
+        functionRef:
+          refName: queryLearningsStore
+          arguments:
+            memory_file: ".aidoc/learning/learnings.md"
+            query_symptom: "${ .symptom_description }"
+            similarity_threshold: 0.85
+    transition: EvaluateMemoryDeflection
+
+  - name: EvaluateMemoryDeflection
+    type: switch
+    dataConditions:
+      - condition: "${ .known_solution_found == true and .confidence >= 0.85 }"
+        transition: ApplyAutomatedRemediation
+    defaultCondition:
+      transition: EscalateToMaintainer
+
+  # --- Step 4: Apply Automated Remediation & Retry ---
+  - name: ApplyAutomatedRemediation
+    type: operation
+    actions:
+      - name: executeLearnedFix
+        functionRef:
+          refName: applyPatchRecipe
+          arguments:
+            recipe: "${ .matched_remediation_recipe }"
+            task_id: "${ .blocked_task_id }"
+      - name: rerunTaskVerification
+        functionRef:
+          refName: executeTaskGate
+          arguments:
+            task_id: "${ .blocked_task_id }"
+    transition: EvaluateRemediationResult
+
+  - name: EvaluateRemediationResult
+    type: switch
+    dataConditions:
+      - condition: "${ .retry_passed == true }"
+        transition: RemediationSuccess
+    defaultCondition:
+      transition: EscalateToMaintainer
+
+  - name: RemediationSuccess
+    type: operation
+    actions:
+      - name: logMemoryDeflectionSuccess
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "DEFLECTED_BY_MEMORY"
+            task_id: "${ .blocked_task_id }"
+            message: "Blocker successfully resolved via memory store remediation recipe."
+    end:
+      terminate: true
+
+  # --- Step 5: Escalate Unresolved Blocker to Maintainer ---
+  - name: EscalateToMaintainer
+    type: operation
+    actions:
+      - name: notifyOperationsChannel
+        functionRef:
+          refName: dispatchNotification
+          arguments:
+            channel: "#framework-ops"
+            ticket_id: "${ .ticket_id }"
+            task_id: "${ .blocked_task_id }"
+            category: "${ .category }"
+            details: "${ .symptom_description }"
+    end:
+      terminate: true
