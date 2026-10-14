@@ -1,0 +1,148 @@
+# =============================================================================
+#  CHG-100: Scaffold Layer 05 ADR Index, Guard Governance Surfaces, and Provide Consumer AGENTS.md Template
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Scaffolding Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issue #970
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.18"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-100"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): proceed with CHG as required (Issue #970)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-100)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-100"
+  title: "Scaffold Layer 05 ADR Index, Guard Governance Surfaces, and Provide Consumer AGENTS.md Template"
+  status: "Ratified"
+  context: |
+    When autonomous AI agents boot up in newly initialized consumer repositories adopting the
+    framework, they frequently fall back to generic open-source habits and attempt to generate
+    monolithic markdown registers (CHANGELOG.md, ROADMAP.md, docs/DECISIONS.md, docs/HANDOFF.md).
+    These files are retired anti-patterns per framework decisions CHG-40, CHG-80, CHG-94, CHG-95,
+    GD-71, and GD-78. This friction occurs because:
+    1. Scaffolding templates (AIDOC-SCAFFOLD-TEMPLATE.md, BOOTSTRAP.md, ADAPTATION-GUIDE.md) document
+       the internal 4-tier model but do not explicitly proscribe root governance anti-patterns.
+    2. Consumer repositories lack a ready-to-use AGENTS.md template declaring non-adoption of these surfaces.
+    3. Tooling (sdd_doc_lint) verifies internal layer syntax but provides no sanity check for loose
+       monolithic files at the project root.
+    4. The installer script (install.sh) scaffolds .aidoc/ but leaves docs/sdd/ completely uninitialized,
+       depriving engineers and agents of a structured Layer 05 ADR home on Day 0.
+  choice: |
+    1. Update AIDOC-SCAFFOLD-TEMPLATE.md, BOOTSTRAP.md, and docs/ADAPTATION-GUIDE.md to add an explicit
+       'Sanctioned Surfaces & Deprecated Anti-Patterns' section.
+    2. Author a turnkey starter template framework/templates/AGENTS-TEMPLATE.md providing the canonical
+       'Where state lives' table for consumer repositories to adopt in their root AGENTS.md.
+    3. Implement sdd_doc_lint/surface_lint.py (rules SURF-001 through SURF-004) to detect loose
+       DECISIONS.md, ROADMAP.md, CHANGELOG.md, and HANDOFF.md, exposing it via CLI `--check-surfaces`.
+    4. Enhance framework/scripts/install.sh to scaffold <project>/docs/sdd/05_ADR/ and copy
+       ADR-00_index.TEMPLATE.yaml to ADR-00_index.yaml with populated metadata (idempotent; preserving existing).
+  consequences: |
+    - Eliminates agent convention fallback and prevents repository pollution with monolithic files.
+    - Day-0 architecture decisions are immediately anchored in structured Layer 05 YAMLs.
+    - Provides deterministic verification via surface linting for CI and pre-commit checks.
+  alternatives_considered:
+    - option: "Advisory documentation only without installer and linter updates"
+      rationale_rejected: >-
+        Documentation alone is routinely missed by agents during automated scaffolding. Machine-enforced
+        linter checks and turnkey installer defaults are required to maintain architectural consistency.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Scaffold Layer 05 ADR Index, Guard Governance Surfaces, and Provide Consumer AGENTS.md Template"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Implement governance surface hardening for consumer projects: add Layer 05 ADR index scaffolding
+    in install.sh, author consumer AGENTS-TEMPLATE.md, add surface_lint in sdd_doc_lint, and update
+    onboarding templates to explicitly proscribe retired monolithic files.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Scaffold Layer 05 ADR index, guard governance surfaces, and provide consumer AGENTS.md template"
+  components_affected:
+    - "framework/scripts/install.sh"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "docs/ADAPTATION-GUIDE.md"
+    - "sdd_doc_lint/surface_lint.py"
+    - "sdd_doc_lint/__main__.py"
+    - "tests/conformance/test_consumer_scripts.py"
+    - "tests/conformance/test_governance.py"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-100/IPLAN-100.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-100.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-100/IPLAN-100.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-100.yaml"
+    - "surface_lint unit tests passing"
+    - "install.sh consumer tests passing with ADR scaffolding verified"
+    - "conformance suites green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

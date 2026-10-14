@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.17 |
+| Framework Version | 0.91.18 |
 
 This is the ordered procedure for deploying `.aidoc/` on a new project
 (#786). The contract lives in `AIDOC.md`; the profile semantics in
@@ -94,6 +94,12 @@ The fresh `.aidoc/` passes when ALL of these hold:
       root, where engines do not read them.
 - [ ] `framework_version` in `profile.yaml` equals the adopted canon
       `framework/VERSION`.
+- [ ] Architecture decisions are anchored in Layer 05 (`docs/sdd/05_ADR/ADR-00_index.yaml`
+      initialized from `ADR-00_index.TEMPLATE.yaml`).
+- [ ] Working agreement `<project>/AGENTS.md` is established (from `framework/templates/AGENTS-TEMPLATE.md`)
+      explicitly declaring non-adoption of retired monolithic files.
+- [ ] Zero forbidden monolithic files exist at repository root or `docs/`:
+      no loose `DECISIONS.md`, `ROADMAP.md`, `CHANGELOG.md`, or `docs/HANDOFF.md`.
 
 ## What is NOT part of the contract
 
@@ -101,6 +107,10 @@ Extra top-level directories (e.g. a `knowledge/` dir) are not read by engines
 and are not a sanctioned tier member — project knowledge the agent must find
 belongs under `.aidoc/project/` or the project's own docs, not beside the
 contract. Overrides never modify the shared `framework/` directory.
+
+Monolithic markdown logs (`DECISIONS.md`, `ROADMAP.md`, `CHANGELOG.md`, `docs/HANDOFF.md`)
+are retired anti-patterns per CHG-40, CHG-80, CHG-94, CHG-95, GD-71, and GD-78.
+All state belongs in structured SDD layers, Change Requests, and GitHub milestones/issues.
 
 ## See also
 

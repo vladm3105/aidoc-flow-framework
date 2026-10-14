@@ -80,6 +80,15 @@ def main(argv: list[str] | None = None) -> int:
         "disabled skippable layer (BDD/ADR) is not demanded downstream "
         "(ACTIVE-LAYERS-CASCADE-001)",
     )
+    parser.add_argument(
+        "--check-surfaces",
+        type=Path,
+        nargs="?",
+        const=Path("."),
+        default=None,
+        metavar="REPO_ROOT",
+        help="verify repository governance surfaces and detect retired monolithic anti-patterns",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     if args.profile is not None:
@@ -94,8 +103,22 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  - {err}", file=sys.stderr)
         return 1
 
+    if args.check_surfaces is not None:
+        from sdd_doc_lint.surface_lint import lint_surfaces
+
+        findings = lint_surfaces(args.check_surfaces)
+        if not findings:
+            print(f"✓ Governance surfaces in {args.check_surfaces} conform to framework standards.")
+            return 0
+        has_errors = False
+        for f in findings:
+            print(f.format(args.check_surfaces), file=sys.stderr if f.severity == "ERROR" else sys.stdout)
+            if f.severity == "ERROR":
+                has_errors = True
+        return 1 if (has_errors or args.warn_exit) else 0
+
     if not args.paths:
-        parser.error("the following arguments are required: paths (or --profile)")
+        parser.error("the following arguments are required: paths (or --profile, --check-surfaces)")
 
     override = None
     if args.active_layers is not None:

@@ -70,6 +70,18 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         (FRAMEWORK / "governance" / "ADAPTATION_SURFACE.yaml", gov / "ADAPTATION_SURFACE.yaml"),
     ):
         shutil.copy(src, dst)
+    layers_05 = canon / "framework" / "layers" / "05_ADR"
+    layers_05.mkdir(parents=True)
+    shutil.copy(
+        FRAMEWORK / "layers" / "05_ADR" / "ADR-00_index.TEMPLATE.yaml",
+        layers_05 / "ADR-00_index.TEMPLATE.yaml",
+    )
+    tmpl_dir = canon / "framework" / "templates"
+    tmpl_dir.mkdir(parents=True)
+    shutil.copy(
+        FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md",
+        tmpl_dir / "AGENTS-TEMPLATE.md",
+    )
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
@@ -195,6 +207,33 @@ class InstallScript(unittest.TestCase):
             "framework/archive/ must be pruned inside the copy",
         )
         self.assertEqual((fw / "tests" / "MARKER").read_text().strip(), "canon-A")
+
+    def test_scaffolds_adr_index_and_agents_working_agreement(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        adr_index = self.project / "docs" / "sdd" / "05_ADR" / "ADR-00_index.yaml"
+        self.assertTrue(adr_index.is_file())
+        adr_content = adr_index.read_text(encoding="utf-8")
+        self.assertIn("9.9.9", adr_content)
+        self.assertNotIn("[X.Y.Z]", adr_content)
+        agents = self.project / "AGENTS.md"
+        self.assertTrue(agents.is_file())
+        agents_content = agents.read_text(encoding="utf-8")
+        self.assertIn("proj", agents_content)
+        self.assertIn("Where state lives", agents_content)
+
+    def test_no_adr_and_no_agents_flags_skip_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-adr",
+            "--no-agents",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / "docs" / "sdd" / "05_ADR").exists())
+        self.assertFalse((self.project / "AGENTS.md").exists())
 
     def test_refuses_overwrite_without_force(self):
         first = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))

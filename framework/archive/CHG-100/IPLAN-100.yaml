@@ -1,0 +1,54 @@
+# =============================================================================
+#  IPLAN-100: Scaffold Layer 05 ADR Index, Guard Governance Surfaces, and Provide Consumer AGENTS.md Template
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-100/CHG-100.yaml
+# =============================================================================
+
+id: "IPLAN-100"
+chg_id: "CHG-100"
+title: "Scaffold Layer 05 ADR Index, Guard Governance Surfaces, and Provide Consumer AGENTS.md Template"
+status: "Completed"
+framework_version: "0.91.18"
+
+file_manifest:
+  - "framework/scripts/install.sh"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+  - "framework/governance/aidoc/BOOTSTRAP.md"
+  - "docs/ADAPTATION-GUIDE.md"
+  - "sdd_doc_lint/surface_lint.py"
+  - "sdd_doc_lint/__main__.py"
+  - "sdd_doc_lint/tests/test_surface_lint.py"
+  - "tests/conformance/test_consumer_scripts.py"
+  - "tests/conformance/test_governance.py"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-100/CHG-100.yaml"
+  - "framework/archive/CHG-100/IPLAN-100.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-100.yaml and IPLAN-100.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: >-
+      Author framework/templates/AGENTS-TEMPLATE.md and update onboarding templates
+      (AIDOC-SCAFFOLD-TEMPLATE.md, BOOTSTRAP.md, ADAPTATION-GUIDE.md)
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Implement sdd_doc_lint/surface_lint.py and integrate with sdd_doc_lint/__main__.py"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Author unit tests in sdd_doc_lint/tests/test_surface_lint.py"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Enhance framework/scripts/install.sh to scaffold Layer 05 ADR index and update tests"
+    status: "Completed"
+  - id: "TASK-06"
+    name: >-
+      Bump framework/VERSION to 0.91.18, run sync-version-refs.sh, and register
+      AGENTS-TEMPLATE.md in test_governance.py
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Run full deterministic check suite (chg_lint, surface_lint, conformance, spec_gate)"
+    status: "Completed"
