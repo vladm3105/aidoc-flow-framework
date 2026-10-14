@@ -50,13 +50,13 @@ graph TD
         
         Pillar2["2. PLATFORM & INFRASTRUCTURE<br/><b>vladm3105/technology-stack</b><br/>• Paved Paths (PG18 HA, Temporal, NATS)<br/>• Security Profiles (gVisor, Infisical)<br/>• Tri-Environment Topology (Dev/Stage/Prod)"]
         
-        Pillar3["3. DATA CONTRACTS CANON<br/><b>vladm3105/aidoc-contracts</b><br/>• Protocol Buffers (proto3) & JSON Schemas<br/>• Canonical IPLAN, ChangeEvent, TestOracle, Policy<br/>• Polyglot Generated SDKs (Python, TS, Go, Rust)"]
+        Pillar3["3. DATA CONTRACTS CANON<br/><b>vladm3105/aidoc-data-contracts</b><br/>• Protocol Buffers (proto3) & JSON Schemas<br/>• Canonical IPLAN, ChangeEvent, TestOracle, Policy<br/>• Polyglot Generated SDKs (Python, TS, Go, Rust)"]
         
-        Pillar4["4. AGENT RUNTIME & TOOLING<br/><b>vladm3105/aidoc-tools</b><br/>• Agent Protocol Server (CLI, IDE, Headless CI)<br/>• Context Slicing Engine (aidoc slice)<br/>• Local CLI, DAG Traversal, Invariant Linting"]
+        Pillar4["4. AGENT RUNTIME & TOOLING<br/><b>vladm3105/aidoc-context-tools</b><br/>• Agent Protocol Server (CLI, IDE, Headless CI)<br/>• Context Slicing Engine (aidoc slice)<br/>• Local CLI, DAG Traversal, Invariant Linting"]
     end
     
     subgraph CompanyProjects["Enterprise Application Repositories (Strictly Separated Repos)"]
-        ProjectA["Project A: Core Platform / Auth Service<br/>(Exports @auth-core:06_SPEC, uses aidoc-tools)"]
+        ProjectA["Project A: Core Platform / Auth Service<br/>(Exports @auth-core:06_SPEC, uses aidoc-context-tools)"]
         ProjectB["Project B: Billing & Invoicing Service<br/>(Imports @auth-core:06_SPEC, runs TDD oracles)"]
         ProjectC["Project C: Customer Web Application<br/>(Consumes NATS CloudEvents from A & B)"]
     end
@@ -76,9 +76,9 @@ graph TD
    The single normative specification defining the 10 SDD layers, review crews, quality gates, and declarative state machine workflows. Governed by **Decision D-0013 / GD-13**: strictly engine-agnostic and vendor-neutral, containing zero platform runtime code.
 2. **Platform & Infrastructure (`vladm3105/technology-stack`):**
    The authoritative reference architecture (Standard v2.0) defining approved enterprise paved paths: Debian 13, Docker CE / gVisor (`runsc`), 3-node HA PostgreSQL 18, shared multi-tenant Temporal Server, clustered NATS JetStream, ClickHouse OLAP, and Infisical secret management.
-3. **Data Contracts Canon (`vladm3105/aidoc-contracts`):**
-   The single source of truth for wire-level and in-memory schema models. Houses Protocol Buffers (proto3) and JSON Schemas (Draft 2020-12). Publishes versioned native client libraries (`pip install aidoc-contracts`, `pnpm add @aidoc/contracts`, `cargo add aidoc-contracts`, `go get ...`). Enforces schema backward compatibility via `buf breaking`.
-4. **Agent Runtime & Tooling (`vladm3105/aidoc-tools`):**
+3. **Data Contracts Canon (`vladm3105/aidoc-data-contracts`):**
+   The single source of truth for wire-level and in-memory schema models. Houses Protocol Buffers (proto3) and JSON Schemas (Draft 2020-12). Publishes versioned native client libraries (`pip install aidoc-data-contracts`, `pnpm add @aidoc/data-contracts`, `cargo add aidoc-data-contracts`, `go get ...`). Enforces schema backward compatibility via `buf breaking`.
+4. **Agent Runtime & Tooling (`vladm3105/aidoc-context-tools`):**
    The executable developer and agent interface. Implements a standardized Agent Tooling Protocol server compatible with autonomous coding agents, IDE assistants, and headless CI workers. Houses the **Context Slicing Engine (`aidoc slice`)**, local DAG linters, and invariant checkers.
 
 ---
@@ -100,7 +100,7 @@ graph TD
         A2 --> A3
     end
 
-    subgraph Hub["Canonical Registry: vladm3105/aidoc-contracts"]
+    subgraph Hub["Canonical Registry: vladm3105/aidoc-data-contracts"]
         direction TB
         R1["contracts-registry.yaml"]
         R2["Language Packages<br/>(pip / pnpm / cargo / go)"]
@@ -137,11 +137,11 @@ graph TD
 Consumer projects resolve and ingest upstream contracts through three progressive tiers:
 
 1. **Tier 1 (Universal Default — Native Package Dependencies):**
-   Provider repositories publish their public schemas to `vladm3105/aidoc-contracts`. CI publishes versioned language packages (`pip install aidoc-contracts`, `pnpm add @aidoc/contracts`, `cargo add aidoc-contracts`, `go get ...`). Consumer repositories import schemas as standard build dependencies.
+   Provider repositories publish their public schemas to `vladm3105/aidoc-data-contracts`. CI publishes versioned language packages (`pip install aidoc-data-contracts`, `pnpm add @aidoc/data-contracts`, `cargo add aidoc-data-contracts`, `go get ...`). Consumer repositories import schemas as standard build dependencies.
 2. **Tier 2 (Optional Git Submodules — Pinned Spec Synchronization):**
-   Teams requiring local in-tree inspection of upstream contracts without installing package binaries attach `aidoc-contracts` (or provider repos) as a read-only Git submodule under `.aidoc/contracts/` pinned to a release tag:
+   Teams requiring local in-tree inspection of upstream contracts without installing package binaries attach `aidoc-data-contracts` (or provider repos) as a read-only Git submodule under `.aidoc/contracts/` pinned to a release tag:
    ```bash
-   git submodule add https://github.com/vladm3105/aidoc-contracts.git .aidoc/contracts
+   git submodule add https://github.com/vladm3105/aidoc-data-contracts.git .aidoc/contracts
    git submodule update --init --recursive
    ```
 3. **Tier 3 (Zero-Network Sandboxed Agent Resolution via Local Socket):**
@@ -159,7 +159,7 @@ Examples:
 
 ### Multi-Project Contract Registry (`contracts-registry.yaml`)
 
-The canonical `aidoc-contracts` repository maintains the company-wide contract registry index. When an independent repository cuts a release tag, its CI updates this manifest:
+The canonical `aidoc-data-contracts` repository maintains the company-wide contract registry index. When an independent repository cuts a release tag, its CI updates this manifest:
 ```yaml
 registry_version: "1.0"
 contracts:
@@ -223,7 +223,7 @@ All cross-project and internal change events bind strictly to the framework's **
 
 To protect downstream subscriber repositories from breaking changes:
 1. **Local Pre-Commit Check (`aidoc lint-invariants`):**
-   `aidoc-tools` inspects git diffs before commit. If an agent attempts to route a change as `CODE2C` (bugfix) or `DIR2C` (direct tooling) that alters a public API signature, database schema, or behavioral state graph, the linter **fails immediately**, forcing promotion to `SEED2C` or `SDD2C`.
+   `aidoc-context-tools` inspects git diffs before commit. If an agent attempts to route a change as `CODE2C` (bugfix) or `DIR2C` (direct tooling) that alters a public API signature, database schema, or behavioral state graph, the linter **fails immediately**, forcing promotion to `SEED2C` or `SDD2C`.
 2. **Cross-Repo Blast Radius Calculation:**
    The PR workflow queries `contracts-registry.yaml` and identifies all subscriber repositories (`billing-service`, `customer-portal`).
 3. **Cross-Repo Verification Dispatch:**
@@ -564,7 +564,7 @@ class AidocDependencyGraph:
 
             node = self.nodes.get(current_id)
             if not node and self.external_resolver and current_id.startswith("@"):
-                # Dynamically resolve cross-project contract pointer from aidoc-contracts cache
+                # Dynamically resolve cross-project contract pointer from aidoc-data-contracts cache
                 node = self.external_resolver(current_id)
                 if node:
                     self.nodes[current_id] = node
@@ -609,11 +609,11 @@ In alignment with [`GOVERNANCE_WORKFLOW_STANDARD.md`](GOVERNANCE_WORKFLOW_STANDA
 graph TD
     subgraph ProviderRepo["1. Provider Repository (e.g. vladm3105/auth-service)"]
         P1["Commit / PR with contract changes"]
-        WF1["<b>multi-repo-contract-sync.sw.yaml</b><br/>• buf lint & buf breaking<br/>• Polyglot client stub generation<br/>• Publish to aidoc-contracts"]
+        WF1["<b>multi-repo-contract-sync.sw.yaml</b><br/>• buf lint & buf breaking<br/>• Polyglot client stub generation<br/>• Publish to aidoc-data-contracts"]
         P1 --> WF1
     end
 
-    subgraph HubRegistry["2. Contracts Registry & Broker (vladm3105/aidoc-contracts)"]
+    subgraph HubRegistry["2. Contracts Registry & Broker (vladm3105/aidoc-data-contracts)"]
         H1["Update contracts-registry.yaml"]
         H2["Emit NATS CloudEvent:<br/>xp.agent.v1.chg.contract.published"]
         WF1 --> H1 --> H2
@@ -637,11 +637,11 @@ graph TD
 ### Planned Workflow State Machines
 
 1. **`multi-repo-contract-sync.sw.yaml`:**
-   Orchestrates contract publishing from provider repositories to `aidoc-contracts`, runs `buf lint` and `buf breaking`, compiles polyglot stubs, and emits notification CloudEvents over NATS JetStream.
+   Orchestrates contract publishing from provider repositories to `aidoc-data-contracts`, runs `buf lint` and `buf breaking`, compiles polyglot stubs, and emits notification CloudEvents over NATS JetStream.
 2. **`cross-project-ci-dispatch.sw.yaml`:**
    Triggered on provider PRs altering exported contracts. Dispatches synthetic verification runs to subscriber repositories, aggregates status checks, and posts the final merge-blocking check back to the provider PR.
 3. **`context-slicing-generation.sw.yaml`:**
-   Invoked by `aidoc-tools`. Parses local and imported repository DAGs, computes ancestor closure, validates graph acyclicity, and outputs the targeted context digest.
+   Invoked by `aidoc-context-tools`. Parses local and imported repository DAGs, computes ancestor closure, validates graph acyclicity, and outputs the targeted context digest.
 4. **`stack-policy-validation.sw.yaml`:**
    Pre-execution gate validating proposed lockfiles (`Cargo.lock`, `package-lock.json`, `poetry.lock`) against `stack-policy.yaml`. Rejects unapproved dependencies and prohibited licenses before implementation starts.
 5. **`support-ticket-escalation.sw.yaml`:**
