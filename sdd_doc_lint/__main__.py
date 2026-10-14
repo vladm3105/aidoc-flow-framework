@@ -112,7 +112,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         has_errors = False
         for f in findings:
-            print(f.format(args.check_surfaces), file=sys.stderr if f.severity == "ERROR" else sys.stdout)
+            print(
+                f.format(args.check_surfaces),
+                file=sys.stderr if f.severity == "ERROR" else sys.stdout,
+            )
             if f.severity == "ERROR":
                 has_errors = True
         return 1 if (has_errors or args.warn_exit) else 0

@@ -21,7 +21,9 @@ class TestSurfaceLint(unittest.TestCase):
 
     def test_loose_decisions_emits_surf_001_error(self):
         decisions_file = self.root / "DECISIONS.md"
-        decisions_file.write_text("# Active Project Decisions\n\n1. Use Postgres\n", encoding="utf-8")
+        decisions_file.write_text(
+            "# Active Project Decisions\n\n1. Use Postgres\n", encoding="utf-8"
+        )
 
         findings = lint_surfaces(self.root)
         self.assertEqual(len(findings), 1)
