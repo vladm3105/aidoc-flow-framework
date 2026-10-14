@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 
 
 Tracks issues encountered during SDD document generation, their root causes,
