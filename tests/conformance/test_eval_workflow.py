@@ -8,7 +8,6 @@ Validates that:
 """
 
 import unittest
-from pathlib import Path
 
 import yaml
 from _spec import FRAMEWORK
