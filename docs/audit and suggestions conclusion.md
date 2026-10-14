@@ -1,6 +1,6 @@
 # Authoritative Architecture Blueprint & ROI Evaluation: Multi-Project Federated SDD Ecosystem
 
-**Document Purpose:** Comprehensive architectural blueprint, rigorous Return on Investment (ROI) evaluation, canonical contract schemas, and multi-repo dataflow protocols for company-wide deployment of the AIDoc Flow Framework.  
+**Document Purpose:** Comprehensive architectural blueprint, rigorous Return on Investment (ROI) evaluation, canonical contract schemas, and multi-repo dataflow protocols for company-wide deployment of the AIDoc Flow Framework.
 **Authority:** Derived from `docs/audit and suggestions.pdf`, `framework/governance/CHG_REQUEST_FLOWS.md`, `framework/layers/04_BDD/README.md`, `framework/layers/06_SPEC/README.md`, `framework/governance/RECOMMENDED_PLATFORM_STACK.md`, and multi-project enterprise requirements.
 
 > [!NOTE]
@@ -16,27 +16,27 @@ To prevent both **"Enterprise Waterfall 2.0"** (developer friction from manual d
 graph TD
     subgraph EnterprisePillars["The Quad-Pillar Corporate Ecosystem"]
         direction TB
-        
+
         Pillar1["1. PROCESS CANON<br/><b>vladm3105/aidoc-flow-framework</b><br/>• SDD 10-Layer Specification Contract<br/>• Declarative Workflows (.sw.yaml)<br/>• Governance, Review Crews, Playbooks<br/><i>Engine-Agnostic, Zero Runtime Code</i>"]
-        
+
         Pillar2["2. PLATFORM & INFRASTRUCTURE<br/><b>vladm3105/technology-stack</b><br/>• Paved Paths (PG18 HA, Temporal, NATS)<br/>• Security Profiles (gVisor, Infisical)<br/>• Tri-Environment Topology (Dev/Stage/Prod)"]
-        
+
         Pillar3["3. DATA CONTRACTS CANON<br/><b>vladm3105/aidoc-contracts</b><br/>• Protocol Buffers (proto3) & JSON Schemas<br/>• Canonical IPLAN, ChangeEvent, TestOracle, Policy<br/>• Polyglot Generated SDKs (Python, TS, Go, Rust)"]
-        
+
         Pillar4["4. AGENT RUNTIME & TOOLING<br/><b>vladm3105/aidoc-mcp</b><br/>• FastMCP Protocol Server (Claude, Cursor, Windsurf)<br/>• Context Slicing Engine (aidoc slice)<br/>• Local CLI, DAG Traversal, Invariant Linting"]
     end
-    
+
     subgraph CompanyProjects["Enterprise Application Repositories (Strictly Separated Repos)"]
         ProjectA["Project A: Core Platform / Auth Service<br/>(Exports @auth-core:SPEC, uses aidoc-mcp)"]
         ProjectB["Project B: Billing & Invoicing Service<br/>(Imports @auth-core:SPEC, runs TDD oracles)"]
         ProjectC["Project C: Customer Web Application<br/>(Consumes NATS CloudEvents from A & B)"]
     end
-    
+
     Pillar1 -.->|Governs SDD Lifecycle| CompanyProjects
     Pillar2 -.->|Provides Runtime Infrastructure| CompanyProjects
     Pillar3 -->|Supplies Typed Schemas & Wire Types| CompanyProjects
     Pillar4 -->|Drives Local Execution & Context Slicing| CompanyProjects
-    
+
     ProjectA -->|Emits CloudEvents & Oracles| Pillar3
     ProjectB -->|Imports Upstream Contracts| ProjectA
 ```
@@ -50,59 +50,69 @@ The suggestions in `docs/audit and suggestions.pdf` range from high-leverage arc
 ### Detailed Proposal Evaluation
 
 #### Proposal 1: Automated Context Slicing Engine (`aidoc slice`)
+
 * **Upfront Cost:** **Low** (~3 person-weeks to build the DAG ancestor closure algorithm in Python/Rust).
 * **Ongoing Maintenance:** **Low** (Deterministic graph traversal; zero external runtime dependencies).
 * **Return / Value:** **Massive.** Reduces prompt token payload from 30,000+ tokens to ~1,500 tokens (60–80% cost reduction per agent turn). Completely eliminates agent context amnesia and attention degradation on large codebases.
 * **ROI Verdict:** **EXCEPTIONAL (Estimated 8.5x ROI). Implement Immediately.**
 
 #### Proposal 2: Behavioral State Graphs vs. Legacy Gherkin for Deterministic Contracts
+
 * **Upfront Cost:** **Zero to Low** (Already architected in `framework/layers/04_BDD/` as CNCF Serverless Workflow v0.8 YAML + Mermaid diagrams).
 * **Ongoing Maintenance:** **Low** (Maintained via `swf_lint.py` and JSON Schema validation).
 * **Return / Value:** **High.** The audit PDF suggested "Executable Gherkin" (`.feature` text files). However, text Gherkin requires fragile regex step parsers, cannot model distributed asynchronous sagas or rollbacks, and lacks machine-actionable state transitions. **Declarative Behavioral State Graphs** provide native machine execution, element-level traceability (`ears:` citations), and direct mapping to Temporal workflow activities.
 * **ROI Verdict:** **HIGH ROI for Behavioral State Graphs; NEGATIVE ROI for Legacy Gherkin. Enforce Graphs.**
 
 #### Proposal 3: Centralized Stack Policy & Boundary Enforcement (`stack-policy.yaml`)
+
 * **Upfront Cost:** **Low** (~2 person-weeks for JSON Schema + lockfile validator in `sdd_doc_lint`).
 * **Ongoing Maintenance:** **Minimal** (Updates only when company approved stack evolves).
 * **Return / Value:** **Critical.** Prevents rogue autonomous agents from introducing conflicting frameworks (e.g. `reqwest` vs `hyper`), unapproved licensing obligations (GPL/AGPL), or unsafe blocks across company repositories.
 * **ROI Verdict:** **VERY HIGH (Estimated 6.5x ROI). Implement in Phase 1.**
 
 #### Proposal 4: Ratified `CHG_REQUEST_FLOWS` vs. Simplified 4-State Change Routing
+
 * **The Audit Proposal:** The PDF proposed a simplified 4-state change classification (`CHG-FIX`, `CHG-TECH`, `CHG-FEAT`, `CHG-MAJOR`).
 * **Cost & Risk:** **High / Negative ROI.** Discarding the framework's ratified standard breaks `chg_lint.py`, invalidates existing governance rules (`CHG-L001..L018`), and conflates distinct lifecycles (e.g., bugfixes on completed IPLANs vs. direct docs/tooling changes).
 * **Return / Value:** Our ratified **`CHG_REQUEST_FLOWS.md`** provides mathematical completeness across 6 precise flows: `HOTFIX` (Emergency), `CODE2S` (Type-R Reconciliation), `CODE2C` (F4 Feedback Bugfix), `SEED2C` (F3 Design/Behavior), `DIR2C` (F2 Direct/Tooling), and `SDD2C` (F1 Full SDD).
 * **ROI Verdict:** **NEGATIVE ROI for PDF's 4-tier model; HIGH ROI for automating the existing ratified CHG_REQUEST_FLOWS.**
 
 #### Proposal 5: Dedicated `aidoc-contracts` Repository (Proto3 + JSON Schema)
+
 * **Upfront Cost:** **Medium** (~3 person-weeks for Buf pipeline, schema authoring, and multi-language package publishing).
 * **Ongoing Maintenance:** **Low** (Automated CI runs `buf breaking` and publishes versioned client packages).
 * **Return / Value:** **Very High.** Solves multi-project polyglot data exchange. Downstream services in Go, Rust, TypeScript, or Python install native packages (`pip`, `pnpm`, `cargo`, `go get`) with zero framework doc bloat.
 * **ROI Verdict:** **VERY HIGH (Estimated 7.0x ROI). Core Foundation.**
 
 #### Proposal 6: Dedicated `aidoc-mcp` Tooling & Runtime Project
+
 * **Upfront Cost:** **Medium** (~3 person-weeks for FastMCP server + CLI wrapper).
 * **Ongoing Maintenance:** **Medium** (Updates with MCP protocol advancements).
 * **Return / Value:** **High.** Preserves Decision D-0013 (framework remains pure specification). Enables any agent platform (Cursor, Claude Code, Windsurf, Antigravity, Docker workers) to invoke the framework without bespoke shell hooks.
 * **ROI Verdict:** **HIGH (Estimated 6.0x ROI). Recommended.**
 
 #### Proposal 7: Standalone 12-Repo Sibling Split (`engramory`, `interlog`, `support-desk`, etc.)
+
 * **Upfront Cost:** **Extreme** (12 CI pipelines, 12 release trains, 12 dependency matrices).
 * **Ongoing Maintenance:** **Catastrophic Drag** (Consumes 70–80% of engineering bandwidth on version choreography and cross-repo schema synchronization).
 * **Return / Value:** **Negative.** Creates "Integration Bankruptcy" and kills development velocity.
 * **ROI Verdict:** **STRONGLY NEGATIVE ROI (-4.0x ROI). REJECT. Consolidate into the Quad-Pillar model.**
 
 #### Proposal 8: Three-Tier Representation (Markdown ↔ JSON AST ↔ Protobuf)
+
 * **Upfront Cost:** **Medium** if scoped to structured YAML/JSON envelopes; **Extreme** if building a full arbitrary Markdown-to-AST decompiler.
 * **Return / Value:** Scoped structured envelopes provide high value: Git auditability in Markdown/YAML, fast LLM tool calling in JSON AST, and high-throughput microservice messaging via Protobuf over NATS JetStream.
 * **ROI Verdict:** **HIGH ROI for Structured Envelopes & Wire Events; REJECT arbitrary freeform Markdown AST compilation.**
 
 #### Proposal 9: Invariant-Guarded Change Verification (Pre-Merge AST Diff Gate)
+
 * **Upfront Cost:** **Medium** (~2 person-weeks using `ast-grep` or tree-sitter in CI).
 * **Ongoing Maintenance:** **Low**.
 * **Return / Value:** **Very High.** Prevents "contract erosion": automatically rejects fast-path PRs (`CODE2C` / `DIR2C`) if public API signatures, schemas, or behavioral state graphs were modified.
 * **ROI Verdict:** **HIGH (Estimated 5.5x ROI). Implement in Phase 2.**
 
 #### Proposal 10: Multi-Repo Dispatch & Anti-Circular DAG Engine
+
 * **Upfront Cost:** **Medium** (~3 person-weeks to build registry sync and GitHub dispatch actions).
 * **Ongoing Maintenance:** **Low**.
 * **Return / Value:** **High.** Prevents cross-repository breaking changes from merging unnoticed and eliminates CI deadlock risks via the Two-Phase Expand/Contract protocol.
@@ -130,12 +140,15 @@ The suggestions in `docs/audit and suggestions.pdf` range from high-leverage arc
 ## 3. Core Architectural Decisions
 
 ### Decision A: Deterministic Contracts via Behavioral State Graphs (Not Executable Gherkin)
+
 The framework strictly rejects legacy Gherkin narrative text (`.feature` files with conversational Given/When/Then steps) for three fundamental reasons:
+
 1. **Machine Execution & State Machine Parity:** Enterprise distributed systems execute stateful workflows (asynchronous callbacks, retries, multi-agent sagas). In `aidoc-flow-framework`, Layer 04 BDD and Layer 06 SPEC define **declarative behavioral state graphs** housed in the **Hybrid Envelope Architecture** ([CNCF Serverless Workflow v0.8 YAML](../framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md)) and visualized via Mermaid state diagrams.
 2. **Element-Level Traceability:** Behavioral graphs carry explicit `ears:` citation arrays on each state and transition, establishing unbroken mathematical lineage back to Layer 03 requirements.
 3. **Deterministic Tooling:** Machine-readable YAML state machines are validated by `sdd_doc_lint` and `swf_lint.py` without requiring brittle regex step bindings.
 
 ### Decision B: Full Binding to Ratified `CHG_REQUEST_FLOWS`
+
 Rather than adopting the audit's simplified 4-state proposal, all multi-project change events bind directly to the framework's **ratified 6-flow router (`CHG_REQUEST_FLOWS.md` §1)**:
 
 ```
@@ -430,7 +443,7 @@ message StackPolicyContract {
 ## 5. Multi-Repo Architecture & Distributed Project Dataflow
 
 > [!IMPORTANT]
-> **Enterprise Invariant: Strictly Separated Repositories Per Project.**  
+> **Enterprise Invariant: Strictly Separated Repositories Per Project.**
 > Every service and application repository (`auth-service`, `billing-service`, `customer-portal`, etc.) maintains its own independent Git repository, CI workflows, and release lifecycle. Monorepo filesystem colocation (e.g. assuming `../../auth-service` exists) is strictly prohibited. Git submodules are supported as an optional, progressive synchronization pattern.
 
 ```
@@ -468,38 +481,44 @@ message StackPolicyContract {
 In a strictly separated multi-repo environment, consumer projects resolve and ingest upstream contracts through three progressive tiers:
 
 1. **Tier 1 (Universal Default — Native Package Dependencies):**
-   - Provider repositories export their schemas to `vladm3105/aidoc-contracts`.
-   - CI in `aidoc-contracts` publishes versioned language packages (`pip install aidoc-contracts`, `pnpm add @aidoc/contracts`, `cargo add aidoc-contracts`, `go get ...`).
-   - Consumer repos import schemas like standard dependencies. Zero Git coupling, fast builds.
+   * Provider repositories export their schemas to `vladm3105/aidoc-contracts`.
+   * CI in `aidoc-contracts` publishes versioned language packages (`pip install aidoc-contracts`, `pnpm add @aidoc/contracts`, `cargo add aidoc-contracts`, `go get ...`).
+   * Consumer repos import schemas like standard dependencies. Zero Git coupling, fast builds.
 2. **Tier 2 (Optional Git Submodules — Pinned Spec Synchronization):**
-   - Teams that require local inspectability of upstream contracts without installing binary packages can attach `aidoc-contracts` (or specific provider repos) as a read-only Git submodule:
+   * Teams that require local inspectability of upstream contracts without installing binary packages can attach `aidoc-contracts` (or specific provider repos) as a read-only Git submodule:
+
      ```bash
      git submodule add https://github.com/vladm3105/aidoc-contracts.git .aidoc/contracts
      git submodule update --init --recursive
      ```
-   - Pinned to an exact immutable commit SHA or release tag.
-   - Developers and agents inspect upstream specifications directly under `.aidoc/contracts/schemas/` without leaving the local worktree.
+
+   * Pinned to an exact immutable commit SHA or release tag.
+   * Developers and agents inspect upstream specifications directly under `.aidoc/contracts/schemas/` without leaving the local worktree.
 3. **Tier 3 (Zero-Network Sandboxed Agent Resolution via Local Socket):**
-   - Per `RECOMMENDED_PLATFORM_STACK.md` §2.2, coding agents execute under user-space kernel virtualization (**gVisor `runsc`**) with strict zero-network egress (`--network=none`). Direct in-sandbox calls to the GitHub API or remote endpoints are physically blocked.
-   - To resolve external contracts in a sandboxed session, the host runner or developer container pre-populates the local cache (`.aidoc/contracts/cache/`) during workspace provisioning (`framework/scripts/install.sh` / `agentd`), or proxies contract queries through the local UNIX domain socket mounted into the sandbox (`/run/aidoc/mcp.sock`).
+   * Per `RECOMMENDED_PLATFORM_STACK.md` §2.2, coding agents execute under user-space kernel virtualization (**gVisor `runsc`**) with strict zero-network egress (`--network=none`). Direct in-sandbox calls to the GitHub API or remote endpoints are physically blocked.
+   * To resolve external contracts in a sandboxed session, the host runner or developer container pre-populates the local cache (`.aidoc/contracts/cache/`) during workspace provisioning (`framework/scripts/install.sh` / `agentd`), or proxies contract queries through the local UNIX domain socket mounted into the sandbox (`/run/aidoc/mcp.sock`).
 
 ---
 
 ### 2. Scoped Pointer Addressing Syntax
+
 All cross-project references use universal, repo-independent URI syntax:
 $$\text{@}\langle\text{project-id}\rangle\text{:}\langle\text{layer}\rangle\text{:}\langle\text{tag-id}\rangle$$
 Examples:
-- `@auth-core:06_SPEC:SPEC-JWT-CLAIMS`
-- `@auth-core:04_BDD:BDD-SWF-LOGIN`
-- `@billing-engine:04_BDD:BDD-SWF-INVOICE-TAX`
-- `@shared-platform:05_ADR:ADR-POSTGRES-18-MIGRATION`
+
+* `@auth-core:06_SPEC:SPEC-JWT-CLAIMS`
+* `@auth-core:04_BDD:BDD-SWF-LOGIN`
+* `@billing-engine:04_BDD:BDD-SWF-INVOICE-TAX`
+* `@shared-platform:05_ADR:ADR-POSTGRES-18-MIGRATION`
 
 The `sdd_doc_lint` and `aidoc-mcp` context slicer parse `@project-id` to identify that the contract resides outside the local repository and resolve it against the local submodule (`.aidoc/contracts/`) or the installed `aidoc-contracts` package.
 
 ---
 
 ### 3. Multi-Project Contract Registry (`contracts-registry.yaml`)
+
 The canonical `aidoc-contracts` repository maintains the company-wide contract registry index. When an independent repository cuts a release tag, its CI updates this manifest:
+
 ```yaml
 registry_version: "1.0"
 contracts:
@@ -520,6 +539,7 @@ contracts:
 ### 4. Cross-Repo Change Propagation & Invariant Gate (Zero Monorepo Assumption)
 
 When a developer or agent in `auth-service` modifies a contract:
+
 1. **Local Pre-Commit Check (`aidoc lint-invariants`):**
    `aidoc-mcp` inspects git diffs. If `@auth-core:06_SPEC:SPEC-JWT-CLAIMS` has altered public fields, the linter rejects `CODE2C` / `DIR2C` locally, requiring a formal `SEED2C` or `SDD2C`.
 2. **Cross-Repo Blast Radius Calculation:**
@@ -528,25 +548,26 @@ When a developer or agent in `auth-service` modifies a contract:
    The `auth-service` CI workflow uses the GitHub API `repository_dispatch` (or emits a NATS JetStream event on `xp.agent.v1.chg.auth-core`) to trigger synthetic verification runs on downstream subscribers.
 4. **Status Check Aggregation:**
    The downstream CI runs its test suite against the candidate contract schema and reports the check back to `auth-service`'s PR:
-   - `Downstream Check (billing-service): SUCCESS`
-   - `Downstream Check (customer-portal): SUCCESS`
+   * `Downstream Check (billing-service): SUCCESS`
+   * `Downstream Check (customer-portal): SUCCESS`
 5. **Hard Invariant Gate:**
    If a downstream subscriber's test suite fails against the candidate schema, the `auth-service` PR **cannot merge** until either:
-   - The contract change is modified to be strictly backward-compatible, OR
-   - A coordinated multi-repo migration plan is executed with matching subscriber PRs.
+   * The contract change is modified to be strictly backward-compatible, OR
+   * A coordinated multi-repo migration plan is executed with matching subscriber PRs.
 
 ---
 
 ### 5. Runtime Dataflow across Separated Repositories (NATS JetStream)
 
 At runtime, separated microservices interact over the platform's high-speed message broker:
+
 * **Subject Namespace Isolation:**
-  - Events follow the strict subject hierarchy: `xp.agent.v1.<project_id>.<domain>.<event_type>`
-  - Example: `xp.agent.v1.auth.token.generated`
+  * Events follow the strict subject hierarchy: `xp.agent.v1.<project_id>.<domain>.<event_type>`
+  * Example: `xp.agent.v1.auth.token.generated`
 * **Thin-State Event Invariant:**
-  - Payloads carry metadata, timestamps, and contract pointer hashes. Heavy artifacts remain in object storage.
+  * Payloads carry metadata, timestamps, and contract pointer hashes. Heavy artifacts remain in object storage.
 * **Lossless Audit Ledger:**
-  - Inbound events are captured as unmodified wire bytes (`bytea`) in PostgreSQL 18 `xp.ledger` before domain unmarshaling, guaranteeing auditability across microservice boundaries.
+  * Inbound events are captured as unmodified wire bytes (`bytea`) in PostgreSQL 18 `xp.ledger` before domain unmarshaling, guaranteeing auditability across microservice boundaries.
 
 ---
 
@@ -555,18 +576,19 @@ At runtime, separated microservices interact over the platform's high-speed mess
 In a distributed multi-repo architecture, circular dependencies between specifications (e.g. `service-a` depends on `service-b` while `service-b` depends on `service-a`) cause deadlocks in cross-repo CI invariant gates.
 
 1. **Strict Acyclicity Rule:**
-   - Contract lineages across repositories must form a strict Directed Acyclic Graph (DAG). Circular contract imports (`@proj-a -> @proj-b -> @proj-a`) are strictly rejected by `aidoc validate-graph`.
+   * Contract lineages across repositories must form a strict Directed Acyclic Graph (DAG). Circular contract imports (`@proj-a -> @proj-b -> @proj-a`) are strictly rejected by `aidoc validate-graph`.
 2. **The Two-Phase Breaking Evolution Protocol (Expand / Contract):**
    When a provider project (`auth-service`) must introduce a breaking contract change, it must NEVER make an atomic in-place breaking update:
-   - **Phase 1 (Expand):** Provider publishes new contract version (`@auth-core:06_SPEC:SPEC-TOKEN-V2`) while maintaining `@auth-core:06_SPEC:SPEC-TOKEN-V1` as deprecated. Downstream subscriber checks remain green.
-   - **Phase 2 (Migrate):** Subscriber projects (`billing-service`) independently migrate their implementations to `@auth-core:06_SPEC:SPEC-TOKEN-V2` via their own PR cycles.
-   - **Phase 3 (Contract):** Once all registered subscribers in `contracts-registry.yaml` have migrated off `V1`, the provider issues a `SEED2C` retiring `@auth-core:06_SPEC:SPEC-TOKEN-V1`.
+   * **Phase 1 (Expand):** Provider publishes new contract version (`@auth-core:06_SPEC:SPEC-TOKEN-V2`) while maintaining `@auth-core:06_SPEC:SPEC-TOKEN-V1` as deprecated. Downstream subscriber checks remain green.
+   * **Phase 2 (Migrate):** Subscriber projects (`billing-service`) independently migrate their implementations to `@auth-core:06_SPEC:SPEC-TOKEN-V2` via their own PR cycles.
+   * **Phase 3 (Contract):** Once all registered subscribers in `contracts-registry.yaml` have migrated off `V1`, the provider issues a `SEED2C` retiring `@auth-core:06_SPEC:SPEC-TOKEN-V1`.
 
 ---
 
 ### 7. Multi-Repo Dispatch Security & Isolated Test Runs
 
 To ensure secure and non-conflicting multi-repo CI execution:
+
 * **Zero Admin Token Sharing:** Cross-repository `repository_dispatch` events authenticate via a dedicated GitHub App installation or fine-grained machine identity token managed in-memory via **Infisical** (`infisical run -- gh workflow run ...`).
 * **Ephemeral Detached Head Execution:** Synthetic verification runs triggered in downstream repositories MUST execute in ephemeral, detached worktrees against `origin/dev` with the candidate schema injected as a mock override. They **never commit, rebase, or mutate target branches directly**.
 
@@ -599,9 +621,9 @@ Month 1           Month 2           Month 3           Month 4
 ## 7. Concrete Next Steps
 
 1. **Initialize `vladm3105/aidoc-contracts`:**
-   - Create repo, establish `buf.yaml` and directory layout.
-   - Seed with the Proto3 and JSON Schema definitions from Section 4.
+   * Create repo, establish `buf.yaml` and directory layout.
+   * Seed with the Proto3 and JSON Schema definitions from Section 4.
 2. **Initialize `vladm3105/aidoc-mcp`:**
-   - Scaffold FastMCP server and migrate context slicing algorithms.
+   * Scaffold FastMCP server and migrate context slicing algorithms.
 3. **Update Framework Documentation:**
-   - Cross-link `aidoc-flow-framework/docs/` and `framework/governance/ADAPTATION.md` to reference the canonical `aidoc-contracts` and `aidoc-mcp` ecosystem tools.
+   * Cross-link `aidoc-flow-framework/docs/` and `framework/governance/ADAPTATION.md` to reference the canonical `aidoc-contracts` and `aidoc-mcp` ecosystem tools.

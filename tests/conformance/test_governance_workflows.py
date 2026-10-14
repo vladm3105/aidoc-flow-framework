@@ -302,12 +302,9 @@ class GovernanceWorkflowsTest(unittest.TestCase):
     def test_no_orphan_workflows(self):
         """Assert that every .sw.yaml file under workflows/ is registered in EXPECTED_*."""
         all_actual = {
-            p.relative_to(WORKFLOWS_DIR).as_posix()
-            for p in WORKFLOWS_DIR.glob("**/*.sw.yaml")
+            p.relative_to(WORKFLOWS_DIR).as_posix() for p in WORKFLOWS_DIR.glob("**/*.sw.yaml")
         }
-        all_expected = set(EXPECTED_WORKFLOWS) | {
-            f"review/{w}" for w in EXPECTED_REVIEW_WORKFLOWS
-        }
+        all_expected = set(EXPECTED_WORKFLOWS) | {f"review/{w}" for w in EXPECTED_REVIEW_WORKFLOWS}
         self.assertEqual(
             all_actual,
             all_expected,
@@ -317,4 +314,3 @@ class GovernanceWorkflowsTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
