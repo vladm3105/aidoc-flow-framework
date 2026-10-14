@@ -45,7 +45,7 @@ target language's conventions. This means:
   languages in a polyglot project: the test mappings reference concrete file
   paths and function names per language.
 - Validators check that TDD-declared paths and names exist in the actual
-  test files (TDD-SYNC-001 through TDD-SYNC-004), regardless of language.
+  test files (`TDD-SYNC-A` through `TDD-SYNC-E`), regardless of language.
 
 This philosophy ensures that the SDD framework works for Go, Python,
 TypeScript, Rust, or any other language without imposing language-specific
@@ -124,14 +124,15 @@ executor back to TDD — was missing. This caused the "IPLAN says DONE, TDD says
 3. No cross-layer validation checks that TDD function names exist in actual test files.
 4. No lint rule verifies IPLAN test file paths match TDD `test_file` paths.
 
-### The Fix: Four Lint Rules
+### The Fix: Five Sync Rules (TDD-SYNC-A through TDD-SYNC-E)
 
 | Rule | What it checks |
 |------|---------------|
-| `TDD-SYNC-001` | TDD `test_mapping` function names exist as `def test_*` / `function test_*` in declared `test_file` |
-| `TDD-SYNC-002` | IPLAN `file_manifest` test file paths match TDD `test_file` paths |
-| `TDD-SYNC-003` | IPLAN `status: DONE` + TDD `status: pending` = status not propagated |
-| `TDD-SYNC-004` | TDD `test_file` paths exist on disk |
+| `TDD-SYNC-A` | Status propagation: IPLAN `status: DONE` + TDD `status: pending` = status not propagated |
+| `TDD-SYNC-B` | File ownership: IPLAN `file_manifest` test file paths match TDD `test_file` paths |
+| `TDD-SYNC-C` | Function-name consistency: TDD `test_mapping` function names exist in declared `test_file` |
+| `TDD-SYNC-D` | Language consistency: TDD and owning IPLAN reference same test-file language |
+| `TDD-SYNC-E` | Index synchronization: TDD index and IPLAN index show consistent statuses |
 
 ### Status Lifecycle for TDD test cases
 

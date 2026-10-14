@@ -290,7 +290,7 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
     - **Mixed scope follows the deployable path.** The change's own file manifest decides: any deployable artifact in the manifest mandates live closeout. When in doubt, the deployable path governs.
 11. **Development-complete ≠ deployed (companion to rule 10).** A development IPLAN is complete when its artifacts are authored, committed, and green — deployment belongs to a separate deployment plan. Rule 10 governs the *CHG* closeout: a deployable CHG is not `Completed` until the deployment-plan evidence (deploy + smoke + EVAL) it depends on has landed and is cited.
 
-**Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
+**Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-06-11). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 
 ### IPLAN Gate (Hard Block — §3.13)
 
@@ -333,7 +333,7 @@ test cases for code; N/A-allowed for pure prose) — "small diff" is not an exem
 seed-phase drafting before the first BRD is authored against seed vN (SEED_CONTRACT R1). See
 `governance/CHG_REQUEST_FLOWS.md` §3 (F2).
 
-**Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
+**Violation log:** CHG-10 had code implemented before IPLAN existed (2026-06-11). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
 
 ### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync)
 

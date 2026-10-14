@@ -37,7 +37,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
 
 > **Technology Selection Gate ([`governance/TECHNOLOGY_STACK_USAGE_GUIDE.md`](governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)):**  
-> SDD enforces clean architectural separation: Layers 01–04 (**Problem Space**) remain technology-agnostic. Layer 05 (**ADR**) serves as the formal selection gate, evaluating options from `/mnt/e/dev/technology_stack` against EARS timing constraints and BDD failure scenarios via Multi-Criteria Decision Analysis (MCDA). Layers 06–10 (**Solution Space**) author concrete technology contracts, testcontainers, and implementations.
+> SDD enforces clean architectural separation: Layers 01–04 (**Problem Space**) remain technology-agnostic. Layer 05 (**ADR**) serves as the formal selection gate, evaluating options from `vladm3105/technology-stack` against EARS timing constraints and BDD failure scenarios via Multi-Criteria Decision Analysis (MCDA). Layers 06–10 (**Solution Space**) author concrete technology contracts, testcontainers, and implementations.
 
 The forward chain above is the **SDD2C greenfield** (F1) flow. Subsequent changes do not all repeat it: behavior changes
 restart the chain from the lowest affected layer (**SEED2C** brownfield / F3, SDD-first), defects in completed work repair
@@ -96,12 +96,15 @@ To support both lightweight specification drafting and complex autonomous agent 
 
 | Area | Owner | Implementation Rule |
 |-----|-------------|---------------------|
-| Architecture decisions | ADR (L5) | Context-Decision-Consequences with downstream SPEC readiness |
+| Business intent & problem space | BRD (L1) | Business rationale, market problem, success metrics, constraints |
+| Product requirements & user stories | PRD (L2) | Features, user personas, functional scope, acceptance boundaries |
 | Requirement formalization | EARS (L3) + BDD (L4) | Formal clauses + executable scenarios with `spec_trace` |
+| Architecture decisions | ADR (L5) | Context-Decision-Consequences with downstream SPEC readiness |
 | Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
 | Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
 | Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
 | Governance workflow | CHG overlay (L9) | Project-level control outside the sequential lifecycle (operational namespace 09) |
+| Evaluation & verification | EVAL (L10) | Evaluation reports, QA governance, acceptance validation, coverage matrices |
 
 ## Development vs Deployment Separation
 

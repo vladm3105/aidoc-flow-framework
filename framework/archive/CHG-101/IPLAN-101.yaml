@@ -1,0 +1,73 @@
+# =============================================================================
+#  IPLAN-101: Remediate Workstation Path Leaks, Stale Decision Guidance, and Governance Catalog Drift
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-101/CHG-101.yaml
+# =============================================================================
+
+id: "IPLAN-101"
+chg_id: "CHG-101"
+title: "Remediate Workstation Path Leaks, Stale Decision Guidance, and Governance Catalog Drift"
+status: "Completed"
+framework_version: "0.91.19"
+
+file_manifest:
+  - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+  - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+  - "framework/governance/DECISION_WORKFLOW.md"
+  - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+  - "framework/templates/MODULE-TEMPLATE.md"
+  - "plans/TECHSTACK-SELECTION-GOVERNANCE-PLAN.md"
+  - "framework/governance/chg/README.md"
+  - "framework/layers/09_CHG/README.md"
+  - "framework/playbooks/09_CHG/gate_spec_change.md"
+  - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+  - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+  - "sdd_doc_lint/surface_lint.py"
+  - "tests/chg/spec_gate.py"
+  - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+  - "framework/layers/01_BRD/README.md"
+  - "framework/playbooks/10_EVAL/README.md"
+  - "framework/playbooks/10_IPVERIFY/README.md"
+  - "framework/playbooks/10_IPVERIFY/evaluator.md"
+  - "framework/playbooks/10_IPVERIFY/verifier.md"
+  - "framework/governance/DOC_GOVERNANCE_CORE.md"
+  - "framework/governance/LINT_RULES.md"
+  - "tests/conformance/test_lint_catalog.py"
+  - "framework/TESTING_STRATEGY_TDD.md"
+  - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+  - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+  - "AGENTS.md"
+  - "framework/AI_ASSISTANT_RULES.md"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-101/CHG-101.yaml"
+  - "framework/archive/CHG-101/IPLAN-101.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-101.yaml and IPLAN-101.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: >-
+      Sanitize /mnt/e/dev/technology_stack to vladm3105/technology-stack in ADR-SWF-TEMPLATE.yaml,
+      SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, DECISION_WORKFLOW.md, SEED_TO_MODULE_DECOMPOSITION.md,
+      MODULE-TEMPLATE.md, and TECHSTACK-SELECTION-GOVERNANCE-PLAN.md (Issue #972)
+    status: "Completed"
+  - id: "TASK-03"
+    name: >-
+      Update change playbooks and READMEs to direct decisions to CHG Sec 1B / Layer 05 ADR
+      instead of retired DECISIONS.md; remove retired CHANGELOG.md and FRAMEWORK-TODO / ROADMAP.md
+      citations; synchronize playbook timestamps (Issue #973)
+    status: "Completed"
+  - id: "TASK-04"
+    name: >-
+      Register SURF-001..004 in framework/governance/LINT_RULES.md, add surface_lint.py to
+      tests/conformance/test_lint_catalog.py, reconcile TDD-SYNC-A..E across spec and templates,
+      and fix Layer 09 header in RECOMMENDED_PLATFORM_STACK.md and layer flow in AGENTS.md (Issue #974)
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Bump framework/VERSION to 0.91.19 and run hooks/sync-version-refs.sh"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Run full deterministic check suite (chg_lint, test_lint_catalog, conformance, spec_gate)"
+    status: "Completed"

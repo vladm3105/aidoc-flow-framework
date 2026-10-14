@@ -116,15 +116,11 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
     - Follow SemVer: major/minor/patch per classification
     - Update `LAYER_REGISTRY.yaml` `metadata.framework_version` to match
 
-11. **Create or update `CHANGELOG.md`** (GATE-SPEC-E008)
-    - Add entry with version number, date, and change summary
-    - Follow existing format (Added/Changed/Fixed sections)
+11. **Record decision in CHG Section 1B** (GD-71 / GD-78)
+    - Author formal decision mapping in `CHG-*.yaml` Section 1B (`decision_id`, `title`, `context`, `choice`, `consequences`)
+    - For architectural decisions, author structured Layer 05 ADR (`docs/sdd/05_ADR/`)
 
-12. **Add GD entry to `DECISIONS.md`** (if significant decision)
-    - Follow existing format (Status, Context, Decision, Consequences, Authority)
-    - Place before existing entries (newest first)
-
-13. **Security assessment** (GATE-SPEC-W003)
+12. **Security assessment** (GATE-SPEC-W003)
     - Review against SECURITY_REVIEW.md threats T1-T4
     - Record findings in CHG `security_assessment` section
     - For informational metadata changes: typically no blocking findings

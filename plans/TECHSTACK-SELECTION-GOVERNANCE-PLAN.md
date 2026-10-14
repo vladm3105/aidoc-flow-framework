@@ -13,7 +13,7 @@
 
 ## Objective
 
-Establish comprehensive, end-to-end integration and governance of our enterprise-approved platform technology stack (codified in `/mnt/e/dev/technology_stack/` and [`RECOMMENDED_PLATFORM_STACK.md`](../framework/governance/RECOMMENDED_PLATFORM_STACK.md)) across the 10-layer Specification-Driven Development (SDD) lifecycle.
+Establish comprehensive, end-to-end integration and governance of our enterprise-approved platform technology stack (codified in `vladm3105/technology-stack` and [`RECOMMENDED_PLATFORM_STACK.md`](../framework/governance/RECOMMENDED_PLATFORM_STACK.md)) across the 10-layer Specification-Driven Development (SDD) lifecycle.
 
 This plan addresses four core deliverables:
 
@@ -28,7 +28,7 @@ In scope:
 
 1. **Phase 1 — Governance Guide (`framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
    - Establish the multi-tier progressive refinement model:
-     - Tier 0: Enterprise Baseline (`/mnt/e/dev/technology_stack/`).
+     - Tier 0: Enterprise Baseline (`vladm3105/technology-stack`).
      - Tier 1: Seed Documents (`<project>/seed/`) — Environmental realities, baseline platform constraints, invariants (C4-L1).
      - Tier 2: Module Specifications (`docs/modules/MODULE-NN_*`) — Structural container modeling (C4-L2), data movement and trust boundaries (DFD-L2), mapping bounded contexts to approved platform container archetypes.
      - Problem Space (Layers 01–04: BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD) — Technology-agnostic business goals, feature requirements, timing constraints, and executable behavioral scenarios; defining `adr_topics`.
@@ -62,7 +62,7 @@ In scope:
 
 4. **Phase 4 — Workflow Standards Modernization (`*_WORKFLOW_STANDARD.md`)**:
    - Modernize the normative standards across layers 01 through 08 (`BRD_WORKFLOW_STANDARD.md`, `PRD_WORKFLOW_STANDARD.md`, `EARS_WORKFLOW_STANDARD.md`, `BDD_WORKFLOW_STANDARD.md`, `ADR_WORKFLOW_STANDARD.md`, `SPEC_WORKFLOW_STANDARD.md`, `TDD_WORKFLOW_STANDARD.md`, `IPLAN_WORKFLOW_STANDARD.md`, and `GOVERNANCE_WORKFLOW_STANDARD.md`) to formally codify technology stack evaluation, verification, and contract generation primitives within their respective state machine specifications.
-   - Update `framework/governance/REVIEW_CREWS.yaml` to ensure the Architect and Operator review personas actively check alignment with `/mnt/e/dev/technology_stack/`.
+   - Update `framework/governance/REVIEW_CREWS.yaml` to ensure the Architect and Operator review personas actively check alignment with `vladm3105/technology-stack`.
 
 Out of scope:
 

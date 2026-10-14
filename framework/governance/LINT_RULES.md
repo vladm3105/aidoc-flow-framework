@@ -228,3 +228,13 @@ nothing emits it the row says **Reserved**.
 | `SWF-L005` | SAGA Compensation Integrity — states declaring `compensatedBy` must target a defined operation state responsible for rollback. | error | `DURABLE_EXECUTION_STANDARD.md` §4 (SAGA reversibility) |
 | `SWF-L006` | Parallel Branch Completeness — parallel state branches must define unique branch names and non-empty action definitions. | error | `DURABLE_EXECUTION_STANDARD.md` §2 |
 | `SWF-L007` | Review Crew Parity — review workflow action personas and crew functions must strictly match the definitions in `REVIEW_CREWS.yaml`. | error | `REVIEW_WORKFLOW_STANDARD.md`, `REVIEW_CREWS.yaml` |
+
+## Governance Surface Lint (SURF-001–SURF-004)
+
+| ID | Meaning | Severity | Contract |
+|----|---------|----------|----------|
+| `SURF-001` | Loose `DECISIONS.md` detected at repository root, `docs/`, or `plans/`. Monolithic decision logs are retired per GD-71 and GD-78; architectural decisions belong in Layer 05 (`docs/sdd/05_ADR/`) and change decisions belong in Layer 09 (`CHG-*.yaml` Section 1B). | error | `DECISION_WORKFLOW.md`, GD-71, GD-78 |
+| `SURF-002` | Loose `ROADMAP.md` detected at repository root, `docs/`, or `plans/`. Monolithic roadmaps are retired; feature planning lives in `plans/*-PLAN.md` and GitHub milestones. | warning | `BOOTSTRAP.md`, `ADAPTATION-GUIDE.md` |
+| `SURF-003` | Loose `CHANGELOG.md` detected at repository root or `docs/`. Monolithic change logs are retired per CHG-40 and CHG-94; change provenance lives in `framework/archive/CHG-*/` and release notes. | warning | `GATE-SPEC_FRAMEWORK.md`, CHG-40, CHG-94 |
+| `SURF-004` | Loose `HANDOFF.md` detected at repository root, `docs/`, or `plans/`. Session handoffs live on the active GitHub issue and plan; loose handoff files are retired. | error | `AGENTS.md` ("Where state lives") |
+

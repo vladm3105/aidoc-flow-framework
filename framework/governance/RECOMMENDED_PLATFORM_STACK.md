@@ -184,7 +184,7 @@ flowchart TD
    - Asynchronous message contract validation tests over NATS JetStream test fixtures.
    - Ephemeral supply chain and CVE security scans via **Trivy**.
 4. **Layer 08 (IPLAN):** Translated 1:1 into a Temporal Workflow Definition where each task state maps to a governed activity, carrying SAGA compensation handlers in reverse LIFO order.
-5. **Layer 09 (Code):** Autonomous coding agents execute within isolated Git worktrees running inside **gVisor (`runsc`)** containers managed by **`agentd over tmux`**:
+5. **Implementation Phase (between Layer 08 IPLAN and Layer 10 EVAL, governed by Layer 09 CHG):** Autonomous coding agents execute within isolated Git worktrees running inside **gVisor (`runsc`)** containers managed by **`agentd over tmux`**:
    - Network egress is blocked (`--network=none`).
    - LLM access is restricted to the host UNIX domain socket `/var/run/litellm.sock` (`:rw`).
    - Secrets are loaded into process RAM only via `infisical run`.

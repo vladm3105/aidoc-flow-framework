@@ -168,7 +168,7 @@ level. Signature fields stay blank for the human.
 
 ```markdown
 - [ ] GATE-SPEC-E001..E004 pass (record-level)
-- [ ] GATE-SPEC-E005..E008 pass (CI: VERSION bump, pins match, suite green, CHANGELOG)
+- [ ] GATE-SPEC-E005..E007 pass (CI: VERSION bump, pins match, suite green)
 - [ ] GATE-SPEC-W001..W003 reviewed (W003: SECURITY_REVIEW.md for agent-facing changes)
 - [ ] CHG document created (>= C2)
 - [ ] Human approval obtained per matrix (branch protection)

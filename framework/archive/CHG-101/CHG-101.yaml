@@ -1,0 +1,170 @@
+# =============================================================================
+#  CHG-101: Remediate Workstation Path Leaks, Stale Decision Guidance, and Governance Catalog Drift
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Specification Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issues #972, #973, #974
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.19"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-101"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): approved, continue (Issues #972, #973, #974)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-101)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-101"
+  title: "Remediate Workstation Path Leaks, Stale Decision Guidance, and Governance Catalog Drift"
+  status: "Ratified"
+  context: |
+    A deep review of the whole framework identified three clusters of defects:
+    1. Workstation Host Path Leak (#972): Windows/WSL host path /mnt/e/dev/technology_stack lingers
+       in 6 live spec files and inside CNCF Serverless Workflow template ADR-SWF-TEMPLATE.yaml,
+       causing workflow state machine execution payloads to refer to nonexistent local paths.
+    2. Stale Guidance & Anti-Pattern Instruction (#973): Layer 09 and change playbooks still instruct
+       agents to "Add GD entry to DECISIONS.md", contradicting GD-71, GD-78, and SURF-001. Other stale
+       citations include deleted plans/FRAMEWORK-TODO.md, retired ROADMAP.md, and retired CHANGELOG.md
+       gate checklist items (GATE-SPEC-E008).
+    3. Catalog Drift & Naming Discrepancies (#974): Newly added SURF-001..004 rules are missing from
+       LINT_RULES.md catalog and tests/conformance/test_lint_catalog.py; TDD-SYNC rule citations in
+       spec and IPLAN-TEMPLATE.yaml use legacy numeric IDs (001..007) instead of canonical A..E; and
+       RECOMMENDED_PLATFORM_STACK.md mislabels Section 4.1 header as "Layer 09 (Code)".
+  choice: |
+    1. Sanitize all instances of /mnt/e/dev/technology_stack to canonical vladm3105/technology-stack,
+       including inside ADR-SWF-TEMPLATE.yaml.
+    2. Update framework/governance/chg/README.md, framework/layers/09_CHG/README.md, and gate_spec_change.md
+       step 12 to record change decisions in CHG-*.yaml Section 1B per GD-71 and architectural decisions
+       in Layer 05 (ADR). Remove step 5 (CHANGELOG.md) and remove FRAMEWORK-TODO / ROADMAP.md citations.
+       Synchronize playbook timestamps to current date (2026-10-13).
+    3. Add SURF-001 through SURF-004 to framework/governance/LINT_RULES.md, add surface_lint.py to
+       tests/conformance/test_lint_catalog.py, reconcile TDD-SYNC-A..E across spec and templates, and
+       re-title Layer 09 header in RECOMMENDED_PLATFORM_STACK.md.
+    4. Bump framework/VERSION to 0.91.19 and propagate via hooks/sync-version-refs.sh.
+  consequences: |
+    - Completely eliminates workstation path leaks in specifications and executable workflow templates.
+    - Eliminates conflicting guidance that directs autonomous agents to violate SURF-001.
+    - Restores bidirectional agreement guard in test_lint_catalog.py for all linter rule families.
+    - Maintains normative SDD layer sequencing and nomenclature across the entire repository.
+  alternatives_considered:
+    - option: "Split into three sequential PRs"
+      rationale_rejected: >-
+        All three issues are non-breaking hygiene, path sanitization, and catalog synchronization
+        fixes identified in the same deep review audit. Unifying them in CHG-101 ensures zero version
+        fragmentation and delivers a clean, consistent baseline.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Remediate Workstation Path Leaks, Stale Decision Guidance, and Governance Catalog Drift"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Comprehensive sanitization of host workstation paths (/mnt/e/dev/technology_stack), remediation
+    of obsolete instructions to edit retired DECISIONS.md/CHANGELOG.md, registration of SURF-001..004
+    in LINT_RULES.md, and reconciliation of TDD-SYNC and Layer 09 naming discrepancies.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Remediate host paths, stale guidance, and catalog drift across framework"
+  components_affected:
+    - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    - "framework/governance/DECISION_WORKFLOW.md"
+    - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    - "framework/templates/MODULE-TEMPLATE.md"
+    - "plans/TECHSTACK-SELECTION-GOVERNANCE-PLAN.md"
+    - "framework/governance/chg/README.md"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/playbooks/09_CHG/gate_spec_change.md"
+    - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+    - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+    - "sdd_doc_lint/surface_lint.py"
+    - "tests/chg/spec_gate.py"
+    - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+    - "framework/layers/01_BRD/README.md"
+    - "framework/playbooks/10_EVAL/README.md"
+    - "framework/playbooks/10_IPVERIFY/README.md"
+    - "framework/playbooks/10_IPVERIFY/evaluator.md"
+    - "framework/playbooks/10_IPVERIFY/verifier.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "tests/conformance/test_lint_catalog.py"
+    - "framework/TESTING_STRATEGY_TDD.md"
+    - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "AGENTS.md"
+    - "framework/AI_ASSISTANT_RULES.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-101/IPLAN-101.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-101.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-101/IPLAN-101.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-101.yaml"
+    - "test_lint_catalog.py passing with SURF-001..004 registered"
+    - "grep -rn '/mnt/e/dev/technology_stack' returns 0 matches in framework/ and plans/"
+    - "conformance suites green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

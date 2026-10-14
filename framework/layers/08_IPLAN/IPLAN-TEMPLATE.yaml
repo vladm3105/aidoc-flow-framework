@@ -309,7 +309,7 @@ tdd_consistency:
     - Rule D: TDDs and IPLANs MUST reference same language
     - Rule E: TDD-00_index and IPLAN-00_index MUST show consistent statuses
 
-    Enforcement: Lint rules TDD-SYNC-001 through TDD-SYNC-007.
+    Enforcement: Lint rules TDD-SYNC-A through TDD-SYNC-E (per LINT_RULES.md).
 
     Docs-only IPLANs (subtype docs, manifest with no code/test bindings)
     set status: not-applicable with a one-line reason in issues[] — never
@@ -324,7 +324,7 @@ tdd_consistency:
     language_consistent: null  # boolean or null
     index_synchronized: null  # boolean or null
   issues: []
-    # - rule: "TDD-SYNC-003"
+    # - rule: "TDD-SYNC-A"
     #   description: "Status not propagated"
     #   file: "path/to/file"
     #   severity: warning

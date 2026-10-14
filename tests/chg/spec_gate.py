@@ -6,14 +6,12 @@ set (a PR / push diff), not from a static snapshot:
 
   GATE-SPEC-E005  framework/VERSION must change when any framework/** changes
                     (outside the frozen archive tier — see below)
-  GATE-SPEC-E008  framework/CHANGELOG.md must be updated alongside a
-                    framework/** change (outside the frozen archive tier —
-                    see below; the root log is a frozen tombstone since
-                    CHG-40, issue #836)
+  GATE-SPEC-E008  [RETIRED in CHG-94] framework/CHANGELOG.md is a frozen
+                    tombstone; provenance is tracked by framework/archive/CHG-*/
 
 Archive tier: edits confined to ``framework/archive/**`` repair frozen history,
 not the normative spec, so they are not spec changes and carry no
-VERSION/CHANGELOG obligation (#725). A change set that touches normative
+VERSION obligation (#725). A change set that touches normative
 ``framework/`` files alongside archive files is still a spec change.
 
 The record-level checks (E001–E004) are the gate-check skill's / a platform's
