@@ -359,8 +359,8 @@ component_decomposition:
     Component IDs are SHORT KEBAB-CASE names (e.g. "redirect-handler",
     "mapping-store") — descriptive labels scoped to this PRD, not
     cross-layer trace targets. Future framework work may promote
-    component decomposition to a first-class `02b_DECOMP` layer (item
-    #19 in FRAMEWORK-TODO); for now this PRD subsection is the home.
+    component decomposition to a dedicated module layer;
+    for now this PRD subsection is the home.
   components:
     - id: "<short-kebab-component-name>"
       responsibility: "<one-line description of what this component owns>"

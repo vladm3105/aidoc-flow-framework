@@ -105,6 +105,8 @@ SURFACE_RULES = [
     ),
 ]
 
+CODES = frozenset(rule[0] for rule in SURFACE_RULES)
+
 
 def lint_surfaces(repo_root: Path) -> list[SurfaceFinding]:
     """Inspect repository root for forbidden governance anti-pattern files."""

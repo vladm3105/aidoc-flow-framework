@@ -137,7 +137,7 @@ Once Verified:
 ```yaml
 verification_history:
   - verifier: "SDD Framework"
-    date: "2026-10-29"
+    date: "2026-10-13"
     eval_report: "EVAL-01-RPT-003.yaml"
     verdict: PASS
     findings_resolved: 4

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across
@@ -92,7 +92,7 @@ this module lives in the module doc.
 **What SDD ADRs contain:**
 - "We chose PostgreSQL 18 with native UUIDv7 and xp.ledger over ClickHouse for transactional ledger state"
 - Context: why this decision matters, citing upstream `@ears` timing constraints and `@bdd` failure scenarios
-- Decision: what was selected from the approved platform stack (`/mnt/e/dev/technology_stack/`)
+- Decision: what was selected from the approved platform stack (`vladm3105/technology-stack`)
 - Consequences: what this enables and constrains for downstream SPEC (Layer 06)
 - Alternatives considered: evaluated via quantitative MCDA utility scoring
 

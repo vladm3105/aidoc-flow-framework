@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: integration_lead
 weight: 12
 agent: solutions-architect
-framework_spec_version: "0.91.18"
+framework_spec_version: "0.91.19"
 ---
 # integration_lead lens — IPLAN layer
 

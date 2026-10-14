@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 
@@ -107,8 +107,8 @@ BRD set (MVP) → Production v1 → Feedback → next BRD set (NEW MVP) → Prod
 
 Before authoring cycle 1, capture the whole-project scope so later cycles are not
 under-specified. The recommended (not mandated) home is the **`BRD-00` index
-"Planned BRDs" table** — its natural place, which avoids colliding with a
-consumer's top-level product-strategy `ROADMAP.md`:
+"Planned BRDs" table** — its natural place, anchoring product scope into structured
+layer specifications rather than monolithic anti-pattern files:
 
 1. Enumerate **every** planned MVP cycle as a **Planned BRDs** row — cycle, target
    PROD, and `@depends:` sequencing.

@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: tech_lead
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.91.18"
+framework_spec_version: "0.91.19"
 ---
 # tech_lead lens — BDD layer
 

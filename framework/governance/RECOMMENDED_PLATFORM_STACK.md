@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
 | Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–19) |
 
@@ -184,7 +184,7 @@ flowchart TD
    - Asynchronous message contract validation tests over NATS JetStream test fixtures.
    - Ephemeral supply chain and CVE security scans via **Trivy**.
 4. **Layer 08 (IPLAN):** Translated 1:1 into a Temporal Workflow Definition where each task state maps to a governed activity, carrying SAGA compensation handlers in reverse LIFO order.
-5. **Layer 09 (Code):** Autonomous coding agents execute within isolated Git worktrees running inside **gVisor (`runsc`)** containers managed by **`agentd over tmux`**:
+5. **Implementation Phase (between Layer 08 IPLAN and Layer 10 EVAL, governed by Layer 09 CHG):** Autonomous coding agents execute within isolated Git worktrees running inside **gVisor (`runsc`)** containers managed by **`agentd over tmux`**:
    - Network egress is blocked (`--network=none`).
    - LLM access is restricted to the host UNIX domain socket `/var/run/litellm.sock` (`:rw`).
    - Secrets are loaded into process RAM only via `infisical run`.

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 
 
 ## Overview
@@ -356,13 +356,12 @@ When modifying `framework/` itself (templates, governance, registry, VERSION),
 the change follows the same CHG process but routes through **GATE-SPEC** instead
 of the artifact cascade gates. The workflow:
 
-1. **Create CHG record** — classify as C2 or C3 (never C1 for spec changes)
+1. **Create CHG record** — classify change level per `CHG_REQUEST_FLOWS.md`
 2. **Archive originals** — to `archive/{CHG-ID}/` before any modification
 3. **Update affected files** — with `document_control` blocks (GD-24)
-4. **Bump VERSION** — `framework/VERSION` follows SemVer
-5. **Update CHANGELOG.md** — document-of-record for spec changes (E008)
-6. **Record decision** — add GD entry to `DECISIONS.md` if significant
-7. **Re-declare spec-version pins** — `sync-version-refs` clean + conformance green
+4. **Bump VERSION** — `framework/VERSION` follows SemVer (GATE-SPEC-E005)
+5. **Record decision** — capture formal decision in `CHG-*.yaml` Section 1B (`decision:` mapping) per GD-71 and Layer 05 (ADR)
+6. **Re-declare spec-version pins** — `sync-version-refs` clean + conformance green
 
 CHG records for framework self-changes live in `archive/{CHG-ID}/CHG-{NN}.yaml`
 alongside the archived originals. The CHG `supersedes` field lists every

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.18 |
+| Framework Version | 0.91.19 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
@@ -21,7 +21,7 @@ into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
 The SDD framework separates initial human intent from formal development execution:
 
 ```
-Tier 0 Enterprise Baseline: Approved Tech Stack (/mnt/e/dev/technology_stack/)
+Tier 0 Enterprise Baseline: Approved Tech Stack (vladm3105/technology-stack)
   │   • Master platform blueprint: Debian 13, Docker/gVisor, PG18 HA, Temporal, NATS, ClickHouse
   ▼
 Tier 1 Inputs: Seed Documents (<project>/seed/)

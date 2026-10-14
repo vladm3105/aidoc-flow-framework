@@ -23,6 +23,7 @@ from _spec import FRAMEWORK, REPO_ROOT
 CHG_LINT = REPO_ROOT / "sdd_doc_lint" / "chg_lint.py"
 BUGFIX_LINT = REPO_ROOT / "sdd_doc_lint" / "bugfix_lint.py"
 SWF_LINT = REPO_ROOT / "sdd_doc_lint" / "swf_lint.py"
+SURF_LINT = REPO_ROOT / "sdd_doc_lint" / "surface_lint.py"
 CATALOG = FRAMEWORK / "governance" / "LINT_RULES.md"
 IMPL_DIRS = (REPO_ROOT / "sdd_doc_lint", REPO_ROOT / "hooks")
 
@@ -101,12 +102,26 @@ class LintCatalogAgreement(unittest.TestCase):
             with self.subTest(code=code):
                 self.assertIn(f"`{code}`", catalog, f"{code} emitted but absent from LINT_RULES.md")
 
+    def test_surf_codes_catalogued(self):
+        """Every SURF ID the surface linter owns appears in LINT_RULES.md."""
+        module = _load("surface_lint", SURF_LINT)
+        self.assertEqual(
+            set(module.CODES),
+            {f"SURF-{i:03d}" for i in range(1, 5)},
+            "surface_lint owns exactly SURF-001–SURF-004",
+        )
+        catalog = _catalog_text()
+        for code in sorted(module.CODES):
+            with self.subTest(code=code):
+                self.assertIn(f"`{code}`", catalog, f"{code} emitted but absent from LINT_RULES.md")
+
     def test_catalog_rows_grounded(self):
         """Every catalogued row ID is emitted, aliased, or reserved (#715)."""
         chg = _load("chg_lint", CHG_LINT)
         bgf = _load("bugfix_lint", BUGFIX_LINT)
         swf = _load("swf_lint", SWF_LINT)
-        owned = set(chg.CODES) | set(bgf.CODES) | set(swf.CODES)
+        surf = _load("surface_lint", SURF_LINT)
+        owned = set(chg.CODES) | set(bgf.CODES) | set(swf.CODES) | set(surf.CODES)
         impl = _impl_text()
         rows = _row_map()
         self.assertTrue(rows, "no rule rows parsed from LINT_RULES.md")
