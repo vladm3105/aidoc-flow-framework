@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 ## Traceability Chain
 
@@ -124,20 +124,20 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
 | IPLAN | @spec, @tdd | EVAL |
 | EVAL | @ears, @bdd, @tdd, @iplan | Code |
 
-## Layer Readiness Gates
+## Binary Topological Validation (BTV)
 
-Each layer must achieve a readiness score >=90/100 before generating its immediate downstream artifact:
+Per CHG-97, qualitative heuristic readiness scores (`>=90%`) are retired in favor of strict, deterministic **Binary Topological Validation** (`PASS` / `FAIL`) verified by `sdd_doc_lint`:
 
-| Gate | Score | Criteria |
-|------|-------|----------|
-| PRD-Ready | >=90 | BRD completeness in business objectives, requirements, scope |
-| EARS-Ready | >=90 | PRD completeness in features, user stories, domain clarity |
-| BDD-Ready | >=90 | EARS syntax compliance, atomicity, testability, spec_trace links |
-| ADR-Ready | >=90 | BDD scenario coverage, scenario (YAML) quality, edge cases |
-| SPEC-Ready | >=90 | ADR decision completeness, alternatives, consequences |
-| TDD-Ready | >=90 | SPEC interface clarity, data model, behavior contracts |
-| IPLAN-Ready | >=90 | TDD test case coverage, threshold definitions, execution order |
-| EXEC-Ready | >=90 | IPLAN file manifest completeness, execution commands, session handoff |
+| Gate | Type | Deterministic Verification Criteria |
+|------|------|-------------------------------------|
+| **PRD-Ready** | Binary | 100% BRD functional requirements (@brd) resolved and mapped to PRD features (COV01). |
+| **EARS-Ready** | Binary | 100% PRD features mapped to formal EARS syntactic requirements with unbroken lineage. |
+| **BDD-Ready** | Binary | 100% EARS requirements realized by BDD behavioral state graphs or atomic scenarios (COV02). |
+| **ADR-Ready** | Binary | 100% architectural trade-offs cite upstream @ears/@bdd with verified decision rationale. |
+| **SPEC-Ready** | Binary | 100% component interfaces realize upstream BDD/ADR requirements without dangling links. |
+| **TDD-Ready** | Binary | 100% BDD scenarios paired to failing test fixtures (ACC01) prior to code generation. |
+| **IPLAN-Ready** | Binary | 100% SPEC/TDD components mapped to ordered test-first file creation manifests. |
+| **EXEC-Ready** | Binary | IPLAN execution manifest verified, file manifest complete, and session handoff verified. |
 
 ## Cross-Document Dependencies & Governance Tags
 

@@ -38,7 +38,7 @@ requirements_documents: []
   #   related_prd: "PRD-01"     # Upstream PRD reference (1-hop necessary upstream)
   #   statement_types: ["Event-driven", "State-driven", "Unwanted"]
   #   total_requirements: 0     # Count of formal EARS statements
-  #   bdd_ready_score: 0        # Quality score 0-100 (>=90 required for BDD gate)
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for BDD gate per CHG-97)
   #   file_path: "EARS-01_[slug].yaml"
   #   lead: "[Requirements Specialist / QA Lead]"
   #   last_updated: "YYYY-MM-DD"
@@ -97,6 +97,6 @@ update_triggers:
     - "Remove corresponding entry from backlog if present"
   on_status_change:
     - "Update status and last_updated timestamp in requirements_documents"
-    - "When status moves to Approved, assert bdd_ready_score >= 90/100"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"
   on_verification:
     - "Update status to Verified when all downstream BDD scenarios and tests pass"

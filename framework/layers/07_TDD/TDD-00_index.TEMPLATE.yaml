@@ -44,7 +44,7 @@ test_suites: []
   #   adr_refs: ["ADR-01"]      # Architecture decision constraints
   #   iplan_target: "IPLAN-01"  # Downstream execution plan
   #   iplan_status: "Pending"   # Synced with IPLAN-00_index (TDD-SYNC-E)
-  #   iplan_ready_score: 0      # Score 0-100 (>=90 required for IPLAN gate)
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for IPLAN gate per CHG-97)
   #   test_cases_count: 0       # Total positive, negative, edge, and integration cases
   #   status: "Draft"           # Draft | In Review | Approved | Implemented | Verified
   #   file_path: "TDD-01_[slug].yaml"
@@ -92,11 +92,11 @@ update_triggers:
   _guidance: "When and how AI agents maintain this registry."
 
   on_tdd_created:
-    - "Add entry to test_suites with status: Draft and iplan_ready_score: 0"
+    - "Add entry to test_suites with status: Draft"
     - "Increment metadata.total_test_suites"
     - "Remove corresponding entry from backlog if present"
   on_status_change:
     - "Update status and last_updated timestamp in test_suites"
-    - "When status moves to Approved, assert iplan_ready_score >= 90/100"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"
   on_iplan_status_change:
     - "Update iplan_status in test_suites to match IPLAN-00_index (TDD-SYNC-E)"

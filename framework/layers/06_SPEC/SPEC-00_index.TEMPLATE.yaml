@@ -38,7 +38,7 @@ specs: []
   #   adr_ref: "ADR-01"         # Authorizing architecture decision record
   #   tdd_target: "TDD-01"      # Downstream pairing test-driven development guide
   #   status: "Draft"           # Draft | In Review | Approved | Implemented | Deprecated
-  #   tdd_ready_score: 0        # Score 0-100 (>=90 required for TDD gate)
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for TDD gate per CHG-97)
   #   interfaces_count: 0       # Number of declared API/interface contracts
   #   file_path: "SPEC-01_[slug].yaml"
   #   lead: "[System Architect / Tech Lead]"
@@ -83,12 +83,12 @@ update_triggers:
   _guidance: "When and how AI agents maintain this registry."
 
   on_spec_created:
-    - "Add entry to specs with status: Draft and tdd_ready_score: 0"
+    - "Add entry to specs with status: Draft"
     - "Increment metadata.total_specs"
     - "Remove corresponding entry from backlog if present"
   on_status_change:
     - "Update status and last_updated timestamp in specs"
-    - "When status moves to Approved, assert tdd_ready_score >= 90/100"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"
   on_interface_updated:
     - "Update interfaces_count in specs"
     - "Verify bidirectional alignment with downstream TDD test contracts"

@@ -38,7 +38,7 @@ bdd_suites: []
   #   upstream_ears: ["EARS-01"] # Necessary upstream EARS document citations
   #   scenarios_count: 0        # Count of Given-When-Then scenarios
   #   status: "Draft"           # Draft | In Review | Approved | Implemented | Verified
-  #   bdd_ready_score: 0        # Score 0-100 (>=90 required for ADR gate)
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for ADR gate per CHG-97)
   #   file_path: "BDD-01_[slug].yaml"
   #   lead: "[QA Lead / Tech Lead]"
   #   last_updated: "YYYY-MM-DD"
@@ -89,4 +89,4 @@ update_triggers:
     - "Validate element-level ears: references conform to EARS elements"
   on_status_change:
     - "Update status and last_updated timestamp in bdd_suites"
-    - "When status moves to Approved, assert bdd_ready_score >= 90/100"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"

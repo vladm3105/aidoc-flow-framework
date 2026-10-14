@@ -301,10 +301,11 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 | Tool | Purpose |
 |------|---------|
 | `sdd_doc_lint/` | Structural linter — 320+ deterministic checks against layer standard and workflow templates |
+| `sdd_doc_lint/slice.py` | DAG context slicing engine (`--slice`) — extracts topological subgraph context digests for agents |
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 | `hooks/ch-gate-check.sh` | PreCommit advisory hook (also pre-commit) — warns on code without an active CHG |
 | `hooks/sync-version-refs.sh` | Version synchronization hook — propagates framework version across playbooks and metadata |
-| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (22 cataloged workflows: 13 core lifecycle + 9 review-remediation) |
+| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (30 cataloged workflows: 15 core lifecycle + 5 federated + 10 review-remediation) |
 
 The former platforms (Hermes MCP server, Claude Code plugin) were archived on
 2026-09-07 and their code has since been removed — no live platform code
@@ -313,7 +314,7 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.21`**.
+the project is in **post-cutover development** tracking framework spec **`0.91.22`**.
 The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), modernized the ADR index and technology stack registry to machine-readable YAML (Decision GD-74, Change Request CHG-87), established the **Universal AI-First 5-Quadrant YAML Index Architecture** across all 10 SDD layers (Decision GD-75, Change Request CHG-88), permanently retired legacy MVP template tombstones with conformance anti-resurrection guards (Decision GD-76, Change Request CHG-89), and codified in-file bidirectional Dual-Template Selection Guides across Layers 01–08 and Governance (Decision GD-77, Change Request CHG-90), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, automated SCA/CVE security tracking, deterministic agent ingestion, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
 > *This overview is a point-in-time snapshot (as of 2026-10-11); it is not

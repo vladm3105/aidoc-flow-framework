@@ -38,7 +38,7 @@ prds: []
   #   related_brd: "BRD-01"     # Upstream BRD reference
   #   features_count: 0         # Number of discrete feature blocks declared
   #   priority: "High"          # High | Medium | Low
-  #   ears_ready_score: 0       # Quality score 0-100 (>=90 required for EARS gate)
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for EARS gate per CHG-97)
   #   file_path: "PRD-01_[slug].yaml"
   #   lead: "[Product Owner / PM]"
   #   last_updated: "YYYY-MM-DD"
@@ -86,12 +86,12 @@ update_triggers:
   _guidance: "When and how AI agents maintain this registry."
 
   on_prd_created:
-    - "Add entry to prds with status: Draft and ears_ready_score: 0"
+    - "Add entry to prds with status: Draft"
     - "Increment metadata.total_prds"
     - "Remove corresponding entry from backlog if present"
   on_status_change:
     - "Update status and last_updated timestamp in prds"
-    - "When status moves to Approved, assert ears_ready_score >= 90/100"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"
   on_threshold_updated:
     - "Update value, description, or cited_by list in thresholds"
     - "Notify downstream EARS/SPEC agents of parameter change"

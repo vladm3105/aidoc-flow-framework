@@ -9,7 +9,7 @@
 | Framework Version | 0.91.15 |
 | Target Version | 0.91.16 |
 | Date | 2026-10-13 |
-| Status | Proposed |
+| Status | Implemented |
 
 ---
 

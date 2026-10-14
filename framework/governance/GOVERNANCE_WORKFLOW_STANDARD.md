@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -76,6 +76,7 @@ framework/governance/
 │   ├── chg-request-flow.sw.yaml              # Change classification, gates & landing
 │   ├── seed-to-module-decomposition.sw.yaml  # 5-step seed to C4-L2 module flow
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
+│   ├── iplan-escalation-flow.sw.yaml         # Autonomous bottom-up feedback & architectural escalation
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
@@ -87,7 +88,12 @@ framework/governance/
 │   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │   ├── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
 │   ├── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
-│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-09)
+│   ├── context-slicing-generation.sw.yaml    # Federated DAG context slicing & scoped digest compilation
+│   ├── cross-project-ci-dispatch.sw.yaml     # Federated cross-repo CI verification dispatch & status gates
+│   ├── multi-repo-contract-sync.sw.yaml      # Federated contract diff inspection, SDK gen & event broadcast
+│   ├── stack-policy-validation.sw.yaml       # Federated pre-implementation stack policy validation & AST scanning
+│   ├── support-ticket-escalation.sw.yaml     # Federated agent blocker ingestion & maintainer escalation
+│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-10)
 │       ├── brd-review-remediation.sw.yaml    # Layer 01 BRD review remediation saga (REV-01-BRD)
 │       ├── prd-review-remediation.sw.yaml    # Layer 02 PRD review remediation saga (REV-02-PRD)
 │       ├── ears-review-remediation.sw.yaml   # Layer 03 EARS review remediation saga (REV-03-EARS)
@@ -96,7 +102,8 @@ framework/governance/
 │       ├── spec-review-remediation.sw.yaml   # Layer 06 SPEC review remediation saga (REV-06-SPEC)
 │       ├── tdd-review-remediation.sw.yaml    # Layer 07 TDD review remediation saga (REV-07-TDD)
 │       ├── iplan-review-remediation.sw.yaml  # Layer 08 IPLAN review remediation saga (REV-08-IPLAN)
-│       └── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
+│       ├── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
+│       └── eval-review-remediation.sw.yaml   # Layer 10 EVAL review remediation saga (REV-10-EVAL)
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── REVIEW_WORKFLOW_STANDARD.md               # Normative specification for graph-based review sagas

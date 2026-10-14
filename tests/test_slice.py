@@ -204,6 +204,25 @@ class TestSddSliceEngine(unittest.TestCase):
             if tmp_path.exists():
                 tmp_path.unlink()
 
+    def test_cli_via_main_module(self) -> None:
+        """CLI works when invoked via `python -m sdd_doc_lint --slice`."""
+        cmd = [
+            sys.executable,
+            "-m",
+            "sdd_doc_lint",
+            "--slice",
+            "-t",
+            "EARS.01.03.aaaa",
+            "--docs-root",
+            str(FIXTURE_ROOT),
+            "-f",
+            "json",
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["target"], "EARS.01.03.aaaa")
+
 
 if __name__ == "__main__":
     unittest.main()
