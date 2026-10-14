@@ -79,6 +79,7 @@ EXPECTED_FILES = [
     "workflows/review/tdd-review-remediation.sw.yaml",
     "workflows/review/iplan-review-remediation.sw.yaml",
     "workflows/review/chg-review-remediation.sw.yaml",
+    "workflows/review/eval-review-remediation.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",

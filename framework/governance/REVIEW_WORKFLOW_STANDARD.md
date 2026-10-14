@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.19 |
+| Framework Version | 0.91.20 |
 | Authority | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` |
 
 This document establishes the normative standard for **graph-based review, remediation, and gating workflows** across the SDD framework. It specifies the declarative CNCF Serverless Workflow state machines (DSL v0.8 YAML), per-layer review crews, SAGA compensation mechanics, playbook evaluation graphs, and the deterministic handover protocol connecting review findings to authorizing Change Requests (CHGs).
@@ -105,7 +105,7 @@ Per [`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml), every layer defines an author pers
 | **`07_TDD`** | `REV-07-TDD` (`tdd-review-remediation.sw.yaml`) | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `chaos_engineer: 10`, `security_engineer: 10`, `operator: 10`, `auditor: 10` |
 | **`08_IPLAN`** | `REV-08-IPLAN` (`iplan-review-remediation.sw.yaml`) | `tech_lead` | `tech_lead: 30`, `architect: 25`, `operator: 15`, `integration_lead: 12`, `auditor: 10`, `chaos_engineer: 8` |
 | **`09_CHG`** | `REV-09-CHG` (`chg-review-remediation.sw.yaml`) | `integration_lead` | `integration_lead: 30`, `architect: 20`, `chaos_engineer: 15`, `operator: 15`, `auditor: 10`, `security_engineer: 10` |
-| **`10_EVAL`** | `EVAL-WF` (`eval-verification-run.sw.yaml`) | `eval_author` | Verdict-graded via `10_IPVERIFY` playbooks (`evaluator`, `validator`, `verifier`, `report_generator`) |
+| **`10_EVAL`** | `REV-10-EVAL` (`eval-review-remediation.sw.yaml`) | `qa_lead` | `evaluator: 35`, `validator: 25`, `verifier: 20`, `report_generator: 10`, `auditor: 10` |
 
 ---
 
