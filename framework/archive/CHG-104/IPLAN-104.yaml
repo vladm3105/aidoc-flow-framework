@@ -1,0 +1,53 @@
+# =============================================================================
+#  IPLAN-104: Consumer Installation, Brownfield Upgrades, and Rollout Remediation
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-104/CHG-104.yaml
+# =============================================================================
+
+id: "IPLAN-104"
+chg_id: "CHG-104"
+title: "Consumer Installation, Brownfield Upgrades, and Rollout Remediation"
+status: "Completed"
+framework_version: "0.91.22"
+
+file_manifest:
+  - "deploy.sh"
+  - "framework/scripts/install.sh"
+  - "framework/scripts/upgrade.sh"
+  - "hooks/ch-gate-check.sh"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "framework/governance/aidoc/BOOTSTRAP.md"
+  - "plans/CONSUMER-INSTALL-ROLLOUT-REMEDIATION-PLAN.md"
+  - "tests/conformance/test_consumer_scripts.py"
+  - "framework/archive/CHG-104/CHG-104.yaml"
+  - "framework/archive/CHG-104/IPLAN-104.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-104.yaml and IPLAN-104.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update deploy.sh to parse and forward all consumer flags in EXTRA_ARGS"
+    status: "Completed"
+  - id: "TASK-03"
+    name: >-
+      Update framework/scripts/install.sh to set metadata.project_name, scaffold stack-policy.yaml
+      with tenant_id binding, provide .aidoc/bin/sdd-lint runner, and smoke-test profile_lint.py
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update framework/scripts/upgrade.sh to detect and backfill missing metadata.project_name"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Update hooks/ch-gate-check.sh CHG_DIRS to inspect docs/sdd/09_CHG first"
+    status: "Completed"
+  - id: "TASK-06"
+    name: >-
+      Update framework/templates/AGENTS-TEMPLATE.md and framework/governance/aidoc/BOOTSTRAP.md
+      with runner and stack policy guidance
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Expand tests/conformance/test_consumer_scripts.py to assert all new behaviors"
+    status: "Completed"
+  - id: "TASK-08"
+    name: "Run verification battery and linting suite"
+    status: "Completed"

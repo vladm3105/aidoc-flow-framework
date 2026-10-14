@@ -15,9 +15,6 @@ VERSION="$(tr -d '[:space:]' < "$SCRIPT_DIR/framework/VERSION")"
 TARGET=""
 KIND="symlink"
 SHARED="$SCRIPT_DIR"
-DRY_RUN=0
-FORCE=0
-YES=0
 
 usage() {
   cat <<EOF
@@ -30,6 +27,11 @@ Options:
   --dry-run             Preview operations without mutating disk
   --force               Allow re-deploying same version or non-destructive reinstall
   --yes                 Confirm operations non-interactively
+  --no-stack-policy     Skip scaffolding stack-policy.yaml
+  --no-adr              Skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
+  --no-agents           Skip scaffolding AGENTS.md
+  --author <name>       Set author name for scaffolded docs
+  --canon-sha <sha>     Verify canon commit SHA
   -h, --help            Show this help message
 EOF
   exit 1
@@ -41,9 +43,14 @@ while [[ $# -gt 0 ]]; do
     --target) TARGET="${2:-}"; shift 2 ;;
     --kind) KIND="${2:-}"; shift 2 ;;
     --shared) SHARED="${2:-}"; shift 2 ;;
-    --dry-run) DRY_RUN=1; EXTRA_ARGS+=("--dry-run"); shift ;;
-    --force) FORCE=1; EXTRA_ARGS+=("--force"); shift ;;
-    --yes) YES=1; EXTRA_ARGS+=("--yes"); shift ;;
+    --dry-run) EXTRA_ARGS+=("--dry-run"); shift ;;
+    --force) EXTRA_ARGS+=("--force"); shift ;;
+    --yes) EXTRA_ARGS+=("--yes"); shift ;;
+    --no-stack-policy) EXTRA_ARGS+=("--no-stack-policy"); shift ;;
+    --no-adr) EXTRA_ARGS+=("--no-adr"); shift ;;
+    --no-agents) EXTRA_ARGS+=("--no-agents"); shift ;;
+    --author) [[ $# -ge 2 ]] || { echo "ERROR: --author needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--author" "$2"); shift 2 ;;
+    --canon-sha) [[ $# -ge 2 ]] || { echo "ERROR: --canon-sha needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--canon-sha" "$2"); shift 2 ;;
     -h|--help) usage ;;
     *) echo "ERROR: Unknown option: $1" >&2; usage ;;
   esac

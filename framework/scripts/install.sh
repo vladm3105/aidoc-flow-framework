@@ -33,6 +33,7 @@
 #                     user.name, falling back to the current user).
 #   --no-adr          skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
 #   --no-agents       skip scaffolding root AGENTS.md
+#   --no-stack-policy skip scaffolding root stack-policy.yaml
 #   --dry-run         print every mutation without performing it (read-only
 #                     VERSION/tag checks still run for local canons).
 #   --force           replace an existing <project>/.aidoc wholesale
@@ -75,7 +76,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -87,6 +88,7 @@ while [ $# -gt 0 ]; do
     --author) need_value "$@"; AUTHOR="$2"; shift 2 ;;
     --no-adr) NO_ADR=1; shift ;;
     --no-agents) NO_AGENTS=1; shift ;;
+    --no-stack-policy) NO_STACK_POLICY=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
@@ -101,6 +103,7 @@ done
 
 [ -d "$PROJECT" ] || refuse "project dir must exist: $PROJECT"
 PROJECT="$(cd -- "$PROJECT" && pwd)" # resolve symlinks/traversal; all writes stay under it
+PROJ_NAME="$(basename "$PROJECT")"
 AIDOC="$PROJECT/.aidoc"
 if [ -e "$AIDOC" ] && [ "$FORCE" != 1 ]; then
   refuse "$AIDOC already exists (pass --force to replace it wholesale)"
@@ -212,11 +215,11 @@ if [ ! -f "$AIDOC/profile.yaml" ]; then
   [ "$DRY_RUN" = 1 ] || [ -f "$CANON/$src" ] || die "canon template missing: $CANON/$src"
   run "cp $CANON/$src $AIDOC/profile.yaml" cp "$CANON/$src" "$AIDOC/profile.yaml"
   if [ "$DRY_RUN" != 1 ]; then
-    pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
+    pinsub "$AIDOC/profile.yaml" -E "s/^[[:space:]]*#[[:space:]]*project_name:.*/  project_name: \"$PROJ_NAME\"/; s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
   fi
 else
   if [ "$DRY_RUN" != 1 ]; then
-    pinsub "$AIDOC/profile.yaml" -E "s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$VERSION\"/"
+    pinsub "$AIDOC/profile.yaml" -E "s/^[[:space:]]*#[[:space:]]*project_name:.*/  project_name: \"$PROJ_NAME\"/; s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$VERSION\"/"
     log "existing profile.yaml preserved and re-pinned to $VERSION"
   fi
 fi
@@ -241,15 +244,43 @@ fi
 if [ "$NO_AGENTS" != 1 ] && [ -f "$CANON/framework/templates/AGENTS-TEMPLATE.md" ]; then
   agents_doc="$PROJECT/AGENTS.md"
   if [ ! -f "$agents_doc" ]; then
-    proj_name="$(basename "$PROJECT")"
     run "cp $CANON/framework/templates/AGENTS-TEMPLATE.md $agents_doc" cp "$CANON/framework/templates/AGENTS-TEMPLATE.md" "$agents_doc"
     if [ "$DRY_RUN" != 1 ]; then
-      pinsub "$agents_doc" "s/<project-name>/$proj_name/g"
+      pinsub "$agents_doc" "s/<project-name>/$PROJ_NAME/g"
       log "scaffolded working agreement at AGENTS.md"
     fi
   else
     log "existing AGENTS.md preserved"
   fi
+fi
+
+# Scaffold root stack-policy.yaml
+if [ "$NO_STACK_POLICY" != 1 ] && [ -f "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" ]; then
+  policy_doc="$PROJECT/stack-policy.yaml"
+  if [ ! -f "$policy_doc" ]; then
+    run "cp $CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml $policy_doc" cp "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" "$policy_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$policy_doc" -E "s/^(tenant_id:[[:space:]]*)\"[^\"]*\"/\\1\"$PROJ_NAME\"/"
+      log "scaffolded stack policy at stack-policy.yaml"
+    fi
+  else
+    log "existing stack-policy.yaml preserved"
+  fi
+fi
+
+# Scaffold linter runner at .aidoc/bin/sdd-lint
+bin_dir="$AIDOC/bin"
+runner="$bin_dir/sdd-lint"
+run "mkdir -p $bin_dir" mkdir -p "$bin_dir"
+if [ "$DRY_RUN" != 1 ]; then
+  cat << 'RUNNER_EOF' > "$runner"
+#!/usr/bin/env bash
+# sdd-lint — portable runner for sdd_doc_lint in consumer repositories
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PYTHONPATH="$SCRIPT_DIR/framework" exec python3 -m sdd_doc_lint "$@"
+RUNNER_EOF
+  chmod +x "$runner"
+  log "scaffolded linter runner at .aidoc/bin/sdd-lint"
 fi
 
 # BOOTSTRAP step 3: attach the framework (pin or symlink).
@@ -308,7 +339,17 @@ if unknown:
     print(f"unknown profile keys: {unknown}", file=sys.stderr)
     sys.exit(1)
 EOF
-  if [ "$rc" = 0 ]; then log "smoke: profile keys within the closed surface";
+  if [ "$rc" = 0 ]; then
+    log "smoke: profile keys within the closed surface"
+    if [ -f "$AIDOC/framework/sdd_doc_lint/profile_lint.py" ]; then
+      rc_prof=0
+      $PY_RUNNER "$AIDOC/framework/sdd_doc_lint/profile_lint.py" "$AIDOC/profile.yaml" >/dev/null 2>&1 || rc_prof=$?
+      if [ "$rc_prof" = 0 ]; then
+        log "smoke: profile schema 1.1.0 validation clean"
+      else
+        die "smoke: profile validation failed (check profile_lint.py)"
+      fi
+    fi
   elif [ "$rc" = 2 ]; then log "WARNING: PyYAML unavailable — profile keys NOT verified (check BOOTSTRAP step 5 manually)";
   else die "smoke: profile.yaml carries unknown keys"; fi
 else

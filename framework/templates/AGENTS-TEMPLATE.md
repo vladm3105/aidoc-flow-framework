@@ -35,4 +35,4 @@ Files in this repository adhere to the four standard tiers:
 - **Never create monolithic anti-pattern files:** Do not generate or update loose `CHANGELOG.md`, `ROADMAP.md`, `DECISIONS.md`, or `docs/HANDOFF.md`. Record all state in the sanctioned surfaces declared in the table above.
 - **Specification-First:** No code implementation without an authorizing Change Request (`CHG-NN.yaml`) and Implementation Plan (`IPLAN-NN.yaml`). Architectural changes require an ADR under `docs/sdd/05_ADR/`.
 - **One task, one worktree:** Feature and defect work runs in a dedicated git worktree and branch (`feature/<issue-or-chg>-<slug>`), never on `main` or `dev`.
-- **Submit only verified work:** Run linters (`python3 -m sdd_doc_lint`) and local test suites before opening or updating a PR.
+- **Submit only verified work:** Run linters (`.aidoc/bin/sdd-lint` or `PYTHONPATH=.aidoc/framework python3 -m sdd_doc_lint`) and local test suites before opening or updating a PR.

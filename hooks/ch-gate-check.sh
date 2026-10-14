@@ -35,7 +35,7 @@ done
 # CHG instance locations, in precedence order. The framework-only repo has no
 # instance dir by design (only the template at framework/layers/09_CHG/), so a
 # missing dir is an advisory state, never a failure.
-CHG_DIRS="docs/sdd/09-CHG framework/layers/09_CHG"
+CHG_DIRS="docs/sdd/09_CHG docs/sdd/09-CHG framework/layers/09_CHG"
 CHG_DIR=""
 for d in $CHG_DIRS; do
   if [ -d "$d" ]; then

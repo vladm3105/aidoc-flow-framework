@@ -87,8 +87,10 @@ The fresh `.aidoc/` passes when ALL of these hold:
 
 - [ ] `.aidoc/README.md`, `.aidoc/profile.yaml` present; `.aidoc/framework`
       resolves (`readlink -f .aidoc/framework` exits 0).
+- [ ] `metadata.project_name` in `profile.yaml` is non-empty and matches the project.
 - [ ] Every key in `profile.yaml` is in the `ADAPTATION_SURFACE.yaml` closed
       set (no unknown keys).
+- [ ] `stack-policy.yaml` is established at project root (or explicitly opted out).
 - [ ] Behavior-changing project docs live under `.aidoc/project/` (mirroring
       `framework/` paths per the discovery rule) — never loose at `.aidoc/`
       root, where engines do not read them.
