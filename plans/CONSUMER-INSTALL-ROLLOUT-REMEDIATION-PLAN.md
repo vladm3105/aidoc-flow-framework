@@ -8,7 +8,7 @@
 | Status | Implemented |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.22 |
+| Framework Version | 0.91.23 |
 | Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), [`ADAPTATION.md`](../framework/governance/ADAPTATION.md), [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) |
 
 ## Objective

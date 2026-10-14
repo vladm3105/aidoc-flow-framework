@@ -819,6 +819,7 @@ class DeployScript(unittest.TestCase):
         deploy_sh = REPO_ROOT / "deploy.sh"
         proc = subprocess.run(
             [
+                "bash",
                 str(deploy_sh),
                 "--target",
                 str(self.project),
