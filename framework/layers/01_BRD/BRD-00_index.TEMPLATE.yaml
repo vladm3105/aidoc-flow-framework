@@ -90,7 +90,7 @@ update_triggers:
     - "Remove or mark graduated from backlog if previously listed"
   on_status_change:
     - "Update status and last_updated timestamp in brds"
-    - "When status moves to Approved, verify PRD-Ready score >= 90/100"
+    - "When status moves to Approved, verify PRD-Ready (Binary Topological Validation PASS per CHG-97)"
   on_brd_graduated:
     - "Transition backlog item to brds registry"
     - "Assign sequential BRD-NN identifier and file path"

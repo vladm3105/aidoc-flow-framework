@@ -8,14 +8,14 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 ## Principles
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
 2. **YAML is the mandatory format and the source of truth** — for **templates and for the instance artifacts authored from them**. Every layer template is `{TYPE}-TEMPLATE.yaml`, and every artifact a layer produces is authored as `.yaml`. **Markdown is optional and descriptive**: a rendering of the YAML, or additional explanatory material around it. Markdown never carries a fact the YAML does not, and a fact that exists only in markdown is a defect of the same class as two records of one count. Where a `.md` file restates YAML content it is **generated, not authored** — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect. Scope note: this principle governs the artifacts of layers 1-10 and their templates; it does not govern repository prose (`README`, `CHANGELOG`, governance surfaces such as this file) or a layer's `<X>-00_index.TEMPLATE.*`, whose extension is fixed per layer by `LAYER_REGISTRY.yaml`. **Authority:** the per-layer value is `LAYER_REGISTRY.yaml` `extensions` — the single normative source (GD-17). This principle states the rule; it does not re-specify the per-layer extensions. **Effective condition:** GD-17 states, once, when the instance-format mandate takes normative effect.
 3. **Necessary-upstream traceability** — Each layer cites only its `required_tags` (`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer; deeper lineage is transitive.
-4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
+4. **Binary Topological Validation** — Quality gating is strictly binary (PASS / FAIL). Each layer must achieve 100% DAG completeness (zero dangling @-pointers) and 100% oracle realization before generating downstream artifacts. Heuristic percentage readiness scores are retired (CHG-97).
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
 6. **Separation of development and deployment** — Development plans produce source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, and shipped through version control. Deployment plans handle operator-only execution of those artifacts. A development plan is complete when its artifacts are authored, committed, and green — it does NOT wait for deployment.
 7. **Token-efficient authoring** — Documents must be **precise and complete**, not **detailed and exhaustive**. Completeness comes from covering every required template section, not from prose volume. Authoring voice, form preferences, and size targets are defined in [`AUTHORING_STYLE.md`](AUTHORING_STYLE.md); every creation and audit engine loads it alongside the layer template.

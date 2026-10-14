@@ -11,7 +11,7 @@
 #    - Specifying formal requirement statements where state machine orchestration is unnecessary overhead
 #  Use the primary template (EARS-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
 #    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
-#    - Orchestrating automated BDD-readiness score evaluation (>=90/100 threshold switch gates)
+#    - Orchestrating automated BDD-readiness evaluation (Binary Topological Validation switch gates per CHG-97)
 #    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
 #    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)

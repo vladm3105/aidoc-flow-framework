@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 
 ## C4 Model Position
@@ -47,7 +47,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 
 ## Design Decisions
 
-- **Mandatory layer** — one IPLAN per TDD/SPEC component, created when TDD reaches IPLAN-Ready >=90/100.
+- **Mandatory layer** — one IPLAN per TDD/SPEC component, created when TDD reaches IPLAN-Ready (BTV PASS per CHG-97).
 - **Test-first file order** — file_manifest declares test files before implementation files (TDD principle inherited from L7).
 - **Session handoff protocol** — solves the stateless executor problem: each session reads the previous session's state, identifies the next incomplete step, and continues without regenerating completed work.
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).

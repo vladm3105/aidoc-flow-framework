@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 
 ## Overview
@@ -69,14 +69,14 @@ EVAL:  @ears @bdd @tdd @iplan
 `required_tags` is the minimum trace-resolution set; a layer MAY carry extra
 provenance tags (e.g. a platform ADR's `@brd`/`@prd`) but is not required to.
 
-## Readiness Score Flow
+## Layer Gate Flow: Binary Topological Validation (BTV)
 
-Each layer must achieve >=90/100 readiness score before generating the next layer:
+Per CHG-97, layer gates evaluate deterministically via Binary Topological Validation (BTV) rather than legacy numeric score thresholds (>=90/100). Each layer must achieve deterministic BTV PASS (structural completeness, upstream trace satisfaction, DAG validity) before transitioning to the downstream layer:
 
 ```
-BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>=90)
-→ BDD → ADR-Ready (>=90) → ADR → SPEC-Ready (>=90) → SPEC → TDD-Ready (>=90)
-→ TDD → IPLAN-Ready (>=90) → IPLAN → EXEC-Ready (>=90) → Code
+BRD → PRD-Ready (BTV PASS) → PRD → EARS-Ready (BTV PASS) → EARS → BDD-Ready (BTV PASS)
+→ BDD → ADR-Ready (BTV PASS) → ADR → SPEC-Ready (BTV PASS) → SPEC → TDD-Ready (BTV PASS)
+→ TDD → IPLAN-Ready (BTV PASS) → IPLAN → EXEC-Ready (BTV PASS) → Code
 ```
 
 ## Dual-Template Architecture: Standard vs. Workflow-Driven SDD

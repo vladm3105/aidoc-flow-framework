@@ -33,8 +33,21 @@ from . import (
 
 
 def main(argv: list[str] | None = None) -> int:
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    if raw_argv and ("--slice" in raw_argv or (raw_argv[0] == "slice")):
+        from sdd_doc_lint.slice import main as slice_main
+
+        slice_argv = [a for a in raw_argv if a not in ("--slice", "slice")]
+        return slice_main(slice_argv)
+
     parser = argparse.ArgumentParser(prog="sdd_doc_lint")
     parser.add_argument("paths", nargs="*", default=[], help="file(s) or directory(ies) to lint")
+    parser.add_argument(
+        "--slice",
+        nargs="*",
+        metavar="TARGET",
+        help="extract minimal topological context slice (delegates to sdd_doc_lint.slice)",
+    )
     parser.add_argument(
         "--profile",
         type=Path,

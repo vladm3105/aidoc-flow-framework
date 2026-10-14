@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -84,6 +84,7 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `adr-decision-analysis.sw.yaml` | Layer 05 ADR | Multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and architectural invalidation sagas. |
 | `spec-choreography-contract.sw.yaml` | Layer 06 SPEC | Distributed component interaction verification, schema compatibility checks, dead-letter routing, and compensating transactions. |
 | `tdd-test-execution.sw.yaml` | Layer 07 TDD | Red-Green-Refactor cycle loops, fixture lifecycle isolation, regression test gating, and fixture rollback compensation. |
+| `iplan-escalation-flow.sw.yaml` | Layer 08 IPLAN | Autonomous bottom-up feedback and architectural escalation when execution encounters contract blockers, library constraints, or missing platform capabilities. |
 | `seed-to-module-decomposition.sw.yaml` | Architecture | Triple-Lens decomposition (Structure, Trust Boundaries, Process/Sequence) from Tier 1 Seed Vision into Tier 2 C4-L2 Module Containers. |
 | `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification across 6 graph traversal paths, gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
 | `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
@@ -105,6 +106,7 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `review/tdd-review-remediation.sw.yaml` | Layer 07 TDD Review | Multi-persona parallel audit (qa_lead, tech_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/iplan-review-remediation.sw.yaml` | Layer 08 IPLAN Review | Multi-persona parallel audit (architect, tech_lead, integration_lead, operator, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/chg-review-remediation.sw.yaml` | Layer 09 CHG Review | Multi-persona parallel audit (architect, integration_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
+| `review/eval-review-remediation.sw.yaml` | Layer 10 EVAL Review | Multi-persona parallel audit (evaluator, validator, verifier, report_generator, auditor), deterministic gate floor evaluation, and 3-strike remediation saga. |
 
 ### Governance Templates (`templates/`)
 

@@ -1,0 +1,32 @@
+# =============================================================================
+#  Multi-Project Contracts Registry Template (contracts-registry.yaml)
+# =============================================================================
+#  Standard: Multi-Project Contract Registry v1.0
+#  Authority: framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md
+#  Governs: Canonical data contract index across federated repositories
+# =============================================================================
+
+registry_version: "1.0"
+
+contracts:
+  "@auth-core:06_SPEC:SPEC-JWT-CLAIMS":
+    version: "1.0.0"
+    schema_type: "protobuf"              # "protobuf" | "json_schema" | "swf_graph"
+    repository: "example-org/auth-service"
+    schema_path: "proto/auth/v1/claims.proto"
+    schema_hash: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    subscribers:
+      - repo: "example-org/billing-service"
+        contact_channel: "#billing-alerts"
+      - repo: "example-org/customer-portal"
+        contact_channel: "#portal-alerts"
+
+  "@auth-core:04_BDD:BDD-SWF-LOGIN":
+    version: "1.0.0"
+    schema_type: "swf_graph"
+    repository: "example-org/auth-service"
+    schema_path: "docs/sdd/04_BDD/BDD-SWF-LOGIN.sw.yaml"
+    schema_hash: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    subscribers:
+      - repo: "example-org/customer-portal"
+        contact_channel: "#portal-alerts"

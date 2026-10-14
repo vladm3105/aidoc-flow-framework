@@ -53,7 +53,7 @@ All three stamp `document_type: iplan-document`, but the shapes differ:
 | sections        | 6                                               | 13                                                              | 4 (its own `iplan-intake`)                           |
 | unit of work    | `file_manifest` (files)                         | `step → work_order → todo`                                      | flat `task_graph`                                    |
 | executor ctx    | —                                               | `executor_context` (forbidden_paths, mcp_tools, secrets_policy) | `isolation_scope.allowed_roots`                      |
-| readiness       | "IPLAN-Ready ≥90" (TDD-layer score, not in doc) | `verification.exec_ready_score` + EXEC-Ready gate               | `intake_control.exec_ready_score ≥ 90`               |
+| readiness       | BTV PASS (formerly "IPLAN-Ready ≥90", per CHG-97) | `verification.exec_ready_score` + EXEC-Ready gate               | `intake_control.exec_ready_score ≥ 90`               |
 | completion gate | — (status only)                                 | `completion_gate` (Iplanic-owned)                               | ledger well-formedness veto                          |
 | resume          | `session_handoff.sessions[]`                    | `handoff` + `navigation`                                        | `run_state` + idempotent `resume`                    |
 | identity        | `iplan_id`, `source_spec`                       | org/project/iplan/plan_version/run/task/step/executor + aliases | client/project/allowed_roots, source_iplan, agent_id |

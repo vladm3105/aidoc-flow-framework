@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 
 ## Overview
 
@@ -49,7 +49,7 @@ to orchestrate requirement verification graphs:
 - **Dependency DAGs**: Parallel resolution of inter-requirement dependencies (`@depends:`).
 - **Syntax Parsing**: Automated verification of the 5 EARS patterns (WHEN, WHILE, WHERE, IF, Ubiquitous) and mandatory response clauses (`THE [system] SHALL ... WITHIN ...`).
 - **Conflict Analysis**: Deterministic scanning for mutually exclusive states and conflicting operational triggers.
-- **BDD-Readiness Gating**: Formal evaluation against the >=90/100 readiness criteria before transition to Layer 04 (BDD).
+- **BDD-Readiness Gating**: Binary Topological Validation (BTV PASS per CHG-97) evaluation before transition to Layer 04 (BDD).
 - **Invalidation Sagas**: Automated compensation (`compensatedBy: InvalidateDownstreamArtifacts`) revoking downstream draft artifacts when requirements are rejected.
 
 See `EARS_WORKFLOW_STANDARD.md` for complete specification rules and graph invariants.

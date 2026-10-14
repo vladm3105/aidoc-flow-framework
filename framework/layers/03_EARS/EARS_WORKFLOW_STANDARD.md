@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 | Authority | Decision GD-59 (framework/governance/DECISIONS.md) |
 
 ---
@@ -45,7 +45,7 @@ The table below defines the formal mapping of EARS requirements analysis primiti
 | **Syntax Pattern Verification** | `operation` | Validates compliance with the 5 EARS patterns, verifies the actor response clause (`THE [component] SHALL`), and checks timing quantifiers (`WITHIN`). |
 | **Dependency DAG Resolution** | `parallel` | Evaluates requirement clusters concurrently and validates that `@depends:` forms an acyclic directed graph (DAG). |
 | **Conflict & Consistency Check** | `operation` | Checks for mutually exclusive states, overlapping triggers, or contradictory behavioral requirements across components. |
-| **BDD-Readiness Evaluation** | `switch` | Evaluates BDD-ready score (threshold >=90/100 across clarity, testability, quality attributes, and strategic alignment) and routes to ratification, clarification, or rejection. |
+| **BDD-Readiness Evaluation** | `switch` | Evaluates BDD-readiness via Binary Topological Validation (BTV PASS per CHG-97 across structural validity, trace satisfaction, and zero conflicts) and routes to ratification, clarification, or rejection. |
 | **Stakeholder Clarification** | `callback` | Emits a clarification request to PRD authors and pauses execution until a correlated `RequirementClarificationEvent` is received (with timeout). |
 | **Contract Ratification** | `operation` | Generates canonical SHA-256 hash IDs (`EARS.{doc_id}.{section_id}.{hash}`) and emits the ratified requirement set to downstream BDD. |
 | **Requirement Invalidation Saga** | `operation` (`usedForCompensation: true`) | Compensating transaction triggered when requirements are rejected, invalidating downstream draft artifacts and alerting stakeholders. |

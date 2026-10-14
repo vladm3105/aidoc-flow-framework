@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.21 |
+| Framework Version | 0.91.22 |
 | Authority | [Decision D-0013 / GD-13](DECISIONS.md), [RECOMMENDED_PLATFORM_STACK.md](RECOMMENDED_PLATFORM_STACK.md), [DURABLE_EXECUTION_STANDARD.md](DURABLE_EXECUTION_STANDARD.md), [CHG_REQUEST_FLOWS.md](CHG_REQUEST_FLOWS.md), [ADAPTATION.md](ADAPTATION.md) |
 
 ---
@@ -159,7 +159,7 @@ Examples:
 
 ### Multi-Project Contract Registry (`contracts-registry.yaml`)
 
-The canonical `aidoc-data-contracts` repository maintains the company-wide contract registry index. When an independent repository cuts a release tag, its CI updates this manifest:
+The canonical `aidoc-data-contracts` repository maintains the company-wide contract registry index (starter template: [`framework/templates/CONTRACTS-REGISTRY-TEMPLATE.yaml`](../templates/CONTRACTS-REGISTRY-TEMPLATE.yaml)). When an independent repository cuts a release tag, its CI updates this manifest:
 ```yaml
 registry_version: "1.0"
 contracts:
@@ -515,6 +515,8 @@ message StackPolicyContract {
   VerificationOraclesConstraint verification_oracles = 6;
 }
 ```
+
+A starter template for repo-level stack policies is provided at [`framework/templates/STACK-POLICY-TEMPLATE.yaml`](../templates/STACK-POLICY-TEMPLATE.yaml).
 
 ---
 
