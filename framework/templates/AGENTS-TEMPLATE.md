@@ -1,6 +1,6 @@
 # AGENTS.md — working agreement for AI coding agents on <project-name>
 
-Orients any AI agent (Claude Code, Codex, Gemini CLI, Cursor, Copilot, Hermes, custom)
+Orients any AI agent (Claude Code, Codex, Gemini CLI, Cursor, Copilot, or custom)
 working on this repo. This file is the single working agreement.
 
 ## What this repo is
