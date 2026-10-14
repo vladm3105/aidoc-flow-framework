@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.20 |
+| Framework Version | 0.91.21 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -59,6 +59,7 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |
 | `ENGINE_TELEMETRY.md` | Vendor-neutral engine-telemetry guidance — standard span/attribute names (attempt, usage, cost, gate verdict + CHG/IPLAN correlation IDs), backend-agnostic, no SDK mandated. |
 | `RECOMMENDED_PLATFORM_STACK.md` | Recommended platform technology stack guidance — authoritative reference architecture connecting the vendor-neutral framework to Debian 13, Docker/gVisor, Temporal + LangGraph, PostgreSQL 18, Bytebase, NATS JetStream, ClickHouse, HyperDX, and Langfuse. |
+| `MULTI_PROJECT_FEDERATED_STANDARD.md` | Normative standard establishing the Quad-Pillar architecture, multi-repo isolation invariants, canonical contract schemas (proto3/JSON Schema), context slicing DAG engine, and cross-project dataflow. |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
 | `DECISIONS.md` | Retired register of decisions about the spec and its governance (frozen tombstone at GD-77). |
@@ -86,6 +87,11 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `seed-to-module-decomposition.sw.yaml` | Architecture | Triple-Lens decomposition (Structure, Trust Boundaries, Process/Sequence) from Tier 1 Seed Vision into Tier 2 C4-L2 Module Containers. |
 | `chg-request-flow.sw.yaml` | Layer 09 CHG | Change request classification across 6 graph traversal paths, gate routing (GATE-01/03/06/08/CODE/SPEC), and landing. |
 | `worktree-pr-lifecycle.sw.yaml` | Worktree Flow | Per-task worktree isolation, feature branching, PR review watchdog, conflict resolution, auto-merge, and order-guarded cleanup. |
+| `multi-repo-contract-sync.sw.yaml` | Federated | Contract diff inspection, protobuf linting, behavioral state graph verification, breaking change detection, polyglot SDK generation, registry publication, and CloudEvent broadcast. |
+| `cross-project-ci-dispatch.sw.yaml` | Federated | Cross-repo CI verification dispatch, downstream subscriber test execution against candidate contracts, result aggregation, and pre-merge commit status gates. |
+| `context-slicing-generation.sw.yaml` | Federated | DAG context slicing (`aidoc slice`), scoped `@`-pointer resolution against cache/socket, topological sort graph acyclicity check, and minimal context digest compilation. |
+| `stack-policy-validation.sw.yaml` | Federated | Pre-implementation stack policy validation, runtime edition constraints, copyleft/commercial license detection, package allowlists, and AST boundary pattern scanning. |
+| `support-ticket-escalation.sw.yaml` | Federated | Agent blocker ingestion, failure category classification, corporate memory deflection/retry, upstream bug ticket creation, and operations maintainer escalation. |
 | `review-remediation-flow.sw.yaml` | Governance | Multi-agent review crew dispatch, shared blackboard scoring, and 3-strike remediation saga. |
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
 | `decision-migration-flow.sw.yaml` | Governance | Dual-channel decision migration & bifurcation flow from monolithic registers to workflows and CHGs. |

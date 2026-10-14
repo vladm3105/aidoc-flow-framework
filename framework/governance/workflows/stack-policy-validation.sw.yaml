@@ -1,0 +1,185 @@
+id: stack-policy-validation
+name: Stack Policy & Dependency Boundary Validation Workflow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing pre-implementation stack policy validation, runtime constraints,
+  dependency license inspection, package allowlist enforcement, and AST boundary pattern scanning
+  per MULTI_PROJECT_FEDERATED_STANDARD.md and stack_policy.proto.
+start: InspectStackManifests
+
+states:
+  # --- Step 1: Inspect Project Manifests ---
+  - name: InspectStackManifests
+    type: operation
+    actions:
+      - name: locateProjectManifests
+        functionRef:
+          refName: scanProjectFiles
+          arguments:
+            manifest_patterns:
+              - "Cargo.toml"
+              - "Cargo.lock"
+              - "package.json"
+              - "package-lock.json"
+              - "pyproject.toml"
+              - "poetry.lock"
+              - "go.mod"
+              - "go.sum"
+            policy_contract: "stack_policy.proto"
+    transition: ValidateRuntimeConstraints
+
+  # --- Step 2: Validate Language Runtime Constraints ---
+  - name: ValidateRuntimeConstraints
+    type: operation
+    actions:
+      - name: checkRuntimeVersion
+        functionRef:
+          refName: verifyRuntimeMatch
+          arguments:
+            rule: "RuntimeConstraint"
+            required_fields:
+              - "language"
+              - "version_or_edition"
+              - "target_triple"
+    transition: EvaluateRuntimeCompliance
+
+  - name: EvaluateRuntimeCompliance
+    type: switch
+    dataConditions:
+      - condition: "${ .runtime_compliant == true }"
+        transition: InspectDependencyLicenses
+    defaultCondition:
+      transition: RejectRuntimeNonCompliance
+
+  - name: RejectRuntimeNonCompliance
+    type: operation
+    actions:
+      - name: reportRuntimeMismatch
+        functionRef:
+          refName: postPolicyViolation
+          arguments:
+            violation_type: "UNAPPROVED_RUNTIME"
+            detected: "${ .detected_runtime }"
+            expected: "${ .policy_runtime }"
+            message: "Project runtime or compiler configuration does not satisfy enterprise stack policy."
+    end:
+      terminate: true
+
+  # --- Step 3: Inspect Dependency Licenses ---
+  - name: InspectDependencyLicenses
+    type: operation
+    actions:
+      - name: scanTransitiveLicenses
+        functionRef:
+          refName: executeLicenseScan
+          arguments:
+            prohibited:
+              - "GPL-3.0"
+              - "AGPL-3.0"
+              - "SSPL"
+              - "Commons Clause"
+    transition: EvaluateLicenseCompliance
+
+  - name: EvaluateLicenseCompliance
+    type: switch
+    dataConditions:
+      - condition: "${ .prohibited_licenses_found.length == 0 }"
+        transition: InspectAllowlistPackages
+    defaultCondition:
+      transition: RejectProhibitedLicenses
+
+  - name: RejectProhibitedLicenses
+    type: operation
+    actions:
+      - name: reportProhibitedLicenses
+        functionRef:
+          refName: postPolicyViolation
+          arguments:
+            violation_type: "PROHIBITED_DEPENDENCY_LICENSE"
+            banned_licenses: "${ .prohibited_licenses_found }"
+            message: "Dependency manifests contain packages with prohibited copyleft/commercial licenses."
+    end:
+      terminate: true
+
+  # --- Step 4: Enforce Package Allowlist (Strict Mode) ---
+  - name: InspectAllowlistPackages
+    type: operation
+    actions:
+      - name: verifyAgainstAllowlist
+        functionRef:
+          refName: executePackageAllowlistCheck
+          arguments:
+            strict_allowlist: "${ .policy_boundaries.strict_allowlist }"
+            manifest_packages: "${ .declared_dependencies }"
+    transition: EvaluatePackageAllowlist
+
+  - name: EvaluatePackageAllowlist
+    type: switch
+    dataConditions:
+      - condition: "${ .unapproved_packages.length == 0 }"
+        transition: ScanSourceCodeBoundaries
+    defaultCondition:
+      transition: RejectUnapprovedPackages
+
+  - name: RejectUnapprovedPackages
+    type: operation
+    actions:
+      - name: reportUnapprovedPackages
+        functionRef:
+          refName: postPolicyViolation
+          arguments:
+            violation_type: "UNAPPROVED_DEPENDENCY_PACKAGE"
+            unapproved: "${ .unapproved_packages }"
+            message: "Strict allowlist violation: dependencies not found in corporate approved package index."
+    end:
+      terminate: true
+
+  # --- Step 5: Scan AST Code Boundaries ---
+  - name: ScanSourceCodeBoundaries
+    type: operation
+    actions:
+      - name: executeAstPatternScan
+        functionRef:
+          refName: scanSourceAst
+          arguments:
+            banned_patterns:
+              - "unsafe"
+              - "unwrap()"
+              - "eval("
+            allow_unsafe: "${ .policy_boundaries.allow_unsafe }"
+    transition: EvaluateBoundaryScan
+
+  - name: EvaluateBoundaryScan
+    type: switch
+    dataConditions:
+      - condition: "${ .banned_patterns_found.length == 0 }"
+        transition: PolicyValidationPassed
+    defaultCondition:
+      transition: RejectBannedCodePatterns
+
+  - name: RejectBannedCodePatterns
+    type: operation
+    actions:
+      - name: reportAstViolations
+        functionRef:
+          refName: postPolicyViolation
+          arguments:
+            violation_type: "BANNED_AST_PATTERN"
+            violations: "${ .banned_patterns_found }"
+            message: "Source code contains unapproved AST patterns violating memory safety or reliability policies."
+    end:
+      terminate: true
+
+  # --- Step 6: Policy Validation Success ---
+  - name: PolicyValidationPassed
+    type: operation
+    actions:
+      - name: recordApprovalVerdict
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "SUCCESS"
+            message: "Stack policy validation passed clean. Runtime, licenses, packages, and boundaries approved."
+    end:
+      terminate: true
