@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | <your name> |
-| Framework Version | 0.91.17 |
+| Framework Version | 0.91.18 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs) and project-specific overrides
@@ -115,3 +115,38 @@ Initial human-authored requirements live under `<project>/seed/` before the firs
 BRD is authored (`SEED_CONTRACT.md` R1). Seed documents explore options, trade-offs,
 and architectural invariants without carrying formal SDD element IDs. Initialize
 substantive architecture domains from [`framework/templates/SEED-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/templates/SEED-TEMPLATE.md).
+
+## Sanctioned Surfaces & Deprecated Anti-Patterns
+
+Autonomous AI agents frequently default to generic open-source patterns when onboarding.
+The framework explicitly prohibits loose monolithic files in favor of structured SDD layers:
+
+- ❌ **`docs/DECISIONS.md` / `plans/DECISIONS.md` (Retired per CHG-80 / CHG-95 / GD-71 / GD-78):**
+  Monolithic decision logs cause split-brain context and token saturation.
+  - **Architectural decisions** belong strictly in **Layer 05** (`docs/sdd/05_ADR/`) as structured YAML records (`ADR-00_index.yaml`, `ADR-NN.yaml`).
+  - **Operational / change decisions** belong strictly in **Layer 09** (`docs/sdd/09_CHG/`) inside authorizing Change Requests (`CHG-NN.yaml` Section 1B `decision:`).
+- ❌ **`ROADMAP.md` (Retired):**
+  Monolithic roadmaps drift. Feature planning and milestones live in `plans/<NAME>-PLAN.md` and GitHub milestones/issues.
+- ❌ **`CHANGELOG.md` (Retired per CHG-40 / CHG-94):**
+  Manual markdown changelogs cause merge conflicts. GitHub Releases and structured change records (`docs/sdd/09_CHG/archive/`) serve as the changelog.
+- ❌ **`docs/HANDOFF.md` / `plans/HANDOFF.md` (Retired):**
+  Active session continuity lives in GitHub issues and verified plans, never in ephemeral markdown files committed to git.
+
+## Repository AGENTS.md Template
+
+Consumer repositories should establish a root `<project>/AGENTS.md` by copying
+[`framework/templates/AGENTS-TEMPLATE.md`](https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/templates/AGENTS-TEMPLATE.md)
+to declare explicit non-adoption of legacy files and anchor agent behavior:
+
+```markdown
+## Where state lives (this repo owns its own continuity)
+
+| Surface | Path | Status |
+|---|---|---|
+| Decisions (Architecture) | `docs/sdd/05_ADR/` (Layer 05) | Structured YAML records; `docs/DECISIONS.md` is a retired anti-pattern (GD-78) |
+| Decisions (Change) | `docs/sdd/09_CHG/` (Layer 09) | Authored in Section 1B of authorizing Change Requests (`CHG-*.yaml`) |
+| Changelog | GitHub Releases + `docs/sdd/09_CHG/archive/` | Structured change requests serve as change records; `CHANGELOG.md` is retired / not adopted |
+| Roadmap | GitHub Milestones / Issues + `plans/*-PLAN.md` | Feature planning lives in verified plans and milestones; `ROADMAP.md` is retired / not adopted |
+| Session Continuity | GitHub Issues + `plans/*-PLAN.md` | Live handoff lives on the active issue; `docs/HANDOFF.md` is retired / not adopted |
+| Lessons Learned | `.aidoc/learning/learnings.md` | Consolidated, PR-reviewed system of record; harness memory is scratch, never the record |
+```

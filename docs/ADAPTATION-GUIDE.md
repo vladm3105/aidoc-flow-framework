@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.17 |
+| Framework Version | 0.91.18 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,19 +33,21 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.17 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.18 --kind pin
 
 # Or symlink to a persistent shared framework checkout:
-framework/scripts/install.sh <project-dir> --canon framework/v0.91.17 --kind symlink --shared /path/to/framework
+framework/scripts/install.sh <project-dir> --canon framework/v0.91.18 --kind symlink --shared /path/to/framework
 ```
 
-`install.sh` automates the ordered 5-step procedure from `BOOTSTRAP.md`:
+`install.sh` automates the ordered procedure from `BOOTSTRAP.md`:
 
 1. Copies `AIDOC-SCAFFOLD-TEMPLATE.md` to `<project>/.aidoc/README.md` and populates author, date, and version placeholders;
 2. Copies `PROFILE-TEMPLATE.yaml` to `<project>/.aidoc/profile.yaml`;
 3. Attaches the framework: either copies the version-pinned allowlist (`docs/PROJECT.md` §7.1 / `allowlist.txt`, pruning internal archives) or establishes the canonical `.aidoc/framework` symlink;
 4. Pins `metadata.framework_version` to the adopted canon version;
-5. Runs automated smoke-verification checks over the scaffolded `.aidoc/` directory structure.
+5. Initializes Layer 05 ADR index: scaffolds `<project>/docs/sdd/05_ADR/` and copies `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` to `ADR-00_index.yaml` (populating version and date; idempotent);
+6. Copies `framework/templates/AGENTS-TEMPLATE.md` to `<project>/AGENTS.md` if missing, providing the canonical state-surface table;
+7. Runs automated smoke-verification checks over the scaffolded directory structure.
 
 ### Manual Setup (Fallback)
 
@@ -54,18 +56,29 @@ Alternatively, copy `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` to `
 The resulting shape:
 
 ```text
-.aidoc/
-├── profile.yaml             # project profile — adaptation knobs
-├── framework/               # shared framework (symlink or pinned copy, canonical)
-├── project/                 # project-specific overrides
-│   ├── governance/          # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
-│   ├── layers/              # template overrides (e.g. Layer 10 EVAL templates)
-│   ├── playbooks/           # playbook overrides
-│   ├── scripts/             # script overrides
-│   ├── templates/           # template overrides
-│   └── registry/            # registry overrides
-└── README.md                # project scaffold guide (from AIDOC-SCAFFOLD-TEMPLATE.md)
+<project>/
+├── AGENTS.md                # working agreement (from AGENTS-TEMPLATE.md)
+├── docs/sdd/05_ADR/         # Layer 05 ADR index & records
+│   └── ADR-00_index.yaml    # technology stack & ADR registry
+├── .aidoc/
+│   ├── profile.yaml         # project profile — adaptation knobs
+│   ├── framework/           # shared framework (symlink or pinned copy, canonical)
+│   ├── project/             # project-specific overrides
+│   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
+│   │   ├── layers/          # template overrides (e.g. Layer 10 EVAL templates)
+│   │   ├── playbooks/       # playbook overrides
+│   │   ├── scripts/         # script overrides
+│   │   ├── templates/       # template overrides
+│   │   └── registry/        # registry overrides
+│   └── README.md            # project scaffold guide (from AIDOC-SCAFFOLD-TEMPLATE.md)
 ```
+
+### Proscribed Anti-Patterns
+
+Monolithic files (`DECISIONS.md`, `ROADMAP.md`, `CHANGELOG.md`, `docs/HANDOFF.md`) are retired anti-patterns
+per framework governance (CHG-40, CHG-80, CHG-94, CHG-95, GD-71, GD-78). All state belongs in structured
+SDD layers (`docs/sdd/05_ADR/`), Change Requests (`docs/sdd/09_CHG/archive/`), verified plans (`plans/*-PLAN.md`),
+and GitHub milestones/issues.
 
 ## 2. Attach the framework
 

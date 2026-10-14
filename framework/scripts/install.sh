@@ -31,6 +31,8 @@
 #                     installs; must contain framework/VERSION; pin kind only).
 #   --author NAME     fill the README author placeholder (default: git
 #                     user.name, falling back to the current user).
+#   --no-adr          skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
+#   --no-agents       skip scaffolding root AGENTS.md
 #   --dry-run         print every mutation without performing it (read-only
 #                     VERSION/tag checks still run for local canons).
 #   --force           replace an existing <project>/.aidoc wholesale
@@ -73,7 +75,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -83,6 +85,8 @@ while [ $# -gt 0 ]; do
     --shared) need_value "$@"; SHARED="$2"; shift 2 ;;
     --canon-dir) need_value "$@"; CANON_DIR="$2"; shift 2 ;;
     --author) need_value "$@"; AUTHOR="$2"; shift 2 ;;
+    --no-adr) NO_ADR=1; shift ;;
+    --no-agents) NO_AGENTS=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
@@ -214,6 +218,37 @@ else
   if [ "$DRY_RUN" != 1 ]; then
     pinsub "$AIDOC/profile.yaml" -E "s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$VERSION\"/"
     log "existing profile.yaml preserved and re-pinned to $VERSION"
+  fi
+fi
+
+# Scaffold Layer 05 ADR index
+if [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ]; then
+  adr_dir="$PROJECT/docs/sdd/05_ADR"
+  adr_index="$adr_dir/ADR-00_index.yaml"
+  if [ ! -f "$adr_index" ]; then
+    run "mkdir -p $adr_dir" mkdir -p "$adr_dir"
+    run "cp $CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml $adr_index" cp "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" "$adr_index"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$adr_index" -E "s/(\\[X\\.Y\\.Z\\]|\"0\\.0\\.0\")/$VERSION/g; s/YYYY-MM-DD/$TODAY/g"
+      log "scaffolded Layer 05 ADR index at docs/sdd/05_ADR/ADR-00_index.yaml"
+    fi
+  else
+    log "existing docs/sdd/05_ADR/ADR-00_index.yaml preserved"
+  fi
+fi
+
+# Scaffold root AGENTS.md
+if [ "$NO_AGENTS" != 1 ] && [ -f "$CANON/framework/templates/AGENTS-TEMPLATE.md" ]; then
+  agents_doc="$PROJECT/AGENTS.md"
+  if [ ! -f "$agents_doc" ]; then
+    proj_name="$(basename "$PROJECT")"
+    run "cp $CANON/framework/templates/AGENTS-TEMPLATE.md $agents_doc" cp "$CANON/framework/templates/AGENTS-TEMPLATE.md" "$agents_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$agents_doc" "s/<project-name>/$proj_name/g"
+      log "scaffolded working agreement at AGENTS.md"
+    fi
+  else
+    log "existing AGENTS.md preserved"
   fi
 fi
 
