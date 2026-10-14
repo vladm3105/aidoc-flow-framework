@@ -1,0 +1,306 @@
+# =============================================================================
+#  EVAL-SWF-TEMPLATE.yaml — Machine-Executable EVAL Workflow Template
+#  SDD Layer 10 — Evaluation Strategy, Suite Execution & Verification Orchestration
+#  Upstream: IPLAN (Layer 8), TDD (Layer 7), BDD (Layer 4), EARS (Layer 3)
+#  Downstream: EVAL-RPT (Layer 10 receipts), CI/CD, Deployment Gates
+#  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (EVAL-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#    - Orchestrating multi-tier concurrent test execution across suites (unit, acceptance, SAST)
+#    - Incorporating automated quality gate calculation, receipt emission, and SAGA cleanup
+#    - Triggering autonomous agent remediation loops and bugfix dispatch via REVIEW_REMEDIATION_FLOW.md
+#    - Targeting autonomous AI coding agents or DAG workflow engines (LangGraph, Temporal)
+#  Use the companion template (EVAL-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#    - Documenting atomic, static test matrices or manual QA verification checklists
+#    - State machine orchestration, concurrent execution branches, and SAGA teardown are not needed
+# =============================================================================
+
+doc_id: EVAL-NN
+title: "[Eval Strategy & Execution Workflow — IPLAN-NN]"
+
+# =============================================================================
+# SDD Document Envelope (Preserved for STRUCT01 / TAG01 Lint Compliance)
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "eval-document"
+  layer: 10
+  lifecycle: iplan-coupled
+  total_sections: 7
+  last_updated: "YYYY-MM-DD"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - eval-document
+    - layer-10-artifact
+    - iplan-coupled
+    - cncf-workflow
+
+  id_standard:
+    state: canonical
+    format: "EVAL.{NN}.{SS}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _size_target: 100
+  status: Draft
+  version: "1.0"
+  owning_iplan: "IPLAN-NN"
+  iplan_version: "1.0"
+  subtype: workflow  # Declares the CNCF Serverless Workflow subtype
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[QA Lead / Author]"
+  priority: P1
+  evaluation_ready_score: "[Score]/100"
+
+# =============================================================================
+# Section 2: Evaluation Scope
+# =============================================================================
+evaluation_scope:
+  _size_target: 200
+  owning_iplan: "IPLAN-NN"
+  iplan_scope: "[List of components/files from IPLAN scope]"
+  eval_track: unit_smoke  # functional | unit_smoke
+  upstream_sources:
+    - layer: 7
+      type: TDD
+      ids: ["TDD-NN"]
+    - layer: 8
+      type: IPLAN
+      ids: ["IPLAN-NN"]
+  coverage_target: 100
+  environment: ci  # staging | ci | both
+
+# =============================================================================
+# Section 3: Test Design
+# =============================================================================
+test_design:
+  _size_target: 800
+  test_cases:
+    - id: "EVAL.NN.03.xxxx"
+      name: "[Test case name]"
+      source_type: tdd_test_case
+      source_id: "TDD.NN.04.xxxx"
+      test_type: unit
+      priority: p0-critical
+      assertions: ["[Assertion description]"]
+
+# =============================================================================
+# Section 4: Coverage Matrix
+# =============================================================================
+coverage_matrix:
+  _size_target: 200
+  entries:
+    - source_id: "TDD.NN.04.xxxx"
+      source_type: tdd_test_case
+      test_case_id: "EVAL.NN.03.xxxx"
+      test_file: "[path/to/test_file]"
+      status: implemented
+      coverage: 100
+  summary:
+    total: 1
+    implemented: 1
+    pending: 0
+    skipped: 0
+    coverage_percent: 100
+
+# =============================================================================
+# Section 5: Quality Thresholds
+# =============================================================================
+quality_thresholds:
+  _size_target: 200
+  p0_critical_pass_rate:
+    target: 100
+    gate: error
+  p1_high_pass_rate:
+    target: 100
+    gate: error
+  coverage_percent:
+    target: 100
+    gate: error
+
+# =============================================================================
+# Section 6: Execution Plan
+# =============================================================================
+execution_plan:
+  _size_target: 200
+  trigger: "[on_merge_to_staging | ci_push | manual]"
+  environment: ci
+
+# =============================================================================
+# Section 7: Machine-Executable CNCF Serverless Workflow (v0.8)
+# =============================================================================
+workflow:
+  id: eval-execution-flow
+  name: Evaluation Execution and Verification Workflow
+  version: "1.0.0"
+  specVersion: "0.8"
+  description: >-
+    Executable workflow state machine coordinating multi-tier test suite runs,
+    quality gate score calculation, report receipt generation, and saga teardown.
+  start: IngestEvaluationScope
+
+  states:
+    # -------------------------------------------------------------------------
+    # State 1: Ingest Evaluation Scope & Strategy
+    # -------------------------------------------------------------------------
+    - name: IngestEvaluationScope
+      type: operation
+      actions:
+        - name: validateScopeContext
+          functionRef:
+            refName: validateScopeFn
+            arguments:
+              owning_iplan: "IPLAN-NN"
+              target_score: 90
+      transition: ExecuteEvaluationSuites
+
+    # -------------------------------------------------------------------------
+    # State 2: Execute Parallel Test Suites (All-Of)
+    # -------------------------------------------------------------------------
+    - name: ExecuteEvaluationSuites
+      type: parallel
+      completionType: allOf
+      compensatedBy: CleanupEvaluationArtifacts
+      branches:
+        - name: UnitSuiteBranch
+          actions:
+            - name: RunUnitTests
+              functionRef:
+                refName: runSuiteFn
+                arguments:
+                  suite: "unit"
+        - name: AcceptanceSuiteBranch
+          actions:
+            - name: RunAcceptanceTests
+              functionRef:
+                refName: runSuiteFn
+                arguments:
+                  suite: "acceptance"
+        - name: ConformanceSuiteBranch
+          actions:
+            - name: RunConformanceTests
+              functionRef:
+                refName: runSuiteFn
+                arguments:
+                  suite: "conformance"
+        - name: SecurityAuditBranch
+          actions:
+            - name: RunSecurityScan
+              functionRef:
+                refName: runSuiteFn
+                arguments:
+                  suite: "security-sast"
+      transition: EvaluateQualityGates
+
+    # -------------------------------------------------------------------------
+    # State 3: Evaluate Quality Gates & Compute Scorecard
+    # -------------------------------------------------------------------------
+    - name: EvaluateQualityGates
+      type: operation
+      actions:
+        - name: ComputeEvaluationScorecard
+          functionRef:
+            refName: computeScorecardFn
+            arguments:
+              threshold_score: 90
+      transition: CheckEvaluationVerdict
+
+    # -------------------------------------------------------------------------
+    # State 4: Decision Switch (Pass vs Fail)
+    # -------------------------------------------------------------------------
+    - name: CheckEvaluationVerdict
+      type: switch
+      dataConditions:
+        - name: EvaluationPassed
+          condition: "${ .score >= 90 and .blocker_count == 0 }"
+          transition: EmitPassingReceipt
+      defaultCondition:
+        transition: HandleEvaluationDefects
+
+    # -------------------------------------------------------------------------
+    # State 5: Terminal Success Path (Emit Receipt & Mark IPLAN Verified)
+    # -------------------------------------------------------------------------
+    - name: EmitPassingReceipt
+      type: operation
+      actions:
+        - name: WriteVerifiedReceipt
+          functionRef:
+            refName: writeReceiptFn
+            arguments:
+              verdict: "PASS"
+              report_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml"
+        - name: MarkIplanVerified
+          functionRef:
+            refName: updateIplanStatusFn
+            arguments:
+              iplan_id: "IPLAN-NN"
+              status: "Verified"
+      end: true
+
+    # -------------------------------------------------------------------------
+    # State 6: Handle Defects & Prepare Remediation
+    # -------------------------------------------------------------------------
+    - name: HandleEvaluationDefects
+      type: operation
+      actions:
+        - name: LogEvaluationDefects
+          functionRef:
+            refName: logDefectsFn
+            arguments:
+              verdict: "FAIL"
+              report_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml"
+      transition: TriggerRemediationVehicle
+
+    # -------------------------------------------------------------------------
+    # State 7: Saga Compensation Teardown Handler
+    # -------------------------------------------------------------------------
+    - name: CleanupEvaluationArtifacts
+      type: operation
+      actions:
+        - name: TeardownFixtures
+          functionRef:
+            refName: teardownFixturesFn
+            arguments:
+              scope: "ephemeral-containers"
+      transition: TriggerRemediationVehicle
+
+    # -------------------------------------------------------------------------
+    # State 8: Terminal Failure Path (Dispatch Bugfix Vehicle)
+    # -------------------------------------------------------------------------
+    - name: TriggerRemediationVehicle
+      type: operation
+      actions:
+        - name: DispatchC1Bugfix
+          functionRef:
+            refName: dispatchBugfixFn
+            arguments:
+              remediation_standard: "REVIEW_REMEDIATION_FLOW.md"
+      end:
+        terminate: true
+
+# =============================================================================
+# Traceability
+# =============================================================================
+traceability:
+  upstream:
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    tdd_references:
+      - "@tdd: TDD.NN.SS.xxxx"
+    iplan_references:
+      - "@iplan: IPLAN-NN"
+  downstream:
+    - type: EVAL-RPT
+      description: "Evaluation reports in EVAL-{NN}/reports/"
+    - type: CI
+      description: "Pipeline gates enforce test pass criteria"

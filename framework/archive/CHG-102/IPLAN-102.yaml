@@ -1,0 +1,56 @@
+# =============================================================================
+#  IPLAN-102: Layer 10 CNCF Review Remediation Workflow, Workflow Standard, and Parity
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-102/CHG-102.yaml
+# =============================================================================
+
+id: "IPLAN-102"
+chg_id: "CHG-102"
+title: "Layer 10 CNCF Review Remediation Workflow, Workflow Standard, and Parity"
+status: "Completed"
+framework_version: "0.91.20"
+
+file_manifest:
+  - "framework/governance/workflows/review/eval-review-remediation.sw.yaml"
+  - "framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md"
+  - "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+  - "plans/ACCEPTANCE-HISTORY.md"
+  - "framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+  - "framework/layers/10_EVAL/README.md"
+  - "tests/conformance/test_eval_workflow.py"
+  - "tests/conformance/test_governance.py"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-102/CHG-102.yaml"
+  - "framework/archive/CHG-102/IPLAN-102.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-102.yaml and IPLAN-102.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: >-
+      Author Layer 10 CNCF Serverless Workflow review remediation state machine
+      framework/governance/workflows/review/eval-review-remediation.sw.yaml
+    status: "Completed"
+  - id: "TASK-03"
+    name: >-
+      Author Layer 10 workflow standard framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md
+      and hybrid envelope template framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Fix broken relative markdown link in plans/ACCEPTANCE-HISTORY.md:196"
+    status: "Completed"
+  - id: "TASK-05"
+    name: >-
+      Synchronize framework/governance/REVIEW_WORKFLOW_STANDARD.md and
+      framework/layers/10_EVAL/README.md to reference the new standard and template
+    status: "Completed"
+  - id: "TASK-06"
+    name: >-
+      Author conformance test tests/conformance/test_eval_workflow.py and verify
+      full conformance test suite passes
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Bump framework/VERSION to 0.91.20 and sweep references via sync-version-refs.sh"
+    status: "Completed"

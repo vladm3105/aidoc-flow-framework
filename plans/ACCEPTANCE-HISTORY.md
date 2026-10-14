@@ -193,7 +193,7 @@ human edits.
 ### 3.3 Tier placement
 
 This is a **Tier 6 — Release gate** test in the pyramid (see
-[`../tests/README.md`](../../tests/README.md)). It runs only with
+[`../tests/README.md`](../tests/README.md)). It runs only with
 `LIVE=1` and is wired into `release.yml`, not into `pr-checks.yml`.
 
 ## 4. Phase 0 — Bootstrap & preflight

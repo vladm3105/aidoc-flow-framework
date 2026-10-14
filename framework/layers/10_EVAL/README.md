@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.19 |
+| Framework Version | 0.91.20 |
 
 ## Overview
 
@@ -97,9 +97,12 @@ This state machine models and executes:
 EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
-- `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
+- `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document (standard atomic unit smoke checks)
+- `EVAL-SWF-TEMPLATE.yaml` — machine-executable evaluation workflow template adhering to CNCF Serverless Workflow v0.8 (see [`EVAL_WORKFLOW_STANDARD.md`](./EVAL_WORKFLOW_STANDARD.md))
 - `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
 - `EVAL-00_index.TEMPLATE.yaml` — master index template in canonical 5-Quadrant YAML
+
+Review and remediation of evaluation strategy and report artifacts is governed by [`eval-review-remediation.sw.yaml`](../../governance/workflows/review/eval-review-remediation.sw.yaml) (`REV-10-EVAL`).
 
 > Canon note: `EVAL-RPT-TEMPLATE.yaml` is tombstoned — it lacked §4
 > `test_results` and carried the banned `EVAL-NN.BDD-NN.TC-NN.NN` ID form.
