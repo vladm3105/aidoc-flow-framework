@@ -15,7 +15,6 @@ Validates that:
 import subprocess
 import sys
 import unittest
-from pathlib import Path
 
 import yaml
 from _spec import FRAMEWORK
@@ -87,43 +86,69 @@ class FederatedWorkflowsConformanceTest(unittest.TestCase):
             self.assertGreater(len(states), 0, f"{wf_name} must define at least one state")
 
             state_names = {s.get("name") for s in states if isinstance(s, dict)}
-            self.assertIn(start_state, state_names, f"{wf_name} start state '{start_state}' not in states")
+            self.assertIn(
+                start_state, state_names, f"{wf_name} start state '{start_state}' not in states"
+            )
 
             has_terminal_state = False
             for s in states:
                 s_name = s.get("name")
                 s_type = s.get("type")
-                self.assertIn(s_type, VALID_STATE_TYPES, f"{wf_name}:{s_name} invalid state type '{s_type}'")
+                self.assertIn(
+                    s_type, VALID_STATE_TYPES, f"{wf_name}:{s_name} invalid state type '{s_type}'"
+                )
 
                 # Check terminal state
                 end_clause = s.get("end")
-                if end_clause is True or (isinstance(end_clause, dict) and end_clause.get("terminate") is True):
+                if end_clause is True or (
+                    isinstance(end_clause, dict) and end_clause.get("terminate") is True
+                ):
                     has_terminal_state = True
 
                 # Check transition targets
                 trans = s.get("transition")
                 if trans:
-                    self.assertIn(trans, state_names, f"{wf_name}:{s_name} transition target '{trans}' not found")
+                    self.assertIn(
+                        trans,
+                        state_names,
+                        f"{wf_name}:{s_name} transition target '{trans}' not found",
+                    )
 
                 # Check switch condition targets
                 for cond in s.get("dataConditions", []):
                     c_trans = cond.get("transition")
                     if c_trans:
-                        self.assertIn(c_trans, state_names, f"{wf_name}:{s_name} condition target '{c_trans}' not found")
+                        self.assertIn(
+                            c_trans,
+                            state_names,
+                            f"{wf_name}:{s_name} condition target '{c_trans}' not found",
+                        )
                 def_cond = s.get("defaultCondition", {})
                 if isinstance(def_cond, dict) and def_cond.get("transition"):
                     d_trans = def_cond["transition"]
-                    self.assertIn(d_trans, state_names, f"{wf_name}:{s_name} defaultCondition target '{d_trans}' not found")
+                    self.assertIn(
+                        d_trans,
+                        state_names,
+                        f"{wf_name}:{s_name} defaultCondition target '{d_trans}' not found",
+                    )
 
                 # Check SAGA compensation target
                 comp = s.get("compensatedBy")
                 if comp:
-                    self.assertIn(comp, state_names, f"{wf_name}:{s_name} compensatedBy target '{comp}' not found")
+                    self.assertIn(
+                        comp,
+                        state_names,
+                        f"{wf_name}:{s_name} compensatedBy target '{comp}' not found",
+                    )
 
-            self.assertTrue(has_terminal_state, f"{wf_name} must declare at least one terminal state")
+            self.assertTrue(
+                has_terminal_state, f"{wf_name} must declare at least one terminal state"
+            )
 
     def test_swf_lint_clean_pass(self):
-        cmd = [sys.executable, "-m", "sdd_doc_lint.swf_lint"] + [str(WORKFLOWS / wf) for wf in FEDERATED_WORKFLOWS]
+        cmd = [sys.executable, "-m", "sdd_doc_lint.swf_lint"] + [
+            str(WORKFLOWS / wf) for wf in FEDERATED_WORKFLOWS
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         self.assertEqual(
             result.returncode,
