@@ -37,7 +37,8 @@ aidoc-flow-framework/
 │   ├── PROJECT.md                   Versioning, branches, milestones, change management
 │   ├── TAGGING.md                   Git-tag policy
 │   ├── SUPPORT.md                   Support channels + how to get help
-│   └── STARTUP_HANDOFF.md
+│   ├── STARTUP_HANDOFF.md
+│   └── AIDOC_WORKSTATION_STANDARD.md .aidoc/ Workstation standard & dual-control
 │
 ├── framework/                       SHARED engine-agnostic specification (the contract)
 │   ├── VERSION                      Framework spec SemVer

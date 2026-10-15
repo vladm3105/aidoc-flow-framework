@@ -271,6 +271,6 @@ After refreshing, verify `framework/VERSION` matches the pin in `.aidoc/profile.
 > `framework/governance/ADAPTATION.md` § "Symlink convention" —
 > `.aidoc/framework/` is a symlink to the shared framework directory
 > (canonical). The MUST-NOT below is the frozen 0.53.x-era rule, kept as
-> history; see `docs/ADAPTATION-GUIDE.md` §2 for the live convention.
+> history; see `docs/ADAPTATION-GUIDE.md` §2 and `docs/AIDOC_WORKSTATION_STANDARD.md` for the live workstation convention.
 
 Projects MUST NOT use symlinks to external framework directories. The framework must be a real cloned copy to support version pinning, local patches, and clean updates.
