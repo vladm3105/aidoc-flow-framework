@@ -255,7 +255,12 @@ else
   fi
 fi
 if [ "$DRY_RUN" != 1 ]; then
-  pinsub "$AIDOC/profile.yaml" -E "s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$NEW\"/"
+  PROJ_NAME="$(basename "$PROJECT")"
+  pinsub "$AIDOC/profile.yaml" -E "s/^[[:space:]]*#[[:space:]]*project_name:.*/  project_name: \"$PROJ_NAME\"/; s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$NEW\"/"
+  if ! grep -qE '^[[:space:]]*project_name:' "$AIDOC/profile.yaml"; then
+    pinsub "$AIDOC/profile.yaml" -E "s/^(metadata:.*)/\\1\n  project_name: \"$PROJ_NAME\"/"
+    log "backfilled missing metadata.project_name in profile.yaml: $PROJ_NAME"
+  fi
   VERIFY="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
   [ "$VERIFY" = "$NEW" ] || die "re-pin failed: profile reads $VERIFY, expected $NEW"
   log "profile.yaml re-pinned at framework_version $NEW (verified)"

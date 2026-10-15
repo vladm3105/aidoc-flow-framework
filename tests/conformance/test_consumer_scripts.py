@@ -82,6 +82,11 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md",
         tmpl_dir / "AGENTS-TEMPLATE.md",
     )
+    if (FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml").exists():
+        shutil.copy(
+            FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml",
+            tmpl_dir / "STACK-POLICY-TEMPLATE.yaml",
+        )
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
@@ -383,6 +388,38 @@ class InstallScript(unittest.TestCase):
         proc = _run(INSTALL, str(self.project), "--canon")
         self.assertEqual(proc.returncode, 2)
         self.assertIn("needs a value", proc.stderr)
+
+    def test_pin_install_sets_project_name_and_passes_profile_lint(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        profile_path = self.project / ".aidoc" / "profile.yaml"
+        profile_text = profile_path.read_text(encoding="utf-8")
+        self.assertIn('project_name: "proj"', profile_text)
+        from sdd_doc_lint.profile_lint import validate_profile
+
+        is_valid, errors = validate_profile(profile_path)
+        self.assertTrue(is_valid, f"profile_lint failed: {errors}")
+
+    def test_scaffolds_stack_policy_and_linter_runner(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        policy = self.project / "stack-policy.yaml"
+        self.assertTrue(policy.is_file())
+        self.assertIn('tenant_id: "proj"', policy.read_text(encoding="utf-8"))
+        runner = self.project / ".aidoc" / "bin" / "sdd-lint"
+        self.assertTrue(runner.is_file())
+        self.assertTrue(os.access(runner, os.X_OK))
+
+    def test_no_stack_policy_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-stack-policy",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / "stack-policy.yaml").exists())
 
 
 class UpgradeScript(unittest.TestCase):
@@ -721,6 +758,21 @@ class UpgradeScript(unittest.TestCase):
         profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
         self.assertIn('framework_version: "9.9.10"', profile)
 
+    def test_upgrade_backfills_missing_project_name(self):
+        self._install_pin()
+        profile_path = self.project / ".aidoc" / "profile.yaml"
+        content = profile_path.read_text(encoding="utf-8")
+        content = re.sub(
+            r"^[ \t]*project_name:.*", '  # project_name: "<broken>"', content, flags=re.MULTILINE
+        )
+        profile_path.write_text(content, encoding="utf-8")
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        reloaded = profile_path.read_text(encoding="utf-8")
+        self.assertIn('project_name: "proj"', reloaded)
+
 
 class ScriptPortabilityPins(unittest.TestCase):
     """Static pins: no GNU-only constructs may re-enter the scripts (#878)."""
@@ -757,6 +809,59 @@ class ScriptsAreShellcheckClean(unittest.TestCase):
                     ["shellcheck", str(script)], capture_output=True, text=True, timeout=120
                 )
                 self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+
+
+class DeployScript(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="deploy-scripts-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.project = self.tmp / "proj"
+        self.project.mkdir()
+
+    def test_deploy_fresh_pin_with_flags(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--kind",
+                "pin",
+                "--no-stack-policy",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        self.assertTrue((self.project / ".aidoc" / "profile.yaml").exists())
+        self.assertFalse((self.project / "stack-policy.yaml").exists())
+
+
+class ChGateCheckHook(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="ch-gate-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.hook = REPO_ROOT / "hooks" / "ch-gate-check.sh"
+
+    def test_ch_gate_check_discovers_underscored_09_chg(self):
+        repo = self.tmp / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+        chg_dir = repo / "docs" / "sdd" / "09_CHG"
+        chg_dir.mkdir(parents=True)
+        (chg_dir / "CHG-01.yaml").write_text(
+            "change_control:\n  status: In-Progress\n", encoding="utf-8"
+        )
+        (repo / "main.py").write_text("print(1)\n", encoding="utf-8")
+        subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+        proc = subprocess.run(
+            [str(self.hook)], cwd=repo, capture_output=True, text=True, timeout=30
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Active CHG found", proc.stdout)
 
 
 if __name__ == "__main__":
