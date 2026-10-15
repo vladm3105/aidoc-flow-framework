@@ -361,8 +361,8 @@ tasks:
     desc: "Slice and pack SDD context DAG for LLM prompts (with native fallback)"
     cmds:
       - >-
-        python3 -c "import aidoc_context_tools" 2>/dev/null &&
-        python3 -m aidoc_context_tools.cli slice {{.CLI_ARGS}} ||
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main slice {{.CLI_ARGS}} ||
         python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
 
   check:
