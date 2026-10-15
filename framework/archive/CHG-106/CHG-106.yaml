@@ -1,0 +1,140 @@
+# =============================================================================
+#  CHG-106: Operationalize .aidoc/ Workstation Standard and Dual-Control Flow
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Documentation & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-15)
+#  Scope: Operationalize .aidoc/ Workstation Standard across the federation
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-15"
+  framework_version: "0.91.23"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-106"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-15T00:00:00Z"
+  date_approved: "2026-10-15T00:00:00Z"
+  date_implemented: "2026-10-15T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-15T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-15): approved, appdate the plan as recomended
+      then start implementation (Issue #984)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-106)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-106"
+  title: "Operationalize .aidoc/ Workstation Standard and Dual-Control Architecture"
+  status: "Ratified"
+  context: |
+    Following ratification of CHG-105, architectural review identified 5 critical operational gaps:
+    1. Pillar 2 (Enterprise Tech Stack policy, stack-policy.yaml) was omitted from the .aidoc/ topology.
+    2. Retaining .aidoc/bin/* while projects use Taskfile.yml creates Dual-CLI friction.
+    3. Without cryptographic content hashing (reviewed_sha256), approved documents are vulnerable to
+       silent post-review mutation and agent hallucination/bypass.
+    4. Execution engines required formalization of Atomic File Shadowing and 3 execution modes (live,
+       verify-only, mock) to support zero-token air-gapped CI.
+    5. In-repo installer scripts (install.sh, upgrade.sh) and AGENTS-TEMPLATE.md must stay in parity with
+       the specification standard by scaffolding .aidoc/Taskfile.yml and providing a backward-compatible shim.
+  choice: |
+    1. Update docs/AIDOC_WORKSTATION_STANDARD.md with Pillar 2, Taskfile CLI orchestration, Atomic File
+       Shadowing, Cryptographic Gate Floor (reviewed_sha256 + 4-step canonical normalization algorithm),
+       three engine execution modes, and Git tracking policy table.
+    2. Update framework/scripts/install.sh, upgrade.sh, and AGENTS-TEMPLATE.md to scaffold .aidoc/Taskfile.yml
+       and provide a backward-compatible .aidoc/bin/sdd-lint wrapper during migration.
+    3. Update tests/conformance/test_consumer_scripts.py to assert Taskfile and runner compatibility.
+  consequences: |
+    - Fully operationalizes the Quad-Pillar federated workstation across consumer repositories.
+    - Eliminates Dual-CLI conflict for AI coding agents and developers.
+    - Cryptographically guarantees review integrity without consuming tokens in headless CI.
+  alternatives_considered:
+    - option: "Keep .aidoc/bin/* as the primary standard and ignore Taskfile"
+      rationale_rejected: >-
+        Violates universal repository convention (Taskfile.yml) across aidoc-local-flow-ci and b-local-privy,
+        causing agent tool confusion and brittle shell script maintenance.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Operationalize .aidoc/ Workstation Standard and Dual-Control Architecture"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-15T00:00:00Z"
+  summary: |
+    Refine docs/AIDOC_WORKSTATION_STANDARD.md, update in-repo install/upgrade scripts and templates
+    to scaffold .aidoc/Taskfile.yml, enforce cryptographic review verification, and verify conformance.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Operationalize .aidoc/ workstation standard and dual-control flow (Issue #984)"
+  components_affected:
+    - "plans/WORKSTATION-STANDARD-AND-DUAL-CONTROL-PLAN.md"
+    - "docs/AIDOC_WORKSTATION_STANDARD.md"
+    - "framework/archive/CHG-106/CHG-106.yaml"
+    - "framework/archive/CHG-106/IPLAN-106.yaml"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-106/IPLAN-106.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-106.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-106/IPLAN-106.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-106/CHG-106.yaml passing"
+    - "check_plan.py plans/WORKSTATION-STANDARD-AND-DUAL-CONTROL-PLAN.md passing"
+    - "PYTHONPATH=tests/conformance python3 -m unittest tests/conformance/test_consumer_scripts.py green"
+    - "python3 -m sdd_doc_lint.surface_lint . green"
+    - "bash hooks/pre_push_check.sh clean pass"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"
