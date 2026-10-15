@@ -396,6 +396,7 @@ class InstallScript(unittest.TestCase):
         profile_text = profile_path.read_text(encoding="utf-8")
         self.assertIn('project_name: "proj"', profile_text)
         from sdd_doc_lint.profile_lint import validate_profile
+
         is_valid, errors = validate_profile(profile_path)
         self.assertTrue(is_valid, f"profile_lint failed: {errors}")
 
@@ -761,7 +762,9 @@ class UpgradeScript(unittest.TestCase):
         self._install_pin()
         profile_path = self.project / ".aidoc" / "profile.yaml"
         content = profile_path.read_text(encoding="utf-8")
-        content = re.sub(r"^[ \t]*project_name:.*", "  # project_name: \"<broken>\"", content, flags=re.MULTILINE)
+        content = re.sub(
+            r"^[ \t]*project_name:.*", '  # project_name: "<broken>"', content, flags=re.MULTILINE
+        )
         profile_path.write_text(content, encoding="utf-8")
         proc = _run(
             UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
@@ -849,10 +852,14 @@ class ChGateCheckHook(unittest.TestCase):
         subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
         chg_dir = repo / "docs" / "sdd" / "09_CHG"
         chg_dir.mkdir(parents=True)
-        (chg_dir / "CHG-01.yaml").write_text("change_control:\n  status: In-Progress\n", encoding="utf-8")
+        (chg_dir / "CHG-01.yaml").write_text(
+            "change_control:\n  status: In-Progress\n", encoding="utf-8"
+        )
         (repo / "main.py").write_text("print(1)\n", encoding="utf-8")
         subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
-        proc = subprocess.run([str(self.hook)], cwd=repo, capture_output=True, text=True, timeout=30)
+        proc = subprocess.run(
+            [str(self.hook)], cwd=repo, capture_output=True, text=True, timeout=30
+        )
         self.assertEqual(proc.returncode, 0)
         self.assertIn("Active CHG found", proc.stdout)
 
