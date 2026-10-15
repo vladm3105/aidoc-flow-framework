@@ -1,0 +1,31 @@
+# =============================================================================
+#  IPLAN-106: Operationalize .aidoc/ Workstation Standard and Dual-Control Architecture
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-106/CHG-106.yaml
+# =============================================================================
+
+id: "IPLAN-106"
+chg_id: "CHG-106"
+title: "Operationalize .aidoc/ Workstation Standard and Dual-Control Architecture"
+status: "Completed"
+framework_version: "0.91.23"
+
+file_manifest:
+  - "plans/WORKSTATION-STANDARD-AND-DUAL-CONTROL-PLAN.md"
+  - "docs/AIDOC_WORKSTATION_STANDARD.md"
+  - "framework/archive/CHG-106/CHG-106.yaml"
+  - "framework/archive/CHG-106/IPLAN-106.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-106.yaml and IPLAN-106.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Refine docs/AIDOC_WORKSTATION_STANDARD.md with all 8 architectural enhancements"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Author verified implementation plan WORKSTATION-STANDARD-AND-DUAL-CONTROL-PLAN.md"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Run verification battery, linter suite, and pre-push checks"
+    status: "Completed"
