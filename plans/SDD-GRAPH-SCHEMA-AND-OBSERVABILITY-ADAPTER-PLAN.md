@@ -17,18 +17,23 @@
 ## 1. Problem Statement & Strategic Motivation
 
 ### 1.1 The Autonomous Agent Paradigm Shift
+
 The Specification-Driven Development (SDD) framework was originally structured around human-oriented document artifacts (hierarchical YAML/Markdown sections mimicking traditional BRD, PRD, and ADR business documents). However, the software development lifecycle is transitioning toward **fully autonomous multi-agent execution**:
+
 - Code generation, test implementation, and pull request reviews are conducted primarily by AI agents (Planner, Architect, SDET, Developer, and Reviewer personas).
 - Human involvement is concentrated on high-level intent, strategic steering, and occasional observability audits rather than line-by-line PR diff reviews.
 
 ### 1.2 Inefficiencies of Document-Oriented Artifacts for AI Agents
+
 1. **Token Inefficiency & Context Waste**: Agents burn tens of thousands of tokens ingesting boilerplate headings, word-count target markers, and verbose mockup narratives (e.g., `BRD-TEMPLATE.yaml` at 1,181 lines / 53 KB).
 2. **Brittle Reverse-Engineering**: The underlying traceability DAG is currently implicit, requiring ~3,400 lines of complex regular expressions in `sdd_doc_lint` to scrape headings, extract `@`-tags, and validate 4-segment content-hash IDs.
 3. **Review Hallucination Risks**: When Reviewer agents inspect full 1,000-line YAML documents, they frequently experience attention degradation and context drift, rather than focusing precisely on the mutated requirements and their immediate blast radius.
 4. **Dual-Template Maintenance Friction**: Maintaining parallel companion declarative templates alongside workflow templates across 10 layers creates synchronicity drift (e.g., CHG-97 scoring omissions).
 
 ### 1.3 Solution: The Dual-Plane CQRS Architecture
+
 To resolve these tensions, Change Request **CHG-108** establishes the **Dual-Plane Architecture** governed by the CQRS (Command Query Responsibility Segregation) principle:
+
 - **Write Plane (Agent Plane - SSOT)**: The Single Source of Truth is a **Native Typed Property Graph** (`.graph.yaml` / JSON-LD). AI agents author, mutate, validate, and review atomic nodes and relational edges.
 - **Read Plane (Observability Plane - Projections)**: Human visibility is preserved via a deterministic, read-only **Observability Adapter** (`sdd-render`) that projects the graph into human-readable Markdown/HTML spec sheets, visual Mermaid diagrams, and CI pull request impact summaries on demand.
 
@@ -65,6 +70,7 @@ To resolve these tensions, Change Request **CHG-108** establishes the **Dual-Pla
 The Native SDD Graph schema structures all requirements, decisions, test fixtures, and execution tasks as a typed property graph:
 
 #### A. Node Ontology (10 Canonical SDD Types + Change Overlay)
+
 Every node carries a unique, content-hashed ID (`TYPE.NN.SS.xxxx`), standard lifecycle metadata (`status: Draft | Active | Deprecated | Superseded`), and type-specific properties:
 
 | Node Type | Tier / Layer | Core Responsibility & Attributes |
@@ -82,6 +88,7 @@ Every node carries a unique, content-hashed ID (`TYPE.NN.SS.xxxx`), standard lif
 | `change_request` | 09 CHG (Overlay)| Authorizing Change Request envelope, blast radius ledger, approval signature, migration lifecycle. |
 
 #### B. Edge Ontology & Strict Cardinality Invariants
+
 Edges declare strict semantic dependencies across the graph. The linter enforces **binary cardinality invariants** (blocking `GRAPH-CARD-001` through `007`):
 
 | Edge Type | Source Node Type | Target Node Type | Cardinality Invariant | Rule Description |
@@ -97,19 +104,25 @@ Edges declare strict semantic dependencies across the graph. The linter enforces
 | `supersedes` | New Node Version | Deprecated Node Version | 1 : 1 | Lineage link preserving full immutable change auditability. |
 
 #### C. Cross-Repository & Federated Contract Boundaries
+
 Per [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), consumer repositories import specifications across service boundaries:
+
 - The graph engine supports federated URI-based node IDs: `@repo_slug:NODE_ID` (e.g. `@auth-core:SPEC.06.01.a1b2`).
 - Binary Topological Validation resolves `@repo_slug:` citations against the project's local `.aidoc/contracts-registry.yaml`. Declared external contracts are treated as validated stubs, allowing local BTV verification to pass cleanly without cloning remote trees.
 
 #### D. Node Immutability & CHG Lifecycle
+
 Per [`DOC_GOVERNANCE_CORE.md`](../framework/governance/DOC_GOVERNANCE_CORE.md), published nodes (`status: Active`) are cryptographically immutable:
+
 - When an AI agent modifies an existing requirement, it does NOT edit the node in place.
 - The agent creates a new node version with a new 4-segment content-hash ID (e.g. `EARS.01.03.c4d5`).
 - The new node carries `supersedes: EARS.01.03.a1b2` and `authorized_by: CHG-108`.
 - The original node transitions to `status: Superseded`.
 
 #### E. Modular Partitioning & Git Tracking Discipline
+
 To prevent git merge collisions in concurrent multi-agent branches:
+
 - Slices are saved modularly: `docs/sdd/graph/modules/<module_id>/<slug>.graph.yaml` and `docs/sdd/graph/initiatives/<init_id>.graph.yaml`.
 - The graph engine performs in-memory unification across all slice files during CI and lint runs.
 - Raw graph files are committed directly to Git; brittle OS filesystem symlinks are strictly banned.
@@ -121,11 +134,14 @@ To prevent git merge collisions in concurrent multi-agent branches:
 The Observability Adapter is a non-authoritative projection engine (`sdd-render`) operating strictly on the Read Plane:
 
 #### A. Pure-Python Text Emission Mandate (Engine Neutrality D-0013)
+
 To ensure portability across Linux, macOS, Windows, and air-gapped CI environments without introducing Node.js or Chromium dependencies:
+
 - `sdd-render diagram` emits **pure Mermaid text** (`.mmd` files or fenced markdown blocks).
 - Rendering PNG/SVG images is delegated to GitHub's native Mermaid renderer or optional static site generators (VitePress/MkDocs).
 
 #### B. Projection Targets
+
 1. **Spec Sheets (`sdd-render spec`)**:
    - Compiles a graph slice into human-readable Markdown or HTML formatted like traditional BRD, PRD, ADR, or SPEC documents.
    - Preserves familiar headings, tables, and narrative structures for human inspection.
@@ -143,13 +159,16 @@ To ensure portability across Linux, macOS, Windows, and air-gapped CI environmen
    - Compiles the graph into a static site generator (e.g. VitePress, Starlight, MkDocs) with full-text search and interactive graph explorer.
 
 #### C. The Read-Only Invariant
+
 Every file emitted by the adapter carries a non-negotiable header:
+
 ```markdown
 <!-- ===================================================================== -->
 <!-- GENERATED BY SDD-RENDER. DO NOT EDIT DIRECTLY. MUTATE THE GRAPH SOURCE. -->
 <!-- Source Graph SHA: <sha256> | Engine: sdd-render v1.0.0                  -->
 <!-- ===================================================================== -->
 ```
+
 Any PR attempting to commit manual edits to generated markdown without corresponding graph mutations is blocked by CI.
 
 ---
@@ -157,6 +176,7 @@ Any PR attempting to commit manual edits to generated markdown without correspon
 ### 2.3 Mathematical Graph Verification Engine (`sdd_graph`)
 
 Replaces regex scraping with rigorous graph mathematics via `networkx`:
+
 1. **Binary Topological Validation (BTV)**:
    - Acyclicity check: `nx.is_directed_acyclic_graph(G) == True`.
    - Dangling pointer check: `all(edge.target in G.nodes or is_federated_stub(edge.target) for edge in G.edges)`.
@@ -198,6 +218,7 @@ tasks:
 ### 2.5 LangGraph Runtime Compliance & 1:1 StateGraph Mapping
 
 The Native SDD Graph schema is explicitly architected to be **100% compliant and synergistic with `aidoc-flow-langgraph`**:
+
 - Eliminates the existing string-templating impedance mismatch where LangGraph was forced to generate and regex-parse legacy Markdown/YAML documents via `tools/template_engine.py`.
 - Maps directly into `langgraph.graph.StateGraph` primitives:
   - `task_action` nodes $\longrightarrow$ LangGraph execution nodes (`builder.add_node`).
@@ -211,10 +232,12 @@ The Native SDD Graph schema is explicitly architected to be **100% compliant and
 ### 2.6 Dual-Template Consolidation Strategy (Retiring `*-SWF-TEMPLATE.yaml`)
 
 The 20 legacy document templates (10 companion static + 10 SWF hybrid envelopes) are consolidated into **two canonical, modular graph templates**:
+
 1. **`INITIATIVE-GRAPH-TEMPLATE.yaml`** (Design & Requirements Plane):
    - Covers Tier 1 Seed intent, Tier 2 Module boundaries, Layer 01–06 business objectives, EARS requirements, BDD scenarios, and ADR choices.
 2. **`EXECUTION-GRAPH-TEMPLATE.yaml`** (Implementation & Verification Plane — directly superseding `IPLAN-SWF-TEMPLATE.yaml`):
    - Declares the task DAG, target code mutations, test proof fixtures, and mandatory 1:1 saga rollback compensation tasks.
+
 - **Rollout Lifecycle**: Greenfield initiatives and autonomous agent workflows adopt the graph templates under `docs/sdd/graph/` immediately. `*-SWF-TEMPLATE.yaml` and `*-TEMPLATE.yaml` are grandfathered for brownfield projects and slated for formal deprecation once the graph standard reaches general adoption across the ecosystem.
 
 ---
@@ -222,6 +245,7 @@ The 20 legacy document templates (10 companion static + 10 SWF hybrid envelopes)
 ## 3. Scope of Work
 
 ### In Scope
+
 1. **Authoring Change Request CHG-108 & Implementation Plan IPLAN-108**:
    - Documented in `framework/archive/CHG-108/CHG-108.yaml` and `framework/archive/CHG-108/IPLAN-108.yaml`.
    - Ratify Decision **GD-95** (`DEC-CHG-108`) in `framework/governance/DECISIONS.md`.
@@ -247,6 +271,7 @@ The 20 legacy document templates (10 companion static + 10 SWF hybrid envelopes)
    - Update `hooks/sync-version-refs.sh` and synchronize version references.
 
 ### Out of Scope
+
 - Registering the graph as an 11th layer in `LAYER_REGISTRY.yaml` (the 10-layer canonical count is preserved; the graph is governed as a cross-layer architectural overlay).
 - Forcing immediate, mandatory migration of legacy document artifacts in existing consumer repositories (brownfield repositories are grandfathered via dual-mode support).
 - Bundling heavy web servers, Node.js packages, or proprietary graph databases into the core framework canon (engine remains pure, lightweight, dependency-minimal Python).
@@ -281,17 +306,20 @@ gantt
 ```
 
 ### Phase 1: Governance & Authorization
+
 - **Task 1.1**: Author `framework/archive/CHG-108/CHG-108.yaml` (Class C2, Type DIR2C, SemVer minor).
 - **Task 1.2**: Author `framework/archive/CHG-108/IPLAN-108.yaml` detailing step-by-step task execution.
 - **Task 1.3**: Ratify Decision **GD-95** in `framework/governance/DECISIONS.md`.
 
 ### Phase 2: Specifications & Schema Definitions
+
 - **Task 2.1**: Author `framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md` defining node/edge ontologies, property schemas, cardinality rules, and modular partitioning.
 - **Task 2.2**: Author `framework/governance/sdd-graph.schema.json` codifying strict JSON Schema validation for all graph nodes and edges.
 - **Task 2.3**: Author `framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md` establishing the CQRS read-projection contract, CLI flags, and read-only headers.
 - **Task 2.4**: Author `framework/templates/GRAPH-TEMPLATE.yaml` as the canonical starter template for graph initiatives.
 
 ### Phase 3: Python Graph Engine Implementation
+
 - **Task 3.1**: Create `sdd_doc_lint/graph_engine.py`:
   - `load_graph_directory(path: Path) -> nx.DiGraph`
   - `validate_btv_conformance(G: nx.DiGraph) -> list[Finding]` (cardinality, acyclicity, coverage)
@@ -304,6 +332,7 @@ gantt
   - `--extract-delta`: Emits isolated mutated subgraph for review agent context.
 
 ### Phase 4: Observability Adapter Implementation
+
 - **Task 4.1**: Create `sdd_doc_lint/observability_adapter.py`:
   - Implement Markdown projection generator for traditional layer views (`render_spec_sheet`).
   - Implement pure Mermaid diagram generator for C4-L1/L2 and traceability DAGs (`render_mermaid`).
@@ -314,10 +343,12 @@ gantt
   - `python3 -m sdd_doc_lint --render-pr-impact --base <ref> --head <ref>`
 
 ### Phase 5: Workstation & Tooling Parity
+
 - **Task 5.1**: Update `framework/scripts/install.sh` and `framework/scripts/upgrade.sh` to include `sdd:graph-check`, `sdd:render`, and `sdd:delta` in generated `.aidoc/Taskfile.yml`.
 - **Task 5.2**: Update `framework/templates/AGENTS-TEMPLATE.md` to instruct AI coding agents on `docs/sdd/graph/` conventions and validation commands.
 
 ### Phase 6: Conformance Testing & Release
+
 - **Task 6.1**: Author `tests/conformance/test_sdd_graph_schema.py`:
   - Validates positive and negative graph schema fixtures against `sdd-graph.schema.json`.
   - Asserts malformed IDs, missing required properties, and illegal node types fail schema checks.
@@ -362,6 +393,7 @@ gantt
 ## 7. Review Log
 
 ### Pass 1: 2026-10-16 — Framework Architect & Spec Auditor
+
 - **Findings**:
   1. *Graph Storage Scalability*: Storing the whole project in a single `.graph.yaml` file guarantees git merge conflicts for concurrent AI worktrees. Must enforce modular partitioning (`docs/sdd/graph/modules/` and `docs/sdd/graph/initiatives/`).
   2. *Strict Read-Only Enforcement*: Generated Markdown documents must carry cryptographic or generator comment banners to prevent humans or agents from attempting to author the projections.
@@ -370,6 +402,7 @@ gantt
   - Codified non-negotiable generated header banners in Section 2.2.C.
 
 ### Pass 2: 2026-10-16 — QA Lead & Autonomous Systems Officer
+
 - **Findings**:
   1. *Dependency Purity*: Ensure `sdd_doc_lint` does not introduce heavy database or C-extension dependencies. `networkx` is pure Python, lightweight, and standard across Python data/graph ecosystems.
   2. *LangGraph Parity*: Ensure node and edge ontologies map directly to `langgraph.graph.StateGraph` without complex serialization transformations.
@@ -378,6 +411,7 @@ gantt
   - Aligned task action and scenario properties with LangGraph activity and state specifications.
 
 ### Pass 3: 2026-10-16 — Governance & Ecosystem Auditor
+
 - **Findings**:
   1. *Seed & Module Disconnect*: Initial draft omitted Tier 1 Seed and Tier 2 Module integration.
   2. *Edge Cardinality Ambiguity*: Edge rules lacked explicit cardinality constraints (e.g. mandatory BDD coverage and 1:1 saga rollback).
