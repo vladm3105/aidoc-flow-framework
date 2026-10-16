@@ -636,6 +636,14 @@ def _check_style(
     return findings
 
 
+def compute_reviewed_sha256(raw_content: str) -> str:
+    """Compute deterministic SHA-256 over document body excluding frontmatter."""
+    body = re.sub(r"^---\n.*?\n---\n?", "", raw_content, flags=re.DOTALL)
+    normalized = body.replace("\r\n", "\n").replace("\r", "\n")
+    normalized = normalized.strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
 def lint_text(
     text: str,
     artifact: str,
@@ -681,6 +689,47 @@ def lint_text(
                 severity="warning",
             )
         )
+
+    # Cryptographic Review Verification (GATE-FLOOR-01)
+    _review_log = (_fm or {}).get("review_log")
+    if isinstance(_review_log, list) and _review_log:
+        last_review = _review_log[-1] if isinstance(_review_log[-1], dict) else {}
+        expected_sha = last_review.get("reviewed_sha256")
+        if expected_sha:
+            computed_sha = compute_reviewed_sha256(text)
+            if computed_sha.lower() != str(expected_sha).lower():
+                findings.append(
+                    Finding(
+                        rel,
+                        1,
+                        "REV01",
+                        f"STALE_REVIEW_DETECTED: Document body has been modified after review "
+                        f"(expected SHA-256 '{expected_sha}', got '{computed_sha}')",
+                        severity="error",
+                    )
+                )
+        verdict = str(last_review.get("verdict", "")).upper()
+        if verdict == "ESCALATED":
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REV02",
+                    "UNRESOLVED_BLOCKERS: Latest review verdict is ESCALATED",
+                    severity="error",
+                )
+            )
+        blocking_remaining = last_review.get("blocking_remaining")
+        if isinstance(blocking_remaining, int) and blocking_remaining > 0:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REV03",
+                    f"UNRESOLVED_BLOCKERS: Review reports {blocking_remaining} unresolved blocking finding(s)",
+                    severity="error",
+                )
+            )
 
     for i, line in enumerate(lines, 1):
         # Trace tags: collect which upstream layers are referenced + validate the id form.

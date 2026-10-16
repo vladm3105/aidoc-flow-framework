@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.23 |
+| Framework Version | 0.91.24 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -389,13 +389,14 @@ global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).
 - **Versioned.** Project overrides are committed alongside `profile.yaml`
   and carry the `framework_version` they were authored against.
 
-### Symlink convention
+### Distribution and Attachment Model
 
-`.aidoc/framework/` is a symlink to the shared framework directory. The
-canonical path is declared in `profile.yaml` as `framework_path`.
+`.aidoc/framework/` carries the shared Process Canon specification, templates, and structural linters.
 
-New files use `.aidoc/framework/` as the canonical path. The root `framework/`
-symlink has been removed — all references must use `.aidoc/framework/`.
+> [!IMPORTANT]
+> **Raw filesystem symlinks in version control are strictly forbidden** per [`docs/AIDOC_WORKSTATION_STANDARD.md`](../../docs/AIDOC_WORKSTATION_STANDARD.md) §8.
+
+Consumer projects attach the framework via Git submodules (`git submodule add ... .aidoc/framework`) or dynamic clone / pinned allowlist copy managed by `aidoc-project-onboarding` or `install.sh --kind pin`.
 
 ## 11. Enforcement adaptation (mandatory for all consuming projects)
 
@@ -427,7 +428,7 @@ Before writing ANY code for a feature, enhancement, or bug fix:
 2. Complete the CHG creation checklist before writing code.
 3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
 4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`. Never work directly on `main` or `dev`.
-5. Run automated verification suites and linters locally before pushing. Never bypass hooks (`--no-verify` is forbidden).
+5. Run automated verification suites and linters locally before pushing: `task sdd:lint` and `task sdd:check` (or `task check`). Never bypass hooks (`--no-verify` is forbidden).
 ```
 
 ## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform

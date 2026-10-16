@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: chaos_engineer
 weight: 10
 agent: chaos-engineer
-framework_spec_version: "0.91.23"
+framework_spec_version: "0.91.24"
 ---
 # chaos_engineer lens — SPEC layer
 

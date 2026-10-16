@@ -1,0 +1,40 @@
+# =============================================================================
+#  Canonical SDD Tasks Template (.aidoc/Taskfile.yml)
+# =============================================================================
+#  Authority: docs/AIDOC_WORKSTATION_STANDARD.md
+#  Governs: SDD lifecycle execution, linting, review crews, context slicing
+# =============================================================================
+version: '3'
+
+vars:
+  SDD_DIR: '{{.SDD_DIR | default "docs/sdd"}}'
+  ENGINE_CONFIG: '{{.ENGINE_CONFIG | default ".aidoc/engine/engine.yaml"}}'
+
+tasks:
+  lint:
+    desc: "Run structural SDD linter over docs/sdd with project overrides"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint {{.SDD_DIR}} {{.CLI_ARGS}}
+
+  review:
+    desc: "Execute multi-persona review crew (live or verify-only mode)"
+    cmds:
+      - python3 -m aidoc_flow_langgraph.cli review --config {{.ENGINE_CONFIG}} {{.CLI_ARGS}}
+
+  slice:
+    desc: "Slice and pack SDD context DAG for LLM prompts (with native fallback)"
+    cmds:
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main slice {{.CLI_ARGS}} ||
+        python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
+
+  check:
+    desc: "Full SDD Gate: structural linting + cryptographic review verification"
+    cmds:
+      - task: lint
+      - task: review
+        vars: { CLI_ARGS: "--verify-only" }

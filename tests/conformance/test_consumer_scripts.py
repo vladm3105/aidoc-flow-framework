@@ -82,11 +82,14 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md",
         tmpl_dir / "AGENTS-TEMPLATE.md",
     )
-    if (FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml").exists():
-        shutil.copy(
-            FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml",
-            tmpl_dir / "STACK-POLICY-TEMPLATE.yaml",
-        )
+    for tmpl_name in (
+        "STACK-POLICY-TEMPLATE.yaml",
+        "TASKFILE-TEMPLATE.yml",
+        "ENGINE-CONFIG-TEMPLATE.yaml",
+    ):
+        src = FRAMEWORK / "templates" / tmpl_name
+        if src.exists():
+            shutil.copy(src, tmpl_dir / tmpl_name)
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
@@ -409,6 +412,12 @@ class InstallScript(unittest.TestCase):
         runner = self.project / ".aidoc" / "bin" / "sdd-lint"
         self.assertTrue(runner.is_file())
         self.assertTrue(os.access(runner, os.X_OK))
+        taskfile = self.project / ".aidoc" / "Taskfile.yml"
+        self.assertTrue(taskfile.is_file())
+        self.assertIn("lint:", taskfile.read_text(encoding="utf-8"))
+        engine_cfg = self.project / ".aidoc" / "engine" / "engine.yaml"
+        self.assertTrue(engine_cfg.is_file())
+        self.assertIn("aidoc-flow-langgraph", engine_cfg.read_text(encoding="utf-8"))
 
     def test_no_stack_policy_flag_skips_scaffolding(self):
         proc = _run(

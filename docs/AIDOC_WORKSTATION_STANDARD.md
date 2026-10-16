@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-15 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.23 |
+| Framework Version | 0.91.24 |
 | Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), [`AIDOC.md`](../framework/governance/aidoc/AIDOC.md) |
 
 ---
@@ -361,8 +361,8 @@ tasks:
     desc: "Slice and pack SDD context DAG for LLM prompts (with native fallback)"
     cmds:
       - >-
-        python3 -c "import aidoc_context_tools" 2>/dev/null &&
-        python3 -m aidoc_context_tools.cli slice {{.CLI_ARGS}} ||
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main slice {{.CLI_ARGS}} ||
         python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
 
   check:

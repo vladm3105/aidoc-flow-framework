@@ -4,15 +4,16 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 2.5 |
+| Version | 2.6 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-16 |
 | Author | <your name> |
-| Framework Version | 0.91.23 |
+| Framework Version | 0.91.24 |
 
 This directory is the project customization layer for the aidoc-flow-framework.
-It holds the project profile (adaptation knobs) and project-specific overrides
-that take precedence over the framework's defaults.
+It holds the project profile (adaptation knobs), technical engine bindings, canonical
+task definitions, enterprise stack policies, and project-specific overrides that take
+precedence over the framework's defaults.
 
 ## Project tier overview
 
@@ -25,17 +26,19 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 │   ├── vision/              # Business intent & product goals
 │   └── architecture/        # Architecture domains (scaffold: SEED-TEMPLATE.md)
 │       └── auth.md
-├── docs/                    # Tier 2 AI outputs: modules/ + sdd/ formal chain
+├── docs/sdd/                # Tier 2 AI outputs: formal 10-layer SDD chain
 ├── .aidoc/                  # Tier 3 Project customization layer (this directory)
-│   ├── profile.yaml         # project profile — adaptation knobs
-│   ├── framework → ...      # symlink to shared framework (canonical path)
-│   ├── project/             # project-specific overrides
+│   ├── profile.yaml         # project profile — adaptation knobs (closed surface)
+│   ├── stack-policy.yaml    # Pillar 2: Enterprise Tech Stack Policy
+│   ├── Taskfile.yml         # Canonical SDD task runner (sdd:lint, sdd:review, sdd:slice, sdd:check)
+│   ├── project/             # project-specific overrides & specialized playbooks
 │   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
-│   │   │   └── CHG_EXECUTION_FLOW.md
 │   │   ├── layers/          # template overrides (same structure as framework/)
-│   │   │   └── ...
 │   │   └── playbooks/       # playbook overrides (same structure as framework/)
-│   │       └── ...
+│   ├── framework/           # Process Canon defaults (attached via Git submodule or pinned copy)
+│   ├── engine/              # Technical engine binding (engine.yaml)
+│   ├── contracts/           # Pillar 3: Data Contracts Canon
+│   ├── ctx-tools/           # Pillar 4: Context Slicing Engine config
 │   └── README.md            # this file
 └── logs/<TS>/               # Tier 4 Tool internals (gitignored)
 ```
@@ -45,29 +48,38 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 ```text
 .aidoc/
 ├── profile.yaml             # project profile — adaptation knobs
-├── framework → ...          # symlink to shared framework (canonical path)
+├── stack-policy.yaml        # Pillar 2: Enterprise Tech Stack Policy
+├── Taskfile.yml             # Canonical SDD task runner
 ├── project/                 # project-specific overrides
 │   ├── governance/          # rule overrides (same structure as framework/)
-│   │   └── ...
 │   ├── layers/              # template overrides (same structure as framework/)
-│   │   └── ...
 │   └── playbooks/           # playbook overrides (same structure as framework/)
-│       └── ...
+├── framework/               # Process Canon defaults (submodule or pinned copy)
+├── engine/                  # Active engine configuration (engine.yaml)
+├── contracts/               # Shared proto/schema contracts
+├── ctx-tools/               # Context slicing configuration
 └── README.md                # this file
 ```
 
-## Discovery rule
+## Discovery rule (`ENGINE-DISCOV-01`)
 
-When the agent reads a template, rule, or playbook:
+When the engine or agent reads a template, rule, or playbook:
 
-1. Check `.aidoc/project/{same-path}` first
-2. If the file exists there, use it (project override)
-3. If not, fall back to `.aidoc/framework/framework/{same-path}` (or `.aidoc/framework/{same-path}` if pointing directly at the framework root)
+1. Check `.aidoc/project/{same-path}` first.
+2. If the file exists there, use it (**project override**).
+3. If not, fall back to `.aidoc/framework/{same-path}` (**canon default**).
+4. **Atomic File Shadowing:** Overrides in `.aidoc/project/` shadow canon defaults at the whole-file level without partial-key merging.
 
-## Framework symlink
+## Framework attachment
 
-`.aidoc/framework/` is a symlink to the shared framework directory.
-The canonical path is declared in `profile.yaml` as `framework_path`.
+`.aidoc/framework/` carries the shared framework specification, playbooks, and structural linters.
+
+> [!IMPORTANT]
+> **Raw filesystem symlinks in version control are strictly forbidden** per `docs/AIDOC_WORKSTATION_STANDARD.md` §8.
+
+Sanctioned attachment models:
+1. **Git Submodule:** Pinned release tag under `.aidoc/framework/`.
+2. **Dynamic Clone / Pinned Copy:** Managed via `aidoc-project-onboarding` (`onboard greenfield` / `onboard update`) or `framework/scripts/install.sh --kind pin`.
 
 ## Project profile
 
@@ -85,8 +97,6 @@ the override contract and constraints.
 
 This project pins **aidoc-flow-framework X.Y.Z** (declared in
 `profile.yaml` as `framework_version`).
-
-
 
 ## Autonomous Execution & Operational Standards
 
