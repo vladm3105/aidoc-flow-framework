@@ -102,7 +102,7 @@ Per [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJEC
 - Binary Topological Validation resolves `@repo_slug:` citations against the project's local `.aidoc/contracts-registry.yaml`. Declared external contracts are treated as validated stubs, allowing local BTV verification to pass cleanly without cloning remote trees.
 
 #### D. Node Immutability & CHG Lifecycle
-Per [DOC_GOVERNANCE_CORE.md](file:///home/ya/devd/aidoc-framework/framework/governance/DOC_GOVERNANCE_CORE.md), published nodes (`status: Active`) are cryptographically immutable:
+Per [`DOC_GOVERNANCE_CORE.md`](../framework/governance/DOC_GOVERNANCE_CORE.md), published nodes (`status: Active`) are cryptographically immutable:
 - When an AI agent modifies an existing requirement, it does NOT edit the node in place.
 - The agent creates a new node version with a new 4-segment content-hash ID (e.g. `EARS.01.03.c4d5`).
 - The new node carries `supersedes: EARS.01.03.a1b2` and `authorized_by: CHG-108`.
@@ -197,14 +197,14 @@ tasks:
 
 ### 2.5 LangGraph Runtime Compliance & 1:1 StateGraph Mapping
 
-The Native SDD Graph schema is explicitly architected to be **100% compliant and synergistic with [`aidoc-flow-langgraph`](file:///home/ya/devd/aidoc-flow-langgraph)**:
-- Eliminates the existing string-templating impedance mismatch where LangGraph was forced to generate and regex-parse legacy Markdown/YAML documents via [`tools/template_engine.py`](file:///home/ya/devd/aidoc-flow-langgraph/src/aidoc_flow_langgraph/tools/template_engine.py).
+The Native SDD Graph schema is explicitly architected to be **100% compliant and synergistic with `aidoc-flow-langgraph`**:
+- Eliminates the existing string-templating impedance mismatch where LangGraph was forced to generate and regex-parse legacy Markdown/YAML documents via `tools/template_engine.py`.
 - Maps directly into `langgraph.graph.StateGraph` primitives:
   - `task_action` nodes $\longrightarrow$ LangGraph execution nodes (`builder.add_node`).
   - `test_fixture` nodes $\longrightarrow$ Oracle validation nodes (`builder.add_node`).
   - `compensated_by` edges $\longrightarrow$ Native saga rollback conditional branches (`builder.add_conditional_edges`).
-- Upgrades [`gates/evaluator.py`](file:///home/ya/devd/aidoc-flow-langgraph/src/aidoc_flow_langgraph/gates/evaluator.py) to execute BTV assertions via in-memory graph queries rather than external regex linters.
-- Feeds review crews in [`crews/review_graph.py`](file:///home/ya/devd/aidoc-flow-langgraph/src/aidoc_flow_langgraph/crews/review_graph.py) with isolated mutated subgraph dictionaries $\Delta G$, bounding LLM review context to ~500 tokens.
+- Upgrades `gates/evaluator.py` to execute BTV assertions via in-memory graph queries rather than external regex linters.
+- Feeds review crews in `crews/review_graph.py` with isolated mutated subgraph dictionaries $\Delta G$, bounding LLM review context to ~500 tokens.
 
 ---
 
