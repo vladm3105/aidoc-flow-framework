@@ -116,7 +116,8 @@ request:
 # =============================================================================
 
 scope:
-  description: "Native SDD Graph Schema and Observability Adapter (Plan SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md)"
+  description: >-
+    Native SDD Graph Schema and Observability Adapter (Plan SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md)
   components_affected:
     - "plans/SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md"
     - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
