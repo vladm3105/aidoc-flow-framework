@@ -1,0 +1,16 @@
+# =============================================================================
+#  Technical Engine Binding Configuration Template (.aidoc/engine/engine.yaml)
+# =============================================================================
+#  Authority: docs/AIDOC_WORKSTATION_STANDARD.md
+#  Governs: Active execution engine dispatch, modes (live|verify-only|mock), thresholds
+# =============================================================================
+
+engine: "aidoc-flow-langgraph"
+version: "0.2.0"
+mode: "live" # Options: live | verify-only | mock
+
+thresholds:
+  min_crew_score: 85
+  max_remediation_iterations: 3
+  fail_on_p0: true
+  fail_on_p1: true

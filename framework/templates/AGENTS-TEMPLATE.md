@@ -27,7 +27,7 @@ Project customization and adaptation settings live in `.aidoc/profile.yaml`.
 Files in this repository adhere to the four standard tiers:
 1. `seed/` — Stakeholder vision, domain boundaries, and architectural options.
 2. `docs/` — Structured SDD specifications (`docs/sdd/01_BRD` through `docs/sdd/10_EVAL`) and modules.
-3. `.aidoc/` — Project profile (`.aidoc/profile.yaml`), framework link, and project overrides (`.aidoc/project/`).
+3. `.aidoc/` — Project profile (`.aidoc/profile.yaml`), stack policy, task runner (`Taskfile.yml`), engine config, and project overrides (`.aidoc/project/`).
 4. `logs/` — Ephemeral run logs and tool internals (gitignored).
 
 ## Non-negotiables
@@ -35,4 +35,4 @@ Files in this repository adhere to the four standard tiers:
 - **Never create monolithic anti-pattern files:** Do not generate or update loose `CHANGELOG.md`, `ROADMAP.md`, `DECISIONS.md`, or `docs/HANDOFF.md`. Record all state in the sanctioned surfaces declared in the table above.
 - **Specification-First:** No code implementation without an authorizing Change Request (`CHG-NN.yaml`) and Implementation Plan (`IPLAN-NN.yaml`). Architectural changes require an ADR under `docs/sdd/05_ADR/`.
 - **One task, one worktree:** Feature and defect work runs in a dedicated git worktree and branch (`feature/<issue-or-chg>-<slug>`), never on `main` or `dev`.
-- **Submit only verified work:** Run linters (`.aidoc/bin/sdd-lint` or `PYTHONPATH=.aidoc/framework python3 -m sdd_doc_lint`) and local test suites before opening or updating a PR.
+- **Submit only verified work:** Run linters and quality gates via Taskfile (`task sdd:lint` and `task sdd:check`, or backward-compatible `.aidoc/bin/sdd-lint`) and local test suites before opening or updating a PR.

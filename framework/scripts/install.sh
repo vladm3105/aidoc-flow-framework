@@ -99,6 +99,9 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$PROJECT" ] || { usage >&2; refuse "missing <project-dir>"; }
 [ "$KIND" = pin ] || [ "$KIND" = symlink ] || refuse "--kind must be pin or symlink"
+if [ "$KIND" = symlink ]; then
+  log "[WARNING] Symlink distribution is deprecated per docs/AIDOC_WORKSTATION_STANDARD.md; use --kind pin or submodules for CI portability"
+fi
 [ -f "$ALLOWLIST" ] || die "allowlist not found: $ALLOWLIST"
 
 [ -d "$PROJECT" ] || refuse "project dir must exist: $PROJECT"
@@ -268,7 +271,31 @@ if [ "$NO_STACK_POLICY" != 1 ] && [ -f "$CANON/framework/templates/STACK-POLICY-
   fi
 fi
 
-# Scaffold linter runner at .aidoc/bin/sdd-lint
+# Scaffold canonical SDD tasks at .aidoc/Taskfile.yml
+if [ -f "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
+  aidoc_taskfile="$AIDOC/Taskfile.yml"
+  if [ ! -f "$aidoc_taskfile" ]; then
+    run "cp $CANON/framework/templates/TASKFILE-TEMPLATE.yml $aidoc_taskfile" cp "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" "$aidoc_taskfile"
+    log "scaffolded canonical SDD tasks at .aidoc/Taskfile.yml"
+  else
+    log "existing .aidoc/Taskfile.yml preserved"
+  fi
+fi
+
+# Scaffold active engine config at .aidoc/engine/engine.yaml
+if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
+  engine_dir="$AIDOC/engine"
+  engine_cfg="$engine_dir/engine.yaml"
+  run "mkdir -p $engine_dir" mkdir -p "$engine_dir"
+  if [ ! -f "$engine_cfg" ]; then
+    run "cp $CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml $engine_cfg" cp "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" "$engine_cfg"
+    log "scaffolded engine config at .aidoc/engine/engine.yaml"
+  else
+    log "existing .aidoc/engine/engine.yaml preserved"
+  fi
+fi
+
+# Scaffold linter runner at .aidoc/bin/sdd-lint (backward-compatible shim)
 bin_dir="$AIDOC/bin"
 runner="$bin_dir/sdd-lint"
 run "mkdir -p $bin_dir" mkdir -p "$bin_dir"
@@ -277,6 +304,9 @@ if [ "$DRY_RUN" != 1 ]; then
 #!/usr/bin/env bash
 # sdd-lint — portable runner for sdd_doc_lint in consumer repositories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if command -v task >/dev/null 2>&1 && [ -f "$SCRIPT_DIR/Taskfile.yml" ]; then
+  exec task --taskfile "$SCRIPT_DIR/Taskfile.yml" lint -- "$@"
+fi
 PYTHONPATH="$SCRIPT_DIR/framework" exec python3 -m sdd_doc_lint "$@"
 RUNNER_EOF
   chmod +x "$runner"
@@ -306,6 +336,9 @@ fi
 if [ "$DRY_RUN" = 1 ]; then log "(dry-run: smoke checks skipped)"; log "done (dry-run)"; exit 0; fi
 if [ ! -f "$AIDOC/README.md" ] || [ ! -f "$AIDOC/profile.yaml" ]; then
   die "smoke: README/profile missing"
+fi
+if [ -f "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" ] && [ ! -f "$AIDOC/Taskfile.yml" ]; then
+  die "smoke: Taskfile missing"
 fi
 if readlink -f "$AIDOC/framework" >/dev/null 2>&1; then :;
 elif [ -e "$AIDOC/framework" ]; then :; # readlink -f missing (macOS): -e follows links too

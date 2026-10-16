@@ -1,0 +1,55 @@
+# =============================================================================
+#  IPLAN-107: Consumer Deployment Parity and In-Repo .aidoc Modernization
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-107/CHG-107.yaml
+# =============================================================================
+
+id: "IPLAN-107"
+chg_id: "CHG-107"
+title: "Consumer Deployment Parity and In-Repo .aidoc Modernization"
+status: "Completed"
+framework_version: "0.91.24"
+
+file_manifest:
+  - "plans/CONSUMER-DEPLOYMENT-PARITY-PLAN.md"
+  - "framework/templates/TASKFILE-TEMPLATE.yml"
+  - "framework/templates/ENGINE-CONFIG-TEMPLATE.yaml"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "framework/governance/aidoc/AIDOC.md"
+  - "framework/governance/aidoc/BOOTSTRAP.md"
+  - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+  - "framework/governance/ADAPTATION.md"
+  - "framework/scripts/install.sh"
+  - "framework/scripts/upgrade.sh"
+  - "tests/conformance/test_consumer_scripts.py"
+  - "framework/archive/CHG-107/CHG-107.yaml"
+  - "framework/archive/CHG-107/IPLAN-107.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-107.yaml and IPLAN-107.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Add canonical TASKFILE-TEMPLATE.yml and ENGINE-CONFIG-TEMPLATE.yaml to framework/templates/"
+    status: "Completed"
+  - id: "TASK-03"
+    name: >-
+      Align governance docs (AIDOC.md, BOOTSTRAP.md, AIDOC-SCAFFOLD-TEMPLATE.md,
+      ADAPTATION.md) to retire symlinks and reflect Quad-Pillar topology
+    status: "Completed"
+  - id: "TASK-04"
+    name: >-
+      Update framework/scripts/install.sh and upgrade.sh to scaffold Taskfile and
+      engine config while retaining sdd-lint shim
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Update AGENTS-TEMPLATE.md to instruct task sdd:lint and task sdd:check"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Update tests/conformance/test_consumer_scripts.py to assert Taskfile and runner compatibility"
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Bump framework/VERSION to 0.91.24, update sync-version-refs.sh, and run verification suite"
+    status: "Completed"

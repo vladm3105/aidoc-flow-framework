@@ -105,6 +105,9 @@ FW="$AIDOC/framework"
 if [ -z "$KIND" ]; then
   if [ -L "$FW" ]; then KIND=symlink; else KIND=pin; fi
   log "detected kind: $KIND"
+  if [ "$KIND" = symlink ]; then
+    log "[WARNING] Symlink distribution is deprecated per docs/AIDOC_WORKSTATION_STANDARD.md; submodules or pinned copies recommended"
+  fi
 else
   [ "$KIND" = pin ] || [ "$KIND" = symlink ] || refuse "--kind must be pin or symlink"
   if [ "$KIND" = symlink ] && [ ! -L "$FW" ]; then
@@ -264,6 +267,17 @@ if [ "$DRY_RUN" != 1 ]; then
   VERIFY="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
   [ "$VERIFY" = "$NEW" ] || die "re-pin failed: profile reads $VERIFY, expected $NEW"
   log "profile.yaml re-pinned at framework_version $NEW (verified)"
+
+  # Harmonize workstation layout: scaffold Taskfile.yml and engine config if missing
+  if [ ! -f "$AIDOC/Taskfile.yml" ] && [ -f "$FW/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
+    cp "$FW/framework/templates/TASKFILE-TEMPLATE.yml" "$AIDOC/Taskfile.yml"
+    log "scaffolded missing .aidoc/Taskfile.yml"
+  fi
+  if [ ! -f "$AIDOC/engine/engine.yaml" ] && [ -f "$FW/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
+    mkdir -p "$AIDOC/engine"
+    cp "$FW/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" "$AIDOC/engine/engine.yaml"
+    log "scaffolded missing .aidoc/engine/engine.yaml"
+  fi
 fi
 
 if [ "$DRY_RUN" = 1 ]; then log "done (dry-run)"; exit 0; fi

@@ -1,0 +1,158 @@
+# =============================================================================
+#  CHG-107: Consumer Deployment Parity and In-Repo .aidoc Modernization
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Documentation & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-16)
+#  Scope: Harmonize in-repo .aidoc governance, templates, and installer scripts
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-16"
+  framework_version: "0.91.24"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-107"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-16T00:00:00Z"
+  date_approved: "2026-10-16T00:00:00Z"
+  date_implemented: "2026-10-16T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-16T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-16): approved, continue
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-107)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-107"
+  title: "Consumer Deployment Parity and In-Repo .aidoc Modernization"
+  status: "Ratified"
+  context: |
+    Following ratification of CHG-106 and the codification of the .aidoc/ Workstation Standard
+    (docs/AIDOC_WORKSTATION_STANDARD.md), an audit of the framework repository revealed four
+    operational gaps and contradictions:
+    1. Symlink Contradiction: The ratified standard bans cross-repository symlinks for CI portability,
+       while framework/governance/aidoc/AIDOC.md, BOOTSTRAP.md, AIDOC-SCAFFOLD-TEMPLATE.md, and
+       ADAPTATION.md still mandate the legacy symlink model (framework -> .aidoc/framework).
+    2. Outdated Topology: Core governance files omitted .aidoc/Taskfile.yml, stack-policy.yaml,
+       engine/engine.yaml, and contracts/ from the .aidoc/ directory structure.
+    3. Installer Script Drift: framework/scripts/install.sh and upgrade.sh scaffolded .aidoc/bin/sdd-lint
+       instead of .aidoc/Taskfile.yml and engine/engine.yaml.
+    4. Missing Templates & Agent Guidance: framework/templates/ lacked TASKFILE-TEMPLATE.yml and
+       ENGINE-CONFIG-TEMPLATE.yaml, while AGENTS-TEMPLATE.md instructed running .aidoc/bin/sdd-lint
+       instead of unified Taskfile commands (task sdd:lint, task sdd:check).
+  choice: |
+    1. Update framework/governance/aidoc/AIDOC.md, BOOTSTRAP.md, and AIDOC-SCAFFOLD-TEMPLATE.md to
+       retire the symlink convention, codify Git Submodule / Dynamic Clone distribution, and reflect
+       the complete Quad-Pillar .aidoc/ topology.
+    2. Update framework/governance/ADAPTATION.md to align distribution rules and starter agent guidance.
+    3. Add framework/templates/TASKFILE-TEMPLATE.yml and ENGINE-CONFIG-TEMPLATE.yaml.
+    4. Update framework/scripts/install.sh and upgrade.sh to scaffold .aidoc/Taskfile.yml and
+       engine/engine.yaml while providing .aidoc/bin/sdd-lint as a backward-compatible shim.
+    5. Update framework/templates/AGENTS-TEMPLATE.md to instruct task sdd:lint and task sdd:check.
+    6. Update tests/conformance/test_consumer_scripts.py to assert Taskfile and runner compatibility.
+    7. Bump framework/VERSION to 0.91.24 per GATE-SPEC-E005.
+  consequences: |
+    - Ensures complete parity between in-repo framework files and the ratified Workstation Standard.
+    - Eliminates conflicting symlink guidance across governance documentation.
+    - Enables clean consumer bootstrapping with unified Taskfile orchestration and backward-compatible shims.
+  alternatives_considered:
+    - option: "Rely solely on external aidoc-project-onboarding repository"
+      rationale_rejected: >-
+        Leaves aidoc-flow-framework internally inconsistent and broken for consumers bootstrapping
+        via in-repo install.sh or reading core governance specifications.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Consumer Deployment Parity and In-Repo .aidoc Modernization"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-16T00:00:00Z"
+  summary: |
+    Align internal framework governance, templates, and installer scripts with the ratified
+    .aidoc/ Workstation Standard (CHG-106).
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Consumer deployment parity and in-repo .aidoc modernization (Plan CONSUMER-DEPLOYMENT-PARITY-PLAN.md)"
+  components_affected:
+    - "plans/CONSUMER-DEPLOYMENT-PARITY-PLAN.md"
+    - "framework/templates/TASKFILE-TEMPLATE.yml"
+    - "framework/templates/ENGINE-CONFIG-TEMPLATE.yaml"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "framework/governance/aidoc/AIDOC.md"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    - "framework/governance/ADAPTATION.md"
+    - "framework/scripts/install.sh"
+    - "framework/scripts/upgrade.sh"
+    - "tests/conformance/test_consumer_scripts.py"
+    - "framework/archive/CHG-107/CHG-107.yaml"
+    - "framework/archive/CHG-107/IPLAN-107.yaml"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-107/IPLAN-107.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-107.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-107/IPLAN-107.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-107/CHG-107.yaml passing"
+    - "python3 .agents/skills/verified-planning/check_plan.py plans/CONSUMER-DEPLOYMENT-PARITY-PLAN.md passing"
+    - "python3 -m unittest tests/conformance/test_consumer_scripts.py green"
+    - "python3 tests/chg/spec_gate.py green"
+    - "bash hooks/pre_push_check.sh clean pass"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"
