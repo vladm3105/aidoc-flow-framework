@@ -1,0 +1,167 @@
+# =============================================================================
+#  CHG-108: Native SDD Graph Schema Specification and Observability Adapter Contract
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-16)
+#  Scope: Native SDD Graph Schema, pure-Python graph engine, and Observability Adapter
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-16"
+  framework_version: "0.92.0"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-108"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-16T00:00:00Z"
+  date_approved: "2026-10-16T00:00:00Z"
+  date_implemented: "2026-10-16T17:15:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-16T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-16): approved, let's implement via CHG
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-108)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-108"
+  title: "Native SDD Graph Schema Specification and Observability Adapter Contract"
+  status: "Ratified"
+  context: |
+    As the framework transitions toward autonomous multi-agent development pipelines where AI
+    agents (Planner, Architect, SDET, Developer, Reviewer) and automated linters author, mutate,
+    and review artifacts, traditional document-oriented formats (hierarchical sections, paragraphs,
+    and word-count targets) create significant friction:
+    1. Token Overhead: AI agents consume tens of thousands of tokens loading template prose,
+       headings, and narrative mockups (e.g. BRD-TEMPLATE at 1,181 lines / 53 KB).
+    2. Brittle Reverse-Engineering: Traceability DAGs are implicit in text, requiring ~3,400 lines
+       of complex regex in sdd_doc_lint to extract headings and @-citation tags.
+    3. Review Hallucination Risks: Reviewer agents evaluating entire 1,000-line YAML documents
+       suffer context drift rather than evaluating precise requirement deltas.
+    4. Dual-Template Drift: Maintaining parallel companion declarative templates alongside
+       CNCF Serverless Workflow hybrid templates across 10 layers causes synchronicity drift.
+  choice: |
+    Adopt the Dual-Plane CQRS Architecture:
+    1. Write Plane (AI Agent SSOT): Codify a Native Typed Property Graph schema (sdd-graph.schema.json)
+       covering 10 canonical node types and 6 relational edges with strict cardinality invariants.
+    2. Read Plane (Observability Adapter): Codify the Observability Adapter Contract (OBSERVABILITY_ADAPTER_CONTRACT.md)
+       with pure-Python text emission projecting graph slices into human-readable Markdown spec sheets,
+       Mermaid C4/DFD maps, and CI pull request impact summaries on demand.
+    3. Python Graph Engine: Implement mathematical graph verification (networkx) in sdd_doc_lint
+       enforcing Binary Topological Validation (BTV), acyclicity, zero dangling edges, and blast radius calculation.
+    4. LangGraph Synergy: Map SDD Graph nodes and edges 1:1 into langgraph.graph.StateGraph primitives.
+    5. Template Consolidation: Consolidate 20 legacy document templates into two modular graph templates
+       (INITIATIVE-GRAPH-TEMPLATE.yaml and EXECUTION-GRAPH-TEMPLATE.yaml).
+    6. Conformance Preservation: Preserve the 10-layer canonical count in LAYER_REGISTRY.yaml, governing
+       the graph schema as an architectural overlay.
+  consequences: |
+    - Mathematical verification replaces brittle regex document scraping.
+    - AI review context windows are bounded to isolated mutated subgraphs, saving up to 90% tokens.
+    - Humans retain complete observability through deterministic, on-demand rendered projections.
+    - Full backward compatibility is preserved for existing brownfield consumer repositories.
+  alternatives_considered:
+    - option: "Retain hierarchical document format and add external graph indexing"
+      rationale_rejected: >-
+        Preserves token bloat, regex scraping friction, and template drift without solving the core
+        agent authoring impedance mismatch.
+    - option: "Store entire project in a single monolithic graph file"
+      rationale_rejected: >-
+        Guarantees git merge collisions across concurrent multi-agent branches; modular slicing
+        (docs/sdd/graph/modules/ and docs/sdd/graph/initiatives/) is required.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Native SDD Graph Schema Specification and Observability Adapter Contract"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-16T00:00:00Z"
+  summary: |
+    Establish the Native SDD Graph Schema, pure-Python mathematical verification engine, and
+    Observability Adapter Contract to enable autonomous agentic authoring and human visibility.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Native SDD Graph Schema and Observability Adapter (Plan SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md)"
+  components_affected:
+    - "plans/SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md"
+    - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    - "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+    - "framework/governance/sdd-graph.schema.json"
+    - "framework/templates/INITIATIVE-GRAPH-TEMPLATE.yaml"
+    - "framework/templates/EXECUTION-GRAPH-TEMPLATE.yaml"
+    - "sdd_doc_lint/graph_engine.py"
+    - "sdd_doc_lint/observability_adapter.py"
+    - "sdd_doc_lint/__main__.py"
+    - "framework/scripts/install.sh"
+    - "framework/scripts/upgrade.sh"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "tests/conformance/test_sdd_graph_schema.py"
+    - "tests/unit/test_graph_engine.py"
+    - "tests/unit/test_observability_adapter.py"
+    - "framework/archive/CHG-108/CHG-108.yaml"
+    - "framework/archive/CHG-108/IPLAN-108.yaml"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-108/IPLAN-108.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-108.yaml"
+      phase: "iplan_creation"
+    - step: "Author SDD_GRAPH_SCHEMA_SPECIFICATION.md and sdd-graph.schema.json"
+      phase: "spec_authoring"
+    - step: "Author OBSERVABILITY_ADAPTER_CONTRACT.md"
+      phase: "spec_authoring"
+    - step: "Author INITIATIVE-GRAPH-TEMPLATE.yaml and EXECUTION-GRAPH-TEMPLATE.yaml"
+      phase: "template_creation"
+    - step: "Implement sdd_doc_lint/graph_engine.py with BTV and blast radius CLI"
+      phase: "engine_implementation"
+    - step: "Implement sdd_doc_lint/observability_adapter.py with spec sheet and Mermaid projections"
+      phase: "adapter_implementation"
+    - step: "Update installer scripts and AGENTS-TEMPLATE.md for Taskfile graph commands"
+      phase: "tooling_parity"
+    - step: "Author test suites (test_sdd_graph_schema.py, test_graph_engine.py, test_observability_adapter.py)"
+      phase: "test_verification"
+    - step: "Bump framework/VERSION to 0.92.0 and synchronize version references"
+      phase: "version_fanout"

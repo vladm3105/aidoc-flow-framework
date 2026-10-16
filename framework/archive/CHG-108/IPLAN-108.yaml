@@ -1,0 +1,58 @@
+# =============================================================================
+#  IPLAN-108: Native SDD Graph Schema Specification and Observability Adapter Contract
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-108/CHG-108.yaml
+# =============================================================================
+
+id: "IPLAN-108"
+chg_id: "CHG-108"
+title: "Native SDD Graph Schema Specification and Observability Adapter Contract"
+status: "Completed"
+framework_version: "0.92.0"
+
+file_manifest:
+  - "plans/SDD-GRAPH-SCHEMA-AND-OBSERVABILITY-ADAPTER-PLAN.md"
+  - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+  - "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+  - "framework/governance/sdd-graph.schema.json"
+  - "framework/templates/INITIATIVE-GRAPH-TEMPLATE.yaml"
+  - "framework/templates/EXECUTION-GRAPH-TEMPLATE.yaml"
+  - "sdd_doc_lint/graph_engine.py"
+  - "sdd_doc_lint/observability_adapter.py"
+  - "sdd_doc_lint/__main__.py"
+  - "framework/scripts/install.sh"
+  - "framework/scripts/upgrade.sh"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "tests/conformance/test_sdd_graph_schema.py"
+  - "tests/unit/test_graph_engine.py"
+  - "tests/unit/test_observability_adapter.py"
+  - "framework/archive/CHG-108/CHG-108.yaml"
+  - "framework/archive/CHG-108/IPLAN-108.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-108.yaml and IPLAN-108.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Author SDD_GRAPH_SCHEMA_SPECIFICATION.md, sdd-graph.schema.json, and graph templates"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Author OBSERVABILITY_ADAPTER_CONTRACT.md"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Implement sdd_doc_lint/graph_engine.py with BTV, acyclicity, and blast radius CLI"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Implement sdd_doc_lint/observability_adapter.py with spec sheet and Mermaid renderers"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Update installer scripts and AGENTS-TEMPLATE.md for Taskfile graph commands"
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Author test suites (test_sdd_graph_schema.py, test_graph_engine.py, test_observability_adapter.py)"
+    status: "Completed"
+  - id: "TASK-08"
+    name: "Bump framework/VERSION to 0.92.0, update sync-version-refs.sh, and run verification suite"
+    status: "Completed"
