@@ -7,9 +7,8 @@ Governed by framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md (CHG-108, GD-
 
 from __future__ import annotations
 
-import json
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -65,6 +64,7 @@ TEMPLATE_ID_PATTERN = re.compile(
 @dataclass
 class GraphFinding:
     """A structured finding emitted during graph validation."""
+
     code: str
     severity: str  # "error" | "warning" | "info"
     message: str
@@ -78,7 +78,7 @@ class SddGraph:
     def __init__(self) -> None:
         self.nodes: dict[str, dict[str, Any]] = {}
         self.edges: list[dict[str, str]] = []
-        self.adj: dict[str, set[str]] = {}   # outgoing: from -> {to}
+        self.adj: dict[str, set[str]] = {}  # outgoing: from -> {to}
         self.pred: dict[str, set[str]] = {}  # incoming: to -> {from}
         self.slice_ids: set[str] = set()
 
@@ -304,7 +304,8 @@ class GraphEngine:
             rid = req["id"]
             # Look for incoming edges with relation="verifies"
             verifiers = [
-                src for src in graph.pred.get(rid, set())
+                src
+                for src in graph.pred.get(rid, set())
                 if any(e["relation"] == "verifies" and e["from"] == src for e in graph.edges)
             ]
             if not verifiers:
@@ -321,7 +322,8 @@ class GraphEngine:
         for bdd in graph.nodes_by_type("acceptance_scenario"):
             bid = bdd["id"]
             provers = [
-                src for src in graph.pred.get(bid, set())
+                src
+                for src in graph.pred.get(bid, set())
                 if any(e["relation"] == "proves" and e["from"] == src for e in graph.edges)
             ]
             if not provers:
@@ -340,7 +342,8 @@ class GraphEngine:
             if "_rollback" in tid:
                 continue  # Rollback tasks do not require another rollback
             rollbacks = [
-                tgt for tgt in graph.adj.get(tid, set())
+                tgt
+                for tgt in graph.adj.get(tid, set())
                 if any(e["relation"] == "compensated_by" and e["to"] == tgt for e in graph.edges)
             ]
             if not rollbacks:

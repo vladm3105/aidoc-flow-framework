@@ -7,9 +7,6 @@ Governed by framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md (CHG-108, GD-
 
 from __future__ import annotations
 
-import hashlib
-from typing import Any
-
 from .graph_engine import SddGraph
 
 GENERATOR_BANNER = (
@@ -62,7 +59,9 @@ class ObservabilityAdapter:
             lines.append("## 3. Formal Functional Requirements (EARS)\n")
             for r in req_nodes:
                 pattern = r.get("pattern", "ubiquitous")
-                lines.append(f"- **`{r['id']}`** [{pattern.upper()}]: {r.get('statement', r.get('title', ''))}")
+                lines.append(
+                    f"- **`{r['id']}`** [{pattern.upper()}]: {r.get('statement', r.get('title', ''))}"
+                )
             lines.append("")
 
         # 4. Acceptance Criteria & Oracles (BDD)
@@ -99,14 +98,18 @@ class ObservabilityAdapter:
             if tdd_nodes:
                 lines.append("### Automated Test Fixtures (TDD)")
                 for t in tdd_nodes:
-                    lines.append(f"- **`{t['id']}`**: `{t.get('command', 'pytest')}` targeting `{t.get('target_file', '')}`")
+                    lines.append(
+                        f"- **`{t['id']}`**: `{t.get('command', 'pytest')}` targeting `{t.get('target_file', '')}`"
+                    )
                 lines.append("")
             if task_nodes:
                 lines.append("### Implementation Tasks (IPLAN)")
                 for m in task_nodes:
                     if "_rollback" in m["id"]:
                         continue
-                    lines.append(f"- **`{m['id']}`** [{m.get('action', 'apply')}]: {m.get('title', '')} (`{m.get('target_file', '')}`)")
+                    lines.append(
+                        f"- **`{m['id']}`** [{m.get('action', 'apply')}]: {m.get('title', '')} (`{m.get('target_file', '')}`)"
+                    )
                 lines.append("")
 
         return "\n".join(lines).strip() + "\n"
@@ -117,24 +120,32 @@ class ObservabilityAdapter:
 
         if diagram_type == "c4-container":
             lines.append("graph TB")
-            lines.append("    subgraph Containers[\"System Containers\"]")
+            lines.append('    subgraph Containers["System Containers"]')
             for node in graph.nodes.values():
-                if node.get("type") in ("system_container", "product_capability", "component_contract"):
+                if node.get("type") in (
+                    "system_container",
+                    "product_capability",
+                    "component_contract",
+                ):
                     clean_title = (node.get("title") or node["id"]).replace('"', "'")
-                    lines.append(f'        {node["id"]}["{clean_title}<br/>[{node.get("type", "container")}]"]')
+                    lines.append(
+                        f'        {node["id"]}["{clean_title}<br/>[{node.get("type", "container")}]"]'
+                    )
             lines.append("    end")
         else:
             # Default: Lineage DAG
             lines.append("graph LR")
             for node in graph.nodes.values():
-                clean_title = (node.get("title") or node.get("statement") or node["id"]).replace('"', "'")
+                clean_title = (node.get("title") or node.get("statement") or node["id"]).replace(
+                    '"', "'"
+                )
                 if len(clean_title) > 35:
                     clean_title = clean_title[:32] + "..."
                 lines.append(f'    {node["id"]}["{node["id"]}<br/>{clean_title}"]')
 
         for edge in graph.edges:
             rel = edge.get("relation", "")
-            lines.append(f'    {edge["from"]} -->|{rel}| {edge["to"]}')
+            lines.append(f"    {edge['from']} -->|{rel}| {edge['to']}")
 
         lines.append("```\n")
         return "\n".join(lines)
@@ -151,18 +162,16 @@ class ObservabilityAdapter:
             rid = req["id"]
             # Find BDD scenarios
             bdds = [
-                e["from"] for e in graph.edges
-                if e["to"] == rid and e["relation"] == "verifies"
+                e["from"] for e in graph.edges if e["to"] == rid and e["relation"] == "verifies"
             ]
             bdd_str = ", ".join(f"`{b}`" for b in bdds) if bdds else "*MISSING*"
 
             # Find TDD fixtures for those BDDs
             tdds: list[str] = []
             for b in bdds:
-                tdds.extend([
-                    e["from"] for e in graph.edges
-                    if e["to"] == b and e["relation"] == "proves"
-                ])
+                tdds.extend(
+                    [e["from"] for e in graph.edges if e["to"] == b and e["relation"] == "proves"]
+                )
             tdd_str = ", ".join(f"`{t}`" for t in tdds) if tdds else "*MISSING*"
 
             status = "✅ PASS" if bdds and tdds else "❌ INCOMPLETE"
@@ -174,7 +183,8 @@ class ObservabilityAdapter:
         """Render high-level PR impact comment block for GitHub."""
         added = [nid for nid in head_graph.nodes if nid not in base_graph.nodes]
         modified = [
-            nid for nid in head_graph.nodes
+            nid
+            for nid in head_graph.nodes
             if nid in base_graph.nodes and head_graph.nodes[nid] != base_graph.nodes[nid]
         ]
         deleted = [nid for nid in base_graph.nodes if nid not in head_graph.nodes]
@@ -187,9 +197,12 @@ class ObservabilityAdapter:
         lines = [
             "### 📊 Native SDD Graph Impact Summary",
             "",
-            f"- **Added Nodes**: {len(added)}" + (f" (`{', '.join(added[:5])}`...)" if added else ""),
-            f"- **Modified Nodes**: {len(modified)}" + (f" (`{', '.join(modified[:5])}`...)" if modified else ""),
-            f"- **Deleted Nodes**: {len(deleted)}" + (f" (`{', '.join(deleted[:5])}`...)" if deleted else ""),
+            f"- **Added Nodes**: {len(added)}"
+            + (f" (`{', '.join(added[:5])}`...)" if added else ""),
+            f"- **Modified Nodes**: {len(modified)}"
+            + (f" (`{', '.join(modified[:5])}`...)" if modified else ""),
+            f"- **Deleted Nodes**: {len(deleted)}"
+            + (f" (`{', '.join(deleted[:5])}`...)" if deleted else ""),
             f"- **Calculated Blast Radius**: {len(blast_radius)} downstream node(s) affected",
             "",
             "<details><summary>Click to view Visual Delta Graph</summary>",

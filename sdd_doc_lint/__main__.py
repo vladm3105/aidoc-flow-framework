@@ -186,9 +186,14 @@ def main(argv: list[str] | None = None) -> int:
             stream = sys.stderr if f.severity == "error" else sys.stdout
             print(f"[{prefix}] {f.code}: {f.message}", file=stream)
         if errors:
-            print(f"\nsdd-doc-lint: ✗ BTV Graph Check failed with {len(errors)} error(s).", file=sys.stderr)
+            print(
+                f"\nsdd-doc-lint: ✗ BTV Graph Check failed with {len(errors)} error(s).",
+                file=sys.stderr,
+            )
             return 1
-        print(f"✓ Native SDD Graph conforms to BTV (0 cycles, 0 dangling edges, {len(graph.nodes)} nodes).")
+        print(
+            f"✓ Native SDD Graph conforms to BTV (0 cycles, 0 dangling edges, {len(graph.nodes)} nodes)."
+        )
         return 0
 
     if args.blast_radius is not None:
@@ -199,6 +204,7 @@ def main(argv: list[str] | None = None) -> int:
         graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
         radius = engine.calculate_blast_radius(graph, args.blast_radius)
         import json
+
         print(json.dumps(sorted(list(radius)), indent=2))
         return 0
 
@@ -255,11 +261,21 @@ def main(argv: list[str] | None = None) -> int:
         from sdd_doc_lint.observability_adapter import ObservabilityAdapter
 
         if not args.base or not args.head:
-            print("Error: --render-pr-impact requires both --base and --head paths", file=sys.stderr)
+            print(
+                "Error: --render-pr-impact requires both --base and --head paths", file=sys.stderr
+            )
             return 2
         engine = GraphEngine()
-        g_base = engine.load_graph_directory(args.base) if args.base.is_dir() else engine.load_graph_file(args.base)
-        g_head = engine.load_graph_directory(args.head) if args.head.is_dir() else engine.load_graph_file(args.head)
+        g_base = (
+            engine.load_graph_directory(args.base)
+            if args.base.is_dir()
+            else engine.load_graph_file(args.base)
+        )
+        g_head = (
+            engine.load_graph_directory(args.head)
+            if args.head.is_dir()
+            else engine.load_graph_file(args.head)
+        )
         adapter = ObservabilityAdapter()
         summary = adapter.render_pr_impact_summary(g_base, g_head)
         if args.out:

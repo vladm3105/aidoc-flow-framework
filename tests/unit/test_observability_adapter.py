@@ -10,8 +10,9 @@ Validates:
 from __future__ import annotations
 
 import unittest
+
 from sdd_doc_lint.graph_engine import SddGraph
-from sdd_doc_lint.observability_adapter import GENERATOR_BANNER, ObservabilityAdapter
+from sdd_doc_lint.observability_adapter import ObservabilityAdapter
 
 
 class TestObservabilityAdapter(unittest.TestCase):
@@ -168,7 +169,9 @@ class TestObservabilityAdapter(unittest.TestCase):
 
         self.assertIn("# Traceability Verification Matrix", matrix)
         self.assertIn("| Requirement (EARS) | BDD Oracle | Test Fixture (TDD) | Status |", matrix)
-        self.assertIn("| `EARS.03.01.e5f6` | `BDD.04.01.g7h8` | `TDD.07.01.k1l2` | ✅ PASS |", matrix)
+        self.assertIn(
+            "| `EARS.03.01.e5f6` | `BDD.04.01.g7h8` | `TDD.07.01.k1l2` | ✅ PASS |", matrix
+        )
 
     def test_render_pr_impact_summary(self) -> None:
         """Verify PR impact report with delta stats and visual delta graph."""

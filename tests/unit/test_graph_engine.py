@@ -15,6 +15,7 @@ Validates:
 from __future__ import annotations
 
 import unittest
+
 from sdd_doc_lint.graph_engine import GraphEngine, SddGraph
 
 

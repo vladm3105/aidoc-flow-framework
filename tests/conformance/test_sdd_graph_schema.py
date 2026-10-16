@@ -14,14 +14,14 @@ from __future__ import annotations
 import json
 import re
 import unittest
-from pathlib import Path
 
 import yaml
-from _spec import FRAMEWORK, REPO_ROOT
+from _spec import FRAMEWORK
 
 SCHEMA_PATH = FRAMEWORK / "governance" / "sdd-graph.schema.json"
 INITIATIVE_TEMPLATE = FRAMEWORK / "templates" / "INITIATIVE-GRAPH-TEMPLATE.yaml"
 EXECUTION_TEMPLATE = FRAMEWORK / "templates" / "EXECUTION-GRAPH-TEMPLATE.yaml"
+
 
 # Standalone validator supporting Draft-07 subset for zero-dependency test execution
 def _type_ok(val: object, expected_type: str) -> bool:
