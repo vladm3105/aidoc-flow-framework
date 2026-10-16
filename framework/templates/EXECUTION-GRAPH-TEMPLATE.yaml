@@ -1,0 +1,67 @@
+# =============================================================================
+#  EXECUTION-GRAPH-TEMPLATE.yaml — Implementation & Saga Rollback Graph Slice
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Governs: Test-first proofs, atomic code mutations, and native saga rollback
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "EXEC-NN_[task_slug]"
+initiative_ref: "INIT-NN_[feature_slug]"
+
+metadata:
+  author: "[Engineer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Completed | Verified
+  framework_version: "[X.Y.Z]"
+  description: "[Implementation task DAG, test fixtures, and automated saga rollback]"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Layer 07: Test Fixture Proof (TDD)
+  # ---------------------------------------------------------------------------
+  - id: "TDD.01.01.xxxx"
+    type: "test_fixture"
+    title: "[Unit / Integration Test Proof]"
+    target_file: "tests/unit/test_[component].py"
+    command: "pytest tests/unit/test_[component].py -v"
+    properties:
+      test_function: "test_[feature_behavior]"
+
+  # ---------------------------------------------------------------------------
+  # Layer 08: Atomic Implementation Task (IPLAN)
+  # ---------------------------------------------------------------------------
+  - id: "TASK.01.01.xxxx"
+    type: "task_action"
+    title: "[Implement Component Logic / Apply Patch]"
+    action: "apply_patch"  # apply_patch | create_file | run_script
+    target_file: "src/[component]/[file].py"
+    compensation: "git checkout -- src/[component]/[file].py"
+
+  # ---------------------------------------------------------------------------
+  # Layer 08: Saga Rollback Compensation Task
+  # ---------------------------------------------------------------------------
+  - id: "TASK.01.01.xxxx_rollback"
+    type: "task_action"
+    title: "[Rollback Component Logic on Verification Failure]"
+    action: "run_script"
+    target_file: "src/[component]/[file].py"
+    command: "git checkout -- src/[component]/[file].py"
+
+edges:
+  # Test Fixture proves upstream Acceptance Scenario
+  - from: "TDD.01.01.xxxx"
+    to: "BDD.01.01.xxxx"
+    relation: "proves"
+
+  # Implementation Task implements Test Fixture (Test-First Invariant)
+  - from: "TASK.01.01.xxxx"
+    to: "TDD.01.01.xxxx"
+    relation: "implements"
+
+  # Implementation Task is compensated by Saga Rollback (Mandatory 1:1 Invariant)
+  - from: "TASK.01.01.xxxx"
+    to: "TASK.01.01.xxxx_rollback"
+    relation: "compensated_by"

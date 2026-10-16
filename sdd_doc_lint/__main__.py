@@ -102,7 +102,188 @@ def main(argv: list[str] | None = None) -> int:
         metavar="REPO_ROOT",
         help="verify repository governance surfaces and detect retired monolithic anti-patterns",
     )
+    # Native SDD Graph and Observability Adapter (CHG-108, GD-95)
+    parser.add_argument(
+        "--graph-check",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help="verify Binary Topological Validation (BTV) on native SDD property graph",
+    )
+    parser.add_argument(
+        "--blast-radius",
+        type=str,
+        default=None,
+        metavar="NODE_ID",
+        help="calculate downstream blast radius of a mutated graph node ID",
+    )
+    parser.add_argument(
+        "--render-spec",
+        type=Path,
+        default=None,
+        metavar="GRAPH_PATH",
+        help="render human-readable Markdown spec sheet from SDD graph",
+    )
+    parser.add_argument(
+        "--render-diagram",
+        type=Path,
+        default=None,
+        metavar="GRAPH_PATH",
+        help="render Mermaid architecture diagram from SDD graph",
+    )
+    parser.add_argument(
+        "--diagram-type",
+        choices=("lineage", "c4-container"),
+        default="lineage",
+        help="diagram type for --render-diagram (default: lineage)",
+    )
+    parser.add_argument(
+        "--render-matrix",
+        type=Path,
+        default=None,
+        metavar="GRAPH_PATH",
+        help="render compliance and traceability matrix from SDD graph",
+    )
+    parser.add_argument(
+        "--render-pr-impact",
+        action="store_true",
+        help="render PR delta impact summary comparing --base and --head graphs",
+    )
+    parser.add_argument(
+        "--base",
+        type=Path,
+        default=None,
+        metavar="BASE_PATH",
+        help="base graph directory or file for --render-pr-impact",
+    )
+    parser.add_argument(
+        "--head",
+        type=Path,
+        default=None,
+        metavar="HEAD_PATH",
+        help="head graph directory or file for --render-pr-impact",
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        metavar="OUT_FILE",
+        help="output destination file for rendered spec sheets or diagrams",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+
+    # 1. Native SDD Graph & Observability CLI Handlers
+    if args.graph_check is not None:
+        from sdd_doc_lint.graph_engine import GraphEngine
+
+        engine = GraphEngine()
+        p = args.graph_check
+        graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
+        findings = engine.validate_btv(graph)
+        errors = [f for f in findings if f.severity == "error"]
+        for f in findings:
+            prefix = "ERROR" if f.severity == "error" else "WARN"
+            stream = sys.stderr if f.severity == "error" else sys.stdout
+            print(f"[{prefix}] {f.code}: {f.message}", file=stream)
+        if errors:
+            print(
+                f"\nsdd-doc-lint: ✗ BTV Graph Check failed with {len(errors)} error(s).",
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            f"✓ Native SDD Graph conforms to BTV (0 cycles, 0 dangling edges, {len(graph.nodes)} nodes)."
+        )
+        return 0
+
+    if args.blast_radius is not None:
+        from sdd_doc_lint.graph_engine import GraphEngine
+
+        engine = GraphEngine()
+        p = Path(args.paths[0]) if args.paths else Path("docs/sdd/graph")
+        graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
+        radius = engine.calculate_blast_radius(graph, args.blast_radius)
+        import json
+
+        print(json.dumps(sorted(list(radius)), indent=2))
+        return 0
+
+    if args.render_spec is not None:
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.observability_adapter import ObservabilityAdapter
+
+        engine = GraphEngine()
+        p = args.render_spec
+        graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
+        adapter = ObservabilityAdapter()
+        spec = adapter.render_spec_sheet(graph)
+        if args.out:
+            args.out.write_text(spec, encoding="utf-8")
+            print(f"✓ Rendered specification sheet to {args.out}")
+        else:
+            sys.stdout.write(spec)
+        return 0
+
+    if args.render_diagram is not None:
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.observability_adapter import ObservabilityAdapter
+
+        engine = GraphEngine()
+        p = args.render_diagram
+        graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
+        adapter = ObservabilityAdapter()
+        diag = adapter.render_mermaid(graph, diagram_type=args.diagram_type)
+        if args.out:
+            args.out.write_text(diag, encoding="utf-8")
+            print(f"✓ Rendered {args.diagram_type} diagram to {args.out}")
+        else:
+            sys.stdout.write(diag)
+        return 0
+
+    if args.render_matrix is not None:
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.observability_adapter import ObservabilityAdapter
+
+        engine = GraphEngine()
+        p = args.render_matrix
+        graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
+        adapter = ObservabilityAdapter()
+        matrix = adapter.render_matrix(graph)
+        if args.out:
+            args.out.write_text(matrix, encoding="utf-8")
+            print(f"✓ Rendered compliance matrix to {args.out}")
+        else:
+            sys.stdout.write(matrix)
+        return 0
+
+    if args.render_pr_impact:
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.observability_adapter import ObservabilityAdapter
+
+        if not args.base or not args.head:
+            print(
+                "Error: --render-pr-impact requires both --base and --head paths", file=sys.stderr
+            )
+            return 2
+        engine = GraphEngine()
+        g_base = (
+            engine.load_graph_directory(args.base)
+            if args.base.is_dir()
+            else engine.load_graph_file(args.base)
+        )
+        g_head = (
+            engine.load_graph_directory(args.head)
+            if args.head.is_dir()
+            else engine.load_graph_file(args.head)
+        )
+        adapter = ObservabilityAdapter()
+        summary = adapter.render_pr_impact_summary(g_base, g_head)
+        if args.out:
+            args.out.write_text(summary, encoding="utf-8")
+            print(f"✓ Rendered PR impact summary to {args.out}")
+        else:
+            sys.stdout.write(summary)
+        return 0
 
     if args.profile is not None:
         from sdd_doc_lint.profile_lint import validate_profile

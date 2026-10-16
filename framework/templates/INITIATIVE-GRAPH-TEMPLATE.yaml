@@ -1,0 +1,103 @@
+# =============================================================================
+#  INITIATIVE-GRAPH-TEMPLATE.yaml — Requirements & Design Graph Slice
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Governs: Upstream requirements, acceptance oracles, and architectural design
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "INIT-NN_[feature_slug]"
+
+metadata:
+  author: "[Engineer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Concise summary of business capability and architectural scope]"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Layer 01: Business Objective (BRD)
+  # ---------------------------------------------------------------------------
+  - id: "BIZ.01.01.xxxx"
+    type: "business_objective"
+    title: "[Business Objective Title]"
+    statement: "[What fundamental user or operational problem does this solve?]"
+    properties:
+      priority: "P1"  # P0 | P1 | P2 | P3
+      roi_target: "[Quantifiable business outcome or latency/cost target]"
+
+  # ---------------------------------------------------------------------------
+  # Layer 02: Product Capability (PRD)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.01.01.xxxx"
+    type: "product_capability"
+    title: "[Product Capability Title]"
+    statement: "[Functional capability provided by the system container]"
+    properties:
+      persona: "[Target User Persona or System Role]"
+      sla_threshold: "[e.g. p99 response time < 50ms]"
+
+  # ---------------------------------------------------------------------------
+  # Layer 03: Formal Requirement (EARS)
+  # ---------------------------------------------------------------------------
+  - id: "EARS.01.01.xxxx"
+    type: "formal_requirement"
+    title: "[Formal Requirement Title]"
+    statement: "The [system name] shall [action / response] when [event / condition]."
+    pattern: "event_driven"  # ubiquitous | event_driven | state_driven | optional | unwanted
+
+  # ---------------------------------------------------------------------------
+  # Layer 04: Acceptance Scenario (BDD Oracle)
+  # ---------------------------------------------------------------------------
+  - id: "BDD.01.01.xxxx"
+    type: "acceptance_scenario"
+    title: "[Acceptance Scenario Title]"
+    given: "[Initial preconditions and system state]"
+    when: "[User action or incoming event occurs]"
+    then: "[Expected observable outcome and state transition]"
+
+  # ---------------------------------------------------------------------------
+  # Layer 05: Architectural Decision (ADR)
+  # ---------------------------------------------------------------------------
+  - id: "ADR.01.01.xxxx"
+    type: "architectural_decision"
+    title: "[Decision Title: e.g. Adopt Redis for Session Caching]"
+    context: "[Forces, trade-offs, and technical constraints motivating choice]"
+    decision: "[The specific architecture choice made]"
+    consequences: "[Positive benefits, negative trade-offs, and operational risks]"
+    status: "Proposed"  # Proposed | Accepted | Deprecated
+
+  # ---------------------------------------------------------------------------
+  # Layer 06: Component Contract (SPEC)
+  # ---------------------------------------------------------------------------
+  - id: "SPEC.01.01.xxxx"
+    type: "component_contract"
+    title: "[Component Interface Contract]"
+    target_file: "[Path to proto/schema/interface definition]"
+    properties:
+      protocol: "http"  # grpc | http | cloudevents
+      schema_ref: "[e.g. proto/auth/v1/auth.proto]"
+
+edges:
+  # Formal Requirement realizes Product Capability
+  - from: "EARS.01.01.xxxx"
+    to: "PRD.01.01.xxxx"
+    relation: "realizes"
+
+  # Product Capability realizes Business Objective
+  - from: "PRD.01.01.xxxx"
+    to: "BIZ.01.01.xxxx"
+    relation: "realizes"
+
+  # Acceptance Scenario verifies Formal Requirement (Mandatory Oracle Invariant)
+  - from: "BDD.01.01.xxxx"
+    to: "EARS.01.01.xxxx"
+    relation: "verifies"
+
+  # Architectural Decision constrains Component Contract
+  - from: "ADR.01.01.xxxx"
+    to: "SPEC.01.01.xxxx"
+    relation: "constrains"

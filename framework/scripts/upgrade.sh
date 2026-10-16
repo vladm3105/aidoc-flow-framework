@@ -272,6 +272,8 @@ if [ "$DRY_RUN" != 1 ]; then
   if [ ! -f "$AIDOC/Taskfile.yml" ] && [ -f "$FW/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
     cp "$FW/framework/templates/TASKFILE-TEMPLATE.yml" "$AIDOC/Taskfile.yml"
     log "scaffolded missing .aidoc/Taskfile.yml"
+  elif [ -f "$AIDOC/Taskfile.yml" ] && ! grep -q 'graph-check:' "$AIDOC/Taskfile.yml"; then
+    log "note: existing .aidoc/Taskfile.yml lacks graph tasks (graph-check, render, delta) — consider harmonizing with framework/templates/TASKFILE-TEMPLATE.yml"
   fi
   if [ ! -f "$AIDOC/engine/engine.yaml" ] && [ -f "$FW/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
     mkdir -p "$AIDOC/engine"
