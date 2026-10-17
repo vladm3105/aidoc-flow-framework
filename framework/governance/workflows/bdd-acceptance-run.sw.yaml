@@ -13,6 +13,11 @@ timeouts:
   workflowExecTimeout:
     duration: PT30M
 
+events:
+  - name: BddScenariosClosedEvent
+    type: org.aidoc.sdd.layer04.bdd.closed
+    source: /layers/04_bdd
+
 states:
   # =========================================================================
   # State 1: Provision QA Staging Environment
@@ -123,11 +128,27 @@ states:
       - name: ReviewGateApproved
         condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: EmitAcceptanceReceipt
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
       - name: ReviewRequiresQuarantine
-        condition: "${ .blocking_findings > 0 }"
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
         transition: QuarantineFailedScenarios
     defaultCondition:
       transition: QuarantineFailedScenarios
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "qa_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # =========================================================================
   # State 6: Quarantine Failed Scenarios and Capture Trace Evidence
@@ -158,6 +179,63 @@ states:
             report_schema: "BDD-RPT-v1.0"
             include_traceability: true
             include_scorecard: true
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-03"
+            layer: "04_BDD"
+            documentId: "${ .acceptanceRunId }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .acceptanceRunId }"
+            layer: "04_BDD"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "BddNode"
+            nodeId: "${ .acceptanceRunId }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "BddScenariosClosedEvent"
+            documentId: "${ .acceptanceRunId }"
+            behavioral_state_graphs: "${ .behavioral_state_graphs }"
+            scenarios_dag: "${ .scenarios_dag }"
+    produceEvents:
+      - eventRef: BddScenariosClosedEvent
     transition: TeardownStagingEnvironment
 
   # =========================================================================
@@ -194,3 +272,18 @@ functions:
   - name: invokeReviewSaga
     type: custom
     operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"

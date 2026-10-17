@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -106,7 +106,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.94.0"
+  framework_version: "0.95.0"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -339,7 +339,18 @@ To eliminate the decoupling between implementation plan execution and review cre
 
 ---
 
-## 7. Review Log
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 08 IPLAN implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Tech lead authors implementation file manifest, mutation tasks, and saga rollback compensation states.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `tech_lead`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-08` exit criteria (`GATE-08_IPLAN_IMPLEMENTATION.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Approved` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `IplanNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `IplanApprovedEvent` (`org.aidoc.sdd.layer08.iplan.approved`) with payload `file_manifest`, `tasks`, `iplan_checksum`, authorizing code execution and subsequent Layer 10 (EVAL) verification.
+
+---
+
+## 8. Review Log
 
 - **2026-10-05 — Pass 1 (Envelope Preservation & Lint Integrity)**:
   - *Gap found*: Naive conversion of IPLAN to pure CNCF root broke `sdd_doc_lint`'s `STRUCT01` check.

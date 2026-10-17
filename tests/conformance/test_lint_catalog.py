@@ -94,8 +94,8 @@ class LintCatalogAgreement(unittest.TestCase):
         module = _load("swf_lint", SWF_LINT)
         self.assertEqual(
             set(module.CODES),
-            {f"SWF-L{i:03d}" for i in range(1, 9)},
-            "swf_lint owns exactly SWF-L001–L008",
+            {f"SWF-L{i:03d}" for i in range(1, 10)},
+            "swf_lint owns exactly SWF-L001–L009",
         )
         catalog = _catalog_text()
         for code in sorted(module.CODES):

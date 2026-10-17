@@ -16,10 +16,30 @@ description: >-
 
 start: ProvisionTestFixtures
 
+events:
+  - name: TddSuitesClosedEvent
+    type: org.aidoc.sdd.layer07.tdd.closed
+    source: /layers/07_tdd
+
 functions:
   - name: invokeReviewSaga
     type: custom
     operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
 
 states:
   # ---------------------------------------------------------------------------
@@ -235,11 +255,27 @@ states:
       - name: ReviewGateApproved
         condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: TestExecutionSuccess
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
       - name: ReviewRequiresQuarantine
-        condition: "${ .blocking_findings > 0 }"
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
         transition: QuarantineAndCompensate
     defaultCondition:
       transition: QuarantineAndCompensate
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "test_engineer"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # ---------------------------------------------------------------------------
   # Terminal States
@@ -250,6 +286,63 @@ states:
     data:
       status: "COMPLETED"
       verdict: "PASSED"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-06"
+            layer: "07_TDD"
+            documentId: "${ .component }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .component }"
+            layer: "07_TDD"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "TddNode"
+            nodeId: "${ .component }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "TddSuitesClosedEvent"
+            documentId: "${ .component }"
+            test_suites: "${ .test_suites }"
+            coverage_target: "${ .coverage_target }"
+    produceEvents:
+      - eventRef: TddSuitesClosedEvent
     end: true
 
   - name: TestExecutionFailed

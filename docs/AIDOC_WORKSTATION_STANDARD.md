@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-15 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 | Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), [`AIDOC.md`](../framework/governance/aidoc/AIDOC.md) |
 
 ---

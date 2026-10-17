@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 ---
 
@@ -175,3 +175,14 @@ To eliminate the decoupling between artifact authoring and review crew evaluatio
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
      `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or defects are uncovered, the saga executes an automated remediation loop, halting scenario sign-off until all P0/P1 blockers are resolved.
+
+---
+
+## 8. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 04 BDD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: QA lead authors behavioral state graphs, scenario DAG structures, and acceptance contracts (omitting deprecated legacy Gherkin narrative text).
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `qa_lead`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-03` exit criteria (`GATE-03_EARS_BDD_ADR.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `BddNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `BddScenariosClosedEvent` (`org.aidoc.sdd.layer04.bdd.closed`) with payload `scenarios_dag`, `behavioral_state_graphs`, `bdd_checksum`, fulfilling the BDD arm for Layer 06 (SPEC) join.

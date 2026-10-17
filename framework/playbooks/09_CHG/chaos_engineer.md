@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: chaos_engineer
 weight: 15
 agent: chaos-engineer
-framework_spec_version: "0.94.0"
+framework_spec_version: "0.95.0"
 ---
 # chaos_engineer lens — CHG layer
 

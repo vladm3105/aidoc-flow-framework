@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.94.0"
+  framework_version: "0.95.0"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
@@ -26,10 +26,30 @@ metadata:
 
 start: IngestEvaluationTrigger
 
+events:
+  - name: EvalVerificationClosedEvent
+    type: org.aidoc.sdd.layer10.eval.closed
+    source: /layers/10_eval
+
 functions:
   - name: invokeReviewSaga
     type: custom
     operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
 
 states:
   # ---------------------------------------------------------------------------
@@ -145,8 +165,27 @@ states:
       - name: ReviewGateApproved
         condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: EmitPassingReportReceipt
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresDefectHandling
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+        transition: HandleEvaluationFailure
     defaultCondition:
       transition: HandleEvaluationFailure
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "eval_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # ---------------------------------------------------------------------------
   # State 5: Terminal Success Path (Emit Report & Mark Verified)
@@ -167,6 +206,63 @@ states:
           arguments:
             target_document: "IPLAN-{NN}"
             new_status: "Verified"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-CODE"
+            layer: "10_EVAL"
+            documentId: "${ .eval_id }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .eval_id }"
+            layer: "10_EVAL"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "EvalNode"
+            nodeId: "${ .eval_id }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "EvalVerificationClosedEvent"
+            eval_id: "${ .eval_id }"
+            receipt_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml"
+            verdict: "PASS"
+    produceEvents:
+      - eventRef: EvalVerificationClosedEvent
     end: true
 
   # ---------------------------------------------------------------------------

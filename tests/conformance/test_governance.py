@@ -78,6 +78,8 @@ EXPECTED_FILES = [
     "workflows/ears-requirements-validation.sw.yaml",
     "workflows/prd-feature-decomposition.sw.yaml",
     "workflows/brd-business-validation.sw.yaml",
+    "workflows/iplan-execution.sw.yaml",
+    "workflows/sdd-layer-orchestration.sw.yaml",
     "workflows/review/brd-review-remediation.sw.yaml",
     "workflows/review/prd-review-remediation.sw.yaml",
     "workflows/review/ears-review-remediation.sw.yaml",

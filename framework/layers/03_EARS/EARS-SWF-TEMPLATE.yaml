@@ -214,6 +214,9 @@ requirements:
         source: /aidoc/requirements/clarification
         correlation:
           - contextAttributeName: documentId
+      - name: EarsClosedAndBaselinedEvent
+        type: org.aidoc.sdd.layer03.ears.closed
+        source: /layers/03_ears
 
     functions:
       - name: parseEarsCatalog
@@ -239,6 +242,21 @@ requirements:
         type: custom
       - name: invokeReviewSaga
         operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
         type: custom
 
     states:
@@ -340,11 +358,27 @@ requirements:
           - name: ReviewGateApproved
             condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
             transition: RatifyEarsRequirements
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
           - name: ReviewRequiresClarification
-            condition: "${ .requiresClarification == true }"
+            condition: "${ .requiresClarification == true or .iteration >= 3 }"
             transition: SolicitClarificationCallback
         defaultCondition:
           transition: RejectRequirementsSet
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "requirements_engineer"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: SolicitClarificationCallback
         type: callback
@@ -368,8 +402,63 @@ requirements:
               refName: emitCanonicalIds
               arguments:
                 documentId: "${ .documentId }"
-        end:
-          terminate: true
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-03"
+                layer: "03_EARS"
+                documentId: "${ .documentId }"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "${ .documentId }"
+                layer: "03_EARS"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "EarsNode"
+                nodeId: "${ .documentId }"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "EarsClosedAndBaselinedEvent"
+                documentId: "${ .documentId }"
+                requirements_dag: "${ .requirements_dag }"
+        produceEvents:
+          - eventRef: EarsClosedAndBaselinedEvent
+        end: true
 
       - name: RejectRequirementsSet
         type: operation

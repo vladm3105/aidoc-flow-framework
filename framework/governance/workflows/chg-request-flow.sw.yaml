@@ -8,10 +8,30 @@ description: >-
   and landing verification per CHG_REQUEST_FLOWS.md and AGENTS.md.
 start: ClassifyChangeTrigger
 
+events:
+  - name: ChgCloseoutEvent
+    type: org.aidoc.governance.chg.closed
+    source: /governance/chg
+
 functions:
   - name: invokeReviewSaga
     type: custom
     operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
 
 states:
   - name: ClassifyChangeTrigger
@@ -323,10 +343,30 @@ states:
   - name: EvaluateReviewSagaResult
     type: switch
     dataConditions:
-      - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: ExecuteEVALAndCloseout
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresEscalation
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+        transition: RejectCodeGate
     defaultCondition:
       transition: RejectCodeGate
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "governance_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   - name: RejectCodeGate
     type: operation
@@ -346,6 +386,63 @@ states:
       - name: markArtifactsComplete
         functionRef:
           refName: markCompletedAndAudit
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-08"
+            layer: "09_CHG"
+            documentId: "${ .chg_id }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .chg_id }"
+            layer: "09_CHG"
+            targetStatus: "Completed"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "ChgNode"
+            nodeId: "${ .chg_id }"
+            status: "Completed"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "ChgCloseoutEvent"
+            chg_id: "${ .chg_id }"
+            audit_trail: "${ .audit_trail }"
+            verdict: "${ .verdict }"
+    produceEvents:
+      - eventRef: ChgCloseoutEvent
     end: true
 
   - name: EscalateUnknownTrigger
