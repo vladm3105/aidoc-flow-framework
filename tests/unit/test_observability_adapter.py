@@ -195,6 +195,120 @@ class TestObservabilityAdapter(unittest.TestCase):
         self.assertIn("EARS.03.02.z9y8", report)
         self.assertIn("```mermaid", report)
 
+    def test_render_spec_sheet_enriched_properties(self) -> None:
+        """Verify projection of metadata problem context, rich node descriptions, and edge rationales."""
+        g = SddGraph()
+        g.slice_ids.add("PRD-01_checkout")
+        g.metadata = {
+            "description": "High-throughput checkout capability",
+            "problem_statement": {
+                "problem": "High checkout drop-off rate",
+                "impact": "$1M annual revenue loss",
+                "opportunity": "Capture repeat shopper loyalty",
+                "current_state": ["18% mobile payment failure rate"],
+            },
+            "mvp_hypothesis": {
+                "statement": "Users will repeat purchase with 1-click checkout",
+                "validation": ">=30% 30-day repeat purchase rate",
+            },
+        }
+
+        g.add_node(
+            {
+                "id": "PRD.02.04.a1b2",
+                "type": "product_capability",
+                "title": "Idempotent Order Gateway",
+                "statement": "Processes batch orders with zero duplicate charges.",
+                "description": "Enterprise order gateway implementing distributed lock deduplication.",
+                "properties": {
+                    "persona": "Merchant",
+                    "priority": "P1-Must",
+                    "sla_threshold": "p99 < 50ms",
+                    "user_story": {
+                        "role": "Registered Merchant",
+                        "want": "submit batch orders",
+                        "so_that": "duplicates are eliminated",
+                    },
+                    "acceptance_criteria": [
+                        "Repeated idempotency key returns cached response",
+                    ],
+                    "interaction_steps": [
+                        "Step 1: Client submits POST /orders",
+                    ],
+                    "edge_cases": [
+                        "Network disconnect triggers automated reconciliation",
+                    ],
+                },
+            }
+        )
+
+        g.add_node(
+            {
+                "id": "BRD.01.07.c3d4",
+                "type": "business_objective",
+                "title": "Order Settlement Capability",
+                "statement": "Automates merchant settlement clearing.",
+                "description": "Evaluates merchant account eligibility and commits ledger debits.",
+                "properties": {"priority": "P0", "category": "business_capability"},
+            }
+        )
+
+        g.add_node(
+            {
+                "id": "EVAL.10.01.e5f6",
+                "type": "evaluation_suite",
+                "title": "End-to-End Regression Gate",
+                "statement": "Verifies 100% test fixture coverage and performance bounds.",
+                "description": "Automated pipeline gate executing load benchmarks.",
+                "properties": {
+                    "quality_gate": "0 P0 failures allowed",
+                    "benchmark_threshold": "p99 < 50ms under 5000 TPS",
+                },
+            }
+        )
+
+        # Enriched edge with description and rationale
+        g.add_edge(
+            "PRD.02.04.a1b2",
+            "BRD.01.07.c3d4",
+            "realizes",
+            notes="Realizes merchant settlement",
+            description="Exposes idempotent HTTP REST gateway to fulfill settlement.",
+            rationale="Decouples ingress from banking delays.",
+        )
+
+        output = self.adapter.render_spec_sheet(g)
+
+        # Verify metadata projection
+        self.assertIn("## Executive Problem Context", output)
+        self.assertIn("- **Problem Statement**: High checkout drop-off rate", output)
+        self.assertIn("- **Business Impact**: $1M annual revenue loss", output)
+        self.assertIn("- **Market Opportunity**: Capture repeat shopper loyalty", output)
+        self.assertIn("18% mobile payment failure rate", output)
+        self.assertIn("## Core MVP Hypothesis", output)
+        self.assertIn("Users will repeat purchase with 1-click checkout", output)
+
+        # Verify node description and rich properties
+        self.assertIn(
+            "Enterprise order gateway implementing distributed lock deduplication.", output
+        )
+        self.assertIn(
+            "**User Story**: As a **Registered Merchant**, I want to **submit batch orders**, so that **duplicates are eliminated**.",
+            output,
+        )
+        self.assertIn("Repeated idempotency key returns cached response", output)
+        self.assertIn("Step 1: Client submits POST /orders", output)
+        self.assertIn("Network disconnect triggers automated reconciliation", output)
+
+        # Verify edge note, description, and rationale projection
+        self.assertIn("Realizes merchant settlement", output)
+        self.assertIn("*Rationale*: Decouples ingress from banking delays.", output)
+
+        # Verify EVAL section
+        self.assertIn("## 7. Evaluation Suites & Quality Gates (EVAL)", output)
+        self.assertIn("End-to-End Regression Gate (`EVAL.10.01.e5f6`)", output)
+        self.assertIn("0 P0 failures allowed", output)
+
 
 if __name__ == "__main__":
     unittest.main()

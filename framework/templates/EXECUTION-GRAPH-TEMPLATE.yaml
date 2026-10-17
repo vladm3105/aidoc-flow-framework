@@ -55,13 +55,22 @@ edges:
   - from: "TDD.01.01.xxxx"
     to: "BDD.01.01.xxxx"
     relation: "proves"
+    notes: "Automated test fixture proves acceptance scenario"
+    description: "Executes unit and integration test assertions proving that the behavioral acceptance oracle is satisfied."
+    rationale: "Fulfills the mandatory SDD Test Proof Invariant (GRAPH-CARD-004)."
 
   # Implementation Task implements Test Fixture (Test-First Invariant)
   - from: "TASK.01.01.xxxx"
     to: "TDD.01.01.xxxx"
     relation: "implements"
+    notes: "Code mutation task implements test fixture logic"
+    description: "Applies code mutation required to satisfy the failing test fixture and transition it red-to-green."
+    rationale: "Enforces strict test-first development invariant (GRAPH-CARD-006)."
 
   # Implementation Task is compensated by Saga Rollback (Mandatory 1:1 Invariant)
   - from: "TASK.01.01.xxxx"
     to: "TASK.01.01.xxxx_rollback"
     relation: "compensated_by"
+    notes: "Mandatory 1:1 saga rollback compensation action"
+    description: "Reverts file mutation and restores clean git state if post-task verification checks fail."
+    rationale: "Fulfills the mandatory SDD Saga Rollback Invariant (GRAPH-CARD-007)."

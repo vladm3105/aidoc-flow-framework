@@ -69,15 +69,21 @@ edges:
     to: "TASK.08.01.xxxx"
     relation: "verifies"
     notes: "Audits execution completeness and quality gate score for Task 01"
+    description: "Evaluates the implemented handler against 100% test coverage criteria and static security analysis rules."
+    rationale: "Establishes independent quality verification gate before code merge."
 
   # Evaluation Suite verifies Upstream Test Fixture (Layer 07 TDD)
   - from: "EVAL.10.01.xxxx"
     to: "TDD.07.01.xxxx"
     relation: "verifies"
     notes: "Verifies test suite execution passes in target CI/staging environment"
+    description: "Executes automated load and stress testing suites to verify latency p99 < 50ms under 5,000 req/sec."
+    rationale: "Validates non-functional performance benchmarks in realistic staging conditions."
 
   # Security Evaluation verifies Audit Requirement (Layer 03 EARS)
   - from: "EVAL.10.02.xxxx"
     to: "EARS.03.01.xxxx"
     relation: "verifies"
     notes: "Validates compliance with ubiquitous immutable audit logging requirement"
+    description: "Runs automated SAST security scan and verifies cryptographic tamper-proofing of audit log records."
+    rationale: "Ensures compliance with enterprise audit retention invariants."

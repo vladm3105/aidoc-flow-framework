@@ -29,7 +29,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-110"
-  status: In-Progress
+  status: Implemented
   flow: iplan_to_code
   flow_code: DIR2C
   change_level: C2
@@ -40,6 +40,7 @@ change_control:
   author: "Framework Maintainer"
   date_proposed: "2026-10-16T00:00:00Z"
   date_approved: "2026-10-16T00:00:00Z"
+  date_implemented: "2026-10-16T20:50:00Z"
   gate_approval:
     approver: "Founder"
     date: "2026-10-16T00:00:00Z"

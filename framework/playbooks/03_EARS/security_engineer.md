@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: security_engineer
 weight: 8
 agent: security-engineer
-framework_spec_version: "0.92.2"
+framework_spec_version: "0.93.0"
 ---
 # security_engineer lens — EARS layer
 

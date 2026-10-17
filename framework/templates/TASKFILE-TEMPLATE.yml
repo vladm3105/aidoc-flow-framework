@@ -53,3 +53,13 @@ tasks:
     desc: "Calculate PR blast radius and extract mutated subgraph for AI review"
     cmds:
       - python3 -m sdd_doc_lint --render-pr-impact --base origin/main --head HEAD {{.CLI_ARGS}}
+
+  graph-cypher:
+    desc: "Execute openCypher query on SDD graph via embedded Kùzu adapter"
+    cmds:
+      - python3 -m sdd_doc_lint --cypher "{{.QUERY}}" --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  lake-export:
+    desc: "Export local SDD graph to openCypher / Apache AGE for Central Federated Read Lake"
+    cmds:
+      - python3 -m sdd_doc_lint --export-lake --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}

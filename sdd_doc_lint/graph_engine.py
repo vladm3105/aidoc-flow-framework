@@ -78,10 +78,11 @@ class SddGraph:
 
     def __init__(self) -> None:
         self.nodes: dict[str, dict[str, Any]] = {}
-        self.edges: list[dict[str, str]] = []
+        self.edges: list[dict[str, Any]] = []
         self.adj: dict[str, set[str]] = {}  # outgoing: from -> {to}
         self.pred: dict[str, set[str]] = {}  # incoming: to -> {from}
         self.slice_ids: set[str] = set()
+        self.metadata: dict[str, Any] = {}
 
     def add_node(self, node: dict[str, Any], slice_id: str | None = None) -> None:
         nid = node["id"]
@@ -93,10 +94,29 @@ class SddGraph:
         if nid not in self.pred:
             self.pred[nid] = set()
 
-    def add_edge(self, from_id: str, to_id: str, relation: str, notes: str | None = None) -> None:
-        edge = {"from": from_id, "to": to_id, "relation": relation}
+    def add_edge(
+        self,
+        from_id: str,
+        to_id: str,
+        relation: str,
+        notes: str | None = None,
+        description: str | None = None,
+        rationale: str | None = None,
+        properties: dict[str, Any] | None = None,
+        **extra: Any,
+    ) -> None:
+        edge: dict[str, Any] = {"from": from_id, "to": to_id, "relation": relation}
         if notes:
             edge["notes"] = notes
+        if description:
+            edge["description"] = description
+        if rationale:
+            edge["rationale"] = rationale
+        if properties:
+            edge["properties"] = properties
+        for k, v in extra.items():
+            if v is not None:
+                edge[k] = v
         self.edges.append(edge)
 
         if from_id not in self.adj:
@@ -184,6 +204,28 @@ class SddGraph:
         """Return all nodes of a specific type."""
         return [n for n in self.nodes.values() if n.get("type") == node_type]
 
+    def to_kuzu(self, db_path: str | Path | None = None) -> Any:
+        """Ingest this graph into an embedded Kùzu adapter instance (optional acceleration)."""
+        from sdd_doc_lint.kuzu_adapter import KuzuGraphAdapter
+
+        adapter = KuzuGraphAdapter(db_path=db_path)
+        adapter.ingest_graph(self)
+        return adapter
+
+    def to_lake_cypher(self, tenant_id: str = "aidoc-framework") -> str:
+        """Export this graph to openCypher DDL/DML for Central Federated Read Lake."""
+        from sdd_doc_lint.lake_exporter import CentralLakeExporter
+
+        return CentralLakeExporter(tenant_id=tenant_id).export_cypher(self)
+
+    def to_lake_age(
+        self, tenant_id: str = "aidoc-framework", graph_name: str = "aidoc_graph"
+    ) -> str:
+        """Export this graph to PostgreSQL 18 + Apache AGE SQL script."""
+        from sdd_doc_lint.lake_exporter import CentralLakeExporter
+
+        return CentralLakeExporter(tenant_id=tenant_id).export_age_sql(self, graph_name=graph_name)
+
 
 def is_federated_stub(target_id: str) -> bool:
     """Return True if target_id is an external federated reference (@repo:ID)."""
@@ -198,6 +240,8 @@ class GraphEngine:
         graph = SddGraph()
         sid = slice_id or data.get("slice_id", "ANONYMOUS_SLICE")
         graph.slice_ids.add(sid)
+        if isinstance(data.get("metadata"), dict):
+            graph.metadata.update(data["metadata"])
 
         for node in data.get("nodes", []):
             if isinstance(node, dict) and "id" in node:
@@ -205,7 +249,11 @@ class GraphEngine:
 
         for edge in data.get("edges", []):
             if isinstance(edge, dict) and "from" in edge and "to" in edge and "relation" in edge:
-                graph.add_edge(edge["from"], edge["to"], edge["relation"], edge.get("notes"))
+                from_id = edge["from"]
+                to_id = edge["to"]
+                rel = edge["relation"]
+                edge_kwargs = {k: v for k, v in edge.items() if k not in ("from", "to", "relation")}
+                graph.add_edge(from_id, to_id, rel, **edge_kwargs)
 
         return graph
 
@@ -221,10 +269,15 @@ class GraphEngine:
         for p in sorted(dir_path.rglob("*.graph.yaml")):
             sub = self.load_graph_file(p)
             unified.slice_ids.update(sub.slice_ids)
+            unified.metadata.update(sub.metadata)
             for nid, node in sub.nodes.items():
                 unified.add_node(node, slice_id=node.get("_slice_id"))
             for edge in sub.edges:
-                unified.add_edge(edge["from"], edge["to"], edge["relation"], edge.get("notes"))
+                from_id = edge["from"]
+                to_id = edge["to"]
+                rel = edge["relation"]
+                edge_kwargs = {k: v for k, v in edge.items() if k not in ("from", "to", "relation")}
+                unified.add_edge(from_id, to_id, rel, **edge_kwargs)
         return unified
 
     def validate_btv(self, graph: SddGraph, is_template: bool = False) -> list[GraphFinding]:

@@ -15,7 +15,14 @@ metadata:
   last_updated: "YYYY-MM-DD"
   status: "Draft"  # Draft | Active | Deprecated | Superseded
   framework_version: "[X.Y.Z]"
-  description: "[Concise summary of business capability and architectural scope]"
+  description: "[Concise summary of business capability, target personas, and architectural scope]"
+  problem_statement:
+    problem: "[Core user or market problem addressed by this initiative]"
+    impact: "[Measurable business or technical impact]"
+    opportunity: "[Strategic opportunity or operational efficiency gained]"
+  mvp_hypothesis:
+    statement: "We believe that [target users] will [key outcome] if we provide [solution]."
+    validation: "We will know this is true when [measurable success criteria]."
 
 nodes:
   # ---------------------------------------------------------------------------
@@ -23,81 +30,117 @@ nodes:
   # ---------------------------------------------------------------------------
   - id: "BRD.01.01.xxxx"
     type: "business_objective"
-    title: "[Business Objective Title]"
+    title: "[Strategic Business Objective Title]"
     statement: "[What fundamental user or operational problem does this solve?]"
+    description: |
+      Comprehensive business narrative detailing market context, customer segment needs,
+      and executive value drivers. Defines the quantifiable return on investment and
+      operational efficiency targets.
     properties:
-      priority: "P1"  # P0 | P1 | P2 | P3
-      roi_target: "[Quantifiable business outcome or latency/cost target]"
+      priority: "P0"  # P0 | P1 | P2 | P3
+      roi_target: "[Quantifiable business outcome, cost reduction, or revenue target]"
+      business_driver: "market_expansion"
 
   # ---------------------------------------------------------------------------
   # Layer 02: Product Capability (PRD)
   # ---------------------------------------------------------------------------
-  - id: "PRD.01.01.xxxx"
+  - id: "PRD.02.01.xxxx"
     type: "product_capability"
-    title: "[Product Capability Title]"
-    statement: "[Functional capability provided by the system container]"
+    title: "[Product Capability Title: e.g. Synchronous Order Ingestion Gateway]"
+    statement: "[Functional capability provided by the system container to target personas]"
+    description: |
+      Detailed functional specification of the product container capability. Defines
+      the user interaction flow, input validation boundaries, idempotency guarantees,
+      and integration with upstream business goals.
     properties:
-      persona: "[Target User Persona or System Role]"
-      sla_threshold: "[e.g. p99 response time < 50ms]"
+      persona: "EndUser"
+      priority: "P1-Must"
+      release_phase: "MVP"
+      sla_threshold: "p99 < 50ms at 5,000 TPS"
+      user_story:
+        role: "Registered User"
+        want: "submit transactional requests via a unified API gateway"
+        so_that: "requests are reliably processed with zero duplicate charges"
+      acceptance_criteria:
+        - "[AC-01] Valid requests return HTTP 200 within 50ms"
+        - "[AC-02] Duplicate submissions within 24h return cached response"
 
   # ---------------------------------------------------------------------------
   # Layer 03: Formal Requirement (EARS)
   # ---------------------------------------------------------------------------
-  - id: "EARS.01.01.xxxx"
+  - id: "EARS.03.01.xxxx"
     type: "formal_requirement"
     title: "[Formal Requirement Title]"
-    statement: "The [system name] shall [action / response] when [event / condition]."
+    statement: "When an OrderSubmitted event is received, the OrderGateway shall validate payload within 20ms."
     pattern: "event_driven"  # ubiquitous | event_driven | state_driven | optional | unwanted
+    description: |
+      Strict EARS syntax bounding system response to external event triggers.
+      Enforces deterministic validation timing and error dispatch behavior.
 
   # ---------------------------------------------------------------------------
   # Layer 04: Acceptance Scenario (BDD Oracle)
   # ---------------------------------------------------------------------------
-  - id: "BDD.01.01.xxxx"
+  - id: "BDD.04.01.xxxx"
     type: "acceptance_scenario"
-    title: "[Acceptance Scenario Title]"
-    given: "[Initial preconditions and system state]"
-    when: "[User action or incoming event occurs]"
-    then: "[Expected observable outcome and state transition]"
+    title: "[Acceptance Scenario Title: Valid Order Ingestion Flow]"
+    description: "Behavioral test oracle verifying successful end-to-end order processing."
+    given: "an authenticated customer with a valid cart and active credit token"
+    when: "the client submits a POST /orders request"
+    then: "the system commits the order and emits an OrderCreatedEvent with HTTP 201 Created"
 
   # ---------------------------------------------------------------------------
   # Layer 05: Architectural Decision (ADR)
   # ---------------------------------------------------------------------------
-  - id: "ADR.01.01.xxxx"
+  - id: "ADR.05.01.xxxx"
     type: "architectural_decision"
-    title: "[Decision Title: e.g. Adopt Redis for Session Caching]"
+    title: "[Decision Title: Adopt In-Memory Caching for Gateway Deduplication]"
+    description: "Evaluates distributed locking mechanisms for high-throughput idempotent deduplication."
     context: "[Forces, trade-offs, and technical constraints motivating choice]"
     decision: "[The specific architecture choice made]"
     consequences: "[Positive benefits, negative trade-offs, and operational risks]"
-    status: "Proposed"  # Proposed | Accepted | Deprecated
+    status: "Accepted"  # Proposed | Accepted | Deprecated
 
   # ---------------------------------------------------------------------------
   # Layer 06: Component Contract (SPEC)
   # ---------------------------------------------------------------------------
-  - id: "SPEC.01.01.xxxx"
+  - id: "SPEC.06.01.xxxx"
     type: "component_contract"
-    title: "[Component Interface Contract]"
-    target_file: "[Path to proto/schema/interface definition]"
+    title: "[Component Interface Contract: Order Gateway API]"
+    description: "Wire specification and schema contract for public order ingestion endpoints."
+    target_file: "proto/order/v1/order_gateway.proto"
     properties:
       protocol: "http"  # grpc | http | cloudevents
-      schema_ref: "[e.g. proto/auth/v1/auth.proto]"
+      schema_ref: "proto/order/v1/order_gateway.proto"
 
 edges:
   # Formal Requirement realizes Product Capability
-  - from: "EARS.01.01.xxxx"
-    to: "PRD.01.01.xxxx"
+  - from: "EARS.03.01.xxxx"
+    to: "PRD.02.01.xxxx"
     relation: "realizes"
+    notes: "Formalizes behavioral execution of the product capability"
+    description: "Translates high-level product capability into strict event-driven EARS syntax."
+    rationale: "Ensures unambiguous, testable behavioral requirements for engineering."
 
   # Product Capability realizes Business Objective
-  - from: "PRD.01.01.xxxx"
+  - from: "PRD.02.01.xxxx"
     to: "BRD.01.01.xxxx"
     relation: "realizes"
+    notes: "Implements core functional mechanics achieving the business objective"
+    description: "Delivers the software container capability required to satisfy the strategic business objective."
+    rationale: "Directly addresses the operational bottleneck identified in the BRD problem statement."
 
   # Acceptance Scenario verifies Formal Requirement (Mandatory Oracle Invariant)
-  - from: "BDD.01.01.xxxx"
-    to: "EARS.01.01.xxxx"
+  - from: "BDD.04.01.xxxx"
+    to: "EARS.03.01.xxxx"
     relation: "verifies"
+    notes: "Executable behavioral oracle verifying formal EARS requirement"
+    description: "Validates that the system produces expected HTTP response codes and emits events under test conditions."
+    rationale: "Fulfills the mandatory SDD Oracle Invariant (GRAPH-CARD-003)."
 
   # Architectural Decision constrains Component Contract
-  - from: "ADR.01.01.xxxx"
-    to: "SPEC.01.01.xxxx"
+  - from: "ADR.05.01.xxxx"
+    to: "SPEC.06.01.xxxx"
     relation: "constrains"
+    notes: "Architecture decision bounds component contract design"
+    description: "Enforces non-blocking asynchronous protocol constraints on the public API wire specification."
+    rationale: "Guarantees system resilience and SLA compliance under high peak load."
