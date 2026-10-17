@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Overview
 
@@ -88,7 +88,7 @@ Evaluation and verification execution across Layer 10 is formally governed by th
 This state machine models and executes:
 1. **Strategy Ingestion**: Ingests trigger context and loads `EVAL-{NN}.yaml` targets, test suite commands, and PRD coverage thresholds.
 2. **Parallel Suite Execution**: Runs unit, acceptance, conformance, and security SAST suites concurrently (`type: parallel`, `completionType: allOf`).
-3. **Automated Quality Gate Checks**: Evaluates the aggregated test results and computed Evaluation Score against thresholds (advisory target: >= 90/100).
+3. **Automated Quality Gate Checks**: Evaluates the aggregated test results and verifies Binary Topological Validation (BTV PASS) against thresholds.
 4. **Immutable Receipt Generation**: Emits `EVAL-{NN}-RPT-{NNN}.yaml` report artifacts carrying full pass/fail breakdowns.
 5. **Remediation Triggering**: On failure, routes directly to the bugfix remediation flow (`REVIEW_REMEDIATION_FLOW.md`) to dispatch a C1 CHG + scoped IPLAN.
 
@@ -98,9 +98,20 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
 - `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document (standard atomic unit smoke checks)
-- `EVAL-SWF-TEMPLATE.yaml` — machine-executable evaluation workflow template adhering to CNCF Serverless Workflow v0.8 (see [`EVAL_WORKFLOW_STANDARD.md`](./EVAL_WORKFLOW_STANDARD.md))
+- `EVAL-GRAPH-TEMPLATE.yaml` — **Canonical Data Plane (Tier 2)** SDD-GRAPH v2.0 property graph slice template for evaluation strategies and verification DAGs
+- `EVAL-SWF-TEMPLATE.yaml` — **Workflow Subtype (Tier 1)** machine-executable evaluation workflow template adhering to CNCF Serverless Workflow v0.8 (see [`EVAL_WORKFLOW_STANDARD.md`](./EVAL_WORKFLOW_STANDARD.md))
 - `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
 - `EVAL-00_index.TEMPLATE.yaml` — master index template in canonical 5-Quadrant YAML
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 10 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on evaluation complexity (GD-53):
+
+| Verification Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct single-suite test checks, unit smoke runs | `EVAL-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `EVAL-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-tier test matrix, automated regression gating, or remediation routing | `EVAL-SWF-TEMPLATE.yaml` | `EVAL-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating verification runs and failure sagas. |
 
 Review and remediation of evaluation strategy and report artifacts is governed by [`eval-review-remediation.sw.yaml`](../../governance/workflows/review/eval-review-remediation.sw.yaml) (`REV-10-EVAL`).
 

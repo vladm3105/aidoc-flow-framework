@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## C4 Model Position
@@ -59,10 +59,20 @@ See template `metadata.id_standard` for details.
 | Test case shape | Section 4 test case definitions |
 | Upstream | EARS + BDD + ADR + SPEC |
 | Downstream | IPLAN, EVAL |
-| Template model | Dual-template (Standard vs Workflow) |
+| Template model | Three-Tier Model & Dual-template Selection |
 | Core assets | Template + index + README + Workflow Standard |
 
-## Test Formats: Standard vs. Stateful Workflow
+## Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 07 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on test complexity (GD-55):
+
+| Test Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Pure unit tests, static mocks, isolated assertions | `TDD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `TDD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-tier test suites, fixture provisioning, or rollback sagas | `TDD-SWF-TEMPLATE.yaml` | `TDD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating test suites and cleanup sagas. |
+
+### Test Formats: Standard vs. Stateful Workflow
 
 The framework provides two complementary approaches to TDD authoring:
 

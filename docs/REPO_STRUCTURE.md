@@ -23,7 +23,7 @@
 ```
 aidoc-flow-framework/
 ├── README.md                       Project overview
-├── CHANGELOG.md                    Project-level changelog (Keep a Changelog)
+├── CHANGELOG.md                    Project-level changelog (frozen historical tombstone per CHG-40)
 ├── SECURITY.md                     Security policy / vulnerability reporting
 ├── LICENSE
 ├── .pre-commit-config.yaml         Pre-commit hooks (lint / format / security)

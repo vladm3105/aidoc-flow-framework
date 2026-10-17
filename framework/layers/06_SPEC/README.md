@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## C4 Model Position
@@ -47,11 +47,11 @@ Implementation-ready technical specification for a single software component. De
 |--------------------|-------------------|
 | Metadata model | `schema_version: 1.0` unified model |
 | Traceability | Flat upstream tags |
-| Template model | Dual-template (Standard vs Workflow) |
+| Template model | Three-Tier Model & Dual-template Selection |
 | Upstream | EARS + BDD + ADR |
 | Downstream | TDD → IPLAN → Code |
 | Document shape | 8 core sections |
-| Readiness gate | TDD-Ready score >= 90% (GATE-06) |
+| Readiness gate | TDD-Ready (BTV PASS, GATE-06) |
 
 ## Element IDs
 
@@ -71,7 +71,17 @@ SPEC cites its necessary upstream (Layer 6 `required_tags`) — `@ears` + `@bdd`
 @adr: ADR.NN.03.xxxx     (architecture decisions constraining the design)
 ```
 
-## Specification Formats: Standard vs. Distributed Choreography Workflow
+## Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 06 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on component complexity (GD-56):
+
+| Component Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Monolithic library, pure algorithm, in-process API | `SPEC-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `SPEC-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Distributed microservices, event-driven callbacks, or saga rollbacks | `SPEC-SWF-TEMPLATE.yaml` | `SPEC-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating interaction contracts and compensating transactions. |
+
+### Specification Formats: Standard vs. Distributed Choreography Workflow
 
 The framework provides two complementary approaches to SPEC authoring:
 

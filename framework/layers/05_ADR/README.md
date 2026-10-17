@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Overview
 
@@ -45,9 +45,17 @@ Solution Space (Technology-Bound):
 | `ADR_WORKFLOW_STANDARD.md` | **Normative Standard** — formal mapping of architecture decision evaluation primitives to CNCF Serverless Workflow state machines. |
 | `ADR-00_index.TEMPLATE.yaml` | ADR & Project Technology Stack Registry template — tracks planned/active ADRs and houses the canonical agent-readable technology inventory for security monitoring and automated updates. |
 
-## Dual-Template Architecture
+## Three-Tier Architecture & Dual-Template Selection Matrix
 
-Layer 05 supports two complementary authoring templates depending on decision complexity:
+Layer 05 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on decision complexity (GD-57):
+
+| Decision Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Single-candidate, localized design choice | `ADR-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `ADR-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| High-stakes multi-candidate trade-offs (MCDA), RFC reviews, or invalidation sagas | `ADR-SWF-TEMPLATE.yaml` | `ADR-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating candidate evaluation and score weighting. |
+
+### Template Implementations
 
 1. **Standard Template (`ADR-TEMPLATE.yaml`)**:
    - Best for straightforward, single-candidate decisions or localized design choices.

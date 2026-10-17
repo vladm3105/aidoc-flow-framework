@@ -1,0 +1,188 @@
+# =============================================================================
+#  CHG-114: Remediate Stale Documentation, Retired Gate Requirements, and Catalog Divergence
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Issue #1004 and ratified STALE-DOCS-REMEDIATION-PLAN.md (#1005)
+#  Scope: Harmonize framework and docs with Three-Tier Architecture, Binary Topological
+#         Validation, closed 5-step layer lifecycles, and monolithic register retirement
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-17"
+  framework_version: "0.96.1"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-114"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-17T18:30:00Z"
+  date_approved: "2026-10-17T18:30:00Z"
+  date_implemented: "2026-10-17T18:35:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-17T18:30:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per ratified implementation plan plans/STALE-DOCS-REMEDIATION-PLAN.md (PR #1005)
+      resolving GitHub issue #1004.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-114)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-114"
+  title: "Remediate Stale Documentation, Retired Gate Requirements, and Catalog Divergence"
+  status: "Ratified"
+  context: |
+    Following the ratification and implementation of Change Requests CHG-94 through CHG-113,
+    several fundamental architectural modernizations occurred across aidoc-framework:
+    1. Three-Tier Layer Architecture (Tier 1 SWF, Tier 2 GRAPH, Tier 3 MD) superseded the legacy Dual-Template model.
+    2. Binary Topological Validation (BTV PASS) replaced heuristic >=90/100 scoring floors.
+    3. Monolithic registers (framework/CHANGELOG.md, framework/governance/DECISIONS.md) were retired as frozen tombstones,
+       retiring GATE-SPEC-E008.
+    4. Closed 5-step layer lifecycles with author remediation loops, baseline sealing, and CloudEvents were standardized.
+    5. Raw filesystem symlinks were banned across consumer repositories.
+    However, 25+ framework and project documentation files across framework/ and docs/ retained stale references to
+    the Dual-Template model, >=90/100 scoring, CHANGELOG.md/DECISIONS.md maintenance duties, symlinks, and outdated catalogs.
+  choice: |
+    Execute comprehensive documentation remediation per ratified plans/STALE-DOCS-REMEDIATION-PLAN.md:
+    1. Core Guides & Quick Reference: Update SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, QUICK_REFERENCE.md, README.md, and
+       AI_ASSISTANT_RULES.md with the Three-Tier Model and BTV PASS criteria.
+    2. Governance Core & Gates: Scrub retired CHANGELOG.md/DECISIONS.md duties from DOC_GOVERNANCE_CORE.md, governance README.md,
+       DEFINITION_OF_DONE.md, GATE-SPEC_FRAMEWORK.md, and gate_spec_change.md. Maintain exact byte identity between
+       governance/chg/README.md and layers/09_CHG/README.md.
+    3. Layer READMEs: Harmonize layers 02_PRD through 10_EVAL with composite header "Three-Tier Architecture & Dual-Template
+       Selection Matrix" (preserving "Dual-template" conformance assertion invariant) and Tier 3 compiled markdown projections.
+    4. Workstations & Patterns: Modernize UPGRADE-RUNBOOK.md, STARTUP_HANDOFF.md, FEDERATED_READ_LAKE_PATTERN.md, PROJECT.md,
+       and REPO_STRUCTURE.md, scrubbing banned symlinks and workstation-specific paths.
+    5. Version bump: Bump framework/VERSION to 0.96.1 and fan out via hooks/sync-version-refs.sh.
+  consequences: |
+    - Complete alignment between architectural specifications, layer READMEs, and actual repo implementation.
+    - Zero misleading guidance for AI agents regarding retired registers, numeric scoring, or forbidden symlinks.
+    - All conformance tests and structural linters remain 100% green.
+  alternatives_considered:
+    - option: "Ad-hoc documentation edits as individual issues arise"
+      rationale_rejected: >-
+        Rejected because piecemeal updates leave conflicting architectural guidance across layers, confusing AI agents
+        and human contributors regarding which contracts are authoritative.
+    - option: "Re-introduce CHANGELOG.md and DECISIONS.md monolithic tracking"
+      rationale_rejected: >-
+        Rejected per CHG-94 and CHG-95. Change tracking is owned by immutable change packages in framework/archive/CHG-*/
+        and GitHub releases; centralized monolithic files cause merge conflicts and drift.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Remediate Stale Documentation, Retired Gate Requirements, and Catalog Divergence"
+  description: >-
+    Remediate systemic documentation staleness, retired gate requirements, architectural naming lag,
+    and catalog divergence across framework/ and docs/ per ratified STALE-DOCS-REMEDIATION-PLAN.md.
+  justification: >-
+    Ensures complete consistency across framework specifications, layer READMEs, and governance gates
+    reflecting CHG-94 through CHG-113 architectural realities.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    - "framework/QUICK_REFERENCE.md"
+    - "framework/README.md"
+    - "framework/AI_ASSISTANT_RULES.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/README.md"
+    - "framework/governance/DEFINITION_OF_DONE.md"
+    - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+    - "framework/playbooks/09_CHG/gate_spec_change.md"
+    - "framework/governance/chg/README.md"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+    - "framework/governance/ID_NAMING_STANDARDS.md"
+    - "framework/registry/LAYER_REGISTRY.yaml"
+    - "framework/layers/02_PRD/README.md"
+    - "framework/layers/03_EARS/README.md"
+    - "framework/layers/04_BDD/README.md"
+    - "framework/layers/05_ADR/README.md"
+    - "framework/layers/06_SPEC/README.md"
+    - "framework/layers/07_TDD/README.md"
+    - "framework/layers/08_IPLAN/README.md"
+    - "framework/layers/10_EVAL/README.md"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    - "docs/STARTUP_HANDOFF.md"
+    - "docs/FEDERATED_READ_LAKE_PATTERN.md"
+    - "docs/PROJECT.md"
+    - "docs/REPO_STRUCTURE.md"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  artifacts_created:
+    - "framework/archive/CHG-114/CHG-114.yaml"
+    - "framework/archive/CHG-114/IPLAN-114.yaml"
+  affected_components:
+    - "Framework Core Guides & Quick Reference"
+    - "Governance Core & Gate Specifications"
+    - "All 10 SDD Layer Documentation READMEs"
+    - "Workstation Standards & Pattern Guides"
+    - "Version Fan-out Tooling"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-114/IPLAN-114.yaml"
+  steps:
+    - step: "Author authorizing CHG-114.yaml and IPLAN-114.yaml"
+      phase: "iplan_creation"
+    - step: "Remediate Core Guides and Quick Reference (Phase 1)"
+      phase: "documentation_sync"
+    - step: "Remediate Governance Core, Gates, and Catalogs (Phase 2)"
+      phase: "documentation_sync"
+    - step: "Harmonize Layer READMEs 02_PRD through 10_EVAL (Phase 3)"
+      phase: "documentation_sync"
+    - step: "Scrub Workstation Runbooks, Handoffs, and Pattern Docs (Phase 4)"
+      phase: "documentation_sync"
+    - step: "Bump framework/VERSION to 0.96.1, fan out version refs, and verify all tests"
+      phase: "documentation_sync"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-114/CHG-114.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "bash hooks/pre_push_check.sh"
+  manual_verification:
+    - "Verify layers 02_PRD through 10_EVAL carry composite Three-Tier and Dual-Template header"
+    - "Verify byte identity of framework/governance/chg/README.md and framework/layers/09_CHG/README.md"
+    - "Verify zero occurrences of retired CHANGELOG.md / DECISIONS.md active duties in normative docs"

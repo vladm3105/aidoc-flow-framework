@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Document IDs
 
@@ -97,7 +97,25 @@ document_control:
   flow: sdd_to_code       # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
   flow_code: SDD2C        # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
 ```
-The two fields must correspond 1:1 per the mapping table above. Mismatched pairs (e.g. `flow: sdd_to_code` with `flow_code: DIR2C`) are rejected by lint as hard errors.
+## SDD-GRAPH v2.0 Slice and Node ID Standards
+
+In SDD-GRAPH v2.0 (property graph data plane), knowledge graphs are partitioned into deterministic slices (`*-GRAPH-TEMPLATE.yaml`):
+
+### Slice IDs (`slice_id`)
+
+Format: `{LAYER}-{NN}_{slug}`
+- `LAYER` — Uppercase layer identifier (`BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SPEC`, `TDD`, `IPLAN`, `CHG`, `EVAL`)
+- `NN` — Two-digit sequential slice number (`01`, `02`, etc.)
+- `slug` — Lowercase snake-case or kebab-case initiative or feature descriptor (e.g. `order_orchestration`, `payment_gateway`)
+- Examples: `BRD-01_billing_engine`, `SPEC-01_token_service`, `CHG-01_lake_federation`
+
+### SDD-GRAPH Node IDs
+
+In the graph data plane, entities are represented as typed nodes with deterministic identifiers:
+- **Macro Architecture Nodes**: `SEED-<slug>` (e.g. `SEED-core_platform`), `MODULE-<NN>` (e.g. `MODULE-01_auth`)
+- **Layer Contract Elements**: Standard 4-segment hashed tokens `{TYPE}.{doc_id}.{section_id}.{hash}` (e.g. `BRD.01.07.a7f3`, `SPEC.02.04.c9b1`)
+- **Task Nodes**: `{LAYER}-T{NN}` or `TASK-{NN}` (e.g. `IPLAN-T01`, `TASK-03`)
+- **Test Scenarios**: `TEST.{doc_id}.{section_id}.{hash}` or `TDD.01.03.e8f2`
 
 ## Element IDs
 

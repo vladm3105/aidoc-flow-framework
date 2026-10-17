@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -27,15 +27,16 @@ performs. Conflict resolution (step 3), conformance (step 4), and recording
 
 ### 1. Read the canon-side inputs
 
-- The canon `CHANGELOG.md` entry for the new version (breaking changes,
+- The canon release notes and Change Request archives for the new version
+  in `framework/archive/CHG-*/` and GitHub Releases (breaking changes,
   migration notes per W001).
 - Your overrides' authored-against `framework_version` pins — anything older
   than the new canon is a candidate conflict.
 
 ### 2. Re-point `framework_path`
 
-- **Symlink consumers:** retarget `.aidoc/framework` at the new canon
-  location and update `framework_version` in `.aidoc/profile.yaml` to the new
+- **Git submodule consumers:** update the submodule pin to the new canon release
+  tag or commit SHA, and update `framework_version` in `.aidoc/profile.yaml` to the new
   `X.Y.Z`.
 - **Pinned-copy consumers:** stage the new tree aside first (repeat the
   `docs/PROJECT.md` §7.1 allowlist copy at the new canon tree —

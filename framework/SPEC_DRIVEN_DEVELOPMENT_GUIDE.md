@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## Overview
@@ -79,18 +79,30 @@ BRD → PRD-Ready (BTV PASS) → PRD → EARS-Ready (BTV PASS) → EARS → BDD-
 → TDD → IPLAN-Ready (BTV PASS) → IPLAN → EXEC-Ready (BTV PASS) → Code
 ```
 
-## Dual-Template Architecture: Standard vs. Workflow-Driven SDD
+## Three-Tier Architecture & Dual-Template Selection Matrix (Tier 1 SWF, Tier 2 GRAPH, Tier 3 MD, and Declarative Alternative)
 
-To support both lightweight specification drafting and complex autonomous agent orchestration, SDD supports two template flavors across all layers (ratified across Decisions GD-51 through GD-61):
+To support both lightweight specification drafting and complex autonomous agent orchestration, SDD implements the **Three-Tier Layer Architecture** alongside the dual-template selection matrix across all layers (ratified across Decisions GD-51 through GD-61, and GD-99 through GD-113):
 
-1. **Standard Templates (`{TYPE}-TEMPLATE.yaml`)**:
-   - Purely declarative YAML defining requirements, acceptance scenarios, architecture decisions, interfaces, test suites, or execution plans.
-   - Recommended for straightforward, linear, or atomic development tasks.
-
-2. **Workflow Templates (`{TYPE}-SWF-TEMPLATE.yaml`)**:
-   - Implement the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded, vendor-neutral **CNCF Serverless Workflow v0.8 YAML** state machine (`workflow_definition`).
-   - Enable autonomous multi-agent execution, parallel branch fan-out (`type: parallel`), human-in-the-loop review callbacks (`type: callback`), and automated saga rollback compensation (`compensatedBy`) upon gate or threshold failure.
+1. **Tier 1: Declarative Execution Flow (`*-SWF-TEMPLATE.yaml`)**:
+   - Implements the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded, vendor-neutral **CNCF Serverless Workflow v0.8 YAML** state machine (`workflow_definition`).
+   - Drives the **5-step closed layer lifecycle**:
+     - **Stage 1: Authoring** — Playbook-guided drafting of requirements, contracts, or architecture.
+     - **Stage 2: Multi-Persona Review Saga & Remediation** — Adversarial review loop with in-situ author remediation (`RemediateLayerDraft`) before escalation.
+     - **Stage 3: Boundary Gate Verification** — Deterministic validation enforcing layer gates (`VerifyLayerCloseoutGate`).
+     - **Stage 4: Document Baseline Sealing** — Freezing the document baseline (`SealLayerDocumentBaseline`) and registering the SDD graph node (`RegisterSddGraphBaselineNode`).
+     - **Stage 5: Event-Driven Handoff** — Emitting trace-contextualized CloudEvents (`EmitLayerHandoffEvent` / `produceEvents`) to trigger downstream lifecycle workflows.
    - Normative mapping rules for each layer are documented in `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md` and `governance/GOVERNANCE_WORKFLOW_STANDARD.md`.
+
+2. **Tier 2: Canonical Data Plane Property Graph (`*-GRAPH-TEMPLATE.yaml`)**:
+   - Represents the layer's formal knowledge graph in **SDD-GRAPH v2.0** format.
+   - Provides strongly-typed typed entities (nodes) and explicit relational dependencies (edges) for sub-millisecond graph slicing, blast-radius queries via Kùzu/openCypher, and deterministic DAG validation (`BTV PASS`).
+
+3. **Tier 3: Compiled Presentation Projection (`*.md`)**:
+   - Clean, human-readable GitHub-Flavored Markdown projection compiled from Tier 1 and Tier 2 definitions for human review, PR summaries, and documentation publication.
+
+4. **Standard Declarative Alternative (`*-TEMPLATE.yaml`)**:
+   - Purely declarative YAML defining requirements, acceptance scenarios, architecture decisions, interfaces, test suites, or execution plans.
+   - Recommended for straightforward, linear, or atomic development tasks where workflow orchestration is unnecessary.
 
 ## Layer Responsibilities
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -71,7 +71,7 @@ transitions between C4 levels; they have no C4 zoom level of their own.
 framework/
   README.md              This file.
   VERSION                Framework spec version (SemVer).
-  CHANGELOG.md           Version history — document-of-record for spec changes (E008).
+  CHANGELOG.md           Version history (retired tombstone frozen in CHG-94; live change records in archive/CHG-*/ and GitHub releases).
   SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  End-to-end SDD authoring guide (the one
                          root doc engines vendor alongside the spec subtrees).
   QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
@@ -80,12 +80,10 @@ framework/
   LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
                          evidence preserved verbatim; era caveats in header).
   layers/                The 10 layer definitions — one folder per layer (01_BRD
-                         through 10_EVAL). Artifact layers (01–07) contain both
-                         document and CNCF SWF templates ({TYPE}-TEMPLATE.yaml and
-                         {TYPE}-SWF-TEMPLATE.yaml) and standards ({TYPE}_WORKFLOW_STANDARD.md);
-                         governance layers (08_IPLAN, 09_CHG, 10_EVAL) house operational
-                         workflows under `framework/governance/workflows/` and standards
-                         under `framework/governance/`.
+                         through 10_EVAL). Each layer carries the Three-Tier Architecture:
+                         Tier 1 execution flow (*-SWF-TEMPLATE.yaml), Tier 2 canonical data
+                         plane (*-GRAPH-TEMPLATE.yaml), Tier 3 compiled markdown, and the
+                         standard declarative template alternative (*-TEMPLATE.yaml).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 11 folders:
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL

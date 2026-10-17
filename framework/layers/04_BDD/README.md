@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## Overview
@@ -68,9 +68,17 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `BDD_WORKFLOW_STANDARD.md` | Normative standard specifying Given/When/Then mapping to CNCF Serverless Workflow state primitives. |
 | `BDD-00_index.TEMPLATE.yaml` | BDD registry template — tracks planned and active BDD documents and scenario suites per project in canonical 5-Quadrant YAML |
 
-## Scenario Formats: Standard vs. Stateful Workflow
+## Three-Tier Architecture & Dual-Template Selection Matrix
 
-The framework provides two complementary approaches to BDD authoring:
+Layer 04 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on behavioral complexity (GD-58):
+
+| Journey Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Single-turn, atomic Given-When-Then checks | `BDD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `BDD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-step user journeys, distributed transactions, or saga rollbacks | `BDD-SWF-TEMPLATE.yaml` | `BDD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating state transitions and fixture cleanup. |
+
+### Scenario Formats: Standard vs. Stateful Workflow
 
 1. **Standard Atomic Scenarios (`BDD-TEMPLATE.yaml`)**:
    Designed for single-turn, atomic Given-When-Then checks.

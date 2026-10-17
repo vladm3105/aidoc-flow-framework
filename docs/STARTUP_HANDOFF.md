@@ -1,11 +1,11 @@
 # Project Startup Handoff & Kickoff Guide
 
 > [!IMPORTANT]
-> **Live Framework Version: 0.96.0.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
+> **Live Framework Version: 0.96.1.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
 
 ---
 
-## 0. Project Kickoff Quickstart (Version 0.96.0)
+## 0. Project Kickoff Quickstart (Version 0.96.1)
 
 ### 0.1 The Modern SDD Framework at a Glance
 
@@ -34,10 +34,10 @@ From the framework repository or clone, run [`framework/scripts/install.sh`](../
 framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
 
 # Option B: Production deployment from published git release tag:
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.0 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.1 --kind pin
 
-# Option C: Shared development deployment (persistent symlink to shared checkout):
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.0 --kind symlink --shared /path/to/framework
+# Option C: Git submodule deployment (tracked by git):
+git submodule add -b dev https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
 ```
 
 This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.
@@ -48,7 +48,7 @@ Review `<project>/.aidoc/profile.yaml` (seeded from `PROFILE-TEMPLATE.yaml`). Tu
 
 - `review_mode`: `team` (multi-persona crew fan-out) or `single_pass`.
 - `active_layers`: `[BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]` (dropping `BDD` or `ADR` applies the cascade rule).
-- `audit_threshold`: raise readiness score floors (raise-only, default 90).
+- `audit_threshold`: configure threshold bounds and Binary Topological Validation (BTV).
 - `exec_*`: bounds on files (8), diff lines (600), token budgets (200k), and patch attempts (3).
 
 #### Step 3: Establish the Root Working Agreement (`<project>/AGENTS.md`)
@@ -120,7 +120,7 @@ python3 <project>/.aidoc/framework/framework/sdd_doc_lint/chg_lint.py --help
 
 ## Historical Archive: AI Doc Flow Framework Migration Brief (2026-05-20)
 
-> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../framework/CHANGELOG.md`](../framework/CHANGELOG.md).
+> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in GitHub Releases and Change Request packages under `framework/archive/CHG-*/` (`framework/CHANGELOG.md` is a frozen tombstone).
 >
 > **Purpose:** Distill the business / startup ideas that surfaced during a
 > multi-phase technical-migration session into a self-contained brief a

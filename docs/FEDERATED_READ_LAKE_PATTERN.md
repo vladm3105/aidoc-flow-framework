@@ -162,10 +162,10 @@ Because cross-project targets cite the canonical `@<repo_slug>:<NODE_ID>` format
    ```
 
 2. **Local Workstation Sweep (`task sdd:federate-local`):**
-   On a local development workstation holding sibling checkouts (e.g. `/home/ya/devd/*`), developers can synchronize all local repositories into a local central graph container in a single command:
+   On a local development workstation holding sibling checkouts (e.g. `$WORKSPACE/*`), developers can synchronize all local repositories into a local central graph container in a single command:
 
    ```bash
-   task sdd:federate-local -- --root /home/ya/devd --lake bolt://localhost:7687
+   task sdd:federate-local -- --root "$WORKSPACE" --lake bolt://localhost:7687
    ```
 
 ---

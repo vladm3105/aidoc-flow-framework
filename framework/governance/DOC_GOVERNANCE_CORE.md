@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Principles
 
@@ -54,16 +54,22 @@ Practical effect:
   them. Both mandate YAML — read Principle 2 before concluding that a layer's
   instance format is unconstrained. The per-layer value is `../registry/LAYER_REGISTRY.yaml`
   `extensions` — the single normative source (GD-17); this bullet does not re-specify it.
-- **Dual-Template Architecture (GD-51 through GD-61)**: To balance lightweight,
-  declarative artifact authoring with machine-executable state machines, each SDD layer
-  ships two canonical YAML templates:
-  1. **Standard Template (`{TYPE}-TEMPLATE.yaml`)**: The default declarative template for
-     atomic, single-capability, or linear artifact definitions.
-  2. **Workflow Template (`{TYPE}-SWF-TEMPLATE.yaml`)**: The workflow-enabled template
+- **Three-Tier Layer Architecture & Dual-Template Selection (GD-51 through GD-61, GD-99 through GD-113)**: To balance lightweight,
+  declarative artifact authoring with machine-executable state machines and sub-millisecond graph queries, each SDD layer
+  ships canonical YAML templates supporting the Three-Tier Model:
+  1. **Tier 1: Workflow Execution (`{TYPE}-SWF-TEMPLATE.yaml`)**: The workflow-enabled template
      implementing the **Hybrid Envelope Architecture** (`subtype: workflow`). It preserves
      100% structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an
      embedded, vendor-neutral CNCF Serverless Workflow v0.8 YAML state machine
-     (`workflow_definition`) for complex, multi-branch, stateful, or saga-compensated execution.
+     (`workflow_definition`) driving the 5-step closed layer lifecycle (authoring, review saga,
+     remediation loop, gate verification, baseline sealing, CloudEvents).
+  2. **Tier 2: Canonical Data Plane Graph (`{TYPE}-GRAPH-TEMPLATE.yaml`)**: The formal property graph
+     template conforming to **SDD-GRAPH v2.0** format, providing strongly-typed node entities and
+     relational edges for Kùzu/openCypher slicing and deterministic Binary Topological Validation (`BTV PASS`).
+  3. **Tier 3: Presentation Projection (`*.md`)**: Human-readable compiled Markdown projection generated
+     on demand for PR review and documentation publication.
+  4. **Standard Declarative Template (`{TYPE}-TEMPLATE.yaml`)**: The default declarative template for
+     atomic, single-capability, or linear artifact definitions.
 - In addition, EVAL carries one companion template (`EVAL-REPORT-TEMPLATE.yaml`);
   `IPLAN-VERIFY-TEMPLATE.yaml` is a retired tombstone pointer carrying no
   template content (CHG-08 #662 — validation runs as EVAL cycles, repairs via

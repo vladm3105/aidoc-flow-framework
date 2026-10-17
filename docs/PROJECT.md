@@ -4,7 +4,7 @@
 > multi-platform migration project (Hermes + Claude Code plugin, cutover
 > `v1.0.0`). Values, branches, and pins inside are frozen at the 0.53.x era —
 > read them as history, not live instruction. Live project state: repo
-> `README.md` + `CHANGELOG.md`; live spec: `framework/`; live process:
+> `README.md` (root `CHANGELOG.md` is a frozen tombstone per CHG-40); live spec: `framework/`; live process:
 > `AGENTS.md`.
 >
 > Created 2026-05-18. Companion to `docs/REPO_STRUCTURE.md` (`ROADMAP.md` was
@@ -29,7 +29,7 @@ Semantic Versioning ([semver.org](https://semver.org)). Four independent streams
 
 | Stream | File | Purpose |
 |--------|------|---------|
-| Project (migration) | `CHANGELOG.md` (`ROADMAP.md` retired) | Tracks migration milestones only |
+| Project (migration) | `CHANGELOG.md` (retired tombstone per CHG-40) | Historical migration milestones |
 | Framework spec | `framework/VERSION` | The shared contract |
 | Hermes AI | retired | Platform stream frozen at the 2026-09-07 archive |
 | Claude Code plugin | retired | Platform stream frozen at the 2026-09-07 archive |
@@ -131,9 +131,8 @@ gates) — see `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`.
   runs E001–E004 (provenance, `semver_impact` + major⇒C3, never-C1, C3 approval
   prep) and the `doc-chg` family routes `change_source: spec` to it.
 - **CI/CD** — runs the automatable checks on every PR as a required status
-  check. For GATE-SPEC: `tests/chg/spec_gate.py` enforces the diff-aware E005
-  (VERSION bump) + E008 (CHANGELOG), and the conformance suite enforces E006
-  (spec-version match) + E007 (suite green).
+  check. For GATE-SPEC: diff-aware checks enforce E005 (VERSION bump; E008 retired in CHG-94),
+  and the conformance suite enforces E006 (spec-version match) + E007 (suite green).
 - **Repo settings** — the *human* gate (e.g. C3 board sign-off) is enforced by
   branch protection / required reviewers on `framework/**`. A skill prepares and
   verifies the approval form but is never the authority that grants approval.
@@ -251,7 +250,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.96.0"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.1"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
 ```
 
 ### 7.5 Updating the framework

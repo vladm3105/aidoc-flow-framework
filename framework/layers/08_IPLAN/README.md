@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## C4 Model Position
@@ -204,6 +204,16 @@ To modify a Verified IPLAN:
 | `IPLAN-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding task DAGs, file manifests, and execution dependencies. Source of truth in git. |
 | `IPLAN-SWF-TEMPLATE.yaml` | **Executable Workflow (Tier 1)** — adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs, test switch gates, and native saga rollback compensation (`subtype: workflow`). See [`IPLAN_WORKFLOW_STANDARD.md`](../../governance/IPLAN_WORKFLOW_STANDARD.md). |
 | `IPLAN-VERIFY-TEMPLATE.yaml` | **Legacy validation** — superseded by the EVAL-RPT flow (CHG-08 #662); retained for existing readers. New validation authors EVAL-RPT reports; repairs use the `bugfix` subtype. |
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 08 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on execution complexity (GD-54):
+
+| Execution Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct single-session implementation, linear script tasks | `IPLAN-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `IPLAN-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Complex multi-task DAGs, verification gates, or automated rollback sagas | `IPLAN-SWF-TEMPLATE.yaml` | `IPLAN-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating task transitions and compensation. |
 
 **Downstream**: [10_EVAL](../10_EVAL/) — Evaluation & QA Governance
 
