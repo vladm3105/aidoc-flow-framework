@@ -63,4 +63,3 @@ tasks:
     desc: "Export local SDD graph to openCypher / Apache AGE for Central Federated Read Lake"
     cmds:
       - python3 -m sdd_doc_lint --export-lake --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
-

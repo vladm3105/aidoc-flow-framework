@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.92.1"
+framework_spec_version: "0.93.0"
 ---
 # auditor lens — BDD layer
 
