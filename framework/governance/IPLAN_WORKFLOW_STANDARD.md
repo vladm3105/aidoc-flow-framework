@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -60,6 +60,40 @@ This standard establishes **Machine-Executable Implementation Plans**:
 
 ---
 
+### The Two-Graph Architecture in Layer 08 IPLAN
+
+Layer 08 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable implementation process DAG with an atomic task content graph:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 08 IPLAN TWO-GRAPH ARCHITECTURE                              │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       IPLAN-SWF-TEMPLATE.yaml (Hybrid Envelope)        │      (IPLAN-GRAPH-TEMPLATE.yaml)   │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to execute, verify & rollback mutations  │ • Content of WHAT tasks exist      │
+│ • Sequential/parallel code mutation steps              │ • Implementation tasks & contracts │
+│ • Automated test execution & regression verification   │ • File manifests & touchpoints     │
+│ • First-class saga rollback compensation               │ • Relational links (implements etc)│
+│ • Compiled to LangGraph / Temporal / runner engine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates code mutation & verification      │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & task dependencies       │
+                    │ • Observability Adapter projects graph into IPLAN-TEMPLATE   │
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Both graphs work together: the Process DAG drives execution, populates the Content Graph, verifies topological integrity via BTV, and projects the validated plan into the canonical human-readable document (`IPLAN-TEMPLATE.yaml` view).
+
+---
+
 ## 2. Hybrid Envelope Architecture
 
 To maintain compatibility with `sdd_doc_lint` while providing an executable workflow DAG, all
@@ -72,7 +106,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.92.1"
+  framework_version: "0.92.2"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"

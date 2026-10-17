@@ -19,14 +19,26 @@
 #  Downstream: ADR (Layer 5), TDD (Layer 7 via BDD scenario mapping)
 #  Upstream: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 04 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (BDD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to run, verify, and rollback scenarios.
+#       Orchestrates Given/When/Then steps, stimuli, assertion gating, and saga teardown.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (BDD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (scenario clauses, preconditions, actions, assertions, trace links).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (BDD-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (BDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (BDD-SWF-TEMPLATE.yaml + BDD-GRAPH-TEMPLATE.yaml) when:
 #    - Modeling stateful behavioral workflows, multi-step customer journeys, or distributed event sequences
 #    - Mapping Given/When/Then to state machine primitives (inject/operation/event/switch)
 #    - Requiring automated saga compensation (backward rollback teardown on scenario failure)
 #    - Orchestrating asynchronous callbacks, webhook events, or external stimuli
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (BDD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (BDD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting standard, linear Given/When/Then scenarios for atomic or monolithic features
 #    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================

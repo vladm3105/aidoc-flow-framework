@@ -10,14 +10,27 @@
 #  Downstream: PRD (Layer 2)
 #  Upstream: Strategic Business Intent / Enterprise Portfolio
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 01 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (BRD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to create, evaluate, review, and ratify the BRD.
+#       Orchestrates strategic theme parsing, value stream mapping, ROI gating,
+#       steering callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (BRD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (business drivers, objectives, capabilities, acceptance criteria).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (BRD-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (BRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (BRD-SWF-TEMPLATE.yaml + BRD-GRAPH-TEMPLATE.yaml) when:
 #    - Modeling multi-stream value flows, cross-department handoffs, or customer journeys
 #    - Orchestrating automated ROI feasibility evaluation and quantitative cost-benefit gates
 #    - Incorporating executive steering committee callbacks, formal sign-off events, or timeouts
 #    - Requiring automated strategic compensation (e.g. invalidating downstream initiative allocations)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (BRD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (BRD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting single-capability business requirements, direct business processes, or focused enhancements
 #    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================

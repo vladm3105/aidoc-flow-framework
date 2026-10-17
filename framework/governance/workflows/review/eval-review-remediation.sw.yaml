@@ -16,7 +16,7 @@ description: >-
   gate floor evaluation, and author remediation.
 
 metadata:
-  framework_version: "0.92.1"
+  framework_version: "0.92.2"
   governed_layer: "10_EVAL"
   workflow_type: "governance-review-saga"
   flow_code: "REV-10-EVAL"

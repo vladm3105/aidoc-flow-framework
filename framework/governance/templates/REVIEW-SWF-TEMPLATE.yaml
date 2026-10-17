@@ -7,6 +7,26 @@
 #  Purpose: Canonical template for configuring and instantiating review sagas
 #           with layer-specific crews, deterministic gate floor evaluation,
 #           and rollback compensation.
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Review and remediation governance operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (REVIEW-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW review crews dispatch across playbooks, how
+#       findings accumulate, how gates evaluate, and how SAGA compensation triggers rollback.
+#    2. Content Graph (Data Plane) — REVIEW_REPORT-TEMPLATE.yaml & *-GRAPH-TEMPLATE.yaml:
+#       Defines WHAT content, findings, check evaluations, remediation tasks, and evidence
+#       are presented in the review report and the underlying document under inspection.
+#    Both graphs work together: the Process DAG drives multi-lens inspection and saga loops,
+#    populates the Content Graph, runs BTV verification, and projects the review verdict into
+#    the ratified Review Report (REV-RPT-NN.yaml).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (REVIEW-SWF-TEMPLATE.yaml — PRIMARY WORKFLOW STANDARD) when:
+#    - Instantiating machine-executable review and remediation state machines
+#    - Orchestrating multi-lens review crews, wall-clock break circuits, and SAGA rollbacks
+#    - Targeting autonomous AI agent execution or governance orchestrators (LangGraph/Temporal)
+#  Use the companion template (REVIEW_REPORT-TEMPLATE.yaml — REPORT ARTIFACT STANDARD) when:
+#    - Emitting review findings, scores, quality gate receipts, and CHG handover records
 # =============================================================================
 
 id: "[layer-code]-review-remediation-flow"
@@ -19,7 +39,7 @@ description: >-
   and mutating remediation cycle with rollback compensation.
 
 metadata:
-  framework_version: "0.92.1"
+  framework_version: "0.92.2"
   governed_layer: "[01_BRD|02_PRD|03_EARS|04_BDD|05_ADR|06_SPEC|07_TDD|08_IPLAN|09_CHG]"
   workflow_type: "governance-review-saga"
 

@@ -9,14 +9,27 @@
 #  Downstream: BDD (Layer 4)
 #  Upstream: PRD (Layer 2)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 03 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (EARS-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to parse, validate, and ratify the requirements.
+#       Orchestrates syntax parsing, DAG dependency checks, BDD-readiness gating (BTV),
+#       clarification callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (EARS-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (atomic EARS statements, quality attributes, timing bounds).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (EARS-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (EARS-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (EARS-SWF-TEMPLATE.yaml + EARS-GRAPH-TEMPLATE.yaml) when:
 #    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
 #    - Orchestrating automated BDD-readiness evaluation (Binary Topological Validation switch gates per CHG-97)
 #    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
 #    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (EARS-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (EARS-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting straightforward, single-system requirements, linear feature sets, or tabular EARS clauses
 #    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================

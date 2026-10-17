@@ -10,14 +10,27 @@
 #  Downstream: EARS (Layer 3)
 #  Upstream: BRD (Layer 1)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 02 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (PRD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to decompose, prioritize, and ratify the PRD.
+#       Orchestrates container boundary analysis, RICE scoring, threshold checks,
+#       stakeholder negotiation callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (PRD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (features, user stories, acceptance criteria, thresholds).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (PRD-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (PRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (PRD-SWF-TEMPLATE.yaml + PRD-GRAPH-TEMPLATE.yaml) when:
 #    - Modeling multi-container product decomposition (C4 Level 2), microservices, or distributed components
 #    - Orchestrating automated feature prioritization (MoSCoW/RICE) and quantitative threshold validation
 #    - Incorporating stakeholder scope negotiation callbacks, external product feedback events, or timeouts
 #    - Requiring automated compensation (invalidating provisional downstream EARS/BDD artifacts on rejection)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (PRD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (PRD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting straightforward, single-container initiatives, monolithic services, or linear feature sets
 #    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
