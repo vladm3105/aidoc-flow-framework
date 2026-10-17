@@ -27,6 +27,7 @@ NODE_TYPES = {
     "test_fixture",
     "task_action",
     "change_request",
+    "evaluation_suite",
 }
 
 EDGE_RELATIONS = {
@@ -55,9 +56,9 @@ TEMPLATE_ID_PATTERN = re.compile(
     r"^(@[a-zA-Z0-9_-]+:)?("
     r"[A-Z]{3,4}\.[0-9]{2}\.[0-9]{2}\.(xxxx|[a-f0-9]{4})"
     r"|TASK\.[0-9]{2}\.[0-9]{2}\.(xxxx|[a-f0-9]{4})(_rollback)?"
-    r"|CHG-[0-9]{2,3}"
+    r"|CHG-([0-9]{2,3}|NN)"
     r"|SEED-[a-zA-Z0-9_-]+"
-    r"|MODULE-[0-9]{2})$"
+    r"|MODULE-([0-9]{2}|NN))$"
 )
 
 

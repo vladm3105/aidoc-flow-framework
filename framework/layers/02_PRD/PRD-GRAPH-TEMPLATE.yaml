@@ -1,0 +1,85 @@
+# =============================================================================
+#  PRD-GRAPH-TEMPLATE.yaml — Product Requirements Graph Slice (Layer 02)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 02_PRD (Product Requirements Document)
+#  Parity: Full content and functional parity with PRD-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "PRD-NN_[product_feature_slug]"
+
+metadata:
+  author: "[Product Manager / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Functional product capabilities, user personas, container bounds, and SLA targets]"
+  layer: "02_PRD"
+  personas:
+    - role: "EndUser"
+      description: "Consumer executing transactional checkout flows"
+    - role: "PlatformOperator"
+      description: "Engineer monitoring order ingestion throughput and failure queues"
+  c4_level: "container"
+  ears_ready_target: "90/100"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Core Functional Product Capability (Section 4 & 7 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.04.xxxx"
+    type: "product_capability"
+    title: "[Product Capability Title: e.g. Synchronous Order Ingestion Gateway]"
+    statement: "[Functional capability provided by the system container to target personas]"
+    properties:
+      persona: "EndUser"
+      priority: "P0"  # MoSCoW: Must | Should | Could | Wont
+      sla_threshold: "p99 < 50ms"
+      release_phase: "MVP"
+      feature_flag: "feature.order_gateway.v2"
+
+  # ---------------------------------------------------------------------------
+  # User Journey Flow / Interaction Capability (Section 5 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.05.xxxx"
+    type: "product_capability"
+    title: "[User Journey Flow: e.g. One-Click Reorder Checkout Flow]"
+    statement: "[Step-by-step user interaction flow from cart review to settlement confirmation]"
+    properties:
+      persona: "EndUser"
+      interaction_type: "asynchronous_flow"
+      fallback_behavior: "Graceful degradation to standard multi-step form"
+
+  # ---------------------------------------------------------------------------
+  # Quality Attribute & Operational SLA Bound (Section 8 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.08.xxxx"
+    type: "product_capability"
+    title: "[Product Performance Threshold: e.g. Cart Checkout Latency SLA]"
+    statement: "[Maximum allowable latency under peak holiday transactional volume]"
+    properties:
+      metric: "latency_p99"
+      threshold: "50ms"
+      telemetry_event: "order.checkout.latency"
+
+edges:
+  # Product Capability realizes Upstream Business Capability (Layer 01 BRD)
+  - from: "PRD.02.04.xxxx"
+    to: "BRD.01.07.xxxx"
+    relation: "realizes"
+    notes: "Implements the core business capability defined in BRD"
+
+  # User Journey realizes Product Capability
+  - from: "PRD.02.05.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Concrete interaction journey fulfilling the product capability"
+
+  # Quality Attribute constrains Product Capability
+  - from: "PRD.02.08.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "constrains"
+    notes: "Operational latency SLA bounds execution behavior"

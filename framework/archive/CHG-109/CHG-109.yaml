@@ -1,0 +1,164 @@
+# =============================================================================
+#  CHG-109: Codify Layer-Specific SDD Graph Templates Across Layers 01–10
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-16)
+#  Scope: Native Layer-Specific SDD Graph Templates with complete content and functional parity
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-16"
+  framework_version: "0.92.1"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-109"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-16T00:00:00Z"
+  date_approved: "2026-10-16T00:00:00Z"
+  date_implemented: "2026-10-16T20:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-16T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-16): approved. implement graph-based templates for each layer.
+      Note the graph-based templates should have parity with all other templates in respect with content
+      and functionality
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-109)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-109"
+  title: "Layer-Specific SDD Graph Templates Parity Architecture"
+  status: "Ratified"
+  context: |
+    While CHG-108 successfully codified the Native Property Graph Schema and Observability
+    Adapter Contract, the single starter template (INITIATIVE-GRAPH-TEMPLATE.yaml) provided only
+    a 1-node-per-layer toy demonstration. In enterprise production projects, each SDD layer
+    possesses distinct domain entities, governance rules, and functional scopes:
+    - Layer 01 (BRD): Requires strategic goals, business capabilities, quality expectations, and acceptance criteria.
+    - Layer 02 (PRD): Requires personas, user journeys, functional product capabilities, and SLA bounds.
+    - Layer 03 (EARS): Requires formal requirements mapped across all 5 canonical EARS patterns.
+    - Layer 04 (BDD): Requires executable Given/When/Then scenarios with edge-case vectors.
+    - Layer 05 (ADR): Requires multi-candidate trade-offs and decision consequences.
+    - Layer 06 (SPEC): Requires component interfaces, gRPC/OpenAPI schemas, and CloudEvent envelopes.
+    - Layer 07 (TDD): Requires concrete unit, integration, and security test proof fixtures.
+    - Layer 08 (IPLAN): Requires atomic code mutation tasks with 1:1 mandatory saga rollback compensation.
+    - Layer 09 (CHG): Requires change request envelopes, gate checklists, and blast radius links.
+    - Layer 10 (EVAL): Requires evaluation suites, quality gate scoring, and regression benchmarks.
+  choice: |
+    Establish 10 Layer-Specific SDD Graph Templates (<LAYER>-GRAPH-TEMPLATE.yaml) co-located
+    within framework/layers/01_BRD through framework/layers/10_EVAL with 100% content and
+    functional parity:
+    1. Schema & Engine Expansion: Update sdd-graph.schema.json and graph_engine.py to natively
+       support evaluation_suite (Layer 10) and layer slice prefixes in slice_id.
+    2. Modularity & Slicing: Enable multi-file authoring under docs/sdd/graph/ where each layer
+       is authored independently without cross-role git merge conflicts.
+    3. Retain Cross-Layer Starter: Retain INITIATIVE-GRAPH-TEMPLATE.yaml in framework/templates/
+       as a single-file spike/micro-initiative starter.
+  consequences: |
+    - Complete parity achieved between graph templates and legacy SWF/static templates.
+    - Specialized AI agents (Product Owner, Requirements Specialist, QA SDET, Architect, Developer)
+      can author dedicated layer graph slices with full domain guidance.
+    - Zero breaking changes to existing templates or conformance suites.
+  alternatives_considered:
+    - option: "Expand INITIATIVE-GRAPH-TEMPLATE.yaml into a single monolithic 1,000-line template"
+      rationale_rejected: >-
+        Reintroduces token bloat and multi-agent merge conflicts. Layer-specific modular slices
+        co-located with layer definitions match real-world role separation.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Codify Layer-Specific SDD Graph Templates Across Layers 01–10"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-16T00:00:00Z"
+  summary: |
+    Implement dedicated <LAYER>-GRAPH-TEMPLATE.yaml files across all 10 framework layers with
+    complete content and functional parity with existing SWF and static templates.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: >-
+    Layer-specific SDD graph templates parity across Layers 01 through 10.
+  components_affected:
+    - "framework/governance/sdd-graph.schema.json"
+    - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    - "sdd_doc_lint/graph_engine.py"
+    - "framework/layers/01_BRD/BRD-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/CHG-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-GRAPH-TEMPLATE.yaml"
+    - "tests/conformance/test_sdd_graph_schema.py"
+    - "tests/unit/test_graph_engine.py"
+    - "framework/archive/CHG-109/CHG-109.yaml"
+    - "framework/archive/CHG-109/IPLAN-109.yaml"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-109/IPLAN-109.yaml"
+  steps:
+    - step: "Author authorizing CHG-109.yaml and IPLAN-109.yaml"
+      phase: "iplan_creation"
+    - step: "Update sdd-graph.schema.json and graph_engine.py for evaluation_suite and layer slice prefixes"
+      phase: "schema_engine_update"
+    - step: "Author BRD-GRAPH-TEMPLATE.yaml and PRD-GRAPH-TEMPLATE.yaml"
+      phase: "templates_l1_l2"
+    - step: "Author EARS-GRAPH-TEMPLATE.yaml and BDD-GRAPH-TEMPLATE.yaml"
+      phase: "templates_l3_l4"
+    - step: "Author ADR-GRAPH-TEMPLATE.yaml and SPEC-GRAPH-TEMPLATE.yaml"
+      phase: "templates_l5_l6"
+    - step: "Author TDD-GRAPH-TEMPLATE.yaml and IPLAN-GRAPH-TEMPLATE.yaml"
+      phase: "templates_l7_l8"
+    - step: "Author CHG-GRAPH-TEMPLATE.yaml and EVAL-GRAPH-TEMPLATE.yaml"
+      phase: "templates_l9_l10"
+    - step: "Update test_sdd_graph_schema.py and test_graph_engine.py for 10-layer template conformance"
+      phase: "verification"
+    - step: "Bump framework/VERSION to 0.92.1 and synchronize references"
+      phase: "version_fanout"

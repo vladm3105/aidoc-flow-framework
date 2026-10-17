@@ -1,0 +1,89 @@
+# =============================================================================
+#  TDD-GRAPH-TEMPLATE.yaml — Test Proof Fixture Graph Slice (Layer 07)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 07_TDD (Test-Driven Development & Acceptance Proofs)
+#  Parity: Full content and functional parity with TDD-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "TDD-NN_[component_slug]"
+
+metadata:
+  author: "[SDET / Developer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Executable test fixtures and verification proofs authored test-first]"
+  layer: "07_TDD"
+  test_frameworks:
+    unit: "pytest >= 8.0"
+    integration: "testcontainers >= 4.0"
+  iplan_ready_target: "90/100"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Unit Test Proof Fixture (Section 4 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "TDD.07.01.xxxx"
+    type: "test_fixture"
+    title: "[Unit Test Proof: Order Line-Item Validation Logic]"
+    target_file: "tests/unit/test_order_service.py"
+    command: "pytest tests/unit/test_order_service.py::test_validate_order_success -v"
+    properties:
+      test_function: "test_validate_order_success"
+      test_category: "unit"
+      timeout_seconds: 5
+      assertions:
+        - "assert result.status == 'VALID'"
+        - "assert result.error_code is None"
+
+  # ---------------------------------------------------------------------------
+  # Integration / Concurrency Test Proof Fixture
+  # ---------------------------------------------------------------------------
+  - id: "TDD.07.02.xxxx"
+    type: "test_fixture"
+    title: "[Integration Test Proof: Concurrent Stock Reservation Contention]"
+    target_file: "tests/integration/test_inventory_concurrency.py"
+    command: "pytest tests/integration/test_inventory_concurrency.py::test_race_condition -v"
+    properties:
+      test_function: "test_race_condition"
+      test_category: "integration"
+      isolation_strategy: "testcontainers (PostgreSQL 16 + Redis 7)"
+      assertions:
+        - "assert successful_orders == 1"
+        - "assert failed_orders == 1"
+
+  # ---------------------------------------------------------------------------
+  # Security / Authentication Regression Test Fixture
+  # ---------------------------------------------------------------------------
+  - id: "TDD.07.03.xxxx"
+    type: "test_fixture"
+    title: "[Security Test Proof: Expired Session Token Rejection]"
+    target_file: "tests/unit/test_auth_guard.py"
+    command: "pytest tests/unit/test_auth_guard.py::test_expired_token_rejected -v"
+    properties:
+      test_function: "test_expired_token_rejected"
+      test_category: "security"
+      assertions:
+        - "assert response.status_code == 401"
+        - "assert 'expired' in response.json()['detail']"
+
+edges:
+  # Test Fixture proves Upstream Acceptance Scenario (Layer 04 BDD)
+  - from: "TDD.07.01.xxxx"
+    to: "BDD.04.01.xxxx"
+    relation: "proves"
+    notes: "Mandatory Oracle proof: unit test asserts happy-path checkout scenario"
+
+  - from: "TDD.07.02.xxxx"
+    to: "BDD.04.02.xxxx"
+    relation: "proves"
+    notes: "Proves concurrency edge case scenario under stock depletion"
+
+  - from: "TDD.07.03.xxxx"
+    to: "BDD.04.03.xxxx"
+    relation: "proves"
+    notes: "Proves security oracle scenario rejecting expired JWT tokens"

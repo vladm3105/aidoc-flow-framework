@@ -112,6 +112,20 @@ class TestSddGraphSchema(unittest.TestCase):
         errors = validate_schema(data, self.schema)
         self.assertEqual(errors, [], f"Template validation errors: {errors}")
 
+    def test_all_ten_layer_graph_templates_validate(self) -> None:
+        """Assert all 10 layer graph templates exist and satisfy sdd-graph.schema.json."""
+        layer_templates = sorted((FRAMEWORK / "layers").glob("*/*-GRAPH-TEMPLATE.yaml"))
+        self.assertEqual(
+            len(layer_templates),
+            10,
+            f"Expected exactly 10 layer graph templates, found {len(layer_templates)}: {layer_templates}",
+        )
+        for tpl in layer_templates:
+            with tpl.open("r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+            errors = validate_schema(data, self.schema)
+            self.assertEqual(errors, [], f"Schema validation errors in {tpl.name}: {errors}")
+
     def test_valid_minimal_graph(self) -> None:
         """Verify a valid minimal property graph slice."""
         minimal = {
