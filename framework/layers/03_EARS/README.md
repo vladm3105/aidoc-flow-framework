@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 ## Overview
 
@@ -38,7 +38,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `EARS-TEMPLATE.yaml` | **Default Declarative** — full template with embedded authoring guidance for single-system requirements. Self-documenting for AI agents. |
-| `EARS-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
+| `EARS-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding formal EARS requirements statements and trigger dependencies. Source of truth in git. |
+| `EARS-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
 | `EARS_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining EARS primitive to CNCF state mappings, DAG integrity rules, and invalidation compensation. |
 | `EARS-00_index.TEMPLATE.yaml` | EARS registry template — tracks planned and active EARS documents and statement patterns per project in canonical 5-Quadrant YAML. |
 

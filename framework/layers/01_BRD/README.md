@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 
@@ -65,18 +65,20 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |---|---|
 | `BRD-TEMPLATE.yaml` | **Standard Declarative** — full template with embedded authoring guidance (`_guidance`, `_note`, `_example`, `_antipatterns` fields). Self-documenting for AI agents and focused/linear business capabilities. |
-| `BRD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope template embedding CNCF Serverless Workflow v0.8 state machines for complex value stream mapping, ROI feasibility, and executive steering consensus. |
+| `BRD-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding goals, capabilities, and dependencies. Single source of truth in git for context slicing and impact analysis. |
+| `BRD-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope template embedding CNCF Serverless Workflow v0.8 state machines for complex value stream mapping, ROI feasibility, and executive steering consensus. |
 | `BRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining the mapping of business requirements primitives to CNCF state types, graph integrity invariants, and zero-runtime execution. |
 | `BRD-00_index.TEMPLATE.yaml` | BRD registry template — tracks planned and active BRDs per project in canonical 5-Quadrant YAML. |
 
-### Dual-Template Selection Matrix
+### Three-Tier Architectural and Dual-Template Selection Matrix
 
-Layer 01 supports dual-template selection based on business domain complexity (GD-61):
+Layer 01 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on business domain complexity (GD-61):
 
-| Initiative Profile | Recommended Template | Operational Rationale |
-|---|---|---|
-| Single capability, direct business process, or focused enhancement | `BRD-TEMPLATE.yaml` | Declarative, lightweight, lowest overhead for linear requirements. |
-| Multi-stream value flows, quantitative ROI evaluation, steering committee review callbacks, or invalidation sagas | `BRD-SWF-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow graph enabling automated validation and rollback. |
+| Initiative Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct business process, linear requirements | `BRD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `BRD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-stream value flows, review callbacks, or rollback sagas | `BRD-SWF-TEMPLATE.yaml` | `BRD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating the authoring and verification lifecycle. |
 
 ## Lifecycle: MVP → PROD → NEW MVP
 

@@ -57,6 +57,7 @@ EXPECTED_FILES = [
     "templates/REVIEW_REPORT-TEMPLATE.yaml",
     "templates/REVIEW-SWF-TEMPLATE.yaml",
     "templates/CHG-SWF-TEMPLATE.yaml",
+    "templates/CHG-GRAPH-TEMPLATE.yaml",
     "IPLAN_WORKFLOW_STANDARD.md",
     "workflows/chg-request-flow.sw.yaml",
     "workflows/seed-to-module-decomposition.sw.yaml",

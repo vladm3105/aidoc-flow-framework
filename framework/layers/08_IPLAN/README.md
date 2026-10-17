@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 
 ## C4 Model Position
@@ -196,12 +196,13 @@ To modify a Verified IPLAN:
 2. Create a NEW IPLAN (IPLAN-NN+1) that references the original
 3. The original IPLAN remains in `Verified` status as historical record
 
-## Template
+## Templates & Reference Documents
 
 | File | Purpose |
 |------|---------|
-| `IPLAN-SWF-TEMPLATE.yaml` | **Executable Workflow** — adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs, test switch gates, and native saga rollback compensation (`subtype: workflow`). See [`IPLAN_WORKFLOW_STANDARD.md`](../../governance/IPLAN_WORKFLOW_STANDARD.md). |
 | `IPLAN-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `IPLAN-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding task DAGs, file manifests, and execution dependencies. Source of truth in git. |
+| `IPLAN-SWF-TEMPLATE.yaml` | **Executable Workflow (Tier 1)** — adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs, test switch gates, and native saga rollback compensation (`subtype: workflow`). See [`IPLAN_WORKFLOW_STANDARD.md`](../../governance/IPLAN_WORKFLOW_STANDARD.md). |
 | `IPLAN-VERIFY-TEMPLATE.yaml` | **Legacy validation** — superseded by the EVAL-RPT flow (CHG-08 #662); retained for existing readers. New validation authors EVAL-RPT reports; repairs use the `bugfix` subtype. |
 
 **Downstream**: [10_EVAL](../10_EVAL/) — Evaluation & QA Governance

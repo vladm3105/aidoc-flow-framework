@@ -1,0 +1,177 @@
+# =============================================================================
+#  CHG-113: Integrate SDD-GRAPH v2.0 Templates, Kùzu Graph Engine Guidance, and Modernized Workstation Standard
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-17)
+#  Scope: SDD-GRAPH v2.0 layer templates, 3-Tier Layer READMEs, Kùzu graph engine
+#         guidance, workstation directory codification, and graph automation tasks
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-17"
+  framework_version: "0.96.0"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-113"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-17T15:27:00Z"
+  date_approved: "2026-10-17T15:27:00Z"
+  date_implemented: "2026-10-17T15:35:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-17T15:27:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-17): approved, author CHG-113
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-113)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-113"
+  title: "Integrate SDD-GRAPH v2.0 Templates, Kùzu Graph Engine Guidance, and Modernized Workstation Standard"
+  status: "Ratified"
+  context: |
+    Audits of the framework across layers 01_BRD through 10_EVAL revealed that while single-document
+    declarative specifications (*-TEMPLATE.yaml) and workflow execution state machines (*-SWF-TEMPLATE.yaml)
+    exist, the canonical SDD-GRAPH v2.0 Data Plane (*-GRAPH-TEMPLATE.yaml) is missing from layer template
+    directories. Furthermore:
+    1. Layer READMEs do not declare the Three-Tier Architecture (Tier 1 Execution Flow, Tier 2 Canonical Data
+       Plane DAG, Tier 3 Compiled Presentation).
+    2. Framework specifications lack explicit guidance defining when and how AI agents should use the
+       Kùzu OLAP graph engine versus pure-Python fallbacks.
+    3. The Workstation Standard (docs/AIDOC_WORKSTATION_STANDARD.md) and installation automation do not
+       standardize the graph directory (docs/sdd/graph/) or provide turnkey graph management tasks.
+  choice: |
+    Execute the modernization per the ratified roadmap:
+    1. Author *-GRAPH-TEMPLATE.yaml (schema v2.0) across all 10 layers (01_BRD through 10_EVAL).
+    2. Update layer READMEs (01_BRD through 10_EVAL) and framework/layers/README.md with the Three-Tier
+       architectural model.
+    3. Codify Kùzu graph engine guidance in framework/AI_ASSISTANT_RULES.md, specifying when to use Kùzu
+       (agent prompt slicing, PR blast radius calculation, ad-hoc openCypher queries) and how to use it
+       via Pillar 4 (aidoc-context-tools) while preserving zero-runtime engine neutrality (D-0013 / GD-13).
+    4. Update docs/AIDOC_WORKSTATION_STANDARD.md, BOOTSTRAP.md, framework/scripts/install.sh, and
+       TASKFILE-TEMPLATE.yml to codify docs/sdd/graph/ and turnkey graph automation tasks.
+  consequences: |
+    - Consumer repositories gain first-class declarative graph slices across all 10 SDD layers.
+    - AI coding agents can slice context and query dependencies in sub-millisecond openCypher via FastMCP.
+    - Consumer git repositories remain 100% clean and free of binary database bloat.
+    - Preserves Decision D-0013 / GD-13 (zero-runtime framework neutrality).
+  alternatives_considered:
+    - option: "Vendor Kùzu binary files directly inside consumer .aidoc/ git repositories"
+      rationale_rejected: >-
+        Rejected per Decision D-0013 and GD-13. Distributing native C++ binaries inside git-tracked repos
+        causes 150MB+ repo bloat, cross-compilation failures across architectures, and breaks platform neutrality.
+    - option: "Rely solely on pure-Python DFS AST scanning without Kùzu"
+      rationale_rejected: >-
+        Rejected because recursive AST traversal becomes a latency bottleneck in repositories with hundreds
+        of layered contracts and lacks openCypher variable-length path matching.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Integrate SDD-GRAPH v2.0 Templates, Kùzu Graph Engine Guidance, and Modernized Workstation Standard"
+  description: >-
+    Author SDD-GRAPH v2.0 templates across all 10 layers, document the Three-Tier architecture in layer READMEs,
+    codify Kùzu engine operational rules in AI assistant rules, and modernize the workstation standard with
+    graph directory layout and Taskfile automation.
+  justification: >-
+    Equips autonomous AI agents with high-density, sub-millisecond graph slicing and openCypher queries
+    while maintaining zero binary bloat and full engine neutrality.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - "README.md"
+    - "framework/layers/01_BRD/README.md"
+    - "framework/layers/02_PRD/README.md"
+    - "framework/layers/03_EARS/README.md"
+    - "framework/layers/04_BDD/README.md"
+    - "framework/layers/05_ADR/README.md"
+    - "framework/layers/06_SPEC/README.md"
+    - "framework/layers/07_TDD/README.md"
+    - "framework/layers/08_IPLAN/README.md"
+    - "framework/layers/10_EVAL/README.md"
+    - "framework/AI_ASSISTANT_RULES.md"
+    - "docs/AIDOC_WORKSTATION_STANDARD.md"
+    - "framework/templates/TASKFILE-TEMPLATE.yml"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "framework/scripts/install.sh"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+    - "tests/conformance/test_governance.py"
+  artifacts_created:
+    - "framework/archive/CHG-113/CHG-113.yaml"
+    - "framework/archive/CHG-113/IPLAN-113.yaml"
+    - "framework/layers/README.md"
+    - "framework/governance/templates/CHG-GRAPH-TEMPLATE.yaml"
+  affected_components:
+    - "All 10 SDD Layer Template Trees"
+    - "AI Assistant Rules (framework/AI_ASSISTANT_RULES.md)"
+    - "Workstation Standard & Taskfile Automation"
+    - "Installation Scripts"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-113/IPLAN-113.yaml"
+  steps:
+    - step: "Author authorizing CHG-113.yaml and IPLAN-113.yaml"
+      phase: "iplan_creation"
+    - step: "Create *-GRAPH-TEMPLATE.yaml across layers 01_BRD through 10_EVAL and governance"
+      phase: "graph_template_authoring"
+    - step: "Update Layer READMEs and framework/layers/README.md with Three-Tier Architecture"
+      phase: "documentation_alignment"
+    - step: "Codify Kùzu graph engine rules and FastMCP tool usage in framework/AI_ASSISTANT_RULES.md"
+      phase: "agent_guidance"
+    - step: "Update docs/AIDOC_WORKSTATION_STANDARD.md, TASKFILE-TEMPLATE.yml, install.sh, and BOOTSTRAP.md"
+      phase: "workstation_standardization"
+    - step: "Bump framework/VERSION to 0.96.0, synchronize references, and verify linters and tests"
+      phase: "version_fanout_and_verification"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-113/CHG-113.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "bash hooks/pre_push_check.sh"
+  manual_verification:
+    - "Verify SDD-GRAPH v2.0 templates conform to node and edge schema specifications"
+    - "Verify Kùzu engine guidance explicitly enforces zero binary bloat and FastMCP usage"
+    - "Verify Taskfile tasks sdd:validate-graph, sdd:slice, and sdd:query-graph function correctly"

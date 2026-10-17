@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 ## Overview
 
@@ -35,12 +35,13 @@ Solution Space (Technology-Bound):
     └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |---|---|
 | `ADR-TEMPLATE.yaml` | **Standard** — static template with embedded authoring guidance for atomic architectural decisions. |
-| `ADR-SWF-TEMPLATE.yaml` | **Workflow** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
+| `ADR-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding architecture decisions, trade-offs, and driver links. Source of truth in git. |
+| `ADR-SWF-TEMPLATE.yaml` | **Workflow (Tier 1)** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
 | `ADR_WORKFLOW_STANDARD.md` | **Normative Standard** — formal mapping of architecture decision evaluation primitives to CNCF Serverless Workflow state machines. |
 | `ADR-00_index.TEMPLATE.yaml` | ADR & Project Technology Stack Registry template — tracks planned/active ADRs and houses the canonical agent-readable technology inventory for security monitoring and automated updates. |
 

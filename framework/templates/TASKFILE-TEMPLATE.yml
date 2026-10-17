@@ -25,12 +25,25 @@ tasks:
       - python3 -m aidoc_flow_langgraph.cli review --config {{.ENGINE_CONFIG}} {{.CLI_ARGS}}
 
   slice:
-    desc: "Slice and pack SDD context DAG for LLM prompts (with native fallback)"
+    desc: "Slice and pack SDD context DAG for LLM prompts (with Kùzu acceleration & native fallback)"
     cmds:
       - >-
         python3 -c "import aidoc_context" 2>/dev/null &&
         python3 -m aidoc_context.cli.main slice {{.CLI_ARGS}} ||
         python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
+
+  setup-kuzu:
+    desc: "Install Kùzu OLAP graph database into local environment for sub-millisecond edge slicing"
+    cmds:
+      - uv pip install "kuzu>=0.8.0" || pip install "kuzu>=0.8.0"
+
+  kuzu-status:
+    desc: "Check Kùzu graph engine index status and node/edge metrics"
+    cmds:
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main kuzu-status --root {{.SDD_DIR}} {{.CLI_ARGS}} ||
+        echo "aidoc-context-tools not installed. Run task sdd:setup-kuzu."
 
   check:
     desc: "Full SDD Gate: structural linting + cryptographic review verification"
@@ -55,9 +68,12 @@ tasks:
       - python3 -m sdd_doc_lint --render-pr-impact --base origin/main --head HEAD {{.CLI_ARGS}}
 
   graph-cypher:
-    desc: "Execute openCypher query on SDD graph via embedded Kùzu adapter"
+    desc: "Execute openCypher query on SDD graph via embedded Kùzu adapter (Pillar 4)"
     cmds:
-      - python3 -m sdd_doc_lint --cypher "{{.QUERY}}" --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main cypher --query "{{.QUERY}}" --root {{.SDD_DIR}} {{.CLI_ARGS}} ||
+        python3 -m sdd_doc_lint --cypher "{{.QUERY}}" --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
 
   lake-export:
     desc: "Export local SDD graph to openCypher / Apache AGE for Central Federated Read Lake"

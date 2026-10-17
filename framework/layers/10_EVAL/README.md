@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 ## Overview
 
@@ -236,10 +236,12 @@ The monolithic strategy documents (`EVAL-01_functional_strategy.yaml`,
 `EVAL-02_unit_smoke_strategy.yaml`) were deprecated as of v2.0 and have since
 been removed. Test strategy is per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |------|---------|
-| `EVAL-TEMPLATE.yaml` | Per-IPLAN evaluation strategy template |
+| `EVAL-TEMPLATE.yaml` | **Default** — Per-IPLAN evaluation strategy template |
+| `EVAL-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding evaluation test cases, reports, and coverage evidence. Source of truth in git. |
+| `EVAL-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) orchestrating multi-cycle verification runs, findings remediation, and gate verdicts. |
 | `EVAL-REPORT-TEMPLATE.yaml` | Self-contained evaluation report template |
 | `EVAL-00_index.TEMPLATE.yaml` | Master index template in canonical 5-Quadrant YAML |
