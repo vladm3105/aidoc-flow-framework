@@ -46,35 +46,40 @@ The table below defines the formal mapping of BRD business requirement primitive
 
 ---
 
-## 3. Dual-Template Architecture & Selection Matrix
+## 3. Two-Graph & Dual-Template Architecture Selection Matrix
 
-Layer 01 provides two canonical authoring templates. Authors and autonomous AI agents MUST select the template matching the structural complexity of the business initiative:
+Layer 01 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable process workflow with an atomic content graph to generate and ratify business requirements:
 
 ```text
-                              ┌───────────────────────────────────┐
-                              │  Does the business initiative     │
-                              │  span multiple value streams,     │
-                              │  ROI models, or executive gates?  │
-                              └─────────────────┬─────────────────┘
-                                                │
-                                ┌───────────────┴───────────────┐
-                                │                               │
-                                ▼ YES                           ▼ NO
-                ┌──────────────────────────────┐ ┌──────────────────────────────┐
-                │   BRD-SWF-TEMPLATE.yaml      │ │       BRD-TEMPLATE.yaml      │
-                │   (Hybrid Envelope Subtype)  │ │      (Standard Declarative)  │
-                │                              │ │                              │
-                │  - Embedded CNCF v0.8 Graph  │ │  - Declarative YAML tables   │
-                │  - Parallel Value Streams    │ │  - Standard objective table  │
-                │  - Automated ROI Calculation │ │  - Single-capability apps   │
-                │  - Steering Review Callback  │ │  - Small/focused initiatives │
-                │  - Invalidation Compensation │ │                              │
-                └──────────────────────────────┘ └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 01 BRD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       BRD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (BRD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to create, evaluate & ratify the BRD     │ • Content of WHAT entities exist   │
+│ • Value stream mapping (Customer, Ops, Financial)      │ • Business drivers & objectives    │
+│ • Automated quantitative ROI & feasibility gating      │ • Operational capabilities         │
+│ • Executive steering committee review callbacks        │ • Relational links (realizes, etc) │
+│ • Strategic invalidation saga (compensatedBy)          │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates authoring & verification steps    │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & acyclicity              │
+                    │ • Observability Adapter projects graph into BRD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
 ```
 
-### Selection Rules:
-1. **Use `BRD-TEMPLATE.yaml`** when the business initiative is focused on a single capability, direct business workflow, or minor enhancement with straightforward stakeholder alignment.
-2. **Use `BRD-SWF-TEMPLATE.yaml`** when the initiative spans multiple operational value streams, requires formal financial feasibility/ROI verification, involves multi-party executive steering reviews, or mandates automated invalidation rollbacks.
+### Dual-Template Selection Rules:
+Authors and autonomous AI agents select the template matching the structural complexity of the business initiative:
+1. **Use Two-Graph Generation (`BRD-SWF-TEMPLATE.yaml` [Hybrid Envelope Subtype] + `BRD-GRAPH-TEMPLATE.yaml` [Property Graph])** when the initiative spans multiple operational value streams, requires formal financial feasibility/ROI verification, involves multi-party executive steering reviews, or mandates automated invalidation rollbacks. The Process DAG guides authoring, populates the Content Graph, executes BTV verification, and projects the final BRD specification.
+2. **Use Companion Declarative (`BRD-TEMPLATE.yaml`)** directly when the business initiative is focused on a single capability, direct business workflow, or minor enhancement with straightforward stakeholder alignment where state machine orchestration is not needed.
 
 ---
 
@@ -120,3 +125,8 @@ When an autonomous AI agent or execution harness executes a BRD workflow via Lan
    - `switch` states evaluate JSONPath/CEL expressions against accumulated business metrics.
    - `callback` states pause the LangGraph thread using checkpointers until executive steering approval events are posted.
    - `compensatedBy` states execute rollback handlers when execution paths terminate in rejection.
+3. **Dual-Graph Pipeline Coordination**:
+   - **Step 1 (Process DAG Orchestration)**: LangGraph drives the authoring agent through the state machine.
+   - **Step 2 (Content Graph Mutation)**: As operations complete, the agent instantiates and updates nodes (`business_driver`, `strategic_objective`, `operational_capability`) and edges (`realizes`, `verifies`) in `BRD-GRAPH-TEMPLATE.yaml`.
+   - **Step 3 (Binary Topological Validation - BTV)**: The state machine executes BTV asserting DAG integrity, trace closure, and schema conformance.
+   - **Step 4 (Document Generation / Read Projection)**: The Observability Adapter compiles the validated property graph into the canonical human-readable document (`BRD-TEMPLATE.yaml` structure).

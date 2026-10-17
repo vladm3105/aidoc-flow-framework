@@ -35,6 +35,19 @@ Quality assurance in autonomous agent engineering operates across two distinct s
    - **Objective**: Verify operational correctness, anti-mock compliance, branch hygiene, and regression avoidance.
    - **Pass Criteria**: Full test suites green (unit, integration, conformance), 4-lens rubric passed, zero unhandled edge cases in exercised paths.
 
+### 1.3 Two-Graph Architecture in Review & Remediation Workflows
+
+Governance reviews and document ratification operate across two complementary graph planes:
+1. **Process DAG (Control Plane)**: Encoded in `*-review-remediation.sw.yaml` and `framework/governance/templates/REVIEW-SWF-TEMPLATE.yaml` (CNCF Serverless Workflow v0.8 DSL).
+   - Specifies the state machine of HOW review crews dispatch, how findings accumulate, how quality gates evaluate, how SAGA compensation (`compensatedBy`) executes rollback on linter breaks, and how CHG handover transitions occur.
+2. **Content Graph (Data Plane)**: Encoded in `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` and layer-specific content graphs (`*-GRAPH-TEMPLATE.yaml`).
+   - Specifies WHAT nodes, attributes, and relationships exist in the artifact under review and in the synthesized review report (e.g. `Finding` nodes, `Check` evaluations, `Remediation` touchpoints, and upstream/downstream traceability edges).
+
+During autonomous review and remediation loops:
+- The **Process DAG** drives the multi-lens agent crew across playbook evaluation checks, gathers findings, and manages remediation iterations.
+- The **Content Graph** models the semantic topology of both the artifact under test and the generated Review Report (`REV-RPT-NN`).
+- Binary Topological Validation (BTV) and deterministic linting (`sdd_doc_lint`, `sdd_swf_lint`) verify structural correctness, acyclicity, and closure across both graphs before document ratification or branch merging.
+
 ---
 
 ## 2. Review SAGA Traversal Taxonomy

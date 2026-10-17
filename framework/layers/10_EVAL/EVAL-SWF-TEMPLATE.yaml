@@ -5,8 +5,20 @@
 #  Downstream: EVAL-RPT (Layer 10 receipts), CI/CD, Deployment Gates
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 10 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (EVAL-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to run verification suites, calculate quality
+#       gates, evaluate criteria, handle sagas/remediations, and emit receipts.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (EVAL-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (test suites, quality gates, evaluation targets, receipts, verdicts).
+#    Both graphs work together to generate a document: the Process DAG drives suite
+#    orchestration, records test runs, populates the Content Graph, executes BTV verification,
+#    and projects the ratified evaluation report into the human-readable document (EVAL-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (EVAL-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (EVAL-SWF-TEMPLATE.yaml + EVAL-GRAPH-TEMPLATE.yaml — PRIMARY STANDARD) when:
 #    - Orchestrating multi-tier concurrent test execution across suites (unit, acceptance, SAST)
 #    - Incorporating automated quality gate calculation, receipt emission, and SAGA cleanup
 #    - Triggering autonomous agent remediation loops and bugfix dispatch via REVIEW_REMEDIATION_FLOW.md

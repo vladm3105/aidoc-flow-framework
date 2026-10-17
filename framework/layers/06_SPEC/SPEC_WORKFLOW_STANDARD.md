@@ -139,11 +139,39 @@ graph TD
 
 ---
 
-## 6. Dual-Template Selection Discipline
+## 6. Two-Graph Architecture & Dual-Template Selection Discipline
 
-Authors choose between the standard static template and the workflow-enabled hybrid template based on component architecture:
+Layer 06 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable component choreography workflow with an atomic technical specification content graph:
 
-| Selection Criteria | Standard [`SPEC-TEMPLATE.yaml`](./SPEC-TEMPLATE.yaml) | Hybrid [`SPEC-SWF-TEMPLATE.yaml`](./SPEC-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 06 SPEC TWO-GRAPH ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       SPEC-SWF-TEMPLATE.yaml (Hybrid Envelope)         │       (SPEC-GRAPH-TEMPLATE.yaml)   │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to choreograph & verify components       │ • Content of WHAT interfaces exist │
+│ • Distributed transaction sequencing & callbacks       │ • Public exports, methods, schemas │
+│ • Automated SLA & threshold verification switch gates  │ • Event contracts & data models    │
+│ • Distributed saga rollback compensation               │ • Relational links (implements etc)│
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates choreography & contract checks    │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & contract consistency    │
+                    │ • Observability Adapter projects graph into SPEC-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors choose between authoring configurations based on component architecture:
+
+| Selection Criteria | Standard Companion [`SPEC-TEMPLATE.yaml`](./SPEC-TEMPLATE.yaml) | Two-Graph [`SPEC-SWF-TEMPLATE.yaml`](./SPEC-SWF-TEMPLATE.yaml) + [`SPEC-GRAPH-TEMPLATE.yaml`](./SPEC-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Architecture Scope** | In-process component, utility library, pure algorithmic model | Distributed microservice, event-driven subsystem, multi-party saga |
 | **Interaction Nature** | Synchronous method calls, standard function exports | Asynchronous callbacks, webhooks, parallel service invocations |

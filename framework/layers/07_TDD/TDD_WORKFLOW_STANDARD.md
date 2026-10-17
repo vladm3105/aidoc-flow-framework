@@ -137,11 +137,39 @@ graph TD
 
 ---
 
-## 7. Dual-Template Selection Discipline
+## 7. Two-Graph Architecture & Dual-Template Selection Discipline
 
-Authors choose between two canonical templates based on test complexity:
+Layer 07 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable test orchestration workflow with an atomic test specification content graph:
 
-| Criteria | Standard [`TDD-TEMPLATE.yaml`](./TDD-TEMPLATE.yaml) | Hybrid [`TDD-SWF-TEMPLATE.yaml`](./TDD-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 07 TDD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       TDD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (TDD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to arrange, execute & verify test suites │ • Content of WHAT test cases exist │
+│ • Multi-tier concurrent branches & flaky retry backoffs│ • Test cases, assertions & fixtures│
+│ • Automated quality gate evaluation switch states      │ • BDD scenario links & SPEC traces │
+│ • First-class fixture teardown saga compensation       │ • Relational links (verifies etc)  │
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates test execution & fixture teardown │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & test case pairing       │
+                    │ • Observability Adapter projects graph into TDD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors choose between authoring configurations based on test complexity:
+
+| Criteria | Standard Companion [`TDD-TEMPLATE.yaml`](./TDD-TEMPLATE.yaml) | Two-Graph [`TDD-SWF-TEMPLATE.yaml`](./TDD-SWF-TEMPLATE.yaml) + [`TDD-GRAPH-TEMPLATE.yaml`](./TDD-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Test Case Type** | Pure functions, isolated unit tests, static mocks | Multi-tier tests, integration with external containers, databases |
 | **Execution Flow** | Flat, sequential test execution | Concurrent branches, retry backoffs, conditional gates |

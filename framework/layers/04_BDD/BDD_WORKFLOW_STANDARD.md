@@ -118,11 +118,39 @@ graph TD
 
 ---
 
-## 6. Dual-Template Discipline
+## 6. Two-Graph Architecture & Dual-Template Discipline
 
-Authors choose between two canonical templates based on scenario complexity:
+Layer 04 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable behavioral process workflow with an atomic scenario content graph:
 
-| Criteria | Standard [`BDD-TEMPLATE.yaml`](./BDD-TEMPLATE.yaml) | Hybrid [`BDD-SWF-TEMPLATE.yaml`](./BDD-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 04 BDD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       BDD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (BDD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to execute, verify & rollback scenarios  │ • Content of WHAT scenarios exist  │
+│ • Multi-step stateful journeys, branches, retries      │ • Given/When/Then scenario clauses │
+│ • Automated threshold verification & quarantine        │ • EARS upstream & TDD pairing links│
+│ • First-class saga rollback compensation               │ • Relational links (verifies, etc) │
+│ • Execution via LangGraph / Temporal / CI runner       │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates scenario execution & validation   │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & scenario contracts      │
+                    │ • Observability Adapter projects graph into BDD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors choose between authoring configurations based on scenario complexity:
+
+| Criteria | Standard [`BDD-TEMPLATE.yaml`](./BDD-TEMPLATE.yaml) | Two-Graph [`BDD-SWF-TEMPLATE.yaml`](./BDD-SWF-TEMPLATE.yaml) + [`BDD-GRAPH-TEMPLATE.yaml`](./BDD-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Scenario Structure** | Atomic, single-turn interactions | Multi-step user journeys, distributed transactions |
 | **Execution Flow** | Linear Given-When-Then | Branching, polling, event stimuli, retries |

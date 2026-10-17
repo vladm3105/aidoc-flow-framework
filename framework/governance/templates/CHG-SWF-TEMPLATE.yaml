@@ -7,12 +7,24 @@
 #  Purpose: Template for configuring change classification, gate routing,
 #           SDD cascades, and landing verification across the 6 traversal paths.
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Change control and governance cascades operate via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (CHG-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW changes are classified, routed across gates,
+#       cascaded across SDD layers, and verified before landing.
+#    2. Content Graph (Data Plane) — CHG-TEMPLATE.yaml & *-GRAPH-TEMPLATE.yaml:
+#       Defines WHAT content, affected nodes, delta impacts, invariant contracts, and
+#       dependency relationships are presented in the change control record.
+#    Both graphs work together: the Process DAG drives automated change classification and
+#    cascade traversal, populates the Content Graph, executes BTV verification, and projects
+#    the change impact into the ratified change record (CHG-NN.yaml).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (CHG-SWF-TEMPLATE.yaml — PRIMARY WORKFLOW STANDARD) when:
+#  Use the Two-Graph approach (CHG-SWF-TEMPLATE.yaml + CHG-TEMPLATE.yaml — PRIMARY WORKFLOW STANDARD) when:
 #    - Orchestrating automated change request lifecycle state machines and gate routing
 #    - Executing automated SDD cascade traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)
 #    - Targeting autonomous AI agent execution or governance orchestrators (LangGraph/Temporal)
-#  Use the companion template (CHG-TEMPLATE.yaml — COMPANION DOCUMENT STANDARD) instead when:
+#  Use the companion template (CHG-TEMPLATE.yaml — COMPANION DOCUMENT STANDARD) alone when:
 #    - Authoring individual change request documents (CHG-NN.yaml) recording proposed changes, decisions, and impact
 #    - Specifying human-authored or agent-filed change records without workflow state machine definition
 # =============================================================================

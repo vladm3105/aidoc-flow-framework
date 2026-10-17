@@ -176,11 +176,39 @@ This guarantees that discarded alternatives are permanently recorded in the ADR'
 
 ---
 
-## 7. Dual-Template Selection Rules
+## 7. Two-Graph & Dual-Template Selection Rules
 
-Authors must select between the static template and the workflow template according to the following decision matrix:
+Layer 05 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable architectural trade-off workflow with an atomic decision content graph:
 
-| Architectural Criteria | Use `ADR-TEMPLATE.yaml` | Use `ADR-SWF-TEMPLATE.yaml` |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 05 ADR TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       ADR-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (ADR-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to evaluate, score & ratify decisions    │ • Content of WHAT decisions exist  │
+│ • Concurrent candidate assessment & MCDA utility scoring│ • Candidate options & trade-offs   │
+│ • Viability threshold gates & stakeholder RFC reviews  │ • Technology selections & variance │
+│ • Rejection archival & cleanup sagas (compensatedBy)   │ • Relational links (evaluates, etc)│
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates candidate evaluation & scoring    │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & technology consistency  │
+                    │ • Observability Adapter projects graph into ADR-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors must select between authoring configurations according to the following decision matrix:
+
+| Architectural Criteria | Use Companion `ADR-TEMPLATE.yaml` | Use Two-Graph `ADR-SWF-TEMPLATE.yaml` + `ADR-GRAPH-TEMPLATE.yaml` |
 |---|---|---|
 | **Candidate Count** | Single obvious candidate or minor library choice | $\ge 2$ competing candidate options requiring formal trade-offs |
 | **Trade-off Complexity** | Qualitative pros/cons sufficient | Quantitative MCDA / utility tree scoring required |
