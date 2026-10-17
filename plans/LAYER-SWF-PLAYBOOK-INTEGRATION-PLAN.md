@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Ready |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
@@ -61,70 +61,102 @@ To resolve this decoupling, **CHG-111** integrates the Authoring Flow with the R
 └─────────────────────────────────┘        └──────────────────────────────────┘
 ```
 
-### 2.1 Author Playbook Binding (`*-SWF-TEMPLATE.yaml`)
+### 2.1 Physical Template Inventory & Author Playbook Bindings
 
-Each layer's `*-SWF-TEMPLATE.yaml` metadata will declare:
+The framework maintains **10 active workflow templates**, physically located across two directories:
 
-```yaml
-metadata:
-  author_persona: "<role>"
-  author_playbook: "framework/playbooks/<layer>/<role>.md"
+- **9 Layer Templates**: in `framework/layers/<NN>_<LAYER>/<LAYER>-SWF-TEMPLATE.yaml`
+- **1 Governance Overlay Template**: in `framework/governance/templates/CHG-SWF-TEMPLATE.yaml` (governing cross-layer change requests)
+
+Each template's top-level document `metadata:` block explicitly binds its designated author persona and playbook from [`REVIEW_CREWS.yaml`](../framework/governance/REVIEW_CREWS.yaml):
+
+| Layer | Physical Template Path | Author Persona | Author Playbook Path |
+|---|---|---|---|
+| **01_BRD** | `framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml` | `business_analyst` | `framework/playbooks/01_BRD/business_analyst.md` |
+| **02_PRD** | `framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml` | `product_owner` | `framework/playbooks/02_PRD/product_owner.md` |
+| **03_EARS** | `framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml` | `requirements_specialist` | `framework/playbooks/03_EARS/requirements_specialist.md` |
+| **04_BDD** | `framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml` | `qa_lead` | `framework/playbooks/04_BDD/qa_lead.md` |
+| **05_ADR** | `framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml` | `architect` | `framework/playbooks/05_ADR/architect.md` |
+| **06_SPEC** | `framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml` | `architect` | `framework/playbooks/06_SPEC/architect.md` |
+| **07_TDD** | `framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml` | `qa_lead` | `framework/playbooks/07_TDD/qa_lead.md` |
+| **08_IPLAN** | `framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml` | `tech_lead` | `framework/playbooks/08_IPLAN/tech_lead.md` |
+| **09_CHG** | `framework/governance/templates/CHG-SWF-TEMPLATE.yaml` | `integration_lead` | `framework/playbooks/09_CHG/integration_lead.md` |
+| **10_EVAL** | `framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml` | `evaluator` | `framework/playbooks/10_IPVERIFY/evaluator.md` |
+
+### 2.2 Structural Section Key Handling in Embedded Workflows
+
+The 10 templates embed their CNCF Serverless Workflow state machines under varying section keys matching their domain semantics:
+
+- **01_BRD**: `value_stream_mapping.workflow_definition:`
+- **02_PRD**: `component_decomposition.workflow_definition:`
+- **03_EARS**: `requirements.workflow_definition:`
+- **04_BDD**, **05_ADR**, **06_SPEC**, **07_TDD**, **08_IPLAN**, **10_EVAL**: `workflow:`
+- **09_CHG**: root-level workflow mapping in `CHG-SWF-TEMPLATE.yaml`
+
+To support this cleanly without brittle key assumptions:
+
+1. `author_persona` and `author_playbook` reside in the outer envelope `metadata:` block.
+2. The subflow invocation state resides inside the embedded workflow dictionary, regardless of which section key hosts it.
+
+### 2.3 Workflow Semantics: Process/Authoring vs. Behavioral/Testing (BDD & TDD)
+
+A key architectural distinction governs the dual nature of workflows across layers:
+
+- **Authoring / Lifecycle Layers (BRD, PRD, EARS, ADR, SPEC, IPLAN, CHG, EVAL)**: The embedded workflow directly executes the authoring and validation process DAG. The quality gate calls the review saga before emitting canonical element IDs.
+- **Behavioral / Testing Layers (BDD & TDD)**: The embedded workflow models the **system under test** (Given/When/Then scenario state machine in BDD, Red-Green-Refactor test runner in TDD). For these two layers:
+  - The outer document metadata binds the author rubric (`author_playbook: framework/playbooks/04_BDD/qa_lead.md`).
+  - The document validation / ratification gate calls the document review saga (`bdd-review-remediation-flow` / `tdd-review-remediation-flow`), verifying scenario coverage without altering the scenario execution states.
+
+### 2.4 Formal Subflow Input / Output Contract
+
+To ensure interoperability across execution harnesses (LangGraph, Temporal Server, or prompt runners), the subflow interface between the authoring workflow and the review saga is codified with a rigid schema:
+
+#### Input Payload (Authoring Flow $\to$ Review Saga):
+
+```json
+{
+  "artifact_id": "BRD-NN",
+  "layer": "01_BRD",
+  "author": "business_analyst",
+  "iteration": 1,
+  "max_iterations": 3,
+  "soft_deadline_seconds": 600
+}
 ```
 
-Mappings per [`REVIEW_CREWS.yaml`](../framework/governance/REVIEW_CREWS.yaml):
+#### Output Payload (Review Saga $\to$ Authoring Flow):
 
-- **01_BRD**: `business_analyst` $\to$ `framework/playbooks/01_BRD/business_analyst.md`
-- **02_PRD**: `product_owner` $\to$ `framework/playbooks/02_PRD/product_owner.md`
-- **03_EARS**: `requirements_specialist` $\to$ `framework/playbooks/03_EARS/requirements_specialist.md`
-- **04_BDD**: `qa_lead` $\to$ `framework/playbooks/04_BDD/qa_lead.md`
-- **05_ADR**: `architect` $\to$ `framework/playbooks/05_ADR/architect.md`
-- **06_SPEC**: `architect` $\to$ `framework/playbooks/06_SPEC/architect.md`
-- **07_TDD**: `qa_lead` $\to$ `framework/playbooks/07_TDD/qa_lead.md`
-- **08_IPLAN**: `tech_lead` $\to$ `framework/playbooks/08_IPLAN/tech_lead.md`
-- **09_CHG**: `integration_lead` $\to$ `framework/playbooks/09_CHG/integration_lead.md`
-- **10_EVAL**: `evaluator` $\to$ `framework/playbooks/10_IPVERIFY/evaluator.md`
-
-### 2.2 Review Saga Subflow Invocation
-
-In each `*-SWF-TEMPLATE.yaml`, the evaluation state triggers the review saga subflow:
-
-```yaml
-    functions:
-      - name: invokeReviewSaga
-        operation: "urn:aidoc:workflows:review-saga#invoke"
-        type: custom
-
-    states:
-      - name: InvokeReviewSagaGate
-        type: operation
-        actions:
-          - name: runLayerReviewSagaAction
-            functionRef:
-              refName: invokeReviewSaga
-              arguments:
-                workflowId: "<layer>-review-remediation-flow"
-                artifactId: "${ .artifactId }"
-        transition: EvaluateReviewSagaResult
-
-      - name: EvaluateReviewSagaResult
-        type: switch
-        dataConditions:
-          - name: ReviewGateApproved
-            condition: "${ .reviewScore >= 90 and .blockingFindings == 0 }"
-            transition: RatifySpecification
-          - name: ReviewRequiresSteering
-            condition: "${ .requiresEscalation == true }"
-            transition: AwaitSteeringCommitteeCallback
-        defaultCondition:
-          transition: RejectInitiative
+```json
+{
+  "artifact_id": "BRD-NN",
+  "review_score": 94,
+  "gate_passed": true,
+  "blocking_findings": 0,
+  "total_findings": 2,
+  "report_ref": "REV-RPT-01.yaml",
+  "status": "CLOSED"
+}
 ```
 
-### 2.3 Structural Linter Rule `SWF-L008`
+#### Gate Evaluation Condition:
+
+Ratification states evaluate:
+`${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`
+
+### 2.5 Standalone Workflow Parity (`framework/governance/workflows/`)
+
+The framework maintains standalone reference workflows under `framework/governance/workflows/` (e.g. `brd-business-validation.sw.yaml`, `prd-feature-decomposition.sw.yaml`, `ears-requirements-validation.sw.yaml`, etc.). During Phase 2, these standalone workflows will be updated in lockstep with the embedded templates to maintain 100% architectural parity.
+
+### 2.6 Structural Linter Rule `SWF-L008`
 
 Add rule `SWF-L008` to `sdd_doc_lint.swf_lint`:
 
-- Asserts that all layer workflow templates (`*-SWF-TEMPLATE.yaml`) carry valid `author_persona` and `author_playbook` metadata pointing to existing files.
-- Asserts that the template contains an invocation state targeting `<layer>-review-remediation-flow`.
+- **Rule ID**: `SWF-L008`
+- **Severity**: Error
+- **Description**: Verifies that:
+  1. All layer workflow templates (`*-SWF-TEMPLATE.yaml`) carry valid `author_persona` and `author_playbook` in their `metadata:` block.
+  2. The referenced `author_playbook` file path exists on disk.
+  3. The workflow definition contains an action invoking the designated layer review saga (`<layer>-review-remediation-flow`).
 
 ---
 
@@ -137,19 +169,20 @@ Add rule `SWF-L008` to `sdd_doc_lint.swf_lint`:
 
 ### Phase 2: Layer SWF Templates & Standards Harmonization
 
-- Update all 10 `*-SWF-TEMPLATE.yaml` files with author playbook metadata and review saga subflow invocations.
+- Update all 10 workflow templates (9 in `framework/layers/`, 1 in `framework/governance/templates/`) with author playbook metadata and review saga subflow invocations.
+- Update standalone workflows under `framework/governance/workflows/` for full parity.
 - Update all 10 layer workflow standards (`framework/layers/<NN>_<LAYER>/<LAYER>_WORKFLOW_STANDARD.md`) documenting the closed dual-flow loop.
 
 ### Phase 3: Linter Extension (`SWF-L008`) & Test Coverage
 
 - Implement `SWF-L008` in `sdd_doc_lint/swf_lint.py`.
-- Add test coverage in `tests/unit/test_swf_lint.py` asserting `SWF-L008` catches missing review saga bindings and valid templates pass.
+- Add test coverage in `tests/unit/test_swf_lint.py` asserting `SWF-L008` catches missing review saga bindings, verifies author playbook paths, and passes valid templates.
 
 ### Phase 4: CI Verification & Promotion
 
 - Run full test suites (`python3 -m unittest discover tests/unit`, conformance, pre-push checks).
 - Open PR `feature/chg-111-layer-swf-playbook-integration` $\to$ `dev`.
-- Verify CI passes and merge to `dev`.
+- Verify CI passes and merge to `dev` targeting version `0.94.0`.
 
 ---
 
@@ -198,6 +231,17 @@ Add rule `SWF-L008` to `sdd_doc_lint.swf_lint`:
   1. *Author Playbook Path Validation*: `SWF-L008` must verify that the cited `author_playbook` file actually exists on disk, preventing broken links or typos during authoring.
   2. *Backwards Compatibility of Declarative Templates*: Standard declarative companion templates (`*-TEMPLATE.yaml`) must remain purely declarative and unaffected by SWF subflow requirements.
 - **Resolution**:
-  - Specified file-existence validation for `author_playbook` in `SWF-L008` (Section 2.3).
+  - Specified file-existence validation for `author_playbook` in `SWF-L008` (Section 2.6).
   - Explicitly scoped changes to `*-SWF-TEMPLATE.yaml` (Workflow Subtypes), leaving static companion templates untouched.
+
+### Pass 3: 2026-10-16 — Multi-Lens Gap Remediation Review
+
+- **Findings**:
+  1. *CHG Physical Location*: Clarified that Layer 09 CHG template is located in `framework/governance/templates/CHG-SWF-TEMPLATE.yaml` rather than `framework/layers/09_CHG/`.
+  2. *Section Key Heterogeneity*: Documented varied section keys (`value_stream_mapping.workflow_definition`, `component_decomposition.workflow_definition`, `requirements.workflow_definition`, `workflow`) and anchored `author_persona` and `author_playbook` at document `metadata:`.
+  3. *Behavioral vs Authoring Semantics*: Explicitly separated behavioral scenario runners (BDD/TDD) from document review saga invocations.
+  4. *Rigid Subflow I/O Contract*: Defined formal JSON input/output schemas for the review saga subflow interface.
+  5. *Standalone Workflow Parity*: Extended Phase 2 scope to synchronize `framework/governance/workflows/*.sw.yaml` with embedded templates.
+- **Resolution**:
+  - All 5 gap remediations codified in Sections 2.1, 2.2, 2.3, 2.4, 2.5, and Phase 2.
 - **Result:** Ready — zero remaining findings.

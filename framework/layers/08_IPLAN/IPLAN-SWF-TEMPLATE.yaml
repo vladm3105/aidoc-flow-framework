@@ -40,6 +40,10 @@ metadata:
   framework_version: "[X.Y.Z]"
   document_type: "iplan-document"
   layer: 8
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "tech_lead"
+  author_playbook: "framework/playbooks/08_IPLAN/tech_lead.md"
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   total_sections: 6
   last_updated: "2026-10-05"
@@ -106,6 +110,11 @@ workflow:
   version: "1.0"
   specVersion: "0.8"
   start: Step1_PreFlightCheck
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
 
   states:
     # --- Step 1: Pre-flight Verification ---
@@ -182,6 +191,25 @@ workflow:
       type: switch
       dataConditions:
         - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
+          transition: InvokeReviewSagaGate
+      defaultCondition:
+        transition: TriggerSagaRollback
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "iplan-review-remediation-flow"
+              artifactId: "IPLAN-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: Step6_CommitAndSignoff
       defaultCondition:
         transition: TriggerSagaRollback

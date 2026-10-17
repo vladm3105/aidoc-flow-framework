@@ -49,6 +49,8 @@ metadata:
   document_type: "brd-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "business_analyst"
+  author_playbook: "framework/playbooks/01_BRD/business_analyst.md"
   layer: 1
   lifecycle: mvp-prod-newmvp
   total_sections: 16
@@ -447,6 +449,9 @@ value_stream_mapping:
       - name: purgeDownstreamInitiativeAllocations
         operation: "urn:aidoc:functions:compensator#purgeAllocations"
         type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
 
     states:
       - name: IngestStrategicInitiative
@@ -509,9 +514,32 @@ value_stream_mapping:
         dataConditions:
           - name: InitiativeApproved
             condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
-            transition: RatifyBusinessSpecification
+            transition: InvokeReviewSagaGate
           - name: ExecutiveReviewRequired
             condition: "${ .requiresExecutiveReview == true }"
+            transition: AwaitSteeringCommitteeCallback
+        defaultCondition:
+          transition: RejectBusinessInitiative
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "brd-review-remediation-flow"
+                artifactId: "${ .initiativeId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyBusinessSpecification
+          - name: ReviewRequiresEscalation
+            condition: "${ .requiresEscalation == true }"
             transition: AwaitSteeringCommitteeCallback
         defaultCondition:
           transition: RejectBusinessInitiative

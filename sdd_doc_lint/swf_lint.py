@@ -9,6 +9,7 @@ Validates declarative workflow graphs against governance rules:
   SWF-L005: SAGA Compensation Integrity — compensatedBy must target defined operation state
   SWF-L006: Parallel Branch Completeness — branches must have unique names and actions
   SWF-L007: Review Crew Parity — layer review workflows must match REVIEW_CREWS.yaml personas
+  SWF-L008: Review Saga & Author Playbook Binding — layer workflow templates must bind author_persona, existing author_playbook, and invoke review saga
 
 Usage:
   python3 -m sdd_doc_lint.swf_lint [--format text|json] [--warn-exit] <path> [<path> ...]
@@ -55,6 +56,7 @@ CODES = {
     "SWF-L005": "SAGA Compensation Integrity — compensatedBy must target defined operation state",
     "SWF-L006": "Parallel Branch Completeness — branches must have unique names and actions",
     "SWF-L007": "Review Crew Parity — layer review workflows must match REVIEW_CREWS.yaml personas",
+    "SWF-L008": "Review Saga & Author Playbook Binding — layer workflow templates must bind author_persona, existing author_playbook, and invoke review saga",
 }
 
 
@@ -126,6 +128,12 @@ def extract_workflow(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
 
     search(data)
     if found is not None:
+        if isinstance(data, dict) and "metadata" in data and isinstance(data["metadata"], dict):
+            if "metadata" not in found:
+                found["metadata"] = dict(data["metadata"])
+            elif isinstance(found["metadata"], dict):
+                for k, v in data["metadata"].items():
+                    found["metadata"].setdefault(k, v)
         return found, []
 
     return None, ["No CNCF Serverless Workflow definition found (missing states list)"]
@@ -135,6 +143,7 @@ def lint_workflow_dict(
     wf: dict[str, Any],
     file_path: str,
     review_crews: dict[str, Any] | None = None,
+    repo_root: Path | None = None,
 ) -> list[Finding]:
     findings: list[Finding] = []
 
@@ -399,16 +408,132 @@ def lint_workflow_dict(
                             )
                         )
 
+    # SWF-L008: Review Saga & Author Playbook Binding for layer templates
+    p = Path(file_path)
+    is_template = (
+        p.name.endswith("-SWF-TEMPLATE.yaml")
+        and p.name != "REVIEW-SWF-TEMPLATE.yaml"
+        and not any(part == "archive" for part in p.parts)
+    )
+    if is_template:
+        meta = wf.get("metadata")
+        if not isinstance(meta, dict):
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L008",
+                    "Layer workflow template missing 'metadata' block declaring author_persona and author_playbook",
+                )
+            )
+        else:
+            persona = meta.get("author_persona")
+            if not persona or not isinstance(persona, str) or not persona.strip():
+                findings.append(
+                    Finding(
+                        file_path,
+                        1,
+                        "ERROR",
+                        "SWF-L008",
+                        "Layer workflow template must declare non-empty 'author_persona' in metadata",
+                    )
+                )
+
+            playbook = meta.get("author_playbook")
+            if not playbook or not isinstance(playbook, str) or not playbook.strip():
+                findings.append(
+                    Finding(
+                        file_path,
+                        1,
+                        "ERROR",
+                        "SWF-L008",
+                        "Layer workflow template must declare non-empty 'author_playbook' path in metadata",
+                    )
+                )
+            else:
+                pb_clean = playbook.strip()
+                pb_path = Path(pb_clean)
+                if repo_root is not None and not pb_path.is_absolute():
+                    pb_path = repo_root / pb_clean
+                elif not pb_path.is_absolute():
+                    discovered_root = _find_repo_root(p if p.exists() else Path.cwd())
+                    if discovered_root:
+                        pb_path = discovered_root / pb_clean
+
+                if not pb_path.is_file():
+                    findings.append(
+                        Finding(
+                            file_path,
+                            1,
+                            "ERROR",
+                            "SWF-L008",
+                            f"Author playbook cited in metadata not found on disk: '{pb_clean}'",
+                        )
+                    )
+
+        # Check review saga invocation
+        has_review_saga_invocation = False
+        for s in state_dict.values():
+            actions = s.get("actions", [])
+            if isinstance(actions, list):
+                for act in actions:
+                    if not isinstance(act, dict):
+                        continue
+                    # subFlowRef
+                    subflow = act.get("subFlowRef")
+                    if subflow and isinstance(subflow, (str, dict)):
+                        subflow_name = (
+                            subflow if isinstance(subflow, str) else subflow.get("workflowId", "")
+                        )
+                        if "review-remediation-flow" in str(subflow_name) or "review-saga" in str(
+                            subflow_name
+                        ):
+                            has_review_saga_invocation = True
+                            break
+                    # functionRef
+                    fn_ref = act.get("functionRef", {})
+                    if isinstance(fn_ref, dict):
+                        ref_name = fn_ref.get("refName", "")
+                        fn_args = fn_ref.get("arguments", {})
+                        if isinstance(fn_args, dict):
+                            wf_id = fn_args.get("workflowId", "")
+                            if "review-remediation-flow" in str(wf_id):
+                                has_review_saga_invocation = True
+                                break
+                        if "reviewSaga" in str(ref_name) or "review-saga" in str(ref_name):
+                            has_review_saga_invocation = True
+                            break
+            if has_review_saga_invocation:
+                break
+
+        if not has_review_saga_invocation:
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L008",
+                    "Layer workflow template must declare a review saga invocation state targeting '<layer>-review-remediation-flow'",
+                )
+            )
+
     return findings
 
 
-def lint_file(path: Path, review_crews: dict[str, Any] | None = None) -> list[Finding]:
+def lint_file(
+    path: Path,
+    review_crews: dict[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> list[Finding]:
     wf, errors = extract_workflow(path)
     if errors:
         return [Finding(str(path), 1, "ERROR", "SWF-L001", msg) for msg in errors]
     if wf is None:
         return []
-    return lint_workflow_dict(wf, str(path), review_crews=review_crews)
+    if repo_root is None:
+        repo_root = _find_repo_root(path if path.exists() else Path.cwd())
+    return lint_workflow_dict(wf, str(path), review_crews=review_crews, repo_root=repo_root)
 
 
 lint_path = lint_file
@@ -446,7 +571,7 @@ def main(argv: list[str] | None = None) -> int:
     review_crews = _load_review_crews(repo_root)
 
     for file_path in target_files:
-        all_findings.extend(lint_file(file_path, review_crews=review_crews))
+        all_findings.extend(lint_file(file_path, review_crews=review_crews, repo_root=repo_root))
 
     if args.format == "json":
         print(json.dumps([f.to_dict() for f in all_findings], indent=2))

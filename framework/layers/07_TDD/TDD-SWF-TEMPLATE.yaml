@@ -40,6 +40,10 @@ metadata:
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
   document_type: "tdd-document"
   layer: 7
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "qa_lead"
+  author_playbook: "framework/playbooks/07_TDD/qa_lead.md"
   total_sections: 7
   last_updated: "YYYY-MM-DD"
   deliverable_type: code
@@ -128,6 +132,11 @@ workflow:
   description: "Machine-executable test workflow with fixture compensation and flaky retries"
 
   start: ArrangeTestFixtures
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
 
   states:
     # --- Phase: Arrange (Compensable) ---
@@ -224,7 +233,30 @@ workflow:
             refName: fixtureCleaner
             arguments:
               purgeDatabases: false
-      transition: TestRunSucceeded
+      transition: InvokeReviewSagaGate
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "tdd-review-remediation-flow"
+              artifactId: "TDD-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          transition: TestRunSucceeded
+        - name: ReviewRequiresQuarantine
+          condition: "${ .blocking_findings > 0 }"
+          transition: QuarantineDefect
+      defaultCondition:
+        transition: QuarantineDefect
 
     # --- Terminal States ---
     - name: TestRunSucceeded

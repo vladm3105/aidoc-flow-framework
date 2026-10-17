@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 10 (Evaluation & Quality Verification / EVAL) execution plans, test suite runners, and quality gate receipts using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -154,6 +154,20 @@ Per [`REVIEW_CREWS.yaml`](../../governance/REVIEW_CREWS.yaml) and the `10_IPVERI
 - **`auditor`** (weight 10%): Checks traceability tags and compliance rules.
 
 Author remediation is assigned to the `qa_lead` persona, bounded by a maximum of 3 iterations before escalation.
+
+### 6.1 Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between evaluation execution and review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "evaluator"` and `author_playbook: "framework/playbooks/10_IPVERIFY/evaluator.md"`.
+   - Autonomous evaluation agents derive suite coverage requirements, threshold metrics, and receipt criteria directly from this rubric prior to authoring.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final receipt emission (`EmitPassingReceipt` in templates or `EmitPassingReportReceipt` in runner workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`eval-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defective test receipts are uncovered, the saga executes an automated remediation loop, halting receipt verification until all P0/P1 blockers are resolved.
 
 ---
 

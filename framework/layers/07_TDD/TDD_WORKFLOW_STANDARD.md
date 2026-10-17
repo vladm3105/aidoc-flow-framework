@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -214,7 +214,23 @@ When testing components that interact with persistent databases or asynchronous 
 
 ---
 
-## 10. Review Log
+## 10. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between TDD test suite authoring and review crew evaluation while respecting the distinction between test runner execution and document quality gating:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "qa_lead"` and `author_playbook: "framework/playbooks/07_TDD/qa_lead.md"`.
+   - Autonomous drafting agents derive test case structuring, assertion determinism, and NFR boundary verification directly from this rubric prior to authoring.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Following test suite execution and fixture teardown (`NormalTeardown` in templates or `ExecuteFixtureTeardown` in runner workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`tdd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defective test fixtures are uncovered, the saga executes an automated remediation loop, halting sign-off until all P0/P1 blockers are resolved.
+
+---
+
+## 11. Review Log
 
 - **2026-10-05 — Pass 1 (Initial Ratification)**:
   - Ratified hybrid envelope architecture, Arrange-Act-Assert mapping, and suite runner workflow (`tdd-test-execution.sw.yaml`).

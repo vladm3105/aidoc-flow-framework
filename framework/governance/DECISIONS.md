@@ -17,7 +17,7 @@
 | Retired In | CHG-95 (0.91.14) |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 | Successor Surfaces | `framework/governance/workflows/*.sw.yaml` (Governance Rules) + `framework/archive/CHG-*/` (Change Decisions) |
 
 ---

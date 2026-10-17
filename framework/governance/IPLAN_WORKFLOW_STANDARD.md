@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -106,7 +106,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.93.0"
+  framework_version: "0.94.0"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -323,7 +323,23 @@ def compile_iplan_workflow(iplan_path: str, action_handlers: dict) -> StateGraph
 
 ---
 
-## 6. Review Log
+## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between implementation plan execution and review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "tech_lead"` and `author_playbook: "framework/playbooks/08_IPLAN/tech_lead.md"`.
+   - Autonomous implementation agents derive cutover sequences, reversibility guarantees, and smoke gate definitions directly from this rubric prior to authoring.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final commit and sign-off (`Step6_CommitAndSignoff`), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`iplan-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or reversibility gaps are uncovered, the saga triggers an automated remediation loop, halting code commit until all P0/P1 blockers are resolved.
+
+---
+
+## 7. Review Log
 
 - **2026-10-05 — Pass 1 (Envelope Preservation & Lint Integrity)**:
   - *Gap found*: Naive conversion of IPLAN to pure CNCF root broke `sdd_doc_lint`'s `STRUCT01` check.

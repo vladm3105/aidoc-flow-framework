@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -217,7 +217,7 @@ nothing emits it the row says **Reserved**.
 | `EVAL-ID-001` | An EVAL test case `id` does not follow the `EVAL.NN.SS.xxxx` element ID format (per `ID_NAMING_STANDARDS.md`). The ID is independent from the source — source type and source document are tracked via `source_type` and `source_id` fields only. The old dash-in-ID format (`EVAL-01.TDD-01.4d64`) is incorrect. | error | `EVAL-TEMPLATE.yaml` §id_standard |
 | `EVAL-SRC-001` | An EVAL `test_design` entry has a missing or incomplete source reference. Each test case must have exactly one `source_type` and one `source_id` (or neither for non-source-derived tests). Create separate test cases for each source element. | error | `EVAL-TEMPLATE.yaml` §id_standard, §test_design |
  
-## CNCF Serverless Workflow (SWF-L001–L007)
+## CNCF Serverless Workflow (SWF-L001–L008)
  
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -228,6 +228,7 @@ nothing emits it the row says **Reserved**.
 | `SWF-L005` | SAGA Compensation Integrity — states declaring `compensatedBy` must target a defined operation state responsible for rollback. | error | `DURABLE_EXECUTION_STANDARD.md` §4 (SAGA reversibility) |
 | `SWF-L006` | Parallel Branch Completeness — parallel state branches must define unique branch names and non-empty action definitions. | error | `DURABLE_EXECUTION_STANDARD.md` §2 |
 | `SWF-L007` | Review Crew Parity — review workflow action personas and crew functions must strictly match the definitions in `REVIEW_CREWS.yaml`. | error | `REVIEW_WORKFLOW_STANDARD.md`, `REVIEW_CREWS.yaml` |
+| `SWF-L008` | Review Saga & Author Playbook Binding — layer workflow templates (`*-SWF-TEMPLATE.yaml`) must declare valid `author_persona` and existing `author_playbook` metadata, and invoke the layer review saga subflow. | error | `plans/LAYER-SWF-PLAYBOOK-INTEGRATION-PLAN.md`, `REVIEW_CREWS.yaml` |
 
 ## Governance Surface Lint (SURF-001–SURF-004)
 

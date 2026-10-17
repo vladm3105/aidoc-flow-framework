@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 | Authority | Decision GD-60 (framework/governance/DECISIONS.md) |
 
 ---
@@ -131,3 +131,19 @@ When an autonomous AI agent or execution harness executes a PRD workflow via Lan
    - **Step 2 (Content Graph Mutation)**: As operations complete, the agent instantiates and updates nodes (`product_feature`, `user_story`, `quality_threshold`) and edges (`realizes`, `verifies`, `depends_on`) in `PRD-GRAPH-TEMPLATE.yaml`.
    - **Step 3 (Binary Topological Validation - BTV)**: The state machine executes BTV asserting container acyclicity, trace closure, and threshold validity.
    - **Step 4 (Document Generation / Read Projection)**: The Observability Adapter compiles the validated property graph into the canonical human-readable document (`PRD-TEMPLATE.yaml` structure).
+
+---
+
+## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between artifact authoring and review crew evaluation, Layer 02 adheres to the closed dual-flow loop:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "product_owner"` and `author_playbook: "framework/playbooks/02_PRD/product_owner.md"`.
+   - Autonomous drafting agents derive their authoring constraints and product decomposition priorities directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final ratification (`RatifyProductSpecification`), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`prd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.

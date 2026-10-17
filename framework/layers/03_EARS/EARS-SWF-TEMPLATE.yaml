@@ -48,6 +48,8 @@ metadata:
   document_type: "ears-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "requirements_specialist"
+  author_playbook: "framework/playbooks/03_EARS/requirements_specialist.md"
   layer: 3
   lifecycle: mvp-prod-newmvp
   total_sections: 5
@@ -235,6 +237,9 @@ requirements:
       - name: purgeDownstreamDrafts
         operation: "urn:aidoc:functions:compensator#purgeDrafts"
         type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
 
     states:
       - name: ParseRequirementsStream
@@ -311,9 +316,32 @@ requirements:
         dataConditions:
           - name: ReadinessApproved
             condition: "${ .readinessScore >= 90 and .conflictCount == 0 }"
-            transition: RatifyEarsRequirements
+            transition: InvokeReviewSagaGate
           - name: AmbiguityDetected
             condition: "${ .readinessScore >= 70 and .hasAmbiguity == true }"
+            transition: SolicitClarificationCallback
+        defaultCondition:
+          transition: RejectRequirementsSet
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "ears-review-remediation-flow"
+                artifactId: "${ .documentId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyEarsRequirements
+          - name: ReviewRequiresClarification
+            condition: "${ .requiresClarification == true }"
             transition: SolicitClarificationCallback
         defaultCondition:
           transition: RejectRequirementsSet

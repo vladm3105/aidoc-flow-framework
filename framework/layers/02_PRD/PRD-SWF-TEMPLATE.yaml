@@ -49,6 +49,8 @@ metadata:
   document_type: "prd-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "product_owner"
+  author_playbook: "framework/playbooks/02_PRD/product_owner.md"
   layer: 2
   lifecycle: mvp-prod-newmvp
   total_sections: 15
@@ -275,6 +277,9 @@ component_decomposition:
       - name: purgeDownstreamDrafts
         operation: "urn:aidoc:functions:compensator#purgeDrafts"
         type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
 
     states:
       - name: IngestProductInitiative
@@ -342,8 +347,31 @@ component_decomposition:
         dataConditions:
           - name: AlignmentApproved
             condition: "${ .isAligned == true and .thresholdsValid == true }"
-            transition: RatifyProductContract
+            transition: InvokeReviewSagaGate
           - name: ScopeAdjustmentNeeded
+            condition: "${ .requiresAdjustment == true }"
+            transition: AwaitScopeAdjustmentCallback
+        defaultCondition:
+          transition: RejectProductInitiative
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "prd-review-remediation-flow"
+                artifactId: "${ .documentId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyProductContract
+          - name: ReviewRequiresAdjustment
             condition: "${ .requiresAdjustment == true }"
             transition: AwaitScopeAdjustmentCallback
         defaultCondition:

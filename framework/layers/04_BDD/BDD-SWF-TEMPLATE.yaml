@@ -56,6 +56,9 @@ metadata:
   framework_version: "[X.Y.Z]"
   document_type: "bdd-document"
   subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "qa_lead"
+  author_playbook: "framework/playbooks/04_BDD/qa_lead.md"
   layer: 4
   lifecycle: mvp-prod-newmvp
   total_sections: 5
@@ -169,10 +172,33 @@ workflow:
       dataConditions:
         - name: SuccessfulTransferOutcome
           condition: "${ .response.status == 200 and .response.balance == 750 }"
-          transition: CompleteScenarioSuccess
+          transition: InvokeReviewSagaGate
         - name: ThresholdViolationOutcome
           condition: "${ .response.latency_ms > 250 }"
           transition: RecordThresholdViolation
+      defaultCondition:
+        transition: RecordAssertionFailure
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "bdd-review-remediation-flow"
+              artifactId: "${ .artifactId }"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          transition: CompleteScenarioSuccess
+        - name: ReviewRequiresQuarantine
+          condition: "${ .blocking_findings > 0 }"
+          transition: RecordAssertionFailure
       defaultCondition:
         transition: RecordAssertionFailure
 
@@ -226,3 +252,6 @@ workflow:
     - name: fixtureRollbackFunction
       type: custom
       operation: "urn:aidoc:bdd:fixture-rollback"
+    - name: invokeReviewSaga
+      type: custom
+      operation: "urn:aidoc:workflows:review-saga#invoke"

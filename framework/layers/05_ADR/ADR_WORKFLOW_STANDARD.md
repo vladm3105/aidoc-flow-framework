@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 05 (Architecture Decision Records / ADR) architectural trade-off evaluations, multi-criteria decision analysis (MCDA), stakeholder RFC review callbacks, and decision ratification using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -264,3 +264,19 @@ builder.add_conditional_edges(
 builder.add_edge("RatifyArchitectureDecision", END)
 builder.add_edge("RejectAndArchiveProposal", END)
 ```
+
+---
+
+## 10. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between architectural authoring and review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "architect"` and `author_playbook: "framework/playbooks/05_ADR/architect.md"`.
+   - Autonomous drafting agents derive candidate evaluation criteria, trade-off weighting, and reversibility analyses directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final ratification (`RatifyDecision` in templates or `RatifyArchitectureDecision` in standalone workflows), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`adr-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or architectural defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.

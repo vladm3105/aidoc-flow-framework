@@ -93,9 +93,38 @@ states:
     dataConditions:
       - name: AllScenariosPassed
         condition: "${ .failures | length == 0 }"
-        transition: EmitAcceptanceReceipt
+        transition: InvokeReviewSagaGate
       - name: DefectDetected
         condition: "${ .failures | length > 0 }"
+        transition: QuarantineFailedScenarios
+    defaultCondition:
+      transition: QuarantineFailedScenarios
+
+  # =========================================================================
+  # State: Invoke Review Saga Gate
+  # =========================================================================
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "bdd-review-remediation-flow"
+            artifactId: "${ .acceptanceRunId }"
+    transition: EvaluateReviewSagaResult
+
+  # =========================================================================
+  # State: Evaluate Review Saga Result
+  # =========================================================================
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: EmitAcceptanceReceipt
+      - name: ReviewRequiresQuarantine
+        condition: "${ .blocking_findings > 0 }"
         transition: QuarantineFailedScenarios
     defaultCondition:
       transition: QuarantineFailedScenarios
@@ -162,3 +191,6 @@ functions:
   - name: acceptanceReceiptEmitter
     type: custom
     operation: "urn:aidoc:governance:acceptance-receipt-emitter"
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"

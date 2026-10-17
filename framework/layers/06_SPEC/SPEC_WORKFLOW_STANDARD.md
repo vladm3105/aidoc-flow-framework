@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -225,4 +225,20 @@ When specifying distributed components that persist state or exchange asynchrono
 3. **Approved Technology Stack Realization:**
    - Component contracts in Section 3 and Section 4 must realize the specific technology selections ratified in upstream Layer 05 ADR from the approved enterprise stack catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
    - Bindings must detail concrete wire and storage idioms: PostgreSQL 18 with monotonic UUIDv7 keys and Bytebase declarative DDL migrations, NATS JetStream pub/sub subjects, gRPC Protobuf services, LiteLLM gateway integrations, and Temporal activity boundaries.
+
+---
+
+## 10. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between technical specification authoring and review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "architect"` and `author_playbook: "framework/playbooks/06_SPEC/architect.md"`.
+   - Autonomous drafting agents derive component interface contracts, interaction choreography, and NFR assertions directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final choreography finalization (`FinalizeChoreography` in templates or `CommitDistributedTransaction` in standalone workflows), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`spec-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or architectural defects are uncovered, the saga executes an automated remediation loop, halting commit and finalizing until all P0/P1 blockers are resolved.
 

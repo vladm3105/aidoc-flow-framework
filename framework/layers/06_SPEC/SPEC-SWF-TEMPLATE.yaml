@@ -40,6 +40,10 @@ metadata:
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "spec-document"
   layer: 6
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "architect"
+  author_playbook: "framework/playbooks/06_SPEC/architect.md"
   total_sections: 8
   last_updated: "2026-10-05"
   deliverable_type: code
@@ -202,6 +206,11 @@ workflow:
       correlation:
         - contextAttributeName: "correlationid"
 
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+
   states:
     - name: IngestRequest
       type: inject
@@ -290,7 +299,30 @@ workflow:
       dataConditions:
         - name: SLAVerified
           condition: "${ .sla_met == true }"
+          transition: InvokeReviewSagaGate
+      defaultCondition:
+        transition: CompensateDistributedSaga
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "spec-review-remediation-flow"
+              artifactId: "SPEC-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: FinalizeChoreography
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 }"
+          transition: CompensateDistributedSaga
       defaultCondition:
         transition: CompensateDistributedSaga
 

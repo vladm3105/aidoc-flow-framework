@@ -39,6 +39,10 @@ metadata:
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
   document_type: "eval-document"
   layer: 10
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "evaluator"
+  author_playbook: "framework/playbooks/10_IPVERIFY/evaluator.md"
   lifecycle: iplan-coupled
   total_sections: 7
   last_updated: "YYYY-MM-DD"
@@ -159,6 +163,11 @@ workflow:
     quality gate score calculation, report receipt generation, and saga teardown.
   start: IngestEvaluationScope
 
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+
   states:
     # -------------------------------------------------------------------------
     # State 1: Ingest Evaluation Scope & Strategy
@@ -233,6 +242,26 @@ workflow:
       dataConditions:
         - name: EvaluationPassed
           condition: "${ .score >= 90 and .blocker_count == 0 }"
+          transition: InvokeReviewSagaGate
+      defaultCondition:
+        transition: HandleEvaluationDefects
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "eval-review-remediation-flow"
+              artifactId: "EVAL-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: EmitPassingReceipt
       defaultCondition:
         transition: HandleEvaluationDefects

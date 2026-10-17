@@ -53,6 +53,9 @@ functions:
   - name: purgeDownstreamDraftArtifacts
     operation: "urn:aidoc:functions:compensator#purgeDownstreamDrafts"
     type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
 
 states:
   - name: IngestProductInitiative
@@ -140,9 +143,32 @@ states:
     dataConditions:
       - name: AlignmentApproved
         condition: "${ .brdAlignmentVerified == true and .unanchoredFeatureCount == 0 and .minimumViabilityMet == true }"
-        transition: RatifyProductSpecification
+        transition: InvokeReviewSagaGate
       - name: ScopeAdjustmentRequired
         condition: "${ .exceedsBudgetOrTimeline == true and .negotiableScope == true }"
+        transition: SolicitScopeAdjustment
+    defaultCondition:
+      transition: RejectProductFeatureSet
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "prd-review-remediation-flow"
+            artifactId: "${ .documentId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyProductSpecification
+      - name: ReviewRequiresAdjustment
+        condition: "${ .requiresAdjustment == true }"
         transition: SolicitScopeAdjustment
     defaultCondition:
       transition: RejectProductFeatureSet

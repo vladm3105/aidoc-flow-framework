@@ -53,7 +53,9 @@ metadata:
   document_type: "adr-document"
   layer: 5
   subtype: "workflow"
-  workflow_spec: "0.8"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "architect"
+  author_playbook: "framework/playbooks/05_ADR/architect.md"
   workflow_engine: "cncf-serverless-workflow"
   lifecycle: mvp-prod-newmvp
   total_sections: 10
@@ -239,6 +241,10 @@ architecture_flow:
         kind: consumed
         correlation:
           - attribute: proposalId
+    functions:
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
     states:
       - name: IngestDecisionContext
         type: operation
@@ -309,7 +315,30 @@ architecture_flow:
         dataConditions:
           - name: ConsensusApproved
             condition: "${ .feedback.status == \"APPROVED\" }"
+            transition: InvokeReviewSagaGate
+        defaultCondition:
+          transition: RejectAndArchive
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "adr-review-remediation-flow"
+                artifactId: "ADR-NN"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
             transition: RatifyDecision
+          - name: ReviewRequiresRFC
+            condition: "${ .requiresRFC == true }"
+            transition: SolicitStakeholderRFC
         defaultCondition:
           transition: RejectAndArchive
 

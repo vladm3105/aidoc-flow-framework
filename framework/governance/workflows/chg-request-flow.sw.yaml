@@ -8,6 +8,11 @@ description: >-
   and landing verification per CHG_REQUEST_FLOWS.md and AGENTS.md.
 start: ClassifyChangeTrigger
 
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+
 states:
   - name: ClassifyChangeTrigger
     type: operation
@@ -300,6 +305,25 @@ states:
     type: switch
     dataConditions:
       - condition: "${ .test_suite.status == 'PASS' and .lint_suite.errors == 0 }"
+        transition: InvokeReviewSagaGate
+    defaultCondition:
+      transition: RejectCodeGate
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "chg-review-remediation-flow"
+            artifactId: "${ .chg_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: ExecuteEVALAndCloseout
     defaultCondition:
       transition: RejectCodeGate
