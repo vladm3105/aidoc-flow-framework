@@ -170,6 +170,37 @@ def main(argv: list[str] | None = None) -> int:
         metavar="OUT_FILE",
         help="output destination file for rendered spec sheets or diagrams",
     )
+    # Embedded Kùzu Acceleration & Central Federated Read Lake (CHG-110, GD-97)
+    parser.add_argument(
+        "--cypher",
+        type=str,
+        default=None,
+        metavar="QUERY",
+        help="execute openCypher query on SDD graph via embedded Kùzu adapter",
+    )
+    parser.add_argument(
+        "--export-lake",
+        action="store_true",
+        help="export SDD graph to Central Federated Read Lake format",
+    )
+    parser.add_argument(
+        "--lake-format",
+        choices=("cypher", "age", "bolt"),
+        default="cypher",
+        help="lake export format: cypher (Memgraph/Neo4j), age (PostgreSQL 18 + Apache AGE), or bolt (JSON payload)",
+    )
+    parser.add_argument(
+        "--tenant-id",
+        default="aidoc-framework",
+        help="tenant repository identifier for federated lake namespacing",
+    )
+    parser.add_argument(
+        "--graph-path",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help="path to graph directory or slice for --cypher or --export-lake",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     # 1. Native SDD Graph & Observability CLI Handlers
@@ -283,6 +314,70 @@ def main(argv: list[str] | None = None) -> int:
             print(f"✓ Rendered PR impact summary to {args.out}")
         else:
             sys.stdout.write(summary)
+        return 0
+
+    if args.cypher is not None:
+        import json
+
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.kuzu_adapter import KuzuGraphAdapter
+
+        if not KuzuGraphAdapter.is_available():
+            print(
+                "sdd-doc-lint: ✗ Kùzu engine is not installed in the environment.\n"
+                "Install with: pip install kuzu\n"
+                "Or use pure-Python BTV validation: python3 -m sdd_doc_lint --graph-check <dir>",
+                file=sys.stderr,
+            )
+            return 1
+
+        engine = GraphEngine()
+        target = args.graph_path or (args.paths[0] if args.paths else Path("docs/sdd/graph"))
+        if not target.exists():
+            print(f"sdd-doc-lint: ✗ Graph path does not exist: {target}", file=sys.stderr)
+            return 1
+
+        graph = (
+            engine.load_graph_directory(target)
+            if target.is_dir()
+            else engine.load_graph_file(target)
+        )
+        adapter = KuzuGraphAdapter()
+        adapter.ingest_graph(graph)
+        rows = adapter.query(args.cypher)
+        print(json.dumps(rows, indent=2))
+        return 0
+
+    if args.export_lake:
+        from sdd_doc_lint.graph_engine import GraphEngine
+        from sdd_doc_lint.lake_exporter import CentralLakeExporter
+
+        engine = GraphEngine()
+        target = args.graph_path or (args.paths[0] if args.paths else Path("docs/sdd/graph"))
+        if not target.exists():
+            print(f"sdd-doc-lint: ✗ Graph path does not exist: {target}", file=sys.stderr)
+            return 1
+
+        graph = (
+            engine.load_graph_directory(target)
+            if target.is_dir()
+            else engine.load_graph_file(target)
+        )
+        exporter = CentralLakeExporter(tenant_id=args.tenant_id)
+        if args.lake_format == "cypher":
+            content = exporter.export_cypher(graph)
+        elif args.lake_format == "age":
+            content = exporter.export_age_sql(graph)
+        else:
+            import json
+
+            content = json.dumps(exporter.export_bolt_payload(graph), indent=2)
+
+        if args.out:
+            args.out.write_text(content, encoding="utf-8")
+            print(f"✓ Exported lake artifact ({args.lake_format}) to {args.out}")
+        else:
+            sys.stdout.write(content)
         return 0
 
     if args.profile is not None:

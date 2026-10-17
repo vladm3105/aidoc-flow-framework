@@ -70,6 +70,7 @@
           },
           "title": { "type": "string" },
           "statement": { "type": "string" },
+          "description": { "type": "string" },
           "pattern": {
             "type": "string",
             "enum": ["ubiquitous", "event_driven", "state_driven", "optional", "unwanted"]
@@ -117,7 +118,10 @@
               "supersedes"
             ]
           },
-          "notes": { "type": "string" }
+          "notes": { "type": "string" },
+          "description": { "type": "string" },
+          "rationale": { "type": "string" },
+          "properties": { "type": "object" }
         }
       }
     }

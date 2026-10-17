@@ -62,9 +62,13 @@ edges:
     to: "SPEC.06.01.xxxx"
     relation: "constrains"
     notes: "Mandates Redis cluster client protocol and connection pooling limits for the gateway"
+    description: "Requires the gRPC service interface to incorporate Redis connection pool parameters and cluster topology routing."
+    rationale: "Ensures that implementation contracts adhere strictly to the ratified architectural infrastructure decision."
 
   # Architectural Decision constrains Upstream Formal Requirement (Layer 03 EARS)
   - from: "ADR.05.01.xxxx"
     to: "EARS.03.02.xxxx"
     relation: "constrains"
     notes: "Bounds the latency and state durability guarantees of event-driven order ingestion"
+    description: "Establishes physical performance boundaries on event-driven ingestion timing by guaranteeing sub-2ms session resolution."
+    rationale: "Prevents requirements from assuming unrealistic latency bounds unsupported by infrastructure."

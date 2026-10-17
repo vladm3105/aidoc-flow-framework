@@ -88,19 +88,27 @@ edges:
     to: "TDD.07.01.xxxx"
     relation: "implements"
     notes: "Test-First Invariant: task implements the logic proven by unit test fixture"
+    description: "Implements the concrete gRPC handler logic required to turn the failing unit test red-to-green."
+    rationale: "Enforces strict test-first development invariant (GRAPH-CARD-006)."
 
   - from: "TASK.08.02.xxxx"
     to: "TDD.07.02.xxxx"
     relation: "implements"
     notes: "Task wires the concurrency integration route"
+    description: "Patches ingress router to bind endpoint handler into testcontainer integration route."
+    rationale: "Satisfies multi-container integration test proof."
 
   # Implementation Tasks MUST have 1:1 Saga Compensation Edges (GRAPH-CARD-007)
   - from: "TASK.08.01.xxxx"
     to: "TASK.08.01.xxxx_rollback"
     relation: "compensated_by"
     notes: "Automated backward recovery if Task 01 verification fails"
+    description: "Executes clean filesystem removal of handler file if post-task unit tests fail."
+    rationale: "Fulfills the mandatory SDD Saga Rollback Invariant (GRAPH-CARD-007)."
 
   - from: "TASK.08.02.xxxx"
     to: "TASK.08.02.xxxx_rollback"
     relation: "compensated_by"
     notes: "Automated backward recovery if Task 02 verification fails"
+    description: "Reverts router git diff cleanly if integration tests fail, leaving repository in pristine state."
+    rationale: "Prevents dirty git state and partial commit contamination during autonomous agent execution."

@@ -22,8 +22,38 @@ class ObservabilityAdapter:
     def render_spec_sheet(self, graph: SddGraph, title: str | None = None) -> str:
         """Render a full human-readable Markdown specification sheet."""
         lines = [GENERATOR_BANNER]
-        doc_title = title or list(graph.slice_ids)[0] if graph.slice_ids else "Specification"
+        doc_title = title or (list(graph.slice_ids)[0] if graph.slice_ids else "Specification")
         lines.append(f"# Specification: {doc_title}\n")
+
+        # 0. Metadata & Executive Context (if present)
+        meta = getattr(graph, "metadata", {})
+        if meta:
+            if meta.get("description"):
+                lines.append(f"> {meta['description']}\n")
+
+            prob = meta.get("problem_statement")
+            if isinstance(prob, dict):
+                lines.append("## Executive Problem Context\n")
+                if prob.get("problem"):
+                    lines.append(f"- **Problem Statement**: {prob['problem']}")
+                if prob.get("impact"):
+                    lines.append(f"- **Business Impact**: {prob['impact']}")
+                if prob.get("opportunity"):
+                    lines.append(f"- **Market Opportunity**: {prob['opportunity']}")
+                if isinstance(prob.get("current_state"), list):
+                    lines.append("- **Current State Pain Points**:")
+                    for pt in prob["current_state"]:
+                        lines.append(f"  - {pt}")
+                lines.append("")
+
+            hyp = meta.get("mvp_hypothesis")
+            if isinstance(hyp, dict):
+                lines.append("## Core MVP Hypothesis\n")
+                if hyp.get("statement"):
+                    lines.append(f"- **Hypothesis**: {hyp['statement']}")
+                if hyp.get("validation"):
+                    lines.append(f"- **Validation Gate**: {hyp['validation']}")
+                lines.append("")
 
         # 1. Executive Summary & Business Objectives
         biz_nodes = graph.nodes_by_type("business_objective")
@@ -33,11 +63,29 @@ class ObservabilityAdapter:
                 lines.append(f"### {b.get('title', b['id'])} (`{b['id']}`)\n")
                 if b.get("statement"):
                     lines.append(f"- **Objective**: {b['statement']}")
+                if b.get("description"):
+                    lines.append(f"\n{b['description'].strip()}\n")
                 props = b.get("properties", {})
+                if props.get("category"):
+                    lines.append(f"- **Category**: {props['category']}")
                 if props.get("priority"):
                     lines.append(f"- **Priority**: {props['priority']}")
                 if props.get("roi_target"):
                     lines.append(f"- **Target ROI / Value**: {props['roi_target']}")
+                if props.get("business_driver"):
+                    lines.append(f"- **Business Driver**: {props['business_driver']}")
+                if props.get("availability_target"):
+                    lines.append(f"- **Availability Target**: {props['availability_target']}")
+                if props.get("peak_throughput_tps"):
+                    lines.append(f"- **Peak Throughput**: {props['peak_throughput_tps']} TPS")
+
+                # Traceability edges from this objective
+                out_edges = [e for e in graph.edges if e["from"] == b["id"]]
+                for edge in out_edges:
+                    rel_title = edge["relation"].replace("_", " ").title()
+                    note = edge.get("notes") or edge.get("description")
+                    note_str = f" — {note}" if note else ""
+                    lines.append(f"- **{rel_title}**: `{edge['to']}`{note_str}")
                 lines.append("")
 
         # 2. Product Capabilities
@@ -48,9 +96,68 @@ class ObservabilityAdapter:
                 lines.append(f"### {c.get('title', c['id'])} (`{c['id']}`)\n")
                 if c.get("statement"):
                     lines.append(f"- **Capability**: {c['statement']}")
+                if c.get("description"):
+                    lines.append(f"\n{c['description'].strip()}\n")
                 props = c.get("properties", {})
                 if props.get("persona"):
                     lines.append(f"- **Target Persona**: {props['persona']}")
+                if props.get("priority"):
+                    lines.append(f"- **Priority**: {props['priority']}")
+                if props.get("release_phase"):
+                    lines.append(f"- **Release Phase**: {props['release_phase']}")
+                if props.get("feature_flag"):
+                    lines.append(f"- **Feature Flag**: `{props['feature_flag']}`")
+                sla = props.get("sla_threshold") or props.get("threshold")
+                if sla:
+                    lines.append(f"- **SLA / Performance Bound**: {sla}")
+
+                story = props.get("user_story")
+                if isinstance(story, dict):
+                    lines.append(
+                        f"\n**User Story**: As a **{story.get('role', 'User')}**, I want to **{story.get('want', '')}**, so that **{story.get('so_that', '')}**.\n"
+                    )
+
+                acs = props.get("acceptance_criteria")
+                if isinstance(acs, list) and acs:
+                    lines.append("**Acceptance Criteria**:")
+                    for ac in acs:
+                        lines.append(f"- {ac}")
+                    lines.append("")
+
+                steps = props.get("interaction_steps")
+                if isinstance(steps, list) and steps:
+                    lines.append("**User Interaction Steps**:")
+                    for step in steps:
+                        lines.append(f"- {step}")
+                    lines.append("")
+
+                ecs = props.get("edge_cases")
+                if isinstance(ecs, list) and ecs:
+                    lines.append("**Edge Cases & Fallbacks**:")
+                    for ec in ecs:
+                        lines.append(f"- {ec}")
+                    lines.append("")
+
+                # Relational contracts for this capability
+                rel_edges = [e for e in graph.edges if e["from"] == c["id"]]
+                for edge in rel_edges:
+                    rel_title = edge["relation"].replace("_", " ").title()
+                    note = edge.get("notes") or edge.get("description")
+                    note_str = f" — {note}" if note else ""
+                    lines.append(f"- **{rel_title}**: `{edge['to']}`{note_str}")
+                    if edge.get("rationale"):
+                        lines.append(f"  - *Rationale*: {edge['rationale']}")
+
+                constraint_edges = [
+                    e for e in graph.edges if e["to"] == c["id"] and e["relation"] == "constrains"
+                ]
+                for edge in constraint_edges:
+                    note = edge.get("notes") or edge.get("description")
+                    note_str = f" — {note}" if note else ""
+                    lines.append(f"- **Constrained by**: `{edge['from']}`{note_str}")
+                    if edge.get("rationale"):
+                        lines.append(f"  - *Rationale*: {edge['rationale']}")
+
                 lines.append("")
 
         # 3. Formal Requirements (EARS)
@@ -62,6 +169,8 @@ class ObservabilityAdapter:
                 lines.append(
                     f"- **`{r['id']}`** [{pattern.upper()}]: {r.get('statement', r.get('title', ''))}"
                 )
+                if r.get("description"):
+                    lines.append(f"  > {r['description'].strip()}")
             lines.append("")
 
         # 4. Acceptance Criteria & Oracles (BDD)
@@ -70,6 +179,8 @@ class ObservabilityAdapter:
             lines.append("## 4. Acceptance Scenarios & Behavioral Oracles (BDD)\n")
             for s in bdd_nodes:
                 lines.append(f"### Scenario: {s.get('title', s['id'])} (`{s['id']}`)\n")
+                if s.get("description"):
+                    lines.append(f"> {s['description'].strip()}\n")
                 lines.append(f"- **Given** {s.get('given', '...')}")
                 lines.append(f"- **When** {s.get('when', '...')}")
                 lines.append(f"- **Then** {s.get('then', '...')}\n")
@@ -88,6 +199,8 @@ class ObservabilityAdapter:
                     lines.append(f"- **Decision**: {a['decision']}")
                 if a.get("consequences"):
                     lines.append(f"- **Consequences**: {a['consequences']}")
+                if a.get("description"):
+                    lines.append(f"\n{a['description'].strip()}\n")
                 lines.append("")
 
         # 6. Implementation & Verification Proofs (TDD/IPLAN)
@@ -110,6 +223,23 @@ class ObservabilityAdapter:
                     lines.append(
                         f"- **`{m['id']}`** [{m.get('action', 'apply')}]: {m.get('title', '')} (`{m.get('target_file', '')}`)"
                     )
+                lines.append("")
+
+        # 7. Evaluation Suites (EVAL)
+        eval_nodes = graph.nodes_by_type("evaluation_suite")
+        if eval_nodes:
+            lines.append("## 7. Evaluation Suites & Quality Gates (EVAL)\n")
+            for ev in eval_nodes:
+                lines.append(f"### {ev.get('title', ev['id'])} (`{ev['id']}`)\n")
+                if ev.get("statement"):
+                    lines.append(f"- **Scope**: {ev['statement']}")
+                if ev.get("description"):
+                    lines.append(f"\n{ev['description'].strip()}\n")
+                props = ev.get("properties", {})
+                if props.get("quality_gate"):
+                    lines.append(f"- **Quality Gate**: {props['quality_gate']}")
+                if props.get("benchmark_threshold"):
+                    lines.append(f"- **Benchmark Threshold**: {props['benchmark_threshold']}")
                 lines.append("")
 
         return "\n".join(lines).strip() + "\n"

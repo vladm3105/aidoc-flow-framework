@@ -57,3 +57,5 @@ edges:
     to: "SPEC.06.01.xxxx"
     relation: "authorized_by"
     notes: "Authorizes introduction of rate-limiting gRPC headers and error statuses"
+    description: "Transactionally authorizes modification of OrderService Protobuf contract to introduce token-bucket rate limits."
+    rationale: "Fulfills SDD transactional change governance invariant (GRAPH-CARD-008)."

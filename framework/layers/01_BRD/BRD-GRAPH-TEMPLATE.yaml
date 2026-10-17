@@ -4,11 +4,23 @@
 #  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
 #  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
 #  Layer: 01_BRD (Business Requirements Document)
-#  Parity: Full content and functional parity with BRD-SWF-TEMPLATE.yaml
+#  C4 Level: Context (business environment, actors, system boundaries)
+#  Parity: Full content and functional parity with BRD-TEMPLATE.yaml & BRD-SWF-TEMPLATE.yaml
+#
+#  CONVENTION:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common authoring pitfalls to avoid
+#    _example      — concrete example values for reference
+#
+#  DOWNSTREAM: PRD (Layer 2)
 # =============================================================================
 
 schema_version: "2.0-graph"
 slice_id: "BRD-NN_[initiative_slug]"
+
+# =============================================================================
+# Metadata & Strategic Context (Section 1–6 Parity)
+# =============================================================================
 
 metadata:
   author: "[Business Analyst / AI Agent ID]"
@@ -16,107 +28,222 @@ metadata:
   last_updated: "YYYY-MM-DD"
   status: "Draft"  # Draft | Active | Deprecated | Superseded
   framework_version: "[X.Y.Z]"
-  description: "[Concise summary of strategic business goals and enterprise capabilities]"
+  description: "[Comprehensive strategic business goals, market problem, financial ROI models, and enterprise capabilities]"
   layer: "01_BRD"
-  scope:
-    in_scope:
-      - "[Primary business capability / boundary 1]"
-      - "[Primary business capability / boundary 2]"
-    out_of_scope:
-      - "[Explicit non-goal or deferred capability]"
+  c4_level: "context"
+
+  # ---------------------------------------------------------------------------
+  # Strategic Problem Statement & Core Hypothesis (Section 4 Parity)
+  # ---------------------------------------------------------------------------
+  problem_statement:
+    problem: "[Concise description of the foundational user, market, or operational problem]"
+    impact: "[Quantifiable business impact — revenue loss, operational overhead, customer churn, or compliance risk]"
+    opportunity: "[Market opportunity or efficiency gain unlocked by resolving this problem]"
+    current_state:
+      - "[Current Pain Point 1: e.g. Cross-border settlement takes 48 hours and incurs a 4.2% manual exception rate]"
+      - "[Current Pain Point 2: e.g. Enterprise merchants lose an estimated $1.2M annually in disputed transaction overhead]"
+      - "[Current Pain Point 3: e.g. Regulatory compliance audits require 3 weeks of manual ledger log compilation]"
+
+  mvp_hypothesis:
+    statement: "Users and merchant partners will adopt real-time digital settlement if reconciliation is instant and fees are under 1%."
+    validation: "We will know this is true when [>=85% automated settlement rate is achieved within 60 days of launch]."
+
+  # ---------------------------------------------------------------------------
+  # Target User Segments & Stakeholders (Section 2 & 6 Parity)
+  # ---------------------------------------------------------------------------
+  target_users:
+    primary:
+      - segment: "[Primary Segment: e.g. Mid-market cross-border e-commerce merchants]"
+        need: "Instant settlement confirmation without multi-day banking float delays"
+        size: "Est. 12,000 active merchant stores"
+    secondary:
+      - segment: "[Secondary Segment: e.g. Compliance and finance audit teams]"
+        need: "Immutable, queryable audit trail for transaction reconciliation"
+        size: "Internal operations and regulatory partners"
+
   stakeholders:
     - persona: "Executive Sponsor"
-      value_driver: "Increase revenue and market penetration"
-    - persona: "Merchant Administrator"
-      value_driver: "Reduce settlement reconciliation latency and operational overhead"
+      value_driver: "Expand payment processing revenue and capture market share in high-growth corridors"
+    - persona: "Merchant Operations Director"
+      value_driver: "Eliminate manual settlement reconciliation errors and lower dispute resolution time"
+
+  # ---------------------------------------------------------------------------
+  # Scope Boundaries (Section 5 Parity)
+  # ---------------------------------------------------------------------------
+  scope:
+    in_scope:
+      - "[Primary Capability: Automated real-time order validation and eligibility checking]"
+      - "[Primary Capability: Guaranteed transactional settlement within enterprise SLA bounds]"
+      - "[Primary Capability: Cryptographic tamper-evident audit trail for regulatory compliance]"
+    out_of_scope:
+      - "[Deferred: Direct physical cash collection and payout networks — Phase 2 consideration]"
+      - "[Deferred: Peer-to-peer consumer split-payment mechanics — out of boundary]"
+
+  # ---------------------------------------------------------------------------
+  # Financial ROI & Investment Envelope (Section 4 Parity)
+  # ---------------------------------------------------------------------------
   financial_roi:
-    target_roi: "[e.g. 30% reduction in customer support load within 6 months]"
-    cost_threshold: "[Budgetary ceiling / resource envelope]"
+    target_roi: "35% reduction in customer support and manual reconciliation costs within 6 months post-launch"
+    cost_threshold: "$250,000 engineering and cloud infrastructure envelope"
+    development_costs:
+      team: "4 engineers x 10 weeks = $180,000"
+      infrastructure: "$3,500/month cloud and database hosting"
+      third_party: "$1,200/month payment validation APIs"
+    total_mvp_investment: "$215,000"
+    roi_hypothesis: "Net annual savings of $480,000 in recovered operational hours and reduced dispute penalties"
+
+# =============================================================================
+# Graph Nodes: Strategic Objectives & Business Capabilities (C4 Level 1)
+# =============================================================================
 
 nodes:
   # ---------------------------------------------------------------------------
-  # Strategic Business Objectives (Section 4 Parity)
+  # Node 1: Strategic Business Objective (Section 4 Parity)
   # ---------------------------------------------------------------------------
   - id: "BRD.01.04.xxxx"
     type: "business_objective"
-    title: "[Strategic Business Objective Title]"
-    statement: "[Fundamental user, market, or operational problem solved by this initiative]"
+    title: "[Strategic Business Objective: Real-Time Automated Settlement]"
+    statement: "[Accelerate transaction settlement from 48 hours to real-time while cutting reconciliation costs by 35%]"
+    description: |
+      Solves the multi-day banking float delay and manual ledger reconciliation burden
+      experienced by merchant partners. Automating transaction eligibility, currency conversion,
+      and settlement ledger commits eliminates payment disputes, reduces working capital
+      lockup, and establishes a scalable foundation for global merchant acquisition.
     properties:
       category: "strategic_goal"
       priority: "P0"  # P0 | P1 | P2 | P3
-      roi_target: "[Quantifiable business outcome or cost reduction metric]"
+      roi_target: "35% reduction in reconciliation costs"
       business_driver: "operational_efficiency"
+      baseline_metric: "48-hour batch settlement, 4.2% dispute rate"
+      target_metric: "<15 minute settlement, <0.2% dispute rate"
 
   # ---------------------------------------------------------------------------
-  # Business Capabilities & Functions (Section 7 Parity)
+  # Node 2: Core Business Capability (Section 7 Parity)
   # ---------------------------------------------------------------------------
   - id: "BRD.01.07.xxxx"
     type: "business_objective"
-    title: "[Business Capability Name: e.g. OrderValidationEngine]"
-    statement: "[Business engine verifying customer eligibility, credit limits, and line items]"
+    title: "[Business Capability: OrderValidationEngine]"
+    statement: "[Autonomous business engine verifying merchant eligibility, credit limits, and line items]"
+    description: |
+      Represents the core business capability that evaluates all incoming commercial orders.
+      Validates merchant account standing, checks transaction fraud risk limits, computes
+      applicable tax and currency conversions, and authorizes transactional settlement
+      before funds movement occurs.
     properties:
       category: "business_capability"
       domain: "OrderManagement"
       capability_type: "core"  # core | supporting | generic
+      user_story:
+        role: "Merchant Administrator"
+        want: "have customer orders automatically verified against credit limits and fraud policies"
+        so_that: "fraudulent and uncollectible transactions are blocked before inventory is committed"
+      acceptance_signoff: "Executive Sponsor and Lead Risk Officer"
 
   # ---------------------------------------------------------------------------
-  # Quality Expectations & Enterprise SLA Bounds (Section 8 Parity)
+  # Node 3: Quality Expectation & Enterprise SLA Bound (Section 8 Parity)
   # ---------------------------------------------------------------------------
   - id: "BRD.01.08.xxxx"
     type: "business_objective"
-    title: "[Enterprise Quality Expectation Title: e.g. Availability & Scalability Bound]"
-    statement: "[System container must maintain 99.95% uptime and support 5,000 req/sec]"
+    title: "[Enterprise Quality Expectation: High Availability & Peak Throughput Bound]"
+    statement: "[System must maintain 99.95% availability and sustain 5,000 transactions per second]"
+    description: |
+      Mandates the operational resilience envelope for all downstream systems supporting
+      order validation. Requires zero single points of failure, multi-zone active-active
+      failover, and strict audit log durability to satisfy regulatory financial audits.
     properties:
       category: "quality_expectation"
       availability_target: "99.95%"
       audit_retention_years: 7
       peak_throughput_tps: 5000
+      disaster_recovery_rto: "<15 minutes"
+      disaster_recovery_rpo: "0 seconds (zero data loss)"
 
   # ---------------------------------------------------------------------------
-  # Business Acceptance Criteria (Section 9 Parity)
+  # Node 4: Business Acceptance Gate (Section 9 Parity)
   # ---------------------------------------------------------------------------
   - id: "BRD.01.09.xxxx"
     type: "business_objective"
-    title: "[Business Acceptance Sign-off Criterion Title]"
-    statement: "[Measurable criteria required for business sign-off and progression to PRD]"
+    title: "[Business Acceptance Sign-off Gate: MVP Production Readiness]"
+    statement: "[Verifiable business sign-off criteria required before advancing from MVP to full production]"
+    description: |
+      Defines the formal business criteria required by enterprise stakeholders to graduate
+      the capability from MVP pilot to general availability. Requires successful completion
+      of load tests, risk audit sign-off, and pilot merchant satisfaction ratings >=4.2/5.
     properties:
       category: "acceptance_criterion"
-      validation_method: "load_testing"  # load_testing | stakeholder_signoff | audit_log_review
+      validation_method: "load_testing_and_stakeholder_signoff"
       signoff_role: "ExecutiveSponsor"
+      minimum_satisfaction_score: "4.2/5.0"
+      pilot_transaction_threshold: 10000
 
   # ---------------------------------------------------------------------------
-  # Business Risks & Mitigations (Section 11 Parity)
+  # Node 5: Strategic Business Risk & Mitigation (Section 11 Parity)
   # ---------------------------------------------------------------------------
   - id: "BRD.01.11.xxxx"
     type: "business_objective"
-    title: "[Business Risk Mitigation Title]"
-    statement: "[Identified business risk, operational trade-off, and compensating control]"
+    title: "[Business Risk Mitigation: Payment Partner Clearing Outage]"
+    statement: "[Mitigate primary banking partner outages via multi-rail fallback and buffered asynchronous queuing]"
+    description: |
+      Addresses the business continuity risk of third-party banking and clearing partner
+      degradation. Guarantees that consumer checkouts are never hard-blocked by banking
+      downtime, utilizing automated multi-rail routing and graceful asynchronous retries.
     properties:
       category: "risk_mitigation"
       risk_severity: "High"  # Critical | High | Medium | Low
-      mitigation_strategy: "[Dual-vendor fallback / phased pilot rollout]"
+      mitigation_strategy: "Multi-rail payment provider failover with secondary acquirer standby"
+      contingency_owner: "Director of Payment Partnerships"
+
+# =============================================================================
+# Graph Edges: Directed Strategic Dependencies & Rationale
+# =============================================================================
 
 edges:
-  # Strategic Objective decomposes to Business Capability
+  # ---------------------------------------------------------------------------
+  # Edge 1: Strategic Objective Decomposes to Business Capability
+  # ---------------------------------------------------------------------------
   - from: "BRD.01.04.xxxx"
     to: "BRD.01.07.xxxx"
     relation: "decomposes_to"
-    notes: "Strategic business objective is realized across core capabilities"
+    notes: "Strategic business objective is realized across core order validation capabilities"
+    description: |
+      Decomposes the strategic settlement objective into the concrete business capability
+      OrderValidationEngine, which executes automated credit limit and risk verification.
+    rationale: "Automating validation at the business logic layer is the direct prerequisite for eliminating manual float delays."
+    properties:
+      strategic_weight: "primary"
 
-  # Acceptance Criteria verifies Strategic Objective
+  # ---------------------------------------------------------------------------
+  # Edge 2: Acceptance Criteria Verifies Strategic Objective
+  # ---------------------------------------------------------------------------
   - from: "BRD.01.09.xxxx"
     to: "BRD.01.04.xxxx"
     relation: "verifies"
     notes: "Formal validation method proving strategic goal satisfaction"
+    description: |
+      Establishes the governance verification gate ensuring that the strategic settlement
+      objective meets pilot transaction volume and executive sign-off criteria before graduation.
+    rationale: "Prevents premature scaling before business viability and partner stability are formally proven."
 
-  # Quality Expectation constrains Business Capability
+  # ---------------------------------------------------------------------------
+  # Edge 3: Quality Expectation Constrains Business Capability
+  # ---------------------------------------------------------------------------
   - from: "BRD.01.08.xxxx"
     to: "BRD.01.07.xxxx"
     relation: "constrains"
     notes: "Enterprise SLA bound constrains operational behavior of the capability"
+    description: |
+      Binds the OrderValidationEngine to strict availability (99.95%) and throughput (5,000 TPS)
+      thresholds, dictating downstream container architecture in PRD and ADR layers.
+    rationale: "Ensures mission-critical reliability during flash sales and prevents catastrophic revenue loss."
 
-  # Risk Mitigation constrains Business Capability
+  # ---------------------------------------------------------------------------
+  # Edge 4: Risk Mitigation Constrains Business Capability
+  # ---------------------------------------------------------------------------
   - from: "BRD.01.11.xxxx"
     to: "BRD.01.07.xxxx"
     relation: "constrains"
     notes: "Compensating governance control bounds business risk"
+    description: |
+      Constrains the OrderValidationEngine to integrate secondary clearing rails and
+      resilient queuing, ensuring business continuity during third-party partner outages.
+    rationale: "Eliminates single point of failure in external payment infrastructure."
