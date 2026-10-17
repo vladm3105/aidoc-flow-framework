@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Overview
 
@@ -42,6 +42,16 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `EARS-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
 | `EARS_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining EARS primitive to CNCF state mappings, DAG integrity rules, and invalidation compensation. |
 | `EARS-00_index.TEMPLATE.yaml` | EARS registry template — tracks planned and active EARS documents and statement patterns per project in canonical 5-Quadrant YAML. |
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 03 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on requirement complexity (GD-59):
+
+| Requirement Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct component requirements, linear clauses | `EARS-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `EARS-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-system dependency DAGs, automated parsing, or invalidation sagas | `EARS-SWF-TEMPLATE.yaml` | `EARS-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating the authoring and verification lifecycle. |
 
 ## Workflow Integration & CNCF Serverless Workflow Standard
 

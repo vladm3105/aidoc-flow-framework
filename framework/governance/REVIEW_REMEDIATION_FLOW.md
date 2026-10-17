@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -31,7 +31,7 @@ sequential stages:
      modes, and contract misalignments BEFORE any implementation code is written.
    - **Pass Criteria:** 100% resolution of blocking findings (zero `P0`/`P1` or
      `critical`/`medium` issues); deterministic schema and structural conformance
-     verified; readiness score advisory target evaluated.
+     verified; Binary Topological Validation (`BTV PASS`) evaluated.
 
 2. **Stage B: Implementation PR Review (Post-Implementation / Pre-Merge)**
    - **Target:** Implementation code diffs, integration tests, IPLAN manifest
@@ -45,7 +45,7 @@ Each artifact moves through this loop before it is allowed to drive the
 downstream layer:
 
 ```text
-Draft ─▶ Review ─▶ (findings + readiness score)
+Draft ─▶ Review ─▶ (findings + BTV DAG validation)
              │
              ├─ gate floor passed ─▶ Gate pass ─▶ Approved ─▶ downstream
              │
@@ -54,14 +54,15 @@ Draft ─▶ Review ─▶ (findings + readiness score)
                                     └────────────────────────────┘
 ```
 
-- **Review** produces *findings* (concrete, located issues) and an advisory *readiness
-  score* against the layer's calibration target (e.g. target ≥ 90/100).
-- **Remediation** applies fixes for the blocking findings, then the artifact is
-  re-reviewed. The loop repeats until the gate floor passes.
+- **Review** produces *findings* (concrete, located issues) and executes deterministic
+  *Binary Topological Validation (BTV)* against the layer's DAG contract.
+- **Remediation** applies fixes for the blocking findings via the in-situ remediation loop
+  (`RemediateLayerDraft` in `*-SWF-TEMPLATE.yaml`), then the artifact is re-reviewed.
+  The loop repeats until the gate floor passes.
 - **Gate** is the existing readiness/CHG checkpoint — the normative gate floor requires
-  deterministic structural lint passage (`structural_pass: true`) and zero unresolved
-  blocking findings (`no_blocking: true`). The numeric readiness score and executive
-  narrative are advisory calibration enrichment above that floor.
+  deterministic structural lint passage (`structural_pass: true`), Binary Topological
+  Validation (`btv_pass: true`), and zero unresolved blocking findings (`no_blocking: true`).
+  Qualitative readiness scores, if computed, are non-normative advisory calibration enrichment.
 
 This loop is layer-agnostic: it applies identically to every artifact (BRD …
 IPLAN, CHG, EVAL), using that layer's own template, required tags, and threshold.

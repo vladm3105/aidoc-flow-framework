@@ -8,14 +8,16 @@
 | Status | Approved |
 | Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 ## Template Usage
 
-- **Dual-Template Selection (GD-51 through GD-61)**:
-  - **Standard Templates (`layers/0X_TYPE/TYPE-TEMPLATE.yaml`)**: Use for straightforward, atomic, or linear artifacts where declarative specification without execution graph state transitions is sufficient.
-  - **Workflow Templates (`layers/0X_TYPE/TYPE-SWF-TEMPLATE.yaml`)**: Use when the artifact models complex state transitions, multi-branch parallel operations, automated evaluation runners, distributed choreography contracts, or saga compensation rollbacks. These templates follow the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow v0.8 YAML state machine (`workflow_definition`).
+- **Three-Tier Layer Model & Template Selection (GD-51 through GD-61, GD-99 through GD-113)**:
+  - **Tier 1 (Workflow Templates — `layers/0X_TYPE/TYPE-SWF-TEMPLATE.yaml`)**: Use when the artifact models complex state transitions, multi-branch parallel operations, automated evaluation runners, distributed choreography contracts, or saga compensation rollbacks. These templates follow the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow v0.8 YAML state machine (`workflow_definition`).
+  - **Tier 2 (Canonical Graph Templates — `layers/0X_TYPE/TYPE-GRAPH-TEMPLATE.yaml`)**: Use for the SDD-GRAPH v2.0 property graph data plane committed to git. Provides strongly-typed node entities and dependency edges for openCypher/Kùzu slicing and deterministic DAG validation (`BTV PASS`).
+  - **Tier 3 (Compiled Markdown — `*.md`)**: Rendered dynamically on demand via `sdd_doc_lint --render-spec <graph.yaml>` for PR summaries and human review.
+  - **Standard Declarative Templates (`layers/0X_TYPE/TYPE-TEMPLATE.yaml`)**: Use for straightforward, atomic, or linear artifacts where declarative specification without execution graph state transitions is sufficient.
 - **Normative Workflow Standards**: When authoring workflow-enabled artifacts or understanding layer state machines, consult `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and the per-layer specification standard `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md`.
 - Fill placeholder fields (`[text]`, `xxxx`) with actual values.
 - Do not remove `_guidance`, `_note`, `_example`, or `_antipatterns` fields — they are ignored by validators but provide context.

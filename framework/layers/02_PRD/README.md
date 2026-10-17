@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 ## Overview
 
@@ -43,6 +43,16 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `PRD-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for multi-container product decomposition, RICE prioritization, and threshold validation. |
 | `PRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining PRD primitive to CNCF state mappings, container isolation rules, and invalidation compensation. |
 | `PRD-00_index.TEMPLATE.yaml` | PRD registry template — tracks planned and active PRDs and threshold parameters per project in canonical 5-Quadrant YAML. |
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 02 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on feature complexity (GD-60):
+
+| Feature Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct container feature, linear scope | `PRD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `PRD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-container decomposition, RICE prioritization, or invalidation sagas | `PRD-SWF-TEMPLATE.yaml` | `PRD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating the authoring and verification lifecycle. |
 
 ## Workflow Integration & CNCF Serverless Workflow Standard
 

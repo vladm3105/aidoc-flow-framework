@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -97,6 +97,8 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `decision-ratification-flow.sw.yaml` | Governance | Governance decision proposal, multi-agent review, founder sign-off, and lock lifecycle. |
 | `decision-migration-flow.sw.yaml` | Governance | Dual-channel decision migration & bifurcation flow from monolithic registers to workflows and CHGs. |
 | `eval-verification-run.sw.yaml` | Layer 10 EVAL | Multi-tier test execution, structured error triage, threshold verification, and evidence bundling. |
+| `sdd-layer-orchestration.sw.yaml` | Master Orchestrator | End-to-end SDD pipeline chaining from BRD through EVAL with parallel fork (BDD/ADR) and join at SPEC. |
+| `iplan-execution.sw.yaml` | Layer 08 IPLAN | Declarative task execution, verification loops, and handoff emission. |
 | `review/brd-review-remediation.sw.yaml` | Layer 01 BRD Review | Multi-persona parallel audit (business_analyst, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/prd-review-remediation.sw.yaml` | Layer 02 PRD Review | Multi-persona parallel audit (product_owner, tech_lead, architect, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/ears-review-remediation.sw.yaml` | Layer 03 EARS Review | Multi-persona parallel audit (requirements_specialist, tech_lead, qa_lead, security_engineer, chaos_engineer), score synthesis, and 3-strike remediation saga. |
@@ -110,11 +112,12 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 
 ### Governance Templates (`templates/`)
 
-The `templates/` directory provides canonical templates for workflows and review reports:
+The `templates/` directory provides canonical templates for workflows, graph data planes, and review reports:
 
 | Template File | Purpose |
 |---|---|
 | `CHG-SWF-TEMPLATE.yaml` | CNCF Serverless Workflow DSL template for change control, gate routing, and SDD cascade execution. |
+| `CHG-GRAPH-TEMPLATE.yaml` | SDD-GRAPH v2.0 property graph data plane slice template for change governance. |
 | `REVIEW-SWF-TEMPLATE.yaml` | CNCF Serverless Workflow DSL template for per-layer multi-persona review flows and 3-strike remediation sagas. |
 | `REVIEW_REPORT-TEMPLATE.yaml` | Engine-agnostic template for the unified review report (`ReviewReport`) with gate evaluation and CHG handover envelope. |
 
@@ -129,7 +132,7 @@ CHG is **spec-only** in the framework: the spec defines the gates and their
 checks; each consuming platform implements the enforcement against this shared
 contract (a record validator for the record-level checks, continuous
 integration for the diff-aware and suite checks, protected-branch review for the
-human approval). This model is recorded formally as **GD-01** in `DECISIONS.md`.
+human approval). This model is recorded formally as **GD-01** (historically in `DECISIONS.md`).
 
 ### Framework self-changes (GATE-SPEC)
 
@@ -144,13 +147,11 @@ the change routes through **GATE-SPEC** — the meta gate. Requirements:
 | `framework/VERSION` bumped (archive-tier-only repairs exempt) | Yes | Yes |
 | Spec-version pins re-declared | Yes | Yes |
 | Conformance suite green | Yes | Yes |
-| `CHANGELOG.md` updated (archive-tier-only repairs exempt) | Yes | Yes |
 | Human approval | Maintainer + 1 reviewer | Maintainer + 2 reviewers |
 
 All framework changes also require:
 1. **Archive** originals to `archive/{CHG-ID}/` before modification
 2. **Document Control** blocks updated (version bump, last_updated, framework_version)
-3. **GD entry** in `DECISIONS.md` for significant decisions
 
 ## `.aidoc/` Governance (`aidoc/`)
 

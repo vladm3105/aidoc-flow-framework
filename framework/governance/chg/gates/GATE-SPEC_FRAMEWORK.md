@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 
 > **Position**: Orthogonal to the artifact cascade — governs the `framework/`
@@ -89,7 +89,6 @@ the full gate applies.
 - [ ] change_description.why and .trigger populated (provenance for a promotion)
 - [ ] semver_impact set (major | minor | patch)
 - [ ] change_level proposed (>= C2; major => C3)
-- [ ] CHANGELOG.md entry drafted
 - [ ] For C3: downstream consumers notified (migration note per consumer)
 ```
 
@@ -155,7 +154,7 @@ level. Signature fields stay blank for the human.
 
 | Criterion | C2 | C3 |
 |-----------|----|----|
-| All E-level checks pass (E001–E008) | Yes | Yes |
+| All E-level checks pass (E001–E007) | Yes | Yes |
 | W-level checks addressed | Review | Must address |
 | Provenance complete | Yes | Yes |
 | SemVer impact classified | Yes | Yes |
@@ -192,7 +191,7 @@ GATE-SPEC passes:
                                   │
                               GATE-SPEC
                  (provenance · semver · >=C2 · human approval
-                  · VERSION bump · pins match · suite green · CHANGELOG)
+                  · VERSION bump · pins match · suite green)
                                   │
                                PASSED
                                   │

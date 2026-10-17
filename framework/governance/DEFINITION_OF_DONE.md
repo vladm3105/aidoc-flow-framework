@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-01 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.0 |
+| Framework Version | 0.96.1 |
 
 Engine-agnostic completion criteria for an SDD **artifact** and for a **change**
 to the spec. This is a *light contract*: it names *what must be true* before work
@@ -26,7 +26,7 @@ An artifact is **Done** when:
 - It has passed **review** with **no blocking findings** (severity *critical* or
   *medium*; see `REVIEW_REMEDIATION_FLOW.md`), or every blocking finding has been
   remediated and re-reviewed.
-- Its **readiness score** meets the layer **gate threshold**.
+- It passes **Binary Topological Validation** (**BTV PASS**) and meets the layer **gate threshold**.
 - The review was **independent of the author** (judge ≠ generator) — an artifact
   is never cleared only by the agent that produced it (mirrors CHG **C1**: no
   self-approval).
@@ -39,8 +39,7 @@ An artifact is **Done** when:
 A change to the framework spec (`framework/**` — templates, governance, registry,
 `VERSION`) is **Done** when it has **passed GATE-SPEC** (`chg/gates/GATE-SPEC_FRAMEWORK.md`):
 provenance + SemVer impact recorded (`major ⇒ C3`; additive may be C2; never C1),
-`VERSION` bumped, `CHANGELOG` updated, every platform's `FRAMEWORK_SPEC_VERSION`
-re-declared to match, the **conformance suite green**, and **human approval**
+`VERSION` bumped, in-repo spec-version pins re-declared to match, the **conformance suite green**, and **human approval**
 obtained (a validator never grants approval — only a human signs; per GD-01).
 
 ## Verification binding (EVAL verdicts)
@@ -75,7 +74,7 @@ part of this contract.)*
 - `REVIEW_REMEDIATION_FLOW.md` — the review→remediation→gate loop, `pre_merge`
   trigger, iteration cap, and severity classes.
 - `DOC_GOVERNANCE_CORE.md` — governance principles + the readiness-gate baseline.
-- `chg/gates/GATE-SPEC_FRAMEWORK.md` + `DECISIONS.md` (GD-01) — the spec-change gate.
+- `chg/gates/GATE-SPEC_FRAMEWORK.md` (GD-01) — the spec-change gate.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
 - `../layers/10_EVAL/README.md` + `EVAL-REPORT-TEMPLATE.yaml` (§9 `verdict`,
   §10 `evidence`, §11 `linkage`) — the verdict pipeline this binding rule
