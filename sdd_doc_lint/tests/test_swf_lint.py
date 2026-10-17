@@ -403,9 +403,7 @@ class SwfLintRulesTest(unittest.TestCase):
                 {
                     "name": "EmitLayerHandoffEvent",
                     "type": "operation",
-                    "produceEvents": [
-                        {"eventRef": "BrdClosedAndBaselinedEvent"}
-                    ],
+                    "produceEvents": [{"eventRef": "BrdClosedAndBaselinedEvent"}],
                     "end": True,
                 },
             ],

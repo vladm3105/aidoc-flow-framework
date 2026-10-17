@@ -535,8 +535,8 @@ def lint_workflow_dict(
             )
 
     # SWF-L009: Layer Workflow Closeout & Handoff Compliance
-    is_standalone_layer_wf = (
-        p.name in STANDALONE_LAYER_WORKFLOWS and not any(part == "archive" for part in p.parts)
+    is_standalone_layer_wf = p.name in STANDALONE_LAYER_WORKFLOWS and not any(
+        part == "archive" for part in p.parts
     )
     enforce_closeout = (is_template or is_standalone_layer_wf) or (
         isinstance(wf.get("metadata"), dict)
@@ -545,17 +545,14 @@ def lint_workflow_dict(
 
     if enforce_closeout:
         # 1. In-situ remediation loop state
-        has_remediation_state = (
-            "RemediateLayerDraft" in state_dict
+        has_remediation_state = "RemediateLayerDraft" in state_dict or any(
+            "remediate" in s_name.lower()
             or any(
-                "remediate" in s_name.lower()
-                or any(
-                    "remediate" in str(act.get("functionRef", {}).get("refName", "")).lower()
-                    for act in s.get("actions", [])
-                    if isinstance(act, dict)
-                )
-                for s_name, s in state_dict.items()
+                "remediate" in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
             )
+            for s_name, s in state_dict.items()
         )
         if not has_remediation_state:
             findings.append(
@@ -569,18 +566,15 @@ def lint_workflow_dict(
             )
 
         # 2. Layer boundary closeout gate verification state
-        has_closeout_gate_state = (
-            "VerifyLayerCloseoutGate" in state_dict
+        has_closeout_gate_state = "VerifyLayerCloseoutGate" in state_dict or any(
+            ("verify" in s_name.lower() and "gate" in s_name.lower())
             or any(
-                ("verify" in s_name.lower() and "gate" in s_name.lower())
-                or any(
-                    "verifylayerboundarygate"
-                    in str(act.get("functionRef", {}).get("refName", "")).lower()
-                    for act in s.get("actions", [])
-                    if isinstance(act, dict)
-                )
-                for s_name, s in state_dict.items()
+                "verifylayerboundarygate"
+                in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
             )
+            for s_name, s in state_dict.items()
         )
         if not has_closeout_gate_state:
             findings.append(
@@ -594,18 +588,14 @@ def lint_workflow_dict(
             )
 
         # 3. Document baseline sealing action/state
-        has_sealing_state = (
-            "SealLayerDocumentBaseline" in state_dict
+        has_sealing_state = "SealLayerDocumentBaseline" in state_dict or any(
+            "seallayerdocumentbaseline" in s_name.lower()
             or any(
-                "seallayerdocumentbaseline" in s_name.lower()
-                or any(
-                    "sealdocumentbaseline"
-                    in str(act.get("functionRef", {}).get("refName", "")).lower()
-                    for act in s.get("actions", [])
-                    if isinstance(act, dict)
-                )
-                for s_name, s in state_dict.items()
+                "sealdocumentbaseline" in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
             )
+            for s_name, s in state_dict.items()
         )
         if not has_sealing_state:
             findings.append(
