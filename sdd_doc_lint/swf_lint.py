@@ -483,8 +483,12 @@ def lint_workflow_dict(
                     # subFlowRef
                     subflow = act.get("subFlowRef")
                     if subflow and isinstance(subflow, (str, dict)):
-                        subflow_name = subflow if isinstance(subflow, str) else subflow.get("workflowId", "")
-                        if "review-remediation-flow" in str(subflow_name) or "review-saga" in str(subflow_name):
+                        subflow_name = (
+                            subflow if isinstance(subflow, str) else subflow.get("workflowId", "")
+                        )
+                        if "review-remediation-flow" in str(subflow_name) or "review-saga" in str(
+                            subflow_name
+                        ):
                             has_review_saga_invocation = True
                             break
                     # functionRef
