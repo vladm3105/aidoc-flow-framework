@@ -10,7 +10,7 @@
 | Author | Framework Maintainer |
 | Framework Version | 0.93.0 |
 | Target Framework Version | 0.94.0 (C2 Minor Spec & Tooling Release) |
-| Authority | Decision GD-98 (`DEC-CHG-111`), [Decision D-0013 / GD-13](file:///home/ya/devd/aidoc-framework/framework/governance/DECISIONS.md), [`REVIEW_CREWS.yaml`](file:///home/ya/devd/aidoc-framework/framework/governance/REVIEW_CREWS.yaml), [`REVIEW_WORKFLOW_STANDARD.md`](file:///home/ya/devd/aidoc-framework/framework/governance/REVIEW_WORKFLOW_STANDARD.md), Issue #996 |
+| Authority | Decision GD-98 (`DEC-CHG-111`), [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`REVIEW_CREWS.yaml`](../framework/governance/REVIEW_CREWS.yaml), [`REVIEW_WORKFLOW_STANDARD.md`](../framework/governance/REVIEW_WORKFLOW_STANDARD.md), Issue #996 |
 
 ---
 
@@ -26,7 +26,7 @@ In the current SDD architecture across Layers `01_BRD` through `10_EVAL`:
    - However, in `*-SWF-TEMPLATE.yaml`, the evaluation gates (e.g. `EvaluateStrategicAlignmentGate` in BRD) transition **directly** to `RatifyBusinessSpecification` without invoking the layer's review saga! The authoring flow and the multi-lens review loop exist as unlinked, isolated state machines.
 
 2. **Unspecified Author Rubric in Workflow Definitions**:
-   - While [`REVIEW_CREWS.yaml`](file:///home/ya/devd/aidoc-framework/framework/governance/REVIEW_CREWS.yaml) specifies the designated `author` role for each layer (e.g. `business_analyst` for BRD, `product_owner` for PRD, `requirements_specialist` for EARS, etc.), the `*-SWF-TEMPLATE.yaml` files do not declare `author_persona` or `author_playbook` in their metadata. Autonomous agents authoring an artifact have no explicit workflow binding pointing them to their authoring rubric prior to drafting.
+   - While [`REVIEW_CREWS.yaml`](../framework/governance/REVIEW_CREWS.yaml) specifies the designated `author` role for each layer (e.g. `business_analyst` for BRD, `product_owner` for PRD, `requirements_specialist` for EARS, etc.), the `*-SWF-TEMPLATE.yaml` files do not declare `author_persona` or `author_playbook` in their metadata. Autonomous agents authoring an artifact have no explicit workflow binding pointing them to their authoring rubric prior to drafting.
 
 3. **Missing Automated Workflow Verification (`SWF-L008`)**:
    - The structural workflow linter (`sdd_doc_lint.swf_lint`) enforces schema compliance (`SWF-L001` through `SWF-L007`), but lacks a rule validating that layer authoring workflows declare canonical author playbooks and invoke their designated review sagas.
@@ -71,7 +71,7 @@ metadata:
   author_playbook: "framework/playbooks/<layer>/<role>.md"
 ```
 
-Mappings per [`REVIEW_CREWS.yaml`](file:///home/ya/devd/aidoc-framework/framework/governance/REVIEW_CREWS.yaml):
+Mappings per [`REVIEW_CREWS.yaml`](../framework/governance/REVIEW_CREWS.yaml):
 
 - **01_BRD**: `business_analyst` $\to$ `framework/playbooks/01_BRD/business_analyst.md`
 - **02_PRD**: `product_owner` $\to$ `framework/playbooks/02_PRD/product_owner.md`
