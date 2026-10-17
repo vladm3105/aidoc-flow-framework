@@ -5,13 +5,26 @@
 #  Downstream: IPLAN (Layer 8), EVAL (Layer 10)
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 07 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (TDD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to arrange, execute, and verify test suites.
+#       Orchestrates test fixture provisioning, test matrix dispatch, flaky retry backoffs,
+#       quality gate evaluation, and fixture teardown compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (TDD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (test cases, assertions, fixtures, BDD pairings, SPEC contracts).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (TDD-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (TDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (TDD-SWF-TEMPLATE.yaml + TDD-GRAPH-TEMPLATE.yaml) when:
 #    - Orchestrating stateful test workflows, fixture lifecycles, or integration test suites
 #    - Mapping Arrange-Act-Assert phases to state machine primitives (inject/operation/switch)
 #    - Incorporating automated flaky failure backoff retries and saga teardown compensation
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (TDD-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (TDD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting isolated, atomic unit tests, static test matrices, or pure function assertions
 #    - State machine orchestration, automated retry backoff, and saga teardown are not needed
 # =============================================================================

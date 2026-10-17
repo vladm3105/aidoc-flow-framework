@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 | Authority | Decision GD-59 (framework/governance/DECISIONS.md) |
 
 ---
@@ -52,34 +52,40 @@ The table below defines the formal mapping of EARS requirements analysis primiti
 
 ---
 
-## 3. Dual-Template Architecture & Selection Matrix
+## 3. Two-Graph & Dual-Template Architecture Selection Matrix
 
-Layer 03 provides two canonical authoring templates. Authors and autonomous AI agents MUST select the template matching the structural complexity of the requirements:
+Layer 03 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable process workflow with an atomic content graph to generate and ratify functional requirements:
 
 ```text
-                              ┌───────────────────────────────────┐
-                              │  Are requirements multi-system,   │
-                              │  feature inter-dependent DAGs,    │
-                              │  or require automated BDD gating? │
-                              └─────────────────┬─────────────────┘
-                                                │
-                                ┌───────────────┴───────────────┐
-                                │                               │
-                                ▼ YES                           ▼ NO
-                ┌──────────────────────────────┐ ┌──────────────────────────────┐
-                │   EARS-SWF-TEMPLATE.yaml     │ │      EARS-TEMPLATE.yaml      │
-                │   (Hybrid Envelope Subtype)  │ │      (Standard Declarative)  │
-                │                              │ │                              │
-                │  - Embedded CNCF v0.8 Graph  │ │  - Declarative YAML tables   │
-                │  - Parallel DAG Resolution   │ │  - Atomic EARS statements    │
-                │  - BDD-Ready Scoring Gate    │ │  - Standard single-system    │
-                │  - Invalidation Compensation │ │    requirements              │
-                └──────────────────────────────┘ └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 03 EARS TWO-GRAPH ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       EARS-SWF-TEMPLATE.yaml (Hybrid Envelope)         │      (EARS-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to parse, validate & ratify requirements │ • Content of WHAT requirements exist│
+│ • Syntax verification & parallel DAG dependency checks │ • Atomic EARS requirement statements│
+│ • Automated BDD-Readiness scoring gate (BTV PASS)      │ • Upstream PRD & downstream BDD links│
+│ • Stakeholder clarification callbacks                  │ • Relational links (realizes, etc) │
+│ • Rejection invalidation saga (compensatedBy)          │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates requirements validation & gating  │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & DAG acyclicity          │
+                    │ • Observability Adapter projects graph into EARS-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
 ```
 
-### Selection Rules:
-1. **Use `EARS-TEMPLATE.yaml`** when requirements represent a single component or linear feature set with isolated, independent behaviors.
-2. **Use `EARS-SWF-TEMPLATE.yaml`** when requirements span multiple subsystems, declare inter-requirement prerequisites (`@depends:`), require automated DAG acyclicity checks, or feed automated BDD generation pipelines.
+### Dual-Template Selection Rules:
+Authors and autonomous AI agents select the template matching the structural complexity of the requirements:
+1. **Use Two-Graph Generation (`EARS-SWF-TEMPLATE.yaml` [Hybrid Envelope Subtype] + `EARS-GRAPH-TEMPLATE.yaml` [Property Graph])** when requirements span multiple subsystems, declare inter-requirement prerequisites (`@depends:`), require automated DAG acyclicity checks, or feed automated BDD generation pipelines. The Process DAG guides validation, populates the Content Graph, executes BTV verification, and projects the final EARS specification.
+2. **Use Companion Declarative (`EARS-TEMPLATE.yaml`)** directly when requirements represent a single component or linear feature set with isolated, independent behaviors without branching or automated compensations.
 
 ---
 
@@ -126,3 +132,8 @@ When an autonomous AI agent or execution harness executes an EARS workflow via L
    - `switch` states evaluate JSONPath/CEL expressions against accumulated requirement metadata.
    - `callback` states pause the LangGraph thread using checkpointers (`MemorySaver` / database saver) until stakeholder events are posted.
    - `compensatedBy` states execute rollback handlers when execution paths terminate in rejection.
+3. **Dual-Graph Pipeline Coordination**:
+   - **Step 1 (Process DAG Orchestration)**: LangGraph drives the authoring agent through the requirement validation workflow.
+   - **Step 2 (Content Graph Mutation)**: As operations complete, the agent instantiates and updates nodes (`requirement`, `quality_attribute`, `timing_bound`) and edges (`realizes`, `verifies`, `depends_on`) in `EARS-GRAPH-TEMPLATE.yaml`.
+   - **Step 3 (Binary Topological Validation - BTV)**: The state machine executes BTV asserting DAG acyclicity, upstream PRD closure, and zero requirement conflicts.
+   - **Step 4 (Document Generation / Read Projection)**: The Observability Adapter compiles the validated property graph into the canonical human-readable document (`EARS-TEMPLATE.yaml` structure).

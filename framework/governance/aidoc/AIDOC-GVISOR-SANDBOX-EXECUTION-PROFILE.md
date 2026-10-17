@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [WORKTREE_FLOW.md](../WORKTREE_FLOW.md) |
 
 Operational blueprint defining the security, runtime isolation, and secret injection profile

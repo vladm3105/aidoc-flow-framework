@@ -5,13 +5,26 @@
 #  Downstream: TDD (Layer 7), IPLAN (Layer 8)
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 06 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (SPEC-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to choreograph, verify, and compensate interactions.
+#       Orchestrates service dispatch, payload validation, async callbacks, SLA checks,
+#       and distributed saga rollback compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (SPEC-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (interfaces, methods, schemas, event contracts, data models).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (SPEC-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (SPEC-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (SPEC-SWF-TEMPLATE.yaml + SPEC-GRAPH-TEMPLATE.yaml) when:
 #    - Specifying distributed service interaction, event-driven choreography, or CloudEvent schemas
 #    - Orchestrating asynchronous webhook callbacks, concurrent service dispatches, or latency SLA checks
 #    - Requiring automated distributed saga compensation (backward recovery on downstream service failure)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Specifying atomic, in-process monolithic components, synchronous APIs, or pure algorithmic modules
 #    - State machine orchestration, asynchronous callbacks, and distributed compensations are not needed
 # =============================================================================

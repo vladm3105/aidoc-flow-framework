@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -65,6 +65,53 @@ To prevent conflation between repository governance policy and codebase mutation
 9. **Business Requirements Validation Workflows (`framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml`)**:
    Govern strategic theme ingestion, value stream mapping, quantitative ROI evaluation, executive steering committee reviews, and strategic invalidation compensation sagas.
    Governed by [`framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md`](../layers/01_BRD/BRD_WORKFLOW_STANDARD.md).
+
+---
+
+### The Two-Graph Architecture: Process DAG vs. Content Graph
+
+In the SDD framework, specification engineering and document generation are structured around a dual-graph paradigm that separates **orchestration flow (control plane)** from **domain specification data (data plane)**:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                             TWO-GRAPH DUAL-PLANE ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│           GRAPH 1: PROCESS DAG (CONTROL PLANE)         │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│            (*-SWF-TEMPLATE.yaml / *.sw.yaml)           │      (*-GRAPH-TEMPLATE.yaml)       │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • Execution workflow / State machine DAG               │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Defines HOW to create, verify & ratify the doc       │ • Defines WHAT content & relations │
+│ • Orchestrates agent actions, authoring steps, gates   │ • Houses atomic nodes & typed edges│
+│ • Asynchronous callbacks & human-in-the-loop approvals │ • Enforces topological invariants  │
+│ • Saga rollback compensation (compensatedBy)           │ • BTV (Binary Topological Validate)│
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │            DOCUMENT SYNTHESIS & READ PROJECTION              │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ 1. Process DAG executes authoring & analysis steps           │
+                    │ 2. Agent populates & mutates atomic entities in Data Graph   │
+                    │ 3. BTV validates topological integrity (closure, acyclicity) │
+                    │ 4. Observability Adapter projects graph into human-facing    │
+                    │    specification deliverables (*-TEMPLATE.yaml / spec sheet) │
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+1. **Graph 1: Process DAG (Control Plane — `*-SWF-TEMPLATE.yaml` / `*.sw.yaml`)**:
+   - **Nature**: CNCF Serverless Workflow DSL v0.8 YAML state machine.
+   - **Purpose**: Defines the operational lifecycle and procedural flow of **how to create, review, evaluate, and ratify a document**.
+   - **Semantics**: Governs sequential/parallel agent actions, quantitative gating thresholds, timeouts, human-in-the-loop callback events, and compensating saga rollbacks.
+2. **Graph 2: Content Graph (Data Plane — `*-GRAPH-TEMPLATE.yaml`)**:
+   - **Nature**: SDD-GRAPH v2.0 native property graph conforming to `sdd-graph.schema.json`.
+   - **Purpose**: Defines **what content and what relationships must be present in the document**.
+   - **Semantics**: Captures atomic domain entities (capabilities, requirements, scenarios, contracts, test cases) and their typed directed edges (`realizes`, `verifies`, `constrains`, `depends_on`, `implements`, `evaluates`).
+3. **Document Generation Synergy**:
+   - Neither graph is a replacement for the other; both are required to produce a valid specification.
+   - The **Process DAG** drives the authoring agent and enforces the quality gates.
+   - The authoring agent instantiates and updates the **Content Graph**.
+   - Topological verification (**BTV**) mathematically proves referential closure and consistency.
+   - The **Observability Adapter** reads the Content Graph and projects it into the canonical human-readable specification document (`*-TEMPLATE.yaml` format).
 
 ## 2. Directory Structure & File Conventions
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 10 (Evaluation & Quality Verification / EVAL) execution plans, test suite runners, and quality gate receipts using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -100,11 +100,39 @@ When unexpected harness failures or assertion errors occur, the orchestrator tri
 
 ---
 
-## 5. Dual-Template Selection Discipline
+## 5. Two-Graph Architecture & Dual-Template Selection Discipline
 
-Authors select between the two canonical evaluation templates based on orchestration complexity:
+Layer 10 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable verification orchestration workflow with an atomic evaluation content graph:
 
-| Criteria | Standard [`EVAL-TEMPLATE.yaml`](./EVAL-TEMPLATE.yaml) | Hybrid [`EVAL-SWF-TEMPLATE.yaml`](./EVAL-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 10 EVAL TWO-GRAPH ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       EVAL-SWF-TEMPLATE.yaml (Hybrid Envelope)         │      (EVAL-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to coordinate, verify & gate quality     │ • Content of WHAT tests exist      │
+│ • Multi-tier parallel test execution & quality gates   │ • Test suites, benchmarks, scopes  │
+│ • Gating switch states & automated receipt emission    │ • Quality thresholds & coverage    │
+│ • Fixture teardown & quarantine saga compensation      │ • Relational links (evaluates etc) │
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates test execution & gate evaluation  │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & test case coverage      │
+                    │ • Observability Adapter projects graph into EVAL-TEMPLATE    │
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors select between authoring configurations based on orchestration complexity:
+
+| Criteria | Standard Companion [`EVAL-TEMPLATE.yaml`](./EVAL-TEMPLATE.yaml) | Two-Graph [`EVAL-SWF-TEMPLATE.yaml`](./EVAL-SWF-TEMPLATE.yaml) + [`EVAL-GRAPH-TEMPLATE.yaml`](./EVAL-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Execution Complexity** | Static test checklists, atomic unit smoke runs | Multi-tier parallel test execution, conditional quality gates |
 | **Fixture Lifecycle** | Stateless, in-process mocks | Multi-container fixtures, first-class saga compensation |

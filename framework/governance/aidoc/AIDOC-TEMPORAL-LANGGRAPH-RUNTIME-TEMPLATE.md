@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.1 |
+| Framework Version | 0.92.2 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [DURABLE_EXECUTION_STANDARD.md](../DURABLE_EXECUTION_STANDARD.md) |
 
 Operational blueprint for translating declarative SDD Serverless Workflows (`.sw.yaml`)

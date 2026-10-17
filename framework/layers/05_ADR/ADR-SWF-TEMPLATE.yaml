@@ -14,14 +14,27 @@
 #  Downstream: SPEC (Layer 6)
 #  Upstream: EARS (L3), BDD (L4)
 #
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 05 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (ADR-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to evaluate, score, and ratify decisions.
+#       Orchestrates candidate evaluation fan-out, MCDA scoring, RFC callbacks,
+#       and rejection archival compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (ADR-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (candidate options, decision topics, evaluation criteria, trade-offs).
+#    Both graphs work together to generate a document: the Process DAG drives evaluation
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (ADR-TEMPLATE.yaml view).
+#
 #  TEMPLATE SELECTION GUIDE:
-#  Use this template (ADR-SWF-TEMPLATE.yaml — PRIMARY STANDARD) when:
+#  Use the Two-Graph approach (ADR-SWF-TEMPLATE.yaml + ADR-GRAPH-TEMPLATE.yaml) when:
 #    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
 #    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
 #    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
 #    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
 #    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
-#  Use the companion template (ADR-TEMPLATE.yaml — COMPANION STANDARD) instead when:
+#  Use the companion template (ADR-TEMPLATE.yaml — COMPANION STANDARD) directly when:
 #    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
 #    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
