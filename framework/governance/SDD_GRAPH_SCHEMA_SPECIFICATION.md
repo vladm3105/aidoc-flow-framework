@@ -8,7 +8,7 @@
 | Status | Ratified |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.92.0 |
+| Framework Version | 0.92.1 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
@@ -38,7 +38,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.92.0"
+  framework_version: "0.92.1"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:
@@ -67,7 +67,7 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 - **Role**: Defines architectural subsystem container (C4-L2) and data movement boundaries.
 
 ### 3.3 Layer 01: Business Objective (`business_objective`)
-- **ID Pattern**: `BIZ.NN.SS.xxxx` (or `BRD.NN.SS.xxxx`)
+- **ID Pattern**: `BRD.NN.SS.xxxx` (or `BIZ.NN.SS.xxxx`)
 - **Properties**: `title`, `statement`, `properties.priority` (`P0`–`P3`), `properties.roi_target`.
 - **Role**: Defines business value drivers, market requirements, and executive goals.
 
@@ -110,6 +110,11 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 - **ID Pattern**: `CHG-NN`
 - **Properties**: `title`, `status`, `authorized_by`, `properties.change_level` (`C1`–`C3`).
 - **Role**: Transactional governance envelope authorizing mutations to active nodes.
+
+### 3.12 Layer 10: Evaluation Suite (`evaluation_suite`)
+- **ID Pattern**: `EVAL.NN.SS.xxxx`
+- **Properties**: `title`, `statement`, `properties.scoring_criteria`, `properties.quality_gate`, `properties.benchmark_threshold`.
+- **Role**: Comprehensive evaluation and verification suite auditing requirements coverage, performance benchmarks, and regression gates.
 
 ---
 

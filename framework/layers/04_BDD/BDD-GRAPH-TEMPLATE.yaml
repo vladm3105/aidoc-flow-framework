@@ -1,0 +1,87 @@
+# =============================================================================
+#  BDD-GRAPH-TEMPLATE.yaml — Behavioral Acceptance Graph Slice (Layer 04)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 04_BDD (Behavior-Driven Development)
+#  Parity: Full content and functional parity with BDD-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "BDD-NN_[feature_slug]"
+
+metadata:
+  author: "[QA Lead / SDET / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Machine-executable acceptance scenarios serving as formal test oracles]"
+  layer: "04_BDD"
+  user_story:
+    as_a: "Merchant Administrator"
+    i_want: "Real-time automated reconciliation of customer settlements"
+    so_that: "Unmatched financial transactions are identified and quarantined immediately"
+  tags:
+    - "@acceptance"
+    - "@layer-04"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Happy Path Acceptance Scenario (Primary Business Journey)
+  # ---------------------------------------------------------------------------
+  - id: "BDD.04.01.xxxx"
+    type: "acceptance_scenario"
+    title: "[Happy Path Scenario: Successful Order Validation & Settlement]"
+    given: "A registered customer with active credit line and items in cart"
+    when: "The customer submits the checkout request with valid payment token"
+    then: "The order is approved within 50ms, inventory is reserved, and confirmation is emitted"
+    properties:
+      scenario_type: "happy_path"
+      tags: ["@smoke", "@p0"]
+      test_data_fixture: "fixtures/valid_order_payload.json"
+
+  # ---------------------------------------------------------------------------
+  # Negative / Edge Case Acceptance Scenario (Boundary Conditions)
+  # ---------------------------------------------------------------------------
+  - id: "BDD.04.02.xxxx"
+    type: "acceptance_scenario"
+    title: "[Edge Case Scenario: Insufficient Inventory Concurrency Contention]"
+    given: "An inventory stock level of exactly 1 item remaining"
+    when: "Two concurrent checkout requests arrive within 5ms of each other"
+    then: "Exactly one order succeeds and the second request is rejected with OutOfStockException"
+    properties:
+      scenario_type: "concurrency_boundary"
+      tags: ["@regression", "@p0"]
+      expected_error_code: "INVENTORY_DEPLETED"
+
+  # ---------------------------------------------------------------------------
+  # Security / Fault-Tolerance Acceptance Scenario
+  # ---------------------------------------------------------------------------
+  - id: "BDD.04.03.xxxx"
+    type: "acceptance_scenario"
+    title: "[Security Scenario: Expired Session Token Invalidation]"
+    given: "An expired authentication JWT session header"
+    when: "The client attempts to mutate order line items"
+    then: "The request is rejected with HTTP 401 Unauthorized and security audit log is appended"
+    properties:
+      scenario_type: "security_oracle"
+      tags: ["@security", "@audit"]
+      expected_http_status: 401
+
+edges:
+  # Acceptance Scenarios verify Upstream Formal Requirements (Layer 03 EARS)
+  - from: "BDD.04.01.xxxx"
+    to: "EARS.03.02.xxxx"
+    relation: "verifies"
+    notes: "Mandatory Oracle invariant: verifies event-driven order placement requirement"
+
+  - from: "BDD.04.02.xxxx"
+    to: "EARS.03.02.xxxx"
+    relation: "verifies"
+    notes: "Verifies inventory concurrency boundary under high contention"
+
+  - from: "BDD.04.03.xxxx"
+    to: "EARS.03.01.xxxx"
+    relation: "verifies"
+    notes: "Verifies ubiquitous audit logging and authentication invariant"

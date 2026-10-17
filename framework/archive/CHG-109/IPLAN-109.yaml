@@ -1,0 +1,63 @@
+# =============================================================================
+#  IPLAN-109: Codify Layer-Specific SDD Graph Templates Across Layers 01–10
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-109/CHG-109.yaml
+# =============================================================================
+
+id: "IPLAN-109"
+chg_id: "CHG-109"
+title: "Codify Layer-Specific SDD Graph Templates Across Layers 01–10"
+status: "Completed"
+framework_version: "0.92.1"
+
+file_manifest:
+  - "framework/governance/sdd-graph.schema.json"
+  - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+  - "sdd_doc_lint/graph_engine.py"
+  - "framework/layers/01_BRD/BRD-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/02_PRD/PRD-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/03_EARS/EARS-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/04_BDD/BDD-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/ADR-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/06_SPEC/SPEC-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/09_CHG/CHG-GRAPH-TEMPLATE.yaml"
+  - "framework/layers/10_EVAL/EVAL-GRAPH-TEMPLATE.yaml"
+  - "tests/conformance/test_sdd_graph_schema.py"
+  - "tests/unit/test_graph_engine.py"
+  - "framework/archive/CHG-109/CHG-109.yaml"
+  - "framework/archive/CHG-109/IPLAN-109.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-109.yaml and IPLAN-109.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: >-
+      Update sdd-graph.schema.json, SDD_GRAPH_SCHEMA_SPECIFICATION.md, and graph_engine.py
+      for evaluation_suite and layer slice prefixes
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Author BRD-GRAPH-TEMPLATE.yaml and PRD-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Author EARS-GRAPH-TEMPLATE.yaml and BDD-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Author ADR-GRAPH-TEMPLATE.yaml and SPEC-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Author TDD-GRAPH-TEMPLATE.yaml and IPLAN-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-07"
+    name: "Author CHG-GRAPH-TEMPLATE.yaml and EVAL-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-08"
+    name: "Update test_sdd_graph_schema.py and test_graph_engine.py for 10-layer template conformance"
+    status: "Completed"
+  - id: "TASK-09"
+    name: "Bump framework/VERSION to 0.92.1, update sync-version-refs.sh, and run full test suites"
+    status: "Completed"

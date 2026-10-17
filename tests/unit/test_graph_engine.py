@@ -67,7 +67,7 @@ class TestGraphEngine(unittest.TestCase):
         g.add_node({"id": "COMP.01", "type": "component_contract", "title": "Comp B"})
         g.add_node({"id": "TEST.01", "type": "test_fixture", "title": "Test C"})
         g.add_node({"id": "BDD.01", "type": "acceptance_scenario", "title": "Acc D"})
-        g.add_node({"id": "BIZ.01", "type": "business_objective", "title": "Unrelated E"})
+        g.add_node({"id": "BRD.01", "type": "business_objective", "title": "Unrelated E"})
 
         g.add_edge("REQ.01", "COMP.01", "implements")
         g.add_edge("COMP.01", "TEST.01", "proves")
@@ -190,6 +190,20 @@ class TestGraphEngine(unittest.TestCase):
         self.assertIn("REQ.01", delta.nodes)
         self.assertIn("TEST.01", delta.nodes)
         self.assertIn("COMP.01", delta.nodes)  # 1-hop neighbor of REQ.01
+
+    def test_load_all_ten_layer_graph_templates(self) -> None:
+        """Verify GraphEngine successfully loads all 10 layer graph templates."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        layer_templates = sorted(
+            (repo_root / "framework" / "layers").glob("*/*-GRAPH-TEMPLATE.yaml")
+        )
+        self.assertEqual(len(layer_templates), 10)
+        for tpl in layer_templates:
+            g = self.engine.load_graph_file(tpl)
+            self.assertGreater(len(g.nodes), 0, f"Template {tpl.name} has no nodes")
+            self.assertTrue(g.is_dag(), f"Template {tpl.name} contains cycles")
 
 
 if __name__ == "__main__":

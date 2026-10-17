@@ -21,7 +21,7 @@ nodes:
   # ---------------------------------------------------------------------------
   # Layer 01: Business Objective (BRD)
   # ---------------------------------------------------------------------------
-  - id: "BIZ.01.01.xxxx"
+  - id: "BRD.01.01.xxxx"
     type: "business_objective"
     title: "[Business Objective Title]"
     statement: "[What fundamental user or operational problem does this solve?]"
@@ -89,7 +89,7 @@ edges:
 
   # Product Capability realizes Business Objective
   - from: "PRD.01.01.xxxx"
-    to: "BIZ.01.01.xxxx"
+    to: "BRD.01.01.xxxx"
     relation: "realizes"
 
   # Acceptance Scenario verifies Formal Requirement (Mandatory Oracle Invariant)

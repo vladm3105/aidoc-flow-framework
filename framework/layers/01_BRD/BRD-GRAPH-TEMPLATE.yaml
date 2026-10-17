@@ -1,0 +1,122 @@
+# =============================================================================
+#  BRD-GRAPH-TEMPLATE.yaml — Business Requirements Graph Slice (Layer 01)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 01_BRD (Business Requirements Document)
+#  Parity: Full content and functional parity with BRD-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "BRD-NN_[initiative_slug]"
+
+metadata:
+  author: "[Business Analyst / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Concise summary of strategic business goals and enterprise capabilities]"
+  layer: "01_BRD"
+  scope:
+    in_scope:
+      - "[Primary business capability / boundary 1]"
+      - "[Primary business capability / boundary 2]"
+    out_of_scope:
+      - "[Explicit non-goal or deferred capability]"
+  stakeholders:
+    - persona: "Executive Sponsor"
+      value_driver: "Increase revenue and market penetration"
+    - persona: "Merchant Administrator"
+      value_driver: "Reduce settlement reconciliation latency and operational overhead"
+  financial_roi:
+    target_roi: "[e.g. 30% reduction in customer support load within 6 months]"
+    cost_threshold: "[Budgetary ceiling / resource envelope]"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Strategic Business Objectives (Section 4 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "BRD.01.04.xxxx"
+    type: "business_objective"
+    title: "[Strategic Business Objective Title]"
+    statement: "[Fundamental user, market, or operational problem solved by this initiative]"
+    properties:
+      category: "strategic_goal"
+      priority: "P0"  # P0 | P1 | P2 | P3
+      roi_target: "[Quantifiable business outcome or cost reduction metric]"
+      business_driver: "operational_efficiency"
+
+  # ---------------------------------------------------------------------------
+  # Business Capabilities & Functions (Section 7 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "BRD.01.07.xxxx"
+    type: "business_objective"
+    title: "[Business Capability Name: e.g. OrderValidationEngine]"
+    statement: "[Business engine verifying customer eligibility, credit limits, and line items]"
+    properties:
+      category: "business_capability"
+      domain: "OrderManagement"
+      capability_type: "core"  # core | supporting | generic
+
+  # ---------------------------------------------------------------------------
+  # Quality Expectations & Enterprise SLA Bounds (Section 8 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "BRD.01.08.xxxx"
+    type: "business_objective"
+    title: "[Enterprise Quality Expectation Title: e.g. Availability & Scalability Bound]"
+    statement: "[System container must maintain 99.95% uptime and support 5,000 req/sec]"
+    properties:
+      category: "quality_expectation"
+      availability_target: "99.95%"
+      audit_retention_years: 7
+      peak_throughput_tps: 5000
+
+  # ---------------------------------------------------------------------------
+  # Business Acceptance Criteria (Section 9 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "BRD.01.09.xxxx"
+    type: "business_objective"
+    title: "[Business Acceptance Sign-off Criterion Title]"
+    statement: "[Measurable criteria required for business sign-off and progression to PRD]"
+    properties:
+      category: "acceptance_criterion"
+      validation_method: "load_testing"  # load_testing | stakeholder_signoff | audit_log_review
+      signoff_role: "ExecutiveSponsor"
+
+  # ---------------------------------------------------------------------------
+  # Business Risks & Mitigations (Section 11 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "BRD.01.11.xxxx"
+    type: "business_objective"
+    title: "[Business Risk Mitigation Title]"
+    statement: "[Identified business risk, operational trade-off, and compensating control]"
+    properties:
+      category: "risk_mitigation"
+      risk_severity: "High"  # Critical | High | Medium | Low
+      mitigation_strategy: "[Dual-vendor fallback / phased pilot rollout]"
+
+edges:
+  # Strategic Objective decomposes to Business Capability
+  - from: "BRD.01.04.xxxx"
+    to: "BRD.01.07.xxxx"
+    relation: "decomposes_to"
+    notes: "Strategic business objective is realized across core capabilities"
+
+  # Acceptance Criteria verifies Strategic Objective
+  - from: "BRD.01.09.xxxx"
+    to: "BRD.01.04.xxxx"
+    relation: "verifies"
+    notes: "Formal validation method proving strategic goal satisfaction"
+
+  # Quality Expectation constrains Business Capability
+  - from: "BRD.01.08.xxxx"
+    to: "BRD.01.07.xxxx"
+    relation: "constrains"
+    notes: "Enterprise SLA bound constrains operational behavior of the capability"
+
+  # Risk Mitigation constrains Business Capability
+  - from: "BRD.01.11.xxxx"
+    to: "BRD.01.07.xxxx"
+    relation: "constrains"
+    notes: "Compensating governance control bounds business risk"
