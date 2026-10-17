@@ -196,7 +196,9 @@ class TestGraphEngine(unittest.TestCase):
         from pathlib import Path
 
         repo_root = Path(__file__).resolve().parent.parent.parent
-        layer_templates = sorted((repo_root / "framework" / "layers").glob("*/*-GRAPH-TEMPLATE.yaml"))
+        layer_templates = sorted(
+            (repo_root / "framework" / "layers").glob("*/*-GRAPH-TEMPLATE.yaml")
+        )
         self.assertEqual(len(layer_templates), 10)
         for tpl in layer_templates:
             g = self.engine.load_graph_file(tpl)
