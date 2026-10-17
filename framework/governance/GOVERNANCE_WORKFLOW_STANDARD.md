@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -351,7 +351,21 @@ When a pull request merges into the target integration branch (`dev`), the deliv
    - **Artifact Links:** Clickable links to updated SDD artifacts (SPEC, IPLAN, EVAL report).
 3. **Safe Publishing Mechanics:** Agents must author comment bodies via files (`gh issue comment <N> --body-file <file>`), verifying that the comment published with non-zero length.
 
-## 9. Review Log
+## 9. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between change request authoring/cascade orchestration and multi-agent review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block of change control workflows (`CHG-SWF-TEMPLATE.yaml` and `chg-request-flow.sw.yaml`) declares `author_persona: "integration_lead"` and `author_playbook: "framework/playbooks/09_CHG/integration_lead.md"`.
+   - Autonomous governance agents derive change classification, blast radius analysis, and SDD cascade propagation directly from this rubric prior to authoring change requests.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final verification and landing (`CloseoutGreenfield` in templates or `ExecuteEVALAndCloseout` in governance workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`chg-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or cascade coverage gaps are uncovered, the saga triggers an automated remediation loop, halting change landing until all P0/P1 blockers are resolved.
+
+## 10. Review Log
 
 - **2026-10-05 — Pass 1 (Architectural Integrity & Primitives)**:
   - *Gap found*: Lack of formal human-in-the-loop primitive for founder OK gates in `AGENTS.md`.

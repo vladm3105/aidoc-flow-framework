@@ -53,6 +53,9 @@ functions:
   - name: flagDownstreamInvalidations
     operation: "urn:aidoc:functions:tracker#flagInvalidations"
     type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
 
 states:
   - name: IngestRequirementsStream
@@ -141,9 +144,32 @@ states:
     dataConditions:
       - name: BddReadyApproved
         condition: "${ .readinessScore >= 90 and .conflictCount == 0 and .upstreamPrdVerified == true }"
-        transition: RatifyEarsContract
+        transition: InvokeReviewSagaGate
       - name: ClarificationRequired
         condition: "${ .readinessScore >= 70 and .ambiguityFlag == true }"
+        transition: RequestRequirementClarification
+    defaultCondition:
+      transition: RejectRequirementSet
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "ears-review-remediation-flow"
+            artifactId: "${ .documentId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyEarsContract
+      - name: ReviewRequiresClarification
+        condition: "${ .requiresClarification == true }"
         transition: RequestRequirementClarification
     defaultCondition:
       transition: RejectRequirementSet

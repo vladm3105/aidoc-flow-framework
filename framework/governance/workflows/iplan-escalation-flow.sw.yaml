@@ -9,6 +9,11 @@ description: >-
   plans/TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN.md (CHG-99).
 start: DetectExecutionBlocker
 
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+
 states:
   - name: DetectExecutionBlocker
     type: operation
@@ -99,4 +104,23 @@ states:
             flow_code: "SDD2C"
             change_source: "upstream"
             entry_gate: "GATE-05"
-    end: true
+    transition: InvokeReviewSagaGate
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "iplan-review-remediation-flow"
+            artifactId: "${ .iplan_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        end: true
+    defaultCondition:
+      transition: EscalateUnknownBlocker

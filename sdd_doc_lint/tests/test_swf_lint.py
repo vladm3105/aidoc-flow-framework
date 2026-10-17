@@ -209,6 +209,126 @@ class SwfLintRulesTest(unittest.TestCase):
         self.assertEqual(len(warnings), 1)
         self.assertIn("missing declared personas", warnings[0].message)
 
+    def test_swf_l008_valid_template_passes(self):
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {
+                "author_persona": "business_analyst",
+                "author_playbook": "framework/playbooks/01_BRD/business_analyst.md",
+            },
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "transition": "InvokeReviewSagaGate",
+                },
+                {
+                    "name": "InvokeReviewSagaGate",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "invokeSaga",
+                            "functionRef": {
+                                "refName": "invokeReviewSaga",
+                                "arguments": {
+                                    "workflowId": "brd-review-remediation-flow",
+                                },
+                            },
+                        }
+                    ],
+                    "end": True,
+                },
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        l008_findings = [f for f in findings if f.rule == "SWF-L008"]
+        self.assertEqual(l008_findings, [])
+
+    def test_swf_l008_missing_persona_or_playbook(self):
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {},
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L008"]
+        self.assertTrue(any("author_persona" in f.message for f in errors))
+        self.assertTrue(any("author_playbook" in f.message for f in errors))
+
+    def test_swf_l008_nonexistent_playbook_path(self):
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {
+                "author_persona": "business_analyst",
+                "author_playbook": "framework/playbooks/fake/does_not_exist.md",
+            },
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L008"]
+        self.assertTrue(any("not found on disk" in f.message for f in errors))
+
+    def test_swf_l008_missing_review_saga_invocation(self):
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {
+                "author_persona": "business_analyst",
+                "author_playbook": "framework/playbooks/01_BRD/business_analyst.md",
+            },
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L008"]
+        self.assertTrue(any("review saga invocation state" in f.message for f in errors))
+
+    def test_swf_l008_non_template_workflow_exempt(self):
+        wf = {
+            "id": "brd-validation",
+            "name": "BRD Validation",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "brd-business-validation.sw.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L008"]
+        self.assertEqual(errors, [])
+
 
 class SwfLintLiveWorkflowsTest(unittest.TestCase):
     def test_all_governance_workflows_pass_clean(self):

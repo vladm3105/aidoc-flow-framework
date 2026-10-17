@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.93.0"
+  framework_version: "0.94.0"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
@@ -25,6 +25,11 @@ metadata:
     - "@standard: CNCF-Serverless-Workflow-0.8"
 
 start: IngestEvaluationTrigger
+
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
 
 states:
   # ---------------------------------------------------------------------------
@@ -116,10 +121,30 @@ states:
     dataConditions:
       - name: EvaluationPassed
         condition: "${ .score >= 90 and .blocker_count == 0 and .critical_count == 0 }"
-        transition: EmitPassingReportReceipt
+        transition: InvokeReviewSagaGate
       - name: EvaluationFailed
         condition: "${ .score < 90 or .blocker_count > 0 or .critical_count > 0 }"
         transition: HandleEvaluationFailure
+    defaultCondition:
+      transition: HandleEvaluationFailure
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "eval-review-remediation-flow"
+            artifactId: "${ .eval_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: EmitPassingReportReceipt
     defaultCondition:
       transition: HandleEvaluationFailure
 

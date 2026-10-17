@@ -53,6 +53,9 @@ functions:
   - name: cleanupEvaluationContext
     type: custom
     operation: aidoc:sdd:adr:cleanupContext
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
 
 states:
   # -----------------------------------------------------------------------------
@@ -171,7 +174,30 @@ states:
     dataConditions:
       - name: ConsensusApproved
         condition: "${ .feedback.status == \"APPROVED\" and .feedback.blocking_objections == 0 }"
+        transition: InvokeReviewSagaGate
+    defaultCondition:
+      transition: RejectAndArchiveProposal
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "adr-review-remediation-flow"
+            artifactId: "${ .adr_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: RatifyArchitectureDecision
+      - name: ReviewRequiresRFC
+        condition: "${ .requiresRFC == true }"
+        transition: SolicitStakeholderRFC
     defaultCondition:
       transition: RejectAndArchiveProposal
 

@@ -56,6 +56,9 @@ functions:
   - name: purgeDownstreamInitiativeAllocations
     operation: "urn:aidoc:functions:compensator#purgeAllocations"
     type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
 
 states:
   - name: IngestStrategicInitiative
@@ -128,9 +131,32 @@ states:
     dataConditions:
       - name: InitiativeApproved
         condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
-        transition: RatifyBusinessSpecification
+        transition: InvokeReviewSagaGate
       - name: ExecutiveReviewRequired
         condition: "${ .requiresExecutiveReview == true }"
+        transition: AwaitSteeringCommitteeCallback
+    defaultCondition:
+      transition: RejectBusinessInitiative
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "brd-review-remediation-flow"
+            artifactId: "${ .initiativeId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyBusinessSpecification
+      - name: ReviewRequiresEscalation
+        condition: "${ .requiresEscalation == true }"
         transition: AwaitSteeringCommitteeCallback
     defaultCondition:
       transition: RejectBusinessInitiative

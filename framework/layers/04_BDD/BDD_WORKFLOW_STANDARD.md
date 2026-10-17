@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.93.0 |
+| Framework Version | 0.94.0 |
 
 ---
 
@@ -159,3 +159,19 @@ Authors choose between authoring configurations based on scenario complexity:
 | **Engine Target** | Pytest-BDD / Behave / Regex runner | LangGraph / Temporal / Agent workflow DAG |
 
 Both formats enforce identical EARS upstream traceability and GD-08 TDD acceptance pairing invariants.
+
+---
+
+## 7. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between artifact authoring and review crew evaluation while respecting the distinction between behavioral scenario execution and document quality gating:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "qa_lead"` and `author_playbook: "framework/playbooks/04_BDD/qa_lead.md"`.
+   - Autonomous drafting agents derive scenario structure, EARS coverage requirements, and assertion styles directly from this rubric prior to authoring.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final acceptance (`CompleteScenarioSuccess` in scenario templates or `EmitAcceptanceReceipt` in execution workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`bdd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defects are uncovered, the saga executes an automated remediation loop, halting scenario sign-off until all P0/P1 blockers are resolved.

@@ -38,11 +38,22 @@ description: >-
   entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
 
 metadata:
-  framework_version: "0.93.0"
+  framework_version: "0.94.0"
+  document_type: "chg-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "integration_lead"
+  author_playbook: "framework/playbooks/09_CHG/integration_lead.md"
   workflow_type: "governance-change-request"
   governed_layer: "09_CHG"
+  layer: 9
 
 start: ClassifyChangeTrigger
+
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
 
 states:
   # -----------------------------------------------------------------------------
@@ -277,7 +288,26 @@ states:
       - name: generateFullLayerChain
         functionRef:
           refName: authorTenLayerChain
-    transition: CloseoutGreenfield
+    transition: InvokeReviewSagaGate
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "chg-review-remediation-flow"
+            artifactId: "${ .changeId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        transition: CloseoutGreenfield
+    defaultCondition:
+      transition: EscalateUnknownTrigger
 
   - name: CloseoutGreenfield
     type: operation
