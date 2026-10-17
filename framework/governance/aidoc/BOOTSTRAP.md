@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-16 |
+| Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 | Authority | [Decision D-0013 / GD-13](../DECISIONS.md), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`AIDOC.md`](AIDOC.md) |
 
 ---
@@ -70,6 +70,13 @@ Sanctioned attachment mechanisms:
 3. Scaffold `.aidoc/engine/engine.yaml` from `framework/templates/ENGINE-CONFIG-TEMPLATE.yaml`.
 4. Scaffold `stack-policy.yaml` from `framework/templates/STACK-POLICY-TEMPLATE.yaml`.
 5. Scaffold working agreement `<project>/AGENTS.md` from `framework/templates/AGENTS-TEMPLATE.md`.
+6. Initialize graph repository directory: `mkdir -p docs/sdd/graph`.
+7. Initialize local workstation cache directory with gitignore (ensuring zero binary bloat in version control per GD-13):
+   ```bash
+   mkdir -p <project>/.aidoc/cache
+   echo "*" > <project>/.aidoc/cache/.gitignore
+   echo "!.gitignore" >> <project>/.aidoc/cache/.gitignore
+   ```
 
 ### 5. Smoke-verify the shape
 
@@ -84,6 +91,8 @@ The fresh `.aidoc/` passes when ALL of these hold:
 - [ ] Behavior-changing project docs live under `.aidoc/project/` (mirroring `framework/` paths per the discovery rule) — never loose at `.aidoc/` root.
 - [ ] `framework_version` in `profile.yaml` equals the adopted canon `framework/VERSION`.
 - [ ] Architecture decisions are anchored in Layer 05 (`docs/sdd/05_ADR/ADR-00_index.yaml` initialized from `ADR-00_index.TEMPLATE.yaml`).
+- [ ] `docs/sdd/graph/` directory is present for SDD-GRAPH v2.0 manifests.
+- [ ] `.aidoc/cache/` exists and is gitignored (ensures zero binary bloat per GD-13).
 - [ ] Working agreement `<project>/AGENTS.md` is established (from `framework/templates/AGENTS-TEMPLATE.md`) instructing `task sdd:lint` and `task sdd:check`.
 - [ ] Zero forbidden monolithic files exist at repository root or `docs/`: no loose `DECISIONS.md`, `ROADMAP.md`, `CHANGELOG.md`, or `docs/HANDOFF.md`.
 

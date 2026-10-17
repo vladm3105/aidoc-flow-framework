@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 
 ## Overview
@@ -58,12 +58,13 @@ Component (SPEC) — component interfaces, data models, behavior contracts
   └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |------|---------|
 | `BDD-TEMPLATE.yaml` | **Default** — full template with embedded `scenarios:` YAML guidance in `_example` fields. Self-documenting for AI agents. |
-| `BDD-SWF-TEMPLATE.yaml` | **Workflow subtype** — Hybrid Envelope housing a CNCF Serverless Workflow (v0.8) state machine for complex, stateful user journeys and saga rollback. |
+| `BDD-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding Given-When-Then behavioral states, transitions, and trace links. Source of truth in git. |
+| `BDD-SWF-TEMPLATE.yaml` | **Workflow subtype (Tier 1)** — Hybrid Envelope housing a CNCF Serverless Workflow (v0.8) state machine for complex, stateful user journeys and saga rollback. |
 | `BDD_WORKFLOW_STANDARD.md` | Normative standard specifying Given/When/Then mapping to CNCF Serverless Workflow state primitives. |
 | `BDD-00_index.TEMPLATE.yaml` | BDD registry template — tracks planned and active BDD documents and scenario suites per project in canonical 5-Quadrant YAML |
 

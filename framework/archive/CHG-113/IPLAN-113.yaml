@@ -1,0 +1,55 @@
+# =============================================================================
+#  IPLAN-113: Integrate SDD-GRAPH v2.0 Templates, Kùzu Graph Engine Guidance, and Modernized Workstation Standard
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-113/CHG-113.yaml
+# =============================================================================
+
+id: "IPLAN-113"
+chg_id: "CHG-113"
+title: "Integrate SDD-GRAPH v2.0 Templates, Kùzu Graph Engine Guidance, and Modernized Workstation Standard"
+status: "Completed"
+framework_version: "0.96.0"
+
+file_manifest:
+  - "README.md"
+  - "framework/archive/CHG-113/CHG-113.yaml"
+  - "framework/archive/CHG-113/IPLAN-113.yaml"
+  - "framework/layers/README.md"
+  - "framework/layers/01_BRD/README.md"
+  - "framework/layers/02_PRD/README.md"
+  - "framework/layers/03_EARS/README.md"
+  - "framework/layers/04_BDD/README.md"
+  - "framework/layers/05_ADR/README.md"
+  - "framework/layers/06_SPEC/README.md"
+  - "framework/layers/07_TDD/README.md"
+  - "framework/layers/08_IPLAN/README.md"
+  - "framework/layers/10_EVAL/README.md"
+  - "framework/governance/templates/CHG-GRAPH-TEMPLATE.yaml"
+  - "framework/AI_ASSISTANT_RULES.md"
+  - "docs/AIDOC_WORKSTATION_STANDARD.md"
+  - "framework/templates/TASKFILE-TEMPLATE.yml"
+  - "framework/governance/aidoc/BOOTSTRAP.md"
+  - "framework/scripts/install.sh"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "tests/conformance/test_governance.py"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-113.yaml and IPLAN-113.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Author *-GRAPH-TEMPLATE.yaml across layers 01_BRD through 10_EVAL and governance"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update Layer READMEs and framework/layers/README.md with Three-Tier Architecture"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Codify Kùzu graph engine rules and FastMCP tool usage in framework/AI_ASSISTANT_RULES.md"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Update docs/AIDOC_WORKSTATION_STANDARD.md, TASKFILE-TEMPLATE.yml, install.sh, and BOOTSTRAP.md"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Bump framework/VERSION to 0.96.0, synchronize references, and run validation test battery"
+    status: "Completed"

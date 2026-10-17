@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-15 |
+| Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 | Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), [`AIDOC.md`](../framework/governance/aidoc/AIDOC.md) |
 
 ---
@@ -97,11 +97,18 @@ Every consumer project adopts the standardized `.aidoc/` workstation layout inco
 │   ├── ctx-tools/                # ⭐ PILLAR 4: CONTEXT SLICING ENGINE (aidoc-context-tools)
 │   │   └── config.yaml           # Token budgets & DAG traversal rules
 │   │
+│   ├── cache/                    # ⭐ WORKSTATION CACHE (gitignored — local Kùzu index, AST cache)
+│   │   └── kuzu.db/              # Ephemeral embedded graph database
+│   │
 │   └── bin/                      # (Optional) Backward-compatible CLI shims during migration
 │       └── sdd-lint              # Compatibility shim delegating to task sdd:lint or python3 -m sdd_doc_lint
 │
 ├── Taskfile.yml                  # Root project orchestrator (includes .aidoc/Taskfile.yml)
 ├── docs/sdd/                     # Produced SDD specifications (01_BRD .. 10_EVAL)
+│   ├── graph/                    # ⭐ CANONICAL SDD-GRAPH v2.0 SLICES (*.graph.yaml)
+│   ├── 01_BRD/                   # Layer 01 specifications
+│   ├── ...                       # Intermediate layers
+│   └── 10_EVAL/                  # Layer 10 evaluation & verification records
 └── src/                          # Project application source code
 ```
 

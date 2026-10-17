@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 ## Overview
 
@@ -39,7 +39,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `PRD-TEMPLATE.yaml` | **Default Declarative** — full template with embedded authoring guidance for single-container product features. Self-documenting for AI agents. |
-| `PRD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for multi-container product decomposition, RICE prioritization, and threshold validation. |
+| `PRD-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding product features, personas, and container allocations. Source of truth in git. |
+| `PRD-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for multi-container product decomposition, RICE prioritization, and threshold validation. |
 | `PRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining PRD primitive to CNCF state mappings, container isolation rules, and invalidation compensation. |
 | `PRD-00_index.TEMPLATE.yaml` | PRD registry template — tracks planned and active PRDs and threshold parameters per project in canonical 5-Quadrant YAML. |
 

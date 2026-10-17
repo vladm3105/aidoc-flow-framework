@@ -282,6 +282,23 @@ if [ -f "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
   fi
 fi
 
+# Scaffold docs/sdd/graph for SDD-GRAPH v2.0 property graph slices
+graph_dir="$PROJECT/docs/sdd/graph"
+run "mkdir -p $graph_dir" mkdir -p "$graph_dir"
+log "scaffolded graph slice directory at docs/sdd/graph"
+
+# Scaffold .aidoc/cache for local Kùzu graph indices and AST cache
+cache_dir="$AIDOC/cache"
+run "mkdir -p $cache_dir" mkdir -p "$cache_dir"
+if [ "$DRY_RUN" != 1 ] && [ ! -f "$cache_dir/.gitignore" ]; then
+  cat << 'CACHE_GITIGNORE_EOF' > "$cache_dir/.gitignore"
+# Workstation cache directory (Kùzu embedded database, AST caches)
+*
+!.gitignore
+CACHE_GITIGNORE_EOF
+  log "scaffolded workstation cache directory at .aidoc/cache"
+fi
+
 # Scaffold active engine config at .aidoc/engine/engine.yaml
 if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
   engine_dir="$AIDOC/engine"

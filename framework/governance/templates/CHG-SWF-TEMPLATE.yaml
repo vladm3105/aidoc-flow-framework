@@ -38,7 +38,7 @@ description: >-
   entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
 
 metadata:
-  framework_version: "0.95.0"
+  framework_version: "0.96.0"
   document_type: "chg-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"

@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.95.0 |
+| Framework Version | 0.96.0 |
 
 
 ## Template Usage
@@ -177,6 +177,25 @@ its companion, and `gates/GATE-*.md` define the checks. See especially
 `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
 checklist (§3.4 of `DOC_GOVERNANCE_CORE.md`) is a MANDATORY PROCESS GATE —
 complete it BEFORE writing any CHG document.
+
+## Graph Engine & Context Slicing: When and How to Use Kùzu
+
+Per the **Quad-Pillar Architecture Standard** and **Decision D-0013 / GD-13** (zero-runtime framework neutrality), AI assistants must follow these operational rules when querying, slicing, or managing repository specifications:
+
+1. **The Three-Tier Layer Model**:
+   - **Tier 1 (Workflow Execution)**: `*-SWF-TEMPLATE.yaml` (CNCF Serverless Workflow v0.8) used by orchestrators (LangGraph/Temporal) to execute authoring, reviews, and gates.
+   - **Tier 2 (Canonical Data Plane)**: `*-GRAPH-TEMPLATE.yaml` (SDD-GRAPH v2.0) committed to git (`docs/sdd/graph/` or per-layer). This is the single data-plane source of truth.
+   - **Tier 3 (Compiled Presentation)**: `*.md` rendered dynamically on demand via `sdd_doc_lint --render-spec <graph.yaml>`.
+2. **Context Slicing Before Code Execution (`IPLAN → Code`)**:
+   - Autonomous agents preparing to implement an IPLAN task MUST extract the minimal topological ancestor closure ($\text{Ancestors}(T_k) \cap \{\text{SPEC}, \text{BDD}, \text{ADR}, \text{EARS}, \text{TDD}\}$).
+   - Use the **FastMCP protocol tool** `aidoc_slice_context(task_id)` or CLI `aidoc-ctx slice --task <ID>`.
+   - This invokes embedded Kùzu (`kuzu>=0.8.0`) under the hood via Pillar 4 (`aidoc-context-tools`), running variable-length openCypher traversals in $<1\,\text{ms}$ and reducing prompt token load by 60–80%.
+   - In minimal CI environments where Kùzu is not installed, `aidoc-context-tools` automatically and gracefully falls back to pure-Python DFS.
+3. **Ad-Hoc Architecture & Impact Inquiries**:
+   - When evaluating cross-layer dependencies, identifying unverified endpoints, or calculating PR blast radius, agents should issue openCypher queries via the FastMCP tool `aidoc_cypher_query(query)` (e.g. `MATCH (n:ArtifactNode {layer: 'SPEC'})-[:DEPENDS_ON]->(b:ArtifactNode {layer: 'BDD'}) RETURN n.node_id, b.node_id`).
+4. **Zero Binary Bloat Invariant (GD-13)**:
+   - AI assistants MUST NEVER commit Kùzu database files, `.kuzu` directories, or compiled binaries into consumer `.aidoc/` or git repositories.
+   - Kùzu instances must always run in-memory (`:memory:`) or within ignored workstation cache directories (`.aidoc/cache/`). The git-tracked `*.graph.yaml` files remain the canonical store.
 
 ## Delegation and concurrency pointers
 
