@@ -329,6 +329,169 @@ class SwfLintRulesTest(unittest.TestCase):
         errors = [f for f in findings if f.rule == "SWF-L008"]
         self.assertEqual(errors, [])
 
+    def test_swf_l009_valid_closeout_passes(self):
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {
+                "author_persona": "business_analyst",
+                "author_playbook": "framework/playbooks/01_BRD/business_analyst.md",
+            },
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "transition": "InvokeReviewSagaGate",
+                },
+                {
+                    "name": "InvokeReviewSagaGate",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "invokeSaga",
+                            "functionRef": {
+                                "refName": "invokeReviewSaga",
+                                "arguments": {
+                                    "workflowId": "brd-review-remediation-flow",
+                                },
+                            },
+                        }
+                    ],
+                    "transition": "RemediateLayerDraft",
+                },
+                {
+                    "name": "RemediateLayerDraft",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "remediate",
+                            "functionRef": {
+                                "refName": "remediateLayerFindings",
+                            },
+                        }
+                    ],
+                    "transition": "VerifyLayerCloseoutGate",
+                },
+                {
+                    "name": "VerifyLayerCloseoutGate",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "verifyGate",
+                            "functionRef": {
+                                "refName": "verifyLayerBoundaryGate",
+                            },
+                        }
+                    ],
+                    "transition": "SealLayerDocumentBaseline",
+                },
+                {
+                    "name": "SealLayerDocumentBaseline",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "sealDoc",
+                            "functionRef": {
+                                "refName": "sealDocumentBaseline",
+                            },
+                        }
+                    ],
+                    "transition": "EmitLayerHandoffEvent",
+                },
+                {
+                    "name": "EmitLayerHandoffEvent",
+                    "type": "operation",
+                    "produceEvents": [{"eventRef": "BrdClosedAndBaselinedEvent"}],
+                    "end": True,
+                },
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        l009_errors = [f for f in findings if f.rule == "SWF-L009"]
+        self.assertEqual(l009_errors, [])
+
+    def test_swf_l009_missing_closeout_elements(self):
+        # Missing all 4 closeout elements
+        wf = {
+            "id": "brd-flow",
+            "name": "BRD Flow",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "metadata": {
+                "author_persona": "business_analyst",
+                "author_playbook": "framework/playbooks/01_BRD/business_analyst.md",
+            },
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "transition": "InvokeReviewSagaGate",
+                },
+                {
+                    "name": "InvokeReviewSagaGate",
+                    "type": "operation",
+                    "actions": [
+                        {
+                            "name": "invokeSaga",
+                            "functionRef": {
+                                "refName": "invokeReviewSaga",
+                                "arguments": {
+                                    "workflowId": "brd-review-remediation-flow",
+                                },
+                            },
+                        }
+                    ],
+                    "end": True,
+                },
+            ],
+        }
+        findings = lint_workflow_dict(wf, "BRD-SWF-TEMPLATE.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L009"]
+        self.assertEqual(len(errors), 4)
+        messages = " ".join(f.message for f in errors)
+        self.assertIn("in-situ remediation loop state", messages)
+        self.assertIn("layer closeout gate verification state", messages)
+        self.assertIn("document baseline sealing state", messages)
+        self.assertIn("downstream handoff event emission", messages)
+
+    def test_swf_l009_standalone_workflow_enforced(self):
+        wf = {
+            "id": "brd-validation",
+            "name": "BRD Validation",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "brd-business-validation.sw.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L009"]
+        self.assertEqual(len(errors), 4)
+
+    def test_swf_l009_non_layer_workflow_exempt(self):
+        wf = {
+            "id": "toolchain-event-broker",
+            "name": "Toolchain Event Broker",
+            "specVersion": "0.8",
+            "start": "StateA",
+            "states": [
+                {
+                    "name": "StateA",
+                    "type": "operation",
+                    "end": True,
+                }
+            ],
+        }
+        findings = lint_workflow_dict(wf, "toolchain-event-broker.sw.yaml", repo_root=REPO_ROOT)
+        errors = [f for f in findings if f.rule == "SWF-L009"]
+        self.assertEqual(errors, [])
+
 
 class SwfLintLiveWorkflowsTest(unittest.TestCase):
     def test_all_governance_workflows_pass_clean(self):

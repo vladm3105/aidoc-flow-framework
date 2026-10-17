@@ -57,7 +57,23 @@ CODES = {
     "SWF-L006": "Parallel Branch Completeness — branches must have unique names and actions",
     "SWF-L007": "Review Crew Parity — layer review workflows must match REVIEW_CREWS.yaml personas",
     "SWF-L008": "Review Saga & Author Playbook Binding — layer workflow templates must bind author_persona, existing author_playbook, and invoke review saga",
+    "SWF-L009": "Layer Workflow Closeout & Handoff Compliance — layer workflows must define remediation, closeout gate, document sealing, and handoff event emission",
 }
+
+STANDALONE_LAYER_WORKFLOWS = frozenset(
+    {
+        "brd-business-validation.sw.yaml",
+        "prd-feature-decomposition.sw.yaml",
+        "ears-requirements-validation.sw.yaml",
+        "bdd-acceptance-run.sw.yaml",
+        "adr-decision-analysis.sw.yaml",
+        "spec-choreography-contract.sw.yaml",
+        "tdd-test-execution.sw.yaml",
+        "iplan-execution.sw.yaml",
+        "chg-request-flow.sw.yaml",
+        "eval-verification-run.sw.yaml",
+    }
+)
 
 
 @dataclass
@@ -515,6 +531,107 @@ def lint_workflow_dict(
                     "ERROR",
                     "SWF-L008",
                     "Layer workflow template must declare a review saga invocation state targeting '<layer>-review-remediation-flow'",
+                )
+            )
+
+    # SWF-L009: Layer Workflow Closeout & Handoff Compliance
+    is_standalone_layer_wf = p.name in STANDALONE_LAYER_WORKFLOWS and not any(
+        part == "archive" for part in p.parts
+    )
+    enforce_closeout = (is_template or is_standalone_layer_wf) or (
+        isinstance(wf.get("metadata"), dict)
+        and wf["metadata"].get("enforce_layer_closeout") is True
+    )
+
+    if enforce_closeout:
+        # 1. In-situ remediation loop state
+        has_remediation_state = "RemediateLayerDraft" in state_dict or any(
+            "remediate" in s_name.lower()
+            or any(
+                "remediate" in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
+            )
+            for s_name, s in state_dict.items()
+        )
+        if not has_remediation_state:
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L009",
+                    "Layer workflow must define an in-situ remediation loop state ('RemediateLayerDraft')",
+                )
+            )
+
+        # 2. Layer boundary closeout gate verification state
+        has_closeout_gate_state = "VerifyLayerCloseoutGate" in state_dict or any(
+            ("verify" in s_name.lower() and "gate" in s_name.lower())
+            or any(
+                "verifylayerboundarygate"
+                in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
+            )
+            for s_name, s in state_dict.items()
+        )
+        if not has_closeout_gate_state:
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L009",
+                    "Layer workflow must define a layer closeout gate verification state ('VerifyLayerCloseoutGate')",
+                )
+            )
+
+        # 3. Document baseline sealing action/state
+        has_sealing_state = "SealLayerDocumentBaseline" in state_dict or any(
+            "seallayerdocumentbaseline" in s_name.lower()
+            or any(
+                "sealdocumentbaseline" in str(act.get("functionRef", {}).get("refName", "")).lower()
+                for act in s.get("actions", [])
+                if isinstance(act, dict)
+            )
+            for s_name, s in state_dict.items()
+        )
+        if not has_sealing_state:
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L009",
+                    "Layer workflow must define a document baseline sealing state ('SealLayerDocumentBaseline')",
+                )
+            )
+
+        # 4. Downstream handoff event emission
+        has_event_emission = (
+            any(
+                isinstance(s.get("produceEvents"), list) and len(s["produceEvents"]) > 0
+                for s in state_dict.values()
+            )
+            or "EmitLayerHandoffEvent" in state_dict
+            or any(
+                any(
+                    "emitcloudevent" in str(act.get("functionRef", {}).get("refName", "")).lower()
+                    for act in s.get("actions", [])
+                    if isinstance(act, dict)
+                )
+                for s in state_dict.values()
+            )
+        )
+        if not has_event_emission:
+            findings.append(
+                Finding(
+                    file_path,
+                    1,
+                    "ERROR",
+                    "SWF-L009",
+                    "Layer workflow must declare downstream handoff event emission ('produceEvents' / 'EmitLayerHandoffEvent')",
                 )
             )
 

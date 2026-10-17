@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 10 (Evaluation & Quality Verification / EVAL) execution plans, test suite runners, and quality gate receipts using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -171,7 +171,18 @@ To eliminate the decoupling between evaluation execution and review crew evaluat
 
 ---
 
-## 7. Review Log
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 10 EVAL implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Evaluator authors evaluation verification runs, test report receipts, and metric compliance hashes against the executed codebase.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `qa_lead`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-CODE` exit criteria (`GATE-CODE_EVAL_DEPLOYMENT.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Verified` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `EvalNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `EvalVerificationClosedEvent` (`org.aidoc.sdd.layer10.eval.closed`) with payload `receipt_id`, `audit_hash`, `overall_verdict: PASS`, finalizing the SDD lifecycle chain.
+
+---
+
+## 8. Review Log
 
 - **2026-10-14 — Pass 1 (Initial Ratification)**:
   - Codified Layer 10 CNCF Serverless Workflow standard, Hybrid Envelope Architecture, Arrange-Execute-Evaluate-Receipt state machine mapping, and dual-template selection discipline.

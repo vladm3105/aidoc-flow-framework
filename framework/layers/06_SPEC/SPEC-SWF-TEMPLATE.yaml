@@ -205,10 +205,28 @@ workflow:
       source: "https://aidoc.io/spec/partner"
       correlation:
         - contextAttributeName: "correlationid"
+    - name: SpecContractsClosedEvent
+      type: "io.aidoc.spec.closed"
+      source: "/layers/06_spec"
 
   functions:
     - name: invokeReviewSaga
       operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
       type: custom
 
   states:
@@ -321,10 +339,26 @@ workflow:
           condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: FinalizeChoreography
         - name: ReviewRequiresRemediation
-          condition: "${ .blocking_findings > 0 }"
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresEscalation
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
           transition: CompensateDistributedSaga
       defaultCondition:
         transition: CompensateDistributedSaga
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "technical_lead"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
 
     - name: CompensateDistributedSaga
       type: operation
@@ -351,6 +385,63 @@ workflow:
         - name: emitSuccessEvent
           functionRef:
             refName: eventBroadcaster
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-06"
+              layer: "06_SPEC"
+              documentId: "SPEC-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "SPEC-NN"
+              layer: "06_SPEC"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "SpecNode"
+              nodeId: "SPEC-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "SpecContractsClosedEvent"
+              documentId: "SPEC-NN"
+              contracts: "${ .contracts }"
+              api_schemas: "${ .api_schemas }"
+      produceEvents:
+        - eventRef: SpecContractsClosedEvent
       end: true
 
     - name: EmitFailureReceipt

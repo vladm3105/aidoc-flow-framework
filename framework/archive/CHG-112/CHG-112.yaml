@@ -1,0 +1,189 @@
+# =============================================================================
+#  CHG-112: Codify Full Layer Closeout and Downstream Handoff Cycles across Layer SWF Templates
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-17)
+#  Scope: 5-step closed layer lifecycle, layer boundary gate verification,
+#         document baseline sealing, downstream CloudEvent emission, and SWF-L009
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-17"
+  framework_version: "0.95.0"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-112"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-17T12:00:00Z"
+  date_approved: "2026-10-17T12:00:00Z"
+  date_implemented: "2026-10-17T12:40:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-17T12:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-17): implement the plan via CHG
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-112)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-112"
+  title: "Codify Full Layer Closeout and Downstream Handoff Cycles across Layer SWF Templates"
+  status: "Ratified"
+  context: |
+    While CHG-111 wired author playbooks and review saga invocations into the 10 layer SWF
+    templates, the terminal sequence of every layer state machine remained an incomplete stub:
+    1. Templates terminated immediately upon emitting element IDs without executing formal
+       layer boundary gates (GATE-01 through GATE-CODE).
+    2. Review saga failures caused abrupt process termination instead of providing an in-situ
+       author remediation loop before escalation.
+    3. Document frontmatter and SDD graph node statuses were not sealed to "Baselined".
+    4. Templates did not emit standardized CNCF CloudEvents to trigger downstream layers.
+  choice: |
+    Implement the 5-step closed layer lifecycle per plans/LAYER-SWF-CLOSE-CYCLE-AND-HANDOFF-PLAN.md:
+    1. Embed an in-situ author remediation loop (RemediateLayerDraft) in review evaluation switches.
+    2. Add formal layer closeout gate verification (VerifyLayerCloseoutGate) enforcing GATE-01..GATE-CODE.
+    3. Add baseline sealing operations (SealLayerDocumentBaseline, RegisterSddGraphBaselineNode).
+    4. Emit typed downstream CloudEvents (produceEvents / EmitLayerHandoffEvent) across all layers.
+    5. Author the Master End-to-End Orchestrator (sdd-layer-orchestration.sw.yaml) modeling parallel
+       fork (L4 BDD / L5 ADR) and join (L6 SPEC).
+    6. Implement structural linter rule SWF-L009 in sdd_doc_lint/swf_lint.py with unit tests.
+  consequences: |
+    - Every layer enforces a 100% closed audit, remediation, gate verification, and sealing cycle
+      before the next layer can be triggered.
+    - Enables fully automated, end-to-end multi-layer pipeline execution via event correlation.
+    - Strictly preserves zero-runtime engine neutrality (Decision D-0013 / GD-13).
+  alternatives_considered:
+    - option: "Leave layer templates as open-ended stubs without handoff events"
+      rationale_rejected: >-
+        Prevents automated multi-layer pipeline chaining and permits unverified documents to
+        cascade downstream.
+    - option: "Hardcode next-layer direct workflow invocations inside each template"
+      rationale_rejected: >-
+        Couples layers together rigidly, destroying independent layer execution and reusability.
+        Event-driven choreography via CloudEvents preserves decoupled modularity.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Codify Full Layer Closeout and Downstream Handoff Cycles across Layer SWF Templates"
+  description: >-
+    Upgrade all 10 layer SWF templates, standalone workflows, and standards with the 5-step
+    closed layer lifecycle, author master SDD layer orchestrator, and implement rule SWF-L009.
+  justification: >-
+    Guarantees that each layer document is audited, remediated, verified against its formal gate,
+    sealed in the SDD content graph, and emitted as a CloudEvent before downstream layers begin.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - "framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    - "framework/governance/templates/CHG-SWF-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    - "framework/governance/workflows/brd-business-validation.sw.yaml"
+    - "framework/governance/workflows/prd-feature-decomposition.sw.yaml"
+    - "framework/governance/workflows/ears-requirements-validation.sw.yaml"
+    - "framework/governance/workflows/bdd-acceptance-run.sw.yaml"
+    - "framework/governance/workflows/adr-decision-analysis.sw.yaml"
+    - "framework/governance/workflows/spec-choreography-contract.sw.yaml"
+    - "framework/governance/workflows/tdd-test-execution.sw.yaml"
+    - "framework/governance/workflows/iplan-escalation-flow.sw.yaml"
+    - "framework/governance/workflows/chg-request-flow.sw.yaml"
+    - "framework/governance/workflows/eval-verification-run.sw.yaml"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    - "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+    - "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+    - "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+    - "framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md"
+    - "framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md"
+    - "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md"
+    - "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md"
+    - "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    - "framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md"
+    - "sdd_doc_lint/swf_lint.py"
+    - "sdd_doc_lint/tests/test_swf_lint.py"
+    - "framework/governance/LINT_RULES.md"
+    - "tests/conformance/test_lint_catalog.py"
+    - "tests/conformance/test_governance.py"
+    - "tests/conformance/test_governance_workflows.py"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  artifacts_created:
+    - "framework/archive/CHG-112/CHG-112.yaml"
+    - "framework/archive/CHG-112/IPLAN-112.yaml"
+    - "framework/governance/workflows/iplan-execution.sw.yaml"
+    - "framework/governance/workflows/sdd-layer-orchestration.sw.yaml"
+  affected_components:
+    - "All 10 SDD Layer Templates and Governance Workflows"
+    - "SDD Doc Lint (swf_lint.py)"
+    - "Layer Workflow Standards"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-112/IPLAN-112.yaml"
+  steps:
+    - step: "Author authorizing CHG-112.yaml and IPLAN-112.yaml"
+      phase: "iplan_creation"
+    - step: "Upgrade 10 layer SWF templates with the 5-step closed lifecycle and CloudEvents"
+      phase: "template_harmonization"
+    - step: "Synchronize 10 standalone workflows and author sdd-layer-orchestration.sw.yaml"
+      phase: "workflow_orchestration"
+    - step: "Implement SWF-L009 in sdd_doc_lint/swf_lint.py and author unit tests"
+      phase: "linter_extension"
+    - step: "Bump framework/VERSION to 0.95.0, synchronize references, and run test battery"
+      phase: "version_fanout"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-112/CHG-112.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "bash hooks/pre_push_check.sh"
+  manual_verification:
+    - "Verify CloudEvent schemas match CNCF Serverless Workflow DSL v0.8"
+    - "Verify master orchestrator models parallel fork (L4/L5) and join (L6)"

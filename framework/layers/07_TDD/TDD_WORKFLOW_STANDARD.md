@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -230,7 +230,18 @@ To eliminate the decoupling between TDD test suite authoring and review crew eva
 
 ---
 
-## 11. Review Log
+## 11. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 07 TDD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: QA lead authors executable test case specifications, assertion fixtures, and mock configurations paired with upstream SPEC contracts.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `qa_lead`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-06` exit criteria (`GATE-06_SPEC_TDD.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `TddNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `TddSuitesClosedEvent` (`org.aidoc.sdd.layer07.tdd.closed`) with payload `test_suites`, `tdd_checksum`, authorizing downstream Layer 08 (IPLAN) execution.
+
+---
+
+## 12. Review Log
 
 - **2026-10-05 — Pass 1 (Initial Ratification)**:
   - Ratified hybrid envelope architecture, Arrange-Act-Assert mapping, and suite runner workflow (`tdd-test-execution.sw.yaml`).

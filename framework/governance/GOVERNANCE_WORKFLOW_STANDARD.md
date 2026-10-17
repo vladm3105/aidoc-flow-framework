@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -123,6 +123,7 @@ framework/governance/
 │   ├── chg-request-flow.sw.yaml              # Change classification, gates & landing
 │   ├── seed-to-module-decomposition.sw.yaml  # 5-step seed to C4-L2 module flow
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
+│   ├── iplan-execution.sw.yaml               # Layer 08 implementation plan execution & closeout
 │   ├── iplan-escalation-flow.sw.yaml         # Autonomous bottom-up feedback & architectural escalation
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
@@ -135,6 +136,7 @@ framework/governance/
 │   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │   ├── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
 │   ├── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
+│   ├── sdd-layer-orchestration.sw.yaml       # Master 10-layer end-to-end SDD orchestration state machine
 │   ├── context-slicing-generation.sw.yaml    # Federated DAG context slicing & scoped digest compilation
 │   ├── cross-project-ci-dispatch.sw.yaml     # Federated cross-repo CI verification dispatch & status gates
 │   ├── multi-repo-contract-sync.sw.yaml      # Federated contract diff inspection, SDK gen & event broadcast
@@ -248,6 +250,21 @@ clean environment restoration without orphaned branches or dirty state:
         refName: executeWorktreeAdd
   transition: RunFeatureImplementation
 ```
+
+### Rule 7: 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+Every SDD layer workflow (embedded in `*-SWF-TEMPLATE.yaml` or declared standalone in `framework/governance/workflows/*.sw.yaml`) must enforce the canonical 5-step closed lifecycle prior to declaring completion or advancing downstream:
+
+1. **Stage 1 (Authoring)**: Domain persona authors artifact draft and establishes traceability tags.
+2. **Stage 2 (Multi-Persona Review & Remediation)**: Review saga (`invokeReviewSaga`) executes multi-persona review. Switch condition routes blocking findings to author remediation (`RemediateLayerDraft`, Circuit Breaker CB-1: max 2 remediation passes / 3 cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: Gate checkpoint (`VerifyLayerCloseoutGate`) verifies formal exit checklist (`GATE-01` through `GATE-CODE`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: Sealing state (`SealLayerDocumentBaseline`) computes SHA-256 content checksum, updates frontmatter to `Baselined`, and registers node in SDD graph (`RegisterSddGraphBaselineNode`).
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: Terminal state (`EmitLayerHandoffEvent`) emits typed CloudEvent (`produceEvents`) authorizing downstream orchestration.
+
+```text
+Stage 1: Authoring ──► Stage 2: Review/Remediate ──► Stage 3: Gate Verify ──► Stage 4: Seal Baseline ──► Stage 5: Emit CloudEvent
+```
+
+In end-to-end SDD orchestration (`sdd-layer-orchestration.sw.yaml`), completion of Layer 03 (EARS) triggers a **Parallel Fork** (`ForkLayer04And05`) into Layer 04 (BDD) and Layer 05 (ADR), which execute concurrently and achieve a **Synchronized Join** at Layer 06 (SPEC). Legacy Gherkin narrative text (`gherkin_scenarios`) is strictly proscribed; Layer 04 BDD must always emit `behavioral_state_graphs, scenarios_dag`.
 
 ---
 

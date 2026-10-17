@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 ---
@@ -146,3 +146,14 @@ To eliminate the decoupling between artifact authoring and review crew evaluatio
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
      `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.
+
+---
+
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 01 BRD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Business analyst authors strategic theme, value stream decomposition, and quantitative ROI analysis.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `business_analyst`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-01` exit criteria (`GATE-01_BUSINESS_PRODUCT.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `BrdNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `BrdClosedAndBaselinedEvent` (`org.aidoc.sdd.layer01.brd.closed`) with payload `initiativeId`, `brd_tags`, authorizing Layer 02 (PRD) start.

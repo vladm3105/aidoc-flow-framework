@@ -30,6 +30,8 @@ EXPECTED_WORKFLOWS = [
     "ears-requirements-validation.sw.yaml",
     "prd-feature-decomposition.sw.yaml",
     "brd-business-validation.sw.yaml",
+    "iplan-execution.sw.yaml",
+    "sdd-layer-orchestration.sw.yaml",
     "multi-repo-contract-sync.sw.yaml",
     "cross-project-ci-dispatch.sw.yaml",
     "context-slicing-generation.sw.yaml",

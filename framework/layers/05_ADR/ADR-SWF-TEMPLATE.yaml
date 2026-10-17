@@ -241,9 +241,27 @@ architecture_flow:
         kind: consumed
         correlation:
           - attribute: proposalId
+      - name: AdrDecisionsClosedEvent
+        type: org.aidoc.sdd.layer05.adr.closed
+        source: /layers/05_adr
     functions:
       - name: invokeReviewSaga
         operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
         type: custom
     states:
       - name: IngestDecisionContext
@@ -336,11 +354,27 @@ architecture_flow:
           - name: ReviewGateApproved
             condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
             transition: RatifyDecision
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
           - name: ReviewRequiresRFC
-            condition: "${ .requiresRFC == true }"
+            condition: "${ .requiresRFC == true or .iteration >= 3 }"
             transition: SolicitStakeholderRFC
         defaultCondition:
           transition: RejectAndArchive
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "solutions_architect"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: RatifyDecision
         type: operation
@@ -351,6 +385,63 @@ architecture_flow:
               arguments:
                 adr_id: "ADR-NN"
                 status: "Accepted"
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-03"
+                layer: "05_ADR"
+                documentId: "ADR-NN"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "ADR-NN"
+                layer: "05_ADR"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "AdrNode"
+                nodeId: "ADR-NN"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "AdrDecisionsClosedEvent"
+                documentId: "ADR-NN"
+                decisions: "${ .decisions }"
+                tech_registry: "${ .tech_registry }"
+        produceEvents:
+          - eventRef: AdrDecisionsClosedEvent
         end: true
 
       - name: RejectAndArchive

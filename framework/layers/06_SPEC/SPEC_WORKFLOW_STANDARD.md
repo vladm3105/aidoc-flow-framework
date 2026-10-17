@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.94.0 |
+| Framework Version | 0.95.0 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -241,4 +241,15 @@ To eliminate the decoupling between technical specification authoring and review
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
      `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or architectural defects are uncovered, the saga executes an automated remediation loop, halting commit and finalizing until all P0/P1 blockers are resolved.
+
+---
+
+## 11. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 06 SPEC implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Architect authors interface contracts, interaction choreography state machines, and data schemas joining upstream BDD and ADR inputs.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `architect`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-06` exit criteria (`GATE-06_SPEC_TDD.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `SpecNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `SpecContractsClosedEvent` (`org.aidoc.sdd.layer06.spec.closed`) with payload `interfaces`, `event_contracts`, `spec_checksum`, authorizing downstream Layer 07 (TDD) execution.
 

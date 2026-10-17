@@ -30,6 +30,9 @@ events:
     type: org.aidoc.sdd.adr.rfc_published
     source: /aidoc/governance/adr
     kind: produced
+  - name: AdrDecisionsClosedEvent
+    type: org.aidoc.sdd.layer05.adr.closed
+    source: /layers/05_adr
 
 functions:
   - name: ingestContextConstraints
@@ -56,6 +59,21 @@ functions:
   - name: invokeReviewSaga
     type: custom
     operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
 
 states:
   # -----------------------------------------------------------------------------
@@ -195,11 +213,27 @@ states:
       - name: ReviewGateApproved
         condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
         transition: RatifyArchitectureDecision
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
       - name: ReviewRequiresRFC
-        condition: "${ .requiresRFC == true }"
+        condition: "${ .requiresRFC == true or .iteration >= 3 }"
         transition: SolicitStakeholderRFC
     defaultCondition:
       transition: RejectAndArchiveProposal
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "solutions_architect"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # -----------------------------------------------------------------------------
   # State 7: Ratify Architecture Decision
@@ -216,6 +250,63 @@ states:
             chosen_candidate: "${ .selected_candidate }"
             consequences: "${ .consequences }"
             spec_readiness_score: 95
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-03"
+            layer: "05_ADR"
+            documentId: "${ .adr_id }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .adr_id }"
+            layer: "05_ADR"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "AdrNode"
+            nodeId: "${ .adr_id }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "AdrDecisionsClosedEvent"
+            documentId: "${ .adr_id }"
+            decisions: "${ .selected_candidate }"
+            tech_registry: "${ .consequences }"
+    produceEvents:
+      - eventRef: AdrDecisionsClosedEvent
     end: true
 
   # -----------------------------------------------------------------------------

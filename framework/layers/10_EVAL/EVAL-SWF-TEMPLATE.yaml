@@ -163,9 +163,29 @@ workflow:
     quality gate score calculation, report receipt generation, and saga teardown.
   start: IngestEvaluationScope
 
+  events:
+    - name: EvalVerificationClosedEvent
+      type: org.aidoc.sdd.layer10.eval.closed
+      source: /layers/10_eval
+
   functions:
     - name: invokeReviewSaga
       operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
       type: custom
 
   states:
@@ -263,8 +283,27 @@ workflow:
         - name: ReviewGateApproved
           condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: EmitPassingReceipt
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresDefectHandling
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: HandleEvaluationDefects
       defaultCondition:
         transition: HandleEvaluationDefects
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "eval_lead"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
 
     # -------------------------------------------------------------------------
     # State 5: Terminal Success Path (Emit Receipt & Mark IPLAN Verified)
@@ -284,6 +323,63 @@ workflow:
             arguments:
               iplan_id: "IPLAN-NN"
               status: "Verified"
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-CODE"
+              layer: "10_EVAL"
+              documentId: "EVAL-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "EVAL-NN"
+              layer: "10_EVAL"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "EvalNode"
+              nodeId: "EVAL-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "EvalVerificationClosedEvent"
+              eval_id: "EVAL-NN"
+              receipt_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-001.yaml"
+              verdict: "PASS"
+      produceEvents:
+        - eventRef: EvalVerificationClosedEvent
       end: true
 
     # -------------------------------------------------------------------------

@@ -132,6 +132,11 @@ workflow:
     workflowExecTimeout:
       duration: PT5M
 
+  events:
+    - name: BddScenariosClosedEvent
+      type: org.aidoc.sdd.layer04.bdd.closed
+      source: /layers/04_bdd
+
   states:
     # -------------------------------------------------------------------------
     # GIVEN: Precondition Initialization & Fixture Injection
@@ -196,20 +201,93 @@ workflow:
         - name: ReviewGateApproved
           condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
           transition: CompleteScenarioSuccess
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
         - name: ReviewRequiresQuarantine
-          condition: "${ .blocking_findings > 0 }"
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
           transition: RecordAssertionFailure
       defaultCondition:
         transition: RecordAssertionFailure
 
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "qa_lead"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
+
     # -------------------------------------------------------------------------
-    # TERMINAL: Scenario Success
+    # TERMINAL: Scenario Success & Layer Closeout
     # -------------------------------------------------------------------------
     - name: CompleteScenarioSuccess
       type: inject
       data:
         verdict: "PASSED"
         ears_verified: ["EARS.NN.SS.xxxx"]
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-03"
+              layer: "04_BDD"
+              documentId: "${ .artifactId }"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "${ .artifactId }"
+              layer: "04_BDD"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "BddNode"
+              nodeId: "${ .artifactId }"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "BddScenariosClosedEvent"
+              documentId: "${ .artifactId }"
+              behavioral_state_graphs: "${ .behavioral_state_graphs }"
+              scenarios_dag: "${ .scenarios_dag }"
+      produceEvents:
+        - eventRef: BddScenariosClosedEvent
       end: true
 
     # -------------------------------------------------------------------------
@@ -255,3 +333,18 @@ workflow:
     - name: invokeReviewSaga
       type: custom
       operation: "urn:aidoc:workflows:review-saga#invoke"
+    - name: remediateLayerFindings
+      type: custom
+      operation: "urn:aidoc:functions:remediator#remediate"
+    - name: verifyLayerBoundaryGate
+      type: custom
+      operation: "urn:aidoc:governance:gate#verify"
+    - name: sealDocumentBaseline
+      type: custom
+      operation: "urn:aidoc:governance:document#seal"
+    - name: registerGraphBaselineNode
+      type: custom
+      operation: "urn:aidoc:governance:graph#registerNode"
+    - name: emitCloudEvent
+      type: custom
+      operation: "urn:aidoc:governance:event#emit"
