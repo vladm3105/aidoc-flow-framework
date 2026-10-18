@@ -137,7 +137,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    EARS-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     BRD Reference: link to upstream BRD using hash-based IDs.
   product_name: "[Product Name]"
   version: "1.0"
@@ -150,7 +150,7 @@ document_control:
   brd_reference: "@brd: BRD.NN.07.xxxx"
   priority: High
   target_release: "[MVP Launch Date]"
-  ears_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  ears_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -644,8 +644,8 @@ traceability:
 
   health_score:
     brd_coverage: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
   ears_cross_reference:
     _note: |

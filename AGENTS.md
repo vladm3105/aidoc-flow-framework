@@ -149,9 +149,10 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - CHG-L017: Premature step completion (§3.4.1 E28) — no `Completed` step on a `Proposed` / `Approved` CHG
 - CHG-L018: Mandatory decision block (§1B, GD-71) — every CHG must carry a non-empty `decision:` mapping
-- Full catalog (L001–L018, BGF-00..07, SWF-L001..L007, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
+- CHG-L019: Fast-path boundary guard (§3.1.3, GOV-023) — contract integrity preserved across fast paths
+- Full catalog (L001–L019, BGF-00..07, SWF-L001..L009, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
-**Automated Workflow validation:** Run `python3 -m sdd_doc_lint.swf_lint [--warn-exit] <path>` to check declarative CNCF Serverless Workflow state machines (`SWF-L001`–`SWF-L007`).
+**Automated Workflow validation:** Run `python3 -m sdd_doc_lint.swf_lint [--warn-exit] <path>` to check declarative CNCF Serverless Workflow state machines (`SWF-L001`–`SWF-L009`).
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 

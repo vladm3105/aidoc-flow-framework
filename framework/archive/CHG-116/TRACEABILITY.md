@@ -1,0 +1,178 @@
+# Traceability — SDD
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-27 |
+| Author | Framework Maintainer |
+| Framework Version | 0.96.2 |
+
+## Traceability Chain
+
+```
+BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code → EVAL (L10) → Verified
+```
+
+## Necessary-upstream tagging
+
+Each layer cites only its **necessary upstream** (`required_tags` in
+`LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
+layer. Deeper lineage is discoverable transitively (one hop per layer, or a
+one-shot trace-walk query). The `tools/*.py` helpers this document names
+(`trace_walk.py`, `sdd_coverage.py`) describe a **reference implementation
+outside the engine-agnostic spec** — no such scripts ship in this repo; the
+traversal they would perform over the `@`-tag graph is the normative
+capability, and the scripts themselves are a convenience an engine MAY provide.
+
+```
+Layer 1 (BRD):   —
+Layer 2 (PRD):   @brd
+Layer 3 (EARS):  @prd
+Layer 4 (BDD):   ears (YAML carrier)
+Layer 5 (ADR):   @ears @bdd
+Layer 6 (SPEC):  @ears @bdd @adr
+Layer 7 (TDD):   @ears @bdd @adr @spec
+Layer 8 (IPLAN): @spec @tdd
+Layer 10 (EVAL): @ears @bdd @tdd @iplan
+```
+
+`required_tags` is the **minimum trace-resolution set**: a layer MAY
+additionally carry provenance tags (e.g. a platform ADR recording `@brd`/`@prd`
+in its `context`) but is not required to. Reverse lookup ("which BRD does
+SPEC-07 trace to?") walks the chain transitively, not a local tag — query the
+`@`-tag graph directly for that one-shot backward lookup, or consult the
+generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (CFB-PR-2)
+for the forward direction — "which
+SPEC/IPLAN realizes this BRD requirement?". Both read the same `@`-tag graph, so
+the forward matrix and the backward walker never disagree. The matrix is
+**generated/regenerable — never hand-edited.**
+
+> *Origin:* NECESSARY-UPSTREAM-001 (spec `0.15.2` → `0.16.0`) replaced the
+> former cumulative-trace contract — every downstream layer redeclaring every
+> upstream layer — after it caused trace fabrication when an upstream layer was
+> genuinely absent from a project. See `governance/REVIEW_TEAM.md`
+> §"Necessary upstream + transitive trace".
+
+> **Cross-layer cardinality (CLEANUP-PR-F item 18):** doc numbers are
+> per-layer sequential and INDEPENDENT across layers. One BRD MAY drive
+> multiple PRDs; one PRD MAY cite multiple BRDs. The url-shortener
+> example's 1:1 numbering is coincidence, not contract. See
+> `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
+
+## Coverage gates (`sdd_doc_lint`)
+
+The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVERAGE-001):
+
+- **Reference Granularity Principle (GD-03 / #502):** Citing an oracle layer (EARS requirements or BDD scenarios) in verification contexts (e.g. SPEC `upstream.bdd_references`, TDD `scenarios[].bdd_scenario`, inline `source: "@bdd: ..."`) MUST be element-level (`TYPE.NN.SS.xxxx`). Citing a document-level ID (e.g. `BDD-01`) for an oracle defeats element coverage computation. Conversely, citing the element-ID-exempt layers (SPEC, IPLAN) at document-level (e.g. `@spec: SPEC-01`, `@iplan: IPLAN-01`) is permitted. `@adr` and `@tdd` are element-declaring and MUST be element-level in any **trace citation**; a whole-document dependency on one is stated in prose. Self-tags and downstream forward-pointers are document-level and exempt (GD-03).
+- **`COV01` — forward coverage.** Every in-scope (`AUTHORED`) BRD functional requirement
+  MUST reach ≥1 SPEC and ≥1 IPLAN downstream. No SPEC → error; SPEC-but-no-IPLAN → warning
+  in `build`, error in `gate-code`. Escaped FRs never block: a `Future` band (deferred) or a
+  `realized_by: <LAYER>` token (realized off the SPEC path).
+- **`COV02` — backward coverage.** The dual: every EARS / BDD element must be realized by a
+  downstream doc in its **realizing set** (or explicitly deferred), computed corpus-wide. The
+  realizing set is a curated one-hop map (EARS → BDD/SPEC/TDD; BDD → SPEC/TDD — ADR is a
+  decision layer and does not realize); an element cited by any doc in its set passes. The
+  **normative map is `registry/LAYER_REGISTRY.yaml` `realizing_layers`** (a platform linter
+  mirrors it); the element-level treatment is also shown in
+  `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`.
+- **`COV03` — phase-leak advisory (the inverse of `COV01`'s escape).** A **`Future`-banded
+  (deferred) FR that IS realized downstream** by its realizing layer draws a **`WARNING`** —
+  something scoped for a *next MVP cycle* is being pulled into the current build. **Advisory
+  only, in both modes** (never blocks): scope pull-forward is legitimate; the resolution is
+  to re-band the FR `P1`/`P2` for the current cycle or confirm the deferral is intentional. A
+  `realized_by:` FR is a positive coverage claim, not a leak, and is never flagged. Cross-cycle
+  leaks need no gate — later-cycle BRDs are `Planned`/`Sketch` (trace-inert), so their
+  elements are not in the graph. *Origin:* D54-F13 / D-0055 (see the D-series annex in `governance/DECISIONS.md`).
+
+`reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
+realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
+
+## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
+
+Under Model 2 (D-0061 — see the D-series annex in `governance/DECISIONS.md`),
+an element ID's 4-hex hash **is** the mint-time content fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
+§7 gated FR elements it recomputes `SHA256("{doc}:{sec}:{norm(title)}:{norm(description)}")[:N]`
+(the normative transform + extraction boundary in `ID_NAMING_STANDARDS.md`) and
+warns when the ID's declared hash no longer matches — a **content drift** since the
+ID was minted, or a **canonical leak** (the ID was never the real hash).
+
+- **Opt-in + advisory.** Runs ONLY via `python -m sdd_doc_lint.rehash --check
+  <docs>` — it is **NOT** part of the default `sdd_doc_lint` pass, so the default
+  gate + the example-corpus lint are byte-identical. `IDDRIFT01` is `WARNING`-level
+  and never blocks.
+- **`canonical`-gated.** A doc declaring `id_state: provisional` is exempt (its IDs
+  are declared placeholders, not hashes).
+- **Phase-1 scope: BRD §7 FR elements only.** Other BRD sections and the other seven
+  layers are not yet verified — later PROVISIONAL-IDS-002 phases extend the
+  extractor, add `rehash --fix`, reconcile the corpus, and may promote the advisory
+  to a gate. See `plans/PROVISIONAL-IDS-002-PLAN.md`.
+
+## Upstream/Downstream Validation
+
+| Layer | Required Upstream Tags | Validated Downstream |
+|-------|----------------------|---------------------|
+| BRD | — | PRD |
+| PRD | @brd | EARS |
+| EARS | @prd | BDD |
+| BDD | @ears | ADR |
+| ADR | @ears, @bdd | SPEC |
+| SPEC | @ears, @bdd, @adr | TDD |
+| TDD | @ears, @bdd, @adr, @spec | IPLAN |
+| IPLAN | @spec, @tdd | EVAL |
+| EVAL | @ears, @bdd, @tdd, @iplan | Code |
+
+## Binary Topological Validation (BTV)
+
+Per CHG-97, qualitative heuristic readiness scores (`>=90%`) are retired in favor of strict, deterministic **Binary Topological Validation** (`PASS` / `FAIL`) verified by `sdd_doc_lint`:
+
+| Gate | Type | Deterministic Verification Criteria |
+|------|------|-------------------------------------|
+| **PRD-Ready** | Binary | 100% BRD functional requirements (@brd) resolved and mapped to PRD features (COV01). |
+| **EARS-Ready** | Binary | 100% PRD features mapped to formal EARS syntactic requirements with unbroken lineage. |
+| **BDD-Ready** | Binary | 100% EARS requirements realized by BDD behavioral state graphs or atomic scenarios (COV02). |
+| **ADR-Ready** | Binary | 100% architectural trade-offs cite upstream @ears/@bdd with verified decision rationale. |
+| **SPEC-Ready** | Binary | 100% component interfaces realize upstream BDD/ADR requirements without dangling links. |
+| **TDD-Ready** | Binary | 100% BDD scenarios paired to failing test fixtures (ACC01) prior to code generation. |
+| **IPLAN-Ready** | Binary | 100% SPEC/TDD components mapped to ordered test-first file creation manifests. |
+| **EXEC-Ready** | Binary | IPLAN execution manifest verified, file manifest complete, and session handoff verified. |
+
+## Cross-Document Dependencies & Governance Tags
+
+- `@depends: TYPE-NN` — Hard prerequisite. Downstream cannot exist without upstream.
+- `@discoverability: TYPE-NN` — Related document for AI search context.
+- `@chg: CHG-NN` — Provenance back-reference to authorizing change record.
+- `@threshold: TYPE.NN.key` — Performance or quality threshold reference.
+
+## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001
+
+A brownfield project may **reuse an existing upstream artifact** instead of
+re-authoring it. A reused doc declares, in frontmatter:
+
+```yaml
+reuse:
+  state: referenced            # default: authored
+  target: PRD-01@<commit>      # in-repo doc_id or path, pinned to a commit
+  rationale: "reuse the platform PRD"
+```
+
+Semantics:
+
+- **Satisfied by reference, not re-audited.** A `referenced` doc's elements are
+  exempt from the coverage gates (`COV01`/`COV02` skip them) — they are reused
+  as-is, not realized downstream. The linter emits one **`REUSE01`** advisory per
+  referenced doc to keep every reuse visible.
+- **Target must be in-repo + pinned** (`<doc_id|path>@<commit>`, commit = 7–40
+  hex). A live URL, an unpinned target, or a target that does not resolve in-repo
+  is a **`REUSE02`** error. Live external URLs belong in `@discoverability` only,
+  never as the trace target.
+- **Full-prefix rule.** A reused doc carries its own outbound upstream `@`-tags,
+  so its **entire upstream lineage must also be present in-repo and `referenced`**
+  — reuse the chain up to the boundary, not a single dangling doc. An upstream
+  tag to an absent doc is a (correct) `TRACE-RES-001` finding (incomplete reuse).
+- **No free readiness score.** A referenced layer is *present + linked* but was
+  not authored/audited here, so the authoring/audit flow MUST NOT grant it an
+  authored-quality (≥90) readiness score. (The deterministic lint records the
+  reuse; the audit-engine enforcement of this rule is a follow-on.)

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 ## Traceability Chain
 
@@ -58,8 +58,8 @@ the forward matrix and the backward walker never disagree. The matrix is
 
 > **Cross-layer cardinality (CLEANUP-PR-F item 18):** doc numbers are
 > per-layer sequential and INDEPENDENT across layers. One BRD MAY drive
-> multiple PRDs; one PRD MAY cite multiple BRDs. The url-shortener
-> example's 1:1 numbering is coincidence, not contract. See
+> multiple PRDs; one PRD MAY cite multiple BRDs. Historical acceptance
+> fixtures' 1:1 numbering was coincidence, not contract. See
 > `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
 
 ## Coverage gates (`sdd_doc_lint`)

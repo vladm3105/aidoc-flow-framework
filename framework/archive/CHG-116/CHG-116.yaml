@@ -1,0 +1,205 @@
+# =============================================================================
+#  CHG-116: Comprehensive Remediation of Stale Framework Information & Artifact Inconsistencies
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Guidelines)
+#  Pre-cleared: Ratified deep_framework_stale_info_review_plan.md
+#  Scope: Modernize layer templates to BTV PASS, synchronize Layer 09 CHG templates and mirrors,
+#         purge retired corpora references, reconcile contradictory changelog guidance, and bump to 0.96.3
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-18"
+  framework_version: "0.96.3"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-116"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-18T12:00:00Z"
+  date_approved: "2026-10-18T12:00:00Z"
+  date_implemented: "2026-10-18T12:30:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-18T12:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per ratified implementation plan deep_framework_stale_info_review_plan.md.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-116)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-116"
+  title: "Comprehensive Remediation of Stale Framework Information and Artifact Inconsistencies"
+  status: "Ratified"
+  context: |
+    A deep review of the aidoc-flow-framework repository following historical migrations (Hermes MCP
+    and Claude Code plugin retirement, monolithic CHANGELOG/DECISIONS freezing, BTV adoption in CHG-97,
+    and Three-Tier Architecture introduction) revealed residual staleness and drift:
+    1. Lingering heuristic readiness scores (target_score: ">=90/100", *_ready_score: "[Score]/100",
+       and numeric workflow conditions) in layer templates and SWF workflows that contradict BTV standards.
+    2. Missing Layer 09 CHG templates in layers/09_CHG and governance/chg (CHG-SWF-TEMPLATE.yaml and
+       CHG-GRAPH-TEMPLATE.yaml), drift in rationale lines, and missing Three-Tier sections in 09_CHG README.
+    3. Mentions of deleted examples/url-shortener/ and root archive/ in docs/REPO_STRUCTURE.md,
+       ID_NAMING_STANDARDS.md, and TRACEABILITY.md.
+    4. Contradictory statements regarding CHANGELOG.md (active vs frozen tombstone) in root README.md,
+       framework/README.md (GATE-SPEC update requirement), and THRESHOLD_NAMING_RULES.md.
+    5. Inaccurate claims in DOC_GOVERNANCE_CORE.md regarding MVP templates surviving as tombstones.
+    6. Stale linter bounds and rule catalogs in AGENTS.md (omitted CHG-L019, bounded SWF at L007).
+  choice: |
+    Execute comprehensive remediation per ratified deep_framework_stale_info_review_plan.md:
+    1. Purge all residual readiness score fields from 01_BRD through 06_SPEC, 08_IPLAN, and 10_EVAL
+       templates and SWF workflows, adopting deterministic BTV PASS (target_status: "PASS").
+       Preserve software test coverage metrics (coverage_target: ">=90%") and product SLAs (threshold: ">=90%").
+    2. Canonicalize CHG templates: home CHG-SWF-TEMPLATE.yaml and CHG-GRAPH-TEMPLATE.yaml in layers/09_CHG/,
+       mirror them to governance/chg/, align governance/templates/CHG-GRAPH-TEMPLATE.yaml rationale,
+       update 09_CHG/README.md and governance/chg/README.md with Three-Tier sections, and update test_governance.py.
+    3. Rephrase historical examples/url-shortener/ references into generic historical acceptance fixture notes
+       and prune deleted trees from REPO_STRUCTURE.md.
+    4. Clarify CHANGELOG.md frozen status across root README.md, framework/README.md, THRESHOLD_NAMING_RULES.md,
+       and PROJECT.md.
+    5. Correct MVP tombstone commentary in DOC_GOVERNANCE_CORE.md to document permanent deletion in CHG-89.
+    6. Update AGENTS.md linter rules to include CHG-L019 and SWF-L001..L009.
+    7. Bump framework/VERSION to 0.96.3, update sync-version-refs.sh, and run full test suites.
+  consequences: |
+    - Complete alignment with BTV deterministic binary verification across all templates and workflows.
+    - Absolute template parity across all 10 layers with Three-Tier Architecture documentation in every layer README.
+    - Zero dead links or citations to deleted example directories or active monolithic changelogs.
+    - Full conformance across 613+ tests and 100+ unit tests without weakening checks.
+  alternatives_considered:
+    - option: "Retain advisory heuristic scores alongside BTV PASS"
+      rationale_rejected: >-
+        Rejected because dual scoring models create semantic ambiguity for autonomous agents and contradict
+        the framework's ratified transition to Binary Topological Validation (BTV).
+    - option: "Leave CHG-SWF-TEMPLATE only in framework/governance/templates/"
+      rationale_rejected: >-
+        Rejected because Layer 09 README already claimed the template existed in layers/09_CHG, and
+        consistency requires that all 10 layers provide complete template sets.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Comprehensive Remediation of Stale Framework Information and Artifact Inconsistencies"
+  description: >-
+    Remediate lingering heuristic scores, synchronize Layer 09 CHG templates, clean retired corpora references,
+    resolve changelog documentation contradictions, and update working agreements.
+  justification: >-
+    Restores absolute specification currency, eliminates agent confusion, and enforces consistent
+    Three-Tier and BTV standards repository-wide.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-TEMPLATE.yaml"
+    - "framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+    - "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    - "framework/governance/workflows/eval-verification-run.sw.yaml"
+    - "framework/governance/templates/CHG-GRAPH-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+    - "framework/QUICK_REFERENCE.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/THRESHOLD_NAMING_RULES.md"
+    - "framework/README.md"
+    - "framework/governance/ID_NAMING_STANDARDS.md"
+    - "framework/governance/TRACEABILITY.md"
+    - "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+    - "framework/layers/01_BRD/README.md"
+    - "README.md"
+    - "docs/REPO_STRUCTURE.md"
+    - "docs/PROJECT.md"
+    - "AGENTS.md"
+    - "tests/conformance/test_governance.py"
+    - "tests/conformance/test_chg_flows_router.py"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  artifacts_created:
+    - "framework/layers/09_CHG/CHG-SWF-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-SWF-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-GRAPH-TEMPLATE.yaml"
+    - "framework/archive/CHG-116/CHG-116.yaml"
+    - "framework/archive/CHG-116/IPLAN-116.yaml"
+  affected_components:
+    - "Layer Templates and SWF Workflows (01_BRD - 10_EVAL)"
+    - "Layer 09 CHG Specification and Governance Mirrors"
+    - "Governance Documentation and Naming Standards"
+    - "Root Documentation and Working Agreements"
+    - "Governance Conformance Tests"
+    - "Framework Version Registry"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-116/IPLAN-116.yaml"
+  steps:
+    - step: "Author authorizing CHG-116.yaml and IPLAN-116.yaml"
+      phase: "iplan_creation"
+    - step: "Remediate layer templates and SWF workflows to BTV PASS (Component 1)"
+      phase: "template_btv_remediation"
+    - step: "Synchronize Layer 09 CHG templates, mirrors, and READMEs (Component 2)"
+      phase: "chg_mirror_synchronization"
+    - step: "Remediate governance core, guides, and naming standards (Component 3)"
+      phase: "governance_modernization"
+    - step: "Remediate root documentation, repo structure, and AGENTS.md (Component 4)"
+      phase: "documentation_alignment"
+    - step: "Bump framework/VERSION to 0.96.3, update sync script, and verify test suites"
+      phase: "version_fanout_and_verification"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-116/CHG-116.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/layers/ framework/governance/"
+    - "python3 -m sdd_doc_lint --check-surfaces ."
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/unit"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "bash hooks/pre_push_check.sh"
+  manual_verification:
+    - "Confirm byte-identical parity between layers/09_CHG/README.md and governance/chg/README.md"
+    - "Confirm absence of residual target_score: '>=90/100' across active framework/layers/ templates"

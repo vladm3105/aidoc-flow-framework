@@ -193,7 +193,7 @@ metadata:
       - id: SDD-XS-001
         rule: "All element IDs in traceability must exist in source sections"
       - id: SDD-XS-002
-        rule: "Readiness score must be recalculated if validation findings exist"
+        rule: "Gate status must be re-evaluated if validation findings exist"
       - id: SDD-XS-003
         rule: "Documents with diagram contracts must have diagrams section with items"
     brd_specific:
@@ -214,8 +214,8 @@ document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Provide project identification and document tracking information.
-    PRD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-    PRD-Ready Score quantifies business-level content quality.
+    PRD-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
+    PRD-Ready verification ensures business-level content quality with 100% upstream-downstream trace.
     Deductions for: code blocks, API/technical terms, UI implementation details.
     Scope-only future-cycle BRDs are NOT authored as standalone files; capture them
     as Sketch/Planned rows in the BRD-00 index "Planned BRDs" table (trace-inert
@@ -228,14 +228,14 @@ document_control:
   author: "[Primary Author]"
   prepared_by: "[Business Analyst]"
   mvp_target_launch: "[Target date]"
-  prd_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  prd_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     _guidance: |
       Major version (X.0): structural changes to FR format, content reclassification.
       Minor version (X.Y): new requirements, clarifications, editorial fixes.
       For major refactoring, include: structural changes, content removed,
-      PRD-Ready Score improvement (before/after), changelog reference.
+      PRD-Ready gate status verification, change reference.
     entries:
       - version: "1.0"
         date: "YYYY-MM-DDTHH:MM:SS"
@@ -1037,8 +1037,8 @@ traceability:
   health_score:
     bo_fr_coverage: "[X]%"
     cross_brd_validated: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
 # =============================================================================
 # Section 15: Glossary

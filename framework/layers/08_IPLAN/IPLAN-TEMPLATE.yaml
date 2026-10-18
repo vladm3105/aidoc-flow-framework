@@ -61,8 +61,8 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    One IPLAN per SPEC component. Created when TDD reaches
-    IPLAN-Ready >=90/100.
+    One IPLAN per SPEC component. Created when TDD passes the
+    deterministic IPLAN-Ready gate (BTV PASS).
 
     `subtype` selects which sections this IPLAN must carry. Values
     (CLEANUP-PR-E; `audit_fix` added 0.54.0; `bugfix` added 0.56.0;

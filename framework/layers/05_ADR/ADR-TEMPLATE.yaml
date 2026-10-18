@@ -145,7 +145,7 @@ document_control:
       Proposed → Accepted → Deprecated → Superseded
       (NOT Draft/In Review/Approved)
 
-    SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    SPEC-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded
   date: "YYYY-MM-DD"
@@ -154,7 +154,7 @@ document_control:
     - "[Tech Lead Name]"
   author: "[Author Name]"
   version: "1.0"
-  spec_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  spec_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -422,8 +422,8 @@ traceability:
 
   health_score:
     spec_ready: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
 # =============================================================================
 # Section 10: Related Decisions

@@ -59,12 +59,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      PRD-Ready Score target >= 90/100 (advisory readiness target).
-    scoring_criteria:
-      strategic_clarity: "35% (SMART objectives, business drivers, vision statement)"
-      value_stream_completeness: "30% (operational capabilities, customer journey flow)"
-      economic_feasibility: "20% (quantified ROI, cost/benefit, payback duration)"
-      stakeholder_alignment: "15% (executive sponsors, governance RACI, approval gates)"
+      PRD-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      strategic_clarity: "SMART objectives, business drivers, vision statement"
+      value_stream_completeness: "operational capabilities, customer journey flow"
+      economic_feasibility: "quantified ROI, cost/benefit, payback duration"
+      stakeholder_alignment: "executive sponsors, governance RACI, approval gates"
 
   c4_level:
     _guidance: |

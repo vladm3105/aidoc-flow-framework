@@ -22,7 +22,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-27 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 ## 1. Overview
 
@@ -754,4 +754,5 @@ dot-separated segments (`{category}.{metric}`), per §2.1 and the authoritative
 pre-migration SDD governance set; domain-specific (financial) examples were
 genericized and runtime/operational override policy removed during the
 pre-production review. Versioned with the framework spec (`framework/VERSION`);
-changes are tracked in the project `CHANGELOG.md` under GATE-SPEC.*
+changes are tracked in structured Change Requests under `framework/archive/CHG-*/`
+and GitHub releases under GATE-SPEC.*

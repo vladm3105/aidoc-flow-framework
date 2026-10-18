@@ -74,7 +74,7 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[QA Lead / Author]"
   priority: P1
-  evaluation_ready_score: "[Score]/100"
+  evaluation_ready_status: "PASS"
 
 # =============================================================================
 # Section 2: Evaluation Scope
@@ -200,7 +200,7 @@ workflow:
             refName: validateScopeFn
             arguments:
               owning_iplan: "IPLAN-NN"
-              target_score: 90
+              verify_btv_pass: true
       transition: ExecuteEvaluationSuites
 
     # -------------------------------------------------------------------------
@@ -251,7 +251,7 @@ workflow:
           functionRef:
             refName: computeScorecardFn
             arguments:
-              threshold_score: 90
+              verify_btv_pass: true
       transition: CheckEvaluationVerdict
 
     # -------------------------------------------------------------------------
@@ -261,7 +261,7 @@ workflow:
       type: switch
       dataConditions:
         - name: EvaluationPassed
-          condition: "${ .score >= 90 and .blocker_count == 0 }"
+          condition: "${ .gate_passed == true and .blocker_count == 0 }"
           transition: InvokeReviewSagaGate
       defaultCondition:
         transition: HandleEvaluationDefects

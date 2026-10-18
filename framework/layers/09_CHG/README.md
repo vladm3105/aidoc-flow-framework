@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 
 ## Overview
@@ -390,6 +390,18 @@ modified file with its archive path.
 | `CHG-00_index.TEMPLATE.yaml` | Change registry template — tracks all CHG documents per project in canonical 5-Quadrant YAML |
 | `gates/` | Gate definitions (GATE-01, 03, 06, 08, CODE, SPEC, error catalog, interaction diagram) |
 | `templates/` | Gate approval form and emergency post-mortem companion |
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 09 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on change governance complexity (GD-53):
+
+| Change Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct transactional change, docs, patch fixes | `CHG-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `CHG-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-layer change orchestration, automated gate routing, or saga rollback | `CHG-SWF-TEMPLATE.yaml` | `CHG-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating change traversal and verification sagas. |
+
+Review and remediation of Change Request artifacts is governed by [`chg-review-remediation.sw.yaml`](../../governance/workflows/review/chg-review-remediation.sw.yaml) (`REV-09-CHG`).
 
 ## Cross-References
 
