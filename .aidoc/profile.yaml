@@ -13,10 +13,11 @@
 # =============================================================================
 
 metadata:
-  schema_version: "1.0.0"
+  schema_version: "1.1.0"
+  project_name: "aidoc-flow-framework"
   authority: "framework/governance/ADAPTATION.md"
-  last_updated: "2026-10-01"
-  framework_version: "0.68.3"
+  last_updated: "2026-10-17"
+  framework_version: "0.96.2"
   framework_path: ".aidoc/framework"  # no vendored engine here; spec lives at framework/
 
 # This repo overrides exactly one knob (CHG-30): ci_bindings. Every other

@@ -184,11 +184,11 @@ if [ -n "$CANON_SHA" ]; then
 fi
 
 # Runbook step 1: surface the canon-side inputs (reading stays manual).
-log "step 1: read the canon CHANGELOG entry for the new version (breaking changes, W001 notes)"
-if [ "$DRY_RUN" != 1 ] && [ -f "$CANON/framework/CHANGELOG.md" ]; then
-  log "canon changelog: $CANON/framework/CHANGELOG.md"
+log "step 1: inspect canon Change Requests in framework/archive/CHG-*/ and GitHub Releases for ${NEW:-${TO:-new version}}"
+if [ "$DRY_RUN" != 1 ] && [ -d "$CANON/framework/archive" ]; then
+  log "canon change records: $CANON/framework/archive/ (releases: https://github.com/vladm3105/aidoc-flow-framework/releases)"
 else
-  log "canon changelog: <canon>/framework/CHANGELOG.md"
+  log "canon change records: <canon>/framework/archive/ (releases: https://github.com/vladm3105/aidoc-flow-framework/releases)"
 fi
 
 # Stale detector (runbook step-1 input): report BEFORE the confirm gate so

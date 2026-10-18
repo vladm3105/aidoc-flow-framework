@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.1 |
+| Framework Version | 0.96.2 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,17 +33,17 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.1 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.2 --kind pin
 
-# Or symlink to a persistent shared framework checkout:
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.1 --kind symlink --shared /path/to/framework
+# Or attach via Git submodule:
+git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
 ```
 
 `install.sh` automates the ordered procedure from `BOOTSTRAP.md`:
 
 1. Copies `AIDOC-SCAFFOLD-TEMPLATE.md` to `<project>/.aidoc/README.md` and populates author, date, and version placeholders;
 2. Copies `PROFILE-TEMPLATE.yaml` to `<project>/.aidoc/profile.yaml`;
-3. Attaches the framework: either copies the version-pinned allowlist (`docs/PROJECT.md` §7.1 / `allowlist.txt`, pruning internal archives) or establishes the canonical `.aidoc/framework` symlink;
+3. Attaches the framework: either copies the version-pinned allowlist (`docs/PROJECT.md` §7.1 / `allowlist.txt`, pruning internal archives) or attaches the framework via Git submodule or pinned copy;
 4. Pins `metadata.framework_version` to the adopted canon version;
 5. Initializes Layer 05 ADR index: scaffolds `<project>/docs/sdd/05_ADR/` and copies `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` to `ADR-00_index.yaml` (populating version and date; idempotent);
 6. Copies `framework/templates/AGENTS-TEMPLATE.md` to `<project>/AGENTS.md` if missing, providing the canonical state-surface table;
@@ -58,11 +58,19 @@ The resulting shape:
 ```text
 <project>/
 ├── AGENTS.md                # working agreement (from AGENTS-TEMPLATE.md)
+├── Taskfile.yml             # root task orchestration
 ├── docs/sdd/05_ADR/         # Layer 05 ADR index & records
 │   └── ADR-00_index.yaml    # technology stack & ADR registry
 ├── .aidoc/
 │   ├── profile.yaml         # project profile — adaptation knobs
-│   ├── framework/           # shared framework (symlink or pinned copy, canonical)
+│   ├── stack-policy.yaml    # tech stack policy & dependency rules
+│   ├── Taskfile.yml         # workstation SDD task runner
+│   ├── contracts/           # integration contracts & schemas
+│   ├── ctx-tools/           # context extraction helpers
+│   ├── cache/               # deterministic cache artifacts
+│   ├── engine/
+│   │   └── engine.yaml      # engine configuration
+│   ├── framework/           # shared framework (submodule or pinned copy)
 │   ├── project/             # project-specific overrides
 │   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
 │   │   ├── layers/          # template overrides (e.g. Layer 10 EVAL templates)
@@ -82,14 +90,11 @@ and GitHub milestones/issues.
 
 ## 2. Attach the framework
 
-Canonical form: `.aidoc/framework/` is a symlink to the shared framework
-checkout (`AIDOC.md` § "Symlink convention"). One project in the wild
-instead keeps a version-pinned copy. A pinned copy carries only the consumer
-allowlist (`docs/PROJECT.md` §7.1: `framework/`, `docs/`, `hooks/`,
-`sdd_doc_lint/`, `tests/`, minus `framework/archive/`) — never the whole
-canon tree — and is refreshed by repeating that copy, never by pulling
-inside `.aidoc/framework/`. Either form works if
-you keep these invariants:
+Sanctioned attachment models: Git submodule (recommended for multi-repo environments) or a version-pinned allowlist copy (`install.sh --kind pin`, recommended for standalone checkouts). Raw filesystem symlinks in version control are strictly forbidden per `docs/AIDOC_WORKSTATION_STANDARD.md` §8 (`WORKSTATION_SYM-01`).
+
+A pinned copy carries only the consumer allowlist (`docs/PROJECT.md` §7.1: `framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/`, minus `framework/archive/`) — never the whole canon tree — and is refreshed by repeating that copy via `framework/scripts/upgrade.sh`, never by editing inside `.aidoc/framework/`.
+
+Keep these invariants:
 
 - Exactly one framework source per project; never copy framework files
   into `project/` unchanged.
@@ -173,7 +178,7 @@ Consuming projects must establish a root `AGENTS.md` working agreement so all AI
 ## Governance Gate (Non-Negotiable)
 
 Before writing ANY code for a feature, enhancement, or bug fix:
-1. Stop: Check if an authorizing Change Request (CHG) exists under `.aidoc/` or `chg/`. If not, create a CHG document first.
+1. Stop: Check if an authorizing Change Request (CHG) exists under `docs/sdd/09_CHG/` or `.aidoc/archive/`. If not, create a CHG document first.
 2. Complete the §3.4 CHG creation checklist before writing code.
 3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
 4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`. Never work directly on `main` or `dev`.

@@ -1,11 +1,11 @@
 # Project Startup Handoff & Kickoff Guide
 
 > [!IMPORTANT]
-> **Live Framework Version: 0.96.1.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
+> **Live Framework Version: 0.96.2.** This document contains the definitive **Project Kickoff Quickstart (Section 0)** for teams initiating new projects with `aidoc-flow-framework`. Sections 1–5 below are preserved verbatim as the authoritative historical migration brief anchoring decisions D-0007..D-0013 in `framework/governance/DECISIONS.md`.
 
 ---
 
-## 0. Project Kickoff Quickstart (Version 0.96.1)
+## 0. Project Kickoff Quickstart (Version 0.96.2)
 
 ### 0.1 The Modern SDD Framework at a Glance
 
@@ -34,7 +34,7 @@ From the framework repository or clone, run [`framework/scripts/install.sh`](../
 framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
 
 # Option B: Production deployment from published git release tag:
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.1 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.2 --kind pin
 
 # Option C: Git submodule deployment (tracked by git):
 git submodule add -b dev https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework

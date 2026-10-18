@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: gate_spec_process
 weight: 0
 agent: framework-maintainer
-framework_spec_version: "0.96.1"
+framework_spec_version: "0.96.2"
 type: process-playbook
 ---
 # GATE-SPEC Framework Self-Change Process
@@ -16,7 +16,7 @@ type: process-playbook
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.1 |
+| Framework Version | 0.96.2 |
 
 ## Purpose
 
@@ -70,22 +70,9 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 
 5. **Archive ALL files before modification**
    ```sh
-   # Governance docs
-   cp governance/*.md archive/CHG-{NN}/governance/
-   
-   # Gate definitions
-   cp layers/09_CHG/gates/*.md archive/CHG-{NN}/layers/09_CHG/gates/
-   
-   # Layer READMEs
-   for d in layers/*/; do
-     [ -f "$d/README.md" ] && cp "$d/README.md" "archive/CHG-{NN}/$d"
-   done
-   
-   # Root docs
-   cp README.md AI_ASSISTANT_RULES.md archive/CHG-{NN}/root/
-   
-   # YAML files
-   cp registry/LAYER_REGISTRY.yaml archive/CHG-{NN}/registry/
+   # Copy pre-modification snapshots into flat framework archive directory:
+   # framework/archive/CHG-{NN}/<filename>
+   cp <modified-files> framework/archive/CHG-{NN}/
    ```
 
 6. **Verify archive completeness**

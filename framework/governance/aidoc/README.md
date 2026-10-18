@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.1 |
+| Framework Version | 0.96.2 |
 
 The `.aidoc/` directory is the project customization layer for every project
 that uses the framework. This directory holds the governance documents for
@@ -20,7 +20,7 @@ bootstrap (`BOOTSTRAP.md`) and upgrade (`UPGRADE-RUNBOOK.md`) runbooks.
 
 | File | Covers |
 |------|--------|
-| `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, symlink convention. |
+| `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, distribution and attachment models (submodule, pinned copy). |
 | `AIDOC-SCAFFOLD-TEMPLATE.md` | Template for bootstrapping a new project's `.aidoc/` directory. |
 | `AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` | Operational execution handbook template for autonomous change processing (`.aidoc/project/governance/CHG_EXECUTION_FLOW.md`). |
 | `AIDOC-CI-SMART-ROUTING-TEMPLATE.md` | Operational template for CI smart change detection and anti-deadlock status check orchestration. |

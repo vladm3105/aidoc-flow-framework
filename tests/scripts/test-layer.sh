@@ -9,5 +9,5 @@ if [[ -z "$LAYER" ]]; then
 fi
 
 FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$FRAMEWORK"
+cd "$FRAMEWORK" || exit 1
 exec python3 -m unittest "tests.acceptance.deterministic.test_layer_${LAYER}" -v
