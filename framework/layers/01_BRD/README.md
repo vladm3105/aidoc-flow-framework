@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 
@@ -70,7 +70,7 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | `BRD_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining the mapping of business requirements primitives to CNCF state types, graph integrity invariants, and zero-runtime execution. |
 | `BRD-00_index.TEMPLATE.yaml` | BRD registry template — tracks planned and active BRDs per project in canonical 5-Quadrant YAML. |
 
-### Three-Tier Architectural and Dual-Template Selection Matrix
+### Three-Tier Architecture & Dual-Template Selection Matrix
 
 Layer 01 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on business domain complexity (GD-61):
 

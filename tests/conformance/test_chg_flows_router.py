@@ -14,6 +14,10 @@ from _spec import FRAMEWORK, REPO_ROOT
 
 LAYER_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-TEMPLATE.yaml"
 GOV_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-TEMPLATE.yaml"
+LAYER_SWF_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-SWF-TEMPLATE.yaml"
+GOV_SWF_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-SWF-TEMPLATE.yaml"
+LAYER_GRAPH_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-GRAPH-TEMPLATE.yaml"
+GOV_GRAPH_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-GRAPH-TEMPLATE.yaml"
 LAYER_GATES = FRAMEWORK / "layers" / "09_CHG" / "gates"
 GOV_GATES = FRAMEWORK / "governance" / "chg" / "gates"
 LAYER_README = FRAMEWORK / "layers" / "09_CHG" / "README.md"
@@ -109,6 +113,22 @@ class GuardCatalogAgreement(unittest.TestCase):
             _text(LAYER_TEMPLATE),
             _text(GOV_TEMPLATE),
             "CHG-TEMPLATE.yaml copies diverged — sync from the governance canon",
+        )
+
+    def test_swf_template_copies_identical(self):
+        """The CHG SWF template copies stay byte-identical."""
+        self.assertEqual(
+            _text(LAYER_SWF_TEMPLATE),
+            _text(GOV_SWF_TEMPLATE),
+            "CHG-SWF-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/chg",
+        )
+
+    def test_graph_template_copies_identical(self):
+        """The CHG GRAPH template copies stay byte-identical."""
+        self.assertEqual(
+            _text(LAYER_GRAPH_TEMPLATE),
+            _text(GOV_GRAPH_TEMPLATE),
+            "CHG-GRAPH-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/chg",
         )
 
     def test_readme_copies_identical(self):

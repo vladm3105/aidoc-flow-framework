@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -286,9 +286,9 @@ run part of the loop. The four canonical points:
 
 | Trigger | Fires when | Loop action |
 |---------|------------|-------------|
-| `on_author` | An artifact is created or edited | Review the artifact → findings + readiness score |
-| `on_gate_fail` | A review scores below the gate threshold | Enter remediation, then re-review |
-| `pre_promotion` | Before generating/authoring the downstream layer | The gate must pass (review is current and ≥ threshold) |
+| `on_author` | An artifact is created or edited | Review the artifact → findings + readiness assessment |
+| `on_gate_fail` | A review identifies blocking findings or fails BTV | Enter remediation, then re-review |
+| `pre_promotion` | Before generating/authoring the downstream layer | The gate must pass (BTV PASS, review current and zero blockers) |
 | `pre_merge` | An artifact enters shared history (integration / pull request) | Run the review gate over the changed artifacts |
 
 `on_author` and `pre_merge` are the two *automatable* points (an engine may fire
@@ -300,7 +300,7 @@ control that map to existing capabilities (remediation and the readiness gate).
 For each trigger point an engine **supports**, it MUST surface:
 
 1. **Findings** — the concrete, located issues (not just a pass/fail).
-2. **Readiness score** — the artifact's score against the layer gate threshold.
+2. **Readiness verdict / score** — the artifact's BTV status (PASS/FAIL) and optional advisory score against the layer gate.
 3. **Remediation path** — how to fix the findings (which capability the user or
    agent invokes next).
 
@@ -460,7 +460,7 @@ The two layers are complementary:
   looking at content quality.
 
 A change may pass the mechanical gate (phrase present) but still fail
-the artifact-review gate (findings unremediated, score below threshold),
+the artifact-review gate (blocking findings unremediated, BTV FAIL),
 or vice versa. Both must pass for a merge.
 
 ## Cross-references

@@ -68,15 +68,7 @@ aidoc-flow-framework/
 │   ├── smoke/                         Post-deploy smoke tests
 │   └── chg/                           GATE-SPEC diff-aware guard
 │
-├── examples/              # url-shortener/ — acceptance-test example
-│   └── url-shortener/
-│       ├── seed/                    Human input — the acceptance-test seed
-│       ├── chg/                     Human input — change request for Phase 2
-│       ├── docs/                    AI output — produced 10-layer chain (committed)
-│       ├── .aidoc/                  Project overrides — see framework/governance/aidoc/
-│       │                            (committed)
-│       └── logs/<TS>/               Tool internals — gitignored, ephemeral
-├── archive/                         Archived: platforms, plans, tools, legacy
+├── .aidoc/                            Local project configuration and learnings
 └── .github/
 ```
 
@@ -95,7 +87,7 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 | `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `archive/platforms/hermes/` (archived)   |
 | `.claude/` skills (`doc-*`), agents, commands    | `archive/platforms/claude-code-plugin/` (archived) |
 | `legacy/ai_dev_ssd_flow_v2/`                     | dropped (superseded by `framework/`)     |
-| `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
+| `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by structured SDD layers, Change Requests, and GitHub releases |
 | `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |
 
 > Content was **copied** out of `legacy/` and adapted during Phases 1–3 (the

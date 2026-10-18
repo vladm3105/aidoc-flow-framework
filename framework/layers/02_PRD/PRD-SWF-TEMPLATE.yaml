@@ -59,12 +59,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      EARS-Ready Score target >= 90/100 (advisory readiness target).
-    scoring_criteria:
-      business_clarity: "40% (SMART objectives, capability definitions, acceptance criteria)"
-      requirements_maturity: "35% (container boundaries, stakeholder needs, problem statement)"
-      ears_translation_readiness: "20% (user journeys, quality attributes quantified)"
-      strategic_alignment: "5% (upstream BRD references)"
+      EARS-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      business_clarity: "SMART objectives, capability definitions, acceptance criteria"
+      requirements_maturity: "container boundaries, stakeholder needs, problem statement"
+      ears_translation_readiness: "user journeys, quality attributes quantified"
+      strategic_alignment: "upstream BRD references"
 
   c4_level:
     _guidance: |
@@ -101,7 +101,7 @@ document_control:
   author: "[Product Manager]"
   priority: P1
   source_document: "@brd: BRD.01.07.a1b2"
-  ears_ready_score: "94/100"
+  ears_ready_status: "PASS"
 
   revision_history:
     - version: "1.0"

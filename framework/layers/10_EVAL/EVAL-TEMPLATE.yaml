@@ -39,13 +39,13 @@ metadata:
   validation:
     _guidance: |
       Evaluation is performed by the platform's conformance tooling.
-      Evaluation-Ready Score: >=90/100 is the advisory target.
+      Evaluation-Ready: BTV PASS is the deterministic quality gate.
 
-      Evaluation scoring criteria:
-        Coverage completeness (40%): all IPLAN-relevant sources mapped to test cases
-        Traceability integrity (25%): bidirectional source ↔ test linking
-        Threshold alignment (20%): quality gates match PRD thresholds
-        Execution readiness (15%): CI/staging environments configured
+      Evaluation verification criteria:
+        Coverage completeness: all IPLAN-relevant sources mapped to test cases
+        Traceability integrity: bidirectional source ↔ test linking
+        Threshold alignment: quality gates match PRD thresholds
+        Execution readiness: CI/staging environments configured
 
   tags:
     - eval-document
@@ -93,7 +93,7 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[QA Engineer]"
   priority: P1
-  evaluation_ready_score: "[Score]/100"
+  evaluation_ready_status: "PASS"
   revision_history:
     - version: "1.0"
       date: "YYYY-MM-DDTHH:MM:SS"

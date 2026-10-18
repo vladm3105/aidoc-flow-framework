@@ -58,12 +58,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      BDD-Ready Score target >= 90/100 (advisory readiness target).
-    criteria:
-      requirements_clarity: "40% (EARS syntax compliance, atomicity, quantifiability)"
-      testability: "35% (BDD translation feasibility, observable verification)"
-      quality_attributes: "15% (quantified latency/throughput/retry bounds)"
-      strategic_alignment: "10% (upstream PRD traceability, business alignment)"
+      BDD-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      requirements_clarity: "EARS syntax compliance, atomicity, quantifiability"
+      testability: "BDD translation feasibility, observable verification"
+      quality_attributes: "quantified latency/throughput/retry bounds"
+      strategic_alignment: "upstream PRD traceability, business alignment"
 
   c4_level:
     _guidance: |
@@ -102,7 +102,7 @@ document_control:
   author: "[Requirements Engineer]"
   priority: P1
   source_document: "@prd: PRD.01.09.a1b2"
-  bdd_ready_score: "92/100"
+  bdd_ready_status: "PASS"
 
   revision_history:
     - version: "1.0"
@@ -552,9 +552,9 @@ traceability:
         value: "50ms"
 
   health_score:
-    bdd_ready: "92%"
+    bdd_ready: "PASS"
     prd_coverage: "100%"
-    target_score: ">=90/100"
+    target_status: "PASS"
 
 # =============================================================================
 # Section 6: Glossary (Required Section 6/6)

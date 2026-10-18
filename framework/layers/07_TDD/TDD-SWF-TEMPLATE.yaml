@@ -81,7 +81,7 @@ document_control:
   component: "[Component Name]"
   subtype: workflow  # Declares the CNCF Serverless Workflow subtype
   source_spec: "@spec: SPEC-NN"
-  iplan_ready_score: "[Score]/100"
+  iplan_ready_status: "PASS"
 
 # =============================================================================
 # Section 2: Test Strategy

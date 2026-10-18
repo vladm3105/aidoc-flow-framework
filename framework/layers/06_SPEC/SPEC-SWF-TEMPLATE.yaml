@@ -98,7 +98,7 @@ document_control:
   author: "[Author]"
   component: "[Distributed Component Name]"
   subtype: workflow  # Declares the CNCF Serverless Workflow subtype
-  tdd_ready_score: "[Score]/100"
+  tdd_ready_status: "PASS"
 
 # =============================================================================
 # Section 2: Component Overview
@@ -522,5 +522,5 @@ traceability:
         category: "Timing"
         value: "200ms"
   health_score:
-    tdd_ready: "[X]%"
-    target_score: ">=90/100"
+    tdd_ready: "PASS"
+    target_status: "PASS"

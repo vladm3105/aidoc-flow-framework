@@ -118,6 +118,8 @@ EXPECTED_FILES = [
     "aidoc/README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
+    "chg/CHG-SWF-TEMPLATE.yaml",
+    "chg/CHG-GRAPH-TEMPLATE.yaml",
     "chg/CHG-00_index.TEMPLATE.yaml",
     "chg/gates/GATE-01_BUSINESS_PRODUCT.md",
     "chg/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md",

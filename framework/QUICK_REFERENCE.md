@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 
 ## 10-Layer SDD Framework
@@ -32,7 +32,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | L6 SPEC | [SPEC-TEMPLATE.yaml](layers/06_SPEC/SPEC-TEMPLATE.yaml) | [SPEC-SWF-TEMPLATE.yaml](layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml) | [SPEC-GRAPH-TEMPLATE.yaml](layers/06_SPEC/SPEC-GRAPH-TEMPLATE.yaml) | @ears @bdd @adr |
 | L7 TDD | [TDD-TEMPLATE.yaml](layers/07_TDD/TDD-TEMPLATE.yaml) | [TDD-SWF-TEMPLATE.yaml](layers/07_TDD/TDD-SWF-TEMPLATE.yaml) | [TDD-GRAPH-TEMPLATE.yaml](layers/07_TDD/TDD-GRAPH-TEMPLATE.yaml) | @ears @bdd @adr @spec |
 | L8 IPLAN | [IPLAN-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-TEMPLATE.yaml) | [IPLAN-SWF-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml) | [IPLAN-GRAPH-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml) | @spec @tdd |
-| L9 CHG | [CHG-TEMPLATE.yaml](layers/09_CHG/CHG-TEMPLATE.yaml) | [CHG-SWF-TEMPLATE.yaml](governance/templates/CHG-SWF-TEMPLATE.yaml) | [CHG-GRAPH-TEMPLATE.yaml](layers/09_CHG/CHG-GRAPH-TEMPLATE.yaml) | governance overlay |
+| L9 CHG | [CHG-TEMPLATE.yaml](layers/09_CHG/CHG-TEMPLATE.yaml) | [CHG-SWF-TEMPLATE.yaml](layers/09_CHG/CHG-SWF-TEMPLATE.yaml) | [CHG-GRAPH-TEMPLATE.yaml](layers/09_CHG/CHG-GRAPH-TEMPLATE.yaml) | governance overlay |
 | L10 EVAL | [EVAL-TEMPLATE.yaml](layers/10_EVAL/EVAL-TEMPLATE.yaml) | [EVAL-SWF-TEMPLATE.yaml](layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml) | [EVAL-GRAPH-TEMPLATE.yaml](layers/10_EVAL/EVAL-GRAPH-TEMPLATE.yaml) | @ears @bdd @tdd @iplan |
 
 ## Key Files

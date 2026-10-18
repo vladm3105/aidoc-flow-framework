@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 ## Principles
 
@@ -73,8 +73,10 @@ Practical effect:
 - In addition, EVAL carries one companion template (`EVAL-REPORT-TEMPLATE.yaml`);
   `IPLAN-VERIFY-TEMPLATE.yaml` is a retired tombstone pointer carrying no
   template content (CHG-08 #662 — validation runs as EVAL cycles, repairs via
-  the `bugfix`-subtype IPLAN). Retired MVP variants survive only as tombstone
-  pointers carrying no template content (CHG-08 #666).
+  the `bugfix`-subtype IPLAN). Legacy MVP templates (`*-MVP-TEMPLATE.yaml`)
+  were permanently removed in CHG-89 (Decision GD-76); conformance
+  anti-resurrection guards (`test_no_mvp_templates_exist`) enforce that zero
+  MVP templates exist in `framework/layers/`.
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.
 

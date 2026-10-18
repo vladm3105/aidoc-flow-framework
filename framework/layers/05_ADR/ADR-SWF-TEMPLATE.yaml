@@ -63,7 +63,7 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling and sdd_doc_lint.
-      SPEC-Ready Score: >=90/100 is the advisory readability target.
+      SPEC-Ready: BTV PASS is the deterministic quality gate.
   c4_level:
     value: none
   diagram_standard:
@@ -101,7 +101,7 @@ document_control:
     - "[Tech Lead Name]"
   author: "[Author Name]"
   version: "1.0"
-  spec_ready_score: "[Score]/100"
+  spec_ready_status: "PASS"
   revision_history:
     - version: "1.0"
       date: "YYYY-MM-DDTHH:MM:SS"
@@ -527,8 +527,8 @@ traceability:
     chg:
       - "@chg: CHG-NN"
   health_score:
-    spec_ready: "95%"
-    target_score: ">=90/100"
+    spec_ready: "PASS"
+    target_status: "PASS"
 
 # =============================================================================
 # Section 10: Related Decisions

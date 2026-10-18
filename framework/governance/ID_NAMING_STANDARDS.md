@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 ## Document IDs
 
@@ -59,11 +59,11 @@ cross-layer relationships:
   multiple `@brd:` citations. A `PRD-01` synthesizing requirements
   from `BRD-01` *and* `BRD-02` simply lists both upstream tags.
 
-The cascade harness's standard example (`examples/url-shortener/`)
-happens to use 1:1 numbering across all 10 layers (BRD-01 → PRD-01 →
-... → IPLAN-01). **That alignment is coincidence, not contract.** A
-reader inferring "doc numbers cascade across layers" from the
-example is reading a pattern that isn't there.
+Historical pre-migration acceptance fixtures (such as the legacy URL-shortener suite)
+happened to use 1:1 numbering across all 10 layers (BRD-01 → PRD-01 →
+... → IPLAN-01). **That alignment was coincidence, not contract.** A
+reader inferring "doc numbers cascade across layers" from historical
+examples is reading a pattern that isn't there.
 
 **For authors:** when reserving an ID at any layer, pick the
 next-free number in *your* layer's index. The upstream's number is

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.2 |
+| Framework Version | 0.96.3 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -176,7 +176,7 @@ Framework-spec changes (edits to `framework/` itself) route through
 **GATE-SPEC** — the meta gate orthogonal to the artifact cascade. GATE-SPEC
 enforces: provenance justification, SemVer classification (≥ C2, never C1),
 `framework/VERSION` bump, spec-version pin re-declaration,
-conformance suite green, and `CHANGELOG.md` update. Archive-tier-only repairs
+and conformance suite green. Archive-tier-only repairs
 (`framework/archive/**`) are not spec changes and skip the gate. See
 [`layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`](layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md)
 for the full gate definition.

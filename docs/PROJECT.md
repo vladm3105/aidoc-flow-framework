@@ -103,9 +103,8 @@ The gated CHG process is **not** applied to migration work. Interim controls:
 
 - Pull-request review on the working branch.
 - Conventional commit messages.
-- `CHANGELOG.md` updated per change.
-- Significant decisions recorded in the decision log `plans/DECISIONS.md`;
-  spec-affecting ones graduate to `framework/governance/DECISIONS.md`.
+- `CHANGELOG.md` updated per change (historical migration only; both root and framework `CHANGELOG.md` are frozen historical tombstones).
+- Significant decisions recorded in Change Requests (`CHG-*.yaml` Section 1B); `plans/DECISIONS.md` and `framework/governance/DECISIONS.md` are frozen historical tombstones.
 
 ### After cutover — CHG re-introduced
 
@@ -215,7 +214,7 @@ Projects maintain a `.aidoc/` directory with this structure:
 │   │   ├── registry/
 │   │   ├── skills/
 │   │   ├── *.md guides      # orientation docs, ship with the copy
-│   │   ├── CHANGELOG.md     # upgrade input (per-version migration notes)
+│   │   ├── CHANGELOG.md     # historical tombstone (frozen at 0.94.0; changes in archive/CHG-*/)
 │   │   └── VERSION          # pinned-version source of truth
 │   ├── docs/
 │   ├── hooks/
@@ -250,7 +249,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.96.2"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.3"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
 ```
 
 ### 7.5 Updating the framework
