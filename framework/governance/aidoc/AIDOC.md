@@ -114,7 +114,7 @@ Project overrides in `.aidoc/project/` may tighten quality thresholds or introdu
 
 The framework is attached to consumer repositories through two approved distribution patterns:
 
-1. **Git Submodule:** The project commits `.aidoc/framework/` as a Git submodule pinned to an immutable release tag (e.g. `framework/v0.96.2`).
+1. **Git Submodule:** The project commits `.aidoc/framework/` as a Git submodule pinned to an immutable release tag (e.g. `framework/v0.96.3`).
 2. **Dynamic Clone / Pinned Copy:** Managed autonomously by **`aidoc-project-onboarding`**:
    - Greenfield: `onboard greenfield --name <service> --install`
    - Brownfield upgrade: `onboard update --target .`

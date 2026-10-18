@@ -373,11 +373,32 @@ tasks:
         python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
 
   check:
-    desc: "Full SDD Gate: structural linting + cryptographic review verification"
+    desc: "Full SDD Gate: adaptation profile + structural linting + cryptographic review verification"
     cmds:
+      - task: profile-lint
       - task: lint
       - task: review
         vars: { CLI_ARGS: "--verify-only" }
+
+  graph-check:
+    desc: "Run Binary Topological Validation (BTV) over docs/sdd/graph/"
+    cmds:
+      - python3 -m sdd_doc_lint --graph-check {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  chg-lint:
+    desc: "Run CHG structural linter on Change Requests in docs/sdd/09_CHG/"
+    cmds:
+      - python3 -m sdd_doc_lint.chg_lint {{.CLI_ARGS}}
+
+  swf-lint:
+    desc: "Run Serverless Workflow linter on declarative state machines"
+    cmds:
+      - python3 -m sdd_doc_lint.swf_lint {{.CLI_ARGS | default .SDD_DIR}}
+
+  profile-lint:
+    desc: "Validate adaptation profile against schema 1.1.0"
+    cmds:
+      - python3 -m sdd_doc_lint.profile_lint {{.CLI_ARGS | default ".aidoc/profile.yaml"}}
 ```
 
 ### Consumer Root Taskfile Integration (`Taskfile.yml`)

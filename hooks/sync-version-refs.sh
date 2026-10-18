@@ -164,7 +164,7 @@ while IFS= read -r -d '' f; do
     sweep "$rel" "Quickstart (Version $old)" "Quickstart (Version $FRAMEWORK_VERSION)" 5 || true
     sweep "$rel" "tracking framework spec **\`$old\`**" "tracking framework spec **\`$FRAMEWORK_VERSION\`**" 5 || true
   done
-done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" "$REPO_ROOT/docs/" "$REPO_ROOT/README.md" 2>/dev/null || true)
+done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" "$REPO_ROOT/docs/" "$REPO_ROOT/README.md" "$REPO_ROOT/.aidoc/profile.yaml" 2>/dev/null || true)
 
 if [ "$rc" -ne 0 ]; then
   echo "sync-version-refs: one or more files refused (see above)" >&2

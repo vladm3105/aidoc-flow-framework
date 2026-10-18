@@ -50,8 +50,9 @@ tasks:
         echo "aidoc-context-tools not installed. Run task sdd:setup-kuzu."
 
   check:
-    desc: "Full SDD Gate: structural linting + cryptographic review verification"
+    desc: "Full SDD Gate: adaptation profile + structural linting + cryptographic review verification"
     cmds:
+      - task: profile-lint
       - task: lint
       - task: review
         vars: { CLI_ARGS: "--verify-only" }
@@ -83,3 +84,42 @@ tasks:
     desc: "Export local SDD graph to openCypher / Apache AGE for Central Federated Read Lake"
     cmds:
       - python3 -m sdd_doc_lint --export-lake --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  chg-lint:
+    desc: "Run CHG structural linter on Change Requests in docs/sdd/09_CHG/"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - |
+        {{if .CLI_ARGS}}
+        python3 -m sdd_doc_lint.chg_lint {{.CLI_ARGS}}
+        {{else}}
+        TARGET="$(ls {{.SDD_DIR}}/09_CHG/CHG-*.yaml 2>/dev/null | sort -V | tail -n 1)"
+        if [ -z "$TARGET" ]; then
+          LATEST_DIR="$(ls -d {{.SDD_DIR}}/09_CHG/archive/CHG-* 2>/dev/null | sort -V | tail -n 1)"
+          [ -n "$LATEST_DIR" ] && TARGET="$(ls "$LATEST_DIR"/CHG-*.yaml 2>/dev/null | head -n 1)"
+        fi
+        if [ -n "$TARGET" ]; then
+          python3 -m sdd_doc_lint.chg_lint --sdd-root "{{.SDD_DIR}}" "$TARGET"
+        else
+          echo "No CHG target specified or found in {{.SDD_DIR}}/09_CHG/." >&2
+          exit 1
+        fi
+        {{end}}
+
+  swf-lint:
+    desc: "Run Serverless Workflow linter on declarative state machines"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint.swf_lint {{.CLI_ARGS | default .SDD_DIR}}
+
+  profile-lint:
+    desc: "Validate adaptation profile against schema 1.1.0"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint.profile_lint {{.CLI_ARGS | default ".aidoc/profile.yaml"}}

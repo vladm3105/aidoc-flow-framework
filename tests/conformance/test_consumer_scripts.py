@@ -414,7 +414,11 @@ class InstallScript(unittest.TestCase):
         self.assertTrue(os.access(runner, os.X_OK))
         taskfile = self.project / ".aidoc" / "Taskfile.yml"
         self.assertTrue(taskfile.is_file())
-        self.assertIn("lint:", taskfile.read_text(encoding="utf-8"))
+        taskfile_text = taskfile.read_text(encoding="utf-8")
+        self.assertIn("lint:", taskfile_text)
+        self.assertIn("chg-lint:", taskfile_text)
+        self.assertIn("swf-lint:", taskfile_text)
+        self.assertIn("profile-lint:", taskfile_text)
         engine_cfg = self.project / ".aidoc" / "engine" / "engine.yaml"
         self.assertTrue(engine_cfg.is_file())
         self.assertIn("aidoc-flow-langgraph", engine_cfg.read_text(encoding="utf-8"))
@@ -472,6 +476,30 @@ class UpgradeScript(unittest.TestCase):
         proc = _run(UPGRADE, str(self.project), "--to", "9.9.9", "--canon-dir", str(self.canon_a))
         self.assertEqual(proc.returncode, 2)
         self.assertIn("already at 9.9.9", proc.stderr)
+
+    def test_pin_upgrade_refuses_git_submodule_without_force(self):
+        self._install_pin()
+        # Simulate a git submodule: .aidoc/framework/.git file (gitlink)
+        gitlink = self.project / ".aidoc" / "framework" / ".git"
+        gitlink.write_text("gitdir: ../../.git/modules/.aidoc/framework\n")
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("Git submodule", proc.stderr)
+
+        # With --force, upgrade succeeds and replaces it
+        proc_force = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            "--force",
+        )
+        self.assertEqual(proc_force.returncode, 0, proc_force.stderr)
 
     def test_upgrade_requires_yes_when_noninteractive(self):
         self._install_pin()

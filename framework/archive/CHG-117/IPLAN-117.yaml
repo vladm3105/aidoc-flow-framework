@@ -1,0 +1,46 @@
+# =============================================================================
+#  IPLAN-117: Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-117/CHG-117.yaml
+# =============================================================================
+
+id: "IPLAN-117"
+chg_id: "CHG-117"
+title: "Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness"
+status: "Completed"
+framework_version: "0.96.3"
+
+file_manifest:
+  - ".aidoc/profile.yaml"
+  - "framework/governance/aidoc/AIDOC.md"
+  - "framework/governance/PROFILE-TEMPLATE.yaml"
+  - "framework/templates/TASKFILE-TEMPLATE.yml"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "Taskfile.yml"
+  - "docs/AIDOC_WORKSTATION_STANDARD.md"
+  - "framework/scripts/upgrade.sh"
+  - "hooks/sync-version-refs.sh"
+  - "tests/conformance/test_consumer_scripts.py"
+  - "framework/archive/CHG-117/CHG-117.yaml"
+  - "framework/archive/CHG-117/IPLAN-117.yaml"
+  - "plans/CONSUMER-AIDOC-DEPLOYMENT-VERIFICATION-PLAN.md"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-117.yaml and IPLAN-117.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Modernize dogfood .aidoc/profile.yaml and hooks/sync-version-refs.sh (Component 1 & 2)"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Align governance guides and PROFILE-TEMPLATE.yaml (Component 2)"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Expand TASKFILE-TEMPLATE.yml and root Taskfile.yml with linters (Component 3)"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Harmonize AGENTS-TEMPLATE.md, workstation standard, and upgrade.sh (Component 4)"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Extend conformance tests and execute end-to-end deployment verification (Component 5)"
+    status: "Completed"

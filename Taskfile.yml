@@ -69,24 +69,28 @@ tasks:
     desc: Run CHG structural linter (defaults to latest archived CHG if none specified)
     cmds:
       - |
-        TARGET="{{.CLI_ARGS}}"
-        if [ -z "$TARGET" ]; then
-          LATEST_DIR="$(ls -d framework/archive/CHG-* 2>/dev/null | sort -V | tail -n 1)"
-          if [ -n "$LATEST_DIR" ]; then
-            TARGET="$(ls "$LATEST_DIR"/CHG-*.yaml 2>/dev/null | head -n 1)"
-          fi
-        fi
-        if [ -n "$TARGET" ]; then
+        {{if .CLI_ARGS}}
+        python3 sdd_doc_lint/chg_lint.py {{.CLI_ARGS}}
+        {{else}}
+        LATEST_DIR="$(ls -d framework/archive/CHG-* 2>/dev/null | sort -V | tail -n 1)"
+        if [ -n "$LATEST_DIR" ]; then
+          TARGET="$(ls "$LATEST_DIR"/CHG-*.yaml 2>/dev/null | head -n 1)"
           python3 sdd_doc_lint/chg_lint.py "$TARGET"
         else
           echo "No CHG target specified or found." >&2
           exit 1
         fi
+        {{end}}
 
   swf-lint:
     desc: Run Serverless Workflow state machine linter
     cmds:
       - python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/ {{.CLI_ARGS}}
+
+  profile-lint:
+    desc: Run profile schema linter on .aidoc/profile.yaml
+    cmds:
+      - python3 sdd_doc_lint/profile_lint.py {{.CLI_ARGS | default ".aidoc/profile.yaml"}}
 
   pre-push:
     desc: Run pre-push checks and audit trail verification
