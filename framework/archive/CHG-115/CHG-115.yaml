@@ -1,0 +1,183 @@
+# =============================================================================
+#  CHG-115: Root Taskfile Orchestration, Consumer .aidoc Audit, Script Remediation, and Playbook Alignment
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Issue #1007 and ratified TASKFILE-AND-PLAYBOOKS-REMEDIATION-PLAN.md (PR #1008)
+#  Scope: Introduce root Taskfile.yml, modernize consumer .aidoc components, remediate
+#         deployment scripts and playbooks, and bump framework spec to 0.96.2
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-17"
+  framework_version: "0.96.2"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-115"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-17T20:30:00Z"
+  date_approved: "2026-10-17T20:30:00Z"
+  date_implemented: "2026-10-17T20:45:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-17T20:30:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per ratified implementation plan plans/TASKFILE-AND-PLAYBOOKS-REMEDIATION-PLAN.md (PR #1008)
+      resolving GitHub issue #1007.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-115)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-115"
+  title: "Root Taskfile Orchestration, Consumer .aidoc Audit, Script Remediation, and Playbook Alignment"
+  status: "Ratified"
+  context: |
+    Following the transition to modern SDD workstation standards (CHG-106) and the retirement
+    of monolithic registers (CHG-94, CHG-95), audits revealed operational lag across tooling,
+    playbooks, consumer onboarding templates, and deployment scripts:
+    1. The repository lacked a canonical root Taskfile.yml exposing daily development workflows.
+    2. The repo dogfood profile (.aidoc/profile.yaml) failed validation under profile_lint.py due to schema 1.0.0 and stale pins.
+    3. deploy.sh defaulted to raw filesystem symlinks, directly violating AIDOC_WORKSTATION_STANDARD.md:341.
+    4. docs/ADAPTATION-GUIDE.md and PROFILE-TEMPLATE.yaml continued to promote symlinks and omitted Quad-Pillar topology.
+    5. framework/templates/TASKFILE-TEMPLATE.yml lacked PYTHONPATH scoping for sdd_doc_lint module resolution.
+    6. Playbooks (09_CHG, 10_EVAL, 07_TDD) carried unannotated references to retired DECISIONS.md, omitted Three-Tier templates, or had typos.
+  choice: |
+    Execute holistic tooling, script, consumer template, and playbook remediation per ratified TASKFILE-AND-PLAYBOOKS-REMEDIATION-PLAN.md:
+    1. Root Taskfile: Provide Taskfile.yml with test, lint, chg-lint, swf-lint, pre-push, links, and sync-versions tasks.
+    2. Consumer .aidoc & Dogfood: Modernize .aidoc/profile.yaml to schema 1.1.0 (version 0.96.2); scrub DECISIONS.md references;
+       update PROFILE-TEMPLATE.yaml, ADAPTATION-GUIDE.md, and framework/governance/aidoc/ guides for Git submodule / pinned-copy attachment;
+       configure vars and env PYTHONPATH in TASKFILE-TEMPLATE.yml.
+    3. Scripts: Set deploy.sh default kind to pin; emit deprecation warnings for symlink; auto-detect argument pairings for brownfield upgrades;
+       point upgrade.sh Step 1 to CHG archives and GitHub Releases; add test_deploy_default_kind_is_pin to test_consumer_scripts.py.
+    4. Playbooks: Annotate DECISIONS.md tombstone in 09_CHG/document_control.md; add Three-Tier templates to 10_EVAL/README.md;
+       correct gate archive path in 09_CHG/gate_spec_change.md; fix typo in 07_TDD/qa_lead.md.
+    5. Governance: Bump framework/VERSION to 0.96.2, append 0.96.1 to OLD_VERSIONS in hooks/sync-version-refs.sh, and run sync.
+  consequences: |
+    - Root Taskfile gives developers and autonomous agents unified, deterministic command surfaces.
+    - Zero violations of workstation standard symlink prohibitions across scripts and adaptation documentation.
+    - Dogfood profile and consumer templates are 100% compliant with schema 1.1.0 and pass all structural linters.
+    - All playbooks correctly reflect Three-Tier Architecture, immutable CHG archive paths, and tombstone registries.
+  alternatives_considered:
+    - option: "Retain deploy.sh default as symlink for legacy checkouts"
+      rationale_rejected: >-
+        Rejected because AIDOC_WORKSTATION_STANDARD.md:341 strictly bans raw filesystem symlinks in version control.
+        Auto-detection in brownfield mode preserves non-breaking upgrades without violating the standard on new installs.
+    - option: "Inject PYTHONPATH directly in top-level env: in Taskfile template"
+      rationale_rejected: >-
+        Rejected because Go-Task top-level env: blocks evaluate sprig default filters on undefined variables to an empty string.
+        Using vars: with fallback default, referenced by env:, is required for reliable evaluation.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Root Taskfile Orchestration, Consumer .aidoc Audit, Script Remediation, and Playbook Alignment"
+  description: >-
+    Standardize root development tasks via Taskfile.yml, remediate dogfood and consumer .aidoc components,
+    align deployment scripts with workstation standards, and correct playbook omissions and references.
+  justification: >-
+    Eliminates developer friction, unifies agent execution surfaces, enforces workstation symlink bans,
+    and maintains absolute consistency between framework specifications and runnable tooling.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - ".aidoc/profile.yaml"
+    - ".aidoc/learning/learnings.md"
+    - "framework/governance/PROFILE-TEMPLATE.yaml"
+    - "docs/ADAPTATION-GUIDE.md"
+    - "framework/governance/aidoc/README.md"
+    - "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    - "framework/governance/aidoc/AIDOC.md"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "framework/templates/TASKFILE-TEMPLATE.yml"
+    - "deploy.sh"
+    - "framework/scripts/upgrade.sh"
+    - "tests/conformance/test_consumer_scripts.py"
+    - "tests/scripts/test-fullpath.sh"
+    - "tests/scripts/test-layer.sh"
+    - "framework/playbooks/09_CHG/document_control.md"
+    - "framework/playbooks/10_EVAL/README.md"
+    - "framework/playbooks/09_CHG/gate_spec_change.md"
+    - "framework/playbooks/07_TDD/qa_lead.md"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  artifacts_created:
+    - "Taskfile.yml"
+    - "framework/archive/CHG-115/CHG-115.yaml"
+    - "framework/archive/CHG-115/IPLAN-115.yaml"
+  affected_components:
+    - "Root Developer Tooling (Taskfile)"
+    - "Dogfood Profile and Learnings Store"
+    - "Consumer Scaffolding Templates and Adaptation Guides"
+    - "Deployment and Upgrade Scripts"
+    - "Layer Playbooks (07_TDD, 09_CHG, 10_EVAL)"
+    - "Version Registry and Synchronizer"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-115/IPLAN-115.yaml"
+  steps:
+    - step: "Author authorizing CHG-115.yaml and IPLAN-115.yaml"
+      phase: "iplan_creation"
+    - step: "Introduce canonical root Taskfile.yml (Component 1)"
+      phase: "tooling_remediation"
+    - step: "Remediate consumer .aidoc, templates, and guides (Component 2)"
+      phase: "documentation_sync"
+    - step: "Remediate deploy.sh and upgrade.sh with conformance tests (Component 3)"
+      phase: "scripts_remediation"
+    - step: "Remediate layer playbooks 09_CHG, 10_EVAL, and 07_TDD (Component 4)"
+      phase: "playbooks_remediation"
+    - step: "Bump framework/VERSION to 0.96.2, fan out version refs, and verify all tests"
+      phase: "version_fanout"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/profile_lint.py .aidoc/profile.yaml"
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-115/CHG-115.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/"
+    - "PYTHONPATH=tests/conformance python3 -m unittest tests/conformance/test_consumer_scripts.py"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/unit"
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "bash hooks/pre_push_check.sh"
+    - "task --list && task test && task lint && task chg-lint && task swf-lint && task links"
+  manual_verification:
+    - "Verify deploy.sh --help displays default kind as pin"
+    - "Verify framework/scripts/upgrade.sh --dry-run prints clean guidance"

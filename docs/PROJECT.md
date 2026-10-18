@@ -250,7 +250,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.96.1"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.2"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
 ```
 
 ### 7.5 Updating the framework

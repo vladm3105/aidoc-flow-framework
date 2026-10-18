@@ -1,0 +1,56 @@
+# =============================================================================
+#  IPLAN-115: Root Taskfile Orchestration, Consumer .aidoc Audit, Script Remediation, and Playbook Alignment
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-115/CHG-115.yaml
+# =============================================================================
+
+id: "IPLAN-115"
+chg_id: "CHG-115"
+title: "Root Taskfile Orchestration, Consumer .aidoc Audit, Script Remediation, and Playbook Alignment"
+status: "In Progress"
+framework_version: "0.96.2"
+
+file_manifest:
+  - "Taskfile.yml"
+  - ".aidoc/profile.yaml"
+  - ".aidoc/learning/learnings.md"
+  - "framework/governance/PROFILE-TEMPLATE.yaml"
+  - "docs/ADAPTATION-GUIDE.md"
+  - "framework/governance/aidoc/README.md"
+  - "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+  - "framework/governance/aidoc/AIDOC.md"
+  - "framework/governance/aidoc/BOOTSTRAP.md"
+  - "framework/templates/TASKFILE-TEMPLATE.yml"
+  - "deploy.sh"
+  - "framework/scripts/upgrade.sh"
+  - "tests/conformance/test_consumer_scripts.py"
+  - "tests/scripts/test-fullpath.sh"
+  - "tests/scripts/test-layer.sh"
+  - "framework/playbooks/09_CHG/document_control.md"
+  - "framework/playbooks/10_EVAL/README.md"
+  - "framework/playbooks/09_CHG/gate_spec_change.md"
+  - "framework/playbooks/07_TDD/qa_lead.md"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/archive/CHG-115/CHG-115.yaml"
+  - "framework/archive/CHG-115/IPLAN-115.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-115.yaml and IPLAN-115.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Introduce canonical root Taskfile.yml (Component 1)"
+    status: "In Progress"
+  - id: "TASK-03"
+    name: "Remediate consumer .aidoc, templates, and guides (Component 2)"
+    status: "Pending"
+  - id: "TASK-04"
+    name: "Remediate deploy.sh and upgrade.sh with conformance tests (Component 3)"
+    status: "Pending"
+  - id: "TASK-05"
+    name: "Remediate layer playbooks 09_CHG, 10_EVAL, and 07_TDD (Component 4)"
+    status: "Pending"
+  - id: "TASK-06"
+    name: "Bump framework/VERSION to 0.96.2 and fan out version refs (Component 5)"
+    status: "Pending"

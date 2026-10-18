@@ -848,6 +848,26 @@ class DeployScript(unittest.TestCase):
         self.assertTrue((self.project / ".aidoc" / "profile.yaml").exists())
         self.assertFalse((self.project / "stack-policy.yaml").exists())
 
+    def test_deploy_default_kind_is_pin(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        fw = self.project / ".aidoc" / "framework"
+        self.assertTrue(fw.exists())
+        self.assertTrue(fw.is_dir())
+        self.assertFalse(fw.is_symlink())
+
 
 class ChGateCheckHook(unittest.TestCase):
     def setUp(self):

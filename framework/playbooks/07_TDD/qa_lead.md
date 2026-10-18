@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: qa_lead
 weight: 35
 agent: test-architect
-framework_spec_version: "0.96.1"
+framework_spec_version: "0.96.2"
 ---
 # qa_lead lens — TDD layer
 
@@ -54,7 +54,7 @@ integrity at the test-case altitude.
 ## Required evidence checks
 
 Every finding MUST cite which check fired. Findings without a check citation
-are out-of-scope and discorded by the synthesizer.
+are out-of-scope and discarded by the synthesizer.
 
 **C1 — Every BDD scenario has at least one paired test case.** Each
 scenario in the upstream BDD layer traces forward to at least one TDD

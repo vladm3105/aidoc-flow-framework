@@ -8,8 +8,8 @@
 | Status | Approved |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.1 |
-| Authority | [Decision D-0013 / GD-13](../DECISIONS.md), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../MULTI_PROJECT_FEDERATED_STANDARD.md) |
+| Framework Version | 0.96.2 |
+| Authority | [Decision D-0013 / GD-13](../DECISIONS.md) (historical tombstone), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../MULTI_PROJECT_FEDERATED_STANDARD.md) |
 
 ---
 
@@ -114,7 +114,7 @@ Project overrides in `.aidoc/project/` may tighten quality thresholds or introdu
 
 The framework is attached to consumer repositories through two approved distribution patterns:
 
-1. **Git Submodule:** The project commits `.aidoc/framework/` as a Git submodule pinned to an immutable release tag (e.g. `framework/v0.91.24`).
+1. **Git Submodule:** The project commits `.aidoc/framework/` as a Git submodule pinned to an immutable release tag (e.g. `framework/v0.96.2`).
 2. **Dynamic Clone / Pinned Copy:** Managed autonomously by **`aidoc-project-onboarding`**:
    - Greenfield: `onboard greenfield --name <service> --install`
    - Brownfield upgrade: `onboard update --target .`

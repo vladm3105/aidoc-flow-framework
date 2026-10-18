@@ -9,6 +9,10 @@ version: '3'
 vars:
   SDD_DIR: '{{.SDD_DIR | default "docs/sdd"}}'
   ENGINE_CONFIG: '{{.ENGINE_CONFIG | default ".aidoc/engine/engine.yaml"}}'
+  PYTHONPATH: '{{.PYTHONPATH | default ".aidoc/framework:framework"}}'
+
+env:
+  PYTHONPATH: '{{.PYTHONPATH}}'
 
 tasks:
   lint:

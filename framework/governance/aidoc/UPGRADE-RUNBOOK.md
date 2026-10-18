@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.1 |
+| Framework Version | 0.96.2 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -84,8 +84,8 @@ The upgrade is not done until the suite is green on the new version.
 ### 5. Record it
 
 - Update the override `framework_version` pins to the new canon version.
-- Record the upgrade in the consumer changelog (old version → new version,
-  conflicts resolved, suite result).
+- Record the upgrade in the consumer change record (authoring a CHG request under
+  `docs/sdd/09_CHG/`, noting old version → new version, conflicts resolved, suite result).
 
 ## Who owes the upgrade
 
@@ -107,5 +107,5 @@ purpose — prose-only vehicle; the follow-up is now closed.)
 ## See also
 
 - `BOOTSTRAP.md` — the initial-deploy procedure this runbook extends
-- `AIDOC.md` — the contract (structure, discovery rule, symlink convention)
+- `AIDOC.md` — the contract (structure, discovery rule, attachment models)
 - `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` — the spec gate (W001/W002, re-adoption box)

@@ -7,7 +7,7 @@ agent with a checkout sees the same lessons.
 
 Contract: entry format and lifecycle follow `.agents/skills/self-learn/`
 (qualify → add/bump/archive; 30-day age-out; count ≥ 5 graduates to
-`framework/governance/DECISIONS.md` or the issue tracker). Hygiene per
+authoring an ADR (Layer 05), a Change Request (Layer 09), or tracking on GitHub Issues). Hygiene per
 `memory-hygiene`. Declared in `AGENTS.md` ("Where state lives").
 
 ## [workflow] Flaky GitHub ops need backoff + re-verification, never a diagnosis

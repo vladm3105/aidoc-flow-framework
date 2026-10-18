@@ -1,0 +1,111 @@
+# Consumer upgrade runbook — re-adopting a new `framework/VERSION`
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.2 |
+| Status | Approved |
+| Last Updated | 2026-10-02 |
+| Author | Framework Maintainer |
+| Framework Version | 0.96.1 |
+
+When the canon ships a new `framework/VERSION`, every consumer owes
+re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
+`framework/VERSION` and re-pass the shared conformance suite"). This runbook
+is the procedure behind that box (#787). Canon-side records feed into it but
+do not substitute for it: per-consumer migration notes (`GATE-SPEC_FRAMEWORK.md`
+W001, for breaking changes) are inputs, and adoption drift (W002) is what the
+procedure below clears.
+
+## Procedure
+
+The mechanical half (step-2 re-point + drift report) is automated by
+`framework/scripts/upgrade.sh` — the steps below are the procedure it
+performs. Conflict resolution (step 3), conformance (step 4), and recording
+(step 5) stay manual.
+
+### 1. Read the canon-side inputs
+
+- The canon release notes and Change Request archives for the new version
+  in `framework/archive/CHG-*/` and GitHub Releases (breaking changes,
+  migration notes per W001).
+- Your overrides' authored-against `framework_version` pins — anything older
+  than the new canon is a candidate conflict.
+
+### 2. Re-point `framework_path`
+
+- **Git submodule consumers:** update the submodule pin to the new canon release
+  tag or commit SHA, and update `framework_version` in `.aidoc/profile.yaml` to the new
+  `X.Y.Z`.
+- **Pinned-copy consumers:** stage the new tree aside first (repeat the
+  `docs/PROJECT.md` §7.1 allowlist copy at the new canon tree —
+  `framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/`, then prune
+  `framework/archive/` inside the copy), verify the staged copy is complete,
+  then swap it over the old tree via backup rename (`mv .aidoc/framework
+  .aidoc/framework.prev && mv <stage> .aidoc/framework`, removing the backup
+  only after the swap succeeds). Never `rm` the live tree before the
+  replacement is verified, never leave a half-copied tree, and never refresh
+  by copying the canon tree whole — that reintroduces the canon-dev
+  internals §7.1 excludes (#834). (`cp -r` never deletes, so refreshing over
+  the existing tree would let upstream-removed files linger.)
+
+> **Supply-chain note:** a release tag is mutable transport. When the canon
+> is cloned by tag, pin the tag's commit SHA as well (`upgrade.sh
+> --canon-sha <40-hex>` / `install.sh --canon-sha <40-hex>`) — the scripts
+> refuse a canon whose `HEAD` differs.
+
+### 3. Diff each `project/` override against its new upstream shadow
+
+For every file under `.aidoc/project/`, diff it against the same path in the
+new `.aidoc/framework/`:
+
+```bash
+diff .aidoc/project/<path> .aidoc/framework/<path>
+```
+
+Resolve each conflict in the override WITHOUT weakening gates: carry the
+project's intent forward onto the new upstream text; if the upstream gate got
+stricter, the override follows it up, never down. Delete overrides that now
+duplicate upstream verbatim.
+
+### 4. Re-run conformance
+
+Re-pass the shared conformance suite against the re-pointed tree (from the
+consumer repo root, Python 3.12 per canon CI):
+
+```bash
+python -m unittest discover -s tests/conformance -v
+python -m unittest discover -s tests/unit
+```
+
+The upgrade is not done until the suite is green on the new version.
+
+### 5. Record it
+
+- Update the override `framework_version` pins to the new canon version.
+- Record the upgrade in the consumer changelog (old version → new version,
+  conflicts resolved, suite result).
+
+## Who owes the upgrade
+
+The consumer owns its re-adoption as an ordinary consumer change (GATE-SPEC
+table: "Consumer must adapt" rows are ordinary consumer PRs, not canon CHGs).
+The canon owes only the inputs: versioned releases, W001 migration notes for
+breaking changes, and drift tracking (W002).
+
+## Minimal automation (shipped: CHG-45)
+
+`framework/scripts/upgrade.sh` performs the mechanical half: the step-2
+re-point for both consumer kinds plus the `stale` detector — each override's
+authored-against `framework_version` pin compared against the canon
+`VERSION`, reported as `DRIFT:`/`OK:`/`UNPINNED:` lines, making W002
+measurable. `framework/scripts/install.sh` is the `BOOTSTRAP.md` companion
+for new projects. Steps 3–5 stay manual by design. (Kept out of CHG-16 on
+purpose — prose-only vehicle; the follow-up is now closed.)
+
+## See also
+
+- `BOOTSTRAP.md` — the initial-deploy procedure this runbook extends
+- `AIDOC.md` — the contract (structure, discovery rule, symlink convention)
+- `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` — the spec gate (W001/W002, re-adoption box)

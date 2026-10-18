@@ -11,6 +11,6 @@ for arg in "$@"; do
 done
 
 FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$FRAMEWORK"
+cd "$FRAMEWORK" || exit 1
 
 python3 -m unittest tests.acceptance.deterministic.test_fullpath -v
