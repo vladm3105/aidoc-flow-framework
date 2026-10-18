@@ -1,0 +1,181 @@
+# =============================================================================
+#  CHG-117: Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/CONSUMER-AIDOC-DEPLOYMENT-VERIFICATION-PLAN.md
+#  Scope: Modernize in-repo dogfood profile, synchronize governance reference pins,
+#         expand workstation Taskfile with canonical linters, guard Git submodules,
+#         and verify end-to-end greenfield/brownfield consumer deployment readiness.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-18"
+  framework_version: "0.96.4"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-117"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.4"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-18T13:00:00Z"
+  date_approved: "2026-10-18T13:00:00Z"
+  date_implemented: "2026-10-18T13:20:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-18T13:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per ratified implementation plan plans/CONSUMER-AIDOC-DEPLOYMENT-VERIFICATION-PLAN.md
+      verifying consumer workstation parity with framework 0.96.3.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-117)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-117"
+  title: "Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness"
+  status: "Ratified"
+  context: |
+    Following the ratification of framework version 0.96.3 (CHG-116), a comprehensive audit was performed
+    to ensure that all changes from the framework are completely implemented into the consumer-facing
+    .aidoc/ workstation layout and ready for reliable consumer deployments:
+    1. In-repo dogfood .aidoc/profile.yaml still pinned framework_version: "0.96.2" and last_updated: "2026-10-17"
+       due to hooks/sync-version-refs.sh excluding .aidoc/ from its mechanical sweep.
+    2. framework/governance/aidoc/AIDOC.md cited a stale example Git submodule release tag (framework/v0.96.2).
+    3. framework/templates/TASKFILE-TEMPLATE.yml lacked canonical task definitions for chg-lint, swf-lint,
+       and profile-lint, leaving consumer projects without direct Taskfile shortcuts to execute the newly
+       ratified automated linters.
+    4. framework/scripts/upgrade.sh lacked a check for Git submodule consumer checkouts (.aidoc/framework/.git),
+       which created a hazard where upgrade.sh would execute a directory swap, deleting submodule .git pointers.
+    5. docs/AIDOC_WORKSTATION_STANDARD.md Section 8 and framework/templates/AGENTS-TEMPLATE.md needed alignment
+       with the expanded task definitions.
+  choice: |
+    Execute comprehensive parity alignment and verification per the ratified plan:
+    1. Bump .aidoc/profile.yaml to framework_version: "0.96.3" and update last_updated to "2026-10-18".
+    2. Include "$REPO_ROOT/.aidoc/profile.yaml" in hooks/sync-version-refs.sh to prevent future version lag.
+    3. Update framework/governance/aidoc/AIDOC.md:117 example tag to framework/v0.96.3.
+    4. Add CHG to the active_layers example in framework/governance/PROFILE-TEMPLATE.yaml.
+    5. Expand framework/templates/TASKFILE-TEMPLATE.yml with chg-lint (using Go-Task {{if .CLI_ARGS}} and --sdd-root),
+       swf-lint, and profile-lint, and wire profile-lint into the composite check: task.
+    6. Synchronize root Taskfile.yml with profile-lint and the updated chg-lint template conditional.
+    7. Update docs/AIDOC_WORKSTATION_STANDARD.md and framework/templates/AGENTS-TEMPLATE.md.
+    8. Add Git submodule guard check in framework/scripts/upgrade.sh.
+    9. Extend tests/conformance/test_consumer_scripts.py to assert the expanded Taskfile tasks.
+    10. Perform end-to-end greenfield and brownfield deployment tests.
+  consequences: |
+    - Zero version lag between framework/VERSION (0.96.3) and consumer .aidoc/ configurations.
+    - Consumer projects gain full Taskfile tooling parity with native automated linters (chg-lint, swf-lint, profile-lint).
+    - Full SDD Gate (task sdd:check) guarantees profile validity, structural compliance, and review verification.
+    - Git submodule consumers are protected against accidental deletion during upgrade scripts.
+    - All conformance and unit tests pass with zero regressions.
+  alternatives_considered:
+    - option: "Rely solely on python3 -m module commands without Taskfile tasks"
+      rationale_rejected: >-
+        Rejected because docs/AIDOC_WORKSTATION_STANDARD.md establishes Taskfile as the single unified entrypoint
+        for autonomous agents and contributors, and omitting tasks forces agents to memorize raw module paths.
+    - option: "Exclude .aidoc/profile.yaml from sync-version-refs.sh"
+      rationale_rejected: >-
+        Rejected because keeping it out caused the exact version lag observed after CHG-116. Automated synchronization
+        guarantees that the repository's dogfood profile always reflects current canon.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness"
+  description: >-
+    Reconcile consumer workstation templates, scripts, and in-repo dogfood profiles with framework version 0.96.3,
+    expand Taskfile linter tasks, protect Git submodule consumers, and verify deployment readiness.
+  justification: >-
+    Ensures seamless consumer adoption, eliminates documentation and tooling gaps, and verifies
+    complete workstation deployment integrity.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - ".aidoc/profile.yaml"
+    - "framework/governance/aidoc/AIDOC.md"
+    - "framework/governance/PROFILE-TEMPLATE.yaml"
+    - "framework/templates/TASKFILE-TEMPLATE.yml"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "Taskfile.yml"
+    - "docs/AIDOC_WORKSTATION_STANDARD.md"
+    - "framework/scripts/upgrade.sh"
+    - "hooks/sync-version-refs.sh"
+    - "tests/conformance/test_consumer_scripts.py"
+    - "framework/VERSION"
+  artifacts_created:
+    - "framework/archive/CHG-117/CHG-117.yaml"
+    - "framework/archive/CHG-117/IPLAN-117.yaml"
+    - "plans/CONSUMER-AIDOC-DEPLOYMENT-VERIFICATION-PLAN.md"
+  affected_components:
+    - "In-Repo Dogfood Profile (.aidoc/)"
+    - "Workstation Governance & Standards (framework/governance/aidoc/, docs/)"
+    - "Workstation Templates (framework/templates/)"
+    - "Root Taskfile & Mechanical Hooks (Taskfile.yml, hooks/)"
+    - "Consumer Scripts & Conformance Tests (framework/scripts/, tests/conformance/)"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-117/IPLAN-117.yaml"
+  steps:
+    - step: "Author authorizing CHG-117.yaml and IPLAN-117.yaml"
+      phase: "iplan_creation"
+    - step: "Modernize dogfood .aidoc/profile.yaml and hooks/sync-version-refs.sh (Component 1 & 2)"
+      phase: "profile_and_hook_alignment"
+    - step: "Align governance guides and PROFILE-TEMPLATE.yaml (Component 2)"
+      phase: "governance_alignment"
+    - step: "Expand TASKFILE-TEMPLATE.yml and root Taskfile.yml with linters (Component 3)"
+      phase: "taskfile_expansion"
+    - step: "Harmonize AGENTS-TEMPLATE.md, workstation standard, and upgrade.sh (Component 4)"
+      phase: "standards_and_scripts_harmonization"
+    - step: "Extend conformance tests and execute end-to-end deployment verification (Component 5)"
+      phase: "test_and_verification"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-117/CHG-117.yaml"
+    - "python3 sdd_doc_lint/profile_lint.py .aidoc/profile.yaml"
+    - "python3 -m sdd_doc_lint --check-surfaces ."
+    - "PYTHONPATH=tests/conformance python3 -m unittest tests/conformance/test_consumer_scripts.py"
+    - "python3 -m unittest discover -s tests/unit"
+    - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+  manual_verification:
+    - "Verify greenfield deploy.sh creates all 10 workstation files on test directory"
+    - "Verify brownfield upgrade.sh preserves overrides and re-pins version cleanly"
+    - "Verify submodule guard in upgrade.sh refuses overwrite when .git file is present"

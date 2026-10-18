@@ -23,7 +23,7 @@ metadata:
   schema_version: "1.1.0"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-10-07"
-  framework_version: "0.96.3"
+  framework_version: "0.96.4"
   # project_name: "<your project>"
   framework_path: ".aidoc/framework"  # attached via Git submodule or pinned copy; engines resolve via readlink -f
 
@@ -63,7 +63,7 @@ metadata:
 # Disabling a skippable layer applies the cascade rule.
 # Default: all 10 layers active.
 #
-# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, CHG, EVAL]
 
 # section_toggles disables template-declared OPTIONAL sections.
 # Required sections are not toggleable — toggling them is out of surface

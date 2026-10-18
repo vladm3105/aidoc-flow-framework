@@ -102,6 +102,9 @@ AIDOC="$PROJECT/.aidoc"
 [ -f "$AIDOC/profile.yaml" ] || refuse "no consumer .aidoc here: $AIDOC/profile.yaml missing"
 FW="$AIDOC/framework"
 [ -e "$FW" ] || [ -L "$FW" ] || refuse ".aidoc/framework missing — run install.sh first"
+if [ -f "$FW/.git" ] && [ "$FORCE" != 1 ]; then
+  refuse ".aidoc/framework is a Git submodule — update via 'git submodule update --remote .aidoc/framework' or re-checkout inside .aidoc/framework (pass --force to override and convert to a pinned copy)"
+fi
 if [ -z "$KIND" ]; then
   if [ -L "$FW" ]; then KIND=symlink; else KIND=pin; fi
   log "detected kind: $KIND"
@@ -272,8 +275,8 @@ if [ "$DRY_RUN" != 1 ]; then
   if [ ! -f "$AIDOC/Taskfile.yml" ] && [ -f "$FW/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
     cp "$FW/framework/templates/TASKFILE-TEMPLATE.yml" "$AIDOC/Taskfile.yml"
     log "scaffolded missing .aidoc/Taskfile.yml"
-  elif [ -f "$AIDOC/Taskfile.yml" ] && ! grep -q 'graph-check:' "$AIDOC/Taskfile.yml"; then
-    log "note: existing .aidoc/Taskfile.yml lacks graph tasks (graph-check, render, delta) — consider harmonizing with framework/templates/TASKFILE-TEMPLATE.yml"
+  elif [ -f "$AIDOC/Taskfile.yml" ] && (! grep -q 'graph-check:' "$AIDOC/Taskfile.yml" || ! grep -q 'chg-lint:' "$AIDOC/Taskfile.yml"); then
+    log "note: existing .aidoc/Taskfile.yml lacks graph or SDD lint tasks (graph-check, chg-lint, swf-lint) — consider harmonizing with framework/templates/TASKFILE-TEMPLATE.yml"
   fi
   if [ ! -f "$AIDOC/engine/engine.yaml" ] && [ -f "$FW/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
     mkdir -p "$AIDOC/engine"
