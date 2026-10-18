@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.3 |
+| Framework Version | 0.96.4 |
 | Authority | [Decision D-0013 / GD-13](../DECISIONS.md) (historical tombstone), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../MULTI_PROJECT_FEDERATED_STANDARD.md) |
 
 ---

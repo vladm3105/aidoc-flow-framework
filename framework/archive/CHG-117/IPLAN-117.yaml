@@ -8,7 +8,7 @@ id: "IPLAN-117"
 chg_id: "CHG-117"
 title: "Consumer .aidoc Verification, Parity Alignment, and Deployment Readiness"
 status: "Completed"
-framework_version: "0.96.3"
+framework_version: "0.96.4"
 
 file_manifest:
   - ".aidoc/profile.yaml"
@@ -21,6 +21,7 @@ file_manifest:
   - "framework/scripts/upgrade.sh"
   - "hooks/sync-version-refs.sh"
   - "tests/conformance/test_consumer_scripts.py"
+  - "framework/VERSION"
   - "framework/archive/CHG-117/CHG-117.yaml"
   - "framework/archive/CHG-117/IPLAN-117.yaml"
   - "plans/CONSUMER-AIDOC-DEPLOYMENT-VERIFICATION-PLAN.md"

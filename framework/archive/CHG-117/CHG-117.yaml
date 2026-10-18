@@ -13,15 +13,15 @@ metadata:
   document_type: "chg-document"
   purpose: governance
   last_updated: "2026-10-18"
-  framework_version: "0.96.3"
+  framework_version: "0.96.4"
   change_level:
     value: C2
   change_source:
     value: direct
   semver_impact:
-    value: none
+    value: patch
   version_action:
-    value: none
+    value: bump
   entry_gate:
     value: GATE-SPEC
 
@@ -37,8 +37,9 @@ change_control:
   change_level: C2
   change_source: direct
   entry_gate: GATE-SPEC
-  semver_impact: none
-  version_action: none
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.4"
   author: "Framework Maintainer"
   date_proposed: "2026-10-18T13:00:00Z"
   date_approved: "2026-10-18T13:00:00Z"
@@ -133,6 +134,7 @@ scope:
     - "framework/scripts/upgrade.sh"
     - "hooks/sync-version-refs.sh"
     - "tests/conformance/test_consumer_scripts.py"
+    - "framework/VERSION"
   artifacts_created:
     - "framework/archive/CHG-117/CHG-117.yaml"
     - "framework/archive/CHG-117/IPLAN-117.yaml"

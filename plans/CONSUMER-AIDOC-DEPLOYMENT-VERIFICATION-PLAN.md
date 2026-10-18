@@ -7,16 +7,16 @@ This plan establishes end-to-end verification and alignment between the latest f
 A comprehensive audit of the repository's `.aidoc/` infrastructure, templates, scripts, and governance contracts revealed the following findings:
 
 1. **In-Repo Dogfood Profile Stale Version:**
-   - [`.aidoc/profile.yaml`](file:///home/ya/devd/aidoc-framework/.aidoc/profile.yaml#L20) still pins `framework_version: "0.96.2"` and `last_updated: "2026-10-17"`, lagging behind [`framework/VERSION`](file:///home/ya/devd/aidoc-framework/framework/VERSION#L1) (`0.96.3`).
+   - [`.aidoc/profile.yaml`](../.aidoc/profile.yaml#L20) still pins `framework_version: "0.96.2"` and `last_updated: "2026-10-17"`, lagging behind [`framework/VERSION`](../framework/VERSION#L1) (`0.96.3`).
 2. **Governance Guide Example Literal Stale Version:**
-   - [`framework/governance/aidoc/AIDOC.md`](file:///home/ya/devd/aidoc-framework/framework/governance/aidoc/AIDOC.md#L117) cites an example Git submodule pin as `framework/v0.96.2` rather than `framework/v0.96.3`.
+   - [`framework/governance/aidoc/AIDOC.md`](../framework/governance/aidoc/AIDOC.md#L117) cites an example Git submodule pin as `framework/v0.96.2` rather than `framework/v0.96.3`.
 3. **Consumer Taskfile Capability Gap:**
-   - While the framework ratified new automated linters (`chg_lint` for Change Requests and `swf_lint` for CNCF Serverless Workflows), [`framework/templates/TASKFILE-TEMPLATE.yml`](file:///home/ya/devd/aidoc-framework/framework/templates/TASKFILE-TEMPLATE.yml) lacks canonical tasks exposing them (`chg-lint`, `swf-lint`, and `profile-lint`). Consumer projects therefore lack direct Taskfile shortcuts to validate their Layer 09 Change Requests, Serverless Workflows, and adaptation profiles.
+   - While the framework ratified new automated linters (`chg_lint` for Change Requests and `swf_lint` for CNCF Serverless Workflows), [`framework/templates/TASKFILE-TEMPLATE.yml`](../framework/templates/TASKFILE-TEMPLATE.yml) lacks canonical tasks exposing them (`chg-lint`, `swf-lint`, and `profile-lint`). Consumer projects therefore lack direct Taskfile shortcuts to validate their Layer 09 Change Requests, Serverless Workflows, and adaptation profiles.
 4. **Git Submodule Safety Guard in `upgrade.sh`:**
    - When a consumer project uses a Git submodule for `.aidoc/framework`, running `upgrade.sh` blindly treats it as a pinned copy, swaps directories, and wipes the submodule's `.git` pointer. A guard is required to detect submodule linkages and prevent destructive overwrites without explicit `--force`.
 5. **Scaffolding and Deployment Verification:**
-   - [`deploy.sh`](file:///home/ya/devd/aidoc-framework/deploy.sh), [`framework/scripts/install.sh`](file:///home/ya/devd/aidoc-framework/framework/scripts/install.sh), and [`framework/scripts/upgrade.sh`](file:///home/ya/devd/aidoc-framework/framework/scripts/upgrade.sh) correctly deploy allowlist files (`framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/` excluding `archive/`). Live testing confirmed that newly placed Layer 09 templates (`CHG-SWF-TEMPLATE.yaml` and `CHG-GRAPH-TEMPLATE.yaml`) and modernized BTV PASS templates are successfully deployed to consumer `.aidoc/framework/`.
-   - The test suite [`tests/conformance/test_consumer_scripts.py`](file:///home/ya/devd/aidoc-framework/tests/conformance/test_consumer_scripts.py) passes 48/48 tests cleanly.
+   - [`deploy.sh`](../deploy.sh), [`framework/scripts/install.sh`](../framework/scripts/install.sh), and [`framework/scripts/upgrade.sh`](../framework/scripts/upgrade.sh) correctly deploy allowlist files (`framework/`, `docs/`, `hooks/`, `sdd_doc_lint/`, `tests/` excluding `archive/`). Live testing confirmed that newly placed Layer 09 templates (`CHG-SWF-TEMPLATE.yaml` and `CHG-GRAPH-TEMPLATE.yaml`) and modernized BTV PASS templates are successfully deployed to consumer `.aidoc/framework/`.
+   - The test suite [`tests/conformance/test_consumer_scripts.py`](../tests/conformance/test_consumer_scripts.py) passes 48/48 tests cleanly.
 
 This plan details the exact remediation and verification steps to bring `.aidoc` into 100% parity with framework `0.96.3` and guarantee consumer deployment readiness.
 
@@ -25,7 +25,7 @@ This plan details the exact remediation and verification steps to bring `.aidoc`
 ## User Review Required
 
 > [!NOTE]
-> All changes are backward-compatible. Adding `chg-lint`, `swf-lint`, and `profile-lint` tasks to [`framework/templates/TASKFILE-TEMPLATE.yml`](file:///home/ya/devd/aidoc-framework/framework/templates/TASKFILE-TEMPLATE.yml) and root [`Taskfile.yml`](file:///home/ya/devd/aidoc-framework/Taskfile.yml) is purely additive and enhances consumer project autonomy.
+> All changes are backward-compatible. Adding `chg-lint`, `swf-lint`, and `profile-lint` tasks to [`framework/templates/TASKFILE-TEMPLATE.yml`](../framework/templates/TASKFILE-TEMPLATE.yml) and root [`Taskfile.yml`](../Taskfile.yml) is purely additive and enhances consumer project autonomy.
 
 <!-- separator -->
 
@@ -36,7 +36,7 @@ This plan details the exact remediation and verification steps to bring `.aidoc`
 
 ## Open Questions
 
-None. The workstation architecture, adaptation surface, and deployment scripts are strictly codified under [`docs/AIDOC_WORKSTATION_STANDARD.md`](file:///home/ya/devd/aidoc-framework/docs/AIDOC_WORKSTATION_STANDARD.md) and [`framework/governance/aidoc/`](file:///home/ya/devd/aidoc-framework/framework/governance/aidoc/).
+None. The workstation architecture, adaptation surface, and deployment scripts are strictly codified under [`docs/AIDOC_WORKSTATION_STANDARD.md`](../docs/AIDOC_WORKSTATION_STANDARD.md) and [`framework/governance/aidoc/`](../framework/governance/aidoc/).
 
 ---
 
@@ -123,7 +123,7 @@ Grouped by component in logical dependency order:
 
 ### Component 1: Dogfood `.aidoc/` Profile Modernization
 
-#### [MODIFY] [.aidoc/profile.yaml](file:///home/ya/devd/aidoc-framework/.aidoc/profile.yaml)
+#### [MODIFY] [.aidoc/profile.yaml](../.aidoc/profile.yaml)
 
 - Bump `metadata.framework_version` from `"0.96.2"` to `"0.96.3"`.
 - Update `metadata.last_updated` to `"2026-10-18"`.
@@ -144,7 +144,7 @@ metadata:
 
 ### Component 2: Governance Guide Alignment & Version Fanout
 
-#### [MODIFY] [framework/governance/aidoc/AIDOC.md](file:///home/ya/devd/aidoc-framework/framework/governance/aidoc/AIDOC.md)
+#### [MODIFY] [framework/governance/aidoc/AIDOC.md](../framework/governance/aidoc/AIDOC.md)
 
 - Update example submodule release tag on line 117 to `framework/v0.96.3`.
 
@@ -153,7 +153,7 @@ metadata:
 +1. **Git Submodule:** The project commits `.aidoc/framework/` as a Git submodule pinned to an immutable release tag (e.g. `framework/v0.96.3`).
 ```
 
-#### [MODIFY] [hooks/sync-version-refs.sh](file:///home/ya/devd/aidoc-framework/hooks/sync-version-refs.sh)
+#### [MODIFY] [hooks/sync-version-refs.sh](../hooks/sync-version-refs.sh)
 
 - Include `"$REPO_ROOT/.aidoc/profile.yaml"` in the version sweep pattern search list (line 167) to prevent future version drift.
 
@@ -162,7 +162,7 @@ metadata:
 +done < <(grep -rlZE "$_meta_pat" "$REPO_ROOT/framework/" "$REPO_ROOT/docs/" "$REPO_ROOT/README.md" "$REPO_ROOT/.aidoc/profile.yaml" 2>/dev/null || true)
 ```
 
-#### [MODIFY] [framework/governance/PROFILE-TEMPLATE.yaml](file:///home/ya/devd/aidoc-framework/framework/governance/PROFILE-TEMPLATE.yaml)
+#### [MODIFY] [framework/governance/PROFILE-TEMPLATE.yaml](../framework/governance/PROFILE-TEMPLATE.yaml)
 
 - Add `CHG` to the commented `active_layers:` example (line 66) so all 10 layers are represented.
 
@@ -175,7 +175,7 @@ metadata:
 
 ### Component 3: Workstation & Root Taskfile Modernization
 
-#### [MODIFY] [framework/templates/TASKFILE-TEMPLATE.yml](file:///home/ya/devd/aidoc-framework/framework/templates/TASKFILE-TEMPLATE.yml)
+#### [MODIFY] [framework/templates/TASKFILE-TEMPLATE.yml](../framework/templates/TASKFILE-TEMPLATE.yml)
 
 - Wire `profile-lint` into composite `check:`.
 - Add `chg-lint` task with native Go-Task template conditional (`{{if .CLI_ARGS}}`), `--sdd-root` scoping, and preconditions.
@@ -191,7 +191,7 @@ metadata:
        - task: lint
        - task: review
          vars: { CLI_ARGS: "--verify-only" }
- 
+
 +  chg-lint:
 +    desc: "Run CHG structural linter on Change Requests in docs/sdd/09_CHG/"
 +    preconditions:
@@ -232,7 +232,7 @@ metadata:
 +      - python3 -m sdd_doc_lint.profile_lint {{.CLI_ARGS | default ".aidoc/profile.yaml"}}
 ```
 
-#### [MODIFY] [Taskfile.yml](file:///home/ya/devd/aidoc-framework/Taskfile.yml)
+#### [MODIFY] [Taskfile.yml](../Taskfile.yml)
 
 - Update root `chg-lint` task to use Go-Task native `{{if .CLI_ARGS}}`.
 - Add `profile-lint` task to root `Taskfile.yml`.
@@ -273,7 +273,7 @@ metadata:
 
 ### Component 4: Working Agreement, Standard & Script Harmonization
 
-#### [MODIFY] [framework/templates/AGENTS-TEMPLATE.md](file:///home/ya/devd/aidoc-framework/framework/templates/AGENTS-TEMPLATE.md)
+#### [MODIFY] [framework/templates/AGENTS-TEMPLATE.md](../framework/templates/AGENTS-TEMPLATE.md)
 
 - Reference `task sdd:chg-lint`, `task sdd:swf-lint`, and `task sdd:profile-lint` in Section ## Non-negotiables (line 39).
 
@@ -282,7 +282,7 @@ metadata:
 +- **Submit only verified work:** Run linters and quality gates via Taskfile (`task sdd:check`, `task sdd:lint`, `task sdd:graph-check`, `task sdd:chg-lint`, `task sdd:swf-lint`, `task sdd:profile-lint`, or backward-compatible `.aidoc/bin/sdd-lint`) and local test suites before opening or updating a PR.
 ```
 
-#### [MODIFY] [docs/AIDOC_WORKSTATION_STANDARD.md](file:///home/ya/devd/aidoc-framework/docs/AIDOC_WORKSTATION_STANDARD.md)
+#### [MODIFY] [docs/AIDOC_WORKSTATION_STANDARD.md](../docs/AIDOC_WORKSTATION_STANDARD.md)
 
 - Update Section 8 `### Canonical SDD Tasks (.aidoc/Taskfile.yml)` to document the new `chg-lint`, `swf-lint`, and `profile-lint` tasks.
 
@@ -312,7 +312,7 @@ metadata:
 +      - python3 -m sdd_doc_lint.profile_lint {{.CLI_ARGS | default ".aidoc/profile.yaml"}}
 ```
 
-#### [MODIFY] [framework/scripts/upgrade.sh](file:///home/ya/devd/aidoc-framework/framework/scripts/upgrade.sh)
+#### [MODIFY] [framework/scripts/upgrade.sh](../framework/scripts/upgrade.sh)
 
 - Add Git submodule guard check (line 106) to refuse destructive overwrites of `.aidoc/framework` when `.git` exists, unless `--force` is given.
 - Update line 276 advisory message to reflect `(graph-check, chg-lint, swf-lint)`.
@@ -334,7 +334,7 @@ metadata:
 
 ### Component 5: Conformance Test Suite Extension
 
-#### [MODIFY] [tests/conformance/test_consumer_scripts.py](file:///home/ya/devd/aidoc-framework/tests/conformance/test_consumer_scripts.py)
+#### [MODIFY] [tests/conformance/test_consumer_scripts.py](../tests/conformance/test_consumer_scripts.py)
 
 - Extend `test_scaffolds_stack_policy_and_linter_runner` (line 406) to assert that `chg-lint:`, `swf-lint:`, and `profile-lint:` are scaffolded into `.aidoc/Taskfile.yml`.
 - Add test for the Git submodule safety guard in `upgrade.sh`.
