@@ -166,6 +166,48 @@ class IPlanWorkflowTest(unittest.TestCase):
         self.assertIn("workflow", plan_std)
         self.assertIn("IPLAN-SWF-TEMPLATE.yaml", plan_std)
 
+    def test_execution_resilience_and_status_taxonomy_conformance(self):
+        """Asserts CHG-120 execution resilience, non-destructive states, and status taxonomy."""
+        tpl_path = LAYER_08 / "IPLAN-SWF-TEMPLATE.yaml"
+        with tpl_path.open(encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+
+        # 1. Plane 3: File manifest must use NOT_STARTED, never PENDING
+        files = data.get("file_manifest", {}).get("files", [])
+        self.assertGreater(len(files), 0)
+        for entry in files:
+            self.assertEqual(
+                entry.get("status"),
+                "NOT_STARTED",
+                f"File manifest entry {entry.get('path')} must use NOT_STARTED",
+            )
+
+        # 2. Execution states presence
+        states = {s["name"]: s for s in data.get("workflow", {}).get("states", [])}
+        self.assertIn("InitializeExecutionContext", states)
+        self.assertEqual(states["InitializeExecutionContext"].get("type"), "inject")
+
+        self.assertIn("RemediateImplementationFixes", states)
+        self.assertEqual(
+            states["RemediateImplementationFixes"].get("compensatedBy"),
+            "RollbackSourceFiles",
+            "RemediateImplementationFixes must declare compensatedBy saga handler (Rule 3)",
+        )
+
+        self.assertIn("ExecutionBlockedTerminal", states)
+        blocked_end = states["ExecutionBlockedTerminal"].get("end")
+        self.assertTrue(
+            blocked_end is True
+            or (isinstance(blocked_end, dict) and blocked_end.get("terminate") is True)
+        )
+
+        # 3. Absence of legacy review_score >= 90 (SDD-0044)
+        raw_text = tpl_path.read_text(encoding="utf-8")
+        self.assertNotIn("review_score", raw_text)
+
+        std_text = (GOVERNANCE / "IPLAN_WORKFLOW_STANDARD.md").read_text(encoding="utf-8")
+        self.assertNotIn("${ .review_score", std_text)
+
 
 if __name__ == "__main__":
     unittest.main()

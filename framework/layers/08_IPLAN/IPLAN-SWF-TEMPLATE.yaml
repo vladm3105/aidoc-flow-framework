@@ -81,13 +81,13 @@ file_manifest:
     - path: "src/component.py"
       description: "Source code implementation fulfilling SPEC contracts"
       order: 1
-      status: PENDING
+      status: NOT_STARTED
       session: 1
       verified: false
     - path: "tests/unit/test_component.py"
       description: "Unit test suite covering TDD assertions"
       order: 2
-      status: PENDING
+      status: NOT_STARTED
       session: 1
       verified: false
 
@@ -109,7 +109,7 @@ workflow:
   name: "Component Execution Workflow"
   version: "1.0"
   specVersion: "0.8"
-  start: Step1_PreFlightCheck
+  start: InitializeExecutionContext
 
   events:
     - name: IplanApprovedEvent
@@ -122,6 +122,18 @@ workflow:
       type: custom
     - name: remediateLayerFindings
       operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: remediateImplementationFindings
+      operation: "urn:aidoc:functions:remediator#remediateImplementation"
+      type: custom
+    - name: incrementCounter
+      operation: "urn:aidoc:functions:math#increment"
+      type: custom
+    - name: runCommand
+      operation: "urn:aidoc:functions:shell#runCommand"
+      type: custom
+    - name: logError
+      operation: "urn:aidoc:functions:logger#logError"
       type: custom
     - name: verifyLayerBoundaryGate
       operation: "urn:aidoc:governance:gate#verify"
@@ -137,6 +149,14 @@ workflow:
       type: custom
 
   states:
+    # --- Step 0: Execution Context Initialization ---
+    - name: InitializeExecutionContext
+      type: inject
+      data:
+        attempt: 1
+        max_attempts: 3
+      transition: Step1_PreFlightCheck
+
     # --- Step 1: Pre-flight Verification ---
     - name: Step1_PreFlightCheck
       type: operation
@@ -212,8 +232,40 @@ workflow:
       dataConditions:
         - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
           transition: InvokeReviewSagaGate
+        - condition: "${ (.pytest.exit_code != 0 or .ruff.exit_code != 0) and .attempt < .max_attempts }"
+          transition: RemediateImplementationFixes
+        - condition: "${ .failure_reason == 'blocked' or .failure_reason == 'ambiguity' }"
+          transition: ExecutionBlockedTerminal
       defaultCondition:
         transition: TriggerSagaRollback
+
+    - name: RemediateImplementationFixes
+      type: operation
+      compensatedBy: RollbackSourceFiles
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateImplementationFindings
+            arguments:
+              findings: "${ .verification_errors }"
+              attempt: "${ .attempt }"
+        - name: incrementAttemptCounter
+          functionRef:
+            refName: incrementCounter
+            arguments:
+              variable: "attempt"
+      transition: Step5_VerifyImplementationSuite
+
+    - name: ExecutionBlockedTerminal
+      type: operation
+      actions:
+        - name: notifyExecutionBlocked
+          functionRef:
+            refName: logError
+            arguments:
+              message: "Execution halted without rollback: environmental blocker or requirement ambiguity."
+      end:
+        terminate: true
 
     - name: InvokeReviewSagaGate
       type: operation
@@ -230,7 +282,7 @@ workflow:
       type: switch
       dataConditions:
         - name: ReviewGateApproved
-          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          condition: "${ .blocking_findings == 0 and .gate_passed == true }"
           transition: Step6_CommitAndSignoff
         - name: ReviewRequiresRemediation
           condition: "${ .blocking_findings > 0 and .iteration < 3 }"

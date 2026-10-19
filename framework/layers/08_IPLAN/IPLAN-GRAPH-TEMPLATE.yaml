@@ -38,6 +38,9 @@ nodes:
     compensation: "rm -f src/order_gateway/handler.py"
     properties:
       session: 1
+      work_order_id: "WORK-001"
+      max_attempts: 3
+      failure_handling: "retry_remediation"
       estimated_lines: 120
       description: "Creates gRPC handler implementing CreateOrder method with Redis validation"
 
@@ -66,6 +69,9 @@ nodes:
     compensation: "git checkout -- src/order_gateway/router.py"
     properties:
       session: 1
+      work_order_id: "WORK-002"
+      max_attempts: 3
+      failure_handling: "retry_remediation"
       estimated_lines: 15
       description: "Registers the new CreateOrder service with the server listener"
 

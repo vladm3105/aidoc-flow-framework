@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.6 |
+| Framework Version | 0.96.7 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -106,7 +106,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.96.6"
+  framework_version: "0.96.7"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -127,7 +127,7 @@ file_manifest:
     - path: "src/component.py"
       description: "Source implementation"
       order: 1
-      status: PENDING
+      status: NOT_STARTED
 
 tdd_consistency:
   status: complete  # complete | partial | not-applicable (DIR2C)
@@ -236,34 +236,50 @@ proxy clients) per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GU
 
 ## 4.1 Traversal-Path State Machine Topologies
 
-Layer 08 compiles into 4 distinct execution topologies depending on the declared `flow`:
+Layer 08 compiles into 4 distinct execution topologies depending on the declared `flow`. Each topology incorporates bounded self-remediation (`max_attempts: 3`), non-destructive blocker handling (`ExecutionBlockedTerminal`), and saga compensation (`TriggerSagaRollback`):
 
 ### 1. Greenfield Forward Topology (`sdd_to_code` / `SDD2C`)
 ```
 PreFlightCheck → SnapshotOriginals → ImplementTestsFirst → ImplementSourceCode → EvaluateVerificationGate → CommitAndSignoff
-                                                                                       ↓ (fails)
-                                                                               TriggerSagaRollback
+                                                                                       ↓ (fails & attempt < max_attempts)
+                                                                                  RemediateImplementationFixes ──┘ (retry)
+                                                                                       ↓ (fails & attempt >= max_attempts & blocker)
+                                                                                  ExecutionBlockedTerminal
+                                                                                       ↓ (fails & attempt >= max_attempts & regression)
+                                                                                  TriggerSagaRollback
 ```
 
 ### 2. Defect Repair Topology (`code_to_code` / `CODE2C`)
 ```
 PreFlightCheck → SnapshotOriginals → AuthorReproductionTest → ApplyPatchFix → EvaluateRegressionGate → CommitAndSignoff
-                                                                                     ↓ (fails)
-                                                                             TriggerSagaRollback
+                                                                                     ↓ (fails & attempt < max_attempts)
+                                                                                RemediateImplementationFixes ──┘ (retry)
+                                                                                     ↓ (fails & attempt >= max_attempts & blocker)
+                                                                                ExecutionBlockedTerminal
+                                                                                     ↓ (fails & attempt >= max_attempts & regression)
+                                                                                TriggerSagaRollback
 ```
 
 ### 3. Direct Fast-Lane Topology (`iplan_to_code` / `DIR2C`)
 ```
 PreFlightCheck → SnapshotOriginals → ApplyFileEdits → EvaluateLintsAndChecks → CommitAndSignoff
-                                                              ↓ (fails)
-                                                      TriggerSagaRollback
+                                                              ↓ (fails & attempt < max_attempts)
+                                                         RemediateImplementationFixes ──┘ (retry)
+                                                              ↓ (fails & attempt >= max_attempts & blocker)
+                                                         ExecutionBlockedTerminal
+                                                              ↓ (fails & attempt >= max_attempts & regression)
+                                                         TriggerSagaRollback
 ```
 
 ### 4. Backward Reconciliation Topology (`code_to_sdd` / `CODE2S`)
 ```
 PreFlightCheck → FreezeCodebase → InspectCodeContracts → ReverseAuthorSDD → EvaluateDocLintGate → CommitAndSignoff
-                                                                                  ↓ (fails)
-                                                                          TriggerSagaRollback
+                                                                                  ↓ (fails & attempt < max_attempts)
+                                                                             RemediateImplementationFixes ──┘ (retry)
+                                                                                  ↓ (fails & attempt >= max_attempts & blocker)
+                                                                             ExecutionBlockedTerminal
+                                                                                  ↓ (fails & attempt >= max_attempts & regression)
+                                                                             TriggerSagaRollback
 ```
 
 ---
@@ -334,7 +350,7 @@ To eliminate the decoupling between implementation plan execution and review cre
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Prior to final commit and sign-off (`Step6_CommitAndSignoff`), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`iplan-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or reversibility gaps are uncovered, the saga triggers an automated remediation loop, halting code commit until all P0/P1 blockers are resolved.
 
 ---
@@ -350,7 +366,59 @@ Layer 08 IPLAN implements the standardized 5-step closed lifecycle:
 
 ---
 
-## 8. Review Log
+## 8. The Four Orthogonal Status Planes (CHG-120)
+
+To prevent status pollution, loss of immutability, and state-projection ambiguity during autonomous execution, Layer 08 establishes four distinct, orthogonal status families (harmonized with `aidoc-flow-iplan-standard`):
+
+| Plane | Scope | Permitted Values | Mutation Authority |
+|---|---|---|---|
+| **Plane 1: Document / Management** | `document_control.status` | `Draft`, `Approved`, `In Progress`, `Completed`, `Verified` | Governance Gate / Tech Lead / EVAL |
+| **Plane 2: Step / Work Order** | Step execution state | `Not Started`, `Queued`, `Running`, `Blocked`, `Completed`, `Failed`, `Cancelled` | Execution Orchestrator |
+| **Plane 3: File Manifest** | `file_manifest.files[].status` | `NOT_STARTED`, `IN_PROGRESS`, `PARTIAL`, `DONE`, `SKIPPED` | Autonomous Worker / File Mutator |
+| **Plane 4: Runtime Event** | Signed execution events | `accepted`, `running`, `blocked`, `succeeded`, `failed`, `cancelled` | Worker / Tool Harness |
+
+### Status Projection Invariants
+1. **Separation of Document vs Execution**: A document in `In Progress` status contains steps transitioning through `Queued` → `Running` → `Completed`. A failed step does not mutate `document_control.status` to `Failed` — it marks the step `Failed` or `Blocked`, triggering remediation or compensation.
+2. **File Manifest vs Verification**: `status: DONE` asserts that the file has been authored and exists on disk. `verified: true` asserts that unit tests have executed against the file and passed cleanly. A file may be `DONE` while `verified: false`.
+3. **Non-Destructive Blocker Projection**: An agent receiving `on_blocker` or `on_ambiguity` emits a `blocked` runtime event projecting the step status to `Blocked` and halting at `ExecutionBlockedTerminal` without triggering file deletion or rollback.
+
+---
+
+## 9. Execution Evidence Receipts Specification (CHG-120)
+
+Upon completing Step 5 (`Step5_VerifyImplementationSuite`) and sign-off, the Layer 08 execution engine generates a detached, tamper-evident execution receipt bridging Layer 08 codebase mutations to downstream Layer 10 (EVAL) evaluation:
+
+```yaml
+schema_version: "1.0"
+document_type: "iplan-execution-receipt"
+receipt_id: "RCPT-08-0001"
+iplan_ref:
+  iplan_id: "IPLAN-01"
+  plan_version: "1.0"
+  plan_digest: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069" # RFC-8785 canonical hash
+execution_context:
+  git_commit_sha: "5bf2034e02a2b1387a3399550a323d1eccec5ce3"
+  branch: "feature/chg-120-iplan-execution"
+  executor_id: "agent:autonomous_coder"
+  started_at: "2026-10-19T13:30:00Z"
+  completed_at: "2026-10-19T13:35:00Z"
+verification_summary:
+  total_attempts: 1
+  max_attempts: 3
+  test_suites_passed: true
+  linters_clean: true
+  gate_outcome: "PASSED"
+  artifacts_manifest:
+    - path: "src/order_gateway/handler.py"
+      status: "DONE"
+      verified: true
+      sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+```
+Downstream Layer 10 (EVAL) ingests this receipt to verify compliance against upstream specification contracts without re-running long implementation harnesses.
+
+---
+
+## 10. Review Log
 
 - **2026-10-05 — Pass 1 (Envelope Preservation & Lint Integrity)**:
   - *Gap found*: Naive conversion of IPLAN to pure CNCF root broke `sdd_doc_lint`'s `STRUCT01` check.
@@ -365,4 +433,9 @@ Layer 08 IPLAN implements the standardized 5-step closed lifecycle:
 - **2026-10-06 — Pass 3 (Dual-Layer Graph Flow & Multi-Topology Execution)**:
   - *Gap found*: Monolithic forward-flow assumption broke `DIR2C` (iplan_to_code), `CODE2C` (bugfix), and `CODE2S` (reconciliation).
   - *Fix*: Re-architected Section 1 to govern all 6 graph traversal paths; added `flow` and `flow_code` to the Hybrid Envelope; relaxed Rule 2 and Rule 4 for `DIR2C`; codified 4 standard DAG topologies in Section 4.1.
+- **2026-10-19 — Pass 4 (Execution Resilience, Non-Destructive Blocked State, and 4-Plane Status Taxonomy — CHG-120)**:
+  - *Gap found*: Immediate destructive saga rollback on first verification failure prevented autonomous agent remediation.
+  - *Fix*: Introduced bounded inner remediation loop (`RemediateImplementationFixes`, `max_attempts: 3`) and non-destructive `ExecutionBlockedTerminal`.
+  - *Gap found*: Internal vocabulary drift (`status: PENDING` in file manifest) and residual `.review_score >= 90` condition in Section 6.
+  - *Fix*: Standardized file manifest on `NOT_STARTED`; retired residual `.review_score >= 90` in favor of zero blocking findings gate; codified the 4 orthogonal status planes in Section 8 and evidence receipts in Section 9.
 

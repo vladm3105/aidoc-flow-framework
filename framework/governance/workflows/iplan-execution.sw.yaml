@@ -1,7 +1,7 @@
 # =============================================================================
 #  CNCF Serverless Workflow: Layer 08 (IPLAN) Implementation Execution Flow
 #  Spec Version: 0.8 (YAML)
-#  Standard: framework/layers/08_IPLAN/IPLAN_WORKFLOW_STANDARD.md
+#  Standard: framework/governance/IPLAN_WORKFLOW_STANDARD.md
 # =============================================================================
 
 id: iplan-execution-flow
@@ -14,7 +14,7 @@ description: >-
   review/remediation saga, GATE-08 boundary verification, document baseline sealing,
   SDD graph registration, and CloudEvent handoff emission.
 
-start: Step1_PreFlightCheck
+start: InitializeExecutionContext
 
 events:
   - name: IplanApprovedEvent
@@ -27,6 +27,18 @@ functions:
     type: custom
   - name: remediateLayerFindings
     operation: "urn:aidoc:functions:remediator#remediate"
+    type: custom
+  - name: remediateImplementationFindings
+    operation: "urn:aidoc:functions:remediator#remediateImplementation"
+    type: custom
+  - name: incrementCounter
+    operation: "urn:aidoc:functions:math#increment"
+    type: custom
+  - name: runCommand
+    operation: "urn:aidoc:functions:shell#runCommand"
+    type: custom
+  - name: logError
+    operation: "urn:aidoc:functions:logger#logError"
     type: custom
   - name: verifyLayerBoundaryGate
     operation: "urn:aidoc:governance:gate#verify"
@@ -42,6 +54,14 @@ functions:
     type: custom
 
 states:
+  # --- Step 0: Execution Context Initialization ---
+  - name: InitializeExecutionContext
+    type: inject
+    data:
+      attempt: 1
+      max_attempts: 3
+    transition: Step1_PreFlightCheck
+
   # --- Step 1: Pre-flight Verification ---
   - name: Step1_PreFlightCheck
     type: operation
@@ -117,8 +137,40 @@ states:
     dataConditions:
       - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
         transition: InvokeReviewSagaGate
+      - condition: "${ (.pytest.exit_code != 0 or .ruff.exit_code != 0) and .attempt < .max_attempts }"
+        transition: RemediateImplementationFixes
+      - condition: "${ .failure_reason == 'blocked' or .failure_reason == 'ambiguity' }"
+        transition: ExecutionBlockedTerminal
     defaultCondition:
       transition: TriggerSagaRollback
+
+  - name: RemediateImplementationFixes
+    type: operation
+    compensatedBy: RollbackSourceFiles
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateImplementationFindings
+          arguments:
+            findings: "${ .verification_errors }"
+            attempt: "${ .attempt }"
+      - name: incrementAttemptCounter
+        functionRef:
+          refName: incrementCounter
+          arguments:
+            variable: "attempt"
+    transition: Step5_VerifyImplementationSuite
+
+  - name: ExecutionBlockedTerminal
+    type: operation
+    actions:
+      - name: notifyExecutionBlocked
+        functionRef:
+          refName: logError
+          arguments:
+            message: "Execution halted without rollback: environmental blocker or requirement ambiguity."
+    end:
+      terminate: true
 
   - name: InvokeReviewSagaGate
     type: operation
@@ -135,7 +187,7 @@ states:
     type: switch
     dataConditions:
       - name: ReviewGateApproved
-        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         transition: Step6_CommitAndSignoff
       - name: ReviewRequiresRemediation
         condition: "${ .blocking_findings > 0 and .iteration < 3 }"
