@@ -39,7 +39,9 @@ NODE_TABLE_SCHEMAS: dict[str, str] = {
     ),
     "system_container": (
         "CREATE NODE TABLE IF NOT EXISTS system_container("
-        "id STRING, title STRING, context STRING, PRIMARY KEY (id))"
+        "id STRING, title STRING, context STRING, "
+        "container_archetype STRING, trust_boundary STRING, data_classification STRING, "
+        "PRIMARY KEY (id))"
     ),
     "business_objective": (
         "CREATE NODE TABLE IF NOT EXISTS business_objective("
@@ -88,7 +90,9 @@ REL_TABLE_SCHEMAS: dict[str, str] = {
     "decomposes_to": (
         "CREATE REL TABLE IF NOT EXISTS decomposes_to("
         "FROM seed_intent TO system_container, "
-        "FROM seed_intent TO product_capability)"
+        "FROM seed_intent TO product_capability, "
+        "FROM system_container TO component_contract, "
+        "FROM system_container TO product_capability)"
     ),
     "realizes": (
         "CREATE REL TABLE IF NOT EXISTS realizes("
@@ -103,7 +107,8 @@ REL_TABLE_SCHEMAS: dict[str, str] = {
     "constrains": (
         "CREATE REL TABLE IF NOT EXISTS constrains("
         "FROM architectural_decision TO component_contract, "
-        "FROM architectural_decision TO system_container)"
+        "FROM architectural_decision TO system_container, "
+        "FROM system_container TO system_container)"
     ),
     "implements": (
         "CREATE REL TABLE IF NOT EXISTS implements("
@@ -201,9 +206,24 @@ class KuzuGraphAdapter:
                     )
                 elif ntype == "system_container":
                     context = str(node.get("context", ""))
+                    container_archetype = str(props.get("container_archetype", "api_service"))
+                    trust_boundary = str(props.get("trust_boundary", "Internal"))
+                    data_classification = str(props.get("data_classification", "INTERNAL"))
                     self._conn.execute(
-                        "CREATE (n:system_container {id: $id, title: $title, context: $context})",
-                        {"id": nid, "title": title, "context": context},
+                        "CREATE (n:system_container {"
+                        "id: $id, title: $title, context: $context, "
+                        "container_archetype: $container_archetype, "
+                        "trust_boundary: $trust_boundary, "
+                        "data_classification: $data_classification"
+                        "})",
+                        {
+                            "id": nid,
+                            "title": title,
+                            "context": context,
+                            "container_archetype": container_archetype,
+                            "trust_boundary": trust_boundary,
+                            "data_classification": data_classification,
+                        },
                     )
                 elif ntype == "business_objective":
                     priority = str(props.get("priority", "P1"))

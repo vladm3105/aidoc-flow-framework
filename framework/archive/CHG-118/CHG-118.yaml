@@ -1,0 +1,184 @@
+# =============================================================================
+#  CHG-118: Native SDD Graph Migration for Tier 2 Module Specifications
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/MODULE-GRAPH-MIGRATION-PLAN.md
+#  Scope: Migrate Tier 2 Module specifications from raw Markdown into Native SDD
+#         Typed Property Graphs (MODULE-GRAPH-TEMPLATE.yaml) conforming to the
+#         Dual-Plane CQRS architecture (DOC_GOVERNANCE_CORE.md Principle 2).
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-18"
+  framework_version: "0.96.4"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-118"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: none
+  new_version: "0.96.4"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-18T20:30:00Z"
+  date_approved: "2026-10-18T20:30:00Z"
+  date_implemented: "2026-10-18T20:45:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-18T20:30:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/MODULE-GRAPH-MIGRATION-PLAN.md
+      migrating Tier 2 modules into Native SDD Typed Property Graphs.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-118)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-118"
+  title: "Native SDD Graph Migration for Tier 2 Module Specifications"
+  status: "Ratified"
+  context: |
+    The Dual-Plane CQRS Architecture established in framework/governance/DOC_GOVERNANCE_CORE.md Rule 2 dictates:
+    "YAML is the mandatory format and the source of truth... Markdown is optional and descriptive: a rendering
+    of the YAML... Where a .md file restates YAML content it is generated, not authored."
+
+    All 10 SDD layers (BRD through EVAL) operate on typed Property Graphs (*-GRAPH-TEMPLATE.yaml) and CNCF
+    Serverless Workflows. Furthermore, Tier 1 Initiatives have INITIATIVE-GRAPH-TEMPLATE.yaml (schema_version:
+    "2.0-graph") and Tier 3 execution has EXECUTION-GRAPH-TEMPLATE.yaml. However, Tier 2 Modules
+    (framework/templates/MODULE-TEMPLATE.md) were authored as raw Markdown documents with frontmatter.
+
+    While SDD_GRAPH_SCHEMA_SPECIFICATION.md and sdd-graph.schema.json already reserve the system_container
+    node ontology for MODULE-NN, there was no canonical template, projection adapter, or multi-hop relationship
+    wiring in Kùzu to complete the 3-tier continuum (Tier 1 Initiative -> Tier 2 Module -> Tier 3 Execution).
+  choice: |
+    Execute comprehensive Tier 2 Module graph migration per the verified plan:
+    1. Author framework/templates/MODULE-GRAPH-TEMPLATE.yaml adhering strictly to sdd-graph.schema.json,
+       capturing Triple-Lens modeling (C4-L2 Container, DFD-L2 Data Movement, Process Choreography).
+    2. Enhance sdd_doc_lint/observability_adapter.py with render_module_spec (emitting line 1 '---' frontmatter)
+       and Mermaid sequence/DFD diagram renderers.
+    3. Update sdd_doc_lint/__main__.py adding sequence and dfd diagram types and auto-dispatching --render-spec.
+    4. Harmonize sdd_doc_lint/kuzu_adapter.py with extended system_container DDL, parameterized ingest_graph(),
+       and multi-hop decomposes_to and constrains rel tables.
+    5. Add CLI entrypoint, GRAPH-CARD-001 invariant check, and extract_slice_subgraph to sdd_doc_lint/graph_engine.py.
+    6. Align governance specifications: MODULE_LAYOUT.md, OBSERVABILITY_ADAPTER_CONTRACT.md, DIAGRAM_STANDARDS.md,
+       SEED_CONTRACT.md, SEED_TO_MODULE_DECOMPOSITION.md, and seed-to-module-decomposition.sw.yaml.
+    7. Extend conformance tests in tests/conformance/test_module_contract.py and test_sdd_graph_schema.py,
+       and add unit tests for adapter and Kùzu ingestion.
+  consequences: |
+    - Completes the 3-tier SDD graph continuum with zero gaps across Tier 1, Tier 2, and Tier 3.
+    - Preserves 100% backward compatibility: MODULE-TEMPLATE.md remains the authoritative visual layout standard.
+    - Autonomous agents gain native property graph authoring for module subsystems.
+    - End-to-end machine-traceable decomposition: seed_intent -> system_container -> component_contract.
+    - All existing conformance and acceptance test suites pass with zero regressions.
+  alternatives_considered:
+    - option: "Retain Markdown authoring for modules and parse frontmatter"
+      rationale_rejected: >-
+        Rejected because parsing Markdown frontmatter violates Dual-Plane CQRS (DOC_GOVERNANCE_CORE.md Rule 2),
+        prevents multi-hop Cypher queries across modules, and blocks topological BTV validation.
+    - option: "Introduce separate non-standard YAML format for modules"
+      rationale_rejected: >-
+        Rejected because sdd-graph.schema.json already defines the unified Native SDD Property Graph schema
+        (slice_id: MODULE-NN, system_container), and diverging would fragment the analytical read plane.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Native SDD Graph Migration for Tier 2 Module Specifications"
+  description: >-
+    Migrate Tier 2 Module specifications from raw Markdown authoring into Native SDD Typed Property Graphs
+    (MODULE-GRAPH-TEMPLATE.yaml) conforming to the Dual-Plane CQRS architecture.
+  justification: >-
+    Enforces Rule 2 of DOC_GOVERNANCE_CORE.md, enables automated Markdown and Mermaid projection,
+    and completes machine-verifiable end-to-end traceability across all SDD tiers.
+
+# =============================================================================
+# Section 3: Scope & Manifest
+# =============================================================================
+
+scope:
+  sdd_lifecycle: []
+  artifacts_modified:
+    - "framework/governance/MODULE_LAYOUT.md"
+    - "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+    - "framework/governance/DIAGRAM_STANDARDS.md"
+    - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    - "framework/governance/SEED_CONTRACT.md"
+    - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    - "framework/governance/workflows/seed-to-module-decomposition.sw.yaml"
+    - "sdd_doc_lint/__main__.py"
+    - "sdd_doc_lint/graph_engine.py"
+    - "sdd_doc_lint/kuzu_adapter.py"
+    - "sdd_doc_lint/observability_adapter.py"
+    - "tests/conformance/test_module_contract.py"
+    - "tests/conformance/test_sdd_graph_schema.py"
+  artifacts_created:
+    - "framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
+    - "framework/archive/CHG-118/CHG-118.yaml"
+    - "framework/archive/CHG-118/IPLAN-118.yaml"
+    - "plans/MODULE-GRAPH-MIGRATION-PLAN.md"
+  affected_components:
+    - "Framework Starter Templates (framework/templates/)"
+    - "Observability Adapter & Projection Engine (sdd_doc_lint/observability_adapter.py, sdd_doc_lint/__main__.py)"
+    - "Native SDD Graph Engine & Validator (sdd_doc_lint/graph_engine.py)"
+    - "Kùzu Graph Storage & Query Adapter (sdd_doc_lint/kuzu_adapter.py)"
+    - "Subsystem & Governance Documentation (framework/governance/)"
+    - "Conformance and Unit Test Suites (tests/conformance/, tests/unit/)"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-118/IPLAN-118.yaml"
+  steps:
+    - step: "Author authorizing CHG-118.yaml and IPLAN-118.yaml"
+      phase: "iplan_creation"
+    - step: "Author canonical framework/templates/MODULE-GRAPH-TEMPLATE.yaml (Component 1)"
+      phase: "template_authoring"
+    - step: "Enhance observability adapter and CLI with render_module_spec and diagram generators (Component 2)"
+      phase: "observability_enhancement"
+    - step: "Harmonize Kùzu adapter DDL and parameterized ingestion (Component 3)"
+      phase: "kuzu_harmonization"
+    - step: "Align governance documentation and Serverless Workflow definitions (Component 4)"
+      phase: "governance_alignment"
+    - step: "Implement graph engine CLI, invariants, and extend test suites (Component 5)"
+      phase: "tooling_and_tests"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-118/CHG-118.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/seed-to-module-decomposition.sw.yaml"
+    - "python3 -m sdd_doc_lint.graph_engine --template framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
+    - "pytest tests/conformance/test_module_contract.py tests/conformance/test_sdd_graph_schema.py -v"
+    - "pytest tests/unit/test_observability_adapter.py tests/unit/test_kuzu_adapter.py -v"
+    - "pytest tests/conformance/ -v"
+    - "python3 .agents/skills/verified-planning/check_plan.py plans/MODULE-GRAPH-MIGRATION-PLAN.md"
+  manual_verification:
+    - "Verify rendered Markdown matches structural sections in MODULE-TEMPLATE.md"
+    - "Verify Kùzu multi-hop decomposes_to and constrains Cypher queries return expected records"

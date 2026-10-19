@@ -131,6 +131,21 @@ class SddGraph:
         """Return True if the graph is a Directed Acyclic Graph (DAG)."""
         return len(self.find_cycles()) == 0
 
+    def extract_slice_subgraph(self, slice_id: str) -> SddGraph:
+        """Extract nodes and edges belonging strictly to a specific slice_id."""
+        sub = SddGraph()
+        sub.slice_ids.add(slice_id)
+        if self.metadata:
+            sub.metadata.update(self.metadata)
+        for nid, node in self.nodes.items():
+            if node.get("_slice_id") == slice_id:
+                sub.add_node(dict(node), slice_id=slice_id)
+        for edge in self.edges:
+            if edge["from"] in sub.nodes and edge["to"] in sub.nodes:
+                edge_kwargs = {k: v for k, v in edge.items() if k not in ("from", "to", "relation")}
+                sub.add_edge(edge["from"], edge["to"], edge["relation"], **edge_kwargs)
+        return sub
+
     def find_cycles(self) -> list[list[str]]:
         """Detect and return all directed cycles using 3-color DFS."""
         visited: dict[str, int] = {}  # 0: unvisited, 1: visiting (in stack), 2: visited
@@ -353,6 +368,30 @@ class GraphEngine:
             )
 
         # 4. Cardinality Invariants (Oracle Realization & Coverage)
+        # GRAPH-CARD-001: Every seed_intent must decompose to >= 1 system_container or product_capability
+        for seed in graph.nodes_by_type("seed_intent"):
+            sid = seed["id"]
+            decompositions = [
+                tgt
+                for tgt in graph.adj.get(sid, set())
+                if any(
+                    e["relation"] == "decomposes_to"
+                    and e["from"] == sid
+                    and e["to"] == tgt
+                    and graph.nodes.get(tgt, {}).get("type") in ("system_container", "product_capability")
+                    for e in graph.edges
+                )
+            ]
+            if not decompositions:
+                findings.append(
+                    GraphFinding(
+                        code="GRAPH-CARD-001",
+                        severity="error",
+                        message=f"Seed vision failure: seed intent '{sid}' has 0 decomposing system containers or product capabilities.",
+                        node_id=sid,
+                    )
+                )
+
         # GRAPH-CARD-003: Every formal_requirement must have >= 1 acceptance_scenario verifying it
         for req in graph.nodes_by_type("formal_requirement"):
             rid = req["id"]
@@ -446,3 +485,55 @@ class GraphEngine:
                 delta.add_edge(edge["from"], edge["to"], edge["relation"], edge.get("notes"))
 
         return delta
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI runner for GraphEngine BTV verification."""
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(
+        prog="python3 -m sdd_doc_lint.graph_engine",
+        description="Validate SDD Graph slices against Binary Topological Validation (BTV) rules.",
+    )
+    parser.add_argument(
+        "paths",
+        nargs="+",
+        type=Path,
+        help="One or more .graph.yaml files or directories to validate",
+    )
+    parser.add_argument(
+        "--template",
+        action="store_true",
+        help="Validate in template mode (allows NN and xxxx wildcard placeholder tokens)",
+    )
+    args = parser.parse_args(argv)
+
+    engine = GraphEngine()
+    total_findings: list[GraphFinding] = []
+
+    for path in args.paths:
+        if not path.exists():
+            print(f"Error: path does not exist: {path}", file=sys.stderr)
+            return 2
+        g = engine.load_graph_directory(path) if path.is_dir() else engine.load_graph_file(path)
+        findings = engine.validate_btv(g, is_template=args.template)
+        total_findings.extend(findings)
+
+    errors = [f for f in total_findings if f.severity == "error"]
+    for f in total_findings:
+        stream = sys.stderr if f.severity == "error" else sys.stdout
+        print(f"[{f.severity.upper()}] {f.code}: {f.message}", file=stream)
+
+    if errors:
+        print(f"\nBTV Validation Failed: {len(errors)} error(s) found.", file=sys.stderr)
+        return 1
+    print("BTV Validation Passed: 0 errors.")
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+
+    sys.exit(main())
+

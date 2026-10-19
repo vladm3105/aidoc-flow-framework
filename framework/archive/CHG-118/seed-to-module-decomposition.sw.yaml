@@ -1,0 +1,134 @@
+id: seed-to-module-decomposition
+name: Seed to Module Decomposition Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing the 5-step decomposition from Tier 1 Seed Vision
+  into Tier 2 C4-L2 Module Containers, featuring the Triple-Lens model (Structure,
+  Data Sensitivity & Trust Boundaries, Process/Sequence) per SEED_TO_MODULE_DECOMPOSITION.md.
+start: Step1_ExtractFunctionalDomains
+
+states:
+  # --- Step 1: Extract Functional Domains ---
+  - name: Step1_ExtractFunctionalDomains
+    type: operation
+    actions:
+      - name: analyzeSeedScope
+        functionRef:
+          refName: dispatchAgentPersona
+          arguments:
+            persona: "architect"
+            playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+            section: "Step 1: Extract Functional Domains & Bounded Contexts"
+            input_artifact: "seed/*.md"
+    transition: Step2_DefineSystemContext
+
+  # --- Step 2: Define System Context (C4-L1 + DFD-L1) ---
+  - name: Step2_DefineSystemContext
+    type: operation
+    actions:
+      - name: authorC4L1AndDFDL1
+        functionRef:
+          refName: dispatchAgentPersona
+          arguments:
+            persona: "architect"
+            playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+            section: "Step 2: Define System Context & External Boundaries"
+            target_artifact: "framework/templates/SEED-TEMPLATE.md"
+    transition: Step3_ModelContainerArchitecture
+
+  # --- Step 3: Model Container Architecture (C4-L2 Lens 1) ---
+  - name: Step3_ModelContainerArchitecture
+    type: operation
+    actions:
+      - name: authorC4L2Containers
+        functionRef:
+          refName: dispatchAgentPersona
+          arguments:
+            persona: "architect"
+            playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+            section: "Step 3: Model Container Architecture & Components"
+            template: "framework/templates/MODULE-TEMPLATE.md"
+    transition: Step4_MapDataSensitivity
+
+  # --- Step 4: Map Data Sensitivity & Trust Boundaries (DFD-L2 Lens 2) ---
+  - name: Step4_MapDataSensitivity
+    type: operation
+    actions:
+      - name: authorDFDL2SensitivityMatrix
+        functionRef:
+          refName: dispatchAgentPersona
+          arguments:
+            persona: "security_architect"
+            playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+            section: "Step 4: Map Inter-Module Data Sensitivity & Trust Boundaries"
+            classifications: ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
+    transition: Step5_DefineSequenceFlows
+
+  # --- Step 5: Define Sequential Execution & Error Pathways (Lens 3) ---
+  - name: Step5_DefineSequenceFlows
+    type: operation
+    actions:
+      - name: authorSequenceAndFailurePaths
+        functionRef:
+          refName: dispatchAgentPersona
+          arguments:
+            persona: "architect"
+            playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+            section: "Step 5: Define Sequential Execution & Error Pathways"
+    transition: RunIndependentReviews
+
+  # --- Multi-Agent Review Crew (Parallel Fan-out) ---
+  - name: RunIndependentReviews
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: ArchitectSelfReview
+        actions:
+          - name: runArchitectReview
+            functionRef:
+              refName: dispatchAgentPersona
+              arguments:
+                persona: "architect"
+                lens: "boundary-cohesion-and-contracts"
+      - name: SecuritySecondOpinion
+        actions:
+          - name: runSecurityReview
+            functionRef:
+              refName: dispatchAgentPersona
+              arguments:
+                persona: "security_reviewer"
+                lens: "trust-boundaries-and-pii-leakage"
+    transition: EvaluateDecompositionGate
+
+  # --- Gate Evaluation Checkpoint ---
+  - name: EvaluateDecompositionGate
+    type: switch
+    dataConditions:
+      - condition: "${ .review_findings.blockers == 0 and .review_findings.unresolved_gaps == 0 }"
+        transition: CompleteModuleManifest
+    defaultCondition:
+      transition: RemediateDecompositionGaps
+
+  # --- Remediation Loop ---
+  - name: RemediateDecompositionGaps
+    type: operation
+    actions:
+      - name: fixIdentifiedDefects
+        functionRef:
+          refName: patchModuleArtifacts
+    transition: RunIndependentReviews
+
+  # --- Terminal Success ---
+  - name: CompleteModuleManifest
+    type: operation
+    actions:
+      - name: syncModuleLayout
+        functionRef:
+          refName: updateModuleManifest
+          arguments:
+            manifest_file: "framework/governance/MODULE_LAYOUT.md"
+      - name: signoffPhase0b
+        functionRef:
+          refName: recordPhase0bSignoff
+    end: true

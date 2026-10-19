@@ -133,7 +133,7 @@ Required fields in SPEC diagram contract subsection:
 | Layer / Tier | Mandatory Checks |
 |---|---|
 | Seed (Tier 1) | `@diagram: c4-l1`, `@diagram: dfd-l1` (defined in `framework/templates/SEED-TEMPLATE.md`) |
-| Module (Tier 2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` (or `sequence-async`); required Data Sensitivity Matrix (`framework/templates/MODULE-TEMPLATE.md`) |
+| Module (Tier 2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` (or `sequence-async`); required Data Sensitivity Matrix (`framework/templates/MODULE-GRAPH-TEMPLATE.yaml` / `framework/templates/MODULE-TEMPLATE.md`) |
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
 | PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
 | EARS (L3) | No diagrams required (refinement step; inherits upstream) |

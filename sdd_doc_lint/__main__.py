@@ -133,7 +133,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--diagram-type",
-        choices=("lineage", "c4-container"),
+        choices=("lineage", "c4-container", "c4-l2", "sequence", "dfd", "dfd-l2"),
         default="lineage",
         help="diagram type for --render-diagram (default: lineage)",
     )
@@ -247,7 +247,14 @@ def main(argv: list[str] | None = None) -> int:
         p = args.render_spec
         graph = engine.load_graph_directory(p) if p.is_dir() else engine.load_graph_file(p)
         adapter = ObservabilityAdapter()
-        spec = adapter.render_spec_sheet(graph)
+        if any(s.startswith("MODULE-") for s in graph.slice_ids) or (
+            graph.nodes_by_type("system_container")
+            and not graph.nodes_by_type("formal_requirement")
+            and not graph.nodes_by_type("product_capability")
+        ):
+            spec = adapter.render_module_spec(graph)
+        else:
+            spec = adapter.render_spec_sheet(graph)
         if args.out:
             args.out.write_text(spec, encoding="utf-8")
             print(f"✓ Rendered specification sheet to {args.out}")

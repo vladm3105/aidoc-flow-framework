@@ -112,6 +112,60 @@ class TestKuzuAdapterMocked(unittest.TestCase):
             self.assertEqual(rows[0]["id"], "BRD.01.01.0001")
             self.assertEqual(rows[0]["title"], "Revenue Growth")
 
+    def test_ingest_system_container_and_decomposes_to(self) -> None:
+        """Verify that system_container nodes with properties and multi-hop decomposes_to ingest properly."""
+        g = SddGraph()
+        g.add_node(
+            {
+                "id": "SEED-domain",
+                "type": "seed_intent",
+                "title": "Core Domain",
+                "statement": "Domain strategic vision",
+            }
+        )
+        g.add_node(
+            {
+                "id": "MODULE-01",
+                "type": "system_container",
+                "title": "Auth Service",
+                "context": "Authentication and authorization container",
+                "properties": {
+                    "container_archetype": "api_service",
+                    "trust_boundary": "DMZ",
+                    "data_classification": "RESTRICTED",
+                },
+            }
+        )
+        g.add_node(
+            {
+                "id": "SPEC.06.01.0001",
+                "type": "component_contract",
+                "title": "OAuth Token Endpoint",
+                "statement": "POST /oauth/token contract",
+            }
+        )
+        g.add_edge("SEED-domain", "MODULE-01", "decomposes_to")
+        g.add_edge("MODULE-01", "SPEC.06.01.0001", "decomposes_to")
+
+        with (
+            patch("sdd_doc_lint.kuzu_adapter.kuzu", self.mock_kuzu),
+            patch("sdd_doc_lint.kuzu_adapter.KUZU_AVAILABLE", True),
+        ):
+            adapter = KuzuGraphAdapter()
+            counts = adapter.ingest_graph(g)
+            self.assertEqual(counts["nodes"], 3)
+            self.assertEqual(counts["edges"], 2)
+
+            # Verify system_container execute call carried properties
+            calls = self.mock_conn.execute.call_args_list
+            container_call = [c for c in calls if "n:system_container" in str(c)]
+            self.assertEqual(len(container_call), 1)
+            params = container_call[0][0][1]
+            self.assertEqual(params["id"], "MODULE-01")
+            self.assertEqual(params["container_archetype"], "api_service")
+            self.assertEqual(params["trust_boundary"], "DMZ")
+            self.assertEqual(params["data_classification"], "RESTRICTED")
+
 
 if __name__ == "__main__":
     unittest.main()

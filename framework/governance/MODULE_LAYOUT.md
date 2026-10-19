@@ -79,14 +79,16 @@ rules, acceptance criteria.
 ## Rules
 
 ### 1. Module location
-All module docs live in `docs/modules/`. This is the single source of truth
-for everything about a project part.
+All module docs live in `docs/modules/`. Under Dual-Plane CQRS (`DOC_GOVERNANCE_CORE.md` Principle 2),
+module specifications are authored as Native SDD Graph slices (`MODULE-NN_slug.graph.yaml` or
+`MODULE-NN_slug/MODULE-NN_slug.graph.yaml`) and projected into human-readable Markdown spec sheets
+via `sdd-render` (`observability_adapter.py`).
 
 ### 2. Flat file vs directory
 
 | Form | When | Example |
 |------|------|---------|
-| **Flat file** | Module has ≤1 file (~800 lines or less) | `MODULE-03_auth.md` |
+| **Flat file** | Module has ≤1 file (~800 lines or less) | `MODULE-03_auth.graph.yaml` + `MODULE-03_auth.md` |
 | **Directory** | Module has 2+ files (split by topic) | `MODULE-12_observability/` |
 
 **Trigger to convert flat → directory:** When a single module file exceeds
@@ -95,8 +97,12 @@ for everything about a project part.
 
 ### 3. Directory naming
 ```
-MODULE-NN_descriptive-slug/       # Directory (multi-file)
-MODULE-NN_descriptive-slug.md     # Flat file (single-file)
+MODULE-NN_descriptive-slug/              # Directory (multi-file)
+├── MODULE-NN_descriptive-slug.graph.yaml # Authored Graph slice (Source of Truth)
+├── MODULE-NN_descriptive-slug.md        # Rendered Markdown projection
+└── README.md                            # Directory entry point
+MODULE-NN_descriptive-slug.graph.yaml    # Flat file authored Graph slice
+MODULE-NN_descriptive-slug.md            # Flat file rendered Markdown projection
 ```
 Use lowercase, hyphens for spaces. Match the slug between directory name and
 all internal references.
@@ -115,7 +121,9 @@ SVG diagrams live inside the module directory or alongside the flat file.
 No separate `diagrams/` directory.
 
 ### 7. Canonical Template & Triple-Lens Standard
-All module documentation (flat files or directory entry points) must adhere to
+All module documentation adheres to the Dual-Plane CQRS standard: machine-authored using
+[`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml)
+and projected to human-readable Markdown matching
 [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
 Modules are decomposed from Tier 1 Seed documents per the normative 5-step methodology in
 [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md),

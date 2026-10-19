@@ -48,7 +48,8 @@ states:
             persona: "architect"
             playbook: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
             section: "Step 3: Model Container Architecture & Components"
-            template: "framework/templates/MODULE-TEMPLATE.md"
+            template: "framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
+            projection_template: "framework/templates/MODULE-TEMPLATE.md"
     transition: Step4_MapDataSensitivity
 
   # --- Step 4: Map Data Sensitivity & Trust Boundaries (DFD-L2 Lens 2) ---

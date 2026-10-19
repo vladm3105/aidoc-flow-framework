@@ -17,12 +17,50 @@ class ModuleTemplateContract(unittest.TestCase):
 
     def setUp(self):
         self.template_path = FRAMEWORK / "templates" / "MODULE-TEMPLATE.md"
+        self.graph_template_path = FRAMEWORK / "templates" / "MODULE-GRAPH-TEMPLATE.yaml"
         self.decomposition_path = FRAMEWORK / "governance" / "SEED_TO_MODULE_DECOMPOSITION.md"
         self.seed_template_path = FRAMEWORK / "templates" / "SEED-TEMPLATE.md"
 
     def test_module_template_exists(self):
         """Canonical MODULE-TEMPLATE.md must exist in framework/templates/."""
         self.assertTrue(self.template_path.is_file(), f"Missing {self.template_path}")
+
+    def test_module_graph_template_exists(self):
+        """Canonical MODULE-GRAPH-TEMPLATE.yaml must exist in framework/templates/."""
+        self.assertTrue(self.graph_template_path.is_file(), f"Missing {self.graph_template_path}")
+
+    def test_module_graph_template_contract(self):
+        """MODULE-GRAPH-TEMPLATE.yaml must define system_container with Triple-Lens properties and decomposition edges."""
+        from sdd_doc_lint.graph_engine import GraphEngine
+
+        content = yaml.safe_load(self.graph_template_path.read_text(encoding="utf-8"))
+        self.assertEqual(content.get("schema_version"), "2.0-graph")
+        self.assertTrue(content.get("slice_id", "").startswith("MODULE-NN_"))
+
+        engine = GraphEngine()
+        graph = engine.load_graph_file(self.graph_template_path)
+        containers = graph.nodes_by_type("system_container")
+        self.assertEqual(len(containers), 1, "Expected exactly 1 system_container node in template")
+        c = containers[0]
+        self.assertEqual(c["id"], "MODULE-NN")
+
+        props = c.get("properties", {})
+        self.assertIn("container_archetype", props)
+        self.assertIn("approved_stack", props)
+        self.assertIn("subsystem_invariants", props)
+        self.assertIn("trust_boundary", props)
+        self.assertIn("data_classification", props)
+        self.assertIn("data_protection_matrix", props)
+        self.assertIn("choreography", props)
+
+        # Traceability edges
+        edges = graph.edges
+        self.assertTrue(any(e["relation"] == "decomposes_to" and e["to"] == "MODULE-NN" for e in edges))
+        self.assertTrue(any(e["relation"] == "decomposes_to" and e["from"] == "MODULE-NN" for e in edges))
+
+        # BTV verification
+        findings = engine.validate_btv(graph, is_template=True)
+        self.assertEqual(len(findings), 0, f"Template BTV findings: {findings}")
 
     def test_decomposition_playbook_exists(self):
         """SEED_TO_MODULE_DECOMPOSITION.md must exist in framework/governance/."""

@@ -21,6 +21,7 @@ from _spec import FRAMEWORK
 SCHEMA_PATH = FRAMEWORK / "governance" / "sdd-graph.schema.json"
 INITIATIVE_TEMPLATE = FRAMEWORK / "templates" / "INITIATIVE-GRAPH-TEMPLATE.yaml"
 EXECUTION_TEMPLATE = FRAMEWORK / "templates" / "EXECUTION-GRAPH-TEMPLATE.yaml"
+MODULE_TEMPLATE = FRAMEWORK / "templates" / "MODULE-GRAPH-TEMPLATE.yaml"
 
 
 # Standalone validator supporting Draft-07 subset for zero-dependency test execution
@@ -108,6 +109,14 @@ class TestSddGraphSchema(unittest.TestCase):
         """Verify EXECUTION-GRAPH-TEMPLATE.yaml satisfies sdd-graph.schema.json."""
         self.assertTrue(EXECUTION_TEMPLATE.is_file())
         with EXECUTION_TEMPLATE.open("r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        errors = validate_schema(data, self.schema)
+        self.assertEqual(errors, [], f"Template validation errors: {errors}")
+
+    def test_module_template_validates(self) -> None:
+        """Verify MODULE-GRAPH-TEMPLATE.yaml satisfies sdd-graph.schema.json."""
+        self.assertTrue(MODULE_TEMPLATE.is_file())
+        with MODULE_TEMPLATE.open("r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
         errors = validate_schema(data, self.schema)
         self.assertEqual(errors, [], f"Template validation errors: {errors}")
