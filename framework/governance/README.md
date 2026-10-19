@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.8 |
+| Framework Version | 0.96.9 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -42,6 +42,7 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `WORKTREE_FLOW.md` | Order-guarded worktree isolation, autonomous feature branching, PR watch, and post-merge branch deletion lifecycle rules (§3.8 order guard). |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
 | `TRACEABILITY.md` | The 10-layer traceability chain, necessary-upstream tagging, and readiness gates. |
+| `SDD_ASSEMBLY_LINE.md` | Normative standard establishing the 10-layer manufacturing assembly line, defect cost amplification curve, upstream defect shielding matrix, and frictionless IPLAN/EVAL integration. |
 | `TAG_SYNTAX.md` | `@`-tag form reference: per-layer punctuation, element-vs-document granularity (GD-03), pipe-delimited cardinality, the self-tag / downstream carve-outs, and the `@chg:` provenance back-reference (a non-trace tag; GD-11). |
 | `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement, C4 + DFD + sequence ownership model, and CNCF workflow state diagram bindings. |
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |

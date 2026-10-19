@@ -1,0 +1,209 @@
+# =============================================================================
+#  CHG-122: SDD Upstream Quality Assurance, Gate Parity, SDD Assembly Line & Frictionless IPLAN Execution
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/SDD-UPSTREAM-ASSURANCE-AND-IPLAN-EXECUTION-PLAN.md
+#  Scope: Establish upstream quality assurance across SDD Layers 01–07 to shield
+#         Layer 08 (IPLAN) from execution friction, ambiguous requirements, broken toolchains,
+#         and test regressions. Enforce tri-surface gate parity across definition files,
+#         catalog, and approval form. Formalize the SDD Assembly Line governance standard
+#         (SDD_ASSEMBLY_LINE.md). Formalize Layer 10 (EVAL) post-validation receipt ingestion.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.9"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-122"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.9"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T20:30:00Z"
+  date_approved: "2026-10-19T20:30:00Z"
+  date_implemented: "2026-10-19T20:45:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T20:30:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/SDD-UPSTREAM-ASSURANCE-AND-IPLAN-EXECUTION-PLAN.md
+      establishing upstream quality assurance, tri-surface gate parity, SDD Assembly Line standard, and EVAL post-validation.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-122)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-122"
+  title: "Formal Decision: SDD Upstream Quality Assurance, Gate Parity, SDD Assembly Line & Frictionless IPLAN Execution"
+  date: "2026-10-19"
+  status: Accepted
+  context: |
+    In the 10-layer SDD framework, Layer 08 (IPLAN) is the code mutation plane. When upstream documents
+    contain ambiguities, untestable acceptance criteria, missing interface schemas, or uncompensated test
+    fixtures, autonomous coding agents absorb the failure—causing execution timeouts, cyclic remediation retries,
+    or execution stalls (ExecutionBlockedTerminal). Furthermore, legacy percentage-based readiness scores in GATE-06
+    conflict with SDD-0044 binary topological validation (tdd_ready_status: PASS). In addition, tri-surface gate
+    parity across gate definition files, GATE_ERROR_CATALOG.md, and GATE_APPROVAL_FORM.md required synchronization
+    for newly ratified IPLAN and SPEC gates, and the overarching manufacturing assembly line concept required
+    formal codification in governance.
+  choice: |
+    Implement upstream quality assurance and frictionless execution enhancements per plans/SDD-UPSTREAM-ASSURANCE-AND-IPLAN-EXECUTION-PLAN.md:
+    1. Harden GATE-06 and GATE-08 across tri-surface parity (definition files, error catalog, approval forms in both
+       framework/layers/09_CHG/ and framework/governance/chg/):
+       - Purge legacy 'score >= 90%' in GATE-06_DESIGN_TEST.md and GATE_APPROVAL_FORM.md; update GATE-06-E001 to binary
+         topological validation (tdd_ready_status: PASS).
+       - Add GATE-06-E005 (SPEC toolchain ownership) and GATE-06-E006 (TDD fixture saga teardown compensation).
+       - Elevate GATE-08-W003 to blocking error GATE-08-E005 (mandatory saga rollback compensation on mutating states),
+         and cleanly retire/remove GATE-08-W003 across definitions, catalog, and form.
+       - Add GATE-08-E006 (step-execution completeness) and GATE-08-E007 (mutating execution timeouts).
+    2. Add explicit toolchain: mapping under component_overview: in SPEC-TEMPLATE.yaml and SPEC-SWF-TEMPLATE.yaml
+       (language, runtime_version, package_manager, setup_command, type_check_command, test_runner_command).
+    3. Mandate fixture_hermeticity: guidelines with compensatedBy: TeardownFixturesCompensation under test_strategy:
+       in TDD-TEMPLATE.yaml and TDD-SWF-TEMPLATE.yaml.
+    4. Update EVAL-SWF-TEMPLATE.yaml and eval-verification-run.sw.yaml with verifyReceiptSeal and checkTreeInvariance
+       actions in pre-flight state, transitioning through EvaluateReceiptGate switch to ExecutionBlockedTerminal on signature/tree drift.
+    5. Author framework/governance/SDD_ASSEMBLY_LINE.md ("The SDD Assembly Line to IPLAN & EVAL"), index it in
+       framework/governance/README.md, and register it in EXPECTED_FILES in tests/conformance/test_governance.py.
+    6. Add test_gate_06_and_gate_08_execution_shielding_invariants in test_governance.py.
+    7. Bump framework/VERSION from 0.96.8 to 0.96.9 per GATE-SPEC-E005, append 0.96.8 to OLD_VERSIONS, and fan out pins.
+  consequences: |
+    - Upstream specifications (SPEC & TDD) strictly own toolchain and fixture cleanup, shielding IPLAN from developer hallucination.
+    - Mutating steps in IPLAN cannot proceed without automated rollback compensation and wall-clock execution timeouts.
+    - Tri-surface gate parity across definition, catalog, and form is mathematically preserved.
+    - Layer 10 EVAL post-validates Layer 08 execution receipts cryptographically before running test suites.
+    - Preserves 100% compatibility with deterministic acceptance fixtures in tests/acceptance/.
+    - Requires framework version bump from 0.96.8 to 0.96.9 per GATE-SPEC-E005.
+  alternatives_considered:
+    - option: "Retain legacy percentage score >= 90% alongside binary topological validation"
+      rationale_rejected: >-
+        Rejected per SDD-0044: percentage-based readiness scores produce false passes and subjective evaluations;
+        deterministic binary topological validation (PASS/FAIL) provides non-ambiguous machine enforcement.
+    - option: "Add top-level toolchain and hermeticity sections to SPEC-TEMPLATE.yaml and TDD-TEMPLATE.yaml"
+      rationale_rejected: >-
+        Rejected to protect frozen golden acceptance fixtures: nesting under existing top-level keys
+        (component_overview and test_strategy) ensures 100% backward compatibility with tests/acceptance/deterministic/.
+
+# =============================================================================
+# Section 2: Artifacts Modified
+# =============================================================================
+
+artifacts_modified:
+  - path: "framework/layers/09_CHG/gates/GATE-06_DESIGN_TEST.md"
+    action: modify
+    rationale: "Purge legacy >=90% score, add GATE-06-E005 (toolchain) and GATE-06-E006 (fixture compensation)."
+  - path: "framework/governance/chg/gates/GATE-06_DESIGN_TEST.md"
+    action: modify
+    rationale: "Mirror GATE-06 updates in governance chg directory for byte-identical parity."
+  - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+    action: modify
+    rationale: "Elevate W003 to E005 (rollback), add E006 (completeness) and E007 (timeouts), remove W003."
+  - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+    action: modify
+    rationale: "Mirror GATE-08 updates in governance chg directory for byte-identical parity."
+  - path: "framework/layers/09_CHG/gates/GATE_ERROR_CATALOG.md"
+    action: modify
+    rationale: "Update E001, add GATE-06-E005/E006, add GATE-08-E005/E006/E007, remove GATE-08-W003."
+  - path: "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+    action: modify
+    rationale: "Mirror error catalog in governance chg directory for byte-identical parity."
+  - path: "framework/layers/09_CHG/templates/GATE_APPROVAL_FORM.md"
+    action: modify
+    rationale: "Add fillable checks for new E-codes, remove GATE-08-W003, update E001."
+  - path: "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+    action: modify
+    rationale: "Mirror approval form in governance chg templates for byte-identical parity."
+  - path: "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+    action: modify
+    rationale: "Add toolchain: block under component_overview: declaring language, runtime, and commands."
+  - path: "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+    action: modify
+    rationale: "Mirror toolchain declaration in SPEC SWF state machine template."
+  - path: "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+    action: modify
+    rationale: "Add fixture_hermeticity: and mandatory saga teardown compensation under test_strategy:."
+  - path: "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+    action: modify
+    rationale: "Mirror fixture hermeticity in TDD SWF state machine template."
+  - path: "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    action: modify
+    rationale: "Register receipt/tree functions, add pre-flight checks, EvaluateReceiptGate switch, and ExecutionBlockedTerminal."
+  - path: "framework/governance/workflows/eval-verification-run.sw.yaml"
+    action: modify
+    rationale: "Mirror EVAL receipt verification, EvaluateReceiptGate, and ExecutionBlockedTerminal in governance workflow."
+  - path: "framework/governance/SDD_ASSEMBLY_LINE.md"
+    action: create
+    rationale: "Author canonical governance standard explaining the SDD assembly line from Layer 01 to Layer 10."
+  - path: "framework/governance/README.md"
+    action: modify
+    rationale: "Index SDD_ASSEMBLY_LINE.md in governance documents table."
+  - path: "tests/conformance/test_governance.py"
+    action: modify
+    rationale: "Add test_gate_06_and_gate_08_execution_shielding_invariants and register SDD_ASSEMBLY_LINE.md in EXPECTED_FILES."
+  - path: "framework/VERSION"
+    action: modify
+    rationale: "Bump framework version from 0.96.8 to 0.96.9 per GATE-SPEC-E005."
+  - path: "hooks/sync-version-refs.sh"
+    action: modify
+    rationale: "Append 0.96.8 to OLD_VERSIONS and propagate version references repo-wide."
+
+# =============================================================================
+# Section 3: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-122/IPLAN-122.yaml"
+  steps:
+    - step: "Author authorizing CHG-122.yaml and IPLAN-122.yaml"
+      phase: "iplan_creation"
+    - step: "Harden GATE-06, GATE-08, Error Catalog, and Approval Form across tri-surface parity"
+      phase: "gate_hardening"
+    - step: "Update SPEC-TEMPLATE.yaml, SPEC-SWF-TEMPLATE.yaml, TDD-TEMPLATE.yaml, and TDD-SWF-TEMPLATE.yaml"
+      phase: "layer_spec_tdd_hardening"
+    - step: "Update EVAL-SWF-TEMPLATE.yaml and eval-verification-run.sw.yaml with receipt verification"
+      phase: "layer_eval_hardening"
+    - step: "Author framework/governance/SDD_ASSEMBLY_LINE.md and index in governance README.md"
+      phase: "assembly_line_governance"
+    - step: "Extend test_governance.py, bump framework/VERSION to 0.96.9, and fan out pins"
+      phase: "verification_and_governance"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-122/CHG-122.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/eval-verification-run.sw.yaml"
+    - "pytest tests/conformance/test_governance.py"
+    - "pytest tests/conformance/test_iplan_workflow.py"
+    - "pytest tests/conformance/test_governance_workflows.py"
+    - "pytest tests/conformance/test_layers.py"
+    - "pytest tests/acceptance/deterministic/test_layer_spec.py"
+    - "pytest tests/acceptance/deterministic/test_layer_tdd.py"
+    - "pytest tests/acceptance/deterministic/test_layer_iplan.py"
+    - "hooks/pre_push_check.sh"
+    - "python3 tests/chg/spec_gate.py --base origin/dev"

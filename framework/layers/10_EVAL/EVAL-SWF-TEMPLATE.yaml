@@ -187,6 +187,12 @@ workflow:
     - name: emitCloudEvent
       operation: "urn:aidoc:governance:event#emit"
       type: custom
+    - name: verifyReceiptSeal
+      operation: "urn:aidoc:governance:receipt#verifySeal"
+      type: custom
+    - name: checkTreeInvariance
+      operation: "urn:aidoc:governance:git#checkTreeSha"
+      type: custom
 
   states:
     # -------------------------------------------------------------------------
@@ -201,7 +207,29 @@ workflow:
             arguments:
               owning_iplan: "IPLAN-NN"
               verify_btv_pass: true
-      transition: ExecuteEvaluationSuites
+        - name: verifyIplanReceiptSeal
+          functionRef:
+            refName: verifyReceiptSeal
+            arguments:
+              receipt_ref: "${ .iplan_context.iplan_receipt_ref }"
+              expected_seal_hash: "${ .iplan_context.receipt_seal_hash }"
+        - name: assertTreeInvariance
+          functionRef:
+            refName: checkTreeInvariance
+            arguments:
+              expected_tree_sha: "${ .receipt.output_tree_sha }"
+      transition: EvaluateReceiptGate
+
+    # -------------------------------------------------------------------------
+    # State 1b: Evaluate Receipt Gate (Cryptographic Seal & Tree Invariance)
+    # -------------------------------------------------------------------------
+    - name: EvaluateReceiptGate
+      type: switch
+      dataConditions:
+        - condition: "${ .receipt_verified == true and .tree_clean == true }"
+          transition: ExecuteEvaluationSuites
+      defaultCondition:
+        transition: ExecutionBlockedTerminal
 
     # -------------------------------------------------------------------------
     # State 2: Execute Parallel Test Suites (All-Of)
@@ -420,6 +448,14 @@ workflow:
             refName: dispatchBugfixFn
             arguments:
               remediation_standard: "REVIEW_REMEDIATION_FLOW.md"
+      end:
+        terminate: true
+
+    # -------------------------------------------------------------------------
+    # State 9: Terminal Blocked State (Receipt Seal or Tree Hash Mismatch)
+    # -------------------------------------------------------------------------
+    - name: ExecutionBlockedTerminal
+      type: operation
       end:
         terminate: true
 

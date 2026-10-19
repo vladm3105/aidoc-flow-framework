@@ -17,7 +17,7 @@ metadata:
   project_name: "aidoc-flow-framework"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-10-18"
-  framework_version: "0.96.8"
+  framework_version: "0.96.9"
   framework_path: ".aidoc/framework"  # no vendored engine here; spec lives at framework/
 
 # This repo overrides exactly one knob (CHG-30): ci_bindings. Every other

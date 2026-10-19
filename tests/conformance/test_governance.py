@@ -23,6 +23,7 @@ EXPECTED_FILES = [
     # remaining files.
     "ID_NAMING_STANDARDS.md",
     "TRACEABILITY.md",
+    "SDD_ASSEMBLY_LINE.md",
     "TAG_SYNTAX.md",
     "DIAGRAM_STANDARDS.md",
     "THRESHOLD_NAMING_RULES.md",
@@ -350,6 +351,28 @@ class GateCheckIdParity(unittest.TestCase):
                         "*fillable* items only, since a code mentioned in prose "
                         "is a check nobody performs",
                     )
+
+
+class GateExecutionShieldingInvariants(unittest.TestCase):
+    """Execution shielding invariants for GATE-06 (SPEC/TDD) and GATE-08 (IPLAN)."""
+
+    def test_gate_06_and_gate_08_execution_shielding_invariants(self):
+        gate_06 = (CHG / "gates" / "GATE-06_DESIGN_TEST.md").read_text(encoding="utf-8")
+        gate_08 = (CHG / "gates" / "GATE-08_IPLAN.md").read_text(encoding="utf-8")
+
+        # GATE-08: E005 (saga rollback compensation), E006 (completeness), E007 (timeouts)
+        self.assertIn("GATE-08-E005", gate_08)
+        self.assertIn("GATE-08-E006", gate_08)
+        self.assertIn("GATE-08-E007", gate_08)
+        self.assertNotIn("GATE-08-W003", gate_08, "GATE-08-W003 should be elevated and removed")
+
+        # GATE-06: E005 (toolchain ownership), E006 (fixture compensation), binary topological validation
+        self.assertIn("GATE-06-E005", gate_06)
+        self.assertIn("GATE-06-E006", gate_06)
+        self.assertNotIn(
+            "score >= 90%", gate_06, "legacy percentage readiness score must be purged"
+        )
+        self.assertIn("tdd_ready_status: PASS", gate_06)
 
 
 class GovernanceFilesNoOrphans(unittest.TestCase):

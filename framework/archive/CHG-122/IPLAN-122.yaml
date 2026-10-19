@@ -1,0 +1,55 @@
+# =============================================================================
+#  IPLAN-122: SDD Upstream Quality Assurance, Gate Parity, SDD Assembly Line & Frictionless IPLAN Execution
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-122/CHG-122.yaml
+# =============================================================================
+
+id: "IPLAN-122"
+chg_id: "CHG-122"
+title: "SDD Upstream Quality Assurance, Gate Parity, SDD Assembly Line & Frictionless IPLAN Execution"
+status: "Completed"
+framework_version: "0.96.9"
+
+file_manifest:
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/layers/09_CHG/gates/GATE-06_DESIGN_TEST.md"
+  - "framework/governance/chg/gates/GATE-06_DESIGN_TEST.md"
+  - "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+  - "framework/governance/chg/gates/GATE-08_IPLAN.md"
+  - "framework/layers/09_CHG/gates/GATE_ERROR_CATALOG.md"
+  - "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+  - "framework/layers/09_CHG/templates/GATE_APPROVAL_FORM.md"
+  - "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+  - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+  - "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+  - "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+  - "framework/governance/workflows/eval-verification-run.sw.yaml"
+  - "framework/governance/SDD_ASSEMBLY_LINE.md"
+  - "framework/governance/README.md"
+  - "tests/conformance/test_governance.py"
+  - "framework/archive/CHG-122/CHG-122.yaml"
+  - "framework/archive/CHG-122/IPLAN-122.yaml"
+  - "plans/SDD-UPSTREAM-ASSURANCE-AND-IPLAN-EXECUTION-PLAN.md"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-122.yaml and IPLAN-122.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Harden GATE-06, GATE-08, Error Catalog, and Approval Form across tri-surface parity"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update SPEC-TEMPLATE.yaml, SPEC-SWF-TEMPLATE.yaml, TDD-TEMPLATE.yaml, and TDD-SWF-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update EVAL-SWF-TEMPLATE.yaml and eval-verification-run.sw.yaml with receipt verification"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Author framework/governance/SDD_ASSEMBLY_LINE.md and index in governance README.md"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Extend test_governance.py, bump framework/VERSION to 0.96.9, and fan out pins"
+    status: "Completed"
