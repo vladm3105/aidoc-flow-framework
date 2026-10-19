@@ -208,6 +208,72 @@ class IPlanWorkflowTest(unittest.TestCase):
         std_text = (GOVERNANCE / "IPLAN_WORKFLOW_STANDARD.md").read_text(encoding="utf-8")
         self.assertNotIn("${ .review_score", std_text)
 
+    def test_distributed_attestation_and_iplanic_compatibility(self):
+        """Validates CHG-121 distributed multi-agent attestation, timeouts, and EVAL bridge."""
+        # 1. IPLAN-TEMPLATE.yaml has intake_control with _required: false and work_orders attestation
+        iplan_yaml = (LAYER_08 / "IPLAN-TEMPLATE.yaml").read_text(encoding="utf-8")
+        iplan_data = yaml.safe_load(iplan_yaml)
+        self.assertIn("intake_control", iplan_data)
+        self.assertFalse(iplan_data["intake_control"].get("_required", True))
+        self.assertIn("provenance", iplan_data["intake_control"])
+
+        self.assertIn("work_orders", iplan_data.get("execution_commands", {}))
+        self.assertIn("attestation:", iplan_yaml)
+        self.assertIn("executor_id:", iplan_yaml)
+        self.assertIn("protocol_agent_id:", iplan_yaml)
+        self.assertIn("skip_audit:", iplan_yaml)
+        self.assertIn("valid_until:", iplan_yaml)
+
+        # 2. IPLAN-GRAPH-TEMPLATE.yaml has verifies relation for preflight attestation
+        graph_text = (LAYER_08 / "IPLAN-GRAPH-TEMPLATE.yaml").read_text(encoding="utf-8")
+        self.assertIn("preflight_attestation", graph_text)
+        self.assertIn("TASK.08.02.xxxx", graph_text)
+        self.assertIn('relation: "verifies"', graph_text)
+
+        # 3. IPLAN-SWF-TEMPLATE.yaml & iplan-execution.sw.yaml have attestation functions & states
+        for path in [
+            LAYER_08 / "IPLAN-SWF-TEMPLATE.yaml",
+            GOVERNANCE / "workflows" / "iplan-execution.sw.yaml",
+        ]:
+            swf_data = yaml.safe_load(path.read_text(encoding="utf-8"))
+            func_names = (
+                [f["name"] for f in swf_data["workflow"]["functions"] if "name" in f]
+                if "workflow" in swf_data
+                else [f["name"] for f in swf_data["functions"]]
+            )
+            self.assertIn("verifyAttestationReceipt", func_names)
+            self.assertIn("verifyStepCompleteness", func_names)
+
+            states = (
+                swf_data["workflow"]["states"] if "workflow" in swf_data else swf_data["states"]
+            )
+            state_names = [s["name"] for s in states]
+            self.assertIn("EvaluatePreFlightGate", state_names)
+            self.assertIn("VerifyStepExecutionCompleteness", state_names)
+
+            step3 = next(s for s in states if s["name"] == "Step3_ImplementTestsFirst")
+            self.assertIn("timeouts", step3)
+            self.assertEqual(step3["timeouts"]["stateExecTimeout"], "PT15M")
+            self.assertEqual(step3["timeouts"]["actionExecTimeout"], "PT5M")
+
+        # 4. EVAL-REPORT-TEMPLATE.yaml has receipt ref and seal hash
+        eval_path = FRAMEWORK / "layers" / "10_EVAL" / "EVAL-REPORT-TEMPLATE.yaml"
+        eval_data = yaml.safe_load(eval_path.read_text(encoding="utf-8"))
+        self.assertIn("iplan_context", eval_data)
+        self.assertIn("iplan_receipt_ref", eval_data["iplan_context"])
+        self.assertIn("receipt_seal_hash", eval_data["iplan_context"])
+
+        # 5. IPLAN_WORKFLOW_STANDARD.md contains normative §10 and §11
+        std_text = (GOVERNANCE / "IPLAN_WORKFLOW_STANDARD.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "## 10. Cryptographic Agent Attribution & Step Digital Signatures (CHG-121)", std_text
+        )
+        self.assertIn(
+            "## 11. Distributed Worker Handover, Timeouts & Completeness (CHG-121)", std_text
+        )
+        self.assertIn("valid_until", std_text)
+        self.assertIn("canonical_hash", std_text)
+
 
 if __name__ == "__main__":
     unittest.main()

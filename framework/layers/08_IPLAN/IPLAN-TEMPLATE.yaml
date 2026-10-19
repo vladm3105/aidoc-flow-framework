@@ -56,6 +56,21 @@ metadata:
       See framework/registry/LAYER_REGISTRY.yaml id_patterns.
 
 # =============================================================================
+# Intake Control (Optional L1 Initiator Provenance for Iplanic Import)
+# =============================================================================
+intake_control:
+  _required: false
+  _guidance: |
+    Optional intake-time control metadata for L1 Initiator Provenance
+    when importing into Iplanic (IPLAN-ASSURANCE.md §2, iplan-document.schema.json).
+    Excluded from the canonical plan payload before signature computation.
+  provenance:
+    initiator_key_id: "[key-initiator-01]"
+    algorithm: "ed25519"  # ed25519 | hmac-sha256
+    signed_at: "YYYY-MM-DDTHH:MM:SS"
+    value: "[lowercase hex signature over canonical IPLAN]"
+
+# =============================================================================
 # Section 1: Document Control
 # =============================================================================
 document_control:
@@ -393,6 +408,23 @@ execution_commands:
     #         - event_type: "test.passed"
     #           artifact_type: "pytest_xml"
     #           description: "Unit test suite executes with exit code 0"
+    #       attestation:
+    #         executor_id: "exec:m7k3x9a2b4c6e8f1"
+    #         protocol_agent_id: "agent:coder_unit_01"
+    #         occurred_at: "YYYY-MM-DDTHH:MM:SS"
+    #         valid_until: "YYYY-MM-DDTHH:MM:SS"
+    #         evidence_summary:
+    #           command: "pytest tests/unit/ -v"
+    #           exit_code: 0
+    #           output_tree_sha: "e3b0c442..."
+    #         signature:
+    #           key_id: "key-worker-01-ed25519"
+    #           algorithm: "ed25519"  # ed25519 | hmac-sha256
+    #           value: "4f6a7b8c..."  # or null for _UNSIGNED fallback
+    #   skip_audit:
+    #     justification: "[Reason for skipping step]"
+    #     authorized_by: "[approver]"
+    #     approved_at: "YYYY-MM-DDTHH:MM:SS"
 
 # =============================================================================
 # Section 3b: Failure Handling Policy (Autonomous Agent Resilience)

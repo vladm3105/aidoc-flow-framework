@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.7 |
+| Framework Version | 0.96.8 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -106,7 +106,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.96.7"
+  framework_version: "0.96.8"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -384,9 +384,9 @@ To prevent status pollution, loss of immutability, and state-projection ambiguit
 
 ---
 
-## 9. Execution Evidence Receipts Specification (CHG-120)
+## 9. Execution Evidence Receipts Specification (CHG-120, CHG-121)
 
-Upon completing Step 5 (`Step5_VerifyImplementationSuite`) and sign-off, the Layer 08 execution engine generates a detached, tamper-evident execution receipt bridging Layer 08 codebase mutations to downstream Layer 10 (EVAL) evaluation:
+Upon completing Step 5 (`Step5_VerifyImplementationSuite`) and sign-off, the Layer 08 execution engine generates a detached, tamper-evident execution receipt bridging Layer 08 codebase mutations to downstream Layer 10 (EVAL) evaluation (harmonized with `iplan-evidence-bundle.schema.json`):
 
 ```yaml
 schema_version: "1.0"
@@ -398,10 +398,12 @@ iplan_ref:
   plan_digest: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069" # RFC-8785 canonical hash
 execution_context:
   git_commit_sha: "5bf2034e02a2b1387a3399550a323d1eccec5ce3"
-  branch: "feature/chg-120-iplan-execution"
-  executor_id: "agent:autonomous_coder"
+  branch: "feature/chg-121-iplan-attestation"
+  executor_id: "exec:m7k3x9a2b4c6e8f1"
+  protocol_agent_id: "agent:autonomous_coder"
   started_at: "2026-10-19T13:30:00Z"
   completed_at: "2026-10-19T13:35:00Z"
+  valid_until: "2026-10-19T15:35:00Z"  # 2-hour validity window (Dual-Anchor Temporal TTL)
 verification_summary:
   total_attempts: 1
   max_attempts: 3
@@ -413,12 +415,108 @@ verification_summary:
       status: "DONE"
       verified: true
       sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+seal:
+  sealed_at: "2026-10-19T13:35:00Z"
+  canonical_hash:
+    algorithm: "sha256"
+    value: "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
+  signature:
+    key_id: "key-worker-01-ed25519"
+    algorithm: "ed25519"
+    value: "4f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a..."
 ```
-Downstream Layer 10 (EVAL) ingests this receipt to verify compliance against upstream specification contracts without re-running long implementation harnesses.
+
+### Layer 10 (EVAL) Post-Validation Consumption
+Downstream Layer 10 (EVAL) ingests this receipt prior to executing independent integration and acceptance suites. EVAL asserts:
+1. `receipt.seal.canonical_hash` verifies against the registered signing key.
+2. `receipt.execution_context.git_commit_sha` matches the evaluated workspace tree.
+3. `now() <= receipt.execution_context.valid_until` (rejecting stale proofs).
+4. `artifacts_manifest` matches 100% of authored files on disk.
 
 ---
 
-## 10. Review Log
+## 10. Cryptographic Agent Attribution & Step Digital Signatures (CHG-121)
+
+In distributed and multi-agent execution environments, self-reported task completion (`status: Completed`) is vulnerable to phantom execution, impersonation, and attribution loss. Layer 08 establishes mathematical attribution through dual-identity modeling and per-step cryptographic attestations (harmonized with `aidoc-flow-iplanic`).
+
+### 10.1 Dual Identity Model
+- **`protocol_agent_id` (Semantic Persona)**: The declared role, agent persona, or A2A card ID (e.g. `agent:tech_lead`, `agent:coder_01`). Used for human review, crew dispatch, and observability.
+- **`executor_id` (Cryptographic Identity)**: The base32 thumbprint derived from the worker's enrolled public key (`^exec:[a-z2-7]{16,}$`). Used for non-repudiation and automated gate verification.
+
+### 10.2 Step Attestation Envelope
+Mutating steps in `work_orders.orders[]` record an `attestation` envelope upon completion:
+
+```yaml
+attestation:
+  executor_id: "exec:m7k3x9a2b4c6e8f1"
+  protocol_agent_id: "agent:coder_unit_01"
+  occurred_at: "2026-10-19T14:25:00Z"
+  valid_until: "2026-10-19T16:25:00Z"
+  evidence_summary:
+    command: "pytest tests/unit/test_handler.py -v"
+    exit_code: 0
+    stdout_digest: "sha256:d41d8cd98f00b204e9800998ecf8427e..."
+    output_tree_sha: "e3b0c44298fc1c149afbf4c8996fb92427ae41e..."
+  signature:
+    key_id: "key-worker-01-ed25519"
+    algorithm: "ed25519"  # ed25519 | hmac-sha256
+    value: "4f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a..."
+```
+
+### 10.3 Unsigned Fallback Contract (`_UNSIGNED`)
+To preserve developer ergonomic freedom in local development environments without an active keystore, the signature envelope supports Iplanic's schema-valid unsigned structure:
+```yaml
+signature:
+  key_id: null
+  algorithm: "hmac-sha256"
+  value: null
+```
+
+### 10.4 Dual-Anchor Evidence Freshness
+Every execution attestation and receipt carries a dual-anchor:
+1. **Temporal Freshness**: Valid only while `now() <= valid_until`.
+2. **State Freshness**: Valid only while the local workspace Git tree SHA equals `output_tree_sha`.
+
+---
+
+## 11. Distributed Worker Handover, Timeouts & Completeness (CHG-121)
+
+### 11.1 Pre-Flight Handover Verification
+In a multi-worker DAG execution, a downstream worker executing `TASK-02` (which depends on `TASK-01` executed by another worker) must enforce a pre-flight assertion:
+1. Fetch `TASK-01`'s signed attestation.
+2. Verify the digital signature against the project key registry.
+3. Compute the local Git tree SHA and assert:
+   `local_tree_sha == TASK-01.attestation.evidence_summary.output_tree_sha`
+4. If a mismatch is detected, halt immediately and transition to `ExecutionBlockedTerminal` with error `DRIFT_UPSTREAM_STATE_MISMATCH`.
+In `IPLAN-GRAPH-TEMPLATE.yaml`, pre-flight dependency handoffs use the canonical `relation: "verifies"` edge with `properties.verification_type: "preflight_attestation"`.
+
+### 11.2 Step-Execution Completeness Gate (`VerifyStepExecutionCompleteness`)
+Prior to `Step6_CommitAndSignoff`, the execution engine verifies that no steps were silently skipped:
+1. **Universe Completeness**: Every step declared in `plan.steps` must be in `Completed` or `Skipped` status.
+2. **Mandatory Skip Audit**: If a step is `Skipped`, it must carry an explicit audit block:
+   ```yaml
+   status: "Skipped"
+   skip_audit:
+     justification: "Prose-only documentation update; tests not applicable"
+     authorized_by: "agent:tech_lead"
+     approved_at: "2026-10-19T14:30:00Z"
+   ```
+3. Any step left in `NOT_STARTED` or `In Progress` halts execution with `STEP_OMISSION_DETECTED`.
+
+### 11.3 CNCF SWF Execution Timeouts
+To prevent infinite agent remediation loops, hung subprocesses, and unresponsive runner containers, mutating states in `IPLAN-SWF-TEMPLATE.yaml` declare explicit execution timeouts (aligned with `ADAPTATION_SURFACE.yaml` knobs `exec_wall_clock_budget_s` and `exec_test_timeout_s`):
+```yaml
+timeouts:
+  stateExecTimeout: "PT15M"   # 15 minutes ceiling per implementation state
+  actionExecTimeout: "PT5M"    # 5 minutes ceiling per command execution
+```
+
+### 11.4 Distributed Task Leases & Stale Worker Reaper
+In distributed architectures (`iplanic`), dispatched tasks carry a short-lived lease (`lease_expires_at`). If an executor suspends or fails to report heartbeats, the control-plane reaper frees the task back to `Queued` (if `attempts < max_attempts`) or transitions to `ExecutionBlockedTerminal`.
+
+---
+
+## 12. Review Log
 
 - **2026-10-05 — Pass 1 (Envelope Preservation & Lint Integrity)**:
   - *Gap found*: Naive conversion of IPLAN to pure CNCF root broke `sdd_doc_lint`'s `STRUCT01` check.
@@ -438,4 +536,8 @@ Downstream Layer 10 (EVAL) ingests this receipt to verify compliance against ups
   - *Fix*: Introduced bounded inner remediation loop (`RemediateImplementationFixes`, `max_attempts: 3`) and non-destructive `ExecutionBlockedTerminal`.
   - *Gap found*: Internal vocabulary drift (`status: PENDING` in file manifest) and residual `.review_score >= 90` condition in Section 6.
   - *Fix*: Standardized file manifest on `NOT_STARTED`; retired residual `.review_score >= 90` in favor of zero blocking findings gate; codified the 4 orthogonal status planes in Section 8 and evidence receipts in Section 9.
+- **2026-10-19 — Pass 5 (Distributed Execution, Cryptographic Attribution & Step Evidence — CHG-121)**:
+  - *Gap found*: Lack of cryptographic attribution, silent step skipping, unanchored evidence replay, and missing state-level execution timeouts.
+  - *Fix*: Codified dual-identity attribution (`executor_id` / `protocol_agent_id`), step attestation envelope, `_UNSIGNED` fallback, pre-flight assertion contract with canonical `verifies` relation, Step Completeness Gate, SWF timeouts, and Layer 10 EVAL post-validation bridge.
+
 

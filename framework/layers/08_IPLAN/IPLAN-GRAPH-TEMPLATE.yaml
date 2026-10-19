@@ -41,6 +41,14 @@ nodes:
       work_order_id: "WORK-001"
       max_attempts: 3
       failure_handling: "retry_remediation"
+      state_timeout_s: 900
+      action_timeout_s: 300
+      evidence_ttl_s: 7200
+      executor_id: "exec:m7k3x9a2b4c6e8f1"
+      protocol_agent_id: "agent:coder_01"
+      attestation:
+        signature_algorithm: "ed25519"
+        key_id: "key-worker-01-ed25519"
       estimated_lines: 120
       description: "Creates gRPC handler implementing CreateOrder method with Redis validation"
 
@@ -72,6 +80,14 @@ nodes:
       work_order_id: "WORK-002"
       max_attempts: 3
       failure_handling: "retry_remediation"
+      state_timeout_s: 900
+      action_timeout_s: 300
+      evidence_ttl_s: 7200
+      executor_id: "exec:m7k3x9a2b4c6e8f1"
+      protocol_agent_id: "agent:coder_01"
+      attestation:
+        signature_algorithm: "ed25519"
+        key_id: "key-worker-01-ed25519"
       estimated_lines: 15
       description: "Registers the new CreateOrder service with the server listener"
 
@@ -89,6 +105,16 @@ nodes:
       trigger_condition: "Integration test assertion failure"
 
 edges:
+  # Downstream Pre-Flight Verification Handshake (CHG-121)
+  - from: "TASK.08.02.xxxx"
+    to: "TASK.08.01.xxxx"
+    relation: "verifies"
+    notes: "Downstream pre-flight: asserts upstream Git tree SHA and attestation receipt before mutating state"
+    description: "Asserts that Task 01 completed cleanly and local workspace tree matches signed evidence before Task 02 execution."
+    rationale: "Prevents cross-worker state drift and silent corruption during multi-agent DAG execution."
+    properties:
+      verification_type: "preflight_attestation"
+
   # Implementation Tasks implement Upstream Test Fixtures (Layer 07 TDD)
   - from: "TASK.08.01.xxxx"
     to: "TDD.07.01.xxxx"
