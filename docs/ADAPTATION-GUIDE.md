@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.4 |
+| Framework Version | 0.96.5 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,7 +33,7 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.4 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.5 --kind pin
 
 # Or attach via Git submodule:
 git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
