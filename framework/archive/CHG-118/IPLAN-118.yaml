@@ -8,9 +8,10 @@ id: "IPLAN-118"
 chg_id: "CHG-118"
 title: "Native SDD Graph Migration for Tier 2 Module Specifications"
 status: "Completed"
-framework_version: "0.96.4"
+framework_version: "0.96.5"
 
 file_manifest:
+  - "framework/VERSION"
   - "framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
   - "sdd_doc_lint/observability_adapter.py"
   - "sdd_doc_lint/__main__.py"

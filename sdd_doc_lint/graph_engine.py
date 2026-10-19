@@ -378,7 +378,8 @@ class GraphEngine:
                     e["relation"] == "decomposes_to"
                     and e["from"] == sid
                     and e["to"] == tgt
-                    and graph.nodes.get(tgt, {}).get("type") in ("system_container", "product_capability")
+                    and graph.nodes.get(tgt, {}).get("type")
+                    in ("system_container", "product_capability")
                     for e in graph.edges
                 )
             ]
@@ -536,4 +537,3 @@ if __name__ == "__main__":
     import sys
 
     sys.exit(main())
-

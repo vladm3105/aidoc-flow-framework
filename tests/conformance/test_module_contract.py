@@ -55,8 +55,12 @@ class ModuleTemplateContract(unittest.TestCase):
 
         # Traceability edges
         edges = graph.edges
-        self.assertTrue(any(e["relation"] == "decomposes_to" and e["to"] == "MODULE-NN" for e in edges))
-        self.assertTrue(any(e["relation"] == "decomposes_to" and e["from"] == "MODULE-NN" for e in edges))
+        self.assertTrue(
+            any(e["relation"] == "decomposes_to" and e["to"] == "MODULE-NN" for e in edges)
+        )
+        self.assertTrue(
+            any(e["relation"] == "decomposes_to" and e["from"] == "MODULE-NN" for e in edges)
+        )
 
         # BTV verification
         findings = engine.validate_btv(graph, is_template=True)

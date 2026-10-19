@@ -265,11 +265,15 @@ class ObservabilityAdapter:
                     lines.append("- **Approved Stack**:")
                     for sk, sv in props["approved_stack"].items():
                         lines.append(f"  - *{sk}*: {sv}")
-                if props.get("subsystem_invariants") and isinstance(props["subsystem_invariants"], list):
+                if props.get("subsystem_invariants") and isinstance(
+                    props["subsystem_invariants"], list
+                ):
                     lines.append("- **Subsystem Invariants**:")
                     for inv in props["subsystem_invariants"]:
                         if isinstance(inv, dict):
-                            lines.append(f"  - `[{inv.get('id', 'INV')}]`: {inv.get('statement', '')}")
+                            lines.append(
+                                f"  - `[{inv.get('id', 'INV')}]`: {inv.get('statement', '')}"
+                            )
                 lines.append("")
 
         return "\n".join(lines).strip() + "\n"
@@ -292,8 +296,13 @@ class ObservabilityAdapter:
         status = meta.get("status", "Draft")
         version = meta.get("framework_version", "1.0.0")
         c4_level = props.get("c4_level", meta.get("c4_level", "c4-l2"))
-        data_class = props.get("data_classification", meta.get("data_classification", "CONFIDENTIAL"))
-        desc = container.get("description", meta.get("description", "Subsystem architectural container specification."))
+        data_class = props.get(
+            "data_classification", meta.get("data_classification", "CONFIDENTIAL")
+        )
+        desc = container.get(
+            "description",
+            meta.get("description", "Subsystem architectural container specification."),
+        )
         clean_desc = " ".join(desc.strip().splitlines())
 
         # Line 1 fence for strict frontmatter parsing
@@ -334,7 +343,9 @@ class ObservabilityAdapter:
         ]
 
         # Upstream seed references
-        seed_edges = [e for e in graph.edges if e.get("to") == cid and e.get("relation") == "decomposes_to"]
+        seed_edges = [
+            e for e in graph.edges if e.get("to") == cid and e.get("relation") == "decomposes_to"
+        ]
         if seed_edges:
             for se in seed_edges:
                 seed_id = se.get("from")
@@ -346,19 +357,21 @@ class ObservabilityAdapter:
         else:
             lines.append(f"- **Seed Reference**: `{meta.get('seed_ref', 'SEED-domain')}`")
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 2. Structural Architecture (C4-L2 Container)",
-            "",
-            "@diagram: c4-l2",
-            "",
-            self.render_mermaid(graph, diagram_type="c4-container").strip(),
-            "",
-            "### 2.1 Container Archetype & Approved Stack Mapping",
-            f"- **Container Archetype:** `{props.get('container_archetype', 'api_service')}`",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 2. Structural Architecture (C4-L2 Container)",
+                "",
+                "@diagram: c4-l2",
+                "",
+                self.render_mermaid(graph, diagram_type="c4-container").strip(),
+                "",
+                "### 2.1 Container Archetype & Approved Stack Mapping",
+                f"- **Container Archetype:** `{props.get('container_archetype', 'api_service')}`",
+            ]
+        )
 
         approved_stack = props.get("approved_stack")
         if isinstance(approved_stack, dict):
@@ -366,24 +379,26 @@ class ObservabilityAdapter:
             for sk, sv in approved_stack.items():
                 lines.append(f"  - **{sk}**: `{sv}`")
 
-        lines.extend([
-            f"- **Runtime Platform:** `{props.get('runtime_platform', 'container / serverless / k8s')}`",
-            f"- **Selection Status:** {props.get('candidate_stack_status', 'Candidate baseline identified; formal binding ratified at downstream Layer 05 ADR')}",
-            "",
-            "---",
-            "",
-            "## 3. Data Movement, Trust Boundaries & Sensitivity (DFD-L2)",
-            "",
-            "### 3.1 Data Flow Diagram",
-            "@diagram: dfd-l2",
-            "",
-            self.render_mermaid(graph, diagram_type="dfd").strip(),
-            "",
-            "### 3.2 Data Sensitivity & Protection Matrix",
-            "",
-            "| Data Entity | Classification | Storage Location | In Transit | At Rest | Retention / Deletion Policy |",
-            "|---|---|---|---|---|---|",
-        ])
+        lines.extend(
+            [
+                f"- **Runtime Platform:** `{props.get('runtime_platform', 'container / serverless / k8s')}`",
+                f"- **Selection Status:** {props.get('candidate_stack_status', 'Candidate baseline identified; formal binding ratified at downstream Layer 05 ADR')}",
+                "",
+                "---",
+                "",
+                "## 3. Data Movement, Trust Boundaries & Sensitivity (DFD-L2)",
+                "",
+                "### 3.1 Data Flow Diagram",
+                "@diagram: dfd-l2",
+                "",
+                self.render_mermaid(graph, diagram_type="dfd").strip(),
+                "",
+                "### 3.2 Data Sensitivity & Protection Matrix",
+                "",
+                "| Data Entity | Classification | Storage Location | In Transit | At Rest | Retention / Deletion Policy |",
+                "|---|---|---|---|---|---|",
+            ]
+        )
 
         matrix = props.get("data_protection_matrix", [])
         if isinstance(matrix, list) and matrix:
@@ -397,23 +412,27 @@ class ObservabilityAdapter:
                     retention = row.get("retention_policy", "Standard Policy")
                     lines.append(f"| {entity} | {cl} | {loc} | {transit} | {rest} | {retention} |")
         else:
-            lines.append(f"| Subsystem Internal State | {data_class} | Datastore | TLS 1.3 | AES-256 | Retained per domain SLA |")
+            lines.append(
+                f"| Subsystem Internal State | {data_class} | Datastore | TLS 1.3 | AES-256 | Retained per domain SLA |"
+            )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 4. Inter-Module Process Choreography & Failure Handling",
-            "",
-            "@diagram: sequence-sync",
-            "",
-            self.render_mermaid(graph, diagram_type="sequence").strip(),
-            "",
-            "---",
-            "",
-            "## 5. Subsystem Invariants & Constraints",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 4. Inter-Module Process Choreography & Failure Handling",
+                "",
+                "@diagram: sequence-sync",
+                "",
+                self.render_mermaid(graph, diagram_type="sequence").strip(),
+                "",
+                "---",
+                "",
+                "## 5. Subsystem Invariants & Constraints",
+                "",
+            ]
+        )
 
         invariants = props.get("subsystem_invariants", [])
         if isinstance(invariants, list) and invariants:
@@ -421,7 +440,9 @@ class ObservabilityAdapter:
                 if isinstance(inv, dict):
                     iid = inv.get("id", "INV-01")
                     istmt = inv.get("statement", "")
-                    ienf = f" *(Enforcement: {inv['enforcement']})*" if inv.get("enforcement") else ""
+                    ienf = (
+                        f" *(Enforcement: {inv['enforcement']})*" if inv.get("enforcement") else ""
+                    )
                     lines.append(f"- `[{iid}]`: {istmt}{ienf}")
         else:
             lines.append("- `[INV-01]`: Idempotency required on all mutating state modifications.")

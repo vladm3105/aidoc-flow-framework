@@ -13,7 +13,7 @@ metadata:
   document_type: "chg-document"
   purpose: governance
   last_updated: "2026-10-18"
-  framework_version: "0.96.4"
+  framework_version: "0.96.5"
   change_level:
     value: C2
   change_source:
@@ -21,7 +21,7 @@ metadata:
   semver_impact:
     value: patch
   version_action:
-    value: none
+    value: bump
   entry_gate:
     value: GATE-SPEC
 
@@ -38,8 +38,8 @@ change_control:
   change_source: direct
   entry_gate: GATE-SPEC
   semver_impact: patch
-  version_action: none
-  new_version: "0.96.4"
+  version_action: bump
+  new_version: "0.96.5"
   author: "Framework Maintainer"
   date_proposed: "2026-10-18T20:30:00Z"
   date_approved: "2026-10-18T20:30:00Z"
