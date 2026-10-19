@@ -20,7 +20,6 @@ metadata:
   description: "[Holistic verification strategy, automated quality gate scoring, and regression benchmarks]"
   layer: "10_EVAL"
   owning_iplan: "IPLAN-NN"
-  evaluation_ready_target: "90/100"
 
 nodes:
   # ---------------------------------------------------------------------------
@@ -68,22 +67,22 @@ edges:
   - from: "EVAL.10.01.xxxx"
     to: "TASK.08.01.xxxx"
     relation: "verifies"
-    notes: "Audits execution completeness and quality gate score for Task 01"
+    notes: "Audits execution completeness and quality gate score for Task 01 (GRAPH-CARD-010)"
     description: "Evaluates the implemented handler against 100% test coverage criteria and static security analysis rules."
-    rationale: "Establishes independent quality verification gate before code merge."
+    rationale: "Establishes independent quality verification gate before code merge (GRAPH-CARD-010)."
 
   # Evaluation Suite verifies Upstream Test Fixture (Layer 07 TDD)
   - from: "EVAL.10.01.xxxx"
     to: "TDD.07.01.xxxx"
     relation: "verifies"
-    notes: "Verifies test suite execution passes in target CI/staging environment"
+    notes: "Verifies test suite execution passes in target CI/staging environment (GRAPH-CARD-010)"
     description: "Executes automated load and stress testing suites to verify latency p99 < 50ms under 5,000 req/sec."
-    rationale: "Validates non-functional performance benchmarks in realistic staging conditions."
+    rationale: "Validates non-functional performance benchmarks in realistic staging conditions (GRAPH-CARD-010)."
 
   # Security Evaluation verifies Audit Requirement (Layer 03 EARS)
   - from: "EVAL.10.02.xxxx"
     to: "EARS.03.01.xxxx"
     relation: "verifies"
-    notes: "Validates compliance with ubiquitous immutable audit logging requirement"
+    notes: "Validates compliance with ubiquitous immutable audit logging requirement (GRAPH-CARD-010)"
     description: "Runs automated SAST security scan and verifies cryptographic tamper-proofing of audit log records."
-    rationale: "Ensures compliance with enterprise audit retention invariants."
+    rationale: "Ensures compliance with enterprise audit retention invariants (GRAPH-CARD-010)."

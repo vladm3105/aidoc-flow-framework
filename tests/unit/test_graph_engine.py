@@ -205,6 +205,45 @@ class TestGraphEngine(unittest.TestCase):
             self.assertGreater(len(g.nodes), 0, f"Template {tpl.name} has no nodes")
             self.assertTrue(g.is_dag(), f"Template {tpl.name} contains cycles")
 
+    def test_graph_card_010_evaluation_suite_verification(self) -> None:
+        """Verify that GRAPH-CARD-010 enforces evaluation_suite verifying >= 1 target."""
+        # Failing case: evaluation_suite with 0 verifies edges
+        g_fail = SddGraph()
+        g_fail.add_node(
+            {
+                "id": "EVAL.10.01.0001",
+                "type": "evaluation_suite",
+                "title": "Unconnected Eval",
+                "statement": "No target edges",
+            }
+        )
+        findings = self.engine.validate_btv(g_fail, is_template=True)
+        card_010_errors = [f for f in findings if f.code == "GRAPH-CARD-010"]
+        self.assertEqual(len(card_010_errors), 1)
+
+        # Passing case: evaluation_suite verifying a task_action
+        g_pass = SddGraph()
+        g_pass.add_node(
+            {
+                "id": "EVAL.10.01.0001",
+                "type": "evaluation_suite",
+                "title": "Connected Eval",
+                "statement": "Verifies task",
+            }
+        )
+        g_pass.add_node(
+            {
+                "id": "TASK.08.01.0001",
+                "type": "task_action",
+                "title": "Task 1",
+                "target_file": "src/main.py",
+            }
+        )
+        g_pass.add_edge("EVAL.10.01.0001", "TASK.08.01.0001", "verifies")
+        findings_pass = self.engine.validate_btv(g_pass, is_template=True)
+        card_010_errors_pass = [f for f in findings_pass if f.code == "GRAPH-CARD-010"]
+        self.assertEqual(len(card_010_errors_pass), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

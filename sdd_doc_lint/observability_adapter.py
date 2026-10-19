@@ -236,10 +236,27 @@ class ObservabilityAdapter:
                 if ev.get("description"):
                     lines.append(f"\n{ev['description'].strip()}\n")
                 props = ev.get("properties", {})
+                if props.get("eval_track"):
+                    lines.append(f"- **Eval Track**: `{props['eval_track']}`")
+                if props.get("environment"):
+                    lines.append(f"- **Environment**: `{props['environment']}`")
+                if props.get("scoring_criteria"):
+                    lines.append(f"- **Scoring Criteria**: {props['scoring_criteria']}")
                 if props.get("quality_gate"):
                     lines.append(f"- **Quality Gate**: {props['quality_gate']}")
-                if props.get("benchmark_threshold"):
-                    lines.append(f"- **Benchmark Threshold**: {props['benchmark_threshold']}")
+                bench = props.get("benchmark_thresholds") or props.get("benchmark_threshold")
+                if bench:
+                    lines.append(f"- **Benchmark Thresholds**: {bench}")
+
+                # Relational verification contracts for this eval suite
+                rel_edges = [e for e in graph.edges if e["from"] == ev["id"]]
+                for edge in rel_edges:
+                    rel_title = edge["relation"].replace("_", " ").title()
+                    note = edge.get("notes") or edge.get("description")
+                    note_str = f" — {note}" if note else ""
+                    lines.append(f"- **{rel_title}**: `{edge['to']}`{note_str}")
+                    if edge.get("rationale"):
+                        lines.append(f"  - *Rationale*: {edge['rationale']}")
                 lines.append("")
 
         # 2b. Subsystem Containers (MODULE)

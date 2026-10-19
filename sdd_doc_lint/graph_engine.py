@@ -450,6 +450,34 @@ class GraphEngine:
                     )
                 )
 
+        # GRAPH-CARD-010: Every evaluation_suite must verify >= 1 target (task_action, test_fixture, or formal_requirement)
+        for suite in graph.nodes_by_type("evaluation_suite"):
+            eid = suite["id"]
+            verified_targets = [
+                tgt
+                for tgt in graph.adj.get(eid, set())
+                if any(
+                    e["relation"] == "verifies"
+                    and e["from"] == eid
+                    and e["to"] == tgt
+                    and (
+                        graph.nodes.get(tgt, {}).get("type")
+                        in ("task_action", "test_fixture", "formal_requirement")
+                        or is_federated_stub(tgt)
+                    )
+                    for e in graph.edges
+                )
+            ]
+            if not verified_targets:
+                findings.append(
+                    GraphFinding(
+                        code="GRAPH-CARD-010",
+                        severity="error",
+                        message=f"Evaluation coverage failure: evaluation suite '{eid}' has 0 verified targets (task_action, test_fixture, or formal_requirement).",
+                        node_id=eid,
+                    )
+                )
+
         return findings
 
     def calculate_blast_radius(self, graph: SddGraph, node_id: str) -> set[str]:

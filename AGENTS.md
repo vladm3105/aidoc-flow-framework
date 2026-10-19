@@ -117,6 +117,7 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Autonomous implementation.** Routine implementation runs without human in the loop — branch, build, self-review, merge on green. Reserve confirmation for important or structural decisions: releases, destructive unmerged-work deletion, and any rule below that names a human.
 - **Never bypass verification.** `--no-verify` (or any hook-bypass flag, skip-verification, or admin override) on commit, push, or merge is forbidden — a red hook means fix the cause in the worktree and re-run to green, never route around it.
 - **Verify subagent writes; share branches.** After a subagent reports file writes, read back at least 3 specific changes before trusting `success` (phantom success has occurred). Subagents share the parent's branch and never mint their own; parallel writers need isolated worktrees.
+- **Normative spec change bump protocol.** Any change modifying normative `framework/` files (outside `framework/archive/`) must bump `framework/VERSION` (`GATE-SPEC-E005`). Always: (1) bump `framework/VERSION`, (2) append the prior version to `OLD_VERSIONS` in `hooks/sync-version-refs.sh`, (3) run `bash hooks/sync-version-refs.sh` to propagate pins, and (4) verify locally via `python3 tests/chg/spec_gate.py --base origin/dev`. Format Python code with `ruff format` before staging.
 
 ## Governance Gate (applies to ALL agents)
 

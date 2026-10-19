@@ -452,6 +452,51 @@ class TestObservabilityAdapter(unittest.TestCase):
         self.assertIn("alt Failure Handling", seq)
         self.assertIn("Retry with idempotency key", seq)
 
+    def test_render_spec_sheet_evaluation_suite(self) -> None:
+        """Verify that render_spec_sheet correctly projects evaluation_suite nodes."""
+        g = SddGraph()
+        g.add_node(
+            {
+                "id": "EVAL.10.01.0001",
+                "type": "evaluation_suite",
+                "title": "Comprehensive E2E Suite",
+                "statement": "Validates system end-to-end",
+                "description": "Full regression and security audit.",
+                "properties": {
+                    "eval_track": "functional_and_regression",
+                    "environment": "staging",
+                    "scoring_criteria": "100% pass",
+                    "quality_gate": {"p0_failures_allowed": 0},
+                    "benchmark_thresholds": {"max_p99_latency_ms": 50},
+                },
+            }
+        )
+        g.add_node(
+            {
+                "id": "TASK.08.01.0001",
+                "type": "task_action",
+                "title": "Core implementation",
+                "target_file": "src/main.py",
+            }
+        )
+        g.add_edge(
+            "EVAL.10.01.0001",
+            "TASK.08.01.0001",
+            "verifies",
+            notes="Quality audit",
+            rationale="Verify before merge",
+        )
+        output = self.adapter.render_spec_sheet(g)
+        self.assertIn("## 7. Evaluation Suites & Quality Gates (EVAL)", output)
+        self.assertIn("Comprehensive E2E Suite (`EVAL.10.01.0001`)", output)
+        self.assertIn("- **Scope**: Validates system end-to-end", output)
+        self.assertIn("- **Eval Track**: `functional_and_regression`", output)
+        self.assertIn("- **Environment**: `staging`", output)
+        self.assertIn("- **Scoring Criteria**: 100% pass", output)
+        self.assertIn("- **Benchmark Thresholds**: {'max_p99_latency_ms': 50}", output)
+        self.assertIn("- **Verifies**: `TASK.08.01.0001` — Quality audit", output)
+        self.assertIn("- *Rationale*: Verify before merge", output)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -166,6 +166,81 @@ class TestKuzuAdapterMocked(unittest.TestCase):
             self.assertEqual(params["trust_boundary"], "DMZ")
             self.assertEqual(params["data_classification"], "RESTRICTED")
 
+    def test_ingest_evaluation_suite_and_verifies_edges(self) -> None:
+        """Verify that evaluation_suite nodes and multi-target verifies edges ingest properly."""
+        g = SddGraph()
+        g.add_node(
+            {
+                "id": "EVAL.10.01.0001",
+                "type": "evaluation_suite",
+                "title": "E2E Verification Suite",
+                "statement": "Verifies all requirements and tasks",
+                "properties": {
+                    "eval_track": "functional",
+                    "environment": "staging",
+                },
+            }
+        )
+        g.add_node(
+            {
+                "id": "TASK.08.01.0001",
+                "type": "task_action",
+                "title": "Implement auth handler",
+                "target_file": "src/auth.py",
+            }
+        )
+        g.add_node(
+            {
+                "id": "TDD.07.01.0001",
+                "type": "test_fixture",
+                "title": "Test auth handler",
+                "target_file": "tests/test_auth.py",
+            }
+        )
+        g.add_node(
+            {
+                "id": "EARS.03.01.0001",
+                "type": "formal_requirement",
+                "title": "Ubiquitous audit log",
+                "statement": "The system shall log all auth events.",
+            }
+        )
+        g.add_edge("EVAL.10.01.0001", "TASK.08.01.0001", "verifies")
+        g.add_edge("EVAL.10.01.0001", "TDD.07.01.0001", "verifies")
+        g.add_edge("EVAL.10.01.0001", "EARS.03.01.0001", "verifies")
+
+        with (
+            patch("sdd_doc_lint.kuzu_adapter.kuzu", self.mock_kuzu),
+            patch("sdd_doc_lint.kuzu_adapter.KUZU_AVAILABLE", True),
+        ):
+            adapter = KuzuGraphAdapter()
+            counts = adapter.ingest_graph(g)
+            self.assertEqual(counts["nodes"], 4)
+            self.assertEqual(counts["edges"], 3)
+
+            calls = self.mock_conn.execute.call_args_list
+            eval_call = [c for c in calls if "n:evaluation_suite" in str(c)]
+            self.assertEqual(len(eval_call), 1)
+            params = eval_call[0][0][1]
+            self.assertEqual(params["id"], "EVAL.10.01.0001")
+            self.assertEqual(params["eval_track"], "functional")
+            self.assertEqual(params["environment"], "staging")
+
+            # Mock query for verifies edges
+            mock_query_result = MagicMock()
+            mock_query_result.get_column_names.return_value = ["eval_id", "task_id"]
+            mock_query_result.has_next.side_effect = [True, False]
+            mock_query_result.get_next.return_value = ["EVAL.10.01.0001", "TASK.08.01.0001"]
+            self.mock_conn.execute.return_value = mock_query_result
+
+            rows = adapter.query(
+                "MATCH (e:evaluation_suite)-[:verifies]->(t:task_action) "
+                "RETURN e.id AS eval_id, t.id AS task_id"
+            )
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["eval_id"], "EVAL.10.01.0001")
+            self.assertEqual(rows[0]["task_id"], "TASK.08.01.0001")
+
 
 if __name__ == "__main__":
     unittest.main()
