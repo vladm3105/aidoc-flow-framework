@@ -23,7 +23,7 @@ metadata:
   schema_version: "1.1.0"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-10-07"
-  framework_version: "0.96.7"
+  framework_version: "0.96.8"
   # project_name: "<your project>"
   framework_path: ".aidoc/framework"  # attached via Git submodule or pinned copy; engines resolve via readlink -f
 

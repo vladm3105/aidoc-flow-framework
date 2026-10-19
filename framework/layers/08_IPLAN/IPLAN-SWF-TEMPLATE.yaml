@@ -147,6 +147,12 @@ workflow:
     - name: emitCloudEvent
       operation: "urn:aidoc:governance:event#emit"
       type: custom
+    - name: verifyAttestationReceipt
+      operation: "urn:aidoc:governance:attestation#verify"
+      type: custom
+    - name: verifyStepCompleteness
+      operation: "urn:aidoc:governance:completeness#verify"
+      type: custom
 
   states:
     # --- Step 0: Execution Context Initialization ---
@@ -166,7 +172,21 @@ workflow:
             refName: runCommand
             arguments:
               command: "git status --porcelain"
-      transition: Step2_SnapshotOriginals
+        - name: verifyUpstreamAttestation
+          functionRef:
+            refName: verifyAttestationReceipt
+            arguments:
+              target_step: "PREV-STEP"
+              expected_tree_sha: "${ .provenance.source_git_commit }"
+      transition: EvaluatePreFlightGate
+
+    - name: EvaluatePreFlightGate
+      type: switch
+      dataConditions:
+        - condition: "${ .preflight.verified == true }"
+          transition: Step2_SnapshotOriginals
+      defaultCondition:
+        transition: ExecutionBlockedTerminal
 
     # --- Step 2: Pre-change Snapshots ---
     - name: Step2_SnapshotOriginals
@@ -183,6 +203,9 @@ workflow:
     - name: Step3_ImplementTestsFirst
       type: operation
       compensatedBy: CleanupTestFiles
+      timeouts:
+        stateExecTimeout: "PT15M"
+        actionExecTimeout: "PT5M"
       actions:
         - name: writeUnitTests
           metadata:
@@ -199,6 +222,9 @@ workflow:
     - name: Step4_ImplementSourceCode
       type: operation
       compensatedBy: RollbackSourceFiles
+      timeouts:
+        stateExecTimeout: "PT15M"
+        actionExecTimeout: "PT5M"
       actions:
         - name: writeComponentLogic
           metadata:
@@ -209,11 +235,21 @@ workflow:
             arguments:
               target_file: "src/component.py"
               persona: "developer"
+        - name: attestStepExecution
+          functionRef:
+            refName: verifyAttestationReceipt
+            arguments:
+              step_id: "TASK-02"
+              executor_id: "${ .execution.executor_id }"
+              signature: "${ .execution.signature }"
       transition: Step5_VerifyImplementationSuite
 
     # --- Step 5: Verification Gate Check ---
     - name: Step5_VerifyImplementationSuite
       type: operation
+      timeouts:
+        stateExecTimeout: "PT15M"
+        actionExecTimeout: "PT5M"
       actions:
         - name: runPytest
           functionRef:
@@ -283,7 +319,7 @@ workflow:
       dataConditions:
         - name: ReviewGateApproved
           condition: "${ .blocking_findings == 0 and .gate_passed == true }"
-          transition: Step6_CommitAndSignoff
+          transition: VerifyStepExecutionCompleteness
         - name: ReviewRequiresRemediation
           condition: "${ .blocking_findings > 0 and .iteration < 3 }"
           transition: RemediateLayerDraft
@@ -305,6 +341,17 @@ workflow:
               findings: "${ .unresolved_findings }"
               iteration: "${ .iteration }"
       transition: InvokeReviewSagaGate
+
+    - name: VerifyStepExecutionCompleteness
+      type: operation
+      actions:
+        - name: verifyStepExecutionAudit
+          functionRef:
+            refName: verifyStepCompleteness
+            arguments:
+              iplan_id: "IPLAN-NN"
+              audit_policy: "fail_on_unjustified_skip"
+      transition: Step6_CommitAndSignoff
 
     # --- Step 6: Terminal Success ---
     - name: Step6_CommitAndSignoff

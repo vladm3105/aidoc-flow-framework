@@ -1,0 +1,312 @@
+# =============================================================================
+#  CNCF Serverless Workflow: Layer 08 (IPLAN) Implementation Execution Flow
+#  Spec Version: 0.8 (YAML)
+#  Standard: framework/governance/IPLAN_WORKFLOW_STANDARD.md
+# =============================================================================
+
+id: iplan-execution-flow
+name: "Layer 08 IPLAN Implementation Execution and Closeout State Machine"
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative CNCF Serverless Workflow governing implementation plan pre-flight verification,
+  snapshot creation, test-driven implementation, code verification gating, multi-persona
+  review/remediation saga, GATE-08 boundary verification, document baseline sealing,
+  SDD graph registration, and CloudEvent handoff emission.
+
+start: InitializeExecutionContext
+
+events:
+  - name: IplanApprovedEvent
+    type: org.aidoc.sdd.layer08.iplan.approved
+    source: /layers/08_iplan
+
+functions:
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
+  - name: remediateLayerFindings
+    operation: "urn:aidoc:functions:remediator#remediate"
+    type: custom
+  - name: remediateImplementationFindings
+    operation: "urn:aidoc:functions:remediator#remediateImplementation"
+    type: custom
+  - name: incrementCounter
+    operation: "urn:aidoc:functions:math#increment"
+    type: custom
+  - name: runCommand
+    operation: "urn:aidoc:functions:shell#runCommand"
+    type: custom
+  - name: logError
+    operation: "urn:aidoc:functions:logger#logError"
+    type: custom
+  - name: verifyLayerBoundaryGate
+    operation: "urn:aidoc:governance:gate#verify"
+    type: custom
+  - name: sealDocumentBaseline
+    operation: "urn:aidoc:governance:document#seal"
+    type: custom
+  - name: registerGraphBaselineNode
+    operation: "urn:aidoc:governance:graph#registerNode"
+    type: custom
+  - name: emitCloudEvent
+    operation: "urn:aidoc:governance:event#emit"
+    type: custom
+
+states:
+  # --- Step 0: Execution Context Initialization ---
+  - name: InitializeExecutionContext
+    type: inject
+    data:
+      attempt: 1
+      max_attempts: 3
+    transition: Step1_PreFlightCheck
+
+  # --- Step 1: Pre-flight Verification ---
+  - name: Step1_PreFlightCheck
+    type: operation
+    actions:
+      - name: verifyGitWorkspace
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "git status --porcelain"
+    transition: Step2_SnapshotOriginals
+
+  # --- Step 2: Pre-change Snapshots ---
+  - name: Step2_SnapshotOriginals
+    type: operation
+    actions:
+      - name: snapshotFiles
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "mkdir -p archive/CHG-NN/ && cp src/component.py archive/CHG-NN/"
+    transition: Step3_ImplementTestsFirst
+
+  # --- Step 3: Test Implementation (TDD First) ---
+  - name: Step3_ImplementTestsFirst
+    type: operation
+    compensatedBy: CleanupTestFiles
+    actions:
+      - name: writeUnitTests
+        metadata:
+          "@spec": "SPEC-NN"
+          "@tdd": "TDD.NN.01.0001"
+        functionRef:
+          refName: writeFileContent
+          arguments:
+            target_file: "tests/unit/test_component.py"
+            persona: "qa_lead"
+    transition: Step4_ImplementSourceCode
+
+  # --- Step 4: Source Implementation ---
+  - name: Step4_ImplementSourceCode
+    type: operation
+    compensatedBy: RollbackSourceFiles
+    actions:
+      - name: writeComponentLogic
+        metadata:
+          "@spec": "SPEC-NN"
+          "@req": "PRD-NN.FR-01"
+        functionRef:
+          refName: editFileContent
+          arguments:
+            target_file: "src/component.py"
+            persona: "developer"
+    transition: Step5_VerifyImplementationSuite
+
+  # --- Step 5: Verification Gate Check ---
+  - name: Step5_VerifyImplementationSuite
+    type: operation
+    actions:
+      - name: runPytest
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "pytest tests/unit/test_component.py"
+      - name: runLinters
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "ruff check src/component.py"
+    transition: EvaluateVerificationGate
+
+  - name: EvaluateVerificationGate
+    type: switch
+    dataConditions:
+      - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
+        transition: InvokeReviewSagaGate
+      - condition: "${ (.pytest.exit_code != 0 or .ruff.exit_code != 0) and .attempt < .max_attempts }"
+        transition: RemediateImplementationFixes
+      - condition: "${ .failure_reason == 'blocked' or .failure_reason == 'ambiguity' }"
+        transition: ExecutionBlockedTerminal
+    defaultCondition:
+      transition: TriggerSagaRollback
+
+  - name: RemediateImplementationFixes
+    type: operation
+    compensatedBy: RollbackSourceFiles
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateImplementationFindings
+          arguments:
+            findings: "${ .verification_errors }"
+            attempt: "${ .attempt }"
+      - name: incrementAttemptCounter
+        functionRef:
+          refName: incrementCounter
+          arguments:
+            variable: "attempt"
+    transition: Step5_VerifyImplementationSuite
+
+  - name: ExecutionBlockedTerminal
+    type: operation
+    actions:
+      - name: notifyExecutionBlocked
+        functionRef:
+          refName: logError
+          arguments:
+            message: "Execution halted without rollback: environmental blocker or requirement ambiguity."
+    end:
+      terminate: true
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "iplan-review-remediation-flow"
+            artifactId: "IPLAN-NN"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: Step6_CommitAndSignoff
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresRollback
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+        transition: TriggerSagaRollback
+    defaultCondition:
+      transition: TriggerSagaRollback
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "implementation_engineer"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
+
+  # --- Step 6: Terminal Success ---
+  - name: Step6_CommitAndSignoff
+    type: operation
+    actions:
+      - name: stageAndCommit
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "git add src/ tests/ && git commit -m 'feat: implement component per IPLAN-NN'"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-08"
+            layer: "08_IPLAN"
+            documentId: "IPLAN-NN"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "IPLAN-NN"
+            layer: "08_IPLAN"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "IplanNode"
+            nodeId: "IPLAN-NN"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "IplanApprovedEvent"
+            iplan_id: "IPLAN-NN"
+            file_manifest: "${ .file_manifest }"
+            tasks: "${ .tasks }"
+    produceEvents:
+      - eventRef: IplanApprovedEvent
+    end: true
+
+  # --- Saga Compensation Handlers (Executable Rollbacks) ---
+  - name: TriggerSagaRollback
+    type: operation
+    actions:
+      - name: logFailure
+        functionRef:
+          refName: logError
+          arguments:
+            message: "Verification tests failed. Triggering automated saga rollback."
+    transition: RollbackSourceFiles
+
+  - name: RollbackSourceFiles
+    type: operation
+    actions:
+      - name: revertSource
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "git checkout HEAD -- src/component.py"
+    transition: CleanupTestFiles
+
+  - name: CleanupTestFiles
+    type: operation
+    actions:
+      - name: removeTest
+        functionRef:
+          refName: runCommand
+          arguments:
+            command: "rm -f tests/unit/test_component.py"
+    end:
+      terminate: true
