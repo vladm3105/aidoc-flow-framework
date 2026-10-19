@@ -111,6 +111,16 @@ component_overview:
         Caller --> Component
         Component --> Dependency
   language: "[Python | TypeScript | Go | Java | ...]"
+  toolchain:
+    _required: false
+    _guidance: |
+      SPEC owns the toolchain conventions for downstream implementation and testing.
+      IPLAN execution_commands and TDD test runner conventions derive directly from these declarations.
+    runtime_version: "[Version pin, e.g. 3.13, Node 22, Go 1.24]"
+    package_manager: "[pip | poetry | npm | pnpm | cargo]"
+    setup_command: "[Command to provision virtualenv / install dependencies]"
+    type_check_command: "[Command to verify types, e.g. mypy --strict]"
+    test_runner_command: "[Command to execute test suite, e.g. pytest tests/unit/ -v]"
   dependencies:
     - name: "[Dependency Package]"
       version: "[>=X.Y.Z]"

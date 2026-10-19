@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.8 |
+| Framework Version | 0.96.9 |
 
 
 > **CHG Reference**: CHG-XX
@@ -119,10 +119,12 @@ custom_fields:
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| GATE-06-E001: SPEC TDD-Ready >= 90% | [ ] Pass / [ ] Fail | Score: ___% |
+| GATE-06-E001: SPEC passes binary topological validation (tdd_ready_status: PASS) | [ ] Pass / [ ] Fail | |
 | GATE-06-E002: TDD covers BDD scenarios | [ ] Pass / [ ] Fail | |
 | GATE-06-E003: TDD/SPEC aligned | [ ] Pass / [ ] Fail | |
 | GATE-06-E004: SPEC change → TDD updated | [ ] Pass / [ ] Fail | |
+| GATE-06-E005: SPEC declares toolchain ownership | [ ] Pass / [ ] Fail | |
+| GATE-06-E006: TDD stateful fixtures define saga teardown compensation | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
 - [ ] GATE-06-W001: Performance baseline documented
@@ -140,11 +142,13 @@ custom_fields:
 | GATE-08-E002: Test-first order enforced | [ ] Pass / [ ] Fail | |
 | GATE-08-E003: @spec/@tdd tags present (or DIR2C exemption) | [ ] Pass / [ ] Fail / [ ] N/A | |
 | GATE-08-E004: Session handoff documented | [ ] Pass / [ ] Fail | |
+| GATE-08-E005: Mutating steps declare saga rollback compensation | [ ] Pass / [ ] Fail | |
+| GATE-08-E006: Step execution completeness enforced | [ ] Pass / [ ] Fail | |
+| GATE-08-E007: Mutating states declare execution timeouts | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
 - [ ] GATE-08-W001: Manifest size acceptable
 - [ ] GATE-08-W002: Implementation contracts defined
-- [ ] GATE-08-W003: Rollback procedure documented
 
 **GATE-08 Result**: [ ] PASS / [ ] PASS WITH WARNINGS / [ ] FAIL
 

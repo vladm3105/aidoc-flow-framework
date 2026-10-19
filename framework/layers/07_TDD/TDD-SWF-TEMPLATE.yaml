@@ -92,6 +92,12 @@ test_strategy:
     unit: "pytest >= 8.0"
     integration: "testcontainers >= 4.0"
   isolation_strategy: "Hermetic containerized fixtures (e.g. testcontainers with PostgreSQL 18 and NATS JetStream) with automated teardown compensation"
+  fixture_hermeticity:
+    _required: false
+    _guidance: |
+      Stateful fixtures allocating external resources (testcontainers, ephemeral databases,
+      mock servers, temporary directories) must declare automated teardown compensation
+      (compensatedBy: TeardownFixturesCompensation) to prevent dirty state from leaking across test runs.
   flaky_policy:
     max_retries: 3
     backoff: "exponential-jitter"

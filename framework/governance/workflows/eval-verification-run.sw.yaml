@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.96.8"
+  framework_version: "0.96.9"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
@@ -50,6 +50,12 @@ functions:
   - name: emitCloudEvent
     type: custom
     operation: "urn:aidoc:governance:event#emit"
+  - name: verifyReceiptSeal
+    type: custom
+    operation: "urn:aidoc:governance:receipt#verifySeal"
+  - name: checkTreeInvariance
+    type: custom
+    operation: "urn:aidoc:governance:git#checkTreeSha"
 
 states:
   # ---------------------------------------------------------------------------
@@ -74,7 +80,29 @@ states:
           arguments:
             eval_strategy_path: "docs/sdd/10_EVAL/EVAL-{NN}/EVAL-{NN}.yaml"
             threshold_min_score: 90
-    transition: ExecuteParallelTestSuites
+      - name: verifyIplanReceiptSeal
+        functionRef:
+          refName: verifyReceiptSeal
+          arguments:
+            receipt_ref: "${ .iplan_context.iplan_receipt_ref }"
+            expected_seal_hash: "${ .iplan_context.receipt_seal_hash }"
+      - name: assertTreeInvariance
+        functionRef:
+          refName: checkTreeInvariance
+          arguments:
+            expected_tree_sha: "${ .receipt.output_tree_sha }"
+    transition: EvaluateReceiptGate
+
+  # ---------------------------------------------------------------------------
+  # State 1b: Evaluate Receipt Gate (Cryptographic Seal & Tree Invariance)
+  # ---------------------------------------------------------------------------
+  - name: EvaluateReceiptGate
+    type: switch
+    dataConditions:
+      - condition: "${ .receipt_verified == true and .tree_clean == true }"
+        transition: ExecuteParallelTestSuites
+    defaultCondition:
+      transition: ExecutionBlockedTerminal
 
   # ---------------------------------------------------------------------------
   # State 2: Parallel Test Suite Execution (All-Of)
@@ -298,4 +326,11 @@ states:
           arguments:
             flow: "REVIEW_REMEDIATION_FLOW.md"
             action: "Create C1 CHG + scoped IPLAN"
+    end: true
+
+  # ---------------------------------------------------------------------------
+  # State 8: Terminal Blocked State (Receipt Seal or Tree Hash Mismatch)
+  # ---------------------------------------------------------------------------
+  - name: ExecutionBlockedTerminal
+    type: operation
     end: true

@@ -183,6 +183,19 @@ test_strategy:
       - "Verify database migration idempotency and backward compatibility"
       - "Mock external APIs not under test"
       - "Use test containers for external message queues and database services when possible"
+
+  # Fixture hermeticity and saga teardown compensation
+  fixture_hermeticity:
+    _required: false
+    _guidance: |
+      Stateful fixtures allocating external resources (testcontainers, ephemeral databases,
+      mock servers, temporary directories) must declare automated teardown compensation
+      (compensatedBy: TeardownFixturesCompensation) to prevent dirty state from leaking across test runs.
+    requirements:
+      - "All test fixtures allocating system resources MUST declare an explicit teardown handler."
+      - "Database fixtures must reset schema/tables to baseline or use per-test transactions with rollback."
+      - "Temporary directories, network ports, and mocks must be registered with automatic cleanup contexts."
+      - "Stateful workflow test suites must define compensatedBy: TeardownFixturesCompensation."
     e2e_tests:
       - "Use real services or full test containers"
       - "Only mock services outside the system boundary"

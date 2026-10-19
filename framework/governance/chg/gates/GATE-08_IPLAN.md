@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.8 |
+| Framework Version | 0.96.9 |
 
 
 > **Position**: Between design/test and Layer 8 (IPLAN)
@@ -80,6 +80,9 @@ Before entering GATE-08, the change request must satisfy:
 | GATE-08-E002 | Test-first order: test files before implementation files | ERROR | Parse file manifest order |
 | GATE-08-E003 | IPLAN must reference upstream SPEC and TDD (SDD2C, SEED2C) | ERROR | `@spec:` and `@tdd:` tags present (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Session handoff protocol documented | ERROR | State variable section present |
+| GATE-08-E005 | Every mutating step/state must declare an automated rollback procedure / saga compensation handler (compensatedBy) | ERROR | Saga rollback compensation check |
+| GATE-08-E006 | Step execution completeness: all steps must be accounted for with non-empty evidence or skip_audit | ERROR | Step completeness check |
+| GATE-08-E007 | Mutating states in CNCF Serverless Workflow must declare state and action execution timeouts | ERROR | Execution timeout check |
 
 ### 3.2 Warning Checks (Non-Blocking)
 
@@ -87,7 +90,6 @@ Before entering GATE-08, the change request must satisfy:
 |----------|-------------|----------|----------------|
 | GATE-08-W001 | File manifest exceeds 20 files | WARNING | Consider splitting into multiple IPLANS |
 | GATE-08-W002 | Missing implementation contract for shared interface | WARNING | Define contract for multi-session work |
-| GATE-08-W003 | No rollback procedure defined | WARNING | Add revert steps for failed implementation |
 
 ## 4. Approval Workflow
 
@@ -208,9 +210,11 @@ Code generation failure
 | GATE-08-E002 | Order | Test files not before implementation files | Reorder manifest: tests first |
 | GATE-08-E003 | Traceability | Missing @spec/@tdd tags | Add upstream traceability tags (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Handoff | Session handoff protocol missing | Document state variables and resume protocol |
+| GATE-08-E005 | Rollback | Mutating step/state missing automated rollback procedure / saga compensation handler | Add compensatedBy compensation action for mutating states |
+| GATE-08-E006 | Completeness | Step execution incomplete without evidence or skip_audit | Account for all steps with non-empty evidence or skip_audit |
+| GATE-08-E007 | Timeouts | Mutating state missing execution timeouts | Add stateExecTimeout and actionExecTimeout |
 | GATE-08-W001 | Size | File manifest too large | Split into multiple IPLANS per sub-component |
 | GATE-08-W002 | Contracts | Shared interface without contract | Define implementation contract |
-| GATE-08-W003 | Rollback | No rollback procedure | Add revert steps |
 
 ### 7.2 Common Resolutions
 
@@ -241,6 +245,18 @@ transitively through the chain, not cited locally:
 
 *Note*: For direct implementation plans (`DIR2C` / `iplan_to_code`), upstream `@spec:` and `@tdd:`
 tags are optional; the `@chg:` reference satisfies traceability.
+
+## GATE-08-E005 Resolution
+Mutating step saga rollback compensation:
+Declare `compensatedBy: RollbackSourceFiles` (or corresponding compensation action) on every mutating state per Rule 3 of IPLAN_WORKFLOW_STANDARD.md.
+
+## GATE-08-E006 Resolution
+Step execution completeness:
+Ensure all declared work order steps have executed and emitted non-empty evidence, or declare an authorized `skip_audit` block.
+
+## GATE-08-E007 Resolution
+Execution timeouts:
+Declare `stateExecTimeout: PT15M` and `actionExecTimeout: PT5M` on mutating states in CNCF Serverless Workflows.
 ```
 
 ---
