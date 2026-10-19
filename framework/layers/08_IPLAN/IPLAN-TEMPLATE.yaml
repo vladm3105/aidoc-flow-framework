@@ -274,7 +274,7 @@ file_manifest:
     - path: "<unit test for the component, per the @spec language>"
       description: "<what this file is for, in one line>"
       order: 1
-      status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+      status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | PARTIAL | DONE | SKIPPED
       session: null
       verified: false
       tdd_ref: "@tdd: TDD.NN.04.xxxx | @tdd: TDD.NN.04.yyyy"
@@ -371,6 +371,42 @@ execution_commands:
   validation:
     - "# Run the @spec toolchain's test + type-check + lint gates"
     - "# example (Python): python -m pytest tests/ -v --cov && python -m mypy --strict && python -m ruff check"
+  work_orders:
+    _guidance: |
+      Optional structured work packages bridging high-level implementation commands
+      to atomic agent execution tasks (adopted from aidoc-flow-iplan-standard).
+      Each work order specifies dispatchability, ordered typed TODOs, allowed actions,
+      acceptance criteria, and evidence requirements.
+    orders: []
+    # - work_order_id: "WORK-001"
+    #   dispatchable: true
+    #   step_ref: "STEP-001"
+    #   todos:
+    #     - todo_id: "TODO-001"
+    #       description: "Author unit tests for component contract"
+    #       type: test  # inspect | edit | create | delete | test | review | document | verify
+    #       priority: P0  # P0 | P1 | P2 | P3
+    #       allowed_actions: ["read", "create", "modify", "run_command", "request_clarification"]
+    #       acceptance_criteria:
+    #         - "Test suite asserts all SPEC contract invariants"
+    #       evidence_required:
+    #         - event_type: "test.passed"
+    #           artifact_type: "pytest_xml"
+    #           description: "Unit test suite executes with exit code 0"
+
+# =============================================================================
+# Section 3b: Failure Handling Policy (Autonomous Agent Resilience)
+# =============================================================================
+failure_handling:
+  _required: false
+  _guidance: |
+    Execution policy governing autonomous agent behavior upon encountering blockers,
+    ambiguities, or test failures (adopted from aidoc-flow-iplan-standard task.schema.json).
+  on_blocker: "pause_and_notify"
+  on_ambiguity: "request_clarification"
+  on_test_failure: "retry_remediation"  # up to max_attempts before saga compensation
+  on_policy_denial: "abort_and_rollback"
+  on_partial_completion: "checkpoint_state"
 
 # =============================================================================
 # Section 4: Implementation Contracts

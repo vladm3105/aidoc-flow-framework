@@ -1,0 +1,157 @@
+# =============================================================================
+#  CHG-120: Layer 08 (IPLAN) Execution Engine Enhancement & Status Taxonomy Harmonization
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/IPLAN-EXECUTION-ENHANCEMENT-PLAN.md
+#  Scope: Harmonize Layer 08 execution state machine resilience, work order structuring,
+#         and status taxonomy separation adopting battle-tested patterns from
+#         aidoc-flow-iplan-standard and aidoc-flow-iplanic.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.7"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-120"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.7"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T13:20:00Z"
+  date_approved: "2026-10-19T13:20:00Z"
+  date_implemented: "2026-10-19T13:40:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T13:20:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/IPLAN-EXECUTION-ENHANCEMENT-PLAN.md
+      resolving Layer 08 execution state machine gaps, retiring score>=90, and harmonizing status planes.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-120)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-120"
+  title: "Formal Decision: Layer 08 (IPLAN) Execution Engine Enhancement & Status Taxonomy Harmonization"
+  date: "2026-10-19"
+  status: Accepted
+  context: |
+    Layer 08 (IPLAN) lacked an inner remediation loop in both IPLAN-SWF-TEMPLATE.yaml and
+    iplan-execution.sw.yaml, causing immediate destructive saga rollbacks (rm -f tests/ and git checkout)
+    upon test failure. The templates also lacked a non-destructive blocked state, retained residual
+    review_score >= 90 conditions violating SDD-0044, suffered internal file manifest status drift
+    (status: PENDING instead of NOT_STARTED), and lacked structured work orders and failure handling policies.
+  choice: |
+    Execute comprehensive Layer 08 execution enhancement per verified plan plans/IPLAN-EXECUTION-ENHANCEMENT-PLAN.md:
+    1. Harmonize file manifest status across templates and governance docs (PENDING -> NOT_STARTED).
+    2. Retire residual review_score >= 90 conditions in IPLAN-SWF-TEMPLATE.yaml, iplan-execution.sw.yaml,
+       and IPLAN_WORKFLOW_STANDARD.md.
+    3. Introduce InitializeExecutionContext inject state, RemediateImplementationFixes retry loop with
+       compensatedBy: RollbackSourceFiles, and non-destructive ExecutionBlockedTerminal in both workflows.
+    4. Introduce structured work_orders, typed todos, and failure_handling (_required: false) into IPLAN-TEMPLATE.yaml.
+    5. Update IPLAN-GRAPH-TEMPLATE.yaml task_action properties with work_order_id, max_attempts, and failure_handling.
+    6. Formalize 4-plane status taxonomy and evidence receipt specifications in IPLAN_WORKFLOW_STANDARD.md.
+    7. Bump framework/VERSION to 0.96.7, append 0.96.6 to OLD_VERSIONS, and propagate references repo-wide.
+  consequences: |
+    - Coding agents gain resilient self-correction loops bounded by max_attempts: 3 before triggering rollbacks.
+    - Environmental blockers or requirement ambiguities pause non-destructively without wiping code/tests.
+    - Zero breaking changes to acceptance suite test_layer_iplan.py golden fixtures via _required: false.
+    - Completely eliminates residual numerical readiness scores in Layer 08 workflows.
+    - Requires framework version bump from 0.96.6 to 0.96.7 per GATE-SPEC-E005.
+  alternatives_considered:
+    - option: "Retain immediate TriggerSagaRollback on first test failure"
+      rationale_rejected: >-
+        Rejected because autonomous agents iterate; destroying tests on transient failure prevents self-correction.
+    - option: "Add mandatory root-level failure_handling in IPLAN-TEMPLATE.yaml"
+      rationale_rejected: >-
+        Rejected because un-flagged root keys break acceptance test test_layer_iplan.py golden fixture checks.
+
+# =============================================================================
+# Section 2: Artifacts Modified
+# =============================================================================
+
+artifacts_modified:
+  - path: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    change_type: modified
+    description: "Fix status: PENDING -> NOT_STARTED, retire score>=90, add InitializeExecutionContext, RemediateImplementationFixes, and ExecutionBlockedTerminal"
+  - path: "framework/governance/workflows/iplan-execution.sw.yaml"
+    change_type: modified
+    description: "Fix standard header path, retire score>=90, add InitializeExecutionContext, RemediateImplementationFixes, and ExecutionBlockedTerminal"
+  - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+    change_type: modified
+    description: "Add structured work_orders, typed todos, failure_handling (_required: false), and clarify 5 file manifest statuses"
+  - path: "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+    change_type: modified
+    description: "Enhance task_action node properties with work_order_id, max_attempts, and failure_handling"
+  - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    change_type: modified
+    description: "Formalize 4 status planes, update snippet PENDING -> NOT_STARTED, retire score>=90, update §4.1 topologies, and specify evidence receipts"
+  - path: "tests/conformance/test_iplan_workflow.py"
+    change_type: modified
+    description: "Add conformance tests asserting NOT_STARTED manifest, absence of review_score >= 90, and presence of remediation and blocked states"
+  - path: "framework/VERSION"
+    change_type: modified
+    description: "Bump framework version from 0.96.6 to 0.96.7"
+  - path: "hooks/sync-version-refs.sh"
+    change_type: modified
+    description: "Append 0.96.6 to OLD_VERSIONS list and propagate 0.96.7"
+  - path: "plans/IPLAN-EXECUTION-ENHANCEMENT-PLAN.md"
+    change_type: created
+    description: "Verified implementation plan with 2 passes of adversarial independent review"
+
+# =============================================================================
+# Section 3: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-120/IPLAN-120.yaml"
+  steps:
+    - step: "Author authorizing CHG-120.yaml and IPLAN-120.yaml"
+      phase: "iplan_creation"
+    - step: "Harmonize SWF templates, retire score>=90, and add remediation loop and blocked state"
+      phase: "swf_enhancement"
+    - step: "Add structured work orders and failure handling to IPLAN prose and graph templates"
+      phase: "template_enhancement"
+    - step: "Formalize 4-plane status taxonomy, evidence receipts, and update topologies in specification"
+      phase: "spec_alignment"
+    - step: "Extend conformance tests, bump framework/VERSION to 0.96.7, and verify test suites"
+      phase: "verification_and_governance"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-120/CHG-120.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/iplan-execution.sw.yaml"
+    - "pytest tests/conformance/test_iplan_workflow.py"
+    - "pytest tests/conformance/test_governance_workflows.py"
+    - "pytest tests/conformance/test_layers.py"
+    - "pytest tests/acceptance/deterministic/test_layer_iplan.py"
+    - "hooks/pre_push_check.sh"
+    - "python3 tests/chg/spec_gate.py --base origin/dev"

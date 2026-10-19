@@ -1,0 +1,41 @@
+# =============================================================================
+#  IPLAN-120: Layer 08 (IPLAN) Execution Engine Enhancement & Status Taxonomy Harmonization
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-120/CHG-120.yaml
+# =============================================================================
+
+id: "IPLAN-120"
+chg_id: "CHG-120"
+title: "Layer 08 (IPLAN) Execution Engine Enhancement & Status Taxonomy Harmonization"
+status: "Completed"
+framework_version: "0.96.7"
+
+file_manifest:
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+  - "framework/governance/workflows/iplan-execution.sw.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+  - "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+  - "tests/conformance/test_iplan_workflow.py"
+  - "framework/archive/CHG-120/CHG-120.yaml"
+  - "framework/archive/CHG-120/IPLAN-120.yaml"
+  - "plans/IPLAN-EXECUTION-ENHANCEMENT-PLAN.md"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-120.yaml and IPLAN-120.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Harmonize SWF templates, retire score>=90, and add remediation loop and blocked state"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Add structured work orders and failure handling to IPLAN prose and graph templates"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Formalize 4-plane status taxonomy, evidence receipts, and update topologies in specification"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Extend conformance tests, bump framework/VERSION to 0.96.7, and verify test suites"
+    status: "Completed"
