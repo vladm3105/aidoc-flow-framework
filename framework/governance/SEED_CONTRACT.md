@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.96.4 |
+| Framework Version | 0.96.5 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -108,7 +108,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.96.4"
+  framework_version: "0.96.5"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:
@@ -226,7 +226,7 @@ executes under a SEED2C (F3) Change Request through the ordered cascade:
 
 2. **Phase 0b — `module_lifecycle: sync` (The Living Bridge):**
    - Seed docs never feed BRDs in isolation; modules bridge seed principles into technical constraints (`Seed → Module → SDD`).
-   - Every module touched by the seed change is analyzed and updated per the normative 5-step methodology in [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md) and formatted per [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+   - Every module touched by the seed change is analyzed and updated per the normative 5-step methodology in [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md), authored in Native SDD Graph format per [`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml), and projected per [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
    - The module’s C4-L2 container boundaries, DFD-L2 data sensitivity matrix, and process sequences are refreshed to reflect the new seed realities.
    - Touched modules are archived to `docs/sdd/09-CHG/archive/{CHG-ID}/modules/` and updated in `docs/modules/` (re-pointing seed references, updating invariants).
 

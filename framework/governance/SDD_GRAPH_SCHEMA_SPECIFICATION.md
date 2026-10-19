@@ -8,7 +8,7 @@
 | Status | Ratified |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.4 |
+| Framework Version | 0.96.5 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
@@ -38,7 +38,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.96.4"
+  framework_version: "0.96.5"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:
@@ -62,9 +62,9 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 - **Role**: Captures stakeholder problem space, business context, and top-level boundaries.
 
 ### 3.2 Tier 2: Subsystem Container (`system_container`)
-- **ID Pattern**: `MODULE-NN` (e.g. `MODULE-01`)
-- **Properties**: `title`, `context` (container responsibility), `properties.data_classification`, `properties.trust_boundary`.
-- **Role**: Defines architectural subsystem container (C4-L2) and data movement boundaries.
+- **ID Pattern**: `MODULE-NN` (e.g. `MODULE-01` or template `MODULE-NN`)
+- **Properties**: `title`, `statement` (subsystem role), `description`, `properties.c4_level: "c4-l2"`, `properties.container_archetype` (`api_service` | `worker` | `data_store` | `spa` | `gateway` | `library`), `properties.approved_stack`, `properties.runtime_platform`, `properties.candidate_stack_status`, `properties.subsystem_invariants`, `properties.trust_boundary`, `properties.data_classification`, `properties.data_protection_matrix`, `properties.choreography` (`interactions`, `failure_branches`).
+- **Role**: Defines architectural subsystem container (C4-L2), data movement boundaries, trust enclaves, and inter-module process choreography.
 
 ### 3.3 Layer 01: Business Objective (`business_objective`)
 - **ID Pattern**: `BRD.NN.SS.xxxx` (or `BIZ.NN.SS.xxxx`)

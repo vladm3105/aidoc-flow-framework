@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.4 |
+| Framework Version | 0.96.5 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
@@ -35,7 +35,7 @@ Tier 2 Domain Source: Module Layer (docs/modules/MODULE-NN_*)
   │   • C4-L2 Container: deployable services, datastores, dependencies (mapped to approved archetypes)
   │   • DFD-L2 Data Movement: trust boundaries, data sensitivity (PII/secrets)
   │   • Sequence Choreography: sync/async workflows, failure & timeout paths
-  │   • Living domain source of truth (MODULE_LAYOUT.md / MODULE-TEMPLATE.md)
+  │   • Living domain source of truth (MODULE_LAYOUT.md / MODULE-GRAPH-TEMPLATE.yaml / MODULE-TEMPLATE.md)
   ▼
 Tier 2 SDD Execution: Formal 10-Layer Chain (docs/sdd/01_BRD → ...)
       • Problem Space (01-04) → Layer 05 ADR Selection Gate → Solution Space (06-10)
@@ -157,6 +157,6 @@ All modules must classify data entities using this standard 4-tier taxonomy:
 2. **Seed Supersede Timing (SEED2C / F3 Phase 0b)**:
    - When a Seed document is superseded (e.g., architecture direction changes or new environmental realities emerge), the architect runs Phase 0b Module Synchronization following this 5-step methodology before any downstream SDD documents are amended.
 3. **Template Mandate**:
-   - Every module document must adhere to [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+   - Every module document adheres to the Dual-Plane CQRS standard: machine-authored in Native SDD Graph format per [`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml) and projected to human-readable Markdown matching [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
 4. **Hard Review Gate**:
    - The module decomposition must achieve human architect sign-off (`Status: Active`) before development teams or AI agents author the downstream BRD, PRD, and SPEC layers.

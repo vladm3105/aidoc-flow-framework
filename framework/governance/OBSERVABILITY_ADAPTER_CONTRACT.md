@@ -8,7 +8,7 @@
 | Status | Ratified |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.4 |
+| Framework Version | 0.96.5 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md) Principle 2 |
 
 ---
@@ -51,22 +51,26 @@ Compiles a graph slice into structured Markdown replicating traditional SDD docu
 - Groups `formal_requirement` nodes into Requirements Specification.
 - Formats `acceptance_scenario` nodes into Given/When/Then scenario tables.
 - Formats `architectural_decision` nodes into Context/Decision/Consequences summaries.
+- Auto-dispatches to `render_module_spec` when processing a Tier 2 module graph slice (`MODULE-NN_[slug].graph.yaml`), generating a canonical spec sheet matching `MODULE-TEMPLATE.md` with line 1 YAML frontmatter.
 
 Command:
 ```bash
 python3 -m sdd_doc_lint --render-spec docs/sdd/graph/initiatives/INIT-01.graph.yaml --out docs/specs/INIT-01.md
+python3 -m sdd_doc_lint --render-spec docs/modules/MODULE-01_auth/MODULE-01_auth.graph.yaml --out docs/modules/MODULE-01_auth/MODULE-01_auth.md
 ```
 
 ### 3.2 Architectural Diagram Projection (`--render-diagram`)
 Generates native Mermaid diagrams derived from node properties and relational edges:
 - **`--type c4-context`**: Emits `graph TB` from `seed_intent` and `system_container` boundaries.
-- **`--type c4-container`**: Emits subsystem container maps from `component_contract` nodes.
-- **`--type dfd`**: Emits Data Flow Diagrams with trust boundary subgraphs.
+- **`--type c4-container`**: Emits subsystem container maps from `system_container` and `component_contract` nodes.
+- **`--type dfd`**: Emits Data Flow Diagrams with trust boundary subgraphs and classified data paths.
+- **`--type sequence`**: Emits inter-module interaction flows and failure recovery branches from `system_container.choreography`.
 - **`--type lineage`**: Emits the end-to-end Traceability DAG (`Requirement` $\longrightarrow$ `Scenario` $\longrightarrow$ `Test` $\longrightarrow$ `Code`).
 
 Command:
 ```bash
 python3 -m sdd_doc_lint --render-diagram docs/sdd/graph/ --type c4-container --out docs/specs/diagrams/c4_containers.mmd
+python3 -m sdd_doc_lint --render-diagram docs/modules/MODULE-01_auth/MODULE-01_auth.graph.yaml --type sequence --out docs/modules/MODULE-01_auth/sequence.mmd
 ```
 
 ### 3.3 Verification & Traceability Matrix (`--render-matrix`)
@@ -110,6 +114,9 @@ Every file emitted by `sdd-render` prepends a non-negotiable generated banner:
 The CI pipeline checks all generated spec files:
 1. Recomputes $\text{SHA-256}(\text{source graph slice})$.
 2. If the commit modifies a rendered markdown file without modifying the corresponding graph slice, or if the rendered output does not match `sdd-render(graph)`, CI fails immediately with `ERR-STALE-PROJECTION`.
+
+### 4.2 Frontmatter Sequencing Invariant
+For document specifications requiring YAML frontmatter (such as `MODULE-NN_slug.md`), the opening fence `---` must appear at line 1, column 1 to guarantee standard frontmatter parser compatibility across all tools and test harnesses. The SDD-RENDER generated notice is embedded as YAML comment lines within the frontmatter block, and cryptographic metadata is recorded within the `document_control` mapping.
 
 ---
 

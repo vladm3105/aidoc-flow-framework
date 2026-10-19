@@ -1,0 +1,53 @@
+# =============================================================================
+#  IPLAN-118: Native SDD Graph Migration for Tier 2 Module Specifications
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-118/CHG-118.yaml
+# =============================================================================
+
+id: "IPLAN-118"
+chg_id: "CHG-118"
+title: "Native SDD Graph Migration for Tier 2 Module Specifications"
+status: "Completed"
+framework_version: "0.96.5"
+
+file_manifest:
+  - "framework/VERSION"
+  - "framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
+  - "sdd_doc_lint/observability_adapter.py"
+  - "sdd_doc_lint/__main__.py"
+  - "sdd_doc_lint/kuzu_adapter.py"
+  - "sdd_doc_lint/graph_engine.py"
+  - "framework/governance/MODULE_LAYOUT.md"
+  - "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+  - "framework/governance/DIAGRAM_STANDARDS.md"
+  - "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+  - "framework/governance/SEED_CONTRACT.md"
+  - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+  - "framework/governance/workflows/seed-to-module-decomposition.sw.yaml"
+  - "tests/conformance/test_module_contract.py"
+  - "tests/conformance/test_sdd_graph_schema.py"
+  - "tests/unit/test_kuzu_adapter.py"
+  - "tests/unit/test_observability_adapter.py"
+  - "framework/archive/CHG-118/CHG-118.yaml"
+  - "framework/archive/CHG-118/IPLAN-118.yaml"
+  - "plans/MODULE-GRAPH-MIGRATION-PLAN.md"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-118.yaml and IPLAN-118.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Author canonical framework/templates/MODULE-GRAPH-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Enhance observability adapter and CLI with render_module_spec and diagram generators"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Harmonize Kùzu adapter DDL and parameterized ingestion"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Align governance documentation and Serverless Workflow definitions"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Implement graph engine CLI, invariants, and extend test suites"
+    status: "Completed"
