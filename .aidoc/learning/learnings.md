@@ -37,6 +37,15 @@ authoring an ADR (Layer 05), a Change Request (Layer 09), or tracking on GitHub 
 - **Evidence**: 2026-09-28 zero-job heads vs fresh green heads; 2026-09-29 PR #778 AGENTS.md push 406addf0: terminated the stale watch, re-watched to green on the new head, merged
 - **Governance rule**: AGENTS.md (watching-your-PR, headRefOid); ship-it §1 stale-SHA trap
 
+## [workflow] Normative framework spec change requires synchronized 4-step version bump
+
+- **First seen**: 2026-10-18
+- **Last seen**: 2026-10-19
+- **Count**: 2
+- **Lesson**: Any change modifying files under `framework/` (outside `framework/archive/`) trips `GATE-SPEC-E005`. Resolving it requires a strict 4-step atomic sequence: (1) bump `framework/VERSION`, (2) append prior version to `OLD_VERSIONS` in `hooks/sync-version-refs.sh`, (3) run `bash hooks/sync-version-refs.sh` to propagate and stage all swept pins, and (4) verify with `python3 tests/chg/spec_gate.py --base origin/dev`. Never bump `framework/VERSION` without adding the old version to `OLD_VERSIONS`.
+- **Evidence**: PR #1012 CHG-118 initial push failed GATE-SPEC (missing bump) and second push failed Conformance (OLD_VERSIONS missing 0.96.4); adding 0.96.4 and running sync-version-refs restored all 9 CI checks to green.
+- **Governance rule**: GATE-SPEC-E005; tests/conformance/test_sync_version_refs.py
+
 ## Candidates logged, not promoted (single occurrence)
 
 - Repo-wide zero-match grep before engaging a filed "contradiction" (2026-09-29, #775) — closed as covered by aidoc-triage §2's core discipline; no separate entry.

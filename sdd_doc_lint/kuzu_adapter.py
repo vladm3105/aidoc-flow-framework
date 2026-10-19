@@ -81,7 +81,7 @@ NODE_TABLE_SCHEMAS: dict[str, str] = {
     ),
     "evaluation_suite": (
         "CREATE NODE TABLE IF NOT EXISTS evaluation_suite("
-        "id STRING, title STRING, statement STRING, PRIMARY KEY (id))"
+        "id STRING, title STRING, statement STRING, eval_track STRING, environment STRING, PRIMARY KEY (id))"
     ),
 }
 
@@ -101,7 +101,11 @@ REL_TABLE_SCHEMAS: dict[str, str] = {
         "FROM formal_requirement TO business_objective)"
     ),
     "verifies": (
-        "CREATE REL TABLE IF NOT EXISTS verifies(FROM acceptance_scenario TO formal_requirement)"
+        "CREATE REL TABLE IF NOT EXISTS verifies("
+        "FROM acceptance_scenario TO formal_requirement, "
+        "FROM evaluation_suite TO task_action, "
+        "FROM evaluation_suite TO test_fixture, "
+        "FROM evaluation_suite TO formal_requirement)"
     ),
     "proves": ("CREATE REL TABLE IF NOT EXISTS proves(FROM test_fixture TO acceptance_scenario)"),
     "constrains": (
@@ -294,9 +298,17 @@ class KuzuGraphAdapter:
                         {"id": nid, "title": title, "status": status, "auth": auth},
                     )
                 elif ntype == "evaluation_suite":
+                    eval_track = str(props.get("eval_track", "conformance"))
+                    environment = str(props.get("environment", "local"))
                     self._conn.execute(
-                        "CREATE (n:evaluation_suite {id: $id, title: $title, statement: $statement})",
-                        {"id": nid, "title": title, "statement": statement},
+                        "CREATE (n:evaluation_suite {id: $id, title: $title, statement: $statement, eval_track: $eval_track, environment: $environment})",
+                        {
+                            "id": nid,
+                            "title": title,
+                            "statement": statement,
+                            "eval_track": eval_track,
+                            "environment": environment,
+                        },
                     )
                 nodes_inserted += 1
             except Exception as e:

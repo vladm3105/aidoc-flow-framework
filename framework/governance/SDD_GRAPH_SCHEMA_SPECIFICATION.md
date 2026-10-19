@@ -8,7 +8,7 @@
 | Status | Ratified |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.5 |
+| Framework Version | 0.96.6 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
@@ -38,7 +38,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.96.5"
+  framework_version: "0.96.6"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:
@@ -113,7 +113,7 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 
 ### 3.12 Layer 10: Evaluation Suite (`evaluation_suite`)
 - **ID Pattern**: `EVAL.NN.SS.xxxx`
-- **Properties**: `title`, `statement`, `properties.scoring_criteria`, `properties.quality_gate`, `properties.benchmark_threshold`.
+- **Properties**: `title`, `statement`, `properties.eval_track`, `properties.environment`, `properties.scoring_criteria`, `properties.quality_gate`, `properties.benchmark_thresholds`.
 - **Role**: Comprehensive evaluation and verification suite auditing requirements coverage, performance benchmarks, and regression gates.
 
 ---
@@ -130,7 +130,9 @@ Edges represent directed semantic dependencies (`from` $\longrightarrow$ `to`). 
                                [product_capability]
                                          ▲
 [formal_requirement] ──realizes─────────┘
-         ▲
+         ▲  ▲
+         │  └──verifies── [evaluation_suite] ──verifies──► [test_fixture] / [task_action]
+         │
          └──verifies── [acceptance_scenario] ◄──proves── [test_fixture]
                                                                ▲
 [architectural_decision] ──constrains──► [component_contract]  │
@@ -155,6 +157,7 @@ Edges represent directed semantic dependencies (`from` $\longrightarrow$ `to`). 
 | `GRAPH-CARD-007` | `compensated_by` | `task_action` | `task_action` (rollback) | $1 : 1$ (Strict) | **Saga Rollback Invariant**: Every mutating task MUST have 1 rollback. |
 | `GRAPH-CARD-008` | `authorized_by` | Any mutated node | `change_request` | $1 : 1$ | Mutated/superseded nodes must cite an authorizing CHG. |
 | `GRAPH-CARD-009` | `supersedes` | New Node Version | Old Node Version | $1 : 1$ | Preserves immutable version lineage. |
+| `GRAPH-CARD-010` | `verifies` | `evaluation_suite` | `task_action` / `test_fixture` / `formal_requirement` | $M : N$ ($N \ge 1$) | **Holistic Evaluation Invariant**: Every evaluation suite MUST verify $\ge 1$ target (task, test fixture, or formal requirement). |
 
 ---
 

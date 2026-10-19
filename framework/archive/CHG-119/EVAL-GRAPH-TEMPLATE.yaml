@@ -1,0 +1,89 @@
+# =============================================================================
+#  EVAL-GRAPH-TEMPLATE.yaml — Evaluation & Verification Graph Slice (Layer 10)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 10_EVAL (Evaluation Strategy, Quality Gates & Verification Receipts)
+#  Parity: Full content and functional parity with EVAL-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "EVAL-NN_[eval_slug]"
+initiative_ref: "INIT-NN_[feature_slug]"
+
+metadata:
+  author: "[Lead SDET / Evaluator / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Holistic verification strategy, automated quality gate scoring, and regression benchmarks]"
+  layer: "10_EVAL"
+  owning_iplan: "IPLAN-NN"
+  evaluation_ready_target: "90/100"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Comprehensive Evaluation Suite (Section 2, 3, 4 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "EVAL.10.01.xxxx"
+    type: "evaluation_suite"
+    title: "[End-to-End Requirements Verification & Regression Suite]"
+    statement: >-
+      Executes end-to-end verification across unit, integration, and load dimensions to ensure
+      100% requirements coverage and zero performance regression prior to release.
+    properties:
+      eval_track: "functional_and_regression"
+      environment: "staging"
+      scoring_criteria:
+        coverage_completeness: "100% of IPLAN tasks mapped to test fixtures"
+        traceability_integrity: "Bidirectional verification links valid"
+        threshold_alignment: "p99 latency < 50ms verified under 5,000 req/sec"
+      quality_gate:
+        p0_failures_allowed: 0
+        p1_failures_allowed: 0
+        code_coverage_minimum: 95
+      benchmark_thresholds:
+        max_p99_latency_ms: 50
+        max_memory_mb: 512
+
+  # ---------------------------------------------------------------------------
+  # Security & Compliance Verification Node
+  # ---------------------------------------------------------------------------
+  - id: "EVAL.10.02.xxxx"
+    type: "evaluation_suite"
+    title: "[SAST Security & Regulatory Audit Ledger Verification]"
+    statement: >-
+      Audits codebase against Bandit SAST rules, secret detection, and verifies 7-year immutable
+      audit ledger persistence.
+    properties:
+      eval_track: "security_compliance"
+      quality_gate:
+        sast_critical_allowed: 0
+        sast_high_allowed: 0
+        audit_trail_verified: true
+
+edges:
+  # Evaluation Suite verifies Implementation Tasks (Layer 08 IPLAN)
+  - from: "EVAL.10.01.xxxx"
+    to: "TASK.08.01.xxxx"
+    relation: "verifies"
+    notes: "Audits execution completeness and quality gate score for Task 01"
+    description: "Evaluates the implemented handler against 100% test coverage criteria and static security analysis rules."
+    rationale: "Establishes independent quality verification gate before code merge."
+
+  # Evaluation Suite verifies Upstream Test Fixture (Layer 07 TDD)
+  - from: "EVAL.10.01.xxxx"
+    to: "TDD.07.01.xxxx"
+    relation: "verifies"
+    notes: "Verifies test suite execution passes in target CI/staging environment"
+    description: "Executes automated load and stress testing suites to verify latency p99 < 50ms under 5,000 req/sec."
+    rationale: "Validates non-functional performance benchmarks in realistic staging conditions."
+
+  # Security Evaluation verifies Audit Requirement (Layer 03 EARS)
+  - from: "EVAL.10.02.xxxx"
+    to: "EARS.03.01.xxxx"
+    relation: "verifies"
+    notes: "Validates compliance with ubiquitous immutable audit logging requirement"
+    description: "Runs automated SAST security scan and verifies cryptographic tamper-proofing of audit log records."
+    rationale: "Ensures compliance with enterprise audit retention invariants."

@@ -1,0 +1,160 @@
+# =============================================================================
+#  CHG-119: Layer 10 (EVAL) Native Graph Completion & Harmonization
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/EVAL-GRAPH-COMPLETION-PLAN.md
+#  Scope: Harmonize Layer 10 (EVAL) native property graphs with the Kùzu graph
+#         adapter, retire legacy readiness score references in EVAL-GRAPH-TEMPLATE.yaml,
+#         codify GRAPH-CARD-010 in SDD_GRAPH_SCHEMA_SPECIFICATION.md and graph_engine.py,
+#         and persist workflow lessons to learnings.md and AGENTS.md.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.6"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-119"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.6"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T10:15:00Z"
+  date_approved: "2026-10-19T10:15:00Z"
+  date_implemented: "2026-10-19T10:35:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T10:15:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/EVAL-GRAPH-COMPLETION-PLAN.md
+      completing Layer 10 EVAL native property graph harmonization.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-119)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-119"
+  title: "Formal Decision: Layer 10 (EVAL) Native Graph Completion & Harmonization"
+  date: "2026-10-19"
+  status: Accepted
+  context: |
+    Layer 10 (EVAL) property graph slice template EVAL-GRAPH-TEMPLATE.yaml defines
+    evaluation_suite nodes with 'verifies' edges pointing to upstream tasks, fixtures,
+    and requirements. However, Kùzu's verifies relation table schema lacked bindings
+    for evaluation_suite sources, causing ingestion errors. Additionally, EVAL-GRAPH-TEMPLATE.yaml
+    contained legacy percentage readiness score references, and SDD_GRAPH_SCHEMA_SPECIFICATION.md
+    omitted evaluation_suite from the Section 4 edge ontology diagram and cardinality table.
+  choice: |
+    Execute comprehensive Layer 10 EVAL graph completion per the verified plan:
+    1. Harmonize Kùzu Graph Adapter by extending REL_TABLE_SCHEMAS['verifies'] with
+       multi-pair target DDL (FROM evaluation_suite TO task_action, test_fixture, formal_requirement)
+       and store eval_track/environment attributes in NODE_TABLE_SCHEMAS['evaluation_suite'].
+    2. Clean EVAL-GRAPH-TEMPLATE.yaml by removing legacy evaluation_ready_target.
+    3. Formalize GRAPH-CARD-010 (Evaluation Verification Invariant) in SDD_GRAPH_SCHEMA_SPECIFICATION.md
+       and enforce it in sdd_doc_lint/graph_engine.py.
+    4. Enhance sdd_doc_lint/observability_adapter.py to project eval_track, environment,
+       and benchmark_thresholds.
+    5. Persist workflow learnings to .aidoc/learning/learnings.md and AGENTS.md.
+    6. Bump framework/VERSION to 0.96.6 and synchronize version references repo-wide.
+  consequences: |
+    - Layer 10 EVAL graphs achieve 100% operational parity with Layers 01–08 and Modules.
+    - Kùzu graph database ingestion supports all evaluation verification relationships.
+    - BTV topological validation checks evaluation verification coverage (GRAPH-CARD-010).
+    - Reusable workflow learnings are recorded in repo-wide documents of record.
+    - Requires framework version bump from 0.96.5 to 0.96.6 per GATE-SPEC-E005.
+  alternatives_considered:
+    - option: "Leave verifies DDL as single-pair and ignore Kùzu EVAL edge failures"
+      rationale_rejected: >-
+        Rejected because broken Kùzu ingestion prevents querying evaluation coverage via openCypher.
+    - option: "Retain evaluation_ready_target percentage score"
+      rationale_rejected: >-
+        Rejected because percentage readiness scores were retired across all SDD layers in favor of BTV.
+
+# =============================================================================
+# Section 2: Artifacts Modified
+# =============================================================================
+
+artifacts_modified:
+  - path: "framework/layers/10_EVAL/EVAL-GRAPH-TEMPLATE.yaml"
+    change_type: modified
+    description: "Retire legacy evaluation_ready_target and add GRAPH-CARD-010 rationale"
+  - path: "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    change_type: modified
+    description: "Add evaluation_suite to §4 edge diagram and codify GRAPH-CARD-010 in §4.1"
+  - path: "sdd_doc_lint/kuzu_adapter.py"
+    change_type: modified
+    description: "Extend verifies relationship DDL and evaluation_suite properties in Kùzu"
+  - path: "sdd_doc_lint/graph_engine.py"
+    change_type: modified
+    description: "Implement GRAPH-CARD-010 in validate_btv"
+  - path: "sdd_doc_lint/observability_adapter.py"
+    change_type: modified
+    description: "Enhance evaluation_suite Markdown projection with eval_track and thresholds"
+  - path: "tests/unit/test_kuzu_adapter.py"
+    change_type: modified
+    description: "Add unit tests verifying evaluation_suite ingestion and verifies queries"
+  - path: "AGENTS.md"
+    change_type: modified
+    description: "Persist normative spec change bump protocol in working agreement"
+  - path: ".aidoc/learning/learnings.md"
+    change_type: modified
+    description: "Persist synchronized 4-step version bump lesson"
+  - path: "framework/VERSION"
+    change_type: modified
+    description: "Bump framework version from 0.96.5 to 0.96.6"
+  - path: "hooks/sync-version-refs.sh"
+    change_type: modified
+    description: "Add 0.96.5 to OLD_VERSIONS list and propagate 0.96.6"
+
+# =============================================================================
+# Section 3: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-119/IPLAN-119.yaml"
+  steps:
+    - step: "Author authorizing CHG-119.yaml and IPLAN-119.yaml"
+      phase: "iplan_creation"
+    - step: "Harmonize Kùzu graph adapter relation DDL and evaluation_suite properties"
+      phase: "kuzu_harmonization"
+    - step: "Retire legacy readiness score in EVAL-GRAPH-TEMPLATE.yaml and codify GRAPH-CARD-010"
+      phase: "spec_alignment"
+    - step: "Implement GRAPH-CARD-010 in graph_engine.py and enhance observability_adapter.py"
+      phase: "tooling_enhancement"
+    - step: "Persist learnings to learnings.md and AGENTS.md, bump framework/VERSION to 0.96.6, and verify test suites"
+      phase: "verification_and_governance"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-119/CHG-119.yaml"
+    - "python3 -m unittest discover -s tests/unit"
+    - "PYTHONPATH=.:tests/conformance python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+    - "hooks/pre_push_check.sh"
+    - "python3 tests/chg/spec_gate.py --base origin/dev"
