@@ -313,6 +313,28 @@ class GovernanceWorkflowsTest(unittest.TestCase):
             f"Orphan or missing workflows detected. Actual: {all_actual}, Expected: {all_expected}",
         )
 
+    def test_no_residual_review_score_in_workflows(self):
+        """Assert zero residual scalar review_score conditions remain across all governance workflows and layer SWF templates (SDD-0044)."""
+        forbidden_patterns = [
+            ".review_score >= 90",
+            ".readinessScore >= 90",
+            "threshold_min_score: 90",
+            "spec_readiness_score: 95",
+        ]
+
+        all_wf_files = list(WORKFLOWS_DIR.glob("**/*.sw.yaml"))
+        layer_swf_files = list((FRAMEWORK / "layers").glob("*/*-SWF-TEMPLATE.yaml"))
+        all_files = all_wf_files + layer_swf_files
+
+        for file_path in all_files:
+            text = file_path.read_text(encoding="utf-8")
+            for pattern in forbidden_patterns:
+                self.assertNotIn(
+                    pattern,
+                    text,
+                    f"Forbidden scalar scoring pattern '{pattern}' found in {file_path.relative_to(FRAMEWORK)}",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

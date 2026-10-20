@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.9 |
+| Framework Version | 0.96.10 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -239,7 +239,7 @@ To eliminate the decoupling between technical specification authoring and review
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Prior to final choreography finalization (`FinalizeChoreography` in templates or `CommitDistributedTransaction` in standalone workflows), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`spec-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or architectural defects are uncovered, the saga executes an automated remediation loop, halting commit and finalizing until all P0/P1 blockers are resolved.
 
 ---

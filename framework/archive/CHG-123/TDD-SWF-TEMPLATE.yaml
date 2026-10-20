@@ -1,0 +1,384 @@
+# =============================================================================
+#  TDD-SWF-TEMPLATE.yaml — Machine-Executable TDD Workflow Template
+#  SDD Layer 7 — Test Case Definitions & Automated Test Orchestration
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
+#  Downstream: IPLAN (Layer 8), EVAL (Layer 10)
+#  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 07 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (TDD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to arrange, execute, and verify test suites.
+#       Orchestrates test fixture provisioning, test matrix dispatch, flaky retry backoffs,
+#       quality gate evaluation, and fixture teardown compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (TDD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (test cases, assertions, fixtures, BDD pairings, SPEC contracts).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (TDD-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (TDD-SWF-TEMPLATE.yaml + TDD-GRAPH-TEMPLATE.yaml) when:
+#    - Orchestrating stateful test workflows, fixture lifecycles, or integration test suites
+#    - Mapping Arrange-Act-Assert phases to state machine primitives (inject/operation/switch)
+#    - Incorporating automated flaky failure backoff retries and saga teardown compensation
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (TDD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting isolated, atomic unit tests, static test matrices, or pure function assertions
+#    - State machine orchestration, automated retry backoff, and saga teardown are not needed
+# =============================================================================
+
+doc_id: TDD-NN
+title: "[Component Test Workflow]"
+
+# =============================================================================
+# SDD Document Envelope (Preserved for STRUCT01 / TAG01 Lint Compliance)
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "tdd-document"
+  layer: 7
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "qa_lead"
+  author_playbook: "framework/playbooks/07_TDD/qa_lead.md"
+  total_sections: 7
+  last_updated: "YYYY-MM-DD"
+  deliverable_type: code
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  tags:
+    - tdd-document
+    - layer-7-artifact
+    - shared-architecture
+    - cncf-workflow
+
+  c4_level:
+    _guidance: |
+      TDD is NOT a C4 level. It defines test cases that validate SPEC
+      (C4-L3 Component) contracts through test execution. C4-L4 (Code)
+      ownership belongs to the Code layer, referenced by IPLAN.
+    value: none
+
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _size_target: 100
+  status: Draft
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author / Persona]"
+  component: "[Component Name]"
+  subtype: workflow  # Declares the CNCF Serverless Workflow subtype
+  source_spec: "@spec: SPEC-NN"
+  iplan_ready_status: "PASS"
+
+# =============================================================================
+# Section 2: Test Strategy
+# =============================================================================
+test_strategy:
+  _size_target: 400
+  frameworks:
+    unit: "pytest >= 8.0"
+    integration: "testcontainers >= 4.0"
+  isolation_strategy: "Hermetic containerized fixtures (e.g. testcontainers with PostgreSQL 18 and NATS JetStream) with automated teardown compensation"
+  fixture_hermeticity:
+    _required: false
+    _guidance: |
+      Stateful fixtures allocating external resources (testcontainers, ephemeral databases,
+      mock servers, temporary directories) must declare automated teardown compensation
+      (compensatedBy: TeardownFixturesCompensation) to prevent dirty state from leaking across test runs.
+  flaky_policy:
+    max_retries: 3
+    backoff: "exponential-jitter"
+    quarantine_threshold: 2
+
+# =============================================================================
+# Section 3: BDD Scenario Mapping (GD-08 Acceptance Pairing)
+# =============================================================================
+bdd_scenario_mapping:
+  pairings:
+    - bdd_ref: "@bdd: BDD.01.01.0001"
+      test_case_ref: "TDD.NN.04.0001"
+      test_type: "integration"
+
+# =============================================================================
+# Section 4: Test Cases
+# =============================================================================
+test_cases:
+  cases:
+    - id: "TDD.NN.04.0001"
+      name: "test_stateful_operation_with_fixture"
+      test_type: "integration"
+      target: "src/component.py"
+      test_file: "tests/integration/test_component.py"
+      test_function: "test_component_state_mutation"
+      spec_ref: "@spec: SPEC-NN"
+      bdd_ref: "@bdd: BDD.01.01.0001"
+      threshold: "@threshold: SLA-LATENCY <= 200ms"
+
+# =============================================================================
+# Section 5: CNCF Serverless Workflow State Machine (specVersion: "0.8")
+# =============================================================================
+workflow:
+  id: tdd-nn-workflow
+  name: "Component Test Execution State Machine"
+  version: "1.0"
+  specVersion: "0.8"
+  description: "Machine-executable test workflow with fixture compensation and flaky retries"
+
+  start: ArrangeTestFixtures
+
+  events:
+    - name: TddSuitesClosedEvent
+      type: org.aidoc.sdd.layer07.tdd.closed
+      source: /layers/07_tdd
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
+      type: custom
+
+  states:
+    # --- Phase: Arrange (Compensable) ---
+    - name: ArrangeTestFixtures
+      type: operation
+      description: "Provisions test containers, seed data, and mock services"
+      compensatedBy: TeardownFixturesCompensation
+      actions:
+        - name: setupFixtures
+          functionRef:
+            refName: fixtureProvisioner
+            arguments:
+              component: "[Component Name]"
+              containerFixtures:
+                - "postgres:18-alpine"
+                - "nats:latest -js"
+              seedFile: "tests/fixtures/seed.sql"
+              platformStackTier: "APPROVED"
+      transition: ActExecuteTests
+
+    # --- Phase: Act ---
+    - name: ActExecuteTests
+      type: operation
+      description: "Executes test runner against the provisioned environment"
+      actions:
+        - name: runTestSuite
+          functionRef:
+            refName: pytestRunner
+            arguments:
+              testFile: "tests/integration/test_component.py"
+              verbose: true
+      transition: AssertResults
+
+    # --- Phase: Assert ---
+    - name: AssertResults
+      type: switch
+      description: "Evaluates assertion outcomes, coverage, and threshold compliance"
+      dataConditions:
+        - name: AllAssertionsPassed
+          condition: "${ .testOutcome.failures == 0 and .testOutcome.duration_ms <= 200 }"
+          transition: NormalTeardown
+
+        - name: FlakyFailureWithinRetryLimit
+          condition: "${ .testOutcome.failures > 0 and .retryCount < 3 }"
+          transition: RetryBackoff
+
+      defaultCondition:
+        transition: QuarantineDefect
+
+    # --- Phase: Retry with Backoff ---
+    - name: RetryBackoff
+      type: operation
+      description: "Applies jittered exponential backoff before re-executing"
+      actions:
+        - name: incrementRetry
+          functionRef:
+            refName: retryTracker
+            arguments:
+              currentAttempt: "${ .retryCount }"
+      transition: ActExecuteTests
+
+    # --- Phase: Defect Quarantine ---
+    - name: QuarantineDefect
+      type: operation
+      description: "Logs failure receipt and quarantines broken test"
+      actions:
+        - name: logDefect
+          functionRef:
+            refName: defectQuarantineLogger
+            arguments:
+              testId: "TDD.NN.04.0001"
+              failureLog: "${ .testOutcome.error }"
+      transition: TestRunFailed
+
+    # --- Phase: Teardown Compensation ---
+    - name: TeardownFixturesCompensation
+      type: operation
+      description: "Rolls back dirty state and terminates containers on failure"
+      actions:
+        - name: rollbackDirtyState
+          functionRef:
+            refName: fixtureCleaner
+            arguments:
+              purgeDatabases: true
+      end: true
+
+    # --- Normal Teardown ---
+    - name: NormalTeardown
+      type: operation
+      description: "Hermetic teardown after successful run"
+      actions:
+        - name: cleanupResources
+          functionRef:
+            refName: fixtureCleaner
+            arguments:
+              purgeDatabases: false
+      transition: InvokeReviewSagaGate
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "tdd-review-remediation-flow"
+              artifactId: "TDD-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          transition: TestRunSucceeded
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresQuarantine
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: QuarantineDefect
+      defaultCondition:
+        transition: QuarantineDefect
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "test_engineer"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
+
+    # --- Terminal States ---
+    - name: TestRunSucceeded
+      type: inject
+      description: "Terminal success state: test suite passed all assertions"
+      data:
+        verdict: "PASSED"
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-06"
+              layer: "07_TDD"
+              documentId: "TDD-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "TDD-NN"
+              layer: "07_TDD"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "TddNode"
+              nodeId: "TDD-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "TddSuitesClosedEvent"
+              documentId: "TDD-NN"
+              test_suites: "${ .test_suites }"
+              coverage_target: "${ .coverage_target }"
+      produceEvents:
+        - eventRef: TddSuitesClosedEvent
+      end: true
+
+    - name: TestRunFailed
+      type: inject
+      description: "Terminal failure state: test assertions failed after retries"
+      data:
+        verdict: "FAILED_QUARANTINED"
+      end:
+        terminate: true
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  spec_ref: "@spec: SPEC-NN"
+  bdd_refs:
+    - "@bdd: BDD.01.01.0001"
+  adr_refs:
+    - "@adr: ADR-01"

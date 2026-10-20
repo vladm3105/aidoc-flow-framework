@@ -21,7 +21,7 @@ metadata:
   decision_makers:
     - "[Architect Name / Role]"
     - "[Tech Lead Name / Role]"
-  spec_ready_target: "90/100"
+  spec_ready_target: "PASS"
 
 nodes:
   # ---------------------------------------------------------------------------

@@ -161,10 +161,10 @@ states:
     type: switch
     dataConditions:
       - name: BddReadyApproved
-        condition: "${ .readinessScore >= 90 and .conflictCount == 0 and .upstreamPrdVerified == true }"
+        condition: "${ .conflictCount == 0 and .upstreamPrdVerified == true and .ambiguityFlag == false }"
         transition: InvokeReviewSagaGate
       - name: ClarificationRequired
-        condition: "${ .readinessScore >= 70 and .ambiguityFlag == true }"
+        condition: "${ .ambiguityFlag == true }"
         transition: RequestRequirementClarification
     defaultCondition:
       transition: RejectRequirementSet
@@ -184,7 +184,7 @@ states:
     type: switch
     dataConditions:
       - name: ReviewGateApproved
-        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         transition: RatifyEarsContract
       - name: ReviewRequiresRemediation
         condition: "${ .blocking_findings > 0 and .iteration < 3 }"
@@ -232,7 +232,7 @@ states:
           arguments:
             documentId: "${ .documentId }"
             requirements: "${ .parsedRequirements }"
-            readinessScore: "${ .readinessScore }"
+            bdd_ready: "PASS"
     transition: VerifyLayerCloseoutGate
 
   - name: VerifyLayerCloseoutGate
@@ -303,7 +303,7 @@ states:
             documentId: "${ .documentId }"
             status: "rejected"
             rejectionReasons: "${ .conflictAnalysis.reasons }"
-            readinessScore: "${ .readinessScore }"
+            bdd_ready: "FAIL"
     end:
       terminate: true
 

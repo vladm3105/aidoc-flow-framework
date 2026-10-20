@@ -18,7 +18,7 @@ metadata:
   framework_version: "[X.Y.Z]"
   description: "[Exhaustive formal behavioral requirements mapped across the 5 canonical EARS patterns]"
   layer: "03_EARS"
-  bdd_ready_target: "90/100"
+  bdd_ready_target: "PASS"
 
 nodes:
   # ---------------------------------------------------------------------------

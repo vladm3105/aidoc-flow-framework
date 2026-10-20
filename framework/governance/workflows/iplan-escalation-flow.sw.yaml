@@ -120,7 +120,7 @@ states:
   - name: EvaluateReviewSagaResult
     type: switch
     dataConditions:
-      - condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+      - condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         end: true
     defaultCondition:
       transition: EscalateUnknownBlocker

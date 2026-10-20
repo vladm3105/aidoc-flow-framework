@@ -198,7 +198,7 @@ states:
     type: switch
     dataConditions:
       - name: ReviewGateApproved
-        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         transition: CommitDistributedTransaction
       - name: ReviewRequiresRemediation
         condition: "${ .blocking_findings > 0 and .iteration < 3 }"

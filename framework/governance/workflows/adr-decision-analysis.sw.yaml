@@ -211,7 +211,7 @@ states:
     type: switch
     dataConditions:
       - name: ReviewGateApproved
-        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         transition: RatifyArchitectureDecision
       - name: ReviewRequiresRemediation
         condition: "${ .blocking_findings > 0 and .iteration < 3 }"
@@ -249,7 +249,7 @@ states:
             status: "Accepted"
             chosen_candidate: "${ .selected_candidate }"
             consequences: "${ .consequences }"
-            spec_readiness_score: 95
+            spec_ready: "PASS"
     transition: VerifyLayerCloseoutGate
 
   - name: VerifyLayerCloseoutGate
