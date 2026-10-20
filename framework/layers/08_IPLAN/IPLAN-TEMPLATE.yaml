@@ -360,6 +360,14 @@ execution_commands:
     below are illustrative only — replace them with your `@spec` toolchain's
     equivalents (e.g. Node: `npm ci` / `npm test`; Go: `go mod download` /
     `go test ./...`).
+
+    SECURITY & PLATFORM TOOLING INVARIANTS:
+    Commands must strictly adhere to the approved platform technology stack (/home/ya/devd/technology_stack,
+    specs 00-23). Insecure command flags (e.g. `--insecure`, `--privileged`, `--no-verify`, or passing
+    plaintext secrets in environment flags) are STRICTLY FORBIDDEN.
+    Missing Tools Protocol: If a task execution requires a tool, binary, or CLI utility not present in
+    the approved technology stack, the agent MUST explicitly inform the operator and request instructions
+    on what tools or software to use before running or adding the command.
   setup:
     - "# Provision the toolchain + dependencies from @spec (env, package install, scaffold dirs)"
     - "# example (Python): python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"

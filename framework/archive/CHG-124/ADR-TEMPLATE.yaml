@@ -1,0 +1,491 @@
+# =============================================================================
+#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD Layer 05)
+# =============================================================================
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable ADR template for linear decision records
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (ADR-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
+#    - Specifying architectural decisions where state machine orchestration is unnecessary overhead
+#  Use the primary template (ADR-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
+#    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
+#    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
+#    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream: SPEC (Layer 6)
+#  Upstream: EARS (L3), BDD (L4)
+# =============================================================================
+
+id: ADR-NN
+doc_id: ADR-NN
+title: "[Architecture Decision Title]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "adr-document"
+  layer: 5
+  lifecycle: mvp-prod-newmvp
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 12 here,
+  # because required unnumbered backmatter (`glossary` + `appendix`) is additional.
+  # The two numbers differing is correct, not a defect — see
+  # governance/LINT_RULES.md §"What STRUCT01 requires". Do NOT reconcile them
+  # with `_required: false`: that marks OPTIONAL content and would remove a
+  # live assertion.
+  total_sections: 10
+  last_updated: "2026-03-29"
+  validation:
+    _guidance: |
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to verified upstream EARS/BDD elements (zero dangling edges).
+        2. Strict Oracle Coverage: Every architectural decision is realized downstream by SPEC component contracts and TDD fixtures.
+        3. Architectural Rigor: Clear rationale, alternatives evaluated, sequenceDiagram (@diagram: sequence-*) present, and consequences analyzed.
+      Heuristic percentage readiness scores (SPEC-Ready >=90%) are retired in favor of binary topological validation.
+
+  c4_level:
+    _guidance: |
+      ADR is NOT a C4 level. It is the decision bridge between
+      Container (PRD) and Component (SPEC).
+
+      SDD C4 map (10 layers):
+        Context (BRD)    — business environment, actors, boundaries
+        Container (PRD)  — product features, functional blocks
+        EARS              — formalize Context→Container transition
+        BDD               — executable acceptance scenarios
+        ADR               — architecture decisions                 ← this layer
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
+
+      ADR records Context-Decision-Consequences for architecture decisions.
+      Content must evaluate alternatives and document consequences — not design components.
+    value: none
+
+  diagram_standard:
+    _guidance: |
+      ADR uses architecture decision diagrams (no C4 level — bridge layer):
+        - REQUIRED: a decision/interaction `sequenceDiagram`, carrying its intent
+          header and the `@diagram: sequence-*` machine tag (per
+          framework/governance/DIAGRAM_STANDARDS.md — ADR's mandatory diagram).
+        - OPTIONAL: a `flowchart` to supplement decision logic, rollback paths,
+          or alternative comparison.
+
+      ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SPEC (Layer 6).
+      ADR diagrams show the decision's impact, not the system structure itself.
+
+      Tag forms: `@diagram: sequence-*` (the required decision diagram) and
+      `@diagram: flow-*` (the optional supplement). Both are valid on every
+      layer (GD-22).
+      ADR already ships its authoring slot as the REQUIRED `decision_sequence`
+      section below — GD-22 deliberately does NOT add a second one here. Two
+      REQUIRED declarations of the same diagram, in two key shapes, is an
+      authoring hazard: it tells the author to write the decision sequence
+      twice. EARS and BDD are the only layers that genuinely lacked a slot.
+
+  tags:
+    - adr-document
+    - layer-5-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Inherited from upstream PRD (which inherits from BRD).
+    value: code  # code | document | ux | risk | process
+
+  id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
+    _guidance: |
+      All element IDs use content-derived hashes scoped to ADR content.
+      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002). See `governance/ID_NAMING_STANDARDS.md`.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: ADR.01.03.e5b1
+
+      Hash algorithm (SHA256, 4-char hex) — the byte-exact input assembly and
+      the title/description normalization transform are the SINGLE SOURCE in
+      `governance/ID_NAMING_STANDARDS.md` ("Hash algorithm" section,
+      PROVISIONAL-IDS-002). Do NOT re-specify the normalization here — cross-ref
+      the authority so the verifier (`rehash --check`), any future generator,
+      and hand authors converge on one contract.
+        Shape: hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]
+        Scope: from ADR content, NOT upstream PRD/BRD content.
+        Collision: extend 4 -> 8 chars if duplicate detected.
+        Field extraction: byte-exact extraction is defined for BRD §7 only
+          (PROVISIONAL-IDS-002 Phase 1); for this layer it is Phase 2+.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    ADR uses a DIFFERENT status lifecycle from other layers:
+      Proposed → Accepted → Deprecated → Superseded
+      (NOT Draft/In Review/Approved)
+
+    SPEC-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
+    Each ADR addresses ONE architecture decision. New decisions = new ADR.
+  status: Proposed  # Proposed | Accepted | Deprecated | Superseded
+  date: "YYYY-MM-DD"
+  decision_makers:
+    - "[Architect Name]"
+    - "[Tech Lead Name]"
+  author: "[Author Name]"
+  version: "1.0"
+  spec_ready_status: "PASS"  # deterministic BTV gate status
+
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial ADR proposal"
+
+# =============================================================================
+# Section 2: Context
+# =============================================================================
+
+context:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Describe WHY this decision is needed. Include business driver from BRD,
+    technical constraints from PRD/EARS, and current system state.
+
+  problem_statement: |
+    [What architectural problem or opportunity requires a decision?
+    Reference the originating BRD topic and PRD elaboration.]
+
+  business_driver: |
+    [Why does the business need this decision? Link to BRD objectives.]
+
+  key_constraints:
+    - "[Constraint 1 — budget, timeline, team skills]"
+    - "[Constraint 2 — regulatory, compliance]"
+
+  technical_context: |
+    [Current system state, existing architecture, integration requirements.
+    Reference EARS timing constraints and BDD failure scenarios that
+    inform this decision.]
+
+# =============================================================================
+# Section 3: Decision
+# =============================================================================
+
+decision:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    State the chosen solution clearly. Be decisive — the decision rationale
+    must explain WHY this option was selected, not just WHAT it is.
+
+  _antipatterns:
+    - "FAIL: ambiguous decision — unclear which option is chosen"
+    - "FAIL: multiple decisions in one ADR — split into separate ADRs"
+    - "FAIL: missing rationale — must explain why, not just what"
+
+  chosen_solution:
+    id: "ADR.NN.03.xxxx"
+    title: "[Chosen Solution Name]"
+    description: |
+      [Clear description of the selected approach and why it was chosen
+      over alternatives.]
+
+  key_components:
+    - name: "[Component 1]"
+      role: "[What it does in the architecture]"
+    - name: "[Component 2]"
+      role: "[What it does]"
+
+  implementation_approach:
+    mvp_scope: |
+      [What is implemented in the current MVP cycle]
+    next_cycle_scope: |
+      [What is deferred to the next cycle]
+
+# =============================================================================
+# Section 4: Alternatives Considered
+# =============================================================================
+
+alternatives:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Briefly list 2-3 alternatives with source reference and decision.
+    The FULL analysis (pros/cons/cost) lives in the seed document.
+    The ADR focuses on the selected option's consequences, not re-surveying alternatives.
+
+    Per governance/DECISION_WORKFLOW.md §3 and TECHNOLOGY_STACK_USAGE_GUIDE.md:
+      "SDD ADR selects, doesn't re-survey. Layer 05 ADR is the formal Technology
+      Selection Gate immediately following BDD. Candidate alternatives are evaluated
+      primarily from the approved platform technology stack. If an off-stack candidate
+      is selected, Section 10 implementation_assessment must document the Variance /
+      Exception Justification approved by Architecture."
+
+  _antipatterns:
+    - "FAIL: duplicating seed analysis (pros/cons/cost) — that belongs in seed docs"
+    - "FAIL: more than 3 alternatives — violates MVP streamlining"
+    - "FAIL: missing rejection reason for non-selected options"
+    - "FAIL: missing seed reference — alternatives must trace to their source"
+
+  considered:
+    - id: "ADR.NN.04.xxxx"
+      name: "[Selected Option]"
+      selected: true
+      source: "@seed: ARCH-NN"
+      decision: "Selected — [one-line reason]"
+
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative B]"
+      selected: false
+      source: "@seed: ARCH-NN"
+      decision: "Rejected — [one-line reason]"
+
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative C — optional]"
+      selected: false
+      source: "@seed: ARCH-NN"
+      decision: "Rejected — [one-line reason]"
+
+# =============================================================================
+# Section 5: Consequences
+# =============================================================================
+
+consequences:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Document the full impact of the decision: positive outcomes,
+    trade-offs/risks with severity, and cost breakdown.
+
+  positive_outcomes:
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 1]"
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 2]"
+
+  tradeoffs_and_risks:
+    - id: "ADR.NN.05.xxxx"
+      tradeoff: "[Trade-off or risk]"
+      impact: High  # High | Medium | Low
+      mitigation: "[How to mitigate]"
+
+  cost_estimate:
+    mvp_cost: "$[X,XXX]"
+    ongoing_monthly: "$[X,XXX]/month"
+    notes: "[Cost assumptions and caveats]"
+
+# =============================================================================
+# Section 6: Architecture Flow
+# =============================================================================
+
+architecture_flow:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Provide Mermaid diagrams showing the decision's impact on architecture.
+    Include MVP scope boundary and external system integrations.
+    Show decision impact, not system internals (SPEC owns C4-L3 detail).
+
+    REQUIRED: a decision/interaction sequenceDiagram (ADR's mandatory diagram per
+    DIAGRAM_STANDARDS.md). Each diagram block carries an intent header and the
+    @diagram machine tag immediately above it. The flowchart below is OPTIONAL.
+
+  decision_sequence:           # REQUIRED
+    intent:
+      diagram_type: sequence
+      scope_boundary: "[decision interaction boundary]"
+      upstream_refs: "[BDD/PRD refs driving the decision]"
+      downstream_refs: "[SPEC components affected]"
+    tag: "@diagram: sequence-sync"   # sequence-sync | sequence-async | sequence-error
+    diagram:
+      type: sequenceDiagram
+      content: |
+        sequenceDiagram
+            participant U as Caller
+            participant A as Component A
+            participant E as External System
+            U->>A: request
+            A->>E: dependency call
+            E-->>A: response
+            A-->>U: result
+
+  high_level_flow:             # OPTIONAL supplement (decision logic / rollback / alternatives)
+    diagram:
+      type: flowchart
+      content: |
+        flowchart TD
+            subgraph MVP Scope
+                A[Component A] --> B[Component B]
+                B --> C[Component C]
+            end
+            C --> D[External System]
+
+  integration_points:
+    - system: "[System/Service]"
+      integration_type: "[REST | gRPC | Async | Event]"
+      purpose: "[Data flow description]"
+
+# =============================================================================
+# Section 7: Implementation Assessment
+# =============================================================================
+
+implementation_assessment:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Decision-level assessment only — NOT detailed implementation plans.
+    IPLAN (Layer 8) owns implementation details.
+    Focus on: rollback feasibility, monitoring baseline, risk mitigation.
+
+  mvp_phases:
+    - phase: "[Phase 1]"
+      scope: "[What this phase delivers]"
+      risk: "[Key risk]"
+
+  rollback_plan:
+    strategy: "[How to reverse this decision if it fails]"
+    trigger: "[What conditions trigger rollback]"
+    estimated_effort: "[Time/cost to rollback]"
+
+  monitoring_baseline:
+    - metric: "[Key metric to watch]"
+      target: "[Target value]"
+      alert_threshold: "[When to alert]"
+
+# =============================================================================
+# Section 8: Verification
+# =============================================================================
+
+verification:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Define success criteria for this decision. Cross-reference BDD scenarios
+    that validate the architecture. Lightweight — full tests are in TDD (Layer 7).
+
+  success_criteria:
+    - criterion: "[Measurable success condition]"
+      measurement: "[How to verify]"
+
+  bdd_scenario_refs:
+    _note: "Cross-references to BDD scenarios that validate this decision."
+    scenarios:
+      - "@bdd: BDD.NN.03.xxxx"
+      - "@bdd: BDD.NN.03.xxxx"
+
+# =============================================================================
+# Section 9: Traceability
+# =============================================================================
+
+traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    ADR synthesizes inputs from its necessary upstream layers.
+    Necessary-upstream tags: @ears + @bdd required (Layer 5 required_tags).
+
+  tags:
+    - "@adr: ADR-NN"
+
+  upstream:
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+
+  downstream_expected:
+    - type: SPEC
+      layer: 6
+      description: "Technical specification implementing this architecture decision"
+
+  cross_links:
+    depends:
+      - "@depends: ADR-NN"
+    discoverability:
+      - "@discoverability: ADR-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
+
+  health_score:
+    spec_ready: "[PASS | FAIL]"
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
+
+# =============================================================================
+# Section 10: Related Decisions
+# =============================================================================
+
+related_decisions:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: |
+    Document dependencies on other ADRs, related decisions, and
+    supersedes relationships. Each ADR = one decision.
+
+  dependencies:
+    - adr: "[ADR-NN]"
+      relationship: "[Depends on | Extends | Constrains]"
+      rationale: "[Why this dependency exists]"
+
+  supersedes:
+    _note: "List ADRs this decision replaces, if any."
+    items: []
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  _guidance: "Flat list of project-specific terms. Keep concise."
+
+  terms:
+    - term: ADR
+      definition: "Architecture Decision Record"
+    - term: SPEC-Ready
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream SPEC realization without dangling citations or unmapped decisions
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# Appendix: MVP Lifecycle
+# =============================================================================
+
+appendix:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
+  lifecycle:
+    _guidance: |
+      Each ADR represents ONE architecture decision in the MVP → PROD → NEW MVP cycle.
+      New decisions = New ADR (ADR-02, ADR-03, etc.).
+
+      When to create new ADR:
+        - New technology selection needed
+        - Existing decision proven inadequate in production
+        - Scope expansion requires architectural change
+
+      When to update existing ADR:
+        - Clarifying existing decision (patch version)
+        - Status change (Proposed → Accepted)
+
+      When to deprecate/supersede:
+        - Decision replaced by better approach → Superseded
+        - Decision no longer relevant → Deprecated
+
+# =============================================================================
+# End of ADR-TEMPLATE.yaml
+# =============================================================================

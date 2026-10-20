@@ -57,19 +57,22 @@ backlog: []
 # Ingested by security monitoring (SCA, CVE scanning) and automated tool updates.
 technologies: []
 
+  # Missing Tools Protocol: Any technology registered here must be grounded in
+  # /home/ya/devd/technology_stack. If a needed tool is missing from the tech stack,
+  # the agent must explicitly inform the operator and obtain instructions before adding it.
   # Template entry:
   # - id: "postgres-db"
   #   technology: "PostgreSQL"
   #   category: "Data Architecture"     # Runtime | Data Architecture | Event Messaging | Observability | Security | Frontend | CI/CD | Infrastructure
   #   stack_tier: "Tier-0-Core"         # Tier-0-Core | Approved-Contained | Specialized-Domain | Approved-Exception
-  #   version_constraint: ">=16.3, <17.0"
+  #   version_constraint: ">=18.0, <19.0"
   #   authorizing_decision: "ADR-02"    # Direct citation to Layer 05 ADR or GD reference
   #
   #   # ── Security Monitoring (SCA, CVE, SBOM) ──
   #   security_monitoring:
   #     enabled: true
-  #     purl: "pkg:docker/library/postgres@16.3-alpine" # Package URL standard (RFC)
-  #     cpe: "cpe:2.3:a:postgresql:postgresql:16.3:*:*:*:*:*:*:*"
+  #     purl: "pkg:docker/library/postgres@18-alpine" # Package URL standard (RFC)
+  #     cpe: "cpe:2.3:a:postgresql:postgresql:18:*:*:*:*:*:*:*"
   #     ecosystem: "docker"              # docker | pypi | golang | npm | maven | cargo
   #     vulnerability_scanners: ["trivy", "osv"]
   #     severity_alert_threshold: "HIGH" # CRITICAL | HIGH | MEDIUM | LOW

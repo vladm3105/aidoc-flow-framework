@@ -48,6 +48,9 @@ Hunt, in your FILE LIST only:
 - **authorization bypass**: can an unprivileged actor reach a privileged
   outcome — skip a gate, cause a merge or deploy, escalate via a side door?
 - **blast radius of a stolen credential**: what can it do, and for how long?
+- **prohibition of insecure options**: ensure no insecure options, plaintext secrets,
+  disabled sandboxing, relaxed permissions, unencrypted transport, or bypassed verification
+  (`--no-verify`) are offered or used; verify Two-Tier Secrets (OCI Vault + OpenBao) conformance
 
 **If the artifact is GitHub Actions**, first read
 `github-actions-review.md` — the file next to this one (auth, tokens, triggers), then add:
@@ -136,3 +139,7 @@ Hunt, in your FILE LIST only:
   rules, review gates, skip labels) that no decision record authorizes
 - trace coverage: every commit must ride its authorizing CHG/IPLAN manifest
   (CHG-12) — untraced commits are invisible to every other gate (#826)
+- platform tech stack adherence: ensure components, dependencies, and tools adhere strictly
+  to the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack`, specs 00–23);
+  verify that any tool not present follows the Missing Tools Operator Escalation Protocol rather
+  than unvetted autonomous adoption
