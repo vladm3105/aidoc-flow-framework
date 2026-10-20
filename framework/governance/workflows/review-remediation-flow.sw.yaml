@@ -175,7 +175,7 @@ states:
           refName: recordGateApproval
           arguments:
             artifact_id: "${ .artifact_id }"
-            score: "${ .readiness_score }"
+            gate_verdict: "PASS"
             status: "CLOSED"
     end: true
 

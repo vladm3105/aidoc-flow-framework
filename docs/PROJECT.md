@@ -180,7 +180,7 @@ rm -rf .aidoc/framework/framework/archive
 
 | Directory | Purpose |
 |-----------|---------|
-| `framework/` | Core spec — governance, layers, playbooks, registry, skills, orientation guides, `VERSION`, `CHANGELOG.md` (minus `archive/`, pruned above) |
+| `framework/` | Core spec — governance, layers, playbooks, registry, skills, orientation guides, `VERSION`, `CHANGELOG.md` (retired tombstone) (minus `archive/`, pruned above) |
 | `docs/` | Framework documentation (including this contract and the adaptation guide) |
 | `hooks/` | Advisory hooks (`PostToolUse` + `PreCommit` — see `hooks/README.md`) |
 | `sdd_doc_lint/` | Structural linter (296+ checks) |
@@ -249,7 +249,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.96.9"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.10"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
 ```
 
 ### 7.5 Updating the framework

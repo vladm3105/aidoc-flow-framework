@@ -32,7 +32,7 @@ metadata:
   description: "[Comprehensive functional product capabilities, user personas, container bounds, user journeys, and SLA targets]"
   layer: "02_PRD"
   c4_level: "container"
-  ears_ready_target: "90/100"
+  ears_ready_target: "PASS"
 
   # ---------------------------------------------------------------------------
   # Problem Statement & Business Opportunity (Section 3 Parity)

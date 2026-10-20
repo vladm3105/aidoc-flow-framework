@@ -289,6 +289,6 @@ traceability:
         category: "Timing"
         value: "[NN]ms"
   health_score:
-    tdd_ready: "[X]%"
+    tdd_ready: "[PASS | FAIL]"
     target_status: "PASS"  # deterministic binary topological gate
     _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."

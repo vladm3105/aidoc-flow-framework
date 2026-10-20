@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.9 |
+| Framework Version | 0.96.10 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -379,7 +379,7 @@ To eliminate the decoupling between change request authoring/cascade orchestrati
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Prior to final verification and landing (`CloseoutGreenfield` in templates or `ExecuteEVALAndCloseout` in governance workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`chg-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or cascade coverage gaps are uncovered, the saga triggers an automated remediation loop, halting change landing until all P0/P1 blockers are resolved.
 
 ## 10. Review Log

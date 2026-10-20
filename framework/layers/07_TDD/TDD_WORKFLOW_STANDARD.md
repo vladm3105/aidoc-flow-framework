@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.9 |
+| Framework Version | 0.96.10 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -225,7 +225,7 @@ To eliminate the decoupling between TDD test suite authoring and review crew eva
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Following test suite execution and fixture teardown (`NormalTeardown` in templates or `ExecuteFixtureTeardown` in runner workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`tdd-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or defective test fixtures are uncovered, the saga executes an automated remediation loop, halting sign-off until all P0/P1 blockers are resolved.
 
 ---

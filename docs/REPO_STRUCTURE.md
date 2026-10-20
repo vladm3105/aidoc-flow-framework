@@ -84,8 +84,8 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 | `legacy/ucx_flow_v3/01_BRD … 08_IPLAN/`          | `framework/layers/`                      |
 | `legacy/ucx_flow_v3/LAYER_REGISTRY.yaml`         | `framework/registry/`                    |
 | `legacy/ucx_flow_v3/CHG/`, `legacy/governance/`  | `framework/governance/`                  |
-| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `archive/platforms/hermes/` (archived)   |
-| `.claude/` skills (`doc-*`), agents, commands    | `archive/platforms/claude-code-plugin/` (archived) |
+| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `legacy-ucx-v3.2-read-only` branch (platforms archived)   |
+| `.claude/` skills (`doc-*`), agents, commands    | `legacy-ucx-v3.2-read-only` branch (platforms archived) |
 | `legacy/ai_dev_ssd_flow_v2/`                     | dropped (superseded by `framework/`)     |
 | `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by structured SDD layers, Change Requests, and GitHub releases |
 | `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |
@@ -94,6 +94,5 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 > legacy copy stayed untouched throughout). At the Phase 5 cutover the
 > `legacy/` tree was **removed** from the working tree (P5-T2) and the pristine
 > pre-migration project is preserved on the protected, read-only branch
-> **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was ported
-> into the Claude Code plugin in Phase 3; the root loader is removed at cutover
-> (the plugin is the distribution).
+> **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was retired
+> alongside platform archives; the framework specification is platform-agnostic.

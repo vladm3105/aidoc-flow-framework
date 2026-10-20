@@ -16,8 +16,10 @@ LAYER_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-TEMPLATE.yaml"
 GOV_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-TEMPLATE.yaml"
 LAYER_SWF_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-SWF-TEMPLATE.yaml"
 GOV_SWF_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-SWF-TEMPLATE.yaml"
+TEMPLATES_SWF_TEMPLATE = FRAMEWORK / "governance" / "templates" / "CHG-SWF-TEMPLATE.yaml"
 LAYER_GRAPH_TEMPLATE = FRAMEWORK / "layers" / "09_CHG" / "CHG-GRAPH-TEMPLATE.yaml"
 GOV_GRAPH_TEMPLATE = FRAMEWORK / "governance" / "chg" / "CHG-GRAPH-TEMPLATE.yaml"
+TEMPLATES_GRAPH_TEMPLATE = FRAMEWORK / "governance" / "templates" / "CHG-GRAPH-TEMPLATE.yaml"
 LAYER_GATES = FRAMEWORK / "layers" / "09_CHG" / "gates"
 GOV_GATES = FRAMEWORK / "governance" / "chg" / "gates"
 LAYER_README = FRAMEWORK / "layers" / "09_CHG" / "README.md"
@@ -116,19 +118,35 @@ class GuardCatalogAgreement(unittest.TestCase):
         )
 
     def test_swf_template_copies_identical(self):
-        """The CHG SWF template copies stay byte-identical."""
+        """The CHG SWF template copies stay byte-identical across all 3 locations."""
+        layer_text = _text(LAYER_SWF_TEMPLATE)
+        gov_text = _text(GOV_SWF_TEMPLATE)
+        templates_text = _text(TEMPLATES_SWF_TEMPLATE)
         self.assertEqual(
-            _text(LAYER_SWF_TEMPLATE),
-            _text(GOV_SWF_TEMPLATE),
+            layer_text,
+            gov_text,
             "CHG-SWF-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/chg",
+        )
+        self.assertEqual(
+            layer_text,
+            templates_text,
+            "CHG-SWF-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/templates",
         )
 
     def test_graph_template_copies_identical(self):
-        """The CHG GRAPH template copies stay byte-identical."""
+        """The CHG GRAPH template copies stay byte-identical across all 3 locations."""
+        layer_text = _text(LAYER_GRAPH_TEMPLATE)
+        gov_text = _text(GOV_GRAPH_TEMPLATE)
+        templates_text = _text(TEMPLATES_GRAPH_TEMPLATE)
         self.assertEqual(
-            _text(LAYER_GRAPH_TEMPLATE),
-            _text(GOV_GRAPH_TEMPLATE),
+            layer_text,
+            gov_text,
             "CHG-GRAPH-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/chg",
+        )
+        self.assertEqual(
+            layer_text,
+            templates_text,
+            "CHG-GRAPH-TEMPLATE.yaml copies diverged between layers/09_CHG and governance/templates",
         )
 
     def test_readme_copies_identical(self):

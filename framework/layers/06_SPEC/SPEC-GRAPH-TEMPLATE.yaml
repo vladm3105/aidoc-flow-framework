@@ -19,7 +19,7 @@ metadata:
   description: "[C4-L3 component contracts, interface endpoints, and data exchange schemas]"
   layer: "06_SPEC"
   c4_level: "component"
-  tdd_ready_target: "90/100"
+  tdd_ready_target: "PASS"
 
 nodes:
   # ---------------------------------------------------------------------------

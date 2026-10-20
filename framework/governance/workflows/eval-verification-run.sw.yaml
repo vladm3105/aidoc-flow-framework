@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.96.9"
+  framework_version: "0.96.10"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
@@ -79,7 +79,7 @@ states:
           refName: loadEvalStrategyFn
           arguments:
             eval_strategy_path: "docs/sdd/10_EVAL/EVAL-{NN}/EVAL-{NN}.yaml"
-            threshold_min_score: 90
+            verify_btv_pass: true
       - name: verifyIplanReceiptSeal
         functionRef:
           refName: verifyReceiptSeal
@@ -191,7 +191,7 @@ states:
     type: switch
     dataConditions:
       - name: ReviewGateApproved
-        condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
         transition: EmitPassingReportReceipt
       - name: ReviewRequiresRemediation
         condition: "${ .blocking_findings > 0 and .iteration < 3 }"

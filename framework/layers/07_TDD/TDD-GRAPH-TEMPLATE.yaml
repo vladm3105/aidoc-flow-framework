@@ -21,7 +21,7 @@ metadata:
   test_frameworks:
     unit: "pytest >= 8.0"
     integration: "testcontainers >= 4.0"
-  iplan_ready_target: "90/100"
+  iplan_ready_target: "PASS"
 
 nodes:
   # ---------------------------------------------------------------------------

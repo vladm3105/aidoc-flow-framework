@@ -421,7 +421,7 @@ traceability:
       - "@chg: CHG-NN"
 
   health_score:
-    spec_ready: "[X]%"
+    spec_ready: "[PASS | FAIL]"
     target_status: "PASS"  # deterministic binary topological gate
     _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 

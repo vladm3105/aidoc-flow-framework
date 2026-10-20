@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.9 |
+| Framework Version | 0.96.10 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 10 (Evaluation & Quality Verification / EVAL) execution plans, test suite runners, and quality gate receipts using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -72,8 +72,8 @@ The evaluation and quality gate verification lifecycle maps cleanly to CNCF Serv
 |---|---|---|---|
 | **Ingest** | Ingest trigger context and test plan | `operation` or `inject` | Validates trigger (`initial_eval`, `bug_fix_verification`) and loads thresholds |
 | **Execute** | Parallel execution across test tiers | `parallel` (`allOf`) | Dispatches unit, acceptance, conformance, and security SAST suites |
-| **Evaluate** | Calculate aggregated score and gate metrics | `operation` | Weighs coverage, traceability, and pass rates against thresholds |
-| **Decide** | Branch on quality gate compliance | `switch` | Assesses `score >= 90 and blocker_count == 0` |
+| **Evaluate** | Calculate quality gate metrics and BTV pass verification | `operation` | Weighs coverage, traceability, and pass rates against thresholds |
+| **Decide** | Branch on quality gate compliance | `switch` | Assesses `blocker_count == 0 and gate_passed == true` |
 | **Receipt** | Emit immutable EVAL-REPORT receipt | `operation` (`end: true`) | Generates `EVAL-{NN}-RPT-{NNN}.yaml` and marks IPLAN Verified |
 | **Remediate** | Handle defects and trigger bugfix vehicle | `operation` (`terminate: true`) | Compensates test fixtures and dispatches C1 CHG + scoped IPLAN |
 
@@ -166,7 +166,7 @@ To eliminate the decoupling between evaluation execution and review crew evaluat
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Prior to final receipt emission (`EmitPassingReceipt` in templates or `EmitPassingReportReceipt` in runner workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`eval-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or defective test receipts are uncovered, the saga executes an automated remediation loop, halting receipt verification until all P0/P1 blockers are resolved.
 
 ---

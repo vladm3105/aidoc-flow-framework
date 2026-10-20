@@ -1,0 +1,350 @@
+# =============================================================================
+#  BDD-SWF-TEMPLATE.yaml — Stateful BDD Scenarios (CNCF Serverless Workflow)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Subtype: workflow)
+#  Purpose: Machine-executable, stateful BDD acceptance workflow template
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Architecture: HYBRID ENVELOPE
+#    Outer document conforms to SDD Layer 4 structure (metadata, document_control,
+#    feature, traceability) for 100% compatibility with sdd_doc_lint.
+#    Inner 'workflow:' block houses a valid CNCF Serverless Workflow v0.8
+#    state machine for multi-step choreography, event stimuli, and saga rollback.
+#  Downstream: ADR (Layer 5), TDD (Layer 7 via BDD scenario mapping)
+#  Upstream: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 04 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (BDD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to run, verify, and rollback scenarios.
+#       Orchestrates Given/When/Then steps, stimuli, assertion gating, and saga teardown.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (BDD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (scenario clauses, preconditions, actions, assertions, trace links).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (BDD-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (BDD-SWF-TEMPLATE.yaml + BDD-GRAPH-TEMPLATE.yaml) when:
+#    - Modeling stateful behavioral workflows, multi-step customer journeys, or distributed event sequences
+#    - Mapping Given/When/Then to state machine primitives (inject/operation/event/switch)
+#    - Requiring automated saga compensation (backward rollback teardown on scenario failure)
+#    - Orchestrating asynchronous callbacks, webhook events, or external stimuli
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (BDD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting standard, linear Given/When/Then scenarios for atomic or monolithic features
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
+# =============================================================================
+
+id: BDD-NN
+doc_id: BDD-NN
+title: "[Feature/Component Under Test - Stateful Workflow]"
+
+# =============================================================================
+# Section 0: Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "bdd-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "qa_lead"
+  author_playbook: "framework/playbooks/04_BDD/qa_lead.md"
+  layer: 4
+  lifecycle: mvp-prod-newmvp
+  total_sections: 5
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.
+      BDD validates end-to-end user acceptance criteria.
+      Every scenario or workflow defined in this layer MUST be paired with a concrete
+      TDD test case in Layer 7 (GD-08, ACC01).
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  version: "1.0"
+  status: draft  # draft | in-review | approved | superseded
+  date_created: "2026-10-05"
+  last_updated: "2026-10-05"
+  author: "[Author Persona — e.g., QA Lead, Requirements Specialist]"
+  target_release: "[vX.Y.Z]"
+
+# =============================================================================
+# Section 2: Feature Context & User Story
+# =============================================================================
+
+feature:
+  name: "[Feature Under Test]"
+  description: >-
+    [High-level description of the business process or system capability being validated]
+  user_story:
+    as_a: "[Persona / Role]"
+    i_want: "[System capability or interaction]"
+    so_that: "[Business outcome or value delivered]"
+
+# =============================================================================
+# Section 3: Traceability (EARS Upstream + TDD Downstream)
+# =============================================================================
+
+traceability:
+  tags:
+    - "@bdd: BDD-NN"
+  upstream:
+    ears:
+      - "EARS.NN.SS.xxxx"
+  downstream:
+    adr_targets:
+      - "ADR.NN.02 (Behavioral scenarios & failure constraints informing technology selection)"
+    tdd_targets:
+      - "TDD.NN.SS.xxxx"
+    spec_interfaces:
+      - "SPEC Section 3 (Interfaces)"
+
+# =============================================================================
+# Section 4: Executable Behavioral Workflow (CNCF Serverless Workflow v0.8)
+# =============================================================================
+
+workflow:
+  id: "bdd-nn-behavioral-flow"
+  name: "[Stateful Behavioral Acceptance Flow]"
+  version: "1.0"
+  specVersion: "0.8"
+  description: >-
+    [CNCF Serverless Workflow modeling multi-step Given-When-Then choreography
+    with failure branches, asynchronous events, and saga compensation rollback]
+
+  start: SetupGivenPreconditions
+
+  timeouts:
+    workflowExecTimeout:
+      duration: PT5M
+
+  events:
+    - name: BddScenariosClosedEvent
+      type: org.aidoc.sdd.layer04.bdd.closed
+      source: /layers/04_bdd
+
+  states:
+    # -------------------------------------------------------------------------
+    # GIVEN: Precondition Initialization & Fixture Injection
+    # -------------------------------------------------------------------------
+    - name: SetupGivenPreconditions
+      type: operation
+      compensatedBy: RollbackStatefulChanges
+      actions:
+        - name: injectPreconditions
+          functionRef:
+            refName: fixtureSetupFunction
+            arguments:
+              account_state: "active"
+              initial_balance: 1000
+              auth_token: "mock-valid-jwt"
+      transition: DispatchWhenAction
+
+    # -------------------------------------------------------------------------
+    # WHEN: Stimulus / Action Execution
+    # -------------------------------------------------------------------------
+    - name: DispatchWhenAction
+      type: operation
+      actions:
+        - name: executeStimulus
+          functionRef:
+            refName: systemActionDispatcher
+            arguments:
+              action: "processTransfer"
+              destination: "acc-9876"
+              amount: 250
+      transition: VerifyThenExpectations
+
+    # -------------------------------------------------------------------------
+    # THEN: Verification / Outcome Assertion
+    # -------------------------------------------------------------------------
+    - name: VerifyThenExpectations
+      type: switch
+      dataConditions:
+        - name: SuccessfulTransferOutcome
+          condition: "${ .response.status == 200 and .response.balance == 750 }"
+          transition: InvokeReviewSagaGate
+        - name: ThresholdViolationOutcome
+          condition: "${ .response.latency_ms > 250 }"
+          transition: RecordThresholdViolation
+      defaultCondition:
+        transition: RecordAssertionFailure
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "bdd-review-remediation-flow"
+              artifactId: "${ .artifactId }"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          transition: CompleteScenarioSuccess
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresQuarantine
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: RecordAssertionFailure
+      defaultCondition:
+        transition: RecordAssertionFailure
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "qa_lead"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
+
+    # -------------------------------------------------------------------------
+    # TERMINAL: Scenario Success & Layer Closeout
+    # -------------------------------------------------------------------------
+    - name: CompleteScenarioSuccess
+      type: inject
+      data:
+        verdict: "PASSED"
+        ears_verified: ["EARS.NN.SS.xxxx"]
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-03"
+              layer: "04_BDD"
+              documentId: "${ .artifactId }"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "${ .artifactId }"
+              layer: "04_BDD"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "BddNode"
+              nodeId: "${ .artifactId }"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "BddScenariosClosedEvent"
+              documentId: "${ .artifactId }"
+              behavioral_state_graphs: "${ .behavioral_state_graphs }"
+              scenarios_dag: "${ .scenarios_dag }"
+      produceEvents:
+        - eventRef: BddScenariosClosedEvent
+      end: true
+
+    # -------------------------------------------------------------------------
+    # TERMINAL: Assertion / Threshold Failure with Quarantine Handling
+    # -------------------------------------------------------------------------
+    - name: RecordThresholdViolation
+      type: inject
+      data:
+        verdict: "FAILED_THRESHOLD"
+        threshold_tag: "@threshold:PRD.NN.perf.latency.p95"
+      transition: RollbackStatefulChanges
+
+    - name: RecordAssertionFailure
+      type: inject
+      data:
+        verdict: "FAILED_ASSERTION"
+        error_code: "ASSERTION_MISMATCH"
+      transition: RollbackStatefulChanges
+
+    # -------------------------------------------------------------------------
+    # SAGA COMPENSATION: State Rollback Handler
+    # -------------------------------------------------------------------------
+    - name: RollbackStatefulChanges
+      type: operation
+      actions:
+        - name: revertFixture
+          functionRef:
+            refName: fixtureRollbackFunction
+            arguments:
+              rollback_action: "revertAccountState"
+      end: true
+
+  functions:
+    - name: fixtureSetupFunction
+      type: custom
+      operation: "urn:aidoc:bdd:fixture-setup"
+    - name: systemActionDispatcher
+      type: custom
+      operation: "urn:aidoc:bdd:action-dispatcher"
+    - name: fixtureRollbackFunction
+      type: custom
+      operation: "urn:aidoc:bdd:fixture-rollback"
+    - name: invokeReviewSaga
+      type: custom
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+    - name: remediateLayerFindings
+      type: custom
+      operation: "urn:aidoc:functions:remediator#remediate"
+    - name: verifyLayerBoundaryGate
+      type: custom
+      operation: "urn:aidoc:governance:gate#verify"
+    - name: sealDocumentBaseline
+      type: custom
+      operation: "urn:aidoc:governance:document#seal"
+    - name: registerGraphBaselineNode
+      type: custom
+      operation: "urn:aidoc:governance:graph#registerNode"
+    - name: emitCloudEvent
+      type: custom
+      operation: "urn:aidoc:governance:event#emit"

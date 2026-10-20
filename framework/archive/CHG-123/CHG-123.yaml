@@ -1,0 +1,318 @@
+# =============================================================================
+#  CHG-123: Framework-Wide BTV Workflow Modernization & Stale Docs Reconciliation
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec Governance)
+#  Pre-cleared: Ratified plans/SDD-BTV-WORKFLOW-AND-DOCS-RECONCILIATION-PLAN.md
+#  Scope: Modernize review gate switch conditions from legacy .review_score >= 90
+#         to zero-blocking-findings binary gates (.blocking_findings == 0 and .gate_passed == true)
+#         across all remaining 9 layer SWFs and 10 governance workflows. Standardize
+#         declarative and graph template readiness indicators. Purge stale platform
+#         distribution references in docs.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.10"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-123"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.10"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T21:00:00Z"
+  date_approved: "2026-10-19T21:00:00Z"
+  date_implemented: "2026-10-19T21:15:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T21:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/SDD-BTV-WORKFLOW-AND-DOCS-RECONCILIATION-PLAN.md
+      establishing framework-wide BTV workflow modernization, graph template readiness standardization,
+      and documentation reconciliation.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-123)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-123"
+  title: "Formal Decision: Framework-Wide BTV Workflow Modernization & Stale Docs Reconciliation"
+  date: "2026-10-19"
+  status: Accepted
+  context: |
+    Under SDD-0044 and Binary Topological Validation (BTV), quality gates are deterministic, binary, and
+    evaluated on structural schema conformance and zero blocking review findings. Following the successful
+    piloting in Layer 08 IPLAN (CHG-121) and GATE-06 (CHG-122), an exhaustive framework audit revealed that
+    the remaining 9 SDD layer SWF templates, 8 workflow standards, and 10 standalone governance workflows
+    still enforced legacy scalar heuristic conditions ('.review_score >= 90'). Furthermore, several declarative
+    templates retained percentage placeholders ('[X]%'), 5 SDD-GRAPH templates retained scalar '90/100' targets,
+    and docs/REPO_STRUCTURE.md retained stale platform distribution claims.
+  choice: |
+    Implement framework-wide BTV modernization per plans/SDD-BTV-WORKFLOW-AND-DOCS-RECONCILIATION-PLAN.md:
+    1. Modernize review gate transition conditions from '${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }'
+       to '${ .blocking_findings == 0 and .gate_passed == true }' across all 9 layer SWF templates (01_BRD through 07_TDD, 09_CHG, 10_EVAL),
+       their workflow standards, and all 10 governance workflows in framework/governance/workflows/.
+    2. Guard EARS sequential switch states against short-circuiting by requiring '.hasAmbiguity == false' on approval,
+       and modernize EARS operation 'readiness#score' to 'readiness#verify' and action 'scoreReadiness' to 'verifyBddReadiness'.
+    3. Modernize governance workflow action arguments: threshold_min_score in eval-verification-run.sw.yaml to verify_btv_pass: true,
+       readinessScore emission in ears-requirements-validation.sw.yaml to bdd_ready: PASS / FAIL, and score in review-remediation-flow.sw.yaml
+       to gate_verdict: PASS.
+    4. Standardize declarative readiness indicators to '[PASS | FAIL]' in 03_EARS, 04_BDD, 05_ADR, 06_SPEC, and update
+       5 SDD-GRAPH metadata readiness targets from '90/100' to 'PASS'.
+    5. Correct stale platform distribution text and dead archive paths in docs/REPO_STRUCTURE.md, and qualify CHANGELOG.md in docs/PROJECT.md.
+    6. Lock down 3-way byte parity across all 3 CHG template locations in tests/conformance/test_chg_flows_router.py, and add
+       test_no_residual_review_score_in_workflows in test_governance_workflows.py.
+    7. Bump framework/VERSION from 0.96.9 to 0.96.10, update hooks/sync-version-refs.sh, and propagate pins.
+  consequences: |
+    - All 10 SDD layers and governance workflows operate under a uniform, deterministic Binary Topological Validation contract.
+    - Zero residual scalar review_score conditions remain in any active state machine or standard.
+    - Graph templates and declarative templates present consistent binary readiness semantics.
+    - 3-way byte parity across CHG templates is permanently backstopped by automated conformance regression tests.
+    - Stale platform distribution claims are eliminated from documentation.
+
+# =============================================================================
+# Section 2: Artifacts Modified
+# =============================================================================
+
+artifacts_modified:
+  - path: "framework/VERSION"
+    type: "version"
+    action: "modify"
+    rationale: "Bump framework spec version to 0.96.10 per GATE-SPEC-E005."
+  - path: "hooks/sync-version-refs.sh"
+    type: "hook"
+    action: "modify"
+    rationale: "Append 0.96.9 to OLD_VERSIONS."
+  - path: "framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/02_PRD/PRD-GRAPH-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Update ears_ready_target to PASS."
+  - path: "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize readiness operation, action name, short-circuit guard, and review gate."
+  - path: "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Standardize bdd_ready to [PASS | FAIL]."
+  - path: "framework/layers/03_EARS/EARS-GRAPH-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Update bdd_ready_target to PASS."
+  - path: "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Standardize adr_ready to [PASS | FAIL]."
+  - path: "framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Standardize spec_ready to [PASS | FAIL]."
+  - path: "framework/layers/05_ADR/ADR-GRAPH-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Update spec_ready_target to PASS."
+  - path: "framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Standardize tdd_ready to [PASS | FAIL]."
+  - path: "framework/layers/06_SPEC/SPEC-GRAPH-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Update tdd_ready_target to PASS."
+  - path: "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/07_TDD/TDD-GRAPH-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Update iplan_ready_target to PASS."
+  - path: "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation."
+  - path: "framework/layers/09_CHG/CHG-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/governance/chg/CHG-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Synchronize byte-identically with layers/09_CHG copy."
+  - path: "framework/governance/templates/CHG-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Synchronize byte-identically with layers/09_CHG copy."
+  - path: "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch to zero-blocking-findings gate."
+  - path: "framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Update workflow standard documentation lines 75, 76, 169."
+  - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate documentation line 382."
+  - path: "framework/governance/workflows/brd-business-validation.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/prd-feature-decomposition.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/ears-requirements-validation.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize conditions and action arguments."
+  - path: "framework/governance/workflows/bdd-acceptance-run.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/adr-decision-analysis.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition and spec_ready argument."
+  - path: "framework/governance/workflows/spec-choreography-contract.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/tdd-test-execution.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/chg-request-flow.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/eval-verification-run.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize threshold_min_score and review gate switch."
+  - path: "framework/governance/workflows/iplan-escalation-flow.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize review gate switch condition."
+  - path: "framework/governance/workflows/review-remediation-flow.sw.yaml"
+    type: "spec"
+    action: "modify"
+    rationale: "Modernize gate_verdict argument."
+  - path: "docs/REPO_STRUCTURE.md"
+    type: "doc"
+    action: "modify"
+    rationale: "Remove dead archive/platforms/ paths and stale plugin distribution claim."
+  - path: "docs/PROJECT.md"
+    type: "doc"
+    action: "modify"
+    rationale: "Annotate CHANGELOG.md as retired tombstone in allowlist."
+  - path: "tests/conformance/test_governance_workflows.py"
+    type: "test"
+    action: "modify"
+    rationale: "Add centralized regression test against residual review_score."
+  - path: "tests/conformance/test_chg_flows_router.py"
+    type: "test"
+    action: "modify"
+    rationale: "Extend byte parity checks to 3-way comparison."
+
+# =============================================================================
+# Section 3: Implementation Order & Scope
+# =============================================================================
+
+sdd_lifecycle: []
+
+implementation:
+  iplan_ref: "framework/archive/CHG-123/IPLAN-123.yaml"
+  steps:
+    - step: "Author authorizing CHG-123.yaml and IPLAN-123.yaml"
+      phase: "iplan_creation"
+    - step: "Modernize review gate switch conditions across all 9 layer SWFs and workflow standards"
+      phase: "layer_swf_reconciliation"
+    - step: "Modernize conditions and arguments in 10 governance state machines"
+      phase: "governance_workflow_reconciliation"
+    - step: "Standardize declarative and graph template readiness indicators"
+      phase: "template_readiness_standardization"
+    - step: "Clean up project documentation and distribution references"
+      phase: "documentation_reconciliation"
+    - step: "Add conformance tests, bump framework/VERSION to 0.96.10, and fan out pins"
+      phase: "verification_and_governance"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-123/CHG-123.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/layers/ framework/governance/"
+    - "pytest tests/conformance/test_governance_workflows.py"
+    - "pytest tests/conformance/test_chg_flows_router.py"
+    - "hooks/pre_push_check.sh"
+    - "python3 tests/chg/spec_gate.py --base origin/dev"

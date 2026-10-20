@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.9 |
+| Framework Version | 0.96.10 |
 | Authority | Decision GD-59 (framework/governance/DECISIONS.md) |
 
 ---
@@ -151,7 +151,7 @@ To eliminate the decoupling between artifact authoring and review crew evaluatio
 2. **Mandatory Review Saga Invalidation & Gating**:
    - Prior to final ratification (`RatifyEarsRequirements`), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`ears-review-remediation-flow`).
    - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
-     `${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }`.
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.
 
 ---

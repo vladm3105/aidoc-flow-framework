@@ -232,7 +232,7 @@ requirements:
         operation: "urn:aidoc:functions:conflict-checker#evaluate"
         type: custom
       - name: computeReadinessGate
-        operation: "urn:aidoc:functions:readiness#score"
+        operation: "urn:aidoc:functions:readiness#verify"
         type: custom
       - name: emitCanonicalIds
         operation: "urn:aidoc:functions:hasher#generate"
@@ -321,7 +321,7 @@ requirements:
               refName: checkConflictMatrix
               arguments:
                 requirements: "${ .parsedRequirements }"
-          - name: scoreReadiness
+          - name: verifyBddReadiness
             functionRef:
               refName: computeReadinessGate
               arguments:
@@ -333,10 +333,10 @@ requirements:
         type: switch
         dataConditions:
           - name: ReadinessApproved
-            condition: "${ .readinessScore >= 90 and .conflictCount == 0 }"
+            condition: "${ .conflictCount == 0 and .syntax_valid == true and .hasAmbiguity == false }"
             transition: InvokeReviewSagaGate
           - name: AmbiguityDetected
-            condition: "${ .readinessScore >= 70 and .hasAmbiguity == true }"
+            condition: "${ .hasAmbiguity == true }"
             transition: SolicitClarificationCallback
         defaultCondition:
           transition: RejectRequirementsSet
@@ -356,7 +356,7 @@ requirements:
         type: switch
         dataConditions:
           - name: ReviewGateApproved
-            condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+            condition: "${ .blocking_findings == 0 and .gate_passed == true }"
             transition: RatifyEarsRequirements
           - name: ReviewRequiresRemediation
             condition: "${ .blocking_findings > 0 and .iteration < 3 }"
