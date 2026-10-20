@@ -223,9 +223,13 @@ implementation_notes:
     - "[Consideration — e.g., LRU cache for frequent reads]"
   platform_stack_alignment:
     _guidance: |
-      Ground component implementation in the approved technology stack (Layer 05 ADR selection).
-      Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18, NATS JetStream client,
-      Temporal workflow activities, LiteLLM proxy) while maintaining engine neutrality.
+      Ground component implementation in the approved technology stack (/home/ya/devd/technology_stack,
+      specs 00-23 and Layer 05 ADR selection). Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18,
+      NATS JetStream client, Temporal workflow activities, LiteLLM proxy, Kùzu embedded graph).
+      Missing Tools Protocol: If a needed library or tool is missing from the approved stack,
+      the agent MUST explicitly inform the operator and request instructions before proceeding.
+      Prohibition of Insecure Options: Insecure options (plaintext secrets, disabled sandboxing,
+      relaxed permissions) are strictly prohibited.
     driver_bindings:
       - "[Driver / SDK name and version pin]"
 

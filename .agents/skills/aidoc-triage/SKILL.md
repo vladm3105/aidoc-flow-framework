@@ -52,6 +52,9 @@ For every claim, run the check; never trust the issue text:
 - P2 — real gaps with workarounds, unimplemented-but-documented rules, mirror/structural traps
 - P3 — stale prose, nits, dead code with no callers
 
+**Platform Technology Stack & Security Compliance:**
+Verify that issues and proposed fix directions adhere strictly to the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack`, specs 00–23). Immediately flag and reject proposals offering insecure options (e.g. plaintext secrets, disabled sandboxing, relaxed permissions, bypassed gates). If a legitimate defect/feature requires tools missing from the approved stack, explicitly note in the triage report that the Missing Tools Operator Escalation Protocol must be invoked.
+
 **Labels**: list first (`gh label list`), reuse — create only for a genuinely new class (`gh label create <name> --color <hex> --description "<text>"`). Compose triples: priority + area + class, e.g. `P1,linter` or `bug,P2,release`. Discriminators: `bug` = behavior contradicts its contract; `gap` = contract missing, nothing contradicts yet; `stale` = once-true prose/code the tree outgrew; `linter` = `sdd_doc_lint/` behavior, `docs` = prose only. Remove a clearly wrong label rather than stacking around it; when unsure, leave it and note the question in the comment.
 
 **Cluster**: link related issues (`#700` before `#726`'s live subset; catalog `#715` before severity `#716`/`#722`/`#696`; behavior pairs `#713`+`#733`).

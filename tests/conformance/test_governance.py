@@ -375,6 +375,95 @@ class GateExecutionShieldingInvariants(unittest.TestCase):
         self.assertIn("tdd_ready_status: PASS", gate_06)
 
 
+class PlatformTechnologyStackAndSecurityInvariants(unittest.TestCase):
+    """Enforces strict platform technology stack adherence, insecure options ban, and missing tools protocol."""
+
+    def test_agents_and_templates_platform_stack_rules(self):
+        repo_root = FRAMEWORK.parent
+        agents_md = (repo_root / "AGENTS.md").read_text(encoding="utf-8")
+        agents_tmpl = (FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md").read_text(encoding="utf-8")
+
+        for doc in (agents_md, agents_tmpl):
+            self.assertIn("technology_stack", doc)
+            self.assertIn("insecure options", doc)
+            self.assertIn("Missing Tools", doc)
+            self.assertIn("autonomous sessions", doc)
+            self.assertIn("Conflict Disposition", doc)
+
+    def test_governance_docs_platform_stack_rules(self):
+        rec_stack = (GOVERNANCE / "RECOMMENDED_PLATFORM_STACK.md").read_text(encoding="utf-8")
+        usage_guide = (GOVERNANCE / "TECHNOLOGY_STACK_USAGE_GUIDE.md").read_text(encoding="utf-8")
+        doc_core = (GOVERNANCE / "DOC_GOVERNANCE_CORE.md").read_text(encoding="utf-8")
+        assistant_rules = (FRAMEWORK / "AI_ASSISTANT_RULES.md").read_text(encoding="utf-8")
+
+        for doc in (rec_stack, usage_guide, doc_core, assistant_rules):
+            self.assertIn("technology_stack", doc)
+            self.assertIn("Missing Tools", doc)
+
+        self.assertIn("Two-Tier Secrets", rec_stack)
+        self.assertIn("Hybrid S3", rec_stack)
+        self.assertIn("Prohibition of Insecure Options", doc_core)
+        self.assertIn("autonomous sessions", usage_guide)
+        self.assertIn("Conflict Disposition", usage_guide)
+        self.assertIn("Conflict Disposition", doc_core)
+
+    def test_skills_and_templates_platform_stack_rules(self):
+        repo_root = FRAMEWORK.parent
+        skills_to_check = [
+            repo_root / ".agents" / "skills" / "approval-gate" / "SKILL.md",
+            repo_root / ".agents" / "skills" / "verified-planning" / "SKILL.md",
+            repo_root / ".agents" / "skills" / "start-session" / "SKILL.md",
+            FRAMEWORK / "skills" / "approval-gate" / "SKILL.md",
+            FRAMEWORK / "skills" / "verified-planning" / "SKILL.md",
+            FRAMEWORK / "skills" / "start-session" / "SKILL.md",
+        ]
+        for skill_file in skills_to_check:
+            content = skill_file.read_text(encoding="utf-8")
+            self.assertIn(
+                "technology_stack", content, f"missing tech stack reference in {skill_file}"
+            )
+            self.assertIn(
+                "insecure options", content, f"missing insecure options ban in {skill_file}"
+            )
+            self.assertIn(
+                "Missing Tools", content, f"missing tools escalation protocol in {skill_file}"
+            )
+
+        # Check templates
+        stack_policy = (FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", stack_policy)
+        self.assertIn("3.15", stack_policy)
+
+        module_tmpl = (FRAMEWORK / "templates" / "MODULE-TEMPLATE.md").read_text(encoding="utf-8")
+        self.assertIn("Missing Tools", module_tmpl)
+        self.assertNotIn("CockroachDB", module_tmpl)
+
+        adr_tmpl = (FRAMEWORK / "layers" / "05_ADR" / "ADR-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", adr_tmpl)
+        self.assertIn("technology_stack", adr_tmpl)
+
+        spec_tmpl = (FRAMEWORK / "layers" / "06_SPEC" / "SPEC-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", spec_tmpl)
+        self.assertIn("technology_stack", spec_tmpl)
+
+        tdd_tmpl = (FRAMEWORK / "layers" / "07_TDD" / "TDD-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", tdd_tmpl)
+
+        iplan_tmpl = (FRAMEWORK / "layers" / "08_IPLAN" / "IPLAN-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", iplan_tmpl)
+        self.assertIn("INVARIANTS", iplan_tmpl)
+
+
 class GovernanceFilesNoOrphans(unittest.TestCase):
     """Any new file under framework/governance/ must be added to EXPECTED_FILES."""
 

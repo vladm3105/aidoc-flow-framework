@@ -26,9 +26,9 @@ not merge authority. Red or incomplete CI always means do not merge.
 
 | Tier | Examples | Do |
 |---|---|---|
-| 🟢 **Act directly** | commits on your own branch · drafts · internal messages · research and analysis · anything reversible inside your own workspace | proceed |
-| 🟡 **Needs human OK** | send external email · public posts · publish a site or docs · spend, pricing or contract changes · anything a stranger will see | prepare the artifact below, then **stop** and surface it |
-| 🔴 **Never autonomous** | financial commitments · legal execution · hiring · force-push · destructive data operations · writes to a repo you are not working in | flag to the human; do **not** prepare it for auto-execution |
+| 🟢 **Act directly** | commits on your own branch · drafts · internal messages · research and analysis · anything reversible inside your own workspace using approved tech stack tools | proceed |
+| 🟡 **Needs human OK** | send external email · public posts · publish a site or docs · spend, pricing or contract changes · Missing Tools escalation (in autonomous sessions, always file a GitHub issue detailing the missing tool requirement; interactively, request operator instructions when a needed tool is missing from `/home/ya/devd/technology_stack`) · conflict disposition (file GitHub issues for real deployment/selection work) · anything a stranger will see | prepare the artifact below, then **stop** and surface it |
+| 🔴 **Never autonomous** | financial commitments · legal execution · hiring · force-push · destructive data operations · writes to a repo you are not working in · offering, proposing, or using insecure options (plaintext secrets, disabled sandboxing, bypassed verification `--no-verify`, relaxed permissions) | flag to the human; do **not** prepare it for auto-execution; reject insecure options outright |
 
 **When unsure which tier, treat it as the higher one.** The cost of over-routing
 is a few minutes; the cost of under-routing is unrecoverable.

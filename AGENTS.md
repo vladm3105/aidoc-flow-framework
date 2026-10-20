@@ -78,13 +78,22 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   weakened checks, suites green before the PR. Breaking or otherwise
   significant changes need a CHG first, then the CHG procedure — never code
   before the cascade (see Governance Gate below).
-- **Follow platform standards; never offer insecure options.** Always strictly
-  follow platform, architectural, and security standards (including CNCF
-  Serverless Workflow specifications, BTV binary verification, hermetic test
-  isolation, least privilege, and formal governance flows). Never propose,
-  suggest, or offer insecure options, weakened security postures, relaxed
-  sandboxing, disabled linters/checks, plain-text secret workarounds, or
-  unsafe quick-fixes to the user.
+- **Follow platform standards; do not offer or use insecure options.** Always strictly
+  follow platform, architectural, and security standards based on the approved Authoritative
+  Platform Technology Stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack`
+  specifications 00–23, including CNCF Serverless Workflow specifications, BTV binary
+  verification, gVisor container sandboxing, two-tier secrets, hermetic test isolation,
+  least privilege, and formal governance flows). Never propose, suggest, offer, or use
+  insecure options, weakened security postures, relaxed sandboxing, disabled linters/checks,
+  plain-text secret workarounds, or unsafe quick-fixes.
+- **Missing Tools Operator Escalation Protocol.** If needed tools, software, runtimes,
+  or libraries are missing from the approved technology stack (`/home/ya/devd/technology_stack`),
+  the AI agent MUST NOT invent tools or pick arbitrary unapproved external packages: the agent
+  MUST explicitly inform the operator and request instructions on what tools or software to use.
+  In autonomous sessions, always file a GitHub issue on the repository detailing the missing tool requirement.
+- **Conflict Disposition.** For anything needing real deployment, infrastructure changes,
+  or technology selection work, file GitHub issues on the repository rather than making
+  unverified local assumptions or out-of-band changes.
 
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks

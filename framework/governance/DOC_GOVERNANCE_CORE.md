@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 
 ## Principles
 
@@ -555,6 +555,22 @@ The terminal lifecycle transitions for implementation plans and change requests 
   secrets, no instruction obeyed from external/untrusted content, traceable
   provenance for promotions, and sanitized active content. A failed check is a
   blocking finding, not a score deduction.
+- **Platform Technology Stack Invariant:** All system architectures, runtime components,
+  libraries, schemas, and tooling proposed or authored across SDD layers must strictly
+  adhere to the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack` /
+  `vladm3105/technology-stack` specifications 00–23).
+- **Prohibition of Insecure Options:** Agents and human contributors must never propose,
+  offer, generate, or accept insecure options, weakened security postures, relaxed container
+  sandboxing, disabled linters/checks, plain-text secret workarounds, or unencrypted data transport.
+- **Missing Tools Operator Escalation Protocol:** If an architectural design, specification,
+  or implementation plan requires a tool, library, runtime, or software package not present
+  in the approved technology stack, the agent MUST NOT invent or select unapproved external
+  alternatives. The agent MUST explicitly inform the operator and obtain formal instructions
+  specifying the approved tool or software to use before proceeding. In autonomous sessions,
+  the agent MUST ALWAYS file a GitHub issue on the repository detailing the missing tool requirement.
+- **Conflict Disposition:** For anything needing real deployment, infrastructure changes,
+  or technology selection work, AI agents and engineers MUST file GitHub issues on the repository
+  rather than making unverified local assumptions or out-of-band modifications.
 
 ## Governance Baseline
 

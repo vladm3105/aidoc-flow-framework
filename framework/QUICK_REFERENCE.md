@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 
 
 ## 10-Layer SDD Framework

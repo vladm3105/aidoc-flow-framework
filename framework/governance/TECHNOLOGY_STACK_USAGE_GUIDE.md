@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
 
 ---
@@ -185,6 +185,28 @@ sequenceDiagram
    - Must provide an automated testcontainer fixture for Layer 07 TDD.
 3. **Review Crew Consensus:** The review crew (specifically the `architect`, `security_engineer`, and `operator` personas) must achieve quorum and sign off with zero blocking vetoes.
 4. **Formal Decision Ratification:** The variance is recorded in the project's authorizing Change Request (Section 1B `decision:`) and logged in the project ADR index.
+
+### 4.1 Missing Tools Operator Escalation Protocol
+
+If any tool, runtime, software, database driver, or library required for a task or implementation is missing from the approved enterprise technology stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack` specifications 00–23), the AI agent MUST NOT guess, invent tools, or pick arbitrary unapproved external packages.
+
+Instead, the AI agent MUST execute the **Missing Tools Operator Escalation Protocol**:
+1. **Explicit Operator Notification**: Halt progression to technical specification or code execution and immediately inform the human operator with an explicit notification identifying the missing capability and why it is required.
+2. **Surface Deficit & Alternatives**: Present the exact capability needed, cite what is available in `/home/ya/devd/technology_stack`, and specify the gap.
+3. **Await Operator Instructions**: Solicit explicit instructions and authorization from the operator regarding which approved tool, library, or software standard should be adopted or whether an Architecture Variance Request should be initiated.
+4. **Autonomous Session Issue Filing**: In autonomous sessions (where an interactive human operator is not in-session), the agent MUST ALWAYS file a GitHub issue on the repository detailing the missing tool requirement, required capabilities, and blast radius rather than guessing or proceeding with unapproved software.
+
+### 4.2 Strict Prohibition of Insecure Options
+
+Under no circumstances may an AI agent or engineer propose, offer, recommend, or implement insecure options or unsafe workarounds:
+- **No Plaintext Secrets**: Secrets MUST NOT be stored in plaintext in code, `.env` files, configuration files, git commits, or command lines. Secrets must be managed via Two-Tier Secrets (OCI Vault + OpenBao) with in-memory injection.
+- **No Disabled Sandboxing**: Agent execution and dynamic commands MUST run under gVisor (`runsc`) user-space virtualization with `--network=none` and dropped capabilities (`--cap-drop=ALL`).
+- **No Bypassed Verification**: Verification, linters, or security hooks must never be bypassed using `--no-verify`, skip-verification flags, relaxed AST rules, or lowered quality thresholds.
+- **No Relaxed Permissions**: Services and containers must adhere to least-privilege RBAC; root container execution and broad socket mounts (e.g. raw `/var/run/docker.sock`) are strictly forbidden.
+
+### 4.3 Conflict Disposition
+
+For anything needing real deployment, infrastructure changes, container runtime provisioning, or technology selection work, AI agents MUST file GitHub issues on the repository rather than making unverified local assumptions or out-of-band modifications.
 
 ---
 

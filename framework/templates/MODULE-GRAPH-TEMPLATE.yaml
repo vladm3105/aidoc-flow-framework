@@ -15,7 +15,7 @@ metadata:
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
   status: "Draft"  # Draft | Active | Deprecated | Superseded
-  framework_version: "0.96.10"
+  framework_version: "0.96.11"
   description: "[Concise summary of subsystem role, boundaries, and architectural scope]"
   c4_level: "c4-l2"
   seed_ref: "SEED-domain"

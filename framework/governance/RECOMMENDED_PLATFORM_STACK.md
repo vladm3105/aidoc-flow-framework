@@ -8,9 +8,9 @@
 | Status | Approved |
 | Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
-| Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–19) |
+| Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–23) |
 
 ---
 
@@ -25,7 +25,7 @@ quality gates, and review crews without tying projects to any proprietary softwa
 This document serves as the **authoritative platform governance guidance**. It defines our ecosystem's
 **recommended reference architecture**, mapping the vendor-agnostic framework contracts directly to our
 enterprise technology stack codified in the canonical upstream repository **[vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)** (Standard v2.0). Projects adopting this stack use the operational blueprints in
-[`framework/governance/aidoc/`](aidoc/) and companion specifications 00–19 to instantiate runtimes with zero architectural drift.
+[`framework/governance/aidoc/`](aidoc/) and companion specifications 00–23 to instantiate runtimes with zero architectural drift.
 
 ---
 
@@ -48,7 +48,7 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 ```
 
 1. **Strictly Open Source**: Every runtime dependency is permissively licensed (MIT, Apache 2.0, BSD-3) and self-hostable without commercial licensing, telemetry callbacks, or proprietary cloud lock-in.
-2. **Zero-Trust Defense in Depth**: Dynamic code execution and autonomous coding agents operate under strict user-space kernel virtualization (**gVisor `runsc`**), modern-eBPF threat monitoring (**Falco**), perimeter mesh (**Tailscale**) with on-demand disposable travel bastions (**AmneziaWG / AWG**), edge ingress via **Cloudflare Tunnel** (`cloudflared`) and **Traefik v3**, host daemon protection via **`docker-socket-proxy`**, ingress intrusion prevention (**CrowdSec**), and machine identity in-memory secrets injection (**Infisical**).
+2. **Zero-Trust Defense in Depth**: Dynamic code execution and autonomous coding agents operate under strict user-space kernel virtualization (**gVisor `runsc`**), modern-eBPF threat monitoring (**Falco**), perimeter mesh (**Tailscale**) with on-demand disposable travel bastions (**AmneziaWG / AWG**), edge ingress via **Cloudflare Tunnel** (`cloudflared`) and **Traefik v3**, host daemon protection via **`docker-socket-proxy`**, ingress intrusion prevention (**CrowdSec**), and **Two-Tier Secrets** separation (**OCI Vault** for Tier 1 bootstrap/cold-start + **OpenBao** for Tier 2 runtime dynamic secrets, with in-memory injection and zero plaintext disk storage).
 3. **AI-First & Model Context Protocol Native**: Models are unified behind **LiteLLM** and dynamically routed by **Laya** via local UNIX domain sockets (`/var/run/litellm.sock`); prompts and evaluation datasets are governed in **Langfuse**; database schemas are inspected, verified for drift, and migrated via **Bytebase Model Context Protocol**.
 4. **Unified OLAP Telemetry & Business Intelligence**: Telemetry and analytical data planes are consolidated into a single columnar **ClickHouse** cluster powering full-stack APM (**HyperDX**), LLM observability (**Langfuse**), kernel network profilers (**Coroot**), and agentic business intelligence (**Apache Superset** with headless Playwright visual critic).
 5. **Multi-Tenant Infrastructure Consolidation & Two-Tier Ledger**: Core platform state is centralized into shared, resilient clusters partitioned cleanly by namespace or account: a 3-node HA **PostgreSQL 18** cluster, a shared **Temporal Server**, and clustered **NATS JetStream**. Employs a **Two-Tier Lossless Ledger**: Tier A Wire Ledger (`xp.ledger` exact unmodified wire bytes `bytea` with UUIDv7 partitioning) for non-repudiation auditability, and Tier B Double-Entry Financial Ledger ($\sum \text{debits} = \sum \text{credits}$, fixed-point 64-bit integer precision).
@@ -61,6 +61,8 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 3. **Thin Payloads & Out-of-Band Content**: Telemetry spans, workflow histories, and queue messages carry only identifiers, URIs, and SHA-256 hashes. Raw code diffs, conversation text, and artifacts reside in restricted object storage (S3 / MinIO).
 4. **Consolidated Infrastructure**: All projects share central multi-tenant services (HA PostgreSQL 18, shared Temporal server, central OpenTelemetry collector) rather than duplicating infrastructure per repository.
 5. **Lossless Audit Fidelity**: Inbound messages and external webhooks are preserved in exact unmodified wire bytes (`bytea`) with UUIDv7 monotonic timestamps in `xp.ledger` before projecting into transactional domain stores.
+6. **Strict Prohibition of Insecure Options**: AI agents and developers must never propose, offer, recommend, or use insecure options, plaintext secrets on disk, disabled container sandboxing, lax permissions, disabled linters/verification, or unencrypted transmission under any circumstances.
+7. **Missing Tools Operator Escalation Protocol**: If any tool, software, runtime, or library required for a task or implementation is missing from the approved technology stack (`/home/ya/devd/technology_stack`), the AI agent MUST NOT invent tools or pick arbitrary unapproved external packages: the agent MUST explicitly inform the operator and request instructions on what tools or software to use before proceeding.
 
 ---
 
@@ -78,7 +80,7 @@ The following authoritative matrix synthesizes Specifications 00 through 19 from
 | **Edge Ingress & Gateway**| **Traefik v3 + Cloudflare Tunnel** | v3.1+ & `cloudflared` | Outbound-only Cloudflare Tunnel (`cloudflared`) provides zero-open-port public ingress with Anycast DDoS/WAF protection; Traefik routes internal containers, TLS (Full Strict), and OTLP spans. | Platform boundary ingress & edge routing. |
 | **Perimeter Defense & VPN** | **Tailscale + On-Demand AWG + CrowdSec** | Mesh VPN + Obfuscated Bastion + IPS | Tailscale provides zero-maintenance primary mesh VPN (replacing legacy ZeroTier); On-Demand AmneziaWG (AWG) provides disposable travel bastion; CrowdSec blocks web attackers dynamically in `nftables`. | Perimeter security & transport isolation. |
 | **Identity & SSO** | **Authentik** | Go / Python Core | Open-source IdP with reverse-proxy Outposts for forward-auth SSO across consoles (Bytebase, HyperDX, Coroot, Langfuse, Superset) backed by PostgreSQL 18 + Valkey 8. | Actor authentication & gate enforcement. |
-| **Secret Management** | **Infisical** | In-Memory Vault | Injects encrypted secrets directly into process RAM (`infisical run -- <cmd>`); ephemeral machine identities for autonomous agents. | Worktree and agent runner credential boundary. |
+| **Secret Management** | **Two-Tier Secrets (OCI Vault + OpenBao)** | Managed KMS & Dynamic Vault | Tier 1 cold-start in OCI Vault via Instance Principals into `/run/beelocal/bootstrap.env`; Tier 2 runtime in OpenBao (KV-v2, dynamic TTL, RBAC); in-memory process injection, zero plaintext secrets on disk. | Worktree and agent runner credential boundary. |
 | **AI Model Gateway & Router** | **Laya + LiteLLM** | OpenAI-Compatible Router | Laya routes intent/complexity; LiteLLM manages spend caps, fallbacks, semantic caching (via Valkey 8), and streams standardized `gen_ai.*` OTel spans; mounted via `/var/run/litellm.sock`. | [`ENGINE_TELEMETRY.md`](ENGINE_TELEMETRY.md) & Model Proxy Socket. |
 | **Workflow Engine** | **Temporal Server** | Shared Multi-Tenant Cluster | Durable execution engine for SDD lifecycles, SAGA compensations, retries, and crash recovery; projects isolated by namespaces. | [`DURABLE_EXECUTION_STANDARD.md`](DURABLE_EXECUTION_STANDARD.md) Tier 1 Durable Workflow. |
 | **Agent Reasoning** | **LangGraph Core** | Standard Python Callables | Cyclical agent reasoning loops executed inside plain Temporal Activities (`@activity.defn`) with heartbeating (1 history event per cycle). | [`DURABLE_EXECUTION_STANDARD.md`](DURABLE_EXECUTION_STANDARD.md) Tier 2 Cognitive Flows. |
@@ -92,7 +94,8 @@ The following authoritative matrix synthesizes Specifications 00 through 19 from
 | **Runtime Security (EDR)**| **Falco** | Modern-eBPF Probe | Sub-1% CPU syscall monitoring; flags container breakouts, shell escapes, and unauthorized network calls. | Deterministic runtime verification. |
 | **Telemetry Pipeline** | **OTel Collector Contrib**| `otelcol-contrib` | Central hub (`:4317`/`:4318`), scrubs secrets/PII, tails host `.interlog/private.log` via `filelogreceiver`. | [`ENGINE_TELEMETRY.md`](ENGINE_TELEMETRY.md) Standard Spans. |
 | **Asynchronous Messaging**| **NATS JetStream** | v2.12+ Clustered | Durable inter-project messaging with multi-account isolation (`nsc`), CloudEvents v1.0, and Protobuf contracts; air-gapped transport isolation (`xp.agent.v1.>`). | Layer 06 SPEC Event Contracts. |
-| **Object Storage** | **MinIO / S3** | S3-Compatible Storage | Stores large artifacts, diffs, plans, conversation blobs, and prompt text exceeding 256 KB. | Out-of-band artifact plane. |
+| **Object Storage** | **Hybrid S3 (SeaweedFS + Cloudflare R2 / OCI Object Storage)** | S3-Compatible Storage | Stores large artifacts, diffs, plans, conversation blobs, and prompt text exceeding 256 KB. SeaweedFS for dev/on-prem, Cloudflare R2 / OCI Object Storage for stage/prod. | Out-of-band artifact plane. |
+| **Federated Graph Lake** | **Embedded Kùzu + Central GraphDB (Memgraph / Apache AGE / Neo4j)** | Edge Embedded + Central Read Lake | Embedded Kùzu for zero-latency local/edge SDD-GRAPH slicing; central federated read lake for fleet-wide architecture analysis. | Native SDD Graph query & slicing engine. |
 | **Business Intelligence** | **Apache Superset** | Agentic BI Engine | Business intelligence with Model Context Protocol and Playwright visual critic loop; high-polish CSS injection. UI on `:8088`. | Fleet metrics & visual analytics. |
 | **Supply Chain Security**| **Trivy** | Ephemeral Scanner | Scans Docker images, container filesystems, and dependencies for CVEs, outdated packages, and leaked credentials. | CI/CD supply-chain quality gate. |
 | **Infrastructure as Code**| **OpenTofu + Ansible + Compose v2**| Declarative IaC / CaC | OpenTofu for multi-cloud topology, Ansible for runner provisioning, and Universal 5-Profile Docker Compose v2 (core, ingress, storage, dev, stage). | Environment reproducibility & cloud portability. |
@@ -128,7 +131,7 @@ The following table details how each phase of the SDD lifecycle maps to the reco
 │ 06    │ SPEC (Contracts)         │ Tier 3 Schema & Interface   │ Bytebase Schema Engine + Protobuf/NATS + xp.ledger │
 │ 07    │ TDD (Test Cases)         │ Tier 3 Test Verification    │ Pytest + Testcontainers (PG 18, Valkey 8, NATS)    │
 │ 08    │ IPLAN (Plan & Manifest)  │ Tier 1 Durable State Machine│ Temporal Workflow Orchestration │
-│ 09    │ Code (Source & Diffs)    │ Tier 3 Sandboxed Execution  │ gVisor runsc + agentd + Infisical + uv + ast-grep  │
+│ 09    │ Code (Source & Diffs)    │ Tier 3 Sandboxed Execution  │ gVisor runsc + agentd + OpenBao + uv + ast-grep    │
 │ 10    │ EVAL (Quality Gate)      │ Tier 2/3 Evaluation Gate    │ Langfuse Datasets + Playwright Visual + sdd_doc_lint│
 └───────┴──────────────────────────┴─────────────────────────────┴─────────────────────────────────┘
 ```
@@ -215,7 +218,7 @@ The enterprise platform architecture is codified across 20 companion specificati
 | **03** | `03-nats-interexchange-queue.md` | Asynchronous Inter-Project Messaging & JetStream Event Buses |
 | **04** | `04-interexchange-protocol.md` | CloudEvents Envelope, I-JSON & Protobuf Wire Contracts |
 | **05** | `05-database-stack.md` | PostgreSQL 18, Two-Tier Ledgers (`xp.ledger`), Valkey 8 & ClickHouse |
-| **06** | `06-security-rbac.md` | Role-Based Access Control, gVisor Sandboxing & Infisical Secrets |
+| **06** | `06-security-rbac.md` | Role-Based Access Control, gVisor Sandboxing & Two-Tier Secrets (OCI Vault + OpenBao) |
 | **07** | `07-review-findings.md` | Architecture Decision Register & Resolved Tradeoffs (Findings 1–28) |
 | **08** | `08-cli-agent-observability.md` | Terminal Agent Tracing, HyperDX APM & Stage QA Gates |
 | **09** | `09-authoritative-platform-technology-stack.md` | Authoritative Platform Stack, Approved Tools & Pinning |
@@ -229,6 +232,10 @@ The enterprise platform architecture is codified across 20 companion specificati
 | **17** | `17-technology-stack-surveillance-and-update-governance.md` | Technology Stack Surveillance, OSV.dev Scanning & Update Governance |
 | **18** | `18-agentic-infrastructure-sentinel-and-self-healing.md` | Agentic Infrastructure Sentinel & Autonomous Self-Healing Governance |
 | **19** | `19-software-inventory-syft-steampipe-superset.md` | Dynamic Tri-Tier Software Inventory: Syft, Steampipe & Superset |
+| **20** | `20-project-onboarding-blueprint.md` | Project Onboarding Blueprint & Repository Scaffolding |
+| **21** | `21-project-deployment-architecture-and-operations-blueprint.md` | Deployment Architecture & Tri-Environment Operations Blueprint |
+| **22** | `22-hybrid-s3-object-storage-seaweedfs-and-cloudflare-r2.md` | Hybrid S3 Storage: On-Prem/Dev SeaweedFS & Edge Cloudflare R2 / OCI |
+| **23** | `23-federated-graph-lake-embedded-kuzu-and-central-graphdb.md` | Federated Graph Lake: Edge Embedded Kùzu & Central Read GraphDB |
 
 ### 5.2 Framework Adoption Blueprints
 

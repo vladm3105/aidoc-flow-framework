@@ -59,6 +59,13 @@ Check relevant PR state, merge commit, deployed version, tests, and cited files
 as needed. Distinguish merged from deployed. Record contradictions between the
 handoff and current evidence.
 
+### 3.1 Verify Platform Technology Stack and Security Readiness
+
+Verify that the task scope and tools align strictly with the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack`, specs 00–23):
+- **Approved Tech Stack:** Confirm required runtimes, databases, and tooling exist in the approved stack.
+- **Prohibition of Insecure Options:** Confirm no insecure options (e.g. plaintext secrets, disabled sandboxing, relaxed permissions, bypassed checks) are contemplated or used.
+- **Missing Tools Protocol:** If needed tools are missing from the approved stack, explicitly inform the operator and request instructions before proceeding with implementation.
+
 Run the shadowing detector in the repo being worked, so a same-name project
 skill or undeclared project agent is caught at session open rather than by
 accident later (pass `--check-remote` after a fetch when a hit needs a

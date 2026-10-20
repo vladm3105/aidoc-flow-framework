@@ -72,6 +72,15 @@ still passes (the symbol is found elsewhere) and only **warns** that the line dr
 **absent** symbol fails. Run `check_plan.py --fix <plan>` to re-point drifted line numbers (unambiguous
 symbols) automatically.
 
+## 1.1 Platform Technology Stack Verification & Security Invariants
+
+Every plan specifying software dependencies, architecture components, runtimes, databases, or tooling must verify selections against the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack` specifications 00–23):
+
+1. **Strict Tech Stack Alignment:** All proposed components must align with the approved stack (e.g., PostgreSQL 18, Bytebase GitOps schema management, Kùzu embedded graph, Two-Tier Secrets with OCI Vault + OpenBao, SeaweedFS + Cloudflare R2 / OCI Object Storage, Temporal + LangGraph, gVisor `runsc` sandbox).
+2. **Prohibition of Insecure Options:** Plans must **never** propose, suggest, or use insecure options, relaxed sandboxing, plaintext secrets, unencrypted transport, weakened permissions, or bypassed verification (`--no-verify`).
+3. **Missing Tools Operator Escalation Protocol:** If a required tool, library, runtime, or software package is missing from `/home/ya/devd/technology_stack`, the author MUST NOT guess, extrapolate, or select arbitrary packages autonomously. The author MUST explicitly halt, inform the operator, and obtain instructions on what tools or software to use before incorporating them into the plan. In autonomous sessions, the agent MUST ALWAYS file a GitHub issue on the repository detailing the missing tool requirement.
+4. **Conflict Disposition:** For anything needing real deployment, infrastructure changes, container runtime provisioning, or technology selection work, the author MUST file GitHub issues on the repository rather than making unverified local assumptions or out-of-band modifications.
+
 ## 2. Run the gate (before dispatching any review)
 
 ```sh

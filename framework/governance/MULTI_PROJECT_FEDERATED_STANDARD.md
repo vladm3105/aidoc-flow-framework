@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 | Authority | [Decision D-0013 / GD-13](DECISIONS.md), [RECOMMENDED_PLATFORM_STACK.md](RECOMMENDED_PLATFORM_STACK.md), [DURABLE_EXECUTION_STANDARD.md](DURABLE_EXECUTION_STANDARD.md), [CHG_REQUEST_FLOWS.md](CHG_REQUEST_FLOWS.md), [ADAPTATION.md](ADAPTATION.md) |
 
 ---

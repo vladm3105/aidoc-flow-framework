@@ -10,22 +10,23 @@ tenant_id: "example-org"
 policy_version: "2.0.0"
 
 # -----------------------------------------------------------------------------
-# Runtime Constraints
+# Runtime Constraints (Approved Tech Stack: specs 00-23)
 # -----------------------------------------------------------------------------
 runtime:
-  language: "python"                    # "rust" | "python" | "typescript" | "go"
-  version_or_edition: "3.12+"           # e.g., "2024", "3.12+", "1.24"
+  language: "python"                    # "python" (3.15 default via uv) | "rust" (stable) | "go" (1.25) | "typescript" (Node 24 LTS)
+  version_or_edition: "3.15"            # e.g., "3.15", "stable", "1.25", "24"
   target_triple: "x86_64-unknown-linux-musl"
   compiler_flags:
     - "-Werror"
     - "-Wall"
 
 # -----------------------------------------------------------------------------
-# Architectural Boundaries & AST Patterns
+# Architectural Boundaries & AST Patterns (Security Invariants)
 # -----------------------------------------------------------------------------
 boundaries:
   allow_unsafe: false                   # Must be false for memory-safe stacks
   strict_allowlist: true                # Rejects any unapproved dependency crate/package
+  prohibit_insecure_options: true       # Forbids plaintext secrets, relaxed sandboxing, unencrypted transport
   banned_patterns:
     - "eval("
     - "exec("
@@ -34,6 +35,9 @@ boundaries:
 
 # -----------------------------------------------------------------------------
 # Dependency Policy & License Verification
+# Note: Missing Tools Protocol applies — if a required package is missing from
+# the approved stack (/home/ya/devd/technology_stack), the agent must explicitly
+# inform the operator and request instructions before adding it.
 # -----------------------------------------------------------------------------
 dependencies:
   prohibited_licenses:

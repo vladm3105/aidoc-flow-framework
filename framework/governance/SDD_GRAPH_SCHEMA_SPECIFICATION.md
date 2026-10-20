@@ -8,7 +8,7 @@
 | Status | Ratified |
 | Last Updated | 2026-10-16 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
@@ -38,7 +38,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.96.10"
+  framework_version: "0.96.11"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:

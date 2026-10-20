@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.10 |
+| Framework Version | 0.96.11 |
 
 
 ## Template Usage
@@ -86,6 +86,15 @@ AI agents MUST NOT bypass verification gates:
 - Auto-merge only when every required check is green. Boundary detection (`REVIEW_REMEDIATION_FLOW.md` audit-trail check) is the backstop, not the permission.
 
 If a hook blocks legitimate work, fix the underlying cause or escalate to the human — the hook is never the problem to route around.
+
+## Platform Technology Stack Compliance & Insecure Options Prohibition
+
+AI assistants operating within the SDD framework MUST strictly adhere to the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack` specifications 00–23):
+
+1. **Mandatory Stack Adherence**: All runtime components, frameworks, persistence mechanisms, message queues, and tools selected or generated in SDD layers (Seed, Module, ADR, SPEC, TDD, IPLAN, Code) MUST strictly draw from the approved platform stack (e.g. Debian 13, Docker CE + gVisor `runsc`, PostgreSQL 18, Bytebase, Valkey 8 / Redis 7.2, NATS JetStream, Temporal, ClickHouse, Embedded Kùzu, Two-Tier Secrets with OCI Vault + OpenBao).
+2. **Strict Prohibition of Insecure Options**: AI agents must NEVER propose, offer, suggest, or use insecure options, relaxed sandboxing (`runc` bypasses without authorization), disabled linters or verification, plain-text secret workarounds on disk or in command lines, or lax container permissions.
+3. **Missing Tools Operator Escalation Protocol**: If any tool, software, runtime, or library required for a task or implementation is missing from the approved technology stack (`/home/ya/devd/technology_stack`), the AI agent MUST NOT invent tools or pick arbitrary unapproved external packages: the agent MUST explicitly inform the operator and request instructions on what tools or software to use before proceeding. In autonomous sessions, always file a GitHub issue on the repository detailing the missing tool requirement.
+4. **Conflict Disposition**: For anything needing real deployment, infrastructure changes, container runtime provisioning, or technology selection work, AI agents MUST file GitHub issues on the repository rather than making unverified local assumptions or out-of-band modifications.
 
 ## IPLAN Status Lifecycle
 
