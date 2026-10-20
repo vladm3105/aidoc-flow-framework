@@ -78,6 +78,13 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   weakened checks, suites green before the PR. Breaking or otherwise
   significant changes need a CHG first, then the CHG procedure — never code
   before the cascade (see Governance Gate below).
+- **Follow platform standards; never offer insecure options.** Always strictly
+  follow platform, architectural, and security standards (including CNCF
+  Serverless Workflow specifications, BTV binary verification, hermetic test
+  isolation, least privilege, and formal governance flows). Never propose,
+  suggest, or offer insecure options, weakened security postures, relaxed
+  sandboxing, disabled linters/checks, plain-text secret workarounds, or
+  unsafe quick-fixes to the user.
 
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks
