@@ -69,6 +69,11 @@ if _floor_error is not None:
     print(_floor_error, file=sys.stderr)
     raise SystemExit(EXIT_MISSING_PREREQUISITE)
 
+# Dual-naming alias guard: ensure doc_lint and sdd_doc_lint share singleton identity
+if __name__ in sys.modules:
+    sys.modules.setdefault("sdd_doc_lint", sys.modules[__name__])
+    sys.modules.setdefault("doc_lint", sys.modules[__name__])
+
 import hashlib
 import os
 import re

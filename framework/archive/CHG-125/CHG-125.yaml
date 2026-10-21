@@ -1,0 +1,126 @@
+# =============================================================================
+#  CHG-125: Framework Modernization, Toolchain Alignment & Dual Naming Parity
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Tooling & Governance)
+#  Pre-cleared: Ratified plans/FRAMEWORK-MODERNIZATION-AND-TOOLCHAIN-ALIGNMENT-PLAN.md
+#  Scope: Modernize structural linter to doc_lint with sdd_doc_lint symlink, packaging
+#         via pyproject.toml, hermetic mise.toml toolchain, fast inner-loop Taskfile targets,
+#         aidoc root symlink, and docs/ADAPTATION-GUIDE.md.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-21"
+  framework_version: "0.96.11"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-125"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-21T12:00:00Z"
+  date_approved: "2026-10-21T12:00:00Z"
+  date_implemented: "2026-10-21T12:30:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-21T12:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/FRAMEWORK-MODERNIZATION-AND-TOOLCHAIN-ALIGNMENT-PLAN.md
+      mandating dual-naming symlink parity (doc_lint/sdd_doc_lint and aidoc/framework), packaging,
+      hermetic mise.toml toolchain, and Taskfile ergonomics with zero breaking changes.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-125)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-125"
+  title: "Modernize SDD Structural Linter to doc_lint with Dual Naming & Toolchain Parity"
+  status: "Decided"
+  date: "2026-10-21"
+  context: >-
+    Following the successful unified monorepo consolidation in aiops-developer, aidoc-framework
+    must be modernized to serve as an ideal, future-proof base for other projects.
+    The structural linter was historically a loose directory of scripts named sdd_doc_lint
+    requiring manual PYTHONPATH configuration. Standardizing to doc_lint with symlink aliases,
+    standard pyproject.toml packaging, hermetic mise toolchain pins, and fast composite Taskfile
+    targets establishes modern ergonomics while guaranteeing 100% backward compatibility.
+  choice: >-
+    1. Rename sdd_doc_lint/ to doc_lint/ and track symlink sdd_doc_lint -> doc_lint in git.
+    2. Add pyproject.toml inside doc_lint/ exposing console script entrypoints (doc-lint, sdd-lint).
+    3. Add in-memory module identity alias in doc_lint/__init__.py to prevent class identity drift.
+    4. Create root symlink aidoc -> framework for path resolution symmetry with aiops-developer.
+    5. Add mise.toml pinning Python 3.12, uv, task, lychee, yamllint, and gitleaks.
+    6. Add composite targets task check (<15s) and task ci (<45s) in Taskfile.yml.
+    7. Add docs/ADAPTATION-GUIDE.md and synchronize linter/test allowlists across repository.
+  consequences:
+    positive:
+      - 100% backward compatibility: existing CI, scripts, and imports referencing sdd_doc_lint work unmodified.
+      - Seamless installation: linter can be installed via uv or pip without manual PYTHONPATH wrangling.
+      - Full architectural symmetry between aidoc-framework and aiops-developer.
+      - Hermetic, reproducible environment for developers and AI agents via mise install.
+    negative:
+      - Repository now tracks symbolic links, requiring POSIX symlink support in contributor environments.
+    risks:
+      - None; verified with comprehensive test suites and allowlist checks.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    aidoc-framework lacked standard Python packaging for its structural linter, lacked hermetic
+    toolchain pinning, had loose task definitions in Taskfile.yml, and lacked cross-repo naming
+    parity with aiops-developer.
+  scope:
+    - doc_lint/ packaging and sdd_doc_lint symlink alias.
+    - Root aidoc -> framework symlink.
+    - mise.toml, Taskfile.yml, .gitignore, .pre-commit-config.yaml, ruff.toml updates.
+    - docs/ADAPTATION-GUIDE.md and test_consumer_manifest.py allowlist alignment.
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-125/IPLAN-125.yaml"
+  steps:
+    - step: "Author authorizing CHG-125.yaml and IPLAN-125.yaml"
+      phase: "iplan_creation"
+    - step: "Modernize linter directory to doc_lint and establish sdd_doc_lint symlink"
+      phase: "linter_modernization"
+    - step: "Add doc_lint/pyproject.toml and module identity alias"
+      phase: "packaging"
+    - step: "Create root aidoc -> framework symlink and add mise.toml"
+      phase: "toolchain_alignment"
+    - step: "Update Taskfile.yml with task check and task ci composite targets"
+      phase: "taskfile_ergonomics"
+    - step: "Synchronize configs (.pre-commit-config.yaml, ruff.toml, .lychee.toml, manifests)"
+      phase: "configuration_sync"
+    - step: "Add docs/ADAPTATION-GUIDE.md and verify all test suites"
+      phase: "documentation_and_verification"
