@@ -44,7 +44,7 @@ fi
 code_changed=0
 while IFS= read -r f; do
   case "$f" in
-    framework/*|sdd_doc_lint/*|hooks/*|tests/*)
+    framework/*|doc_lint/*|sdd_doc_lint/*|hooks/*|tests/*)
       code_changed=1
       break
       ;;

@@ -31,7 +31,7 @@
 #  3. cross-repo relative links (../business, ../operations, …) — resolve only
 #     in the local multi-repo workspace, never in single-repo CI. Verified by
 #     the umbrella, not per-repo CI.
-exclude_path = ["framework/archive/", "platforms", "examples", "tests"]
+exclude_path = ["framework/archive/", "aidoc/archive/", "platforms", "examples", "tests"]
 # "/archive/platforms/" and "/examples/" are dead for the same reason their
 # exclude_path twins are — those trees are gone. Kept beside the live cross-repo
 # patterns rather than pruned, so a re-vendored directory stays excluded.

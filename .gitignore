@@ -58,6 +58,8 @@ dist/
 !framework/archive/CHG-*/
 
 # --- aidoc-flow-ci canon baseline (PLAN-002 §10.1) ---
+.task/
+test-results/
 .claude/
 .review/
 scratch/

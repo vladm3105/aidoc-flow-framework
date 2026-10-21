@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "doc-lint"
+version = "0.96.11"
+description = "Structural and contract linter for SDD documents, change requests, and workflows (with sdd_doc_lint dual-naming parity)"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0",
+    "jsonschema>=4.20",
+]
+
+[project.scripts]
+doc-lint = "sdd_doc_lint.__main__:main"
+sdd-lint = "sdd_doc_lint.__main__:main"
+chg-lint = "sdd_doc_lint.chg_lint:main"
+swf-lint = "sdd_doc_lint.swf_lint:main"
+profile-lint = "sdd_doc_lint.profile_lint:main"
+bugfix-lint = "sdd_doc_lint.bugfix_lint:main"
+surface-lint = "sdd_doc_lint.surface_lint:main"

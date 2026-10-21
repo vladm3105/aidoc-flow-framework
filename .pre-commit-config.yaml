@@ -69,7 +69,7 @@ repos:
     hooks:
       - id: bandit
         args: ["--severity-level", "medium", "--confidence-level", "medium"]
-        files: '^(sdd_doc_lint/|tests/).*\.py$'
+        files: '^((doc_lint|sdd_doc_lint)/|tests/).*\.py$'
 
   # ---- Markdown --------------------------------------------------------------
   - repo: https://github.com/igorshubovych/markdownlint-cli
@@ -80,12 +80,12 @@ repos:
         # Hermes agent-skills/prompts/skills are vendored/parsed content — exclude
         # from style-linting (framework/ is already excluded globally). Done via
         # pre-commit exclude because markdownlint-cli ignores .markdownlintignore
-        # when pre-commit passes file paths explicitly. sdd_doc_lint fixtures are
+        # when pre-commit passes file paths explicitly. sdd_doc_lint/doc_lint fixtures are
         # deliberately-malformed sample docs for the doc-linter's own tests.
         # examples/<name>/.aidoc/ is cascade-output (auditor + fixer SKILL artifacts),
         # not maintained docs. Underlying SKILL bug (unescaped `|` inside code spans
         # in table cells) tracked in issue #481 / #372.
-        exclude: '^(sdd_doc_lint/fixtures|examples/[^/]+/\.aidoc)/'
+        exclude: '^((doc_lint|sdd_doc_lint)/fixtures|examples/[^/]+/\.aidoc)/'
 
   # ---- YAML ------------------------------------------------------------------
   - repo: https://github.com/adrienverge/yamllint
@@ -98,7 +98,7 @@ repos:
         # files are byte-sensitive (element hashes are computed over their
         # content). Style-linting them is out of scope — mirrors the
         # markdownlint fixture exclusion above.
-        exclude: '^(tests/acceptance/fixtures/|sdd_doc_lint/fixtures/)'
+        exclude: '^(tests/acceptance/fixtures/|(doc_lint|sdd_doc_lint)/fixtures/)'
 
   # ---- secrets ---------------------------------------------------------------
   - repo: https://github.com/Yelp/detect-secrets
