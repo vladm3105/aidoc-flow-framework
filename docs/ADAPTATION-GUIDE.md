@@ -35,8 +35,9 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 # Pinned allowlist copy (default; self-contained for production repositories):
 framework/scripts/install.sh <project-dir> --canon framework/v0.96.12 --kind pin
 
-# Or attach via Git submodule:
+# Or attach via Git submodule (pinned to a release tag, never a moving branch):
 git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
+git -C .aidoc/framework checkout framework/v0.96.12
 ```
 
 `install.sh` automates the ordered procedure from `BOOTSTRAP.md`:

@@ -1,0 +1,130 @@
+# =============================================================================
+#  CHG-127: Project Kickoff Docs Repair & Release Tag Backlog Cut
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Pre-cleared: User instruction in session (2026-10-23)
+#  Scope: Repair the project-kickoff quickstarts (docs/STARTUP_HANDOFF.md,
+#         docs/ADAPTATION-GUIDE.md) so a new team can follow them literally,
+#         and cut the 41 missing framework release tags (v0.91.3-v0.96.12)
+#         the quickstarts reference. Docs-only; no normative change, no bump.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-23"
+  framework_version: "0.96.12"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: none
+  version_action:
+    value: keep
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-127"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: none
+  version_action: keep
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-23T14:05:00Z"
+  date_approved: "2026-10-23T14:10:00Z"
+  date_implemented: "2026-10-23T14:40:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-23T14:10:00Z"
+    verdict: Approved
+    evidence: >-
+      In-session founder authorization: approved kickoff-unblock scope
+      (docs fixes) and explicitly authorized cutting all 41 missing release
+      tags (framework/v0.91.3-v0.96.12) with per-tag verification.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-127)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-127"
+  title: "Repair Kickoff Quickstarts and Cut the Missing Release Tags"
+  status: "Decided"
+  date: "2026-10-23"
+  context: >-
+    A live review of docs/ found the project-kickoff quickstarts unrunnable as
+    written: (1) both prescribe `install.sh --canon framework/v0.96.12`, but no
+    framework/v0.9x tag above v0.91.2 exists on the remote — 41 assigned
+    versions (0.91.3-0.96.12) are untagged, so only `--canon-dir` works;
+    (2) STARTUP_HANDOFF.md Step 6 cites a phantom linter path with a doubled
+    `framework/` segment; (3) Step 5 scaffolds `<project>/seed/` although
+    CHG-126 unified the topology under `docs/seed/`; (4) the submodule option
+    pins to the moving `dev` branch instead of a release tag.
+  choice: >-
+    1. Cut and individually verify the 41 missing annotated release tags
+       framework/v0.91.3 through framework/v0.96.12, each on the first commit
+       whose framework/VERSION reads that exact version (all on dev, merged
+       under branch protection; conformance-green confirmed on sampled
+       targets per independent review).
+    2. Fix the Step 6 linter path to `.aidoc/framework/sdd_doc_lint/`
+       (allowlist + installer shim).
+    3. Fix the Step 5 seed scaffold path to `docs/seed/` (CHG-126 topology).
+    4. Pin the submodule option to a release tag instead of `-b dev`.
+  consequences:
+    positive:
+      - The documented `--canon framework/v0.96.12` kickoff command works.
+      - Every assigned framework version from v0.46.0 through v0.96.12 is cut
+        (the pre-0.46.0 backlog stays sanctioned-untagged per TAGGING.md).
+      - New teams can follow the quickstart literally with no stale paths.
+    negative:
+      - None; docs-only plus additive immutable tags.
+    risks:
+      - Release tags are immutable once pushed; mitigated by per-tag
+        target verification (`git show <tag>:framework/VERSION`) before push
+        and an independent review of the tag payload.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    The kickoff quickstarts reference a release tag that was never cut and
+    contain stale paths, so a new project team cannot bootstrap by following
+    them. The tag backlog (41 versions) is the root cause of finding 1.
+  scope:
+    - docs/STARTUP_HANDOFF.md kickoff Steps 1, 5, 6.
+    - docs/ADAPTATION-GUIDE.md submodule attachment form.
+    - Release tags framework/v0.91.3 through framework/v0.96.12 (41 tags).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-127/IPLAN-127.yaml"
+  steps:
+    - step: "Author authorizing CHG-127.yaml and IPLAN-127.yaml"
+      phase: "iplan_creation"
+    - step: "Fix kickoff linter path in docs/STARTUP_HANDOFF.md (Step 6)"
+      phase: "documentation_sync"
+    - step: "Fix seed scaffold path to docs/seed/ in docs/STARTUP_HANDOFF.md (Step 5)"
+      phase: "documentation_sync"
+    - step: "Pin submodule attachment to release tag in kickoff docs"
+      phase: "documentation_sync"
+    - step: "Cut and verify missing framework release tags v0.91.3-v0.96.12"
+      phase: "documentation_sync"
+    - step: "Validate chg_lint, spec_gate, and test suites"
+      phase: "verification"
