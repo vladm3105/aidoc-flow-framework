@@ -1,0 +1,44 @@
+# =============================================================================
+#  IPLAN-126: AIDOC Workstation Topology Consolidation & doc_lint Alias Parity
+# =============================================================================
+#  Implementation Plan authorized by CHG-126
+#  Status: Implemented
+# =============================================================================
+
+id: IPLAN-126
+title: "Implementation Plan: AIDOC Workstation Topology Consolidation & doc_lint Alias Parity"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.12"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-23"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "Framework Maintainer"
+  source_chg: "CHG-126"
+  date_created: "2026-10-23T08:50:00Z"
+  date_implemented: "2026-10-23T08:55:00Z"
+
+file_manifest:
+  - path: "framework/governance/aidoc/AIDOC.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/archive/CHG-126/AIDOC.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-126/CHG-126.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-126/IPLAN-126.yaml"
+    action: "create"
+    status: "DONE"

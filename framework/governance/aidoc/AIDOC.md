@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 2.2 |
+| Version | 2.3 |
 | Status | Approved |
-| Last Updated | 2026-10-16 |
+| Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.11 |
+| Framework Version | 0.96.12 |
 | Authority | [Decision D-0013 / GD-13](../DECISIONS.md) (historical tombstone), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../MULTI_PROJECT_FEDERATED_STANDARD.md) |
 
 ---
@@ -21,18 +21,25 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 
 ```text
 <project>/
-├── seed/, chg/              — human inputs (committed)
-├── docs/sdd/                — AI outputs, the produced formal chain (committed)
-├── .aidoc/                  — project overrides + profile + workstation tools (committed) ← this tier
-└── logs/<TS>/               — tool internals & execution traces (gitignored)
+├── docs/                     — all project documentation & specifications (committed)
+│   ├── seed/                 — Tier 1 Inputs: human-authored briefs & requirements
+│   ├── modules/              — Tier 2 Architecture: C4-L2 container specifications
+│   └── sdd/                  — Tier 2 Process: formal 10-layer SDD chain
+│       ├── 01_BRD .. 08_IPLAN
+│       └── 09_CHG/           — Change governance & pre-change archives
+│           └── archive/{CHG-ID}/{seed|modules|layer}/
+├── .aidoc/                   — Tier 3 Project: overrides + profile + workstation tools (committed) ← this tier
+└── logs/<TS>/                — Tier 4 Ephemeral: tool internals & execution traces (gitignored)
 ```
 
-| Tier | What | Lifecycle |
-|---|---|---|
-| Inputs | human-authored seeds + change requests | committed |
-| Outputs | the produced 10-layer chain (`01_BRD` → `08_IPLAN` + `09_CHG` + `10_EVAL`) | committed |
-| Project (`.aidoc/`) | profile, task runners, engine config, project-specific templates/rules/playbooks | committed |
-| Tool internals (`logs/`) | execution metadata, raw engine/CLI stdout, timing | gitignored |
+| Tier | Path | What | Lifecycle |
+|---|---|---|---|
+| **Inputs** | `docs/seed/` | Human-authored requirements, initial briefs, stakeholder notes | Committed (versioned via CHG) |
+| **Domain Specs** | `docs/modules/` | Architectural subsystems & C4-L2 container boundaries | Committed |
+| **Process Chain** | `docs/sdd/` | Produced 10-layer chain (`01_BRD` → `08_IPLAN` + `10_EVAL`) | Committed |
+| **Governance & Archives** | `docs/sdd/09_CHG/` | Active Change Requests (`CHG-*.yaml`) + pre-change archives (`archive/{CHG-ID}/`) | Committed |
+| **Project (`.aidoc/`)** | `.aidoc/` | Profile, task runners, engine config, project-specific templates/rules/playbooks | Committed |
+| **Tool Internals (`logs/`)** | `logs/<TS>/` | Execution metadata, raw engine/CLI stdout, timing benchmarks | Gitignored |
 
 ## What `.aidoc/` contains
 
@@ -51,7 +58,7 @@ Per the ratified Workstation Standard ([`docs/AIDOC_WORKSTATION_STANDARD.md`](..
 ├── framework/                # ⭐ Tier 2: Process Canon defaults (Pillar 1)
 │   ├── layers/               # Default templates (01_BRD .. 10_EVAL)
 │   ├── playbooks/            # Standard persona playbooks (architect, security, etc.)
-│   └── sdd_doc_lint/         # Canonical structural linters
+│   └── doc_lint/             # Canonical structural linters (sdd_doc_lint alias supported)
 ├── engine/                   # ⭐ Technical Engine Binding
 │   └── engine.yaml           # Active engine config (aidoc-flow-langgraph, modes: live|verify-only|mock)
 ├── contracts/                # ⭐ Pillar 3: Data Contracts Canon (aidoc-data-contracts schemas)
@@ -59,7 +66,7 @@ Per the ratified Workstation Standard ([`docs/AIDOC_WORKSTATION_STANDARD.md`](..
 ├── ctx-tools/                # ⭐ Pillar 4: Context Slicing Engine (aidoc-context-tools config)
 │   └── config.yaml
 └── bin/                      # (Optional / Deprecated) Backward-compatible CLI shims
-    └── sdd-lint              # Compatibility shim delegating to task sdd:lint or python3 -m sdd_doc_lint
+    └── sdd-lint              # Compatibility shim delegating to task sdd:lint, doc_lint, or sdd_doc_lint
 ```
 
 ### `profile.yaml` — the project profile
