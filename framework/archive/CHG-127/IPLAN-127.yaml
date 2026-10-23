@@ -1,0 +1,38 @@
+# =============================================================================
+#  IPLAN-127: Project Kickoff Docs Repair & Release Tag Backlog Cut
+# =============================================================================
+#  Implementation Plan authorized by CHG-127
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-127
+title: "Implementation Plan: Project Kickoff Docs Repair & Release Tag Backlog Cut"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.12"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-23"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "Framework Maintainer"
+  source_chg: "CHG-127"
+  date_created: "2026-10-23T14:10:00Z"
+  date_implemented: "2026-10-23T14:40:00Z"
+
+file_manifest:
+  - path: "docs/STARTUP_HANDOFF.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/ADAPTATION-GUIDE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/archive/CHG-127/CHG-127.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-127/IPLAN-127.yaml"
+    action: "create"
+    status: "DONE"

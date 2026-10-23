@@ -36,8 +36,9 @@ framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-frame
 # Option B: Production deployment from published git release tag:
 framework/scripts/install.sh <project-dir> --canon framework/v0.96.12 --kind pin
 
-# Option C: Git submodule deployment (tracked by git):
-git submodule add -b dev https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
+# Option C: Git submodule deployment (tracked by git, pinned to a release tag):
+git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
+git -C .aidoc/framework checkout framework/v0.96.12
 ```
 
 This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.
@@ -99,11 +100,11 @@ cp <project>/.aidoc/framework/framework/governance/REVIEW_WORKFLOW_STANDARD.md \
 Scaffold the initial seed document and Layer 1 BRD:
 
 ```bash
-mkdir -p <project>/seed <project>/docs/sdd/01_BRD/BRD-01
-cp <project>/.aidoc/framework/framework/templates/SEED-TEMPLATE.md <project>/seed/SEED-01.md
+mkdir -p <project>/docs/seed <project>/docs/sdd/01_BRD/BRD-01
+cp <project>/.aidoc/framework/framework/templates/SEED-TEMPLATE.md <project>/docs/seed/SEED-01.md
 ```
 
-1. Fill out `<project>/seed/SEED-01.md` with stakeholder requirements.
+1. Fill out `<project>/docs/seed/SEED-01.md` with stakeholder requirements.
 2. Decompose seed into architecture domains per [`SEED_TO_MODULE_DECOMPOSITION.md`](../framework/governance/SEED_TO_MODULE_DECOMPOSITION.md).
 3. Author Layer 1 `BRD` (`docs/sdd/01_BRD/BRD-01/BRD-01.yaml`) to initiate the formal SDD chain.
 
@@ -113,7 +114,7 @@ Validate the newly scaffolded project environment before creating the initial co
 
 ```bash
 # Test change linting capability
-python3 <project>/.aidoc/framework/framework/sdd_doc_lint/chg_lint.py --help
+python3 <project>/.aidoc/framework/sdd_doc_lint/chg_lint.py --help
 ```
 
 ---
