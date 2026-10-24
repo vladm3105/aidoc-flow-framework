@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.12 |
+| Framework Version | 0.96.13 |
 
 How to consume `aidoc-flow-framework` in a real project without forking
 it: link (or clone) the framework, declare adaptation knobs in a profile,
@@ -33,11 +33,11 @@ Run `framework/scripts/install.sh` from the framework repository or clone:
 
 ```bash
 # Pinned allowlist copy (default; self-contained for production repositories):
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.12 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.13 --kind pin
 
 # Or attach via Git submodule (pinned to a release tag, never a moving branch):
 git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
-git -C .aidoc/framework checkout framework/v0.96.12
+git -C .aidoc/framework checkout framework/v0.96.13
 ```
 
 `install.sh` automates the ordered procedure from `BOOTSTRAP.md`:
@@ -59,12 +59,12 @@ The resulting shape:
 ```text
 <project>/
 ├── AGENTS.md                # working agreement (from AGENTS-TEMPLATE.md)
-├── Taskfile.yml             # root task orchestration
+├── stack-policy.yaml        # tech stack policy (installer-scaffolded at root)
+├── Taskfile.yml             # root task orchestration (consumer-authored)
 ├── docs/sdd/05_ADR/         # Layer 05 ADR index & records
 │   └── ADR-00_index.yaml    # technology stack & ADR registry
 ├── .aidoc/
 │   ├── profile.yaml         # project profile — adaptation knobs
-│   ├── stack-policy.yaml    # tech stack policy & dependency rules
 │   ├── Taskfile.yml         # workstation SDD task runner
 │   ├── contracts/           # integration contracts & schemas
 │   ├── ctx-tools/           # context extraction helpers
@@ -81,6 +81,8 @@ The resulting shape:
 │   │   └── registry/        # registry overrides
 │   └── README.md            # project scaffold guide (from AIDOC-SCAFFOLD-TEMPLATE.md)
 ```
+
+**Which parts `install.sh` scaffolds vs what you author:** the installer creates `.aidoc/` (`README.md`, `profile.yaml`, `framework/`, `Taskfile.yml`, `engine/engine.yaml`, `cache/`, `bin/sdd-lint`), `docs/sdd/05_ADR/ADR-00_index.yaml`, `docs/sdd/graph/`, root `AGENTS.md`, and root `stack-policy.yaml` (ADR/AGENTS/stack-policy skippable via `--no-adr` / `--no-agents` / `--no-stack-policy`). Everything else above — `project/` overrides, `contracts/`, `ctx-tools/`, root `Taskfile.yml`, root `seed/`, `docs/modules/` — is consumer-authored or arrives with Tier-1 engine adoption. The three `.aidoc/` trees in this repo ([`PROJECT.md`](PROJECT.md) §7.2 minimal, this guide, [`AIDOC_WORKSTATION_STANDARD.md`](AIDOC_WORKSTATION_STANDARD.md) §3 full) describe the same layout at increasing adoption depth — start minimal, extend as needed.
 
 ### Proscribed Anti-Patterns
 
@@ -168,23 +170,16 @@ In addition to the eight governance blueprints above, consumer projects instanti
   Projects bind the framework's advisory hooks into their local agent configurations:
   - `PostToolUse` (matcher: `Write|Edit`): invokes `hooks/sdd-doc-review.sh` to provide immediate feedback on structural SDD requirements.
   - `PreCommit` (matcher: `.*`): invokes `hooks/ch-gate-check.sh` and `hooks/pre_push_check.sh` to enforce the zero `--no-verify` invariant locally before commits reach remote CI.
+- **Consumer CI gate ([`docs/CONSUMER-CI-STARTER.md`](CONSUMER-CI-STARTER.md))**:
+  `.github/` is excluded from the consumer copy, so new projects start with no CI. Adopt the starter workflow (profile-lint + `sdd_doc_lint` + `chg_lint` on PR) so the first PR is already gated.
 
 ## 4.2 Establish the Project Working Agreement (`AGENTS.md`)
 
-Consuming projects must establish a root `AGENTS.md` working agreement so all AI coding agents adhere to the Governance Gate autonomously. Starter template:
+Consuming projects must establish a root `AGENTS.md` so all AI coding agents adhere to the Governance Gate autonomously. The single source is [`framework/templates/AGENTS-TEMPLATE.md`](../framework/templates/AGENTS-TEMPLATE.md) (consumer path: `<project>/.aidoc/framework/framework/templates/AGENTS-TEMPLATE.md`), which `install.sh` copies to `<project>/AGENTS.md` when missing (§1 step 6) — do not maintain a hand-written variant.
 
-```markdown
-# AGENTS.md — Working Agreement for AI Coding Agents
+### Day-1 minimal scope
 
-## Governance Gate (Non-Negotiable)
-
-Before writing ANY code for a feature, enhancement, or bug fix:
-1. Stop: Check if an authorizing Change Request (CHG) exists under `docs/sdd/09_CHG/` or `.aidoc/archive/`. If not, create a CHG document first.
-2. Complete the §3.4 CHG creation checklist before writing code.
-3. Validate CHG via `python3 .aidoc/framework/sdd_doc_lint/chg_lint.py <chg-file.yaml>`.
-4. Work in a dedicated per-task git worktree: `git worktree add ../<project>-<slug> -b feature/<branch-slug> origin/dev`. Never work directly on `main` or `dev`.
-5. Run automated verification suites and linters locally before pushing. Never bypass hooks (`--no-verify` is forbidden).
-```
+Start linter-only: `profile_lint`, `sdd_doc_lint`, and `chg_lint` run on plain Python + `pyyaml` with no engines, no containers, no API keys. Adopt Tier-1 engines (`aidoc-flow-langgraph`, `aidoc-context-tools`) only when you need review crews or context slicing; when you do, start the engine in `verify-only` (CI) or `mock` (pipeline testing) mode and switch to `live` for interactive authoring (modes: [`AIDOC_WORKSTATION_STANDARD.md`](AIDOC_WORKSTATION_STANDARD.md) §6).
 
 ## 5. What never goes where
 

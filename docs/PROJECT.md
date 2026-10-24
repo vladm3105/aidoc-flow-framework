@@ -230,7 +230,7 @@ Projects maintain a `.aidoc/` directory with this structure:
 └── README.md
 ```
 
-This is the shape `framework/scripts/install.sh` creates on a new project.
+This is the shape `framework/scripts/install.sh` creates on a new project. Extended workstation parts (`contracts/`, `ctx-tools/`, engine modes) layer on top of this minimal set — see [`ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §1 (scaffolded-vs-authored) and [`AIDOC_WORKSTATION_STANDARD.md`](AIDOC_WORKSTATION_STANDARD.md) §3 (full topology).
 
 ### 7.3 Discovery rule
 
@@ -249,7 +249,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.96.12"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.13"  # Pinned spec version; must match .aidoc/framework/framework/VERSION
 ```
 
 ### 7.5 Updating the framework

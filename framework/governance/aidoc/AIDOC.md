@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 2.3 |
+| Version | 2.4 |
 | Status | Approved |
-| Last Updated | 2026-10-23 |
+| Last Updated | 2026-10-24 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.12 |
+| Framework Version | 0.96.13 |
 | Authority | [Decision D-0013 / GD-13](../DECISIONS.md) (historical tombstone), [`AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../MULTI_PROJECT_FEDERATED_STANDARD.md) |
 
 ---
@@ -21,8 +21,8 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 
 ```text
 <project>/
+├── seed/                     — Tier 1 Inputs: human-authored briefs & requirements (canonical; peer to docs/ per SEED_CONTRACT.md, CHG-128 / #1024)
 ├── docs/                     — all project documentation & specifications (committed)
-│   ├── seed/                 — Tier 1 Inputs: human-authored briefs & requirements
 │   ├── modules/              — Tier 2 Architecture: C4-L2 container specifications
 │   └── sdd/                  — Tier 2 Process: formal 10-layer SDD chain
 │       ├── 01_BRD .. 08_IPLAN
@@ -34,7 +34,7 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 
 | Tier | Path | What | Lifecycle |
 |---|---|---|---|
-| **Inputs** | `docs/seed/` | Human-authored requirements, initial briefs, stakeholder notes | Committed (versioned via CHG) |
+| **Inputs** | `seed/` (project root) | Human-authored requirements, initial briefs, stakeholder notes | Committed (versioned via CHG) |
 | **Domain Specs** | `docs/modules/` | Architectural subsystems & C4-L2 container boundaries | Committed |
 | **Process Chain** | `docs/sdd/` | Produced 10-layer chain (`01_BRD` → `08_IPLAN` + `10_EVAL`) | Committed |
 | **Governance & Archives** | `docs/sdd/09_CHG/` | Active Change Requests (`CHG-*.yaml`) + pre-change archives (`archive/{CHG-ID}/`) | Committed |
