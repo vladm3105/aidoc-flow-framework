@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.12 |
+| Framework Version | 0.96.13 |
 | Authority | [Decision D-0013 / GD-13](../framework/governance/DECISIONS.md), [`MULTI_PROJECT_FEDERATED_STANDARD.md`](../framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md), [`AIDOC.md`](../framework/governance/aidoc/AIDOC.md) |
 
 ---
@@ -23,6 +23,8 @@ Consumer project workstations are bootstrapped and maintained by **`aidoc-projec
 
 * **Greenfield Inception:** `onboard greenfield --name <service> --profile <lang> --install` scaffolds the complete `.aidoc/` workstation layout.
 * **Upstream Maintenance:** `onboard update --target .` reconciles `.aidoc/framework/` and `.aidoc/contracts/` pins with upstream releases without clobbering project adaptations in `.aidoc/project/`.
+
+> `onboard` is the planned Tier-1 tool; until it ships, bootstrap with [`framework/scripts/install.sh`](../framework/scripts/install.sh) and re-adopt with [`framework/scripts/upgrade.sh`](../framework/scripts/upgrade.sh) (CHG-128).
 
 ---
 
@@ -66,9 +68,9 @@ Every consumer project adopts the standardized `.aidoc/` workstation layout inco
 
 ```text
 <consumer-project>/
+├── stack-policy.yaml         # ⭐ PILLAR 2: ENTERPRISE TECH STACK POLICY (schema 1.0.0; installer-scaffolded at root)
 ├── .aidoc/
 │   ├── profile.yaml              # Declarative adaptation knobs (active layers, thresholds, tenant_id)
-│   ├── stack-policy.yaml         # ⭐ PILLAR 2: ENTERPRISE TECH STACK POLICY (schema 1.0.0)
 │   ├── Taskfile.yml              # ⭐ CANONICAL SDD TASK DEFINITIONS (sdd:lint, sdd:review, sdd:slice, sdd:check)
 │   │
 │   ├── project/                  # ⭐ TIER 1: PROJECT OVERRIDES & SPECIALIZED GOVERNANCE
@@ -284,6 +286,8 @@ thresholds:
 3. **`mock` / `dry-run` Mode (Integration Testing):**
    * Runs the LangGraph state machine with deterministic, heuristic rule-based checks to validate workflow graphs without invoking external LLMs.
 
+Day-1 default: `verify-only` in CI and `mock` for pipeline testing; adopt `live` when authoring with the engine (see Day-1 minimal scope in [`ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.2).
+
 ---
 
 ## 7. Machine-Readable `review_log` Frontmatter Schema
@@ -329,7 +333,7 @@ review_log:
 | Path | Git Tracking Policy | Rationale |
 |:---|:---|:---|
 | `.aidoc/profile.yaml` | **Tracked** | Core project configuration contract |
-| `.aidoc/stack-policy.yaml` | **Tracked** | Pillar 2 Enterprise Technology Stack contract |
+| `stack-policy.yaml` (project root) | **Tracked** | Pillar 2 Enterprise Technology Stack contract |
 | `.aidoc/Taskfile.yml` | **Tracked** | Canonical task runner definitions |
 | `.aidoc/project/` | **Tracked** | Project overrides and specialized playbooks |
 | `.aidoc/engine/engine.yaml` | **Tracked** | Engine selection and mode configuration |

@@ -1,0 +1,168 @@
+# =============================================================================
+#  CHG-128: Kickoff Consolidation + Seed-Path Restoration (seed/ canonical)
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Pre-cleared: User instruction in session (2026-10-24)
+#  Scope: Implement #1022 findings F4/F5/F7-F12 (single AGENTS.md source,
+#         .aidoc/ tree reconciliation, onboard pointer, consumer CI starter,
+#         prereqs/verification/brownfield, docs index + history split, pin
+#         comment, day-1 minimal scope) and resolve #1024 by restoring the
+#         CHG-53/GD-36 seed/ canonical path in AIDOC.md (v2.4) + Step 5.
+#         One normative doc touched (AIDOC.md) -> patch bump 0.96.13.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-24"
+  framework_version: "0.96.13"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-128"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-24T02:20:00Z"
+  date_approved: "2026-10-24T02:24:00Z"
+  date_implemented: "2026-10-24T02:43:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-24T02:24:00Z"
+    verdict: Approved
+    evidence: >-
+      In-session founder authorization: continue with #1022 implementation
+      (triaged GO) and seed-path decision for #1024 (uphold seed/ per
+      CHG-53). The post-merge framework/v0.96.13 tag (step 12) is a
+      same-class release tag keeping the documented --canon pin resolving;
+      verified pre-push and reported in the session wrap.
+  supersedes:
+    - "framework/archive/CHG-128/AIDOC.md"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-128)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-128"
+  title: "Consolidate Kickoff Docs and Restore seed/ as Canonical Tier 1 Path"
+  status: "Decided"
+  date: "2026-10-24"
+  context: >-
+    Issue #1022 (triaged GO, P2/docs/gap) carries 8 kickoff gaps: two inline
+    AGENTS.md copies drifting from the template install.sh ships (F4), three
+    unreconciled .aidoc/ trees plus stack-policy.yaml misplaced under .aidoc/
+    in two diagrams while installer + BOOTSTRAP put it at root (F5), a
+    prescribed `onboard` bootstrapper that does not exist (F7), no consumer
+    CI starter though .github/ is excluded from the consumer copy (F8), no
+    prerequisites / brownfield path / real verification (F9), no docs index
+    with 460 lines of 2026-05 history inside the kickoff guide (F10), a
+    self-contradicting pin comment (F11), and no day-1 minimal scope (F12).
+    Scoping F4/F5 exposed #1024: CHG-53/GD-36 (C2, deliberate) standardize
+    <project>/seed/ with docs/seed/ legacy-tolerated across 5 normative
+    files, while CHG-126 moved AIDOC.md v2.3 alone to docs/seed/ claiming a
+    false alignment with those contracts. The founder decided 2026-10-24:
+    uphold seed/ (CHG-126's move was oversight, not reversal).
+  choice: >-
+    1. F4: delete both inline AGENTS.md copies; point at
+       framework/templates/AGENTS-TEMPLATE.md (the file install.sh copies).
+    2. F5: state which .aidoc/ tree install.sh scaffolds vs
+       consumer-authored/optional parts; move stack-policy.yaml to root in
+       both diagrams + tracking table (installer + BOOTSTRAP ground truth).
+    3. F7/F12: one-line onboard pointer (planned Tier-1 tool; install.sh is
+       the bootstrapper) + day-1 minimal/linter-only scope note.
+    4. F8: ship docs/CONSUMER-CI-STARTER.md (self-contained minimal gate:
+       profile-lint + sdd_doc_lint + chg_lint) + pointer from the guide.
+    5. F9: prerequisites block (git, python >=3.11, task/gh recommended),
+       real Step-6 verification, CODE2S (Type-R) brownfield note.
+    6. F10: add docs/README.md index; move the 2026-05 brief to
+       docs/history/STARTUP-BRIEF-2026-05-20.md; slim the kickoff guide.
+    7. F11: correct the PROJECT.md pin comment (value shape preserved for
+       the pin sweeper).
+    8. #1024: restore seed/ tier in AIDOC.md (v2.4) + Step 5; archive v2.3;
+       patch bump 0.96.12 -> 0.96.13 with pin propagation; cut
+       framework/v0.96.13 post-merge so the documented --canon pin resolves.
+  consequences:
+    positive:
+      - One AGENTS.md source, one stated .aidoc/ truth, one seed path.
+      - New teams get prereqs, a runnable quickstart, CI starter, and index.
+      - The documented --canon pin resolves on the day it ships (no tag lag).
+    negative:
+      - None; restores the established contract, no contract change.
+    risks:
+      - Release tag framework/v0.96.13 immutable once pushed; mitigated by
+        target verification (first-holder merge commit) before push.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    The kickoff docs are individually correct after CHG-127 but mutually
+    inconsistent and incomplete (8 gaps, #1022), and the Tier 1 seed path is
+    contested between two ratified positions (#1024, decided: seed/).
+  scope:
+    - docs/STARTUP_HANDOFF.md (F4, F9, F10, seed/ revert).
+    - docs/ADAPTATION-GUIDE.md (F4, F5, F8 pointer, F12).
+    - docs/PROJECT.md (F5 pointer, F11).
+    - docs/AIDOC_WORKSTATION_STANDARD.md (F5, F7, F12).
+    - docs/README.md, docs/history/STARTUP-BRIEF-2026-05-20.md (new, F10).
+    - docs/CONSUMER-CI-STARTER.md (new, F8).
+    - README.md docs list (F10 pointer refresh).
+    - framework/governance/aidoc/AIDOC.md v2.4 + v2.3 snapshot (#1024).
+    - framework/VERSION 0.96.13 + pin propagation + post-merge tag.
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-128/IPLAN-128.yaml"
+  steps:
+    - step: "Archive AIDOC.md v2.3 into framework/archive/CHG-128/AIDOC.md"
+      phase: "archive_originals"
+    - step: "Author authorizing CHG-128.yaml and IPLAN-128.yaml"
+      phase: "iplan_creation"
+    - step: "F4: single AGENTS.md source (delete inline copies, point at template)"
+      phase: "documentation_sync"
+    - step: "F5: reconcile .aidoc/ trees; stack-policy.yaml to root"
+      phase: "documentation_sync"
+    - step: "F7/F12: onboard pointer + day-1 minimal scope notes"
+      phase: "documentation_sync"
+    - step: "F8: consumer CI starter doc + guide pointer"
+      phase: "documentation_sync"
+    - step: "F9: prerequisites + real verification + brownfield note"
+      phase: "documentation_sync"
+    - step: "F10: docs index + history split"
+      phase: "documentation_sync"
+    - step: "F11: correct pin comment in docs/PROJECT.md"
+      phase: "documentation_sync"
+    - step: "Restore seed/ tier in AIDOC.md v2.4 + kickoff Step 5 (#1024)"
+      phase: "documentation_sync"
+    - step: "Bump framework/VERSION to 0.96.13 and run hooks/sync-version-refs.sh"
+      phase: "version_propagation"
+    - step: "Cut and verify framework/v0.96.13 post-merge"
+      phase: "documentation_sync"
+    - step: "Validate chg_lint, spec_gate, and test suites"
+      phase: "verification"

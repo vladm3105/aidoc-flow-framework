@@ -1,0 +1,68 @@
+# =============================================================================
+#  IPLAN-128: Kickoff Consolidation + Seed-Path Restoration (seed/ canonical)
+# =============================================================================
+#  Implementation Plan authorized by CHG-128
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-128
+title: "Implementation Plan: Kickoff Consolidation + Seed-Path Restoration"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.13"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-24"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "Framework Maintainer"
+  source_chg: "CHG-128"
+  date_created: "2026-10-24T02:24:00Z"
+  date_implemented: "2026-10-24T02:43:00Z"
+
+file_manifest:
+  - path: "docs/STARTUP_HANDOFF.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/ADAPTATION-GUIDE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/PROJECT.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/AIDOC_WORKSTATION_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/README.md"
+    action: "create"
+    status: "DONE"
+  - path: "docs/history/STARTUP-BRIEF-2026-05-20.md"
+    action: "create"
+    status: "DONE"
+  - path: "docs/CONSUMER-CI-STARTER.md"
+    action: "create"
+    status: "DONE"
+  - path: "README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/aidoc/AIDOC.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/archive/CHG-128/AIDOC.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-128/CHG-128.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-128/IPLAN-128.yaml"
+    action: "create"
+    status: "DONE"

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.12 |
+| Framework Version | 0.96.13 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [ENGINE_TELEMETRY.md](../ENGINE_TELEMETRY.md) |
 
 Operational blueprint for managing prompt manifests, LLM-as-a-judge evaluation datasets,
