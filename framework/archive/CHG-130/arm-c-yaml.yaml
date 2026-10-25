@@ -1,0 +1,95 @@
+# =============================================================================
+#  Phase 1 benchmark — Arm C (YAML). Same facts as Arms A/B, restructured.
+# =============================================================================
+
+metadata:
+  doc_id: GOV-FLOWS-ROUTER
+  bucket: machine-consumed-candidate
+  authority: bidirectional
+  consumers: [authoring, audit, traceability]
+  source_document: framework/governance/CHG_REQUEST_FLOWS.md
+
+match_rule: first matching row wins
+match_order: [HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C]
+
+legacy_aliases:
+  HOTFIX: Emergency
+  CODE2S: Type-R
+  CODE2C: F4
+  SEED2C: F3
+  DIR2C: F2
+  SDD2C: F1
+
+flows:
+  - code: HOTFIX
+    flow_identifier: hotfix
+    traversal: Code -> Prod (post-hoc Doc)
+    trigger: Critical production issue requiring fix before authorization
+    change_source: Emergency level
+    change_level: Emergency
+    entry_gate: Post-hoc
+    sdd_cascade: None (retroactive document within 48h + post-mortem)
+    iplan_shape: Fix IPLAN post-hoc per 09_CHG/README.md + POST_MORTEM-TEMPLATE.md
+    verification: Post-mortem verification; deployable fixes close live (§3.3 rule 10)
+  - code: CODE2S
+    flow_identifier: code_to_sdd
+    traversal: Code -> IPLAN -> SDD
+    trigger: Verified working codebase preceding its specs (non-emergency empirical work)
+    change_source: reconciliation
+    change_level: C2 typical
+    entry_gate: GATE-CODE
+    sdd_cascade: Reverse — Code→TDD→SPEC→BDD→EARS per §3.1.2
+    iplan_shape: Reverse-authored (ground truth from code)
+    verification: §3.1.2 Phase-3 battery; runtime touches close live (§3.3 rule 10)
+  - code: CODE2C
+    flow_identifier: code_to_code
+    traversal: Defect -> IPLAN -> Code
+    trigger: Defect found in EVAL, manual test, or field use, traceable to a Completed/Verified parent IPLAN
+    change_source: feedback
+    change_level: C1 CHG (CHG-05 vehicle)
+    entry_gate: GATE-CODE
+    sdd_cascade: No (parent SDD stands; fix-IPLAN carries validation_findings)
+    iplan_shape: Bugfix-subtype (parent_iplan + source_chg, repair-scoped manifest, rollback)
+    verification: Regression suite + parent revision entry; runtime fixes close live (§3.3 rule 10)
+  - code: SEED2C
+    flow_identifier: seed_to_code
+    traversal: Seed -> Module -> SDD -> Code
+    trigger: Product design or behavior change to an implemented product (Full Multi-Tier Chain)
+    change_source: [upstream, midstream, design, spec]
+    change_level: C2 / C3 (C3 if cross-layer or new requirements)
+    entry_gate: GATE-01 / 03 / 06 / GATE-SPEC
+    sdd_cascade: Yes — modules-first restart per §4
+    iplan_shape: Full, referencing NEW SDD versions (authored only after checkpoint passes)
+    verification: EVAL cycles + live closeout (deployable — §3.3 rule 10)
+  - code: DIR2C
+    flow_identifier: iplan_to_code
+    traversal: IPLAN -> Code / Docs
+    trigger: Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling)
+    change_source: direct
+    change_level: C1 (every C1: C1 CHG + scoped IPLAN per F2.2, every author)
+    entry_gate: GATE-CODE
+    sdd_cascade: No (sdd_lifecycle: [])
+    iplan_shape: Scoped (manifest + steps only, §3.3)
+    verification: Covering tests + verification commands in scoped IPLAN; static closeout (non-deployable — §3.3 rule 10)
+  - code: SDD2C
+    flow_identifier: sdd_to_code
+    traversal: BRD -> PRD -> ... -> Code
+    trigger: New product / new layer chain, no prior implementation (SDD Layer Chain)
+    change_source: upstream
+    change_level: C3
+    entry_gate: GATE-01
+    sdd_cascade: Yes — full 10-layer authoring per §3.1.1
+    iplan_shape: Full (all code steps, full manifest)
+    verification: EVAL cycles + live closeout (deployable — §3.3 rule 10)
+
+source_gates:
+  Upstream: GATE-01
+  Midstream: GATE-03
+  Design: GATE-06
+  Execution: GATE-08
+  External-business: GATE-01
+  External-technical: GATE-03
+  Feedback: GATE-CODE
+  Reconciliation: GATE-CODE
+  Direct: GATE-CODE
+  Spec: GATE-SPEC
