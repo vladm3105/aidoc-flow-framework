@@ -64,13 +64,17 @@ flows:
   - code: DIR2C
     flow_identifier: iplan_to_code
     traversal: IPLAN -> Code / Docs
-    trigger: Human or AI-agent request, unrelated to any prior IPLAN, no product-behavior change (docs, scripts, hooks, small tooling)
+    trigger: >-
+      Human or AI-agent request, unrelated to any prior IPLAN,
+      no product-behavior change (docs, scripts, hooks, small tooling)
     change_source: direct
-    change_level: C1 (every C1: C1 CHG + scoped IPLAN per F2.2, every author)
+    change_level: "C1 (every C1: C1 CHG + scoped IPLAN per F2.2, every author)"
     entry_gate: GATE-CODE
-    sdd_cascade: No (sdd_lifecycle: [])
+    sdd_cascade: "No (sdd_lifecycle: [])"
     iplan_shape: Scoped (manifest + steps only, §3.3)
-    verification: Covering tests + verification commands in scoped IPLAN; static closeout (non-deployable — §3.3 rule 10)
+    verification: >-
+      Covering tests + verification commands in scoped IPLAN;
+      static closeout (non-deployable — §3.3 rule 10)
   - code: SDD2C
     flow_identifier: sdd_to_code
     traversal: BRD -> PRD -> ... -> Code
