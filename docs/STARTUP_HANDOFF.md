@@ -1,11 +1,11 @@
 # Project Kickoff Guide
 
 > [!IMPORTANT]
-> **Live Framework Version: 0.96.15.** The definitive quickstart for teams initiating new projects with `aidoc-flow-framework`. Docs index: [`docs/README.md`](README.md). The 2026-05 migration brief formerly appended here moved verbatim to [`docs/history/STARTUP-BRIEF-2026-05-20.md`](history/STARTUP-BRIEF-2026-05-20.md) (CHG-128).
+> **Live Framework Version: 0.96.16.** The definitive quickstart for teams initiating new projects with `aidoc-flow-framework`. Docs index: [`docs/README.md`](README.md). The 2026-05 migration brief formerly appended here moved verbatim to [`docs/history/STARTUP-BRIEF-2026-05-20.md`](history/STARTUP-BRIEF-2026-05-20.md) (CHG-128).
 
 ---
 
-## 0. Project Kickoff Quickstart (Version 0.96.15)
+## 0. Project Kickoff Quickstart (Version 0.96.16)
 
 ### 0.1 The Modern SDD Framework at a Glance
 
@@ -40,7 +40,7 @@ From the framework repository or clone, run [`framework/scripts/install.sh`](../
 framework/scripts/install.sh <project-dir> --canon-dir /path/to/aidoc-flow-framework --kind pin
 
 # Option B: Production deployment from published git release tag:
-framework/scripts/install.sh <project-dir> --canon framework/v0.96.15 --kind pin
+framework/scripts/install.sh <project-dir> --canon framework/v0.96.16 --kind pin
 
 # Option C: Git submodule deployment (tracked by git, pinned to a release tag):
 git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
