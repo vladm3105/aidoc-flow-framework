@@ -32,7 +32,7 @@ skills. Vehicle DIR2C/F2/C1. Publish split: plan PR, then skills PR A
 3. This plan file → two review passes → plan PR → merge before any skill.
 4. Complete the §3.4 checklist BEFORE writing the CHG. Then write the C1 CHG
    (no code steps, non-empty `decision:`, lifecycle attribution with `author`
-   + `chg_ref`, `change_source: direct`, `sdd_lifecycle: []`) and run §3.4.1
+   - `chg_ref`, `change_source: direct`, `sdd_lifecycle: []`) and run §3.4.1
    validation AFTER writing it, BEFORE committing. DIR2C/F2 is the vehicle:
    skills + registry/readme are docs/tooling with no product-behavior change,
    matching the DIR2C trigger row; SEED2C/SDD2C are rejected because no SDD
