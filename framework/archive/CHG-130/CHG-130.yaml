@@ -1,0 +1,116 @@
+# =============================================================================
+#  CHG-130: Governance Doc Conversion Plan — Phase 1 Frozen Benchmark
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Execute Phase 1 of plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md —
+#         frozen three-arm benchmark (current MD vs structured MD vs YAML)
+#         on the §1 router block. Prototype arms live outside framework/;
+#         evidence committed with IPLAN-130. No framework/ normative edit.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-26"
+  framework_version: "0.96.13"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact: null
+  version_action: null
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-130"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: null
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-26T00:00:00Z"
+  date_approved: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-130)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-130"
+  title: "Execute Phase 1 frozen benchmark for the governance doc conversion plan"
+  status: "Decided"
+  date: "2026-10-26"
+  context: >-
+    The merged plan (plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md, PR #1026)
+    and the Phase 0 inventory (CHG-129/IPLAN-129) require a frozen,
+    pre-registered benchmark before any YAML conversion: 30 tasks, three
+    isolated arms, one named model, majority vote over 3 repeats, with a
+    percentage-point gate and a 90% floor on both arms.
+  choice: >-
+    Run the benchmark exactly as frozen in
+    framework/archive/CHG-130/benchmark-tasks.md: 24 classification tasks
+    (4 per flow, including the spec → GATE-SPEC route as T15/T16) plus 6
+    retrieval tasks, across arm-a-current.md, arm-b-structured.md, and
+    arm-c-yaml.yaml. Record raw results in benchmark-results.md, compute
+    the gate, and record the verdict in IPLAN-130. If the gate fails or
+    the run is inconclusive, the plan ends after Phase 2a.
+  consequences:
+    positive:
+      - The YAML-vs-structured-Markdown decision becomes measured evidence.
+      - All raw results are committed and auditable.
+    negative:
+      - None; prototype arms live outside framework/, no normative edits.
+    risks:
+      - Ambiguity in T15/T16 flow ground truth (SEED2C by change_source
+        column vs DIR2C by trigger) is document ambiguity, equal across
+        arms; analyzed, not re-frozen, in the results.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    Whether YAML beats structured Markdown on agent classification tasks is
+    unmeasured (Claim 7 of the plan, blocking Phase 2b). Only a frozen
+    benchmark with a pre-registered gate can settle it.
+  scope:
+    - framework/archive/CHG-130/CHG-130.yaml (new, this vehicle).
+    - framework/archive/CHG-130/IPLAN-130.yaml (new, executing IPLAN + verdict).
+    - framework/archive/CHG-130/benchmark-tasks.md (new, frozen task set + ground truth).
+    - framework/archive/CHG-130/benchmark-results.md (new, raw results + gate computation).
+    - framework/archive/CHG-130/arm-a-current.md (new, prototype arm, non-normative).
+    - framework/archive/CHG-130/arm-b-structured.md (new, prototype arm, non-normative).
+    - framework/archive/CHG-130/arm-c-yaml.yaml (new, prototype arm, non-normative).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-130/IPLAN-130.yaml"
+  steps:
+    - step: "Author authorizing CHG-130.yaml and IPLAN-130.yaml"
+      phase: "iplan_creation"
+    - step: "Freeze benchmark-tasks.md (30 tasks + ground truth) before any arm run"
+      phase: "documentation_sync"
+    - step: "Build three isolated prototype arms (A/B/C)"
+      phase: "documentation_sync"
+    - step: "Run 9 benchmark passes (3 arms x 3 repeats), record raw results"
+      phase: "documentation_sync"
+    - step: "Compute gate verdict, record in IPLAN-130"
+      phase: "documentation_sync"
+    - step: "Validate chg_lint and conformance agreement tests"
+      phase: "verification"

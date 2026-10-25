@@ -1,0 +1,69 @@
+# =============================================================================
+#  IPLAN-130: Governance Doc Conversion Plan — Phase 1 Frozen Benchmark
+# =============================================================================
+#  Implementation Plan authorized by CHG-130
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-130
+title: "Implementation Plan: Phase 1 frozen three-arm benchmark"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.13"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-26"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-130"
+  date_created: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-130/CHG-130.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/IPLAN-130.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/benchmark-tasks.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/benchmark-results.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/arm-a-current.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/arm-b-structured.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-130/arm-c-yaml.yaml"
+    action: "create"
+    status: "DONE"
+
+# =============================================================================
+# Phase 1 verdict (recorded evidence — ends the conversion plan per its gate)
+# =============================================================================
+
+phase1_verdict:
+  date: "2026-10-26"
+  model: "Muse Code, powered by Meta Muse Spark"
+  design: "30 frozen tasks, 3 isolated arms, 3 repeats each, majority vote"
+  accuracy_structured_md: 100.0
+  accuracy_yaml: 100.0
+  accuracy_delta_pp: 0.0
+  token_saving_yaml_pct: 3.4
+  gate: FAIL
+  consequence: >-
+    The conversion plan ends after Phase 2a (structured Markdown) per its
+    pre-registered gate. No Phase 2b YAML pilot, no Phase 3 scaling. The
+    executing vehicle for Phase 2a is a separate CHG (DIR2C + spec,
+    GATE-SPEC, C2, patch, per Claim 11 of the plan).
+  analysis: >-
+    Format is not the lever: unanimous 270/270 across all arms. Residual
+    difficulty lives in rule overlap (e.g. T15/T16 SEED2C-vs-DIR2C), which
+    resolved identically in every format. See benchmark-results.md.
