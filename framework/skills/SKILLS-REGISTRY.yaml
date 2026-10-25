@@ -35,6 +35,30 @@ skills:
   - name: sdd-iplan
     path: framework/skills/sdd-iplan/SKILL.md
     files: ["SKILL.md"]
+  - name: sdd-adr
+    path: framework/skills/sdd-adr/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-bdd
+    path: framework/skills/sdd-bdd/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-brd
+    path: framework/skills/sdd-brd/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-ears
+    path: framework/skills/sdd-ears/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-eval
+    path: framework/skills/sdd-eval/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-prd
+    path: framework/skills/sdd-prd/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-spec
+    path: framework/skills/sdd-spec/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-tdd
+    path: framework/skills/sdd-tdd/SKILL.md
+    files: ["SKILL.md"]
   - name: second-opinion
     path: framework/skills/second-opinion/SKILL.md
     files: ["SKILL.md"]
