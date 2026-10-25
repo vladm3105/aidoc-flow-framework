@@ -1,0 +1,109 @@
+# =============================================================================
+#  CHG-132: Fix unswept checkout pins + guard (review findings)
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Fix the two `checkout framework/v0.96.13` literals that contradict
+#         the 0.96.14 pins (issue #1030), add a conformance guard that fails
+#         loudly on stale checkout pins, refresh stale plan metadata.
+#         No framework/ normative edit; no version bump.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-26"
+  framework_version: "0.96.14"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact: null
+  version_action: null
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-132"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: null
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-26T00:00:00Z"
+  date_approved: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-132)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-132"
+  title: "Fix stale checkout pins and guard the unswept form"
+  status: "Decided"
+  date: "2026-10-26"
+  context: >-
+    The post-implementation deep review found docs/STARTUP_HANDOFF.md:47 and
+    docs/ADAPTATION-GUIDE.md:40 instructing `checkout framework/v0.96.13`
+    while the same files pin 0.96.14 (issue #1030). The sync script cannot
+    sweep the bare `checkout framework/v<old>` form: literal sweeping risks
+    prefix corruption across OLD_VERSIONS (0.96.1 is a prefix of 0.96.13),
+    so the durable fix is a conformance guard that fails loudly, not a
+    silent sweep extension. Erratum (archive immutable, recorded here, not
+    edited in place): CHG-130 benchmark-results.md reports Arm C as 4036
+    bytes; arm-c-yaml.yaml is 4070 bytes on disk after the yamllint fix
+    (identical parsed content). Token estimate and FAIL verdict unaffected.
+  choice: >-
+    Bump both checkout lines to framework/v0.96.14; add
+    test_checkout_pins_current to tests/conformance/test_sync_version_refs.py;
+    refresh the stale Framework Version cell in the merged plan file.
+  consequences:
+    positive:
+      - Kickoff docs agree on a single version again.
+      - The next bump fails loudly instead of drifting silently.
+    negative:
+      - None; docs/test/metadata only.
+    risks:
+      - None.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    Two consumer entry-point docs contradict the current version pin, and
+    no check covers the literal form they use.
+  scope:
+    - docs/STARTUP_HANDOFF.md (one line: checkout pin 0.96.13 -> 0.96.14).
+    - docs/ADAPTATION-GUIDE.md (one line: checkout pin 0.96.13 -> 0.96.14).
+    - tests/conformance/test_sync_version_refs.py (new guard test).
+    - plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md (stale metadata row).
+    - framework/archive/CHG-132/CHG-132.yaml (new, this vehicle).
+    - framework/archive/CHG-132/IPLAN-132.yaml (new, executing IPLAN).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-132/IPLAN-132.yaml"
+  steps:
+    - step: "Author authorizing CHG-132.yaml and IPLAN-132.yaml"
+      phase: "iplan_creation"
+    - step: "Add test_checkout_pins_current guard; observe it fail on the stale pins"
+      phase: "documentation_sync"
+    - step: "Fix both checkout pins to framework/v0.96.14; refresh plan metadata"
+      phase: "documentation_sync"
+    - step: "Validate guard green, chg_lint clean, conformance green"
+      phase: "verification"
