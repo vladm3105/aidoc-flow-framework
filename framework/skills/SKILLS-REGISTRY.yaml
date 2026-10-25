@@ -1,7 +1,7 @@
 # SKILLS-REGISTRY.yaml — framework skills index
 # Single owner for skill list: this file. SKILL.md frontmatter `name` must match directory name.
 version: "1.0"
-framework_version: "0.96.14"
+framework_version: "0.96.15"
 source: "aidoc-flow-claude-agents-config/skills (private, 2026-09-27)"
 skills:
   - name: approval-gate
@@ -19,6 +19,21 @@ skills:
     files: ["SKILL.md", "references/lens-briefs.md", "references/github-actions-review.md"]
   - name: recall
     path: framework/skills/recall/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-chg-author
+    path: framework/skills/sdd-chg-author/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-chg-flow
+    path: framework/skills/sdd-chg-flow/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-chg-triage
+    path: framework/skills/sdd-chg-triage/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-gates
+    path: framework/skills/sdd-gates/SKILL.md
+    files: ["SKILL.md"]
+  - name: sdd-iplan
+    path: framework/skills/sdd-iplan/SKILL.md
     files: ["SKILL.md"]
   - name: second-opinion
     path: framework/skills/second-opinion/SKILL.md
