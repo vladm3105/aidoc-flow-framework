@@ -54,17 +54,13 @@ class TestGovSliceAdmission(unittest.TestCase):
         self.assertEqual(graph.nodes["GOV-EXAMPLE"].layer, "GOV")
         self.assertIn("GOV-EXAMPLE#sec-selector", graph.nodes)
         self.assertIn("GOV-EXAMPLE#sec-gates", graph.nodes)
-        self.assertEqual(
-            graph.nodes["GOV-EXAMPLE#sec-selector"].title, "Selector"
-        )
+        self.assertEqual(graph.nodes["GOV-EXAMPLE#sec-selector"].title, "Selector")
 
     def test_layer_doc_without_anchors_unchanged(self):
         graph = self._graph({"BRD-01.md": LAYER_DOC})
         self.assertIn("BRD-01", graph.nodes)
         self.assertEqual(graph.nodes["BRD-01"].layer, "BRD")
-        self.assertEqual(
-            [n for n in graph.nodes if n.startswith("BRD-01#")], []
-        )
+        self.assertEqual([n for n in graph.nodes if n.startswith("BRD-01#")], [])
 
 
 if __name__ == "__main__":
