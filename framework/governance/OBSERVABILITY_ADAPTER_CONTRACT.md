@@ -1,25 +1,32 @@
+---
+doc_id: GOV-OBSERVABILITY-ADAPTER-CONTRACT
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Observability Adapter Contract & Projection Standard
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Status | Ratified |
-| Last Updated | 2026-10-16 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md) Principle 2 |
 
 ---
 
-## 1. Purpose & Architectural Context
+## 1. Purpose & Architectural Context {#sec-1-purpose-architectural-context}
 
 The Observability Adapter (`sdd-render`) implements the **Read Plane** of the framework's Dual-Plane CQRS Architecture. 
 
 While autonomous AI agents operate on the **Write Plane** (reading, mutating, and reviewing the Native SDD Graph), human stakeholders, auditors, and engineering leaders require high-level, human-friendly representations (spec sheets, visual architecture maps, and pull request summaries).
 
-### 1.1 Non-Authoritative Invariant (Principle 2)
+### 1.1 Non-Authoritative Invariant (Principle 2) {#sec-11-non-authoritative-invariant-principle-2}
 Per [DOC_GOVERNANCE_CORE.md Principle 2](DOC_GOVERNANCE_CORE.md#L16):
 > *"Markdown is optional and descriptive: a rendering of the underlying data... generated, not authored — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect."*
 
@@ -30,7 +37,7 @@ The Observability Adapter is strictly **non-authoritative and deterministic**:
 
 ---
 
-## 2. Engine Neutrality & Pure-Python Mandate (Decision D-0013)
+## 2. Engine Neutrality & Pure-Python Mandate (Decision D-0013) {#sec-2-engine-neutrality-pure-python-mandate-decision-d-0013}
 
 To ensure zero-friction portability across Linux, macOS, Windows, and air-gapped CI environments:
 1. **Zero External Browser/Node.js Dependencies**: The adapter must NOT depend on Node.js, `@mermaid-js/mermaid-cli`, Puppeteer, or headless Chromium.
@@ -41,11 +48,11 @@ To ensure zero-friction portability across Linux, macOS, Windows, and air-gapped
 
 ---
 
-## 3. Projection Subcommands & Formats
+## 3. Projection Subcommands & Formats {#sec-3-projection-subcommands-formats}
 
 The adapter CLI (`python3 -m sdd_doc_lint --render-*`) provides four canonical projection targets:
 
-### 3.1 Spec Sheet Projection (`--render-spec`)
+### 3.1 Spec Sheet Projection (`--render-spec`) {#sec-31-spec-sheet-projection---render-spec}
 Compiles a graph slice into structured Markdown replicating traditional SDD document sections:
 - Groups `business_objective` nodes into Executive Summary.
 - Groups `formal_requirement` nodes into Requirements Specification.
@@ -59,7 +66,7 @@ python3 -m sdd_doc_lint --render-spec docs/sdd/graph/initiatives/INIT-01.graph.y
 python3 -m sdd_doc_lint --render-spec docs/modules/MODULE-01_auth/MODULE-01_auth.graph.yaml --out docs/modules/MODULE-01_auth/MODULE-01_auth.md
 ```
 
-### 3.2 Architectural Diagram Projection (`--render-diagram`)
+### 3.2 Architectural Diagram Projection (`--render-diagram`) {#sec-32-architectural-diagram-projection---render-diagram}
 Generates native Mermaid diagrams derived from node properties and relational edges:
 - **`--type c4-context`**: Emits `graph TB` from `seed_intent` and `system_container` boundaries.
 - **`--type c4-container`**: Emits subsystem container maps from `system_container` and `component_contract` nodes.
@@ -73,7 +80,7 @@ python3 -m sdd_doc_lint --render-diagram docs/sdd/graph/ --type c4-container --o
 python3 -m sdd_doc_lint --render-diagram docs/modules/MODULE-01_auth/MODULE-01_auth.graph.yaml --type sequence --out docs/modules/MODULE-01_auth/sequence.mmd
 ```
 
-### 3.3 Verification & Traceability Matrix (`--render-matrix`)
+### 3.3 Verification & Traceability Matrix (`--render-matrix`) {#sec-33-verification-traceability-matrix---render-matrix}
 Emits an exhaustive compliance verification table proving 100% oracle realization:
 
 | Requirement ID | Statement | BDD Scenario Oracle | Test Fixture Proof | Implementation Task | Status |
@@ -85,7 +92,7 @@ Command:
 python3 -m sdd_doc_lint --render-matrix docs/sdd/graph/ --out docs/specs/TRACEABILITY_MATRIX.md
 ```
 
-### 3.4 CI Pull Request Impact Summary (`--render-pr-impact`)
+### 3.4 CI Pull Request Impact Summary (`--render-pr-impact`) {#sec-34-ci-pull-request-impact-summary---render-pr-impact}
 Compares the PR branch graph ($G_{head}$) against the base branch graph ($G_{base}$):
 - Evaluates added, modified, and deleted nodes.
 - Computes the exact downstream blast radius ($\text{nx.descendants}$).
@@ -99,7 +106,7 @@ python3 -m sdd_doc_lint --render-pr-impact --base origin/main --head HEAD
 
 ---
 
-## 4. The Read-Only Invariant & Cryptographic Banner
+## 4. The Read-Only Invariant & Cryptographic Banner {#sec-4-the-read-only-invariant-cryptographic-banner}
 
 Every file emitted by `sdd-render` prepends a non-negotiable generated banner:
 
@@ -110,17 +117,17 @@ Every file emitted by `sdd-render` prepends a non-negotiable generated banner:
 <!-- ===================================================================== -->
 ```
 
-### 4.1 CI Mutation Guard (`GATE-DOC-READONLY`)
+### 4.1 CI Mutation Guard (`GATE-DOC-READONLY`) {#sec-41-ci-mutation-guard-gate-doc-readonly}
 The CI pipeline checks all generated spec files:
 1. Recomputes $\text{SHA-256}(\text{source graph slice})$.
 2. If the commit modifies a rendered markdown file without modifying the corresponding graph slice, or if the rendered output does not match `sdd-render(graph)`, CI fails immediately with `ERR-STALE-PROJECTION`.
 
-### 4.2 Frontmatter Sequencing Invariant
+### 4.2 Frontmatter Sequencing Invariant {#sec-42-frontmatter-sequencing-invariant}
 For document specifications requiring YAML frontmatter (such as `MODULE-NN_slug.md`), the opening fence `---` must appear at line 1, column 1 to guarantee standard frontmatter parser compatibility across all tools and test harnesses. The SDD-RENDER generated notice is embedded as YAML comment lines within the frontmatter block, and cryptographic metadata is recorded within the `document_control` mapping.
 
 ---
 
-## 5. Workstation Integration (`.aidoc/Taskfile.yml`)
+## 5. Workstation Integration (`.aidoc/Taskfile.yml`) {#sec-5-workstation-integration-aidoctaskfileyml}
 
 Developers and AI agents invoke the adapter through standardized Taskfile commands:
 

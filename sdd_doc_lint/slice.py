@@ -52,6 +52,10 @@ _MD_BOLD_ELEM = re.compile(
 _MD_ANY_HEADING = re.compile(r"^(#{1,6})\s+(.*)$")
 #: Document heading: `# EARS-01`
 _MD_DOC_HEADING = re.compile(r"^#\s+([A-Z]+-\d+)")
+#: Governance front-matter doc id: `GOV-<STEM>` (Phase 2a structured Markdown)
+_GOV_DOC = re.compile(r"^GOV-[A-Z0-9-]+$")
+#: Governance section anchor: `## Title {#sec-slug}` (Phase 2a stable section IDs)
+_MD_SECTION_ID = re.compile(r"^(#{2,6})\s+(.*?)\s*\{#([A-Za-z0-9_-]+)\}\s*$")
 #: Standalone element pattern
 _ELEM_PATTERN = re.compile(r"\b([A-Z]+)\.(\d+)\.(\d+)\.([a-f0-9]+)\b")
 
@@ -195,6 +199,10 @@ class SddGraph:
                         if DOC_FORM.match(doc_id):
                             layer = doc_id.split("-")[0]
                             return doc_id, layer, LAYER_INDEX.get(layer, 0)
+                        # Governance admission (Phase 2a): GOV-<STEM> docs are
+                        # addressable even though they match no layer chain.
+                        if _GOV_DOC.match(doc_id):
+                            return doc_id, "GOV", 0
                 except Exception:
                     pass
 
@@ -247,6 +255,14 @@ class SddGraph:
         ] = []  # (line_idx, elem_id, title, inline_stmt, kind)
 
         for idx, line in enumerate(lines):
+            # Check governance section anchor (Phase 2a, GOV docs only)
+            if layer == "GOV":
+                ms = _MD_SECTION_ID.match(line)
+                if ms:
+                    title = ms.group(2).strip()
+                    elem_id = f"{doc_id}#{ms.group(3)}"
+                    elem_starts.append((idx, elem_id, title, "", "section"))
+                    continue
             # Check Heading element
             mh = _MD_HEADING_ELEM.match(line)
             if mh:

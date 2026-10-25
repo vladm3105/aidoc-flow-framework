@@ -1,14 +1,21 @@
+---
+doc_id: GOV-IPLAN-WORKFLOW-STANDARD
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Implementation Plan Workflow Standard: CNCF Serverless Workflow for Layer 08 (IPLAN)
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -16,7 +23,7 @@ in YAML format within the SDD Hybrid Envelope Architecture across all 6 framewor
 
 ---
 
-## 1. Purpose & Architectural Context
+## 1. Purpose & Architectural Context {#sec-1-purpose-architectural-context}
 
 In the 10-layer SDD specification, Layer 08 (IPLAN) serves as the **mandatory execution engine
 for mutating codebase changes**. Rather than being restricted to a monolithic forward bridge
@@ -60,7 +67,7 @@ This standard establishes **Machine-Executable Implementation Plans**:
 
 ---
 
-### The Two-Graph Architecture in Layer 08 IPLAN
+### The Two-Graph Architecture in Layer 08 IPLAN {#sec-the-two-graph-architecture-in-layer-08-iplan}
 
 Layer 08 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable implementation process DAG with an atomic task content graph:
 
@@ -94,7 +101,7 @@ Both graphs work together: the Process DAG drives execution, populates the Conte
 
 ---
 
-## 2. Hybrid Envelope Architecture
+## 2. Hybrid Envelope Architecture {#sec-2-hybrid-envelope-architecture}
 
 To maintain compatibility with `sdd_doc_lint` while providing an executable workflow DAG, all
 CNCF-compliant IPLAN artifacts adopt the **Hybrid Envelope Architecture**:
@@ -106,7 +113,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.96.13"
+  framework_version: "0.96.14"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -157,7 +164,7 @@ traceability:
 
 ---
 
-## 3. CNCF Serverless Workflow Primitives in IPLAN
+## 3. CNCF Serverless Workflow Primitives in IPLAN {#sec-3-cncf-serverless-workflow-primitives-in-iplan}
 
 Layer 08 maps CNCF Serverless Workflow v0.8 primitives to concrete implementation concepts:
 
@@ -173,13 +180,13 @@ Layer 08 maps CNCF Serverless Workflow v0.8 primitives to concrete implementatio
 
 ---
 
-## 4. Normative Rules for IPLAN Workflows
+## 4. Normative Rules for IPLAN Workflows {#sec-4-normative-rules-for-iplan-workflows}
 
-### Rule 1: Static Inventory Parity
+### Rule 1: Static Inventory Parity {#sec-rule-1-static-inventory-parity}
 Every file modified or created within an `operation` state's actions must be declared in the
 top-level `file_manifest.files` list. Undocumented file modifications are strictly prohibited.
 
-### Rule 2: Flow-Aware Test Ordering
+### Rule 2: Flow-Aware Test Ordering {#sec-rule-2-flow-aware-test-ordering}
 In accordance with framework testing strategy, task ordering is bound to the declared traversal path:
 1. **`sdd_to_code` (`SDD2C`) & `seed_to_code` (`SEED2C`)**: Implementation workflows must order test file
    creation and execution before or in tandem with source code implementation.
@@ -189,11 +196,11 @@ In accordance with framework testing strategy, task ordering is bound to the dec
    exempt from test-first ordering (`tdd_consistency.status: not-applicable`); they require covering
    linter, formatter, or build dry-run checks before commit.
 
-### Rule 3: Mandatory Saga Compensation on Mutating States
+### Rule 3: Mandatory Saga Compensation on Mutating States {#sec-rule-3-mandatory-saga-compensation-on-mutating-states}
 Every `operation` state that creates files, modifies source code, or alters git state must declare
 a `compensatedBy` handler that reverts its specific mutations if subsequent verification gates fail.
 
-### Rule 4: Action Traceability Metadata
+### Rule 4: Action Traceability Metadata {#sec-rule-4-action-traceability-metadata}
 To maintain element-level traceability across the SDD layers, actions within operation states
 must carry upstream citations within their `metadata` dictionary:
 - **`SDD2C`**: Must carry `@spec` and `@tdd` (plus optional `@req` / `@brd`).
@@ -215,17 +222,17 @@ actions:
         target_file: "src/auth/tokens.py"
 ```
 
-### Rule 5: Deterministic Gate Sinks
+### Rule 5: Deterministic Gate Sinks {#sec-rule-5-deterministic-gate-sinks}
 Every `switch` state evaluating verification results must define:
 1. `dataConditions`: Routing to the next progression step upon passing test results.
 2. `defaultCondition`: Routing to an explicit saga rollback compensation sequence.
 Never leave gate failures unhandled or falling through to subsequent implementation steps.
 
-### Rule 6: Visual Graph Parity
+### Rule 6: Visual Graph Parity {#sec-rule-6-visual-graph-parity}
 Every IPLAN workflow must maintain 1-to-1 parity with an embedded Mermaid `stateDiagram-v2`
 diagram in its companion documentation or planning record.
 
-### Rule 7: Approved Technology Stack Invariant Enforcement
+### Rule 7: Approved Technology Stack Invariant Enforcement {#sec-rule-7-approved-technology-stack-invariant-enforcement}
 Every IPLAN workflow mutating production, test, or service code must enforce the approved
 technology stack contracts ratified in Layer 05 ADR and specified in SPEC/TDD. Code mutations
 must conform to target engine idioms (e.g., PostgreSQL 18 with UUIDv7 and Bytebase declarative
@@ -234,11 +241,11 @@ proxy clients) per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GU
 
 ---
 
-## 4.1 Traversal-Path State Machine Topologies
+## 4.1 Traversal-Path State Machine Topologies {#sec-41-traversal-path-state-machine-topologies}
 
 Layer 08 compiles into 4 distinct execution topologies depending on the declared `flow`. Each topology incorporates bounded self-remediation (`max_attempts: 3`), non-destructive blocker handling (`ExecutionBlockedTerminal`), and saga compensation (`TriggerSagaRollback`):
 
-### 1. Greenfield Forward Topology (`sdd_to_code` / `SDD2C`)
+### 1. Greenfield Forward Topology (`sdd_to_code` / `SDD2C`) {#sec-1-greenfield-forward-topology-sdd_to_code-sdd2c}
 ```
 PreFlightCheck → SnapshotOriginals → ImplementTestsFirst → ImplementSourceCode → EvaluateVerificationGate → CommitAndSignoff
                                                                                        ↓ (fails & attempt < max_attempts)
@@ -249,7 +256,7 @@ PreFlightCheck → SnapshotOriginals → ImplementTestsFirst → ImplementSource
                                                                                   TriggerSagaRollback
 ```
 
-### 2. Defect Repair Topology (`code_to_code` / `CODE2C`)
+### 2. Defect Repair Topology (`code_to_code` / `CODE2C`) {#sec-2-defect-repair-topology-code_to_code-code2c}
 ```
 PreFlightCheck → SnapshotOriginals → AuthorReproductionTest → ApplyPatchFix → EvaluateRegressionGate → CommitAndSignoff
                                                                                      ↓ (fails & attempt < max_attempts)
@@ -260,7 +267,7 @@ PreFlightCheck → SnapshotOriginals → AuthorReproductionTest → ApplyPatchFi
                                                                                 TriggerSagaRollback
 ```
 
-### 3. Direct Fast-Lane Topology (`iplan_to_code` / `DIR2C`)
+### 3. Direct Fast-Lane Topology (`iplan_to_code` / `DIR2C`) {#sec-3-direct-fast-lane-topology-iplan_to_code-dir2c}
 ```
 PreFlightCheck → SnapshotOriginals → ApplyFileEdits → EvaluateLintsAndChecks → CommitAndSignoff
                                                               ↓ (fails & attempt < max_attempts)
@@ -271,7 +278,7 @@ PreFlightCheck → SnapshotOriginals → ApplyFileEdits → EvaluateLintsAndChec
                                                          TriggerSagaRollback
 ```
 
-### 4. Backward Reconciliation Topology (`code_to_sdd` / `CODE2S`)
+### 4. Backward Reconciliation Topology (`code_to_sdd` / `CODE2S`) {#sec-4-backward-reconciliation-topology-code_to_sdd-code2s}
 ```
 PreFlightCheck → FreezeCodebase → InspectCodeContracts → ReverseAuthorSDD → EvaluateDocLintGate → CommitAndSignoff
                                                                                   ↓ (fails & attempt < max_attempts)
@@ -284,7 +291,7 @@ PreFlightCheck → FreezeCodebase → InspectCodeContracts → ReverseAuthorSDD 
 
 ---
 
-## 5. LangGraph & Runtime Adapter Pattern
+## 5. LangGraph & Runtime Adapter Pattern {#sec-5-langgraph-runtime-adapter-pattern}
 
 Autonomous agent runners compile the `workflow:` block of an IPLAN into LangGraph on the fly,
 validating node transitions against the declared `flow`:
@@ -339,7 +346,7 @@ def compile_iplan_workflow(iplan_path: str, action_handlers: dict) -> StateGraph
 
 ---
 
-## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98) {#sec-6-closed-dual-flow-quality-loop-authoring-review-saga-binding-chg-111-gd-98}
 
 To eliminate the decoupling between implementation plan execution and review crew evaluation:
 
@@ -355,7 +362,7 @@ To eliminate the decoupling between implementation plan execution and review cre
 
 ---
 
-## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99) {#sec-7-5-step-closed-layer-lifecycle-and-cloudevent-handoff-chg-112-gd-99}
 
 Layer 08 IPLAN implements the standardized 5-step closed lifecycle:
 1. **Stage 1 (Authoring)**: Tech lead authors implementation file manifest, mutation tasks, and saga rollback compensation states.
@@ -366,7 +373,7 @@ Layer 08 IPLAN implements the standardized 5-step closed lifecycle:
 
 ---
 
-## 8. The Four Orthogonal Status Planes (CHG-120)
+## 8. The Four Orthogonal Status Planes (CHG-120) {#sec-8-the-four-orthogonal-status-planes-chg-120}
 
 To prevent status pollution, loss of immutability, and state-projection ambiguity during autonomous execution, Layer 08 establishes four distinct, orthogonal status families (harmonized with `aidoc-flow-iplan-standard`):
 
@@ -377,14 +384,14 @@ To prevent status pollution, loss of immutability, and state-projection ambiguit
 | **Plane 3: File Manifest** | `file_manifest.files[].status` | `NOT_STARTED`, `IN_PROGRESS`, `PARTIAL`, `DONE`, `SKIPPED` | Autonomous Worker / File Mutator |
 | **Plane 4: Runtime Event** | Signed execution events | `accepted`, `running`, `blocked`, `succeeded`, `failed`, `cancelled` | Worker / Tool Harness |
 
-### Status Projection Invariants
+### Status Projection Invariants {#sec-status-projection-invariants}
 1. **Separation of Document vs Execution**: A document in `In Progress` status contains steps transitioning through `Queued` → `Running` → `Completed`. A failed step does not mutate `document_control.status` to `Failed` — it marks the step `Failed` or `Blocked`, triggering remediation or compensation.
 2. **File Manifest vs Verification**: `status: DONE` asserts that the file has been authored and exists on disk. `verified: true` asserts that unit tests have executed against the file and passed cleanly. A file may be `DONE` while `verified: false`.
 3. **Non-Destructive Blocker Projection**: An agent receiving `on_blocker` or `on_ambiguity` emits a `blocked` runtime event projecting the step status to `Blocked` and halting at `ExecutionBlockedTerminal` without triggering file deletion or rollback.
 
 ---
 
-## 9. Execution Evidence Receipts Specification (CHG-120, CHG-121)
+## 9. Execution Evidence Receipts Specification (CHG-120, CHG-121) {#sec-9-execution-evidence-receipts-specification-chg-120-chg-121}
 
 Upon completing Step 5 (`Step5_VerifyImplementationSuite`) and sign-off, the Layer 08 execution engine generates a detached, tamper-evident execution receipt bridging Layer 08 codebase mutations to downstream Layer 10 (EVAL) evaluation (harmonized with `iplan-evidence-bundle.schema.json`):
 
@@ -426,7 +433,7 @@ seal:
     value: "4f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a..."
 ```
 
-### Layer 10 (EVAL) Post-Validation Consumption
+### Layer 10 (EVAL) Post-Validation Consumption {#sec-layer-10-eval-post-validation-consumption}
 Downstream Layer 10 (EVAL) ingests this receipt prior to executing independent integration and acceptance suites. EVAL asserts:
 1. `receipt.seal.canonical_hash` verifies against the registered signing key.
 2. `receipt.execution_context.git_commit_sha` matches the evaluated workspace tree.
@@ -435,15 +442,15 @@ Downstream Layer 10 (EVAL) ingests this receipt prior to executing independent i
 
 ---
 
-## 10. Cryptographic Agent Attribution & Step Digital Signatures (CHG-121)
+## 10. Cryptographic Agent Attribution & Step Digital Signatures (CHG-121) {#sec-10-cryptographic-agent-attribution-step-digital-signatures-chg-121}
 
 In distributed and multi-agent execution environments, self-reported task completion (`status: Completed`) is vulnerable to phantom execution, impersonation, and attribution loss. Layer 08 establishes mathematical attribution through dual-identity modeling and per-step cryptographic attestations (harmonized with `aidoc-flow-iplanic`).
 
-### 10.1 Dual Identity Model
+### 10.1 Dual Identity Model {#sec-101-dual-identity-model}
 - **`protocol_agent_id` (Semantic Persona)**: The declared role, agent persona, or A2A card ID (e.g. `agent:tech_lead`, `agent:coder_01`). Used for human review, crew dispatch, and observability.
 - **`executor_id` (Cryptographic Identity)**: The base32 thumbprint derived from the worker's enrolled public key (`^exec:[a-z2-7]{16,}$`). Used for non-repudiation and automated gate verification.
 
-### 10.2 Step Attestation Envelope
+### 10.2 Step Attestation Envelope {#sec-102-step-attestation-envelope}
 Mutating steps in `work_orders.orders[]` record an `attestation` envelope upon completion:
 
 ```yaml
@@ -463,7 +470,7 @@ attestation:
     value: "4f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a..."
 ```
 
-### 10.3 Unsigned Fallback Contract (`_UNSIGNED`)
+### 10.3 Unsigned Fallback Contract (`_UNSIGNED`) {#sec-103-unsigned-fallback-contract-_unsigned}
 To preserve developer ergonomic freedom in local development environments without an active keystore, the signature envelope supports Iplanic's schema-valid unsigned structure:
 ```yaml
 signature:
@@ -472,16 +479,16 @@ signature:
   value: null
 ```
 
-### 10.4 Dual-Anchor Evidence Freshness
+### 10.4 Dual-Anchor Evidence Freshness {#sec-104-dual-anchor-evidence-freshness}
 Every execution attestation and receipt carries a dual-anchor:
 1. **Temporal Freshness**: Valid only while `now() <= valid_until`.
 2. **State Freshness**: Valid only while the local workspace Git tree SHA equals `output_tree_sha`.
 
 ---
 
-## 11. Distributed Worker Handover, Timeouts & Completeness (CHG-121)
+## 11. Distributed Worker Handover, Timeouts & Completeness (CHG-121) {#sec-11-distributed-worker-handover-timeouts-completeness-chg-121}
 
-### 11.1 Pre-Flight Handover Verification
+### 11.1 Pre-Flight Handover Verification {#sec-111-pre-flight-handover-verification}
 In a multi-worker DAG execution, a downstream worker executing `TASK-02` (which depends on `TASK-01` executed by another worker) must enforce a pre-flight assertion:
 1. Fetch `TASK-01`'s signed attestation.
 2. Verify the digital signature against the project key registry.
@@ -490,7 +497,7 @@ In a multi-worker DAG execution, a downstream worker executing `TASK-02` (which 
 4. If a mismatch is detected, halt immediately and transition to `ExecutionBlockedTerminal` with error `DRIFT_UPSTREAM_STATE_MISMATCH`.
 In `IPLAN-GRAPH-TEMPLATE.yaml`, pre-flight dependency handoffs use the canonical `relation: "verifies"` edge with `properties.verification_type: "preflight_attestation"`.
 
-### 11.2 Step-Execution Completeness Gate (`VerifyStepExecutionCompleteness`)
+### 11.2 Step-Execution Completeness Gate (`VerifyStepExecutionCompleteness`) {#sec-112-step-execution-completeness-gate-verifystepexecutioncompleteness}
 Prior to `Step6_CommitAndSignoff`, the execution engine verifies that no steps were silently skipped:
 1. **Universe Completeness**: Every step declared in `plan.steps` must be in `Completed` or `Skipped` status.
 2. **Mandatory Skip Audit**: If a step is `Skipped`, it must carry an explicit audit block:
@@ -503,7 +510,7 @@ Prior to `Step6_CommitAndSignoff`, the execution engine verifies that no steps w
    ```
 3. Any step left in `NOT_STARTED` or `In Progress` halts execution with `STEP_OMISSION_DETECTED`.
 
-### 11.3 CNCF SWF Execution Timeouts
+### 11.3 CNCF SWF Execution Timeouts {#sec-113-cncf-swf-execution-timeouts}
 To prevent infinite agent remediation loops, hung subprocesses, and unresponsive runner containers, mutating states in `IPLAN-SWF-TEMPLATE.yaml` declare explicit execution timeouts (aligned with `ADAPTATION_SURFACE.yaml` knobs `exec_wall_clock_budget_s` and `exec_test_timeout_s`):
 ```yaml
 timeouts:
@@ -511,12 +518,12 @@ timeouts:
   actionExecTimeout: "PT5M"    # 5 minutes ceiling per command execution
 ```
 
-### 11.4 Distributed Task Leases & Stale Worker Reaper
+### 11.4 Distributed Task Leases & Stale Worker Reaper {#sec-114-distributed-task-leases-stale-worker-reaper}
 In distributed architectures (`iplanic`), dispatched tasks carry a short-lived lease (`lease_expires_at`). If an executor suspends or fails to report heartbeats, the control-plane reaper frees the task back to `Queued` (if `attempts < max_attempts`) or transitions to `ExecutionBlockedTerminal`.
 
 ---
 
-## 12. Review Log
+## 12. Review Log {#sec-12-review-log}
 
 - **2026-10-05 — Pass 1 (Envelope Preservation & Lint Integrity)**:
   - *Gap found*: Naive conversion of IPLAN to pure CNCF root broke `sdd_doc_lint`'s `STRUCT01` check.

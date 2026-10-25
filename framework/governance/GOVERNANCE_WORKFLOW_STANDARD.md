@@ -1,14 +1,21 @@
+---
+doc_id: GOV-GOVERNANCE-WORKFLOW-STANDARD
+bucket: machine-consumed-candidate
+authority: doc-leads
+consumers: [authoring, audit, traceability]
+---
+
 # Governance Workflow Standard: CNCF Serverless Workflow DSL & Executable Graphs
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
-| Last Updated | 2026-10-13 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -16,7 +23,7 @@ flows and multi-agent lifecycle state machines.
 
 ---
 
-## 1. Purpose & Architectural Context
+## 1. Purpose & Architectural Context {#sec-1-purpose-architectural-context}
 
 The SDD framework governs complex, multi-agent development lifecycles (Change Requests,
 Review Sagas, Worktree Isolations, Seed Decompositions, Evaluation Runs, Decision Ratifications, and QA Acceptance Runs).
@@ -35,7 +42,7 @@ This specification formalizes **Machine-Executable Governance**:
 
 ---
 
-### Domain Separation: Governance Workflows vs. Implementation Workflows
+### Domain Separation: Governance Workflows vs. Implementation Workflows {#sec-domain-separation-governance-workflows-vs-implementation-workflows}
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
@@ -68,7 +75,7 @@ To prevent conflation between repository governance policy and codebase mutation
 
 ---
 
-### The Two-Graph Architecture: Process DAG vs. Content Graph
+### The Two-Graph Architecture: Process DAG vs. Content Graph {#sec-the-two-graph-architecture-process-dag-vs-content-graph}
 
 In the SDD framework, specification engineering and document generation are structured around a dual-graph paradigm that separates **orchestration flow (control plane)** from **domain specification data (data plane)**:
 
@@ -113,7 +120,7 @@ In the SDD framework, specification engineering and document generation are stru
    - Topological verification (**BTV**) mathematically proves referential closure and consistency.
    - The **Observability Adapter** reads the Content Graph and projects it into the canonical human-readable specification document (`*-TEMPLATE.yaml` format).
 
-## 2. Directory Structure & File Conventions
+## 2. Directory Structure & File Conventions {#sec-2-directory-structure-file-conventions}
 
 All declarative workflow definitions reside in `framework/governance/workflows/`:
 
@@ -165,14 +172,14 @@ framework/governance/
 └── DECISION_WORKFLOW.md                      # Decision workflow embedding ratification graph
 ```
 
-### File Naming Convention
+### File Naming Convention {#sec-file-naming-convention}
 - Canonical extension: `<domain>-<process>.sw.yaml`
 - Lowercase alphanumeric slugs with hyphens (e.g., `chg-request-flow.sw.yaml`).
 - Specification Version: All workflows target `specVersion: "0.8"` of the CNCF Serverless Workflow standard.
 
 ---
 
-## 3. CNCF Serverless Workflow Mapping to SDD Governance
+## 3. CNCF Serverless Workflow Mapping to SDD Governance {#sec-3-cncf-serverless-workflow-mapping-to-sdd-governance}
 
 The framework adopts CNCF Serverless Workflow v0.8 primitives mapped directly to
 governance and agentic execution concepts:
@@ -192,31 +199,31 @@ governance and agentic execution concepts:
 
 ---
 
-## 4. Rules for Governance Graphs
+## 4. Rules for Governance Graphs {#sec-4-rules-for-governance-graphs}
 
-### Rule 1: Declarative Single Source of Truth
+### Rule 1: Declarative Single Source of Truth {#sec-rule-1-declarative-single-source-of-truth}
 The `.sw.yaml` file is the normative authority for all state transitions, gate guards, and
 allowed paths. Companion Markdown documentation (`*.md`) provides narrative context and
 renders the visual graph, but must never declare transitions not permitted by the YAML.
 
-### Rule 2: Deterministic Terminal States
+### Rule 2: Deterministic Terminal States {#sec-rule-2-deterministic-terminal-states}
 Every execution path in a workflow graph must reach an unambiguous terminal state:
 - **`end: true`**: Denotes successful phase completion and compliance sign-off.
 - **`end: { terminate: true }`**: Denotes explicit gate failure, escalation, or rejection.
 
 Unconditional loops without terminating edge conditions or retry limits are prohibited.
 
-### Rule 3: Discrete Gate Verification (`type: switch`)
+### Rule 3: Discrete Gate Verification (`type: switch`) {#sec-rule-3-discrete-gate-verification-type-switch}
 All quality gates and transition approvals must be represented as discrete `switch` states
 evaluating unambiguous boolean conditions (e.g., `"${ .eval_verdict == 'PASS' }"`).
 Conditional branches must explicitly define a `defaultCondition` preventing deadlocks.
 
-### Rule 4: Parallelism for Independent Reviews (`type: parallel`)
+### Rule 4: Parallelism for Independent Reviews (`type: parallel`) {#sec-rule-4-parallelism-for-independent-reviews-type-parallel}
 Multi-agent reviews (e.g., simultaneous checks by Architect, Security, and Auditor) must be
 modeled as `parallel` states with `completionType: allOf` to minimize latency while guaranteeing
 full consensus.
 
-### Rule 5: Human-in-the-Loop Callback Gates (`type: callback`)
+### Rule 5: Human-in-the-Loop Callback Gates (`type: callback`) {#sec-rule-5-human-in-the-loop-callback-gates-type-callback}
 States requiring explicit human confirmation (e.g. founder approval for releases per `AGENTS.md`,
 or destructive worktree cleanup approvals) must use the `callback` state pattern. Execution
 suspends until a correlated external authorization event (`kind: consumed`) is received or an
@@ -235,7 +242,7 @@ suspends until a correlated external authorization event (`kind: consumed`) is r
   transition: ProcessFounderDecision
 ```
 
-### Rule 6: Rollback and Remediation Sagas (`compensatedBy`)
+### Rule 6: Rollback and Remediation Sagas (`compensatedBy`) {#sec-rule-6-rollback-and-remediation-sagas-compensatedby}
 Destructive operations, task branch allocations, or worktree creation steps that fail downstream
 validation must declare a compensating state using the `compensatedBy` attribute. This guarantees
 clean environment restoration without orphaned branches or dirty state:
@@ -251,7 +258,7 @@ clean environment restoration without orphaned branches or dirty state:
   transition: RunFeatureImplementation
 ```
 
-### Rule 7: 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+### Rule 7: 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99) {#sec-rule-7-5-step-closed-layer-lifecycle-and-cloudevent-handoff-chg-112-gd-99}
 Every SDD layer workflow (embedded in `*-SWF-TEMPLATE.yaml` or declared standalone in `framework/governance/workflows/*.sw.yaml`) must enforce the canonical 5-step closed lifecycle prior to declaring completion or advancing downstream:
 
 1. **Stage 1 (Authoring)**: Domain persona authors artifact draft and establishes traceability tags.
@@ -268,7 +275,7 @@ In end-to-end SDD orchestration (`sdd-layer-orchestration.sw.yaml`), completion 
 
 ---
 
-## 5. Execution Integration: LangGraph & Agent Runtimes
+## 5. Execution Integration: LangGraph & Agent Runtimes {#sec-5-execution-integration-langgraph-agent-runtimes}
 
 While the framework specification is runtime-neutral ([D-0013](DECISIONS.md)), any downstream
 agent harness consuming this framework can convert `.sw.yaml` files into executable graphs:
@@ -313,7 +320,7 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 
 ---
 
-## 6. Multi-Tier Circuit Breakers (Anti-Infinite Loop System)
+## 6. Multi-Tier Circuit Breakers (Anti-Infinite Loop System) {#sec-6-multi-tier-circuit-breakers-anti-infinite-loop-system}
 
 To guarantee that autonomous execution never enters an uncontrolled loop, exhausts compute, or cascades errors, any conforming multi-agent engine enforces six non-negotiable circuit breakers:
 
@@ -328,7 +335,7 @@ To guarantee that autonomous execution never enters an uncontrolled loop, exhaus
 
 ---
 
-## 7. Layer 10 Terminal Lifecycle Gate Contract
+## 7. Layer 10 Terminal Lifecycle Gate Contract {#sec-7-layer-10-terminal-lifecycle-gate-contract}
 
 Change Requests and Implementation Plans conclude deterministically through the Layer 10 Evaluation gate:
 1. **Deployable Changes (Code, Schemas, Configurations, Runtime Touches):**
@@ -340,7 +347,7 @@ Change Requests and Implementation Plans conclude deterministically through the 
 
 ---
 
-## 8. Tripartite Engineering Architecture & Separation of Concerns
+## 8. Tripartite Engineering Architecture & Separation of Concerns {#sec-8-tripartite-engineering-architecture-separation-of-concerns}
 
 Conforming multi-agent project implementations separate software delivery responsibilities across three autonomous, non-overlapping engineering roles:
 
@@ -350,14 +357,14 @@ Conforming multi-agent project implementations separate software delivery respon
 | **SDET (Software Development Engineer in Test)** | Authors automated test harnesses, mock fixtures, synthetic test runners, and performance benchmarks | Test suites (`tests/*`), test scaffolding, CI testing scripts, benchmark harnesses | Directly mutating production application logic to force tests to pass |
 | **QA (Quality Assurance & Acceptance Verifier)** | Executes independent user-journey acceptance tests, end-to-end browser scenarios, compliance audits | Verification reports, test run logs, QA issue comments, failure reproduction artifacts | **HARD BLOCK: Zero production or test code mutations** (QA observes, tests, and reports; never writes fixes) |
 
-### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA)
+### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA) {#sec-81-strict-non-code-modifying-invariant-hard-block-for-qa}
 
 To prevent conflict of interest, test dilution, and cosmetic patching:
 1. **Observation & Verification Only:** QA personas and acceptance runners operate in a read-only capacity with respect to production codebases and test harness implementation.
 2. **Zero In-Place Fixes:** When an acceptance test fails, QA agents MUST NOT modify code or adjust assertions to mask the defect.
 3. **Defect Ticket & Repro Generation:** QA agents capture structured reproduction evidence (logs, DOM snapshots, network traces, failing payloads), formulate an actionable defect finding, and surface it back to the DEV persona or open a governed issue.
 
-### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract
+### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract {#sec-82-mandatory-post-merge-issue-closure-implementation-report-contract}
 
 When a pull request merges into the target integration branch (`dev`), the delivering agent MUST close the loop by posting an explicit Implementation and Verification Report on the associated tracking issue before closing it:
 
@@ -368,7 +375,7 @@ When a pull request merges into the target integration branch (`dev`), the deliv
    - **Artifact Links:** Clickable links to updated SDD artifacts (SPEC, IPLAN, EVAL report).
 3. **Safe Publishing Mechanics:** Agents must author comment bodies via files (`gh issue comment <N> --body-file <file>`), verifying that the comment published with non-zero length.
 
-## 9. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+## 9. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98) {#sec-9-closed-dual-flow-quality-loop-authoring-review-saga-binding-chg-111-gd-98}
 
 To eliminate the decoupling between change request authoring/cascade orchestration and multi-agent review crew evaluation:
 
@@ -382,7 +389,7 @@ To eliminate the decoupling between change request authoring/cascade orchestrati
      `${ .blocking_findings == 0 and .gate_passed == true }`.
    - If findings or cascade coverage gaps are uncovered, the saga triggers an automated remediation loop, halting change landing until all P0/P1 blockers are resolved.
 
-## 10. Review Log
+## 10. Review Log {#sec-10-review-log}
 
 - **2026-10-05 — Pass 1 (Architectural Integrity & Primitives)**:
   - *Gap found*: Lack of formal human-in-the-loop primitive for founder OK gates in `AGENTS.md`.

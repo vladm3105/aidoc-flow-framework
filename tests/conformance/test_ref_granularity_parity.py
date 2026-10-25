@@ -513,7 +513,7 @@ def anchored_region(name: str, text: str) -> str:
 # for why these exist and what to do when one fails; the failure message carries
 # the new digest, so regenerating is a copy, never a computation.
 PINNED_REGIONS = {
-    "ID_NAMING_STANDARDS.md": "7749a042461518610a32edc839530502f7b3bede690eeff8e9b5f168ffcfae51",  # pragma: allowlist secret
+    "ID_NAMING_STANDARDS.md": "7e832e5c8c02e28d200060df2c56444de532478071d6c6426cbbcbbbccedb7c8",  # pragma: allowlist secret
     "TAG_SYNTAX.md": "914e3577d0d195f2ecff54ad1d448a12ee9c8a0e205ac4d10edb53b78de60cd1",  # pragma: allowlist secret
     "TRACEABILITY.md": "65cb30a43a0a11f2aae69914b131397c38a68afbf63414d52c44a97f1d8a8590",  # pragma: allowlist secret
 }

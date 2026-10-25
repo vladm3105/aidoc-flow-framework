@@ -1,14 +1,21 @@
+---
+doc_id: GOV-LINT-RULES
+bucket: machine-consumed-candidate
+authority: bidirectional
+consumers: [authoring, audit, traceability]
+---
+
 # Lint Rules Catalog
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -30,7 +37,7 @@ machine behavior.
 Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 `build` phase and errors in `gate-code`); the column gives the common tier.
 
-## Structure & schema
+## Structure & schema {#sec-structure-schema}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -42,7 +49,7 @@ Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 | `PH01` | A placeholder / unfilled token (e.g. `TODO`, `XXX`, `{…}`) remains in the body. | error | `AUTHORING_STYLE.md` |
 | `SEED01` | A BRD `seed_disposition:` ledger row is malformed (missing claim, illegal disposition, `absorbed` with no/unresolvable BRD element, `rejected` with no rationale, or `deferred` with no rationale/target cycle) or carries a `seed_version` pin that does not match the cited seed file's `document_control.version` — the named `seed_file:` when the row carries one (#723), else any corpus seed file (legacy set-membership). Deterministic half of the seed contract; the auditor lens (C8) owns completeness. Silent when the optional carrier is absent; unpinned rows pass as before; pinned rows skip when the seed file is absent from the corpus. | error | `SEED_CONTRACT.md` |
 
-## What `STRUCT01` requires, and why it can exceed `total_sections`
+## What `STRUCT01` requires, and why it can exceed `total_sections` {#sec-what-struct01-requires-and-why-it-can-exceed-total_sections}
 
 **These are two different counts, and four layers disagree by design.** Reading them as the
 same number is why #557 was filed against a template that was correct.
@@ -76,7 +83,7 @@ three add. A reader who generalises "differs ⇒ has backmatter" gets IPLAN exac
 `tests/conformance/test_required_section_sets.py` pins all eight derived sets, IPLAN's `2`
 included, so the direction cannot drift unnoticed.
 
-### `_required: false` marks OPTIONAL CONTENT, not "unnumbered"
+### `_required: false` marks OPTIONAL CONTENT, not "unnumbered" {#sec-_required-false-marks-optional-content-not-unnumbered}
 
 The marker's one meaning is that the section may be **absent**. `PRD`'s
 `component_decomposition` is the worked example: *"OPTIONAL — only required when downstream
@@ -88,7 +95,7 @@ layer's authoring guidance calls required — **removes a live assertion** and m
 where required backmatter is unenforced. `tests/conformance/test_required_section_sets.py` pins
 each layer's derived count so that edit cannot be made silently.
 
-## Identifiers
+## Identifiers {#sec-identifiers}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -100,7 +107,7 @@ each layer's derived count so that edit cannot be made silently.
 | `IDDRIFT01` | `rehash --check`: an element's content no longer matches its declared ID hash (drift since the ID was minted). | warning (advisory opt-in) | `ID_NAMING_STANDARDS.md` |
 | `FRCAP01` | A BRD carries more functional requirements than GD-14's SHOULD cap of 5. Counts the element IDs under the FR section and BEFORE its literal `Acceptance criteria:` line — the same boundary `COV01` grades — so acceptance criteria do not count. Escaped (`Future` / `realized_by:`) requirements DO count: the cap is about document size, not coverage obligation. **Never escalates** — GD-14 states the cap as a SHOULD. | warning (advisory) | GD-14, `../layers/01_BRD/BRD-TEMPLATE.yaml` |
 
-## Traceability & coverage
+## Traceability & coverage {#sec-traceability-coverage}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -114,7 +121,7 @@ each layer's derived count so that edit cannot be made silently.
 | `REG01` | New-layer registration: a layer entry is missing a mandatory registration field (`number`, `artifact`, `name`, `folder`, `extensions`, `required_tags`, `can_reference`, `error_prefix`, `optional`, `description`, `template`, `downstream`) or a registration follow-up (`total_layers`, `layer_groups`, `realizing_layers`, `c4_mapping`, upstream `downstream`, new lint rule IDs). The full checklist lives in the `LAYER_REGISTRY.yaml` header comment. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `registry/LAYER_REGISTRY.yaml`, `registry/README.md` |
 | `CSC01` | Cross-layer cardinality / deliverable-type mismatch between a child doc and its parent. | error | `ID_NAMING_STANDARDS.md` |
 
-## Thresholds
+## Thresholds {#sec-thresholds}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -122,7 +129,7 @@ each layer's derived count so that edit cannot be made silently.
 | `TH02` | A threshold's suffix/value is inconsistent with the corpus's other uses of the same key. | warning | `THRESHOLD_NAMING_RULES.md` |
 | `TH-RES-001` | An `@threshold:` reference is unresolved — not declared in the cited source document's threshold section. | error | `THRESHOLD_NAMING_RULES.md`, `TRACEABILITY.md` |
 
-## Style
+## Style {#sec-style}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -131,14 +138,14 @@ each layer's derived count so that edit cannot be made silently.
 | `STY03` | The document body exceeds its word-count target. | error | `AUTHORING_STYLE.md` |
 | `STALE01` | Status is `Approved` but a required freshness field (e.g. `last_audited_spec`) is missing — the artifact may be stale. | warning | `DEFINITION_OF_DONE.md` |
 
-## Reuse
+## Reuse {#sec-reuse}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
 | `REUSE01` | The document is satisfied by reference (`reuse: referenced`) — it is not re-audited; the reuse target is named. | warning (advisory) | `TRACEABILITY.md` |
 | `REUSE02` | A `reuse:` declaration violates its contract — unknown `reuse.state` (expected `authored`/`referenced`), or a missing / URL / malformed / unresolvable-in-repo `reuse.target`. | error | `TRACEABILITY.md` |
 
-## Governance (CHG)
+## Governance (CHG) {#sec-governance-chg}
 
 The machine checks live in `sdd_doc_lint/chg_lint.py` (`CODES`: `CHG-L001`–`CHG-L019`;
 `CHG-L012` is catalogued with the IPLAN rows below).
@@ -193,7 +200,7 @@ nothing emits it the row says **Reserved**.
 | `BGF-06` | A bugfix IPLAN's manifest names files outside the repair scope, or a DONE entry names a file missing on disk (manifest accuracy per §3.5-equivalent). Scope creep turns a repair into an unreviewed feature. | error | `DOC_GOVERNANCE_CORE.md` §IPLAN Lifecycle (manifest accuracy) |
 | `BGF-07` | A bugfix IPLAN's parent is not an original terminal IPLAN (parent is itself a bugfix, or is still active). Fix-on-fix chains hide thrashing; failed attempts run rollback, then a new sibling cites `prior_attempts`. | error | `IPLAN-TEMPLATE.yaml` (`document_control` bugfix guidance) |
 
-## TDD ↔ IPLAN sync
+## TDD ↔ IPLAN sync {#sec-tdd-iplan-sync}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -203,7 +210,7 @@ nothing emits it the row says **Reserved**.
 | `TDD-SYNC-D` | Language consistency: a TDD and its owning IPLAN reference different test-file languages for the same component. After a language pivot both layers must be updated in the same change. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync |
 | `TDD-SYNC-E` | Index synchronization: the TDD index and the IPLAN index show inconsistent IPLAN statuses. The IPLAN index is the source of truth; when an IPLAN status changes, both indexes must be updated. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync |
 
-## Evaluation (L10)
+## Evaluation (L10) {#sec-evaluation-l10}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -217,7 +224,7 @@ nothing emits it the row says **Reserved**.
 | `EVAL-ID-001` | An EVAL test case `id` does not follow the `EVAL.NN.SS.xxxx` element ID format (per `ID_NAMING_STANDARDS.md`). The ID is independent from the source — source type and source document are tracked via `source_type` and `source_id` fields only. The old dash-in-ID format (`EVAL-01.TDD-01.4d64`) is incorrect. | error | `EVAL-TEMPLATE.yaml` §id_standard |
 | `EVAL-SRC-001` | An EVAL `test_design` entry has a missing or incomplete source reference. Each test case must have exactly one `source_type` and one `source_id` (or neither for non-source-derived tests). Create separate test cases for each source element. | error | `EVAL-TEMPLATE.yaml` §id_standard, §test_design |
  
-## CNCF Serverless Workflow (SWF-L001–L009)
+## CNCF Serverless Workflow (SWF-L001–L009) {#sec-cncf-serverless-workflow-swf-l001l009}
  
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -231,7 +238,7 @@ nothing emits it the row says **Reserved**.
 | `SWF-L008` | Review Saga & Author Playbook Binding — layer workflow templates (`*-SWF-TEMPLATE.yaml`) must declare valid `author_persona` and existing `author_playbook` metadata, and invoke the layer review saga subflow. | error | `plans/LAYER-SWF-PLAYBOOK-INTEGRATION-PLAN.md`, `REVIEW_CREWS.yaml` |
 | `SWF-L009` | Layer Workflow Closeout & Handoff Compliance — layer workflows and templates must define in-situ remediation loop, layer boundary gate verification, baseline sealing, and downstream handoff CloudEvent emission. | error | `plans/LAYER-SWF-CLOSE-CYCLE-AND-HANDOFF-PLAN.md`, `GOVERNANCE_WORKFLOW_STANDARD.md` §Rule 7 |
 
-## Governance Surface Lint (SURF-001–SURF-004)
+## Governance Surface Lint (SURF-001–SURF-004) {#sec-governance-surface-lint-surf-001surf-004}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|

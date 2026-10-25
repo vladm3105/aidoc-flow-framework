@@ -1,14 +1,21 @@
+---
+doc_id: GOV-DECISION-WORKFLOW
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Decision Workflow: Architecture, Governance, and Change Request Decisions
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-13 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across
@@ -17,7 +24,7 @@ This document prevents duplication, eliminates split-brain registries, and ensur
 and governance choice is formally tracked by its authorizing change vehicle. It is engine-agnostic —
 it constrains the artifacts and state machines, not any platform's runtime.
 
-## Purpose
+## Purpose {#sec-purpose}
 
 The SDD framework has four distinct tiers where decisions are recorded, each with
 a different author, content scope, and lifecycle:
@@ -29,7 +36,7 @@ a different author, content scope, and lifecycle:
 Clarifying these boundaries eliminates duplication, prevents stale documents, and ensures complete
 auditability between code diffs and architectural choices.
 
-## Four-Tier Decision Model
+## Four-Tier Decision Model {#sec-four-tier-decision-model}
 
 ```
 Tier 1: Seed             Tier 2: Module           Tier 3: SDD ADR          Tier 4: CHG Decision
@@ -41,7 +48,7 @@ Options + rationale      Invariants + constraints Context-Decision-Conseq  Every
 Frozen per version       Living document          Versioned per CHG        Mandatory in CHG Section 1B
 ```
 
-### Tier 1: Seed Documents
+### Tier 1: Seed Documents {#sec-tier-1-seed-documents}
 
 - **Author:** System architect, with stakeholder/management input
 - **Content:** Initial architecture suggestions, 2-3 options per decision,
@@ -62,7 +69,7 @@ Frozen per version       Living document          Versioned per CHG        Manda
 - Code-level constraints
 - Business requirements (those belong in BRD)
 
-### Tier 2: Module Docs
+### Tier 2: Module Docs {#sec-tier-2-module-docs}
 
 - **Author:** Product owner, refined by development team
 - **Content:** ALL source material for a module — overview, refined decisions,
@@ -82,7 +89,7 @@ Frozen per version       Living document          Versioned per CHG        Manda
 **Module is the single source of truth.** Everything needed to write a BRD for
 this module lives in the module doc.
 
-### Tier 3: SDD ADR (Layer 5)
+### Tier 3: SDD ADR (Layer 5) {#sec-tier-3-sdd-adr-layer-5}
 
 - **Author:** Development team (AI agent + human tech lead)
 - **Content:** ONE selected architecture and technology stack selection with Context-Decision-Consequences (the formal selection gate immediately after BDD per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md))
@@ -101,7 +108,7 @@ this module lives in the module doc.
 - Business requirements (that's in the BRD)
 - Implementation details (that's in the SPEC)
 
-### Tier 4: Change Request Decision Record (`DEC-CHG-NN`)
+### Tier 4: Change Request Decision Record (`DEC-CHG-NN`) {#sec-tier-4-change-request-decision-record-dec-chg-nn}
 
 - **Author:** Change request author (human engineer or autonomous AI agent)
 - **Content:** Formal decision record embedded in the Change Request Section 1B
@@ -119,11 +126,11 @@ this module lives in the module doc.
 
 ---
 
-## Mandatory Decision Tracking in Change Requests (CHGs)
+## Mandatory Decision Tracking in Change Requests (CHGs) {#sec-mandatory-decision-tracking-in-change-requests-chgs}
 
 To eliminate unrecorded architectural drift, **every Change Request MUST carry a populated `decision:` block in Section 1B of `CHG-TEMPLATE.yaml`**. There are no exceptions for small changes.
 
-### Sizing and Rigor Guidelines
+### Sizing and Rigor Guidelines {#sec-sizing-and-rigor-guidelines}
 
 | Change Scope | Required Detail in `decision:` block | Example |
 |---|---|---|
@@ -131,7 +138,7 @@ To eliminate unrecorded architectural drift, **every Change Request MUST carry a
 | **Operational / Policy (C2 / C1 Repo)** | Clear Context and Choice defining the repo rule or workflow behavior; alternatives noted. | DEC-CHG-80 (Mandatory CHG decisions; retirement of plans/DECISIONS.md) |
 | **Minor / Leaf Doc Sync / Bugfix (C1 / DIR2C / CODE2C)** | Concise 1–2 sentence statement of the choice made and why the alternative (e.g., status quo or workaround) was rejected. | DEC-CHG-79 (Harden startup quickstart commands; reject online-only installation) |
 
-### Linter Enforcement (`CHG-L018`)
+### Linter Enforcement (`CHG-L018`) {#sec-linter-enforcement-chg-l018}
 
 The structural linter `sdd_doc_lint/chg_lint.py` automatically enforces rule **`CHG-L018`** (governance alias `GOV-022`) on every CHG document:
 - The top-level `decision` section must be present and formatted as a mapping.
@@ -140,11 +147,11 @@ The structural linter `sdd_doc_lint/chg_lint.py` automatically enforces rule **`
 
 ---
 
-## Decision Surfaces and Deprecation of Legacy Monolithic Registers
+## Decision Surfaces and Deprecation of Legacy Monolithic Registers {#sec-decision-surfaces-and-deprecation-of-legacy-monolithic-registers}
 
 Historically, decisions were split between `plans/DECISIONS.md` (repo working log) and `framework/governance/DECISIONS.md` (spec governance). This created confusion, drift, token bloat, and dual-maintenance overhead.
 
-### Deprecation and Tombstone Policy
+### Deprecation and Tombstone Policy {#sec-deprecation-and-tombstone-policy}
 
 1. **`plans/DECISIONS.md` is RETIRED**:
    - The file is converted into a permanent, frozen tombstone per Decision `DEC-CHG-80` (GD-71).
@@ -161,7 +168,7 @@ Historically, decisions were split between `plans/DECISIONS.md` (repo working lo
 
 ---
 
-## Decision Threshold Matrix
+## Decision Threshold Matrix {#sec-decision-threshold-matrix}
 
 | Change Scope | Primary Decision Location | Master Monolithic Register? | Active Rule Encoding |
 |---|---|---|---|
@@ -173,7 +180,7 @@ Historically, decisions were split between `plans/DECISIONS.md` (repo working lo
 
 ---
 
-## Authorship Matrix
+## Authorship Matrix {#sec-authorship-matrix}
 
 | Artifact | Author | Contains | Lifecycle |
 |----------|--------|----------|-----------|
@@ -187,7 +194,7 @@ Historically, decisions were split between `plans/DECISIONS.md` (repo working lo
 
 ---
 
-## Executable CNCF Decision Migration Flow
+## Executable CNCF Decision Migration Flow {#sec-executable-cncf-decision-migration-flow}
 
 To permanently eliminate split-brain divergence and context bloat from monolithic markdown ledgers, the framework formalizes a dual-path decision migration lifecycle in:
 `framework/governance/workflows/decision-migration-flow.sw.yaml`.
@@ -214,7 +221,7 @@ flowchart TD
     F --> G
 ```
 
-### Migration State Mapping
+### Migration State Mapping {#sec-migration-state-mapping}
 
 | Workflow State | CNCF State Type | Operational Semantics |
 |---|---|---|
@@ -230,7 +237,7 @@ flowchart TD
 
 ---
 
-## Executable CNCF Decision Ratification Flow
+## Executable CNCF Decision Ratification Flow {#sec-executable-cncf-decision-ratification-flow}
 
 Decisions that alter framework governance or shared contracts pass through
 a formal ratification state machine. To guarantee procedural consistency and provide multi-agent
@@ -270,7 +277,7 @@ stateDiagram-v2
     RejectDecision --> [*]
 ```
 
-### State-to-Primitive Mapping
+### State-to-Primitive Mapping {#sec-state-to-primitive-mapping}
 
 | Workflow State | CNCF State Type | Operational Semantics |
 |---|---|---|
@@ -288,7 +295,7 @@ stateDiagram-v2
 
 ---
 
-## Cross-References
+## Cross-References {#sec-cross-references}
 
 - `SEED_CONTRACT.md` — Seed lifecycle, disposition rules, and supersede flow
 - `framework/templates/SEED-TEMPLATE.md` — Canonical seed document template

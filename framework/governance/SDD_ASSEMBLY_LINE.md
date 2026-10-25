@@ -1,18 +1,25 @@
+---
+doc_id: GOV-SDD-ASSEMBLY-LINE
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # The SDD Assembly Line to IPLAN & EVAL
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-19 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 ---
 
-## 1. Executive Summary & Manufacturing Metaphor
+## 1. Executive Summary & Manufacturing Metaphor {#sec-1-executive-summary-manufacturing-metaphor}
 
 The **Spec-Driven Development (SDD)** framework models the software development lifecycle not as an ad-hoc conversational negotiation, but as an **industrial precision manufacturing assembly line** for automated code mutation.
 
@@ -43,7 +50,7 @@ The **Spec-Driven Development (SDD)** framework models the software development 
    Layer 10 (EVAL)  ──► Cryptographic Verification & Tree Invariance Seal
 ```
 
-### The Defect Amplification Law
+### The Defect Amplification Law {#sec-the-defect-amplification-law}
 
 In manual software development, defects that escape early phases waste developer hours. In **autonomous multi-agent coding environments**, upstream defects are catastrophic:
 
@@ -57,20 +64,20 @@ The primary mission of Layers 01 through 07 is to **shield Layer 08 from ambigui
 
 ---
 
-## 2. Layer-by-Layer Manufacturing Sequence (01 to 10)
+## 2. Layer-by-Layer Manufacturing Sequence (01 to 10) {#sec-2-layer-by-layer-manufacturing-sequence-01-to-10}
 
-### 2.1 Layer 01 (BRD) — Raw Material Intake & Business Justification
+### 2.1 Layer 01 (BRD) — Raw Material Intake & Business Justification {#sec-21-layer-01-brd-raw-material-intake-business-justification}
 
 - **Manufacturing Function**: Evaluates incoming problem statements, business requirements, and strategic intent.
 - **Upstream Assurance Guard**: Rejects unvetted scope, missing stakeholder attribution, or unjustified resource allocations before engineering investment begins.
 - **Governing Gate**: `GATE-01` (`GATE-01-E001` through `E003`).
 
-### 2.2 Layer 02 (PRD) — Product Dimensioning & Measurable Bounds
+### 2.2 Layer 02 (PRD) — Product Dimensioning & Measurable Bounds {#sec-22-layer-02-prd-product-dimensioning-measurable-bounds}
 
 - **Manufacturing Function**: Translates business problems into concrete product capabilities, user personas, and measurable acceptance metrics.
 - **Upstream Assurance Guard**: Forbids subjective phrases ("fast", "intuitive", "scalable"). Enforces quantified SLAs (`@threshold:` constraints) and explicit boundary conditions.
 
-### 2.3 Layer 03 (EARS) — Syntax Crystallization & Logical Stamping
+### 2.3 Layer 03 (EARS) — Syntax Crystallization & Logical Stamping {#sec-23-layer-03-ears-syntax-crystallization-logical-stamping}
 
 - **Manufacturing Function**: Formats all product requirements into deterministic, machine-parsable Easy Approach to Requirements Syntax (EARS):
   - Ubiquitous: `THE <system> SHALL <response>`
@@ -81,19 +88,19 @@ The primary mission of Layers 01 through 07 is to **shield Layer 08 from ambigui
 - **Upstream Assurance Guard**: Eliminates natural language ambiguity. Ensures every requirement carries a single binary testable outcome.
 - **Governing Gate**: `GATE-03` (`GATE-03-E003`, `GATE-03-E005`).
 
-### 2.4 Layer 04 (BDD) — Behavioral Acceptance Contracts
+### 2.4 Layer 04 (BDD) — Behavioral Acceptance Contracts {#sec-24-layer-04-bdd-behavioral-acceptance-contracts}
 
 - **Manufacturing Function**: Bridges formal EARS statements into executable scenario specifications (`Given-When-Then`).
 - **Upstream Assurance Guard**: Forces explicit enumeration of system prerequisites (`Given`), stimulus actions (`When`), and observable state assertions (`Then`). Shields downstream test engineers from guessing system preconditions.
 - **Governing Gate**: `GATE-03` (`GATE-03-E004`, `GATE-03-E006`).
 
-### 2.5 Layer 05 (ADR) — Architectural Decision Boundaries
+### 2.5 Layer 05 (ADR) — Architectural Decision Boundaries {#sec-25-layer-05-adr-architectural-decision-boundaries}
 
 - **Manufacturing Function**: Evaluates structural trade-offs, technology choices, data boundaries, and architectural patterns.
 - **Upstream Assurance Guard**: Seals architectural decisions against runtime drift. Prevents rogue dependencies or unapproved service boundaries from entering downstream component design.
 - **Governing Gate**: `GATE-03` (`GATE-03-E001`, `GATE-03-E007`).
 
-### 2.6 Layer 06 (SPEC) — Component Blueprint & Toolchain Ownership
+### 2.6 Layer 06 (SPEC) — Component Blueprint & Toolchain Ownership {#sec-26-layer-06-spec-component-blueprint-toolchain-ownership}
 
 - **Manufacturing Function**: The definitive blueprint for software components. Defines public APIs, type signatures, error codes, and **explicitly owns the toolchain**.
 - **Upstream Assurance Guard**:
@@ -101,14 +108,14 @@ The primary mission of Layers 01 through 07 is to **shield Layer 08 from ambigui
   - **Topological Readiness (`GATE-06-E001`)**: SPEC must achieve binary topological validation (`tdd_ready_status: PASS`), ensuring zero cyclic dependencies or dangling interface citations.
 - **Governing Gate**: `GATE-06` (`GATE-06-E001` through `GATE-06-E006`).
 
-### 2.7 Layer 07 (TDD) — Pre-Flight Staging & Hermetic Fixtures
+### 2.7 Layer 07 (TDD) — Pre-Flight Staging & Hermetic Fixtures {#sec-27-layer-07-tdd-pre-flight-staging-hermetic-fixtures}
 
 - **Manufacturing Function**: Stages unit, integration, and contract test cases red-first before implementation code exists.
 - **Upstream Assurance Guard**:
   - **Fixture Hermeticity (`GATE-06-E006`)**: Any stateful test fixture allocating external resources (databases, testcontainers, mock servers, temporary directories) must declare automated saga teardown compensation (`compensatedBy: TeardownFixturesCompensation`).
   - **State Cleanliness**: Eliminates dirty state leakage that causes subsequent test runs or IPLAN validation steps to fail intermittently.
 
-### 2.8 Layer 08 (IPLAN) — The Automated Code Mutation Factory Floor
+### 2.8 Layer 08 (IPLAN) — The Automated Code Mutation Factory Floor {#sec-28-layer-08-iplan-the-automated-code-mutation-factory-floor}
 
 - **Manufacturing Function**: The code implementation plane. Decomposes tasks into atomic work orders, executes code mutations, and runs verification suites.
 - **Factory Execution Guards**:
@@ -119,13 +126,13 @@ The primary mission of Layers 01 through 07 is to **shield Layer 08 from ambigui
   - **Cryptographic Receipt Signing (`CHG-121`)**: Emits signed execution receipts (`iplan_receipt_ref`, `receipt_seal_hash`, `output_tree_sha`).
 - **Governing Gate**: `GATE-08` (`GATE-08-E001` through `GATE-08-E007`).
 
-### 2.9 Layer 09 (CHG) — Governance Packaging & Traceability Envelope
+### 2.9 Layer 09 (CHG) — Governance Packaging & Traceability Envelope {#sec-29-layer-09-chg-governance-packaging-traceability-envelope}
 
 - **Manufacturing Function**: Binds the Change Request, approval records, decision blocks, and modified file manifests into an immutable governance ledger.
 - **Upstream Assurance Guard**: Enforces change classification (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C) and ensures that all modified files ride an authorized change envelope.
 - **Governing Gate**: `GATE-SPEC`, `chg_lint.py`.
 
-### 2.10 Layer 10 (EVAL) — Post-Validation Quality Seal & Tree Invariance
+### 2.10 Layer 10 (EVAL) — Post-Validation Quality Seal & Tree Invariance {#sec-210-layer-10-eval-post-validation-quality-seal-tree-invariance}
 
 - **Manufacturing Function**: The independent quality inspector at the end of the assembly line. Validates that the manufactured product satisfies all specifications before baseline deployment.
 - **Post-Validation Invariants**:
@@ -136,7 +143,7 @@ The primary mission of Layers 01 through 07 is to **shield Layer 08 from ambigui
 
 ---
 
-## 3. Upstream Defect Shielding Matrix
+## 3. Upstream Defect Shielding Matrix {#sec-3-upstream-defect-shielding-matrix}
 
 The following matrix illustrates how upstream failures are arrested before contaminating Layer 08 (IPLAN) execution:
 
@@ -153,7 +160,7 @@ The following matrix illustrates how upstream failures are arrested before conta
 
 ---
 
-## 4. Integration with SDD Graph & CNCF Serverless Workflows
+## 4. Integration with SDD Graph & CNCF Serverless Workflows {#sec-4-integration-with-sdd-graph-cncf-serverless-workflows}
 
 The SDD Assembly Line operates as a unified directed acyclic graph (DAG) evaluated by `sdd-graph.schema.json` and executed by declarative CNCF Serverless Workflow state machines:
 

@@ -1,20 +1,27 @@
+---
+doc_id: GOV-RECOMMENDED-PLATFORM-STACK
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Recommended Platform Technology Stack: Authoritative Reference Architecture & SDD Layer Mapping
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 2.2 |
+| Version | 2.3 |
 | Status | Approved |
-| Last Updated | 2026-10-13 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
 | Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–23) |
 
 ---
 
-## 1. Purpose & Relationship to Framework Core
+## 1. Purpose & Relationship to Framework Core {#sec-1-purpose-relationship-to-framework-core}
 
 The **`aidoc-flow-framework`** establishes a 10-layer Specification-Driven Development (SDD) contract
 (BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD $\rightarrow$ ADR $\rightarrow$ SPEC $\rightarrow$ TDD $\rightarrow$ IPLAN $\rightarrow$ Code $\rightarrow$ EVAL $\rightarrow$ Verified).
@@ -29,7 +36,7 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 
 ---
 
-## 2. The Six Architectural Pillars & Operational Principles
+## 2. The Six Architectural Pillars & Operational Principles {#sec-2-the-six-architectural-pillars-operational-principles}
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -54,7 +61,7 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 5. **Multi-Tenant Infrastructure Consolidation & Two-Tier Ledger**: Core platform state is centralized into shared, resilient clusters partitioned cleanly by namespace or account: a 3-node HA **PostgreSQL 18** cluster, a shared **Temporal Server**, and clustered **NATS JetStream**. Employs a **Two-Tier Lossless Ledger**: Tier A Wire Ledger (`xp.ledger` exact unmodified wire bytes `bytea` with UUIDv7 partitioning) for non-repudiation auditability, and Tier B Double-Entry Financial Ledger ($\sum \text{debits} = \sum \text{credits}$, fixed-point 64-bit integer precision).
 6. **Polyglot High Performance & Container-Native Tooling**: Adheres to zero host pollution via the unified workspace container (`platform-dev-tools:latest`). Enforces a dual execution boundary (`dev-cli` for developer tooling vs. `agent-sandbox` under gVisor). Standardizes build toolchains across Python 3.15 default (via Astral `uv` with `python-build-standalone`), Rust stable (`cargo`), Go 1.25, and Node.js 24 LTS / TypeScript (`pnpm`).
 
-### Five Non-Negotiable Operational Tenets
+### Five Non-Negotiable Operational Tenets {#sec-five-non-negotiable-operational-tenets}
 
 1. **Three-Layer Orchestration**: Reasoning lives in cognitive graphs (LangGraph Core), effects live in idempotent activities, and control flow lives in durable workflows (Temporal Server).
 2. **An Agent Is Not a Principal**: AI models and autonomous agent roles hold no credentials, have no network identity, and cannot open connections of their own.
@@ -66,7 +73,7 @@ enterprise technology stack codified in the canonical upstream repository **[vla
 
 ---
 
-## 3. Master Platform Technology Matrix
+## 3. Master Platform Technology Matrix {#sec-3-master-platform-technology-matrix}
 
 The following authoritative matrix synthesizes Specifications 00 through 19 from [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack):
 
@@ -113,7 +120,7 @@ The following authoritative matrix synthesizes Specifications 00 through 19 from
 
 ---
 
-## 4. SDD 10-Layer Execution Mapping
+## 4. SDD 10-Layer Execution Mapping {#sec-4-sdd-10-layer-execution-mapping}
 
 The following table details how each phase of the SDD lifecycle maps to the recommended platform technology stack:
 
@@ -136,7 +143,7 @@ The following table details how each phase of the SDD lifecycle maps to the reco
 └───────┴──────────────────────────┴─────────────────────────────┴─────────────────────────────────┘
 ```
 
-### 4.1 Progressive Refinement & Layer 05 Selection Gate
+### 4.1 Progressive Refinement & Layer 05 Selection Gate {#sec-41-progressive-refinement-layer-05-selection-gate}
 
 Technology stack selection operates as a progressive refinement funnel governed by [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md):
 
@@ -173,7 +180,7 @@ flowchart TD
     ADR --> SPEC
 ```
 
-### Detailed Layer Blueprints
+### Detailed Layer Blueprints {#sec-detailed-layer-blueprints}
 
 1. **Layers 01–05 (Specification & Deliberation):** Executed as cyclical multi-persona review crews ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml)) implemented via LangGraph StateGraphs inside plain Temporal activities. Prompts are resolved from the Langfuse Prompt CMS via `prompt_manifest_id`.
 2. **Layer 06 (SPEC):** Specifications define:
@@ -194,7 +201,7 @@ flowchart TD
    - Tool operations evaluate the deterministic quality floor (`sdd_doc_lint` + `swf_lint` + `pytest` + `ast-grep` + `ruff`).
 6. **Layer 10 (EVAL):** Completed implementations are evaluated against benchmark datasets pulled from Langfuse. Quality scores (`relevance`, `faithfulness`, `task_completion`) are logged back to Langfuse and correlated with HyperDX traces via W3C `traceparent`. Frontend and visual artifacts undergo automated visual critic evaluations via headless **Playwright**.
 
-### 4.2 Tri-Environment Continuum (Dev, Stage, Prod) & SDD Flow Promotion
+### 4.2 Tri-Environment Continuum (Dev, Stage, Prod) & SDD Flow Promotion {#sec-42-tri-environment-continuum-dev-stage-prod-sdd-flow-promotion}
 
 In adherence to Specification 16 (`16-tri-environment-dev-stage-prod.md`), SDD execution maps across three continuous environments:
 
@@ -204,9 +211,9 @@ In adherence to Specification 16 (`16-tri-environment-dev-stage-prod.md`), SDD e
 
 ---
 
-## 5. Adoption & Operational Blueprints
+## 5. Adoption & Operational Blueprints {#sec-5-adoption-operational-blueprints}
 
-### 5.1 Authoritative Specification Directory
+### 5.1 Authoritative Specification Directory {#sec-51-authoritative-specification-directory}
 
 The enterprise platform architecture is codified across 20 companion specifications in the canonical repository **[https://github.com/vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)**:
 
@@ -237,7 +244,7 @@ The enterprise platform architecture is codified across 20 companion specificati
 | **22** | `22-hybrid-s3-object-storage-seaweedfs-and-cloudflare-r2.md` | Hybrid S3 Storage: On-Prem/Dev SeaweedFS & Edge Cloudflare R2 / OCI |
 | **23** | `23-federated-graph-lake-embedded-kuzu-and-central-graphdb.md` | Federated Graph Lake: Edge Embedded Kùzu & Central Read GraphDB |
 
-### 5.2 Framework Adoption Blueprints
+### 5.2 Framework Adoption Blueprints {#sec-52-framework-adoption-blueprints}
 
 To adapt a consumer project to this recommended platform stack, adopt the corresponding templates from [`framework/governance/aidoc/`](aidoc/) into `.aidoc/project/`:
 
@@ -248,7 +255,7 @@ To adapt a consumer project to this recommended platform stack, adopt the corres
 5. **Observability & Evaluation:** Adopt [`AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md`](aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md) into `.aidoc/project/observability/` (extract Section 4 into `otel_collector.yaml`).
 6. **Browser & Visual Critic Testing:** Adopt [`AIDOC-BROWSER-TESTING-TEMPLATE.md`](aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md) into `.aidoc/project/qa/` for automated Playwright visual testing loops.
 
-### 5.3 Fetching the Authoritative Technology Stack
+### 5.3 Fetching the Authoritative Technology Stack {#sec-53-fetching-the-authoritative-technology-stack}
 
 To inspect, verify, or clone the live specifications (00–19) and container configurations, clone the canonical repository:
 

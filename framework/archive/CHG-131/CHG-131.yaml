@@ -1,0 +1,423 @@
+# =============================================================================
+#  CHG-131: Governance Doc Conversion Plan — Phase 2a Structured Markdown
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C + change_source spec (CHG-74 precedent), Level C2, GATE-SPEC
+#  Scope: Structured-Markdown rewrite of 36 governance docs (front-matter
+#         doc_id/bucket/authority/consumers + stable section IDs), slicer
+#         governance admission + section-anchor parsing, framework 0.96.14.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-26"
+  framework_version: "0.96.14"
+  change_level:
+    value: C2
+  change_source:
+    value: spec
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-131"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-26T00:00:00Z"
+  date_approved: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-26T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      In-session authorization to execute the conversion plan (plan PR
+      #1026, CHG-129, CHG-130 merged on green; user 'continue'
+      directives). PR merge itself is held for explicit GATE-SPEC
+      sign-off per the plan.
+  supersedes:
+    - "framework/archive/CHG-131/ADAPTATION.md"
+    - "framework/archive/CHG-131/AUTHORING_STYLE.md"
+    - "framework/archive/CHG-131/CHG_REQUEST_FLOWS.md"
+    - "framework/archive/CHG-131/CI_AUTONOMOUS_PR_STANDARD.md"
+    - "framework/archive/CHG-131/DECISION_WORKFLOW.md"
+    - "framework/archive/CHG-131/DEFINITION_OF_DONE.md"
+    - "framework/archive/CHG-131/DIAGRAM_STANDARDS.md"
+    - "framework/archive/CHG-131/DOC_GOVERNANCE_CORE.md"
+    - "framework/archive/CHG-131/DURABLE_EXECUTION_STANDARD.md"
+    - "framework/archive/CHG-131/ENGINE_TELEMETRY.md"
+    - "framework/archive/CHG-131/GOVERNANCE_WORKFLOW_STANDARD.md"
+    - "framework/archive/CHG-131/ID_NAMING_STANDARDS.md"
+    - "framework/archive/CHG-131/IPLAN_WORKFLOW_STANDARD.md"
+    - "framework/archive/CHG-131/LINT_RULES.md"
+    - "framework/archive/CHG-131/MODULE_LAYOUT.md"
+    - "framework/archive/CHG-131/MULTI_PROJECT_FEDERATED_STANDARD.md"
+    - "framework/archive/CHG-131/NOTICES.md"
+    - "framework/archive/CHG-131/OBSERVABILITY_ADAPTER_CONTRACT.md"
+    - "framework/archive/CHG-131/README.md"
+    - "framework/archive/CHG-131/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/archive/CHG-131/REVIEW_REMEDIATION_FLOW.md"
+    - "framework/archive/CHG-131/REVIEW_SAGA.md"
+    - "framework/archive/CHG-131/REVIEW_TEAM.md"
+    - "framework/archive/CHG-131/REVIEW_WORKFLOW_STANDARD.md"
+    - "framework/archive/CHG-131/SDD_ASSEMBLY_LINE.md"
+    - "framework/archive/CHG-131/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    - "framework/archive/CHG-131/SECURITY_REVIEW.md"
+    - "framework/archive/CHG-131/SEED_CONTRACT.md"
+    - "framework/archive/CHG-131/SEED_TO_MODULE_DECOMPOSITION.md"
+    - "framework/archive/CHG-131/SELF_LEARNING.md"
+    - "framework/archive/CHG-131/TAG_SYNTAX.md"
+    - "framework/archive/CHG-131/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    - "framework/archive/CHG-131/THRESHOLD_NAMING_RULES.md"
+    - "framework/archive/CHG-131/TRACEABILITY.md"
+    - "framework/archive/CHG-131/WORKTREE_FLOW.md"
+    - "framework/archive/CHG-131/CHG-README.md"
+    - "framework/archive/CHG-131/slice.py"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-131)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-131"
+  title: "Execute Phase 2a structured Markdown + slicer governance admission"
+  status: "Decided"
+  date: "2026-10-26"
+  context: >-
+    The Phase 1 benchmark (CHG-130) failed its gate unanimously: 100% accuracy
+    in all three arms, ~3.4% YAML token saving vs the 30% bar. Per the plan's
+    pre-registered rule the conversion ends after Phase 2a: structured
+    Markdown for normative-prose and candidate docs, plus the certain slicer
+    extension work. The Phase 0 inventory (CHG-129) classified 29 prose and
+    7 candidate docs for this treatment; tombstone, aidoc, and workflow-form
+    docs are untouched. GATE-SPEC human sign-off is required before merge.
+  choice: >-
+    Rewrite 36 governance docs with Phase 2a syntax (front-matter
+    doc_id/bucket/authority/consumers; GitHub-compatible stable section
+    IDs; per-doc minor version bump + date), archive each original under
+    framework/archive/CHG-131/, extend sdd_doc_lint/slice.py with the GOV
+    admission rule and section-anchor parsing plus a focused test, and bump
+    framework/VERSION 0.96.13 -> 0.96.14 with pin propagation.
+  consequences:
+    positive:
+      - Every governance prose/candidate doc becomes section-addressable.
+      - The slicer serves governance sections for future context slicing.
+      - No fact is converted to YAML; Markdown remains the human surface.
+    negative:
+      - 36 Document Control versions bumped for a metadata-only change.
+    risks:
+      - Custom heading IDs replace GitHub auto-anchors; mitigated by
+        GitHub-compatible slug generation and the full offline link check.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    Governance prose is not section-addressable by agents today: the slicer
+    only accepts TYPE.NN.SS.hex element headings in TYPE-NN documents, so
+    governance files are dropped. Phase 2a fixes that without converting
+    any fact to YAML.
+  scope:
+    - "36 governance docs (29 normative prose + 7 machine-consumed candidates)."
+    - "sdd_doc_lint/slice.py (GOV admission + section anchors) + focused test."
+    - "framework/VERSION 0.96.14 + pin propagation."
+    - "framework/layers/09_CHG/README.md (byte-identical mirror re-synced from the governance canon, guard-prescribed)."
+    - "Out of scope: DECISIONS.md tombstone, aidoc/ docs, gates/templates forms."
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-131/IPLAN-131.yaml"
+  steps:
+    - step: "Structured-Markdown rewrite of framework/governance/ADAPTATION.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ADAPTATION.md"
+      archive_path: "framework/archive/CHG-131/ADAPTATION.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/AUTHORING_STYLE.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/AUTHORING_STYLE.md"
+      archive_path: "framework/archive/CHG-131/AUTHORING_STYLE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/CHG_REQUEST_FLOWS.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CHG_REQUEST_FLOWS.md"
+      archive_path: "framework/archive/CHG-131/CHG_REQUEST_FLOWS.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/CI_AUTONOMOUS_PR_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/CI_AUTONOMOUS_PR_STANDARD.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/DECISION_WORKFLOW.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DECISION_WORKFLOW.md"
+      archive_path: "framework/archive/CHG-131/DECISION_WORKFLOW.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/DEFINITION_OF_DONE.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DEFINITION_OF_DONE.md"
+      archive_path: "framework/archive/CHG-131/DEFINITION_OF_DONE.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/DIAGRAM_STANDARDS.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DIAGRAM_STANDARDS.md"
+      archive_path: "framework/archive/CHG-131/DIAGRAM_STANDARDS.md"
+      current_version: "1.13"
+      new_version: "1.14"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/DOC_GOVERNANCE_CORE.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      archive_path: "framework/archive/CHG-131/DOC_GOVERNANCE_CORE.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/DURABLE_EXECUTION_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/DURABLE_EXECUTION_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/DURABLE_EXECUTION_STANDARD.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/ENGINE_TELEMETRY.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ENGINE_TELEMETRY.md"
+      archive_path: "framework/archive/CHG-131/ENGINE_TELEMETRY.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/GOVERNANCE_WORKFLOW_STANDARD.md"
+      current_version: "1.7"
+      new_version: "1.8"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/ID_NAMING_STANDARDS.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/ID_NAMING_STANDARDS.md"
+      archive_path: "framework/archive/CHG-131/ID_NAMING_STANDARDS.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/IPLAN_WORKFLOW_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/IPLAN_WORKFLOW_STANDARD.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/LINT_RULES.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/LINT_RULES.md"
+      archive_path: "framework/archive/CHG-131/LINT_RULES.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/MODULE_LAYOUT.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/MODULE_LAYOUT.md"
+      archive_path: "framework/archive/CHG-131/MODULE_LAYOUT.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/MULTI_PROJECT_FEDERATED_STANDARD.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/NOTICES.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/NOTICES.md"
+      archive_path: "framework/archive/CHG-131/NOTICES.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+      archive_path: "framework/archive/CHG-131/OBSERVABILITY_ADAPTER_CONTRACT.md"
+      current_version: "1.0.0"
+      new_version: "1.1.0"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/README.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/README.md"
+      archive_path: "framework/archive/CHG-131/README.md"
+      current_version: "1.7"
+      new_version: "1.8"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/RECOMMENDED_PLATFORM_STACK.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+      archive_path: "framework/archive/CHG-131/RECOMMENDED_PLATFORM_STACK.md"
+      current_version: "2.2"
+      new_version: "2.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/REVIEW_REMEDIATION_FLOW.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+      archive_path: "framework/archive/CHG-131/REVIEW_REMEDIATION_FLOW.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/REVIEW_SAGA.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_SAGA.md"
+      archive_path: "framework/archive/CHG-131/REVIEW_SAGA.md"
+      current_version: "1.3"
+      new_version: "1.4"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/REVIEW_TEAM.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_TEAM.md"
+      archive_path: "framework/archive/CHG-131/REVIEW_TEAM.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/REVIEW_WORKFLOW_STANDARD.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+      archive_path: "framework/archive/CHG-131/REVIEW_WORKFLOW_STANDARD.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SDD_ASSEMBLY_LINE.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SDD_ASSEMBLY_LINE.md"
+      archive_path: "framework/archive/CHG-131/SDD_ASSEMBLY_LINE.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+      archive_path: "framework/archive/CHG-131/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+      current_version: "2.0.0"
+      new_version: "2.1.0"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SECURITY_REVIEW.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SECURITY_REVIEW.md"
+      archive_path: "framework/archive/CHG-131/SECURITY_REVIEW.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SEED_CONTRACT.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SEED_CONTRACT.md"
+      archive_path: "framework/archive/CHG-131/SEED_CONTRACT.md"
+      current_version: "1.4"
+      new_version: "1.5"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SEED_TO_MODULE_DECOMPOSITION.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+      archive_path: "framework/archive/CHG-131/SEED_TO_MODULE_DECOMPOSITION.md"
+      current_version: "1.1"
+      new_version: "1.2"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/SELF_LEARNING.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/SELF_LEARNING.md"
+      archive_path: "framework/archive/CHG-131/SELF_LEARNING.md"
+      current_version: "2.0"
+      new_version: "2.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/TAG_SYNTAX.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/TAG_SYNTAX.md"
+      archive_path: "framework/archive/CHG-131/TAG_SYNTAX.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+      archive_path: "framework/archive/CHG-131/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/THRESHOLD_NAMING_RULES.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/THRESHOLD_NAMING_RULES.md"
+      archive_path: "framework/archive/CHG-131/THRESHOLD_NAMING_RULES.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/TRACEABILITY.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/TRACEABILITY.md"
+      archive_path: "framework/archive/CHG-131/TRACEABILITY.md"
+      current_version: "1.0"
+      new_version: "1.1"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/WORKTREE_FLOW.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/WORKTREE_FLOW.md"
+      archive_path: "framework/archive/CHG-131/WORKTREE_FLOW.md"
+      current_version: "1.2"
+      new_version: "1.3"
+      status: Completed
+    - step: "Structured-Markdown rewrite of framework/governance/chg/README.md (front-matter + section IDs)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/governance/chg/README.md"
+      archive_path: "framework/archive/CHG-131/CHG-README.md"
+      current_version: "1.5"
+      new_version: "1.6"
+      status: Completed
+    - step: "Extend sdd_doc_lint/slice.py (GOV admission + section anchors) with focused test"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/slice.py"
+      archive_path: "framework/archive/CHG-131/slice.py"
+      current_version: "0.96.13"
+      new_version: "0.96.14"
+      status: Completed
+    - step: "Author authorizing IPLAN-131.yaml under framework/archive/CHG-131/"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-131/IPLAN-131.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+    - step: "Bump framework/VERSION to 0.96.14 and run hooks/sync-version-refs.sh"
+      phase: "version_propagation"
+    - step: "Re-pin ID_NAMING anchor digest after verified re-read (extractor output unchanged)"
+      phase: "verification"
+    - step: "Validate chg_lint, spec_gate, full test suites, offline link check"
+      phase: "verification"

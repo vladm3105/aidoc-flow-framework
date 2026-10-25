@@ -1,14 +1,21 @@
+---
+doc_id: GOV-MODULE-LAYOUT
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Module Folder Layout
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-05 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 
 Defines the project module directory structure and naming conventions.
@@ -16,7 +23,7 @@ Modules are the single source of truth for everything about a project part —
 overview, refined decisions, invariants, constraints, seed references, business
 rules, acceptance criteria.
 
-## Directory Structure
+## Directory Structure {#sec-directory-structure}
 
 ```
 <project>/
@@ -76,15 +83,15 @@ rules, acceptance criteria.
 > outputs under `<project>/docs/`. The legacy location `<project>/docs/seed/` remains supported
 > and tolerated by `sdd_doc_lint` for backward compatibility.
 
-## Rules
+## Rules {#sec-rules}
 
-### 1. Module location
+### 1. Module location {#sec-1-module-location}
 All module docs live in `docs/modules/`. Under Dual-Plane CQRS (`DOC_GOVERNANCE_CORE.md` Principle 2),
 module specifications are authored as Native SDD Graph slices (`MODULE-NN_slug.graph.yaml` or
 `MODULE-NN_slug/MODULE-NN_slug.graph.yaml`) and projected into human-readable Markdown spec sheets
 via `sdd-render` (`observability_adapter.py`).
 
-### 2. Flat file vs directory
+### 2. Flat file vs directory {#sec-2-flat-file-vs-directory}
 
 | Form | When | Example |
 |------|------|---------|
@@ -95,7 +102,7 @@ via `sdd-render` (`observability_adapter.py`).
 ~1000 lines OR when the module naturally splits into distinct subsystems
 (e.g., metrics catalog, dashboards, agent surface are separate concerns).
 
-### 3. Directory naming
+### 3. Directory naming {#sec-3-directory-naming}
 ```
 MODULE-NN_descriptive-slug/              # Directory (multi-file)
 ├── MODULE-NN_descriptive-slug.graph.yaml # Authored Graph slice (Source of Truth)
@@ -107,7 +114,7 @@ MODULE-NN_descriptive-slug.md            # Flat file rendered Markdown projectio
 Use lowercase, hyphens for spaces. Match the slug between directory name and
 all internal references.
 
-### 4. README.md is the entry point
+### 4. README.md is the entry point {#sec-4-readmemd-is-the-entry-point}
 Every module directory has a `README.md` that contains:
 - Module overview and purpose
 - Design principles and invariants
@@ -116,11 +123,11 @@ Every module directory has a `README.md` that contains:
 
 When a reader opens the module, `README.md` is always the first thing they see.
 
-### 5. Diagrams stay with their module
+### 5. Diagrams stay with their module {#sec-5-diagrams-stay-with-their-module}
 SVG diagrams live inside the module directory or alongside the flat file.
 No separate `diagrams/` directory.
 
-### 7. Canonical Template & Triple-Lens Standard
+### 7. Canonical Template & Triple-Lens Standard {#sec-7-canonical-template-triple-lens-standard}
 All module documentation adheres to the Dual-Plane CQRS standard: machine-authored using
 [`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml)
 and projected to human-readable Markdown matching
@@ -132,7 +139,7 @@ satisfying the Triple-Lens standard:
 2. **DFD-L2 Data Movement, Trust Boundaries & Sensitivity Matrix** (`@diagram: dfd-l2`)
 3. **Inter-Module Process Choreography & Failure Handling** (`@diagram: sequence-sync` / `sequence-async`)
 
-### 6. Multi-file module structure
+### 6. Multi-file module structure {#sec-6-multi-file-module-structure}
 
 ```
 MODULE-NN_slug/
@@ -149,7 +156,7 @@ MODULE-NN_slug/
 - `agent_surface.md` — LLM/agent specific content
 - `<topic>.md` — any distinct subsystem
 
-### 7. Seed versions beside modules, never duplicated
+### 7. Seed versions beside modules, never duplicated {#sec-7-seed-versions-beside-modules-never-duplicated}
 
 Seed docs reside at `<project>/seed/` (canonical Tier 1 Inputs; `docs/seed/` is tolerated
 by tooling) and are versioned input to the BRD: each file carries a `document_control` block
@@ -159,13 +166,13 @@ Seed docs are not part of the module. Modules reference the **current** seed ver
 not duplicate seed content; a seed supersede re-points the referencing module in the same CHG
 lifecycle.
 
-### 8. SDD stays separate
+### 8. SDD stays separate {#sec-8-sdd-stays-separate}
 SDD docs (`docs/sdd/`) are the formal chain. Modules are source material for
 BRDs. The SDD chain formalizes from modules, not from scattered seed fragments.
 
-## Migration Guide
+## Migration Guide {#sec-migration-guide}
 
-### Existing flat modules (no migration needed unless splitting)
+### Existing flat modules (no migration needed unless splitting) {#sec-existing-flat-modules-no-migration-needed-unless-splitting}
 ```
 MODULE-01_server.md        → stays flat
 MODULE-02_client.md        → stays flat
@@ -173,7 +180,7 @@ MODULE-03_auth.md          → stays flat
 ...
 ```
 
-### Complex modules (split when >1000 lines or distinct subsystems)
+### Complex modules (split when >1000 lines or distinct subsystems) {#sec-complex-modules-split-when-1000-lines-or-distinct-subsystems}
 ```
 MODULE-12_observability.md          → MODULE-12_observability/
   ├── README.md                     ← overview from header
@@ -182,7 +189,7 @@ MODULE-12_observability.md          → MODULE-12_observability/
   └── agent_surface.md              ← Layer 5 (LLM/Agent)
 ```
 
-### Index update
+### Index update {#sec-index-update}
 After migration, update `MODULE-00_index.md` to reflect directory form:
 ```markdown
 | MODULE-01 | Server | Directory | Approved |
@@ -190,7 +197,7 @@ After migration, update `MODULE-00_index.md` to reflect directory form:
 | MODULE-03 | Auth | Flat | Approved |
 ```
 
-## Cross-References
+## Cross-References {#sec-cross-references}
 
 - `DECISION_WORKFLOW.md` — Authorship boundaries
 - `registry/LAYER_REGISTRY.yaml` — Layer definitions

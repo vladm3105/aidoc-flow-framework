@@ -1,16 +1,23 @@
+---
+doc_id: GOV-ID-NAMING-STANDARDS
+bucket: machine-consumed-candidate
+authority: doc-leads
+consumers: [authoring, audit, traceability]
+---
+
 # ID Naming Standards — SDD
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
-## Document IDs
+## Document IDs {#sec-document-ids}
 
 Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential number of **two or more digits** (two-digit is the common case; the authoritative pattern is `registry/LAYER_REGISTRY.yaml` `id_patterns.document` = `^[A-Z]+-\d{2,}$`, which the registry README declares wins on any discrepancy).
 
@@ -27,7 +34,7 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential n
 | CHG | CHG | CHG-01 |
 | EVAL | EVAL | EVAL-01 |
 
-### CHG Flows and Change Record Conventions
+### CHG Flows and Change Record Conventions {#sec-chg-flows-and-change-record-conventions}
 
 For artifact prefix `CHG`, the framework standardizes on **CHG flows** as the umbrella terminology, with the following conceptual equivalence:
 
@@ -39,7 +46,7 @@ For artifact prefix `CHG`, the framework standardizes on **CHG flows** as the um
 
 In framework operations and agent interactions, **CHG flow == CHG request == CHG graph**: they refer to the unified change architecture across its procedural, transactional, and declarative representations.
 
-### Cross-layer cardinality (CLEANUP-PR-F item 18)
+### Cross-layer cardinality (CLEANUP-PR-F item 18) {#sec-cross-layer-cardinality-cleanup-pr-f-item-18}
 
 **Document numbers are per-layer sequential and INDEPENDENT across
 layers.** `BRD-01` and `PRD-01` are *not* causally related — `PRD-01`
@@ -74,7 +81,7 @@ declaring `@brd: BRD-01` when `PRD-01` already exists with the same
 upstream) MAY be valid siblings, not actual orphans. Validate the
 trace by tag resolution, not by number alignment.
 
-## Graph Flow & Code Naming Standards (Dual-Layer Nomenclature — GD-65, GD-66)
+## Graph Flow & Code Naming Standards (Dual-Layer Nomenclature — GD-65, GD-66) {#sec-graph-flow-code-naming-standards-dual-layer-nomenclature-gd-65-gd-66}
 
 The SDD framework governs change requests and multi-agent execution lifecycles using the **Dual-Layer Traversal-Path Graph Nomenclature** ratified in Decisions GD-65 and GD-66. Every change request (CHG) and implementation plan (IPLAN) declares its traversal path using two complementary fields in frontmatter / `document_control`:
 
@@ -90,18 +97,18 @@ The SDD framework governs change requests and multi-agent execution lifecycles u
 | `DIR2C` | `iplan_to_code` | IPLAN → Code | Fast-lane task execution node | Direct changes (docs, chores, tools) |
 | `SDD2C` | `sdd_to_code` | BRD → PRD → ... → Code | Full SDD forward cascade DAG | Greenfield new capability |
 
-### Frontmatter Schema Constraints
+### Frontmatter Schema Constraints {#sec-frontmatter-schema-constraints}
 In both `CHG-TEMPLATE.yaml` and `IPLAN-SWF-TEMPLATE.yaml`, `flow` and `flow_code` are mandatory structured fields validated by static linters (`sdd_doc_lint` rule `CHG-L013` / `GOV-018`):
 ```yaml
 document_control:
   flow: sdd_to_code       # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
   flow_code: SDD2C        # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
 ```
-## SDD-GRAPH v2.0 Slice and Node ID Standards
+## SDD-GRAPH v2.0 Slice and Node ID Standards {#sec-sdd-graph-v20-slice-and-node-id-standards}
 
 In SDD-GRAPH v2.0 (property graph data plane), knowledge graphs are partitioned into deterministic slices (`*-GRAPH-TEMPLATE.yaml`):
 
-### Slice IDs (`slice_id`)
+### Slice IDs (`slice_id`) {#sec-slice-ids-slice_id}
 
 Format: `{LAYER}-{NN}_{slug}`
 - `LAYER` — Uppercase layer identifier (`BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SPEC`, `TDD`, `IPLAN`, `CHG`, `EVAL`)
@@ -109,7 +116,7 @@ Format: `{LAYER}-{NN}_{slug}`
 - `slug` — Lowercase snake-case or kebab-case initiative or feature descriptor (e.g. `order_orchestration`, `payment_gateway`)
 - Examples: `BRD-01_billing_engine`, `SPEC-01_token_service`, `CHG-01_lake_federation`
 
-### SDD-GRAPH Node IDs
+### SDD-GRAPH Node IDs {#sec-sdd-graph-node-ids}
 
 In the graph data plane, entities are represented as typed nodes with deterministic identifiers:
 - **Macro Architecture Nodes**: `SEED-<slug>` (e.g. `SEED-core_platform`), `MODULE-<NN>` (e.g. `MODULE-01_auth`)
@@ -117,7 +124,7 @@ In the graph data plane, entities are represented as typed nodes with determinis
 - **Task Nodes**: `{LAYER}-T{NN}` or `TASK-{NN}` (e.g. `IPLAN-T01`, `TASK-03`)
 - **Test Scenarios**: `TEST.{doc_id}.{section_id}.{hash}` or `TDD.01.03.e8f2`
 
-## Element IDs
+## Element IDs {#sec-element-ids}
 
 Format: `{TYPE}.{doc_id}.{section_id}.{hash}`
 
@@ -128,7 +135,7 @@ Format: `{TYPE}.{doc_id}.{section_id}.{hash}`
 
 Example: `BRD.01.07.a7f3`
 
-### Hash algorithm (the canonicalization target)
+### Hash algorithm (the canonicalization target) {#sec-hash-algorithm-the-canonicalization-target}
 
 The SHA-256 form below is the **canonicalization target** — the by-hand↔tool parity
 anchor (PROVISIONAL-IDS-001) that *any* generator (an engine's ID generator or a
@@ -145,7 +152,7 @@ The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored ha
 applies this algorithm by hand; it *should* be byte-identical to an engine's
 generated hash.
 
-#### Normalization transform (normative — PROVISIONAL-IDS-002)
+#### Normalization transform (normative — PROVISIONAL-IDS-002) {#sec-normalization-transform-normative-provisional-ids-002}
 
 `title` and `description` are each normalized by this **exact, ordered** transform
 before assembly into the input string. This is the load-bearing contract: the
@@ -165,7 +172,7 @@ non-ASCII fields can normalize to the same string and collide on the 4-hex prefi
 the collision rule (`[:8]`) covers that. A Unicode-category-based strip is a
 PROVISIONAL-IDS-002 Phase-2 option.
 
-#### Field extraction (normative — BRD §7 Functional-Requirement bullets)
+#### Field extraction (normative — BRD §7 Functional-Requirement bullets) {#sec-field-extraction-normative-brd-7-functional-requirement-bullets}
 
 For a BRD §7 FR bullet
 `- **<ID> — <Title>** (band): <description…>`, `title` and `description` are
@@ -201,7 +208,7 @@ extractor.
 > advisory `IDDRIFT01` when the command is run, and is still **not shape-detectable**
 > by the default lint (only non-hex `xxxx` is flagged, via `PH01`).
 
-#### Structured (YAML) carrier — same input, different extraction (GD-20)
+#### Structured (YAML) carrier — same input, different extraction (GD-20) {#sec-structured-yaml-carrier-same-input-different-extraction-gd-20}
 
 The extraction above is defined byte-exactly over an **authored-markdown FR
 bullet**. A YAML-authored instance has no bullet, so this states where the same
@@ -232,7 +239,7 @@ This section defines the contract; extending the verifier to the structured
 carrier is later-phase work and is **not** claimed here. Stating it because the
 table above otherwise reads as an enforced guarantee.
 
-### Provisional vs canonical IDs
+### Provisional vs canonical IDs {#sec-provisional-vs-canonical-ids}
 
 Hand-authored hashes are **placeholders until canonicalized**. A document declares
 its state once, in frontmatter:
@@ -263,7 +270,7 @@ only — provisional elements are still subject to coverage and traceability gat
 > archive the old document first — never let two scopes share one ID
 > (NOTICES Rule 5).
 
-### Element-ID exemptions (CLEANUP-PR-C item 13)
+### Element-ID exemptions (CLEANUP-PR-C item 13) {#sec-element-id-exemptions-cleanup-pr-c-item-13}
 
 Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
 element IDs on every distinct content unit per their template's required
@@ -309,7 +316,7 @@ layer-local element IDs as long as upstream citations resolve cleanly.
 The `@<layer>:` chain plus method/file names is sufficient evidence of
 traceability.
 
-## Tag Format
+## Tag Format {#sec-tag-format}
 
 | Tag | Usage | Example |
 |-----|-------|---------|
@@ -336,7 +343,7 @@ traceability.
 > citation, or free prose. Regression-locked by
 > `tests/acceptance/fixtures/negative/brd-templated-ids.md`.
 
-### Reference granularity (GD-03)
+### Reference granularity (GD-03) {#sec-reference-granularity-gd-03}
 
 Functionality is defined in **elements** (each functional requirement, EARS
 statement, BDD scenario, ADR decision, TDD case is a discrete unit); the document
@@ -374,7 +381,7 @@ actually specified.
 
 Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 
-### Status field scopes and legal values
+### Status field scopes and legal values {#sec-status-field-scopes-and-legal-values}
 
 The `status:` field appears across different scopes with distinct legal-value enumerations:
 
@@ -384,7 +391,7 @@ The `status:` field appears across different scopes with distinct legal-value en
 - **CHG Lifecycle (Layer 9):** `Proposed` | `Approved` | `In-Progress` | `Implemented` | `Completed` (§3.3)
 - **Option / Item Status:** `Selected` | `Pending` | `Rejected`
 
-## File Naming
+## File Naming {#sec-file-naming}
 
 | File | Format | Example |
 |------|--------|---------|
@@ -410,7 +417,7 @@ generic slug-allocation bullets, not normative filename rules):
 > single normative source (GD-17). The table above states the values; it does not re-specify
 > them. The index row is the documented per-layer index carve-out, not an instance format.
 
-## Workflow State and Action Naming Conventions
+## Workflow State and Action Naming Conventions {#sec-workflow-state-and-action-naming-conventions}
 
 For executable state machines adhering to the CNCF Serverless Workflow DSL v0.8 (including `framework/governance/workflows/*.sw.yaml` and Layer 08 `IPLAN-SWF-TEMPLATE.yaml`):
 
