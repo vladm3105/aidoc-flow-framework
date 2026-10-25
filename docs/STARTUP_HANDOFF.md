@@ -44,7 +44,7 @@ framework/scripts/install.sh <project-dir> --canon framework/v0.96.14 --kind pin
 
 # Option C: Git submodule deployment (tracked by git, pinned to a release tag):
 git submodule add https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
-git -C .aidoc/framework checkout framework/v0.96.13
+git -C .aidoc/framework checkout framework/v0.96.14
 ```
 
 This executes [`BOOTSTRAP.md`](../framework/governance/aidoc/BOOTSTRAP.md) steps 1–5 automatically and verifies directory structure health.

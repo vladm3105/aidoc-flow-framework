@@ -7,7 +7,7 @@
 | Author | AI agent (framework maintainer review pending) |
 | Date | 2026-10-26 |
 | Status | Proposed — implementation starts only after this plan PR merges |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Plan type | Migration / rollout, evidence-gated |
 
 ## Goal
