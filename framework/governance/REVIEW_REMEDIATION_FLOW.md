@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.15 |
+| Framework Version | 0.96.16 |
 
 The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —

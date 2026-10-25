@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.15 |
+| Framework Version | 0.96.16 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets

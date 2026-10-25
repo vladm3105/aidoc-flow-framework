@@ -15,7 +15,7 @@ consumers: [authoring, audit, traceability]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.15 |
+| Framework Version | 0.96.16 |
 
 | Field | Value |
 |---|---|
