@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.14 |
+| Framework Version | 0.96.15 |
 
 Task isolation and promotion for framework-consuming projects. Covers `dev`
 integration only. `dev` → `staging` → `main` promotions are human-executed

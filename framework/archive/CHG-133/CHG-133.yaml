@@ -1,0 +1,147 @@
+# =============================================================================
+#  CHG-133: Ship SDD layer + CHG skillset in framework/skills/
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Add 13 engine-agnostic skills (sdd-brd/prd/ears/bdd/adr/spec/tdd/eval,
+#         sdd-iplan, sdd-gates, sdd-chg-flow, sdd-chg-author, sdd-chg-triage)
+#         under framework/skills/, update SKILLS-REGISTRY.yaml + README.md
+#         index, bump framework/VERSION 0.96.14 -> 0.96.15 (patch, repo
+#         practice) with pin propagation. Issue #1032.
+#         No SDD layer-doc rewrites; no product-behavior change.
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-25):
+#  1. Read every referenced file: SKILLS-REGISTRY.yaml, skills README,
+#     CHG_REQUEST_FLOWS.md, AGENTS.md, layers README, EVAL standard,
+#     plan-gate.yml, check_plan.py, DOC_GOVERNANCE_CORE §3.4, CHG-131/132 +
+#     IPLAN-132, spec_gate.py, sync-version-refs.sh. All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (no product requirements; DIR2C docs/tooling, no EARS/BDD trace).
+#  7. Coupled issues analyzed: #987 (template token overhead) and #988 (index
+#     scaffolding) are adjacent surfaces, not the same fix; single vehicle.
+#  8. Test specs: check-skill-shadowing.sh, check_plan.py, chg_lint,
+#     spec_gate, conformance + acceptance suites in each PR.
+#  11. No SDD document modifications (new files only); no archive/rewrite
+#     lifecycle needed. VERSION bump for new normative framework/ files.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C1, GATE-CODE entry. CHG-L013 flow-misfit avoided.
+#  13-14. Steps use documentation_sync / iplan_creation phases only, lifecycle
+#     steps none (empty), execution order holds; no code_implementation steps.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-25"
+  framework_version: "0.96.14"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-133"
+  status: Proposed
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-25T21:30:00Z"
+  date_approved: null
+  date_implemented: null
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-133)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-133"
+  title: "Ship 13 SDD layer + CHG skills under framework/skills/"
+  status: "Decided"
+  date: "2026-10-25"
+  context: >-
+    Issue #1032: framework/skills/ ships 12 process skills but no layer or
+    CHG skills, while every SDD layer and the CHG router have templates and
+    linters with no dispatchable agent skill. The requested aidoc/skills/
+    path resolves through the aidoc -> framework symlink to
+    framework/skills/, which already exists, so no folder is created.
+    DIR2C/F2 carries the change: docs/tooling, unrelated to any prior IPLAN,
+    no product-behavior change; SEED2C/SDD2C rejected (no SDD cascade, no new
+    product chain). Skills stay engine-agnostic (<skills-root>, no engine
+    names) per framework/skills/README.md; registry remains the single owner
+    of the skill list.
+  choice: >-
+    Add framework/skills/sdd-* (8 layer + 2 bridge + 3 governance, thin
+    trigger/inputs/steps/handoff shape), update SKILLS-REGISTRY.yaml and
+    README.md in the same PRs, bump framework/VERSION 0.96.14 -> 0.96.15
+    (patch, repo practice) with OLD_VERSIONS + pin propagation. Publish in
+    two PRs: A (governance + bridge, 5 skills) carrying this CHG + IPLAN,
+    then B (8 layer skills) rebased onto merged A.
+  consequences:
+    positive:
+      - Every SDD layer and the CHG surface become dispatchable skills.
+      - Registry + readme stay the single indexed record; no second tree.
+    negative:
+      - None; additive skills + index + version metadata only.
+    risks:
+      - Skill-name collision with future skills; mitigated by
+        check-skill-shadowing.sh in each skills PR.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    No SDD layer or CHG skill ships in framework/skills/ (issue #1032).
+  scope:
+    - framework/skills/sdd-brd/SKILL.md (new).
+    - framework/skills/sdd-prd/SKILL.md (new).
+    - framework/skills/sdd-ears/SKILL.md (new).
+    - framework/skills/sdd-bdd/SKILL.md (new).
+    - framework/skills/sdd-adr/SKILL.md (new).
+    - framework/skills/sdd-spec/SKILL.md (new).
+    - framework/skills/sdd-tdd/SKILL.md (new).
+    - framework/skills/sdd-eval/SKILL.md (new).
+    - framework/skills/sdd-iplan/SKILL.md (new).
+    - framework/skills/sdd-gates/SKILL.md (new).
+    - framework/skills/sdd-chg-flow/SKILL.md (new).
+    - framework/skills/sdd-chg-author/SKILL.md (new).
+    - framework/skills/sdd-chg-triage/SKILL.md (new).
+    - framework/skills/SKILLS-REGISTRY.yaml (13 entries).
+    - framework/skills/README.md (13 index rows).
+    - framework/VERSION (0.96.14 -> 0.96.15) + pin propagation.
+    - framework/archive/CHG-133/CHG-133.yaml (new, this vehicle).
+    - framework/archive/CHG-133/IPLAN-133.yaml (new, executing IPLAN).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-133/IPLAN-133.yaml"
+  steps:
+    - step: "Author authorizing CHG-133.yaml and IPLAN-133.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "PR A: 5 governance/bridge skills + registry/readme + VERSION bump + pin propagation; shadowing + chg_lint + spec_gate + suites green"
+      phase: "documentation_sync"
+    - step: "PR B (rebased onto merged A): 8 layer skills + registry/readme; shadowing + suites green"
+      phase: "documentation_sync"
+    - step: "Validate both PRs merged, worktrees removed before branch deletes, issue #1032 closed by PR B"
+      phase: "verification"
