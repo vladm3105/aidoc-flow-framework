@@ -1,22 +1,29 @@
+---
+doc_id: GOV-TRACEABILITY
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Traceability — SDD
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
-## Traceability Chain
+## Traceability Chain {#sec-traceability-chain}
 
 ```
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code → EVAL (L10) → Verified
 ```
 
-## Necessary-upstream tagging
+## Necessary-upstream tagging {#sec-necessary-upstream-tagging}
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
@@ -62,7 +69,7 @@ the forward matrix and the backward walker never disagree. The matrix is
 > fixtures' 1:1 numbering was coincidence, not contract. See
 > `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
 
-## Coverage gates (`sdd_doc_lint`)
+## Coverage gates (`sdd_doc_lint`) {#sec-coverage-gates-sdd_doc_lint}
 
 The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVERAGE-001):
 
@@ -90,7 +97,7 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
 `reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
 realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
 
-## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
+## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory) {#sec-element-id-content-drift-check-iddrift01-opt-in-advisory}
 
 Under Model 2 (D-0061 — see the D-series annex in `governance/DECISIONS.md`),
 an element ID's 4-hex hash **is** the mint-time content fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
@@ -110,7 +117,7 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
   extractor, add `rehash --fix`, reconcile the corpus, and may promote the advisory
   to a gate. See `plans/PROVISIONAL-IDS-002-PLAN.md`.
 
-## Upstream/Downstream Validation
+## Upstream/Downstream Validation {#sec-upstreamdownstream-validation}
 
 | Layer | Required Upstream Tags | Validated Downstream |
 |-------|----------------------|---------------------|
@@ -124,7 +131,7 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
 | IPLAN | @spec, @tdd | EVAL |
 | EVAL | @ears, @bdd, @tdd, @iplan | Code |
 
-## Binary Topological Validation (BTV)
+## Binary Topological Validation (BTV) {#sec-binary-topological-validation-btv}
 
 Per CHG-97, qualitative heuristic readiness scores (`>=90%`) are retired in favor of strict, deterministic **Binary Topological Validation** (`PASS` / `FAIL`) verified by `sdd_doc_lint`:
 
@@ -139,14 +146,14 @@ Per CHG-97, qualitative heuristic readiness scores (`>=90%`) are retired in favo
 | **IPLAN-Ready** | Binary | 100% SPEC/TDD components mapped to ordered test-first file creation manifests. |
 | **EXEC-Ready** | Binary | IPLAN execution manifest verified, file manifest complete, and session handoff verified. |
 
-## Cross-Document Dependencies & Governance Tags
+## Cross-Document Dependencies & Governance Tags {#sec-cross-document-dependencies-governance-tags}
 
 - `@depends: TYPE-NN` — Hard prerequisite. Downstream cannot exist without upstream.
 - `@discoverability: TYPE-NN` — Related document for AI search context.
 - `@chg: CHG-NN` — Provenance back-reference to authorizing change record.
 - `@threshold: TYPE.NN.key` — Performance or quality threshold reference.
 
-## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001
+## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001 {#sec-reuse-satisfied-by-reference-reuse-manifest-001}
 
 A brownfield project may **reuse an existing upstream artifact** instead of
 re-authoring it. A reused doc declares, in frontmatter:

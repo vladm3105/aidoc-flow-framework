@@ -1,20 +1,27 @@
+---
+doc_id: GOV-WORKTREE-FLOW
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Worktree Flow — `feature/*` → `dev`
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 Task isolation and promotion for framework-consuming projects. Covers `dev`
 integration only. `dev` → `staging` → `main` promotions are human-executed
 and out of scope.
 
-## 1. Invariants
+## 1. Invariants {#sec-1-invariants}
 
 1. The main checkout stays on `dev`. Feature work never executes in the main
    checkout.
@@ -35,7 +42,7 @@ and out of scope.
    (`--force`, `--force-with-lease`) is strictly forbidden. Conflict resolution
    must use forward branch merges (`git merge origin/dev`).
 
-## 2. Prerequisites
+## 2. Prerequisites {#sec-2-prerequisites}
 
 - Dependencies: `git >= 2.38` (worktree support), `gh` CLI (authenticated),
   network access to `origin`.
@@ -43,7 +50,7 @@ and out of scope.
   where applicable.
 - Disk: each worktree duplicates working files. Remove worktrees after merge.
 
-### 2.2 Multi-Worktree Port & Container Isolation
+### 2.2 Multi-Worktree Port & Container Isolation {#sec-22-multi-worktree-port-container-isolation}
 
 When multiple agent tasks run concurrently across separate worktrees on the same
 host, shared local runtime resources can collide. Projects MUST isolate worktree
@@ -57,7 +64,7 @@ runtimes:
 3. **Volume Isolation:** Never share ephemeral test databases or writable cache
    volumes between concurrent worktrees.
 
-### 2.3 Sandboxed Agent Execution Profile
+### 2.3 Sandboxed Agent Execution Profile {#sec-23-sandboxed-agent-execution-profile}
 
 For autonomous coding agents (Tier 3 execution) generating, modifying, or testing source code inside worktrees:
 1. **Syscall Sandboxing:** Use user-space Linux kernel virtualization (such as gVisor `runsc`) rather than raw host execution.
@@ -66,7 +73,7 @@ For autonomous coding agents (Tier 3 execution) generating, modifying, or testin
 4. **Local Model Proxy Socket:** When the agent requires model inference, bind-mount a host UNIX domain socket (e.g. `/var/run/litellm.sock` `:rw`) rather than exposing open internet routing.
 5. **In-Memory Secret Provisioning:** Secrets are injected directly into process RAM at runtime using ephemeral machine identity runners (e.g. `infisical run`) rather than writing unencrypted `.env` files to disk.
 
-## 3. Procedure & State Machine Lifecycle
+## 3. Procedure & State Machine Lifecycle {#sec-3-procedure-state-machine-lifecycle}
 
 The following state machine governs the complete worktree and autonomous PR lifecycle, corresponding to normative workflow `workflows/worktree-pr-lifecycle.sw.yaml`:
 
@@ -105,7 +112,7 @@ stateDiagram-v2
     OrderGuardedCleanup --> [*]: Issue Closed
 ```
 
-### 3.1 Sync `dev` in main checkout
+### 3.1 Sync `dev` in main checkout {#sec-31-sync-dev-in-main-checkout}
 
 ```bash
 git fetch origin
@@ -117,7 +124,7 @@ git worktree list
 If `pull --ff-only` fails, resolve divergence before creating a worktree. Do
 not proceed on a stale base.
 
-### 3.2 Create worktree and branch
+### 3.2 Create worktree and branch {#sec-32-create-worktree-and-branch}
 
 ```bash
 git worktree add ../<project>-<issue> -b feature/<short-name> origin/dev
@@ -128,20 +135,20 @@ git branch --show-current
 Naming: `feature/<issue-or-chg>-<slug>` for features, `fix/<issue>-<slug>`
 for defects. Verify branch output before the first write.
 
-### 3.3 Implement in worktree
+### 3.3 Implement in worktree {#sec-33-implement-in-worktree}
 
 1. Execute IPLAN steps in order.
 2. Update each `file_manifest` entry from `NOT_STARTED` to `DONE` (or
    `SKIPPED` with `_note`) as the file lands.
 3. Stage owned files only. Never stage unrelated changes.
 
-### 3.4 Verify in worktree
+### 3.4 Verify in worktree {#sec-34-verify-in-worktree}
 
 Run the project's own verification gates (conformance suite, linter,
 acceptance harness — whatever the repo's governance names). If a gate is
 skipped, record the command and reason in the PR body.
 
-### 3.5 Push feature branch
+### 3.5 Push feature branch {#sec-35-push-feature-branch}
 
 ```bash
 git status --short
@@ -153,7 +160,7 @@ git push -u origin feature/<short-name>
 Run `git branch --show-current` before commit and before push. If HEAD is not
 the feature branch, stop.
 
-### 3.6 Open PR `feature/*` → `dev`
+### 3.6 Open PR `feature/*` → `dev` {#sec-36-open-pr-feature-dev}
 
 ```bash
 gh pr create --base dev --head feature/<short-name> --title "<scope>: <what>" --body-file -
@@ -162,12 +169,12 @@ gh pr create --base dev --head feature/<short-name> --title "<scope>: <what>" --
 PR body rules: include `Closes #N` or `Fixes #N` only on full resolution;
 partial advances get a progress comment. Never write the phrase negated.
 
-### 3.7 Autonomous PR Conflict Resolution Protocol
+### 3.7 Autonomous PR Conflict Resolution Protocol {#sec-37-autonomous-pr-conflict-resolution-protocol}
 
 When a target branch (`dev`) advances while a feature PR is under review, merge
 conflicts may occur. AI agents follow a strict two-class conflict taxonomy:
 
-#### 3.7.1 Conflict Taxonomy
+#### 3.7.1 Conflict Taxonomy {#sec-371-conflict-taxonomy}
 
 1. **Class 1: Deterministic / Additive Conflicts**
    - **Scope:** Append-only surfaces, documentation indices, changelogs, task
@@ -191,7 +198,7 @@ conflicts may occur. AI agents follow a strict two-class conflict taxonomy:
    - **Procedure:** Immediately abort the merge (`git merge --abort`), capture the
      conflict diff, post an escalation comment on the PR, and stop.
 
-#### 3.7.2 Auto-Merge Re-Arming Mandate
+#### 3.7.2 Auto-Merge Re-Arming Mandate {#sec-372-auto-merge-re-arming-mandate}
 
 Pushing a conflict resolution commit clears any previously armed auto-merge status
 on the host platform. After pushing the merge commit, the agent MUST:
@@ -199,7 +206,7 @@ on the host platform. After pushing the merge commit, the agent MUST:
 2. Explicitly re-arm auto-merge (`gh pr merge <PR> --auto --squash` or platform equivalent).
 3. Confirm auto-merge is actively armed before ending execution.
 
-#### 3.7.3 Circuit Breakers
+#### 3.7.3 Circuit Breakers {#sec-373-circuit-breakers}
 
 - **CB-5.1 (Single-Attempt Limit):** An agent may attempt autonomous conflict
   resolution at most ONCE per PR. If the push results in subsequent conflicts or
@@ -207,7 +214,7 @@ on the host platform. After pushing the merge commit, the agent MUST:
 - **CB-5.2 (Zero Semantic Guessing):** Any presence of conflicting algorithmic or
   domain logic triggers an immediate `git merge --abort` and human escalation.
 
-### 3.8 After merge — cleanup (ORDER MATTERS)
+### 3.8 After merge — cleanup (ORDER MATTERS) {#sec-38-after-merge-cleanup-order-matters}
 
 ```bash
 cd <main-checkout>
@@ -225,7 +232,7 @@ Delete the remote branch on merge (`--delete-branch`). If `worktree remove` fail
 uncommitted state, snapshot (copy to a scratch dir or patch export) before
 forcing.
 
-## 4. Failure modes
+## 4. Failure modes {#sec-4-failure-modes}
 
 | Condition | Handling |
 |---|---|
@@ -237,7 +244,7 @@ forcing.
 | Class 2 merge conflict | `git merge --abort` immediately; escalate to human. |
 | Auto-merge disarmed post-push | Verify CI suite and explicitly re-arm auto-merge. |
 
-## 5. Validation
+## 5. Validation {#sec-5-validation}
 
 1. `git worktree list` shows one entry per active task, zero after cleanup.
 2. `git branch --show-current` in worktree returns the feature branch at
@@ -249,7 +256,7 @@ forcing.
 5. Pushed conflict resolutions are verified to have preserved branch lineage
    without force-pushes, and auto-merge is re-armed.
 
-## 6. References
+## 6. References {#sec-6-references}
 
 - `DOC_GOVERNANCE_CORE.md` §3.13 (IPLAN Gate), §4.1 (status propagation)
 - `NOTICES.md` §Concurrency traps (no whole-tree ops), Rule 5 (archive)

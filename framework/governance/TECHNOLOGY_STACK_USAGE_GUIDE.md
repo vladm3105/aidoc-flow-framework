@@ -1,19 +1,26 @@
+---
+doc_id: GOV-TECHNOLOGY-STACK-USAGE-GUIDE
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Technology Stack Usage Guide: Enterprise Stack Alignment Across SDD Tiers
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-13 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
 
 ---
 
-## 1. Purpose & Relationship to Framework Core
+## 1. Purpose & Relationship to Framework Core {#sec-1-purpose-relationship-to-framework-core}
 
 The **`aidoc-flow-framework`** establishes a 10-layer Specification-Driven Development (SDD) contract:
 
@@ -29,7 +36,7 @@ This guide defines **how and when** to use the approved platform technology stac
 
 ---
 
-## 2. The Progressive Refinement Model
+## 2. The Progressive Refinement Model {#sec-2-the-progressive-refinement-model}
 
 Technology stack integration is not a single, isolated event; it operates as a **progressive refinement funnel** across four architectural tiers:
 
@@ -57,19 +64,19 @@ Technology stack integration is not a single, isolated event; it operates as a *
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Tier 0: Enterprise Platform Baseline ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack))
+### 2.1 Tier 0: Enterprise Platform Baseline ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)) {#sec-21-tier-0-enterprise-platform-baseline-vladm3105technology-stackhttpsgithubcomvladm3105technology-stack}
 
 - **Role:** The company-wide catalog of approved standards, shared multi-tenant infrastructure, and security baselines.
 - **Core Principle:** Shared infrastructure over per-repository sprawl. Projects connect to the central 3-node HA **PostgreSQL 18** cluster (isolated databases), central **Temporal** server (isolated namespaces), central **NATS JetStream** broker (isolated accounts), and central **ClickHouse** cluster.
 - **Execution Boundary:** Sandboxed agent execution runs under **Docker CE + gVisor (`runsc`)** with dropped capabilities and `--network=none`.
 
-### 2.2 Tier 1: Seed Documents (`<project>/seed/`) — C4-L1 System Context
+### 2.2 Tier 1: Seed Documents (`<project>/seed/`) — C4-L1 System Context {#sec-22-tier-1-seed-documents-seed-c4-l1-system-context}
 
 - **Role:** Establishes project foundation, problem statement, and external platform context.
 - **Stack Integration:** In [`SEED-TEMPLATE.md`](../templates/SEED-TEMPLATE.md) Section 2 (*Environmental Realities & Constraints*) and Section 5 (*Architectural Principles & Non-Negotiable Invariants*), the architect binds the project to the enterprise baseline.
 - **Rule:** The seed document declares platform constraints (e.g., *"System runs containerized in Docker with gVisor sandboxing and integrates with central PostgreSQL 18 and Temporal"*), but **does NOT select specific component libraries or internal schemas**.
 
-### 2.3 Tier 2: Module Specifications (`docs/modules/MODULE-NN_*`) — C4-L2 Container Boundaries
+### 2.3 Tier 2: Module Specifications (`docs/modules/MODULE-NN_*`) — C4-L2 Container Boundaries {#sec-23-tier-2-module-specifications-docsmodulesmodule-nn_-c4-l2-container-boundaries}
 
 - **Role:** Structural container modeling per [`SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md).
 - **Stack Integration:** Step 2 (*C4-L2 Container Definition*) maps bounded contexts into approved platform container archetypes:
@@ -78,7 +85,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
   - *Messaging Container:* NATS JetStream asynchronous publisher/subscriber.
 - **Rule:** Module documents identify container archetypes and trust boundaries (DFD-L2), but **defer concrete component interfaces and protocol definitions to SPEC (Layer 06)**.
 
-### 2.4 Problem Space (Layers 01–04: BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD)
+### 2.4 Problem Space (Layers 01–04: BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD) {#sec-24-problem-space-layers-0104-brd-rightarrow-prd-rightarrow-ears-rightarrow-bdd}
 
 - **Role:** Capture business outcomes, product scope, and behavioral contracts.
 - **Architecture Principle (Technology-Agnostic Requirements):** Requirements must define *WHAT* the user needs and *WHY*, never the internal implementation tool:
@@ -87,7 +94,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
   - `03_EARS`: Formulates testable, conditional requirements (WHEN/THE/SHALL/WITHIN), establishing latency budgets, throughput thresholds, and error conditions.
   - `04_BDD`: Formulates executable acceptance scenarios (Given-When-Then), modeling edge cases, network disruptions, and transactional failure modes.
 
-### 2.5 The Selection Gate (Layer 05: ADR — AFTER BDD)
+### 2.5 The Selection Gate (Layer 05: ADR — AFTER BDD) {#sec-25-the-selection-gate-layer-05-adr-after-bdd}
 
 - **Role:** The C4 decision bridge between Container (PRD) and Component (SPEC).
 - **Why After BDD?**  
@@ -98,7 +105,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
   4. The ratified decision locks the exact technology choice with Context, Decision, and Consequences, unblocking technical specifications.
   5. The ratified technology, version constraint, authorizing ADR reference, security monitoring metadata (PURL, CPE, scanners), and automated update policy are recorded directly into the project's canonical agent-readable [`ADR-00_index.yaml`](../layers/05_ADR/ADR-00_index.TEMPLATE.yaml) registry under `technologies`.
 
-### 2.6 Solution Space (Layers 06–10: SPEC $\rightarrow$ TDD $\rightarrow$ IPLAN $\rightarrow$ Code $\rightarrow$ EVAL)
+### 2.6 Solution Space (Layers 06–10: SPEC $\rightarrow$ TDD $\rightarrow$ IPLAN $\rightarrow$ Code $\rightarrow$ EVAL) {#sec-26-solution-space-layers-0610-spec-rightarrow-tdd-rightarrow-iplan-rightarrow-code-rightarrow-eval}
 
 - **Role:** Authoring implementation contracts and executing code within sandboxes.
 - **Stack Integration:**
@@ -110,7 +117,7 @@ Technology stack integration is not a single, isolated event; it operates as a *
 
 ---
 
-## 3. SDD Traversal Flow Mappings
+## 3. SDD Traversal Flow Mappings {#sec-3-sdd-traversal-flow-mappings}
 
 The framework's 6 traversal flows ([`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md)) apply technology stack governance according to their operational context:
 
@@ -152,7 +159,7 @@ flowchart TD
 
 ---
 
-## 4. Technology Stack Variance & Exception Governance
+## 4. Technology Stack Variance & Exception Governance {#sec-4-technology-stack-variance-exception-governance}
 
 A project MUST NOT adopt libraries, databases, or runtime infrastructure outside the approved enterprise technology stack ([vladm3105/technology-stack](https://github.com/vladm3105/technology-stack)) without an approved **Architecture Variance Request**.
 
@@ -176,7 +183,7 @@ sequenceDiagram
     end
 ```
 
-### The 4-Step Variance Procedure
+### The 4-Step Variance Procedure {#sec-the-4-step-variance-procedure}
 
 1. **Demonstrate Deficit in ADR:** The author drafts an ADR evaluating the standard platform component (e.g., PostgreSQL 18) and provides quantitative benchmarks proving it fails non-functional requirements (e.g., sub-millisecond graph traversals requiring Neo4j).
 2. **Strict Containment & Sandboxing:** The variance must specify how the non-standard technology is contained:
@@ -186,7 +193,7 @@ sequenceDiagram
 3. **Review Crew Consensus:** The review crew (specifically the `architect`, `security_engineer`, and `operator` personas) must achieve quorum and sign off with zero blocking vetoes.
 4. **Formal Decision Ratification:** The variance is recorded in the project's authorizing Change Request (Section 1B `decision:`) and logged in the project ADR index.
 
-### 4.1 Missing Tools Operator Escalation Protocol
+### 4.1 Missing Tools Operator Escalation Protocol {#sec-41-missing-tools-operator-escalation-protocol}
 
 If any tool, runtime, software, database driver, or library required for a task or implementation is missing from the approved enterprise technology stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack` specifications 00–23), the AI agent MUST NOT guess, invent tools, or pick arbitrary unapproved external packages.
 
@@ -196,7 +203,7 @@ Instead, the AI agent MUST execute the **Missing Tools Operator Escalation Proto
 3. **Await Operator Instructions**: Solicit explicit instructions and authorization from the operator regarding which approved tool, library, or software standard should be adopted or whether an Architecture Variance Request should be initiated.
 4. **Autonomous Session Issue Filing**: In autonomous sessions (where an interactive human operator is not in-session), the agent MUST ALWAYS file a GitHub issue on the repository detailing the missing tool requirement, required capabilities, and blast radius rather than guessing or proceeding with unapproved software.
 
-### 4.2 Strict Prohibition of Insecure Options
+### 4.2 Strict Prohibition of Insecure Options {#sec-42-strict-prohibition-of-insecure-options}
 
 Under no circumstances may an AI agent or engineer propose, offer, recommend, or implement insecure options or unsafe workarounds:
 - **No Plaintext Secrets**: Secrets MUST NOT be stored in plaintext in code, `.env` files, configuration files, git commits, or command lines. Secrets must be managed via Two-Tier Secrets (OCI Vault + OpenBao) with in-memory injection.
@@ -204,13 +211,13 @@ Under no circumstances may an AI agent or engineer propose, offer, recommend, or
 - **No Bypassed Verification**: Verification, linters, or security hooks must never be bypassed using `--no-verify`, skip-verification flags, relaxed AST rules, or lowered quality thresholds.
 - **No Relaxed Permissions**: Services and containers must adhere to least-privilege RBAC; root container execution and broad socket mounts (e.g. raw `/var/run/docker.sock`) are strictly forbidden.
 
-### 4.3 Conflict Disposition
+### 4.3 Conflict Disposition {#sec-43-conflict-disposition}
 
 For anything needing real deployment, infrastructure changes, container runtime provisioning, or technology selection work, AI agents MUST file GitHub issues on the repository rather than making unverified local assumptions or out-of-band modifications.
 
 ---
 
-## 5. Review Crew Verification Checklist
+## 5. Review Crew Verification Checklist {#sec-5-review-crew-verification-checklist}
 
 Review crews evaluating SDD artifacts ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml)) must assert the following criteria:
 

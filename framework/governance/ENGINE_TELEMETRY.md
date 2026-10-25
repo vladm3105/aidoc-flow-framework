@@ -1,14 +1,21 @@
+---
+doc_id: GOV-ENGINE-TELEMETRY
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Engine Telemetry Guidance
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-02 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 Engine-agnostic recommendations for **how a conforming engine emits
 observability telemetry** so that traces from different engines are mutually
@@ -18,7 +25,7 @@ machine-readable record of *what happened* stays the saga journal
 standardizes only the *span/attribute names* an engine uses when it chooses
 to emit traces. It mandates no vendor, no backend, and no SDK.
 
-## 1. Status of this guidance
+## 1. Status of this guidance {#sec-1-status-of-this-guidance}
 
 Every statement in §§2–4 is a **SHOULD** or a guardrail **MUST NOT**
 conditional on emitting — not an unconditional MUST. An engine that emits
@@ -37,7 +44,7 @@ this document so its traces compare with other engines' traces.
 - **No PII.** Spans carry counts, IDs, and verdicts — never prompt
   text, artifact bodies, or secrets.
 
-## 2. Standard spans and attributes
+## 2. Standard spans and attributes {#sec-2-standard-spans-and-attributes}
 
 An emitting engine SHOULD use these span names:
 
@@ -64,7 +71,7 @@ upstream renames an attribute, the upstream name wins and this table is
 updated by a framework-spec change. `aidoc.*` names are stable: renaming
 one is a breaking spec change.
 
-## 3. Correlation IDs
+## 3. Correlation IDs {#sec-3-correlation-ids}
 
 Every span an engine emits SHOULD carry the change records it serves, so
 traces join across engines on the work — not on engine-local IDs:
@@ -80,7 +87,7 @@ traces join across engines on the work — not on engine-local IDs:
 Engines MUST NOT join on saga-journal internals (saga IDs, journal
 offsets): the journal is a local record, not a cross-engine key.
 
-## 4. Emission discipline
+## 4. Emission discipline {#sec-4-emission-discipline}
 
 - Emit spans **after** the attempt or verdict completes (telemetry
   observes; it never participates in the decision it reports).
@@ -89,7 +96,7 @@ offsets): the journal is a local record, not a cross-engine key.
 - Sample or drop freely under load; document the sampling policy where
   the backend config lives (engine-local, out of framework scope).
 
-## 5. What this does not cover
+## 5. What this does not cover {#sec-5-what-this-does-not-cover}
 
 - **Saga journaling** (`REVIEW_SAGA.md`, `saga.schema.json`) is
   unchanged: the journal remains the normative local record of the
@@ -101,7 +108,7 @@ offsets): the journal is a local record, not a cross-engine key.
 - **Cost accounting** is informational: `aidoc.cost_microcents`
   supports evaluation-time comparison, not billing.
 
-## 6. Conformance
+## 6. Conformance {#sec-6-conformance}
 
 Advisory in v1: no deterministic check asserts span names yet. A future
 linter check (emitted spans carry the §2–§3 names) is conceivable but

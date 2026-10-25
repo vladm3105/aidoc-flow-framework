@@ -1,14 +1,21 @@
+---
+doc_id: GOV-CHG-REQUEST-FLOWS
+bucket: machine-consumed-candidate
+authority: bidirectional
+consumers: [authoring, audit, traceability]
+---
+
 # CHG Request Flows
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 | Field | Value |
 |---|---|
@@ -20,7 +27,7 @@
 > **Ratified 0.57.0 (CHG-06).** All §7 deltas landed: `direct` is a valid template value, the F2.2
 > ruling governs §3.13, and CHG-L013/GOV-018 enforces the router.
 
-### 0.1 Terminology: CHG Flows, CHG Requests, and CHG Graphs
+### 0.1 Terminology: CHG Flows, CHG Requests, and CHG Graphs {#sec-01-terminology-chg-flows-chg-requests-and-chg-graphs}
 
 **"CHG flows"** is the framework's standard umbrella terminology for change management and routing workflows. Across framework documentation and operational execution, **CHG flow**, **CHG request**, and **CHG graph** are equivalent, complementary terms:
 
@@ -31,7 +38,7 @@
 
 In framework operations and agent prompts, **CHG flow == CHG request == CHG graph**: they refer to the unified change management architecture.
 
-## 1. Flow selector (normative router)
+## 1. Flow selector (normative router) {#sec-1-flow-selector-normative-router}
 
 Every artifact change MUST be classified into exactly one flow — or into a governed non-flow path (Emergency,
 Type-R) that yields to its own section — before a CHG is authored. Classify in this order — the first matching
@@ -48,7 +55,7 @@ row wins:
 
 *(Legacy Aliases: `HOTFIX` $\leftrightarrow$ Emergency, `CODE2S` $\leftrightarrow$ Type-R, `CODE2C` $\leftrightarrow$ F4, `SEED2C` $\leftrightarrow$ F3, `DIR2C` $\leftrightarrow$ F2, `SDD2C` $\leftrightarrow$ F1).*
 
-### 1.1 Change Request Governance State Machine (CNCF Serverless Workflow Parity)
+### 1.1 Change Request Governance State Machine (CNCF Serverless Workflow Parity) {#sec-11-change-request-governance-state-machine-cncf-serverless-workflow-parity}
 
 Normative visual representation maintaining 1-to-1 parity with `framework/governance/workflows/chg-request-flow.sw.yaml` per `DIAGRAM_STANDARDS.md` §Governance State Machines & Workflow Graphs:
 
@@ -150,7 +157,7 @@ stateDiagram-v2
     EscalateUnknownTrigger --> [*]: alertAdmin
 ```
 
-## 2. SDD2C (sdd_to_code / F1) — Greenfield SDD layer cascade
+## 2. SDD2C (sdd_to_code / F1) — Greenfield SDD layer cascade {#sec-2-sdd2c-sdd_to_code-f1-greenfield-sdd-layer-cascade}
 
 The initial 10-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code/Docs/Scripts → EVAL → Verified).
 `change_source: upstream`, `change_level: C3` (cross-layer by construction; `gate_approval.approver` required before status leaves `Proposed` per GOV-012),
@@ -158,7 +165,7 @@ entry GATE-01. SDD-first order (§3.1.1) applies end to end: no IPLAN before the
 no code before an `In Progress` IPLAN exists (§3.13). This flow is fully governed today; it is named here so the
 router is total — authors MUST NOT file greenfield work as `DIR2C` (F2) or `CODE2C` (F4) to dodge the cascade.
 
-## 3. DIR2C (iplan_to_code / F2) — Direct leaf request
+## 3. DIR2C (iplan_to_code / F2) — Direct leaf request {#sec-3-dir2c-iplan_to_code-f2-direct-leaf-request}
 
 A change request from a human or another AI agent that is NOT related to a previous IPLAN implementation and does
 NOT change product behavior: documentation edits, hook/script/tooling tweaks (`hooks/`, `framework/scripts/`,
@@ -214,7 +221,7 @@ Untraced changes (commits riding no CHG/IPLAN at all) are caught the same way: t
 commit against the authorizing CHG/IPLAN manifest (CHG-12 enforcement decision) — branch protection forces
 every change through a PR, so the review gate is total. GOV-018 stays syntactic by design (see LINT_RULES.md).
 
-## 4. SEED2C (seed_to_code / F3) — Brownfield behavior change (full multi-tier chain)
+## 4. SEED2C (seed_to_code / F3) — Brownfield behavior change (full multi-tier chain) {#sec-4-seed2c-seed_to_code-f3-brownfield-behavior-change-full-multi-tier-chain}
 
 A product design or behavior change to an implemented product restarts the full SDD chain at the lowest affected
 layer: source `upstream` (BRD/PRD-level) / `midstream` (EARS/BDD/ADR) / `design` (SPEC/TDD), level C2 (single-layer
@@ -248,7 +255,7 @@ seed file landed, or supersede archived + bumped with ledger rows re-pointed), e
 No SDD lifecycle step runs and no IPLAN is authored until this checkpoint passes — an IPLAN written against
 unreviewed modules references a chain that is not actual. The checkpoint verdict is recorded in the CHG.
 
-## 5. CODE2C (code_to_code / F4) — Bugfix on implemented IPLAN
+## 5. CODE2C (code_to_code / F4) — Bugfix on implemented IPLAN {#sec-5-code2c-code_to_code-f4-bugfix-on-implemented-iplan}
 
 A defect found during EVAL, manual test, or field use, traceable to a `Completed`/`Verified` parent IPLAN, is
 repaired exclusively through the CHG-05 vehicle (0.56.0, canon — `LINT_RULES.md:131` GOV-013 carve-out): the parent
@@ -260,7 +267,7 @@ No-fix-on-fix: a failed attempt runs rollback; retry is a new sibling citing `pr
 for behavior change (that's `SEED2C`) or for defects in `Draft`/`Approved`/`In Progress` plans (fix on the active IPLAN
 itself — the AGENTS.md exception — no CHG required).
 
-## 6. Router procedure (replaces ad-hoc classification)
+## 6. Router procedure (replaces ad-hoc classification) {#sec-6-router-procedure-replaces-ad-hoc-classification}
 
 1. Critical production issue requiring fix before authorization? → **`HOTFIX` (`hotfix` / Emergency path)** (fix → deploy → document + post-mortem within 48h). The router yields. `DIR2C` is never the speed lane for production incidents.
 2. Verified working codebase preceding its specs (non-emergency empirical work)? → **`CODE2S` (`code_to_sdd` / Type-R)**: §3.1.2 governs (reverse-authored IPLAN, GATE-CODE, Phase-3 battery). The router yields; `SDD2C` MUST NOT claim it.
@@ -271,7 +278,7 @@ itself — the AGENTS.md exception — no CHG required).
 
 Steps 1–6 are ordered as a decision list: `HOTFIX` first (safety), `CODE2S` second (chronology), `CODE2C` third (narrowest flow), `SEED2C` fourth (full chain), `DIR2C` fifth (scoped leaf), `SDD2C` sixth (greenfield default). When two rows seem to match, the EARLIER row wins; record the rejected candidate and one-line rationale in the CHG so reclassification is auditable.
 
-## 7. Ratification deltas (REQUIRED before this document takes effect)
+## 7. Ratification deltas (REQUIRED before this document takes effect) {#sec-7-ratification-deltas-required-before-this-document-takes-effect}
 
 1. `CHG-TEMPLATE.yaml` (both copies — after #667 canon): add `direct` row to the `change_source` guidance table
    (Definition: direct requester instruction; Entry GATE-CODE; Affected: IPLAN→Code, no SDD) AND the `direct`
@@ -291,7 +298,7 @@ Steps 1–6 are ordered as a decision list: `HOTFIX` first (safety), `CODE2S` se
 6. Ratification vehicle: F3/spec authoring CHG + IPLAN per the Governance Gate; Flow 2 machinery filed as its
    own issue at CHG authoring (mint-`direct` + C1/IPLAN ruling + lint rule).
 
-## 8. Open decisions (pass 2 verdicts — all CONFIRMED 2026-09-22)
+## 8. Open decisions (pass 2 verdicts — all CONFIRMED 2026-09-22) {#sec-8-open-decisions-pass-2-verdicts-all-confirmed-2026-09-22}
 
 - (a) Emergency handling: CONFIRMED — router step 1 yields to the Emergency path (fix → deploy → document +
   post-mortem 48h); Emergency keeps its post-hoc procedure unchanged (`09_CHG/README.md` Workflow line +
@@ -309,7 +316,7 @@ Steps 1–6 are ordered as a decision list: `HOTFIX` first (safety), `CODE2S` se
   because Agent-first trackability traces every post-seed change regardless of author; cheapness survives via
   the minimal C1 shape. No human approval gate.
 
-## Appendix A — Review history (condensed from the draft)
+## Appendix A — Review history (condensed from the draft) {#sec-appendix-a-review-history-condensed-from-the-draft}
 
 - Pass 0 (2026-09-22): initial draft — 4 flows (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix).
 - Pass 1 (2026-09-22): 10 gaps, all applied — G1 Emergency branch added (was misroutable to F3); G2 Type-R

@@ -1,14 +1,21 @@
+---
+doc_id: GOV-CI-AUTONOMOUS-PR-STANDARD
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # CI & Autonomous Change-Integration Standard
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 Engine-agnostic rules for continuous integration and autonomous merging of
 reviewed changes. This standard fixes the integration topology the SDD layers
@@ -21,7 +28,7 @@ commands) are NOT specified here — each consumer declares them in its
 adaptation profile (`ADAPTATION.md`). What is specified here is the
 invariant shape every binding must satisfy.
 
-## 1. Scope and non-goals
+## 1. Scope and non-goals {#sec-1-scope-and-non-goals}
 
 This standard governs the path from a finished change to its integration
 into a shared branch. It applies at two review points:
@@ -41,9 +48,9 @@ reviewed work into (often `dev`); "merge request" is the platform's review
 unit (often called a pull request). "Required check" is any verification
 the branch policy mandates before merge.
 
-## 2. The six invariants
+## 2. The six invariants {#sec-2-the-six-invariants}
 
-### Invariant 1 — Single unified verification harness
+### Invariant 1 — Single unified verification harness {#sec-invariant-1-single-unified-verification-harness}
 
 A project maintains ONE executable verification suite shared by the
 author's workspace and the integration pipeline. Maintaining disjoint
@@ -61,7 +68,7 @@ prohibited. Verification doubles that bypass real code paths (in-memory
 fakes standing in for real services where the contract requires the real
 behavior) hide boundary regressions and are forbidden in both halves.
 
-### Invariant 2 — Concentric verification latency budgets
+### Invariant 2 — Concentric verification latency budgets {#sec-invariant-2-concentric-verification-latency-budgets}
 
 Verification is staged in concentric tiers with latency ceilings so fast
 feedback stays fast and slow assurance stays out of the inner loop:
@@ -90,7 +97,7 @@ artifact certifying that the change passed local pre-flight gates before
 push. Pushes carry verifiable attestation metadata confirming that the
 working tree was clean and all mandatory checks reported a passing verdict.
 
-### Invariant 3 — Required checks report conclusively (anti-deadlock)
+### Invariant 3 — Required checks report conclusively (anti-deadlock) {#sec-invariant-3-required-checks-report-conclusively-anti-deadlock}
 
 Every check the branch policy requires MUST report a conclusive pass/fail
 verdict on every merge request. A required check that silently does not
@@ -122,7 +129,7 @@ Therefore:
   impacted) or an explicit fast-pass success (paths not impacted,
   typically in seconds). "No verdict" is never a legal outcome.
 
-### Invariant 4 — Two-pass independent review before autonomous merge
+### Invariant 4 — Two-pass independent review before autonomous merge {#sec-invariant-4-two-pass-independent-review-before-autonomous-merge}
 
 A merge request merges without human approval only after two review
 passes, both recorded on the request:
@@ -154,7 +161,7 @@ judge ≠ generator) and may reuse layer review crews (`REVIEW_TEAM.md`).
 lens verdicts — a different concept from merge-conflict authority
 (Invariant 5). The terms MUST NOT be conflated.
 
-### Invariant 5 — Merge-conflict authority classes
+### Invariant 5 — Merge-conflict authority classes {#sec-invariant-5-merge-conflict-authority-classes}
 
 When the integration branch advances under a queued merge request, the
 request may become unmergeable and its merge automation disarmed. Agents
@@ -178,7 +185,7 @@ deterministic class:
 Class membership is decided per conflicting file; a single Class 2 file
 escalates the whole request.
 
-### Invariant 6 — Anti-blind closure
+### Invariant 6 — Anti-blind closure {#sec-invariant-6-anti-blind-closure}
 
 A merge request that resolves a tracked issue MUST link the issue from
 its description using the platform's closing keyword, so the platform —
@@ -188,7 +195,7 @@ to each resolved issue thread: what was built, the code manifest, and
 the verification evidence (tiers run, review passes, required checks).
 An issue closed without this report is reopened.
 
-## 3. CHG lifecycle harmonization
+## 3. CHG lifecycle harmonization {#sec-3-chg-lifecycle-harmonization}
 
 The framework's CHG governance defines no numbered step lifecycle, so
 donor formulations in terms of "CHG Step #6" do not port literally. The
@@ -202,7 +209,7 @@ mapping is:
 
 No step numbering is introduced into CHG governance by this standard.
 
-## 4. Pre-merge verification and post-merge closure discipline
+## 4. Pre-merge verification and post-merge closure discipline {#sec-4-pre-merge-verification-and-post-merge-closure-discipline}
 
 - Pre-merge: the author re-verifies the request head (not a stale local
   state) — static + integration tiers green, both review passes
@@ -213,7 +220,7 @@ No step numbering is introduced into CHG governance by this standard.
   the platform confirms the merge. The report cites the merged commit,
   not the pre-merge head.
 
-## Cross-references
+## Cross-references {#sec-cross-references}
 
 - `REVIEW_REMEDIATION_FLOW.md` — the `pre_merge` independent-review gate
   this standard's Pass 2 satisfies.

@@ -1,21 +1,28 @@
+---
+doc_id: GOV-README
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Governance
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
-| Last Updated | 2026-10-13 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
 define the rules that every artifact and platform must conform to, independent
 of which engine executes the workflow.
 
-## Document Lifecycle
+## Document Lifecycle {#sec-document-lifecycle}
 
 Every governance document carries a **Document Control** block (GD-24) with:
 Version, Status, Last Updated, Author, and Framework Version. This tracks
@@ -30,7 +37,7 @@ Which flow a change takes — HOTFIX (Emergency), CODE2S (Type-R), CODE2C (F4),
 SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 [`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
 
-## Documents
+## Documents {#sec-documents}
 
 | File | Covers |
 |------|--------|
@@ -72,7 +79,7 @@ SEED2C (F3), DIR2C (F2), or SDD2C (F1) — is routed by
 | `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06), modernized in 0.88.0+ — the classify→route table for change requests across the 6 graph traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C), and the C1/IPLAN-gate ruling. |
 | `CI_AUTONOMOUS_PR_STANDARD.md` | Engine-agnostic CI and autonomous change-integration rules — the unified harness, latency tiers, required-check conclusiveness (anti-deadlock), two-pass independent review, merge-conflict authority classes, and anti-blind closure (GD-42). |
 
-## CNCF Serverless Workflows (`workflows/`)
+## CNCF Serverless Workflows (`workflows/`) {#sec-cncf-serverless-workflows-workflows}
 
 The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workflow v0.8 YAML (`.sw.yaml`) definitions governing multi-agent SDD lifecycles and automated verification runners:
 
@@ -111,7 +118,7 @@ The `workflows/` directory contains pure, engine-agnostic CNCF Serverless Workfl
 | `review/chg-review-remediation.sw.yaml` | Layer 09 CHG Review | Multi-persona parallel audit (architect, integration_lead, operator, security_engineer, chaos_engineer, auditor), score synthesis, and 3-strike remediation saga. |
 | `review/eval-review-remediation.sw.yaml` | Layer 10 EVAL Review | Multi-persona parallel audit (evaluator, validator, verifier, report_generator, auditor), deterministic gate floor evaluation, and 3-strike remediation saga. |
 
-### Governance Templates (`templates/`)
+### Governance Templates (`templates/`) {#sec-governance-templates-templates}
 
 The `templates/` directory provides canonical templates for workflows, graph data planes, and review reports:
 
@@ -122,7 +129,7 @@ The `templates/` directory provides canonical templates for workflows, graph dat
 | `REVIEW-SWF-TEMPLATE.yaml` | CNCF Serverless Workflow DSL template for per-layer multi-persona review flows and 3-strike remediation sagas. |
 | `REVIEW_REPORT-TEMPLATE.yaml` | Engine-agnostic template for the unified review report (`ReviewReport`) with gate evaluation and CHG handover envelope. |
 
-## CHG Overlay (`chg/`)
+## CHG Overlay (`chg/`) {#sec-chg-overlay-chg}
 
 The `chg/` directory holds the Change Management overlay — a governance overlay
 for managing changes to existing artifacts (gate definitions, the CHG template,
@@ -135,7 +142,7 @@ contract (a record validator for the record-level checks, continuous
 integration for the diff-aware and suite checks, protected-branch review for the
 human approval). This model is recorded formally as **GD-01** (historically in `DECISIONS.md`).
 
-### Framework self-changes (GATE-SPEC)
+### Framework self-changes (GATE-SPEC) {#sec-framework-self-changes-gate-spec}
 
 When modifying `framework/` itself (templates, governance, registry, VERSION),
 the change routes through **GATE-SPEC** — the meta gate. Requirements:
@@ -154,7 +161,7 @@ All framework changes also require:
 1. **Archive** originals to `archive/{CHG-ID}/` before modification
 2. **Document Control** blocks updated (version bump, last_updated, framework_version)
 
-## `.aidoc/` Governance (`aidoc/`)
+## `.aidoc/` Governance (`aidoc/`) {#sec-aidoc-governance-aidoc}
 
 The `aidoc/` directory holds the governance documents for the `.aidoc/` project
 override layer — the contract that defines how projects customize the framework

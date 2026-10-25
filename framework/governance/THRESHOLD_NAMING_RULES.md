@@ -1,4 +1,8 @@
 ---
+doc_id: GOV-THRESHOLD-NAMING-RULES
+bucket: machine-consumed-candidate
+authority: doc-leads
+consumers: [authoring, audit, traceability]
 title: "Threshold Naming and Usage Rules"
 tags:
   - reference
@@ -14,17 +18,17 @@ custom_fields:
 
 # Threshold Naming and Usage Rules
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
-## 1. Overview
+## 1. Overview {#sec-1-overview}
 
 This document defines the naming conventions and usage rules for thresholds,
 limits, and timing parameters. Projects using this framework follow these
@@ -37,14 +41,14 @@ maintainable across documents and teams.
 > overrides, and operational rollout policy belong to a consuming project's own
 > config, not to this spec.
 
-### 1.1 What this standard provides
+### 1.1 What this standard provides {#sec-11-what-this-standard-provides}
 
 - **Universal rules** for threshold key naming.
 - **Predefined categories** applicable to all projects.
 - **Guidelines** for creating domain-specific categories.
 - **Standards** for boundary specification and `@threshold:` reference format.
 
-### 1.2 Threshold Definition Strategy
+### 1.2 Threshold Definition Strategy {#sec-12-threshold-definition-strategy}
 
 Thresholds are defined in **source documents** (BRD / PRD / ADR) and referenced
 via **`@threshold:` tags** in downstream artifacts:
@@ -69,9 +73,9 @@ via **`@threshold:` tags** in downstream artifacts:
 This approach eliminates separate registry documents while maintaining full
 traceability.
 
-### 1.3 Defining Thresholds in Source Documents
+### 1.3 Defining Thresholds in Source Documents {#sec-13-defining-thresholds-in-source-documents}
 
-#### 1.3.1 YAML Block Format in Source Documents
+#### 1.3.1 YAML Block Format in Source Documents {#sec-131-yaml-block-format-in-source-documents}
 
 Define thresholds in a dedicated section using YAML code blocks. The examples
 below use a neutral `quota` domain; replace it with your project's categories.
@@ -119,7 +123,7 @@ thresholds:
 | Unit (comment) | Yes | Unit specification | `# units`, `# ms`, `# score` |
 | Boundary (comment) | Conditional | For ranges | `# inclusive`, `# cumulative` |
 
-#### 1.3.2 @threshold: Tag Format
+#### 1.3.2 @threshold: Tag Format {#sec-132-threshold-tag-format}
 
 Downstream documents reference thresholds using the `@threshold:` tag:
 
@@ -143,7 +147,7 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 @threshold: ADR.20.perf.api.p95
 ```
 
-#### 1.3.3 Usage in Downstream Documents
+#### 1.3.3 Usage in Downstream Documents {#sec-133-usage-in-downstream-documents}
 
 Downstream documents cite a defined threshold with an `@threshold:` tag rather
 than hardcoding its value. A representative example (EARS):
@@ -163,7 +167,7 @@ The same pattern applies in BDD (comment tags above the scenario), SPEC/TDD
 references), and code (a module docstring tag + a `config.get("thresholds.…")`
 lookup). See §6 for the full per-context format table.
 
-#### 1.3.4 Threshold Traceability Chain
+#### 1.3.4 Threshold Traceability Chain {#sec-134-threshold-traceability-chain}
 
 ```text
 Source Documents (define thresholds):
@@ -189,9 +193,9 @@ Code (implements with config reference)
 
 ---
 
-## 2. Naming Convention Structure
+## 2. Naming Convention Structure {#sec-2-naming-convention-structure}
 
-### 2.1 Key Format
+### 2.1 Key Format {#sec-21-key-format}
 
 ```text
 {category}[.{subcategory}].{attribute}[.{qualifier}]
@@ -212,9 +216,9 @@ matching the authoritative `id_patterns.threshold` regex in
 underscore *within* a segment name (e.g. `p95_latency`) is a legal attribute token;
 NR-02 governs the *separators* between segments (dots), not characters inside a segment.
 
-### 2.2 Category Creation Rules
+### 2.2 Category Creation Rules {#sec-22-category-creation-rules}
 
-#### 2.2.1 Category Naming Rules
+#### 2.2.1 Category Naming Rules {#sec-221-category-naming-rules}
 
 | Rule ID | Rule | Correct | Incorrect |
 |---------|------|---------|-----------|
@@ -224,7 +228,7 @@ NR-02 governs the *separators* between segments (dots), not characters inside a 
 | CR-04 | One category per domain | `cache` for all caching | `memcache`, `rediscache` |
 | CR-05 | No overlapping scope | Separate `rate` and `quota` | Both limiting same resource |
 
-#### 2.2.2 Universal Categories (Predefined)
+#### 2.2.2 Universal Categories (Predefined) {#sec-222-universal-categories-predefined}
 
 These categories apply to ALL projects and SHOULD be used when applicable:
 
@@ -242,7 +246,7 @@ These categories apply to ALL projects and SHOULD be used when applicable:
 | `batch` | Batch processing | Sizes, intervals | `batch.size.max`, `batch.interval` |
 | `quota` | Tiered usage/velocity limits | Per-tier ceilings | `quota.l1.daily`, `quota.l2.monthly` |
 
-#### 2.2.3 Domain-Specific Categories (Project-Defined)
+#### 2.2.3 Domain-Specific Categories (Project-Defined) {#sec-223-domain-specific-categories-project-defined}
 
 Projects define domain-specific categories in the BRD/PRD Thresholds section.
 Document each new category with a YAML comment:
@@ -267,7 +271,7 @@ thresholds:
 | Storage | `storage`, `file`, `upload` | `storage.file.maxsize`, `upload.chunk.size` |
 | Messaging | `msg`, `notification` | `msg.retry.max`, `notification.batch.size` |
 
-#### 2.2.4 Category Registration Process
+#### 2.2.4 Category Registration Process {#sec-224-category-registration-process}
 
 1. **Check universal categories** — use a predefined one if applicable.
 2. **Check existing project categories** — review BRD/PRD threshold sections for
@@ -280,9 +284,9 @@ thresholds:
 
 ---
 
-## 3. Naming Rules
+## 3. Naming Rules {#sec-3-naming-rules}
 
-### 3.1 General Rules
+### 3.1 General Rules {#sec-31-general-rules}
 
 | Rule ID | Rule | Correct | Incorrect |
 |---------|------|---------|-----------|
@@ -293,9 +297,9 @@ thresholds:
 | NR-05 | Maximum 5 segments | `perf.api.standard.p95` | `perf.api.standard.endpoint.response.p95` |
 | NR-06 | No numeric prefixes in segments | `tier1`, `l1` | `1tier`, `1l` |
 
-### 3.2 Standard Abbreviations
+### 3.2 Standard Abbreviations {#sec-32-standard-abbreviations}
 
-#### 3.2.1 Universal Abbreviations (Use Across All Projects)
+#### 3.2.1 Universal Abbreviations (Use Across All Projects) {#sec-321-universal-abbreviations-use-across-all-projects}
 
 | Abbreviation | Meaning | Usage Context |
 |--------------|---------|---------------|
@@ -314,7 +318,7 @@ thresholds:
 | `ms` | Milliseconds | Time units |
 | `sec` | Seconds | Time units |
 
-#### 3.2.2 Domain-Specific Abbreviations (Define Per Project)
+#### 3.2.2 Domain-Specific Abbreviations (Define Per Project) {#sec-322-domain-specific-abbreviations-define-per-project}
 
 Projects MAY define additional abbreviations in BRD/PRD threshold sections using
 YAML comments. Each abbreviation: maximum 5 characters, lowercase only,
@@ -331,7 +335,7 @@ thresholds:
         min: 0.85
 ```
 
-### 3.3 Time Period Qualifiers
+### 3.3 Time Period Qualifiers {#sec-33-time-period-qualifiers}
 
 | Qualifier | Duration | Reset Boundary |
 |-----------|----------|----------------|
@@ -341,7 +345,7 @@ thresholds:
 | `monthly` | Calendar month | 00:00:00 UTC 1st of month |
 | `yearly` | Calendar year | 00:00:00 UTC January 1st |
 
-### 3.4 Range Qualifiers
+### 3.4 Range Qualifiers {#sec-34-range-qualifiers}
 
 | Qualifier | Purpose | Boundary Type |
 |-----------|---------|---------------|
@@ -355,9 +359,9 @@ thresholds:
 
 ---
 
-## 4. Type Specifications
+## 4. Type Specifications {#sec-4-type-specifications}
 
-### 4.1 Data Types
+### 4.1 Data Types {#sec-41-data-types}
 
 | Type | Description | Example Values |
 |------|-------------|----------------|
@@ -367,7 +371,7 @@ thresholds:
 | `percent` | Value between 0 and 100 | `75`, `95.5` |
 | `score` | Scaled score (0-100 typical) | `39`, `75` |
 
-### 4.2 Unit Standards
+### 4.2 Unit Standards {#sec-42-unit-standards}
 
 | Unit Category | Standard Units | Conversion Reference |
 |---------------|----------------|---------------------|
@@ -383,9 +387,9 @@ thresholds:
 
 ---
 
-## 5. Boundary Specification Rules
+## 5. Boundary Specification Rules {#sec-5-boundary-specification-rules}
 
-### 5.1 Default Boundary Convention
+### 5.1 Default Boundary Convention {#sec-51-default-boundary-convention}
 
 **Default**: all ranges use `[inclusive, exclusive)` unless explicitly noted in
 threshold documentation.
@@ -397,7 +401,7 @@ threshold documentation.
 | Exclusive-Inclusive | `(a, b]` | Start excluded, end included | Must be explicitly stated |
 | Exclusive-Exclusive | `(a, b)` | Neither endpoint included | Must be explicitly stated |
 
-### 5.2 Boundary Clarification Requirements
+### 5.2 Boundary Clarification Requirements {#sec-52-boundary-clarification-requirements}
 
 Every threshold with range semantics MUST include explicit boundary clarification:
 
@@ -418,7 +422,7 @@ Every threshold with range semantics MUST include explicit boundary clarificatio
 - Exceeds boundary: An operation causing cumulative total > limit is BLOCKED
 ```
 
-### 5.3 Score Boundary Rules
+### 5.3 Score Boundary Rules {#sec-53-score-boundary-rules}
 
 Tiered score ranges use inclusive-inclusive boundaries. Example (a 3-tier risk
 score):
@@ -438,7 +442,7 @@ risk.medium: [40, 74] → Score 40 = MEDIUM
 risk.high: [75, 100] → Score 75 = HIGH
 ```
 
-### 5.4 Cumulative vs. Single-Operation Boundaries
+### 5.4 Cumulative vs. Single-Operation Boundaries {#sec-54-cumulative-vs-single-operation-boundaries}
 
 | Boundary Type | Key Suffix | Behavior |
 |---------------|------------|----------|
@@ -452,7 +456,7 @@ quota.l1.monthly: 5000    # Cumulative monthly total
 rate.tx.user.velocity: 5  # Rolling: 5 operations per window
 ```
 
-### 5.5 Reset Boundary Rules
+### 5.5 Reset Boundary Rules {#sec-55-reset-boundary-rules}
 
 | Period | Reset Time | Timezone | Notes |
 |--------|------------|----------|-------|
@@ -465,9 +469,9 @@ rate.tx.user.velocity: 5  # Rolling: 5 operations per window
 
 ---
 
-## 6. @threshold: Tag Reference Rules
+## 6. @threshold: Tag Reference Rules {#sec-6-threshold-tag-reference-rules}
 
-### 6.1 Tag Format
+### 6.1 Tag Format {#sec-61-tag-format}
 
 ```text
 @threshold: {DOC_TYPE}.{DOC_NUM}.{threshold_key}
@@ -479,7 +483,7 @@ rate.tx.user.velocity: 5  # Rolling: 5 operations per window
 | `DOC_NUM` | 2+ digit number (starts at 01) | `01`, `15`, `100` |
 | `threshold_key` | Dot-separated key | `quota.l1.daily`, `circuit.failure.count` |
 
-### 6.2 Reference Formats by Context
+### 6.2 Reference Formats by Context {#sec-62-reference-formats-by-context}
 
 | Context | Format | Example |
 |---------|--------|---------|
@@ -489,7 +493,7 @@ rate.tx.user.velocity: 5  # Rolling: 5 operations per window
 | Config path | `thresholds.{key}` | `thresholds.quota.l1.daily` |
 | Environment var | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_QUOTA_L1_DAILY=1000` |
 
-### 6.3 Consumer Document Requirements
+### 6.3 Consumer Document Requirements {#sec-63-consumer-document-requirements}
 
 All downstream documents referencing thresholds MUST:
 
@@ -511,7 +515,7 @@ All downstream documents referencing thresholds MUST:
 
 3. **Never hardcode values** — always use `@threshold:` tags.
 
-### 6.4 Source Resolution
+### 6.4 Source Resolution {#sec-64-source-resolution}
 
 When multiple documents could define similar thresholds, establish clear
 ownership:
@@ -533,9 +537,9 @@ ownership:
 
 ---
 
-## 7. Definition Rules
+## 7. Definition Rules {#sec-7-definition-rules}
 
-### 7.1 Percentile Definitions
+### 7.1 Percentile Definitions {#sec-71-percentile-definitions}
 
 | Qualifier | Percentile | Statistical Definition | Operational Purpose |
 |-----------|------------|------------------------|---------------------|
@@ -545,7 +549,7 @@ ownership:
 | `p99` | 99th | 99% of requests faster | **Alert threshold** |
 | `p999` | 99.9th | 99.9% of requests faster | SLA boundary / critical |
 
-### 7.2 Tiered Level Definitions
+### 7.2 Tiered Level Definitions {#sec-72-tiered-level-definitions}
 
 Tier qualifiers (`low`/`medium`/`high`, or `l1`/`l2`/`l3`) name escalating
 levels of a score, limit, or capability. The number of tiers, their numeric
@@ -562,7 +566,7 @@ Tiered limits (`l1`/`l2`/`l3`) follow the same shape — higher tiers carry high
 ceilings; the scaling factor between tiers is a project decision documented in
 the source YAML.
 
-### 7.3 Alert Severity Definitions
+### 7.3 Alert Severity Definitions {#sec-73-alert-severity-definitions}
 
 | Severity | Definition | Response Time | Escalation |
 |----------|------------|---------------|------------|
@@ -571,7 +575,7 @@ the source YAML.
 | `critical` | Threshold exceeded | 15 minutes | Incident manager |
 | `emergency` | System-wide impact | Immediate | Executive escalation |
 
-### 7.4 Timeout Category Definitions
+### 7.4 Timeout Category Definitions {#sec-74-timeout-category-definitions}
 
 | Category | Typical Range | Use Case |
 |----------|---------------|----------|
@@ -580,7 +584,7 @@ the source YAML.
 | `job.*` | 1800-7200 seconds | Background batch processing |
 | `validity.*` | 60-300 seconds | Token/quote expiration |
 
-### 7.5 Rate Limit Window Definitions
+### 7.5 Rate Limit Window Definitions {#sec-75-rate-limit-window-definitions}
 
 | Window Type | Duration | Reset Behavior |
 |-------------|----------|----------------|
@@ -591,9 +595,9 @@ the source YAML.
 
 ---
 
-## 8. Weight Factor Rules
+## 8. Weight Factor Rules {#sec-8-weight-factor-rules}
 
-### 8.1 Sum Constraint Rules
+### 8.1 Sum Constraint Rules {#sec-81-sum-constraint-rules}
 
 | Rule | Requirement |
 |------|-------------|
@@ -614,7 +618,7 @@ risk.weight:
 
 ---
 
-## 9. Configuration Structure
+## 9. Configuration Structure {#sec-9-configuration-structure}
 
 ```yaml
 thresholds:
@@ -648,9 +652,9 @@ thresholds:
 
 ---
 
-## 10. Validation Rules
+## 10. Validation Rules {#sec-10-validation-rules}
 
-### 10.1 Required Validations
+### 10.1 Required Validations {#sec-101-required-validations}
 
 | Validation | Rule |
 |------------|------|
@@ -660,7 +664,7 @@ thresholds:
 | Reference integrity | Cross-references MUST point to valid keys |
 | Sum constraints | Weight factors MUST sum to 1.0 |
 
-### 10.2 Logical Consistency
+### 10.2 Logical Consistency {#sec-102-logical-consistency}
 
 | Constraint | Example |
 |------------|---------|
@@ -671,7 +675,7 @@ thresholds:
 
 ---
 
-## 11. Governance
+## 11. Governance {#sec-11-governance}
 
 Thresholds are governed as part of the source document that defines them. A
 change to a threshold value is a change to its BRD/PRD/ADR, and follows the
@@ -686,9 +690,9 @@ document — including its audit trail and approver set.
 
 ---
 
-## 12. Anti-Patterns
+## 12. Anti-Patterns {#sec-12-anti-patterns}
 
-### 12.1 Naming Anti-Patterns
+### 12.1 Naming Anti-Patterns {#sec-121-naming-anti-patterns}
 
 | Anti-Pattern | Problem | Correct Approach |
 |--------------|---------|------------------|
@@ -698,7 +702,7 @@ document — including its audit trail and approver set.
 | `perf.api.response.time.milliseconds.p95` | Too verbose | `perf.api.standard.p95` |
 | `limit` | No context | `rate.api.user.standard` |
 
-### 12.2 Usage Anti-Patterns
+### 12.2 Usage Anti-Patterns {#sec-122-usage-anti-patterns}
 
 | Anti-Pattern | Problem | Correct Approach |
 |--------------|---------|------------------|
@@ -710,9 +714,9 @@ document — including its audit trail and approver set.
 
 ---
 
-## 13. Quick Reference
+## 13. Quick Reference {#sec-13-quick-reference}
 
-### 13.1 Key Construction Template
+### 13.1 Key Construction Template {#sec-131-key-construction-template}
 
 ```text
 {category}[.{scope}].{metric}[.{qualifier}]
@@ -728,7 +732,7 @@ alone scopes the metric (e.g. `perf.p95_latency`). The key is a minimum of two
 dot-separated segments (`{category}.{metric}`), per §2.1 and the authoritative
 `id_patterns.threshold` regex.
 
-### 13.2 Common Patterns
+### 13.2 Common Patterns {#sec-132-common-patterns}
 
 | Pattern | Use Case | Example |
 |---------|----------|---------|
@@ -737,7 +741,7 @@ dot-separated segments (`{category}.{metric}`), per §2.1 and the authoritative
 | `{domain}.{target}.{action}` | External service config | `timeout.partner.default` |
 | `{domain}.{level}.{boundary}` | Risk/alert ranges | `risk.medium.max` |
 
-### 13.3 Checklist for New Thresholds
+### 13.3 Checklist for New Thresholds {#sec-133-checklist-for-new-thresholds}
 
 - [ ] Key follows `category[.subcategory].attribute` format (subcategory optional; key is ≥2 dot-separated segments)
 - [ ] Uses lowercase with dot separators

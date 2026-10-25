@@ -1,0 +1,337 @@
+# Self-Learning Governance
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 2.0 |
+| Status | Approved |
+| Last Updated | 2026-09-29 |
+| Author | Framework Maintainer |
+| Framework Version | 0.96.13 |
+
+
+Defines the self-learning loop for agents operating in this project: what gets
+captured, how patterns are extracted, where lessons persist, and how they
+inject into future sessions. Prevents repeated mistakes, preserves successful
+workflows, and builds project-specific institutional knowledge.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Self-Learning Loop                       │
+│                                                              │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌────────┐ │
+│  │ CAPTURE  │───▶│ EXTRACT  │───▶│CONSOLIDATE│───▶│ INJECT │ │
+│  │          │    │          │    │          │    │        │ │
+│  │ session  │    │ pattern  │    │ learnings│    │ system │ │
+│  │ .post    │    │ analysis │    │ .md      │    │ prompt │ │
+│  └──────────┘    └──────────┘    └──────────┘    └────────┘ │
+│       │                               │                     │
+│       ▼                               ▼                     │
+│  trajectories/                    learnings.md              │
+│  {date}-trajectories.jsonl        (persistent)              │
+└─────────────────────────────────────────────────────────────┘
+```
+(Harness hook and store names in this diagram are illustrative — see
+Knowledge tiers Tier 1 and the harness-optional notes under Capture/Inject.)
+
+## Knowledge tiers
+
+The loop runs on the Two-Tier Project Knowledge Architecture (#779):
+
+| Tier | Home | Content | Cost |
+|------|------|---------|------|
+| **Tier 1 — Active invariants** | `AGENTS.md`, `.agents/rules/`, linters and static checks | Non-negotiable safety rules, enforced mechanically | Zero/minimal context — loaded by the harness or the gate, never pasted in full |
+| **Tier 2 — On-demand knowledge** | `.aidoc/learning/learnings.md` (repo-owned system of record, by PR) | Consolidated lessons with count/evidence; read headings first, open only entries bearing on the task | Small — a ~3KB cap of lesson text per session, highest-count first |
+| **Tier 3 — Upstream feedback** | The framework / project issue trackers (§7.4 feedback-submit contract, by reference) | Tooling and canon defects filed upstream instead of stored locally | One issue per defect, read back to prove publication |
+
+Tier 1 is referenced, never injected. Tier 2 is checked at session start and
+read on demand. Tier 3 is not a knowledge store — it is the feedback contract
+that keeps tooling defects out of project memory. (No Tier-3 storage and no
+universal log ship in this version.)
+
+## File Locations
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| Trajectory logs | `.aidoc/learning/{date}-trajectories.jsonl` | Raw session summaries — roadmap: auto-captured only where the harness provides them; no trajectory files ship in this repo |
+| Consolidated learnings | `.aidoc/learning/learnings.md` | Extracted patterns and rules (the implemented system of record) |
+| Project memory | Project memory convention (e.g. `MEMORY.md` where adopted) | Promoted high-frequency lessons toward Tier 1 (see below) |
+| Governance doc | This document (`framework/governance/SELF_LEARNING.md`) | This document |
+
+Trajectory paths are harness-provided examples, resolved at runtime — a
+harness without trajectory capture runs the loop on portable sources
+(`git log`, session notes, the repo tracker).
+
+## Capture Phase
+
+### What gets captured
+
+Where the harness exposes a session-close hook (e.g. `session.post`), every
+session trajectory is logged through it. Harnesses without one capture from
+portable sources instead (`git log`, session notes, the repo tracker):
+
+| Field | Source | Purpose |
+|-------|--------|---------|
+| `sessionID` | Hook input | Session identifier |
+| `agent` | Hook input | Which agent ran (build, plan, compose, subagent) |
+| `outcome` | Hook input | completed / error / cancelled |
+| `error` | Hook input | Error message if failed |
+| `turns` | Trajectory count | Session length |
+| `toolCalls` | assistant messages with tool-invocation parts | Activity level |
+| `errors` | tool results with isError=true | Failure count |
+
+### What does NOT get captured
+
+- Full message content (privacy, size)
+- API keys, credentials, secrets
+- User personal information
+- File contents (only metadata)
+
+## Extract Phase
+
+### Pattern categories
+
+| Category | Signal | Example |
+|----------|--------|---------|
+| `error` | Repeated same error across sessions | "Hallucinated EARS IDs in subagent output" |
+| `workflow` | Successful multi-step sequence | "Read upstream → validate refs → delegate → verify" |
+| `tool-usage` | Tool called incorrectly or suboptimally | "Used grep instead of glob for file discovery" |
+| `project-rule` | Constraint discovered through trial | "Debian images only, not Alpine" |
+| `preference` | User correction or style preference | "No emojis in governance docs" |
+
+### Extraction criteria
+
+A pattern qualifies as a learning when:
+
+1. **Observed 2+ times** across different sessions, OR
+2. **Caused a user correction** (user explicitly said "don't do X" or "do Y
+   instead"), OR
+3. **Required a governance rule** (was formalized into a governance rule in
+   the owning repo)
+
+Single-occurrence events are logged but not promoted to learnings.
+
+## Consolidate Phase
+
+### Learnings file format
+
+`.aidoc/learning/learnings.md` uses this structure:
+
+```markdown
+# Consolidated Learnings
+
+## [error] Hallucinated cross-references in subagent output
+- **First seen**: 2026-08-31
+- **Last seen**: 2026-09-01
+- **Count**: 3
+- **Lesson**: Always pass actual upstream IDs to subagent delegation prompts.
+- **Evidence**: SPEC-09 had 18 fake EARS IDs generated by subagent
+- **Governance rule**: DOC_GOVERNANCE_CORE.md §6.1
+
+## [workflow] SDD document generation sequence
+- **First seen**: 2026-08-30
+- **Last seen**: 2026-09-01
+- **Count**: 5
+- **Lesson**: BRD → EARS → BDD → ADR → SPEC → TDD → IPLAN. Never skip layers.
+- **Evidence**: SDD-09 observability generation
+```
+
+### Deduplication rules
+
+- **Merge** entries describing the same lesson (update count, keep latest evidence)
+- **Promote** entries with count >= 5 toward Tier 1 (`AGENTS.md`, `.agents/rules/`, or a linter/static check); without a Tier-1 surface they stay in `learnings.md`
+- **Age out** entries older than 30 days that haven't been observed recently
+- **Archive** aged-out entries to `.aidoc/learning/archive/{year}-{month}.md`
+
+### Consolidation schedule
+
+| Trigger | Method | Scope |
+|---------|--------|-------|
+| Nightly (3 AM) | Cron job | All trajectories from last 7 days |
+| Manual | `/self-learn` slash command | Current session + recent trajectories |
+| Post-session | Agent self-trigger | After error-heavy or correction-heavy sessions |
+
+## Inject Phase
+
+### System prompt injection
+
+Where the harness supports injection hooks (e.g. `learn-inject`), top lessons
+are appended to the system prompt. Otherwise the apply mode reads Tier 2 on
+demand at session start:
+
+- **Cap**: 3KB maximum to avoid context bloat
+- **Priority**: Most recent + highest count lessons first
+- **Scope**: Only lessons with count >= 2 (exclude single-occurrence noise)
+
+### Memory integration
+
+Lessons with count >= 5 are promoted toward Tier 1. Where the project keeps a
+memory file (e.g. `MEMORY.md`), they land under:
+
+```markdown
+## Rules
+- [From self-learn] Always pass actual upstream IDs to subagents
+- [From self-learn] Validate all cross-references after delegation
+```
+
+### Governance rule promotion
+
+Lessons that become project-wide constraints are proposed as updates to the
+appropriate governance document — through the owning repo's authorizing CHG
+and an In-Progress IPLAN (always-traced; there is no solo-project exemption).
+The self-learn skill proposes (never lands unilaterally):
+
+- `framework/governance/DOC_GOVERNANCE_CORE.md` — new enforcement rules
+- `framework/governance/DECISION_WORKFLOW.md` — process changes
+- `framework/governance/NOTICES.md` — known issues and prevention rules
+- `framework/governance/SELF_LEARNING.md` — self-learn process changes
+- (Consumer projects propose against their own governance docs; the
+  `framework/governance/` paths above are the framework repo's.)
+- `AGENTS.md` — agent execution rules
+
+Rules for governance updates: only add (never remove safety invariants),
+cite the learning source, keep updates small (one rule per learning), and log
+changes in the self-learn report. Solo projects use self-approved C3 (owner
+as Technical Lead) — the CHG record still exists, only the approver is the
+owner.
+
+### Framework and governance feedback submission
+
+When the self-learn skill modifies governance or framework files, it submits
+tracking issues for auditability:
+
+- **Framework files** (`framework/**`): Submit to framework repo —
+  framework-level bugs/improvements found during project work
+- **Project governance files** (the project's own governance docs): Submit to
+  project repo — governance changes for audit trail
+
+This ensures governance changes are tracked in issue trackers, not just in
+files. The framework maintainer can see what project-level fixes should be
+upstreamed.
+
+### Feedback-submit contract (§7.4 hardening)
+
+Every learning cycle that modifies a governed document MUST close the loop in
+the same cycle — an unsubmitted governance change is invisible to every
+consumer outside this session:
+
+1. Modified a framework file (`framework/**`)? File a tracking issue on the
+   framework repo carrying the same evidence a cross-repo report needs
+   (reproduction at `file:line`, blast radius run not assumed, suggested fix).
+2. Modified a project governance file? File the audit-trail issue on the
+   project repo.
+3. Read the published artifact back (non-zero body length is the only proof
+   it published) and record the issue number in the cycle report, so a
+   future session finds the upstream thread instead of rediscovering the
+   defect as a fresh bug. There is no file log to update — the tracker
+   issue is the record.
+4. Session-start duty: review injected learnings AND the open feedback
+   issues on the tracker before planning work.
+
+## Verification Checklist
+
+After running a learning cycle (`/self-learn`), verify:
+
+- [ ] `learnings.md` has no duplicate entries (same lesson, different wording)
+- [ ] All entries have valid dates (not future, not before project start)
+- [ ] Count >= 5 entries are promoted toward Tier 1
+- [ ] Entries older than 30 days without recent observation are archived
+- [ ] Trajectory files older than 7 days are deleted
+- [ ] System prompt injection stays under 3KB
+- [ ] No sensitive data leaked into learnings (credentials, PII, secrets)
+- [ ] Governance updates are additive (no safety invariants removed)
+- [ ] Each governance update cites its learning source
+- [ ] Self-learn report lists all governance files modified
+- [ ] Framework changes (`framework/**`) submitted to framework repo
+- [ ] Project governance changes submitted to project repo
+- [ ] Each feedback issue read back to verify publication
+
+## Prevention Rules
+
+### Rule 1: Never capture full message content
+
+Trajectory logs store metadata only (turns, tool calls, errors). Full message
+content stays in the session trajectory store and is not duplicated into JSONL
+logs.
+
+### Rule 2: Governance updates are additive, cited, and CHG-traced
+
+Self-learn never writes governance documents directly: every governance update
+rides an authorizing CHG and an In-Progress IPLAN in the owning repo — solo or
+multi-contributor, no exemption. For solo projects the CHG may be self-approved
+C3 (owner as Technical Lead); the record still exists, silent direct write is
+never permitted.
+Constraints: only add rules (never remove safety invariants), cite the learning
+source in the update, keep each update to one rule or sentence, and log all
+changes in the self-learn report.
+
+### Rule 3: Cap injection size
+
+The system prompt injection must not exceed 3KB. If learnings exceed this, keep
+only the top 20 by recency * count score. Overflow stays in `learnings.md` for
+manual review.
+
+### Rule 4: Age out aggressively
+
+Stale learnings add noise. 30-day expiry with re-observation resets the timer.
+If a lesson hasn't been relevant in 30 days, it's probably not a durable
+pattern.
+
+### Rule 5: Don't learn from cancelled sessions
+
+Sessions with `outcome: "cancelled"` may have incomplete trajectories. Only
+extract patterns from `completed` or `error` sessions.
+
+## Agent Responsibilities
+
+### Primary agent (build)
+
+- Review injected learnings at session start
+- Apply learnings during execution
+- Flag new patterns for extraction when user corrects behavior
+
+### Subagents (explore, general)
+
+- Do NOT write to learnings.md directly
+- Report findings to parent agent for consolidation
+
+### Compose agent
+
+- Runs learning cycle as part of workflow orchestration
+- Can trigger `/self-learn` between workflow phases
+
+## Integration with Existing Governance
+
+### SDD Reference Integrity (§6)
+
+Self-learning reinforces DOC_GOVERNANCE_CORE.md §6 by:
+
+- Capturing every hallucinated-reference incident as an `error` learning
+- Tracking which subagent delegation patterns succeed vs fail
+- Injecting "validate references after delegation" as a high-priority learning
+
+### Decision Workflow (DECISION_WORKFLOW.md)
+
+Self-learning captures:
+
+- Which decision tiers were skipped (and caused rework)
+- Which seed-to-module-to-SDD sequences worked smoothly
+- Module number confusion patterns
+
+### notices.md (RCA)
+
+Self-learning feeds into notices.md by:
+
+- Auto-detecting when a new issue matches an existing prevention rule
+- Flagging when prevention rules are being violated (same error despite rule)
+- Tracking rule effectiveness (is the rule actually preventing the issue?)
+
+## Cross-References
+
+- `framework/skills/submit-feedback/` — Framework-level feedback filing workflow
+- `DOC_GOVERNANCE_CORE.md` — Governance principles
+- `NOTICES.md` — Issue registry and prevention rules
+- `DECISION_WORKFLOW.md` — Authorship boundaries

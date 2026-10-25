@@ -1,23 +1,30 @@
+---
+doc_id: GOV-SDD-GRAPH-SCHEMA-SPECIFICATION
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Specification: Native SDD Graph Schema (SDD-GRAPH v2.0)
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 2.0.0 |
+| Version | 2.1.0 |
 | Status | Ratified |
-| Last Updated | 2026-10-16 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
 
-## 1. Purpose & Core Philosophy
+## 1. Purpose & Core Philosophy {#sec-1-purpose-core-philosophy}
 
 The Native SDD Graph specification defines a machine-native, typed property graph representing the entire lifecycle of software requirements, architecture decisions, behavioral acceptance criteria, test proofs, and codebase implementation tasks.
 
-### 1.1 Beyond Document-Oriented Artifacts
+### 1.1 Beyond Document-Oriented Artifacts {#sec-11-beyond-document-oriented-artifacts}
 Traditional SDD artifacts structured specifications as human-facing documents (hierarchical YAML sections, markdown headings, and prose paragraphs). In an autonomous software delivery environment:
 - **Primary Consumers & Producers**: Autonomous AI agents (Planner, Architect, SDET, Developer, Reviewer) and deterministic verification tools.
 - **Single Source of Truth (SSOT)**: A typed property graph (`.graph.yaml`) storing atomic nodes and relational edges.
@@ -26,7 +33,7 @@ Traditional SDD artifacts structured specifications as human-facing documents (h
 
 ---
 
-## 2. Graph Data Model & Root Envelope
+## 2. Graph Data Model & Root Envelope {#sec-2-graph-data-model-root-envelope}
 
 Every graph slice is stored as a YAML document conforming to [`framework/governance/sdd-graph.schema.json`](sdd-graph.schema.json):
 
@@ -38,7 +45,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.96.13"
+  framework_version: "0.96.14"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:
@@ -52,73 +59,73 @@ edges:
 
 ---
 
-## 3. Node Ontology (10 Canonical SDD Types + Change Overlay)
+## 3. Node Ontology (10 Canonical SDD Types + Change Overlay) {#sec-3-node-ontology-10-canonical-sdd-types-change-overlay}
 
 Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or canonical entity token) and specific typed properties:
 
-### 3.1 Tier 1: Seed Vision (`seed_intent`)
+### 3.1 Tier 1: Seed Vision (`seed_intent`) {#sec-31-tier-1-seed-vision-seed_intent}
 - **ID Pattern**: `SEED-<slug>`
 - **Properties**: `title`, `statement` (intent / vision), `properties.environmental_constraints`, `properties.c4_level: "c4-l1"`.
 - **Role**: Captures stakeholder problem space, business context, and top-level boundaries.
 
-### 3.2 Tier 2: Subsystem Container (`system_container`)
+### 3.2 Tier 2: Subsystem Container (`system_container`) {#sec-32-tier-2-subsystem-container-system_container}
 - **ID Pattern**: `MODULE-NN` (e.g. `MODULE-01` or template `MODULE-NN`)
 - **Properties**: `title`, `statement` (subsystem role), `description`, `properties.c4_level: "c4-l2"`, `properties.container_archetype` (`api_service` | `worker` | `data_store` | `spa` | `gateway` | `library`), `properties.approved_stack`, `properties.runtime_platform`, `properties.candidate_stack_status`, `properties.subsystem_invariants`, `properties.trust_boundary`, `properties.data_classification`, `properties.data_protection_matrix`, `properties.choreography` (`interactions`, `failure_branches`).
 - **Role**: Defines architectural subsystem container (C4-L2), data movement boundaries, trust enclaves, and inter-module process choreography.
 
-### 3.3 Layer 01: Business Objective (`business_objective`)
+### 3.3 Layer 01: Business Objective (`business_objective`) {#sec-33-layer-01-business-objective-business_objective}
 - **ID Pattern**: `BRD.NN.SS.xxxx` (or `BIZ.NN.SS.xxxx`)
 - **Properties**: `title`, `statement`, `properties.priority` (`P0`–`P3`), `properties.roi_target`.
 - **Role**: Defines business value drivers, market requirements, and executive goals.
 
-### 3.4 Layer 02: Product Capability (`product_capability`)
+### 3.4 Layer 02: Product Capability (`product_capability`) {#sec-34-layer-02-product-capability-product_capability}
 - **ID Pattern**: `PRD.NN.SS.xxxx`
 - **Properties**: `title`, `statement`, `properties.persona`, `properties.sla_threshold`.
 - **Role**: Partitions business goals into buildable product feature capabilities.
 
-### 3.5 Layer 03: Formal Requirement (`formal_requirement`)
+### 3.5 Layer 03: Formal Requirement (`formal_requirement`) {#sec-35-layer-03-formal-requirement-formal_requirement}
 - **ID Pattern**: `EARS.NN.SS.xxxx`
 - **Properties**: `title`, `statement`, `pattern` (`ubiquitous` | `event_driven` | `state_driven` | `optional` | `unwanted`).
 - **Role**: Strict EARS syntax specifying exact functional behavior.
 
-### 3.6 Layer 04: Acceptance Scenario (`acceptance_scenario`)
+### 3.6 Layer 04: Acceptance Scenario (`acceptance_scenario`) {#sec-36-layer-04-acceptance-scenario-acceptance_scenario}
 - **ID Pattern**: `BDD.NN.SS.xxxx`
 - **Properties**: `title`, `given`, `when`, `then`.
 - **Role**: The behavioral oracle defining "what correct looks like" independently of code.
 
-### 3.7 Layer 05: Architectural Decision (`architectural_decision`)
+### 3.7 Layer 05: Architectural Decision (`architectural_decision`) {#sec-37-layer-05-architectural-decision-architectural_decision}
 - **ID Pattern**: `ADR.NN.SS.xxxx`
 - **Properties**: `title`, `context`, `decision`, `consequences`, `status` (`Proposed` | `Accepted` | `Deprecated`).
 - **Role**: Durable record of architectural design rationale and trade-offs.
 
-### 3.8 Layer 06: Component Contract (`component_contract`)
+### 3.8 Layer 06: Component Contract (`component_contract`) {#sec-38-layer-06-component-contract-component_contract}
 - **ID Pattern**: `SPEC.NN.SS.xxxx`
 - **Properties**: `title`, `target_file`, `properties.protocol` (`grpc` | `http` | `cloudevents`), `properties.schema_ref`.
 - **Role**: Buildable interface specification and wire contract (C4-L3).
 
-### 3.9 Layer 07: Test Fixture (`test_fixture`)
+### 3.9 Layer 07: Test Fixture (`test_fixture`) {#sec-39-layer-07-test-fixture-test_fixture}
 - **ID Pattern**: `TDD.NN.SS.xxxx`
 - **Properties**: `title`, `target_file`, `command` (e.g. `pytest tests/unit/test_jwt.py`), `properties.test_function`.
 - **Role**: Concrete test code proving scenario satisfaction, authored test-first.
 
-### 3.10 Layer 08: Implementation Task (`task_action`)
+### 3.10 Layer 08: Implementation Task (`task_action`) {#sec-310-layer-08-implementation-task-task_action}
 - **ID Pattern**: `TASK.NN.SS.xxxx` (rollback: `TASK.NN.SS.xxxx_rollback`)
 - **Properties**: `title`, `action` (`apply_patch` | `create_file` | `run_script`), `target_file`, `compensation`.
 - **Role**: Executable code mutation DAG with native saga rollback compensation.
 
-### 3.11 Layer 09 Overlay: Change Request (`change_request`)
+### 3.11 Layer 09 Overlay: Change Request (`change_request`) {#sec-311-layer-09-overlay-change-request-change_request}
 - **ID Pattern**: `CHG-NN`
 - **Properties**: `title`, `status`, `authorized_by`, `properties.change_level` (`C1`–`C3`).
 - **Role**: Transactional governance envelope authorizing mutations to active nodes.
 
-### 3.12 Layer 10: Evaluation Suite (`evaluation_suite`)
+### 3.12 Layer 10: Evaluation Suite (`evaluation_suite`) {#sec-312-layer-10-evaluation-suite-evaluation_suite}
 - **ID Pattern**: `EVAL.NN.SS.xxxx`
 - **Properties**: `title`, `statement`, `properties.eval_track`, `properties.environment`, `properties.scoring_criteria`, `properties.quality_gate`, `properties.benchmark_thresholds`.
 - **Role**: Comprehensive evaluation and verification suite auditing requirements coverage, performance benchmarks, and regression gates.
 
 ---
 
-## 4. Edge Ontology & Cardinality Invariants
+## 4. Edge Ontology & Cardinality Invariants {#sec-4-edge-ontology-cardinality-invariants}
 
 Edges represent directed semantic dependencies (`from` $\longrightarrow$ `to`). The graph validator enforces strict cardinality rules:
 
@@ -144,7 +151,7 @@ Edges represent directed semantic dependencies (`from` $\longrightarrow$ `to`). 
                                                                  [rollback_action]
 ```
 
-### 4.1 Cardinality Invariant Table
+### 4.1 Cardinality Invariant Table {#sec-41-cardinality-invariant-table}
 
 | Rule ID | Relation | From | To | Cardinality | Verification Invariant |
 |---|---|---|---|---|---|
@@ -161,7 +168,7 @@ Edges represent directed semantic dependencies (`from` $\longrightarrow$ `to`). 
 
 ---
 
-## 5. Storage Partitioning & Git Tracking
+## 5. Storage Partitioning & Git Tracking {#sec-5-storage-partitioning-git-tracking}
 
 To eliminate Git merge collisions across concurrent multi-agent branches:
 1. **Initiative Slices**: `docs/sdd/graph/initiatives/<initiative_slug>.graph.yaml` contains feature-specific requirements, scenarios, tests, and task actions.
@@ -171,7 +178,7 @@ To eliminate Git merge collisions across concurrent multi-agent branches:
 
 ---
 
-## 6. Federated Multi-Repository Contracts
+## 6. Federated Multi-Repository Contracts {#sec-6-federated-multi-repository-contracts}
 
 Per [`MULTI_PROJECT_FEDERATED_STANDARD.md`](MULTI_PROJECT_FEDERATED_STANDARD.md):
 - Nodes can reference external specifications using URI prefixes: `@<repo_slug>:<NODE_ID>`.
@@ -180,7 +187,7 @@ Per [`MULTI_PROJECT_FEDERATED_STANDARD.md`](MULTI_PROJECT_FEDERATED_STANDARD.md)
 
 ---
 
-## 7. Node Immutability Lifecycle
+## 7. Node Immutability Lifecycle {#sec-7-node-immutability-lifecycle}
 
 1. **Active Invariance**: Once committed to `dev` with `status: Active`, nodes are immutable.
 2. **Mutation Mechanics**: To modify a requirement:

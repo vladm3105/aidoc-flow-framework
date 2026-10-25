@@ -1,14 +1,21 @@
+---
+doc_id: GOV-ADAPTATION
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Project Adaptation Surface
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD
@@ -21,7 +28,7 @@ list of knobs, constraints, and the mandatory/skippable layer split. This
 document is the human-readable contract; the YAML is what tools and the
 conformance suite parse.
 
-## 1. Principles
+## 1. Principles {#sec-1-principles}
 
 - **Closed surface.** Only the knobs enumerated in `ADAPTATION_SURFACE.yaml`
   are honored. An engine ignores any unknown or out-of-surface key. Adding a
@@ -37,7 +44,7 @@ conformance suite parse.
   version-controlled, so the same project audits identically on any machine and
   in CI (see §3).
 
-## 2. The profile
+## 2. The profile {#sec-2-the-profile}
 
 A project declares its adaptation in a profile file:
 
@@ -61,7 +68,7 @@ glossary:
 Every key must resolve to a knob in `ADAPTATION_SURFACE.yaml`. An absent profile
 means "framework defaults" — adaptation is purely additive.
 
-## 3. Scopes and reproducibility
+## 3. Scopes and reproducibility {#sec-3-scopes-and-reproducibility}
 
 Two scopes are supported, but only one is read at runtime:
 
@@ -80,7 +87,7 @@ version-controlled. A project value that overrides the seed for the same knob is
 a deliberate per-project deviation and is recorded as a learning (see the
 knowledge-extraction overlay).
 
-## 4. The surface (v1 — fifteen knobs)
+## 4. The surface (v1 — fifteen knobs) {#sec-4-the-surface-v1-fifteen-knobs}
 
 The authoritative definitions, types, and consumer roles live in
 `ADAPTATION_SURFACE.yaml`. This section is the rationale.
@@ -90,7 +97,7 @@ Consumer roles are engine-agnostic: **authoring** (creating an artifact),
 **scaffolding** (creating the project structure). Each engine maps its own tools
 to these roles.
 
-### 4.1 `active_layers`
+### 4.1 `active_layers` {#sec-41-active_layers}
 
 Which of the 10 layers are in play for this project. A project may disable only
 layers in the **skippable** set (`ADAPTATION_SURFACE.yaml: layers.skippable`,
@@ -106,7 +113,7 @@ Honored by: **scaffolding** (scaffolds only active layers), **traceability** and
 **audit** (never demand a reference to, or flag the absence of, a disabled
 layer).
 
-### 4.2 `section_toggles`
+### 4.2 `section_toggles` {#sec-42-section_toggles}
 
 Per-layer on/off switches for the template's **declared-optional** sections
 only. Required sections are not toggleable — turning a required section off is
@@ -116,7 +123,7 @@ Honored by: **authoring** (omits/includes the section) and **audit** (a
 toggled-off optional section is not a finding; a missing *required* section
 still is).
 
-### 4.3 `audit_threshold`
+### 4.3 `audit_threshold` {#sec-43-audit_threshold}
 
 The layer-audit quality-gate score (the framework default is the value each
 layer's audit defines). **Raise-only:** a project may set the threshold equal to
@@ -126,7 +133,7 @@ A value below the default is out of surface and ignored. This preserves the
 
 Honored by: **audit**.
 
-### 4.4 `glossary`
+### 4.4 `glossary` {#sec-44-glossary}
 
 Preferred-term substitutions (`default term → project term`). **Mechanics:**
 applied to **generated prose only**. Audits do **not** enforce terminology in
@@ -135,7 +142,7 @@ seed commonly carries.
 
 Honored by: **authoring**.
 
-### 4.5 `review_mode`
+### 4.5 `review_mode` {#sec-45-review_mode}
 
 Selects review/remediation depth: `team` runs the multi-persona review crew;
 `single_pass` runs a single agent applying every lens in one context. **Never
@@ -146,7 +153,7 @@ diversity for cost, not rigor. The framework default is `team` at gates and
 
 Honored by: **authoring** and **audit**.
 
-### 4.6 `quality_loop_max_iterations`
+### 4.6 `quality_loop_max_iterations` {#sec-46-quality_loop_max_iterations}
 
 The default cap on review→remediate cycles before the saga transitions to
 `ESCALATED` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
@@ -157,7 +164,7 @@ This bounds the loop; it does not weaken any gate.
 
 Honored by: **audit**.
 
-### 4.7 `ci_bindings`
+### 4.7 `ci_bindings` {#sec-47-ci_bindings}
 
 Where a consuming project pins the platform mechanics
 `CI_AUTONOMOUS_PR_STANDARD.md` points at: verification-tier latency ceilings
@@ -174,7 +181,7 @@ it each consumer invents its own profile shape for the same bindings.
 Honored by: **scaffolding** (wires the project's CI surface from the pinned
 values).
 
-### 4.8 `exec_max_files`
+### 4.8 `exec_max_files` {#sec-48-exec_max_files}
 
 How many distinct files one execution task may create or modify. Without a
 standard knob each engine invents its own blast-radius limit and profiles are
@@ -183,7 +190,7 @@ and fall back to the default. A cap only — it never widens any gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.9 `exec_max_diff_lines`
+### 4.9 `exec_max_diff_lines` {#sec-49-exec_max_diff_lines}
 
 How large one execution task's diff may grow (added-plus-removed lines).
 Range 1–10000 (`600` default); out-of-range values are malformed and fall
@@ -191,7 +198,7 @@ back to the default. A cap only — it never widens any gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.10 `exec_protected_paths`
+### 4.10 `exec_protected_paths` {#sec-410-exec_protected_paths}
 
 Repository-relative path prefixes an execution task must never write (e.g.
 `framework/archive/`, `.git/`). Non-string or blank entries are ignored; the
@@ -201,7 +208,7 @@ the blast radius; it does not weaken any gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.11 `exec_test_timeout_s`
+### 4.11 `exec_test_timeout_s` {#sec-411-exec_test_timeout_s}
 
 Per-test-command wall-clock ceiling in seconds. Range 30–3600 (`300`
 default); out-of-range values are malformed and fall back to the default.
@@ -209,7 +216,7 @@ A ceiling only — it never weakens any gate.
 
 Honored by: **audit**.
 
-### 4.12 `exec_max_attempts`
+### 4.12 `exec_max_attempts` {#sec-412-exec_max_attempts}
 
 How many patch→verify cycles an execution task runs before it stops
 retrying. The saga lifecycle already bounds *review* loops
@@ -221,7 +228,7 @@ weaken any gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.13 `exec_token_budget`
+### 4.13 `exec_token_budget` {#sec-413-exec_token_budget}
 
 Total model-token budget per execution task, retries included — without it
 cyclic retry compacts context monotonically across attempts and cost is
@@ -231,7 +238,7 @@ gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.14 `exec_wall_clock_budget_s`
+### 4.14 `exec_wall_clock_budget_s` {#sec-414-exec_wall_clock_budget_s}
 
 Total wall-clock budget in seconds per execution task, retries included.
 Range 60–14400 (`1800` default); out-of-range values are malformed and fall
@@ -239,7 +246,7 @@ back to the default. A budget only — it never widens any gate.
 
 Honored by: **authoring** and **audit**.
 
-### 4.15 `exec_failure_summary_lines`
+### 4.15 `exec_failure_summary_lines` {#sec-415-exec_failure_summary_lines}
 
 Fixed size in lines of the failure summary carried across retries, so
 retried context stays compact instead of accumulating full logs. Range
@@ -248,7 +255,7 @@ default.
 
 Honored by: **authoring** and **audit**.
 
-## 5. How an engine consults the profile
+## 5. How an engine consults the profile {#sec-5-how-an-engine-consults-the-profile}
 
 The framework ships no runtime code; an engine honors the profile by
 instruction, not by execution. Each adapting tool declares which knobs it honors
@@ -262,7 +269,7 @@ knobs. The canonical instruction:
 
 An engine that cannot find a profile proceeds with framework defaults.
 
-### 5.1 Live policy updates (validate-then-swap)
+### 5.1 Live policy updates (validate-then-swap) {#sec-51-live-policy-updates-validate-then-swap}
 
 §5 and §6 describe the profile at a single instant. A long-lived engine
 (agent runtimes, daemon-backed authoring loops) MAY additionally pick up
@@ -289,14 +296,14 @@ file — under this discipline:
 Polling/watching is engine-local and out of framework scope; the
 contract above governs only what an engine does with what it reads.
 
-## 6. Versioning
+## 6. Versioning {#sec-6-versioning}
 
 `ADAPTATION_SURFACE.yaml` carries a `schema_version`; a project profile records
 the `schema_version` it targets. Changing the surface (adding, renaming, or
 removing a knob, or changing the mandatory/skippable split) is a framework-spec
 change and moves `framework/VERSION` accordingly.
 
-## 7. Learnings log (raw signal for promotion)
+## 7. Learnings log (raw signal for promotion) {#sec-7-learnings-log-raw-signal-for-promotion}
 
 A project may keep a learnings log alongside its profile:
 
@@ -330,7 +337,7 @@ governance rule, or the registry) is routed through **change management** (CHG)
 via the **GATE-SPEC** meta gate (`chg/gates/GATE-SPEC_FRAMEWORK.md`); a change to
 an **engine's own authoring guidance** is an ordinary platform review.
 
-## 8. Conformance
+## 8. Conformance {#sec-8-conformance}
 
 The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 
@@ -340,20 +347,20 @@ The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 - no project profile or learnings file is committed under `framework/`;
 - this document and the surface YAML carry no engine-specific tokens.
 
-## 9. Out of scope (v1)
+## 9. Out of scope (v1) {#sec-9-out-of-scope-v1}
 
 - `id_format` as a knob — deferred pending an `ID_NAMING_STANDARDS.md` review to
   enumerate genuinely project-selectable conventions; the narrow-surface
   principle favors not inventing options.
 
-## 10. Project overrides (`.aidoc/project/`)
+## 10. Project overrides (`.aidoc/project/`) {#sec-10-project-overrides-aidocproject}
 
 A project may place files in `.aidoc/project/` using the same directory
 structure as `framework/`. When an engine reads a template, rule, or
 playbook, it checks `.aidoc/project/` first. If the file exists, it
 replaces the framework version. If not, the framework version applies.
 
-### Override structure
+### Override structure {#sec-override-structure}
 
 ```
 .aidoc/project/
@@ -368,7 +375,7 @@ replaces the framework version. If not, the framework version applies.
         └── auditor.md
 ```
 
-### Discovery rule
+### Discovery rule {#sec-discovery-rule}
 
 1. Check `.aidoc/project/{same-path}` first
 2. If the file exists there, use it (project override)
@@ -377,7 +384,7 @@ replaces the framework version. If not, the framework version applies.
 This is the same pattern as software: project-local config overrides
 global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).
 
-### Constraints
+### Constraints {#sec-constraints}
 
 - **Project-local only.** Overrides live in the consuming project, never
   in the shared `framework/` directory.
@@ -389,7 +396,7 @@ global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).
 - **Versioned.** Project overrides are committed alongside `profile.yaml`
   and carry the `framework_version` they were authored against.
 
-### Distribution and Attachment Model
+### Distribution and Attachment Model {#sec-distribution-and-attachment-model}
 
 `.aidoc/framework/` carries the shared Process Canon specification, templates, and structural linters.
 
@@ -398,7 +405,7 @@ global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).
 
 Consumer projects attach the framework via Git submodules (`git submodule add ... .aidoc/framework`) or dynamic clone / pinned allowlist copy managed by `aidoc-project-onboarding` or `install.sh --kind pin`.
 
-## 11. Enforcement adaptation (mandatory for all consuming projects)
+## 11. Enforcement adaptation (mandatory for all consuming projects) {#sec-11-enforcement-adaptation-mandatory-for-all-consuming-projects}
 
 When adapting the framework, consuming projects MUST propagate these enforcement mechanisms:
 
@@ -414,7 +421,7 @@ These steps ensure defense-in-depth: `AGENTS.md` (prompt-level working agreement
 skills (process-level), and `DOC_GOVERNANCE_CORE.md` (documentation-level) all enforce
 the CHG gate independently.
 
-### Project Working Agreement (`AGENTS.md`) Starter Skeleton
+### Project Working Agreement (`AGENTS.md`) Starter Skeleton {#sec-project-working-agreement-agentsmd-starter-skeleton}
 
 Consuming projects should commit an `AGENTS.md` file at project root orienting all AI coding agents:
 
@@ -431,7 +438,7 @@ Before writing ANY code for a feature, enhancement, or bug fix:
 5. Run automated verification suites and linters locally before pushing: `task sdd:lint` and `task sdd:check` (or `task check`). Never bypass hooks (`--no-verify` is forbidden).
 ```
 
-## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform
+## 12. Reference Runtime Execution Architecture: 3-Tier Multi-Agent Platform {#sec-12-reference-runtime-execution-architecture-3-tier-multi-agent-platform}
 
 Consuming platforms deploying autonomous agent runtimes MUST implement the engine-agnostic
 **3-Tier Execution Architecture** codified in [`DURABLE_EXECUTION_STANDARD.md`](DURABLE_EXECUTION_STANDARD.md):
@@ -445,14 +452,14 @@ Consuming platforms deploying autonomous agent runtimes MUST implement the engin
 3. **Tier 3: Deterministic Effect & Verification Services (Physical Execution)**:
    - Owns isolated workspace lifecycle ([`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)), compilation, deterministic linting (`sdd_doc_lint`, `sdd_swf_lint`), and test suites.
 
-### The Invariant Rule for Consuming Platforms:
+### The Invariant Rule for Consuming Platforms: {#sec-the-invariant-rule-for-consuming-platforms}
 > **Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.**
 >
 > - Graphs *propose*.
 > - Services *apply and verify*.
 > - Durable Workflows *orchestrate, compensate, gate, and advance*.
 
-### Key Implementation Invariants for Adapters:
+### Key Implementation Invariants for Adapters: {#sec-key-implementation-invariants-for-adapters}
 - **Thin State**: Durable workflows pass URIs, IDs, and status codes ($\le 2$ KB) only. Large artifacts (diffs, plans, logs) live in the project's external artifact store.
 - **Deterministic Quality Gate Floor**: Promotion/merge authorization strictly requires `structural_pass == true` and `blocking_findings == 0` (zero P0/P1 blockers). Advisory scores and narrative summaries must not flap the binary gate.
 - **Deterministic Rollback**: No generative model is ever used to undo git state. Rollback is performed exclusively by deterministic services (`git worktree remove` before `git branch -D`).

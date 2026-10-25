@@ -1,25 +1,32 @@
+---
+doc_id: GOV-MULTI-PROJECT-FEDERATED-STANDARD
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Multi-Project Federated Architecture Standard: Quad-Pillar Topology, Cross-Project Dataflow, and Machine-Readable Contracts
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-14 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 | Authority | [Decision D-0013 / GD-13](DECISIONS.md), [RECOMMENDED_PLATFORM_STACK.md](RECOMMENDED_PLATFORM_STACK.md), [DURABLE_EXECUTION_STANDARD.md](DURABLE_EXECUTION_STANDARD.md), [CHG_REQUEST_FLOWS.md](CHG_REQUEST_FLOWS.md), [ADAPTATION.md](ADAPTATION.md) |
 
 ---
 
-## 1. Purpose & Foundational Law
+## 1. Purpose & Foundational Law {#sec-1-purpose-foundational-law}
 
 The **`aidoc-flow-framework`** establishes a 10-layer Specification-Driven Development (SDD) contract
 (BRD $\rightarrow$ PRD $\rightarrow$ EARS $\rightarrow$ BDD $\rightarrow$ ADR $\rightarrow$ SPEC $\rightarrow$ TDD $\rightarrow$ IPLAN $\rightarrow$ Code $\rightarrow$ EVAL $\rightarrow$ Verified).
 This standard serves as the **authoritative governance specification for multi-project enterprise environments**, standardizing how multiple independent, polyglot software repositories interact, share contracts, enforce architectural policies, and exchange dataflow events without semantic drift or integration failure.
 
-### The Two Fatal Failure Modes of Multi-Project Agentic Systems
+### The Two Fatal Failure Modes of Multi-Project Agentic Systems {#sec-the-two-fatal-failure-modes-of-multi-project-agentic-systems}
 
 Autonomous multi-agent engineering across multiple repositories invariably encounters two destructive extremes:
 
@@ -28,7 +35,7 @@ Autonomous multi-agent engineering across multiple repositories invariably encou
 2. **The "12-Repo Integration Bankruptcy" Trap (Sprawl & Entropy):**
    Fragmenting the platform into a sprawling constellation of 10+ uncoordinated standalone repositories (e.g. separate repos for testing, memory, logging, interlog, router, support desk, operations). Engineering teams exhaust their entire velocity debugging schema mismatches, version synchronization, and broken CI pipelines across decoupled repos.
 
-### The Federated Paved-Path Invariant
+### The Federated Paved-Path Invariant {#sec-the-federated-paved-path-invariant}
 
 To resolve these failure modes, the enterprise ecosystem adopts a **compiler-style federated architecture**:
 * Documentation is treated as **machine-addressable contracts, directed acyclic graphs (DAGs), and automated test oracles**, not prose homework.
@@ -37,7 +44,7 @@ To resolve these failure modes, the enterprise ecosystem adopts a **compiler-sty
 
 ---
 
-## 2. The Quad-Pillar Corporate Ecosystem
+## 2. The Quad-Pillar Corporate Ecosystem {#sec-2-the-quad-pillar-corporate-ecosystem}
 
 The enterprise architecture is strictly partitioned into four authoritative, decoupled pillars:
 
@@ -70,7 +77,7 @@ graph TD
     ProjectB -->|Imports Upstream Contracts| ProjectA
 ```
 
-### Pillar Definitions & Roles
+### Pillar Definitions & Roles {#sec-pillar-definitions-roles}
 
 1. **Process Canon (`vladm3105/aidoc-flow-framework`):**
    The single normative specification defining the 10 SDD layers, review crews, quality gates, and declarative state machine workflows. Governed by **Decision D-0013 / GD-13**: strictly engine-agnostic and vendor-neutral, containing zero platform runtime code.
@@ -83,7 +90,7 @@ graph TD
 
 ---
 
-## 3. Multi-Repo Isolation & Distribution Model
+## 3. Multi-Repo Isolation & Distribution Model {#sec-3-multi-repo-isolation-distribution-model}
 
 > [!IMPORTANT]
 > **Enterprise Invariant: Strictly Separated Repositories Per Project.**  
@@ -132,7 +139,7 @@ graph TD
     CI -.->|"Merge Gate Status"| Repo1
 ```
 
-### The Three Progressive Distribution Tiers
+### The Three Progressive Distribution Tiers {#sec-the-three-progressive-distribution-tiers}
 
 Consumer projects resolve and ingest upstream contracts through three progressive tiers:
 
@@ -147,7 +154,7 @@ Consumer projects resolve and ingest upstream contracts through three progressiv
 3. **Tier 3 (Zero-Network Sandboxed Agent Resolution via Local Socket):**
    Per [`RECOMMENDED_PLATFORM_STACK.md`](RECOMMENDED_PLATFORM_STACK.md) §2.2, autonomous coding agents execute inside **gVisor (`runsc`)** sandboxes with strict zero-network egress (`--network=none`). Direct in-sandbox calls to the GitHub API are physically blocked. External contracts are pre-populated into `.aidoc/contracts/cache/` during workspace initialization (`framework/scripts/install.sh` / `agentd`), or queried through the local UNIX domain socket `/run/aidoc/agent.sock`.
 
-### Scoped Pointer Addressing Syntax
+### Scoped Pointer Addressing Syntax {#sec-scoped-pointer-addressing-syntax}
 
 All cross-project references use universal, repo-independent URI syntax:
 $$\text{@}\langle\text{project-id}\rangle\text{:}\langle\text{layer}\rangle\text{:}\langle\text{tag-id}\rangle$$
@@ -157,7 +164,7 @@ Examples:
 - `@billing-engine:04_BDD:BDD-SWF-INVOICE-TAX`
 - `@shared-platform:05_ADR:ADR-POSTGRES-18-MIGRATION`
 
-### Multi-Project Contract Registry (`contracts-registry.yaml`)
+### Multi-Project Contract Registry (`contracts-registry.yaml`) {#sec-multi-project-contract-registry-contracts-registryyaml}
 
 The canonical `aidoc-data-contracts` repository maintains the company-wide contract registry index (starter template: [`framework/templates/CONTRACTS-REGISTRY-TEMPLATE.yaml`](../templates/CONTRACTS-REGISTRY-TEMPLATE.yaml)). When an independent repository cuts a release tag, its CI updates this manifest:
 ```yaml
@@ -188,25 +195,25 @@ contracts:
 
 ---
 
-## 4. Deterministic Contracts via Behavioral State Graphs
+## 4. Deterministic Contracts via Behavioral State Graphs {#sec-4-deterministic-contracts-via-behavioral-state-graphs}
 
 > [!IMPORTANT]
 > **Normative Law: Behavioral State Graphs Prohibit Legacy Gherkin.**  
 > The framework formally proscribes legacy Gherkin narrative text (`.feature` files with conversational Given/When/Then steps) for machine-driven contracts. Behavioral requirements in Layer 04 BDD and interface contracts in Layer 06 SPEC MUST be modeled as **declarative behavioral state graphs** housed in the **Hybrid Envelope Architecture** ([CNCF Serverless Workflow v0.8 YAML](../layers/04_BDD/BDD_WORKFLOW_STANDARD.md)) and visualized via Mermaid state diagrams.
 
-### Why Legacy Gherkin Is Proscribed
+### Why Legacy Gherkin Is Proscribed {#sec-why-legacy-gherkin-is-proscribed}
 1. **Lack of Machine-Actionable State Transitions:** Conversational `.feature` files rely on brittle regular expression matching against arbitrary prose strings. They cannot formally define asynchronous callbacks, distributed transaction rollbacks, or state machine boundaries.
 2. **Absence of SAGA Compensation Modeling:** In autonomous distributed systems, failures require formal compensation (SAGA pattern). CNCF state graphs natively define compensation states (`compensatedBy`), while Gherkin has no structural mechanism for compensation.
 3. **Element-Level Lineage:** Behavioral state graphs carry structured `ears:` citation lists on every state and transition, maintaining unbroken mathematical traceability from Layer 03 EARS to Layer 07 TDD test fixtures.
 
-### Dual-Template Architecture in Layer 04 (BDD)
+### Dual-Template Architecture in Layer 04 (BDD) {#sec-dual-template-architecture-in-layer-04-bdd}
 Consuming projects instantiate BDD scenarios using two validated templates:
 * **Standard Atomic Scenarios (`BDD-TEMPLATE.yaml`):** Structured Given-When-Then YAML for single-turn, atomic behavior verifications.
 * **Stateful Behavioral Workflows (`BDD-SWF-TEMPLATE.yaml`):** Hybrid Envelope housing a CNCF Serverless Workflow state machine for multi-step journeys, asynchronous sagas, and distributed state transitions.
 
 ---
 
-## 5. Change Request Lifecycle Governance
+## 5. Change Request Lifecycle Governance {#sec-5-change-request-lifecycle-governance}
 
 All cross-project and internal change events bind strictly to the framework's **ratified 6-flow router ([`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) §1)**:
 
@@ -219,7 +226,7 @@ All cross-project and internal change events bind strictly to the framework's **
 | `DIR2C` | F2 (Direct) | IPLAN $\rightarrow$ Code/Docs | Direct docs/tooling; empty SDD lifecycle |
 | `SDD2C` | F1 (Full SDD) | BRD $\rightarrow$ PRD $\rightarrow$ ... $\rightarrow$ Code | Full 10-layer SDD chain for new systems |
 
-### The Anti-Contract Erosion Gate (Pre-Merge Invariant)
+### The Anti-Contract Erosion Gate (Pre-Merge Invariant) {#sec-the-anti-contract-erosion-gate-pre-merge-invariant}
 
 To protect downstream subscriber repositories from breaking changes:
 1. **Local Pre-Commit Check (`aidoc lint-invariants`):**
@@ -231,7 +238,7 @@ To protect downstream subscriber repositories from breaking changes:
 4. **Hard Invariant Gate:**
    If any downstream subscriber fails against the candidate contract schema, the provider PR **cannot merge** until either backward compatibility is restored, or a coordinated multi-repo migration plan is executed.
 
-### Anti-Circular Dependency Rule & Two-Phase Evolution (Expand / Contract)
+### Anti-Circular Dependency Rule & Two-Phase Evolution (Expand / Contract) {#sec-anti-circular-dependency-rule-two-phase-evolution-expand-contract}
 
 1. **Strict Acyclicity Rule:**
    Cross-repository contract dependencies must form a strict Directed Acyclic Graph (DAG). Circular dependencies (`@proj-a -> @proj-b -> @proj-a`) are strictly rejected by `aidoc validate-graph`.
@@ -243,11 +250,11 @@ To protect downstream subscriber repositories from breaking changes:
 
 ---
 
-## 6. Canonical Machine-Readable Contract Schemas (Proto3)
+## 6. Canonical Machine-Readable Contract Schemas (Proto3) {#sec-6-canonical-machine-readable-contract-schemas-proto3}
 
 ---
 
-### Contract 1: IPLAN Execution Manifest (`iplan.proto`)
+### Contract 1: IPLAN Execution Manifest (`iplan.proto`) {#sec-contract-1-iplan-execution-manifest-iplanproto}
 
 ```protobuf
 syntax = "proto3";
@@ -330,7 +337,7 @@ message IplanManifest {
 
 ---
 
-### Contract 2: Change Event & Blast Radius (`change_event.proto`)
+### Contract 2: Change Event & Blast Radius (`change_event.proto`) {#sec-contract-2-change-event-blast-radius-change_eventproto}
 
 ```protobuf
 syntax = "proto3";
@@ -383,7 +390,7 @@ message ChangeEvent {
 
 ---
 
-### Contract 3: Test Oracle & Behavioral Graph Verification (`test_oracle.proto`)
+### Contract 3: Test Oracle & Behavioral Graph Verification (`test_oracle.proto`) {#sec-contract-3-test-oracle-behavioral-graph-verification-test_oracleproto}
 
 ```protobuf
 syntax = "proto3";
@@ -435,7 +442,7 @@ message ExecutionResultPayload {
 
 ---
 
-### Contract 4: Support Ticket / Blocker Escalation (`support_ticket.proto`)
+### Contract 4: Support Ticket / Blocker Escalation (`support_ticket.proto`) {#sec-contract-4-support-ticket-blocker-escalation-support_ticketproto}
 
 ```protobuf
 syntax = "proto3";
@@ -468,7 +475,7 @@ message SupportTicketPayload {
 
 ---
 
-### Contract 5: Centralized Stack Policy Contract (`stack_policy.proto`)
+### Contract 5: Centralized Stack Policy Contract (`stack_policy.proto`) {#sec-contract-5-centralized-stack-policy-contract-stack_policyproto}
 
 ```protobuf
 syntax = "proto3";
@@ -520,13 +527,13 @@ A starter template for repo-level stack policies is provided at [`framework/temp
 
 ---
 
-## 7. Context Slicing Engine Specification (`aidoc slice`)
+## 7. Context Slicing Engine Specification (`aidoc slice`) {#sec-7-context-slicing-engine-specification-aidoc-slice}
 
 To protect agent reasoning capacity and prevent token budget exhaustion, agents executing tasks in Layer 08 IPLAN MUST NOT ingest monolithic upstream documents. The Context Slicing Engine extracts the minimal necessary ancestor closure:
 
 $$\text{Context}(T_k) = \text{Ancestors}(T_k) \cap \{\text{SPEC}, \text{BDD}, \text{EARS}, \text{ADR}\}$$
 
-### Reference Implementation (`slicer.py`)
+### Reference Implementation (`slicer.py`) {#sec-reference-implementation-slicerpy}
 
 ```python
 """AIDoc DAG Context Slicing Engine (aidoc slice)."""
@@ -601,11 +608,11 @@ class AidocDependencyGraph:
 
 ---
 
-## 8. Declarative Workflow & State Graph Modeling Specifications (Next-Phase Foundation)
+## 8. Declarative Workflow & State Graph Modeling Specifications (Next-Phase Foundation) {#sec-8-declarative-workflow-state-graph-modeling-specifications-next-phase-foundation}
 
 In alignment with [`GOVERNANCE_WORKFLOW_STANDARD.md`](GOVERNANCE_WORKFLOW_STANDARD.md), all multi-project orchestrations must be formalized as declarative CNCF Serverless Workflow v0.8 YAML state machines (`.sw.yaml`) and visualized via Mermaid state diagrams:
 
-### End-to-End Multi-Project Workflow Architecture
+### End-to-End Multi-Project Workflow Architecture {#sec-end-to-end-multi-project-workflow-architecture}
 
 ```mermaid
 graph TD
@@ -636,7 +643,7 @@ graph TD
     end
 ```
 
-### Planned Workflow State Machines
+### Planned Workflow State Machines {#sec-planned-workflow-state-machines}
 
 1. **`multi-repo-contract-sync.sw.yaml`:**
    Orchestrates contract publishing from provider repositories to `aidoc-data-contracts`, runs `buf lint` and `buf breaking`, compiles polyglot stubs, and emits notification CloudEvents over NATS JetStream.

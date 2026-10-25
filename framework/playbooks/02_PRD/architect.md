@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: architect
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.96.13"
+framework_spec_version: "0.96.14"
 ---
 # architect lens — PRD layer
 

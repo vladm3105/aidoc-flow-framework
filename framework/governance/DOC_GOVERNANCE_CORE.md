@@ -1,16 +1,23 @@
+---
+doc_id: GOV-DOC-GOVERNANCE-CORE
+bucket: machine-consumed-candidate
+authority: bidirectional
+consumers: [authoring, audit, traceability]
+---
+
 # Document Governance — SDD
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.13 |
+| Framework Version | 0.96.14 |
 
-## Principles
+## Principles {#sec-principles}
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
 2. **YAML is the mandatory format and the source of truth** — for **templates and for the instance artifacts authored from them**. Every layer template is `{TYPE}-TEMPLATE.yaml`, and every artifact a layer produces is authored as `.yaml`. **Markdown is optional and descriptive**: a rendering of the YAML, or additional explanatory material around it. Markdown never carries a fact the YAML does not, and a fact that exists only in markdown is a defect of the same class as two records of one count. Where a `.md` file restates YAML content it is **generated, not authored** — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect. Scope note: this principle governs the artifacts of layers 1-10 and their templates; it does not govern repository prose (`README`, `CHANGELOG`, governance surfaces such as this file) or a layer's `<X>-00_index.TEMPLATE.*`, whose extension is fixed per layer by `LAYER_REGISTRY.yaml`. **Authority:** the per-layer value is `LAYER_REGISTRY.yaml` `extensions` — the single normative source (GD-17). This principle states the rule; it does not re-specify the per-layer extensions. **Effective condition:** GD-17 states, once, when the instance-format mandate takes normative effect.
@@ -22,7 +29,7 @@
 8. **Change-of-record discipline** — Every change must keep its documents-of-record in sync within the same PR. A doc-of-record is any document whose content is the durable answer to "what state is the project in" — `VERSION`, `README`, `PARITY`, `TAGGING`, `DECISIONS`, Change Requests (`CHG`), the handoff log, and the project memory (changelogs and roadmaps are frozen tombstones; live records are CHG archives and GitHub issues/releases). No catch-up "doc-refresh" PR may follow a change; the doc updates ship in the change's own PR. Enforcement is two-tier: (a) **mechanical** — version-reference propagation runs automatically on commit (`hooks/sync-version-refs.sh` re-syncs every doc that quotes a `VERSION` file when that file changes); (b) **semantic** — a warning hook (`hooks/check-docs-updated.sh`) flags likely-stale docs when a commit touches code/spec/skills without touching a doc-of-record. The contributor authors the semantic content (decision rationale, CHG request record, handoff narrative); the hook decides whether to remind. See [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md#documentation-discipline--update-docs-of-record-per-pr) §Documentation discipline for the per-change-category matrix.
 9. **Example-driven / project-driven framework improvement** — Every consumer project applying the framework is an additional empirical test. Friction discovered during use (lint-rule misfires, harness flag absences, engine prose contradicting the spec, sync-script gotchas, missing convenience features) is **NEW knowledge about the framework itself** and is captured immediately, not held in personal memory. The capture surface is the owning repository's tracker, filed via the `submit-feedback` skill (`framework/skills/submit-feedback/`): search before filing, carry the analysis with reproduction at `file:line` plus fix shape, classify origin (`real-use` vs `review`), publish with safe body-file mechanics and read the write back. An entry that is actionable by someone other than its finder, reproducible at `file:line` with a fix shape, or user-visible gets an issue, linked both ways and closed on the merge SHA. Without the discipline, learning evaporates between sessions and the next project rediscovers the same pain. (No file log: Tier-1 retired in 0.67.0, CHG-23; file eliminated in CHG-35 — the tracker is the single surface.)
 
-### Development vs Deployment Plans
+### Development vs Deployment Plans {#sec-development-vs-deployment-plans}
 
 Adopted 2026-04-29. Permanent plans split into two roles:
 
@@ -41,13 +48,13 @@ Practical effect:
 
 **Cross-plan obligation handoff.** When closing a development IPLAN whose artifacts depend on a deployment-plan apply step, register the obligation in `IPLAN-00_index.yaml` §deferred_items before flipping `Completed`. The IPLAN's status reflects authoring-completion; the registry entry tracks the deploy-side handoff.
 
-## Immutability
+## Immutability {#sec-immutability}
 
 - Published artifacts (status: Approved) must not be modified.
 - Changes require a new document version or a new document ID.
 - Superseded documents are marked as Deprecated/Superseded in document_control.status.
 
-## Template Policy
+## Template Policy {#sec-template-policy}
 
 - **Unified YAML only** — No `.md` templates, no `.feature` templates. This bullet
   governs **templates**; Principle 2 governs the instance artifacts authored from
@@ -80,14 +87,14 @@ Practical effect:
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.
 
-## Validation
+## Validation {#sec-validation}
 
 - Layer entries must validate against `LAYER_REGISTRY.yaml`.
 - Required upstream tags must be present in traceability sections.
 - Element IDs must match the 4-segment hash format: `TYPE.NN.SS.xxxx`.
 - Document IDs must match the format: `TYPE-NN`.
 
-### SDD-First Implementation Order (§3.1.1)
+### SDD-First Implementation Order (§3.1.1) {#sec-sdd-first-implementation-order-311}
 
 When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** be SDD document updates. The correct flow is:
 
@@ -126,7 +133,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 | **IPLAN** | All code implementation steps, file manifest, execution commands, test cases | SDD document lifecycle (that's CHG's job) |
 | **SDD Documents** | Current requirements, specs, test definitions | Implementation details (that's IPLAN's job) |
 
-### Backward Propagation / Code-to-Doc Reconciliation Flow (Type-R — §3.1.2)
+### Backward Propagation / Code-to-Doc Reconciliation Flow (Type-R — §3.1.2) {#sec-backward-propagation-code-to-doc-reconciliation-flow-type-r-312}
 
 When a verified working codebase temporarily precedes its specifications —
 empirical integration discovery against a live third-party sandbox,
@@ -173,7 +180,7 @@ Phase 3: Bi-directional Verification Gate
 3. The freeze holds through reconciliation: no new unverified code mid-phase. A discovery made during reconciliation restarts at Phase 0.
 4. **IPLAN Gate (§3.13) relationship.** The pre-existing verified code is the governed exception, not new implementation: from Phase 1 onward the reverse-authored IPLAN (status `In Progress`, `source_chg` naming the Type-R CHG, manifest covering every file the reconciliation touches) is the authorizing IPLAN for all doc edits and any follow-up code. The §3.13 pre-write verification applies to everything written after the freeze — including the reconciliation edits themselves. GOV-013 remains a forward-flow check; a Type-R CHG carrying `change_source: reconciliation` with a frozen manifest is its documented carve-out, not a violation.
 
-### CHG Request Flows (§3.1.3)
+### CHG Request Flows (§3.1.3) {#sec-chg-request-flows-313}
 
 Every artifact change is classified into exactly one flow — or into a governed non-flow path that yields to its
 own section — before its CHG is authored. First match wins, in this order:
@@ -195,7 +202,7 @@ direct-commit path; sole exception seed-phase drafting pre-first-BRD), the miscl
 and verification expectations:
 `governance/CHG_REQUEST_FLOWS.md` (canonical — this section is the kernel, not a second source).
 
-## CHG creation checklist (§3.4)
+## CHG creation checklist (§3.4) {#sec-chg-creation-checklist-34}
 
 Before writing any CHG document, complete this checklist. Each item maps to a
 gap class found in CHG post-creation reviews. Items 11-12 were added after
@@ -228,7 +235,7 @@ failures).
 | 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle`, `iplan_creation`, or `documentation_sync` for doc-only milestones). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` / `documentation_sync` steps (execution zone). NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
 | 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle`, `iplan_creation`, and `documentation_sync` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 
-### 3.4.1 CHG Post-Creation Validation (MANDATORY)
+### 3.4.1 CHG Post-Creation Validation (MANDATORY) {#sec-341-chg-post-creation-validation-mandatory}
 
 After creating a CHG document, verify EVERY item before committing. This
 catches errors introduced during CHG authoring — even when §3.4 was followed.
@@ -268,7 +275,7 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 
 **Violation log:** Record errors in CHG revision_history for audit trail.
 
-### CHG Status Lifecycle (Mandatory — §3.3)
+### CHG Status Lifecycle (Mandatory — §3.3) {#sec-chg-status-lifecycle-mandatory-33}
 
 Every CHG document MUST track its status through the full lifecycle. Status changes are **not optional**.
 
@@ -300,7 +307,7 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 
 **Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-06-11). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 
-### IPLAN Gate (Hard Block — §3.13)
+### IPLAN Gate (Hard Block — §3.13) {#sec-iplan-gate-hard-block-313}
 
 **No code may be written without an IPLAN authorizing the changes.**
 
@@ -343,7 +350,7 @@ seed-phase drafting before the first BRD is authored against seed vN (SEED_CONTR
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-06-11). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
 
-### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync)
+### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync) {#sec-iplan-lifecycle-status-gates-manifest-accuracy-completion-sync}
 
 **Status transitions are mandatory gates.** The IPLAN status lifecycle (`Draft → Approved → In Progress → Completed → Verified`) requires an explicit status update at each phase boundary before work on the next phase begins. `Completed` is validatable, not terminal — the VERIFY window is still open. Only `Verified` is terminal (immutable, no backward transitions ever):
 
@@ -368,11 +375,11 @@ seed-phase drafting before the first BRD is authored against seed vN (SEED_CONTR
 
 **Migration VERIFY rule.** For migration IPLANs, fmt/lint/unit green is necessary but NOT sufficient: validation MUST include a fresh-image rebuild plus a live-DB dry-run of the migration apply step. A formatter parsing cleanly does not prove the artefact applies; a stale image does not prove the current tree boots (#656).
 
-### CHG Linter Usage Rules (§3.14)
+### CHG Linter Usage Rules (§3.14) {#sec-chg-linter-usage-rules-314}
 
 The CHG linter (`scripts/chg_lint.py` or `sdd_doc_lint/chg_lint.py`) validates CHG documents against governance rules. **Running the linter is MANDATORY at three points in the CHG lifecycle.**
 
-#### When to Run the Linter
+#### When to Run the Linter {#sec-when-to-run-the-linter}
 
 | Trigger Point | When | What It Catches |
 |---------------|------|-----------------|
@@ -380,7 +387,7 @@ The CHG linter (`scripts/chg_lint.py` or `sdd_doc_lint/chg_lint.py`) validates C
 | **Pre-implementation** | Before writing ANY code for a CHG | Missing IPLAN reference, wrong SDD-first order |
 | **Pre-merge** | Before merging a PR that modifies CHG files | All governance violations |
 
-#### How to Run
+#### How to Run {#sec-how-to-run}
 
 ```bash
 # Single CHG file
@@ -393,7 +400,7 @@ python scripts/chg_lint.py docs/sdd/09-CHG/*.yaml
 python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 ```
 
-#### Exit Codes
+#### Exit Codes {#sec-exit-codes}
 
 | Code | Meaning | Action Required |
 |------|---------|-----------------|
@@ -402,7 +409,7 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 | `2` | Usage error | Check command arguments |
 | `3` | Missing prerequisite | Install PyYAML: `pip install pyyaml` |
 
-#### What the Linter Checks
+#### What the Linter Checks {#sec-what-the-linter-checks}
 
 | Check ID | Rule | Severity | What It Validates |
 |----------|------|----------|-------------------|
@@ -425,7 +432,7 @@ python sdd_doc_lint/chg_lint.py <chg-file.yaml>
 
 Severities match `sdd_doc_lint/chg_lint.py`'s actual `errors`/`warnings` placement (#716); the full catalog with `GOV-*` aliases lives in `LINT_RULES.md`.
 
-#### Required Workflow
+#### Required Workflow {#sec-required-workflow}
 
 ```
 1. Create CHG (status: Proposed)
@@ -447,7 +454,7 @@ Severities match `sdd_doc_lint/chg_lint.py`'s actual `errors`/`warnings` placeme
 9. Implement code per IPLAN
 ```
 
-#### Error Resolution
+#### Error Resolution {#sec-error-resolution}
 
 | Error | Fix |
 |-------|-----|
@@ -457,7 +464,7 @@ Severities match `sdd_doc_lint/chg_lint.py`'s actual `errors`/`warnings` placeme
 | CHG-L004: no IPLAN reference | Add IPLAN to `sdd_lifecycle` or `artifacts_modified` section. |
 | CHG-L005: wrong order | Reorder steps: all `sdd_lifecycle` steps must come before all `iplan_creation` steps. |
 
-#### Integration with Other Gates
+#### Integration with Other Gates {#sec-integration-with-other-gates}
 
 The CHG linter works alongside:
 
@@ -468,7 +475,7 @@ The CHG linter works alongside:
 
 **Rule:** The linter does NOT replace the manual checklists. Run the linter AND complete the checklists. The linter catches structural violations; the checklists catch content quality.
 
-## Status Propagation (§4.1)
+## Status Propagation (§4.1) {#sec-status-propagation-41}
 
 When a downstream SDD layer document is started, the upstream document's status MUST be updated to `Approved`. Do not start the next layer if its upstream is not approved.
 
@@ -483,14 +490,14 @@ This ensures the SDD chain reflects authoring progress — a `Draft` upstream me
 
 **Worktree-based cascade authoring** follows the ordering invariants in [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md) (worktree removal runs before branch deletion).
 
-## EVAL Layer Governance
+## EVAL Layer Governance {#sec-eval-layer-governance}
 
-### EVAL-IPLAN 1:1 Mapping Rule
+### EVAL-IPLAN 1:1 Mapping Rule {#sec-eval-iplan-11-mapping-rule}
 
 Each IPLAN owns exactly one EVAL document. The EVAL-NN number matches the IPLAN-NN
 number (EVAL-01 owns IPLAN-01, EVAL-02 owns IPLAN-02, etc.).
 
-### EVAL Version Coupling
+### EVAL Version Coupling {#sec-eval-version-coupling}
 
 EVAL documents version with their owning IPLAN. When a CHG bumps the IPLAN version,
 the EVAL versions with it. The `document_control.iplan_version` field records which
@@ -502,13 +509,13 @@ IPLAN version the EVAL covers.
 | IPLAN scope changes (new files/features) | EVAL bumps version, archive old |
 | BDD/TDD upstream changes | EVAL bumps version if test cases change |
 
-### EVAL-RPT Immutability
+### EVAL-RPT Immutability {#sec-eval-rpt-immutability}
 
 Evaluation reports (EVAL-RPT files) are immutable once written. They are snapshots
 of test execution — never modified after creation. If new tests are run, a new RPT
 file is created with an incremented cycle number.
 
-### EVAL Archival
+### EVAL Archival {#sec-eval-archival}
 
 When a CHG bumps an EVAL version, the old EVAL document and its reports are archived
 to the CHG archive directory:
@@ -521,7 +528,7 @@ docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
       EVAL-{NN}-RPT-*.yaml            # archived reports
 ```
 
-### EVAL Naming Standards
+### EVAL Naming Standards {#sec-eval-naming-standards}
 
 | Element | Format | Example |
 |---------|--------|---------|
@@ -531,7 +538,7 @@ docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
 | Test case (BDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.03.a7f3` |
 | Test case (TDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.04.4d64` |
 
-### EVAL Traceability
+### EVAL Traceability {#sec-eval-traceability}
 
 Each EVAL document traces to its owning IPLAN (1:1). The IPLAN traces to SPEC, TDD,
 BDD, and EARS. EVAL does not need to re-trace the full chain — it follows transitively
@@ -541,14 +548,14 @@ through the IPLAN.
 EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
 ```
 
-### Terminal Lifecycle Transition Gate
+### Terminal Lifecycle Transition Gate {#sec-terminal-lifecycle-transition-gate}
 
 The terminal lifecycle transitions for implementation plans and change requests are governed deterministically by Layer 10 Evaluation:
 - **IPLAN Transition (`Completed` → `Verified`):** Authorized strictly upon generation and commit of an authentic Layer 10 Evaluation Report (`EVAL-{NN}-RPT-{NNN}.yaml`) with `verdict: PASS` and zero test failures across all active verification layers.
 - **CHG Transition (`Implemented` → `Completed`):** Authorized strictly when the terminal evaluation report is committed and merged into the integration branch (`dev`).
 - **Non-Deployable Changes Exception:** Pure documentation, governance, and tooling changes (F2 Direct Requests) bypass live deployment and evaluation reports (`CHG_REQUEST_FLOWS.md` §3.3 rule 10), completing directly upon passing static validation and dual independent review.
 
-## Security
+## Security {#sec-security}
 
 - Artifacts are agent-authored from inputs the agent does not control. Every
   agent-authored artifact passes the `SECURITY_REVIEW.md` checks — no embedded
@@ -572,7 +579,7 @@ The terminal lifecycle transitions for implementation plans and change requests 
   or technology selection work, AI agents and engineers MUST file GitHub issues on the repository
   rather than making unverified local assumptions or out-of-band modifications.
 
-## Governance Baseline
+## Governance Baseline {#sec-governance-baseline}
 
 | Governance Area | Standard |
 |----|------|
