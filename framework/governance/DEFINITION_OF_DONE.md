@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.16 |
+| Framework Version | 0.96.17 |
 
 Engine-agnostic completion criteria for an SDD **artifact** and for a **change**
 to the spec. This is a *light contract*: it names *what must be true* before work

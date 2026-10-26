@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.16 |
+| Framework Version | 0.96.17 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the

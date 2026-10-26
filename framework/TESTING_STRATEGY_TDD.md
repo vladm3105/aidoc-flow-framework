@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.16 |
+| Framework Version | 0.96.17 |
 
 # Layer 7 — TDD Guide
 

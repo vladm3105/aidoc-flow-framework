@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.16 |
+| Framework Version | 0.96.17 |
 
 **Scope:** Continuous Integration & Status Check Orchestration for `[Project Name]`
 **Governing Rules:** `CI_AUTONOMOUS_PR_STANDARD.md`, `GOVERNANCE_WORKFLOW_STANDARD.md`
