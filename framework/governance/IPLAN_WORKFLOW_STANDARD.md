@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.16 |
+| Framework Version | 0.96.17 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -113,7 +113,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.96.16"
+  framework_version: "0.96.17"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
