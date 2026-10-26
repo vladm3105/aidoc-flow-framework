@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.17 |
+| Framework Version | 0.96.18 |
 
 ---
 
@@ -186,3 +186,37 @@ graph TD
 ```
 
 Every transition along this DAG is governed by machine-executable criteria. By the time work reaches the factory floor of code implementation, every ambiguity has been crystallized into binary topological invariants—ensuring reliable, unattended, and deterministic execution.
+
+---
+
+## 5. Skill Dispatch Map — How and When to Use Each Skill {#sec-5-skill-dispatch-map-how-and-when-to-use-each-skill}
+
+Each station below names the one `framework/skills/sdd-*` skill that runs it: when to dispatch it, which flows it serves, and which skill receives its output. Dispatch in station order; never jump from classification to code with zero SDD steps. Skill bodies carry the full trigger text — this map is the routing layer, not a second copy.
+
+### 5.1 Before the line — validate, then classify, then authorize
+
+| Order | Dispatch | When | Hands off to |
+|---|---|---|---|
+| 0 | `sdd-chg-triage` | Before any CHG or code: the picked-up issue must still be open, reproducible, and applicable on current `dev`. Verdicts `STALE`, `SUPERSEDED`, or `ALREADY-FIXED` stop the line here. | `sdd-chg-flow` on `GO` |
+| 1 | `sdd-chg-flow` | Immediately after a `GO`: classify into exactly one flow (first router row that matches). The verdict fixes `change_source`, level, entry gate, and IPLAN shape. | `sdd-chg-author` |
+| 2 | `sdd-chg-author` | With the flow fixed: complete the §3.4 checklist, write the CHG, validate per §3.4.1, clear `chg_lint`. No code steps ever enter the CHG. | `sdd-seed` (new cycle) or the entry station below |
+
+### 5.2 The line — one skill per station
+
+| Station | Dispatch | When | Flows | Hands off to |
+|---|---|---|---|---|
+| Seed | `sdd-seed` | New cycle, or a supersede that moves the starting point forward (archive vN, author vN+1). Never amend a published version to pass an audit. | SDD2C, SEED2C entry | `sdd-module` |
+| Module | `sdd-module` | After the seed stands: Triple-Lens decomposition with `author` + `chg_ref` lifecycle entries. | SEED2C | `sdd-brd` per module |
+| Layer 01 (BRD) | `sdd-brd` | Objectives, ROI, and scope before any feature exists. | SDD2C; SEED2C scope changes | `sdd-prd` |
+| Layer 02 (PRD) | `sdd-prd` | Expand BRD objectives into personas and acceptance criteria EARS can consume. | SDD2C, SEED2C | `sdd-ears` |
+| Layer 03 (EARS) | `sdd-ears` | Formalize PRD features into `WHEN-THE-SHALL` statements. | SDD2C | `sdd-bdd` |
+| Layer 04 (BDD) | `sdd-bdd` | Translate EARS into executable `Given-When-Then` scenarios. | SDD2C | `sdd-adr` |
+| Layer 05 (ADR) | `sdd-adr` | Record decisions with options, trade-offs, and a Selected reason. | SDD2C | `sdd-spec` |
+| Layer 06 (SPEC) | `sdd-spec` | Component contracts with the toolchain pinned in `language:`. | SDD2C | `sdd-tdd` |
+| Layer 07 (TDD) | `sdd-tdd` | Test cases with assertions and verification criteria. | SDD2C | `sdd-iplan` |
+| Layer 08 (IPLAN) | `sdd-iplan` | After TDD, before any code: `In Progress` IPLAN with a complete `file_manifest`. No code without it (seed-phase drafting excepted). | All code-bearing flows | Code, then `sdd-eval` |
+| Layer 10 (EVAL) | `sdd-eval` | Execute the battery, record per-metric `PASS`/`FAIL` with the IPLAN receipt. `FAIL` opens the CODE2C loop, never a silent known issue. | All flows at closeout | Done (or CODE2C on `FAIL`) |
+
+### 5.3 Across the line — gates at every station
+
+`sdd-gates` is not a station; it runs alongside them. Dispatch it per touched layer (`GATE-01` for business/product, `GATE-03` for requirements and architecture, `GATE-06` for design and test, `GATE-08` for the IPLAN, `GATE-CODE` for implementation, `GATE-SPEC` for normative `framework/` edits) and dispose every finding through the error catalog. Fast-path flows (HOTFIX, CODE2C, DIR2C) may not touch Layers 03–06 without an SDD lifecycle step. Never merge while red.
