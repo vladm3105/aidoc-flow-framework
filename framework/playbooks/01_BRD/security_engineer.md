@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: security_engineer
 weight: 8
 agent: security-engineer
-framework_spec_version: "0.96.17"
+framework_spec_version: "0.96.18"
 ---
 # security_engineer lens — BRD layer
 

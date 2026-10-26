@@ -1,0 +1,131 @@
+# =============================================================================
+#  CHG-135: Skill dispatch map in SDD_ASSEMBLY_LINE.md
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Add §5 Skill Dispatch Map to
+#         framework/governance/SDD_ASSEMBLY_LINE.md (station -> skill -> flow
+#         applicability -> handoff for the 15 sdd-* skills), refresh Document
+#         Control cells, bump framework/VERSION 0.96.17 -> 0.96.18 (patch,
+#         repo practice) with pin propagation. Issue #1039.
+#         No skill bodies, registry, layer docs, or canon touched.
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-26):
+#  1. Read every referenced file: SDD_ASSEMBLY_LINE.md (§2 stations, §4 DAG,
+#     doc tail), all 15 sdd-* SKILL.md trigger sections (authored + read back
+#     in #1032/#1036 work), CHG_REQUEST_FLOWS.md §1 router, LINT_RULES.md
+#     (no assembly-line-specific lint; markdownlint + internal-links run in
+#     CI). All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (no product requirements; DIR2C docs).
+#  7. Single issue #1039; #1032/#1036 closed the skill-supply gaps, not
+#     dispatch.
+#  8. Test specs: markdownlint + internal-links (CI blocking), SDD structural
+#     gate, chg_lint, spec_gate, conformance + acceptance suites in the PR.
+#  11. One governance doc modified (new §5 + Document Control cells); no SDD
+#     layer-doc rewrites, no archive/rewrite lifecycle needed.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C1, GATE-CODE entry. Section uses code-span references
+#     (no markdown links) so the internal-links gate has nothing new to
+#     resolve; anchor follows the doc's {#sec-N-slug} convention.
+#  13-14. Steps use documentation_sync / iplan_creation phases only, empty
+#     lifecycle, execution order holds; no code_implementation steps.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-26"
+  framework_version: "0.96.17"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-135"
+  status: Proposed
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-26T00:00:00Z"
+  date_approved: null
+  date_implemented: null
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-135)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-135"
+  title: "Dock the sdd-* skill dispatch map in SDD_ASSEMBLY_LINE.md §5"
+  status: "Decided"
+  date: "2026-10-26"
+  context: >-
+    Issue #1039 (user-placed in SDD_ASSEMBLY_LINE.md, scoped to the 15 sdd-*
+    skills): the skills exist and are indexed, but no governance guidance
+    maps stations to skills. Each skill reads complete in isolation, so the
+    cross-skill dispatch map (which station, which flow, which order) only
+    shows as missing when reading the assembly line end to end.
+  choice: >-
+    Append §5 Skill Dispatch Map to SDD_ASSEMBLY_LINE.md: one table row per
+    station (skill, when to dispatch, flow applicability, handoff to the next
+    skill), plus the governance/bridge skills that wrap the line (triage
+    before entry, CHG authoring at the overlay, gates per station, IPLAN
+    before code, EVAL at closeout). Refresh Document Control cells
+    (Last Updated, Framework Version 0.96.18). Bump framework/VERSION
+    0.96.17 -> 0.96.18 with OLD_VERSIONS + pin propagation. Single PR with
+    Closes #1039.
+  consequences:
+    positive:
+      - Agents dispatch skills by station instead of by guess; the map is
+        enforced nowhere new (guidance, not gate), so nothing can newly fail.
+    negative:
+      - None; one doc section + version metadata only.
+    risks:
+      - Map drift if skills are renamed; mitigated by the registry
+        single-owner rule (name == directory).
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    No how-and-when dispatch guidance for sdd-* skills (issue #1039).
+  scope:
+    - framework/governance/SDD_ASSEMBLY_LINE.md (new §5 + Document Control cells).
+    - framework/VERSION (0.96.17 -> 0.96.18) + pin propagation.
+    - framework/archive/CHG-135/CHG-135.yaml (new, this vehicle).
+    - framework/archive/CHG-135/IPLAN-135.yaml (new, executing IPLAN).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-135/IPLAN-135.yaml"
+  steps:
+    - step: "Author authorizing CHG-135.yaml and IPLAN-135.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Write §5 dispatch map + Document Control cells; VERSION bump + pin propagation; markdownlint-clean, chg_lint + spec_gate + suites green"
+      phase: "documentation_sync"
+    - step: "Open PR with Closes #1039; watch to green; merge; close issue record; worktree cleanup"
+      phase: "verification"
