@@ -55,7 +55,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-135"
-  status: Proposed
+  status: Implemented
   flow: iplan_to_code
   flow_code: DIR2C
   change_level: C1
@@ -65,8 +65,8 @@ change_control:
   version_action: bump
   author: "AI agent (framework maintainer review pending)"
   date_proposed: "2026-10-26T00:00:00Z"
-  date_approved: null
-  date_implemented: null
+  date_approved: "2026-10-26T23:31:00Z"
+  date_implemented: "2026-10-26T23:31:00Z"
   supersedes: []
 
 # =============================================================================
