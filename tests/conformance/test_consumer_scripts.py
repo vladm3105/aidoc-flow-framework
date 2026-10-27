@@ -112,6 +112,11 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
         (canon / d).mkdir(parents=True)
         (canon / d / "MARKER").write_text(marker + "\n", encoding="utf-8")
+    # The scaffolded pre-commit gate references the real hook by path: ship
+    # it so the wiring test proves executability, not just text (CHG-136).
+    hook_src = REPO_ROOT / "hooks" / "ch-gate-check.sh"
+    if hook_src.is_file():
+        shutil.copy(hook_src, canon / "hooks" / "ch-gate-check.sh")
     return canon
 
 
@@ -490,6 +495,9 @@ class InstallScript(unittest.TestCase):
         content = precommit.read_text(encoding="utf-8")
         self.assertIn("chg-gate-check", content)
         self.assertIn(".aidoc/framework/hooks/ch-gate-check.sh", content)
+        hook = self.project / ".aidoc" / "framework" / "hooks" / "ch-gate-check.sh"
+        self.assertTrue(hook.is_file(), "scaffolded gate entry has no hook behind it")
+        self.assertTrue(os.access(hook, os.X_OK), "shipped hook is not executable")
 
     def test_no_precommit_flag_skips_scaffolding(self):
         proc = _run(
@@ -533,6 +541,8 @@ class UpgradeScript(unittest.TestCase):
             "--no-stack-policy",
             "--no-blueprints",
             "--no-precommit",
+            "--author",
+            "Probe Eng",
         )
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
@@ -984,6 +994,29 @@ class DeployScript(unittest.TestCase):
         self.assertTrue(fw.exists())
         self.assertTrue(fw.is_dir())
         self.assertFalse(fw.is_symlink())
+
+    def test_deploy_help_exits_zero(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            ["bash", str(deploy_sh), "--help"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Usage:", proc.stdout)
+
+    def test_deploy_missing_values_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        for flag in ("--target", "--kind", "--shared"):
+            proc = subprocess.run(
+                ["bash", str(deploy_sh), flag],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(proc.returncode, 2, flag)
+            self.assertIn("needs a value", proc.stderr)
 
     def test_deploy_canon_symlink_refused(self):
         deploy_sh = REPO_ROOT / "deploy.sh"

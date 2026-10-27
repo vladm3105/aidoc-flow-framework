@@ -44,15 +44,15 @@ Options:
   --canon-sha <sha>     Verify canon commit SHA
   -h, --help            Show this help message
 EOF
-  exit 1
+  exit "${USAGE_EXIT:-1}"
 }
 
 EXTRA_ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --target) TARGET="${2:-}"; shift 2 ;;
-    --kind) KIND="${2:-}"; KIND_SPECIFIED=1; shift 2 ;;
-    --shared) SHARED="${2:-}"; shift 2 ;;
+    --target) [[ $# -ge 2 ]] || { echo "ERROR: --target needs a value" >&2; exit 2; }; TARGET="$2"; shift 2 ;;
+    --kind) [[ $# -ge 2 ]] || { echo "ERROR: --kind needs a value" >&2; exit 2; }; KIND="$2"; KIND_SPECIFIED=1; shift 2 ;;
+    --shared) [[ $# -ge 2 ]] || { echo "ERROR: --shared needs a value" >&2; exit 2; }; SHARED="$2"; shift 2 ;;
     --canon) [[ $# -ge 2 ]] || { echo "ERROR: --canon needs a value" >&2; exit 1; }; CANON_TAG="$2"; shift 2 ;;
     --dry-run) EXTRA_ARGS+=("--dry-run"); shift ;;
     --force) EXTRA_ARGS+=("--force"); shift ;;
@@ -64,7 +64,7 @@ while [[ $# -gt 0 ]]; do
     --no-precommit) EXTRA_ARGS+=("--no-precommit"); shift ;;
     --author) [[ $# -ge 2 ]] || { echo "ERROR: --author needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--author" "$2"); shift 2 ;;
     --canon-sha) [[ $# -ge 2 ]] || { echo "ERROR: --canon-sha needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--canon-sha" "$2"); shift 2 ;;
-    -h|--help) usage ;;
+    -h|--help) USAGE_EXIT=0; usage ;;
     *) echo "ERROR: Unknown option: $1" >&2; usage ;;
   esac
 done
