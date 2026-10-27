@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: gate_spec_process
 weight: 0
 agent: framework-maintainer
-framework_spec_version: "0.96.22"
+framework_spec_version: "0.96.23"
 type: process-playbook
 ---
 # GATE-SPEC Framework Self-Change Process
@@ -16,7 +16,7 @@ type: process-playbook
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 
 ## Purpose
 

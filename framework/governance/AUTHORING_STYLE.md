@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 
 Authority for **how** SDD documents are written. Templates define structure;
 this defines voice, density, and form. Apply to every layer (BRD/PRD/EARS/BDD/

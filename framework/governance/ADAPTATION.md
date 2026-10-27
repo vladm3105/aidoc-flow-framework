@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 
 
 Engine-agnostic specification of **how a consuming project may adapt the SDD

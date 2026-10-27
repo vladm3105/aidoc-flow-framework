@@ -15,7 +15,7 @@ consumers: [authoring, audit, traceability]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 
 Per-layer punctuation, cardinality, and worked examples for the `@<layer>:`
 trace tags. This is the **form** reference; the normative rules live elsewhere

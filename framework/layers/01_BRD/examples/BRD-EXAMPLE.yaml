@@ -1,0 +1,667 @@
+# =============================================================================
+#  BRD-EXAMPLE.yaml — Illustrative Business Requirements Document (Layer 01 Example)
+# =============================================================================
+#  Document Authority: REFERENCE EXAMPLE (Companion View)
+#  Purpose: Reference instance illustrating a fully populated Layer 01 BRD
+#           demonstrating business-level capabilities, SMART objectives, C4-L1
+#           boundary diagrams, and seed disposition tracking.
+# =============================================================================
+
+id: BRD-01
+doc_id: BRD-01
+title: "Cross-Border Instant Transfer MVP"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "brd-document"
+  layer: 1
+  lifecycle: mvp-prod-newmvp
+  total_sections: 16
+  last_updated: "2026-03-29"
+  deliverable_type: code
+  tags:
+    - brd-document
+    - layer-1-artifact
+    - reference-example
+  c4_level:
+    value: context
+  diagram_standard:
+    tags:
+      - "@diagram: c4-l1"
+      - "@diagram: dfd-l1"
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  project_name: "Instant Cross-Border Transfers"
+  version: "1.0"
+  status: Approved
+  date_created: "2026-03-01T09:00:00Z"
+  last_updated: "2026-03-29T17:00:00Z"
+  author: "Product Management Team"
+  prepared_by: "Senior Business Analyst"
+  mvp_target_launch: "2026-06-15"
+  prd_ready_status: "PASS"
+
+  revision_history:
+    entries:
+      - version: "1.0"
+        date: "2026-03-29T17:00:00Z"
+        author: "Lead Analyst"
+        changes: "Approved initial MVP baseline"
+        approver: "Executive Sponsor"
+
+# =============================================================================
+# Section 2: Executive Summary (Optional human-readable rollup)
+# =============================================================================
+
+executive_summary:
+  _size_target: 200
+  required: false
+  overview: >-
+    Cross-border remittance corridors from North America to Latin America currently
+    suffer from 24-48 hour settlement delays and high aggregate fees (7-10%). This MVP
+    validates the hypothesis that retail remitters will adopt a digital self-service
+    transfer solution if end-to-end delivery is completed in under 15 minutes at a
+    transparent fee structure under 3%.
+  target_users:
+    primary:
+      - segment: "Cross-border retail senders (US to Mexico corridor)"
+        need: "Fast, reliable, low-fee remittance with transparent delivery status"
+        size: "Estimated 250,000 active sender demographic"
+    secondary:
+      - segment: "Recipients with local bank accounts"
+        need: "Immediate fund availability without in-person pickup delays"
+
+# =============================================================================
+# Diagrams Registry
+# =============================================================================
+
+diagrams:
+  _size_target: 100
+  id: "BRD.01.00.d7a1"
+  directory: "diagrams/"
+  format: "SVG rendered from Mermaid sources (.mmd)"
+  items:
+    - id: "BRD.01.00.d7a1"
+      title: "End-to-End User Transfer Journey"
+      file: "diagrams/user_journey.mmd"
+      source: "Mermaid sequenceDiagram"
+      scope: "Core happy-path remittance workflow"
+
+# =============================================================================
+# Section 3: Introduction
+# =============================================================================
+
+introduction:
+  _size_target: 200
+  business_context: >-
+    Migrant workers and international families require fast, predictable fund transfers.
+    Traditional money transfer operators impose substantial physical overhead and opaque
+    foreign exchange markups.
+  purpose: >-
+    This BRD defines business requirements for the Cross-Border Transfer MVP, covering
+    the minimal capability set required to validate market adoption and transaction
+    conversion along the US-to-Mexico primary corridor.
+  document_scope:
+    in_scope:
+      - "Sender onboarding, tier-1 KYC verification, and digital fund transfer"
+      - "Real-time foreign exchange quotation and fee transparency"
+      - "Direct payout into verified Mexican bank accounts via SPEI"
+      - "Status notifications and transaction receipts"
+    out_of_scope:
+      - "Physical cash collection or agent distribution network"
+      - "Multi-currency corridors outside US to Mexico"
+      - "Corporate or multi-user business accounts"
+
+# =============================================================================
+# Section 4: Business Objectives
+# =============================================================================
+
+business_objectives:
+  _size_target: 500
+  hypothesis:
+    statement: "Users will adopt instant digital remittances if settlement occurs in <15 minutes at <3% fee."
+    validation_questions:
+      - "Will first-time users complete digital onboarding in under 5 minutes?"
+      - "Will the platform achieve >= 90% transfer completion rate on initial submission?"
+      - "Will customer satisfaction score achieve >= 4.2 out of 5 across the pilot corridor?"
+
+  problem_statement:
+    problem: "Cross-border transfers are slow, expensive, and opaque for retail consumers."
+    impact: "Consumers lose 7-10% of principal value to hidden spreads and wait days for funds."
+    mvp_solution: "Provide direct digital remittance with real-time rate locks and SPEI payout."
+
+  goals:
+    - id: "BRD.01.04.10a1"
+      statement: "Validate consumer demand in US-to-Mexico corridor"
+      baseline: "N/A — new capability"
+      target: "5,000 completed transactions in first 90 days post-launch"
+    - id: "BRD.01.04.20b2"
+      statement: "Prove operational settlement speed"
+      baseline: "Traditional wire: 24 to 48 hours"
+      target: "95% of transactions settled in < 15 minutes"
+
+  success_metrics:
+    - id: "BRD.01.04.30c3"
+      objective: "Achieve commercial transaction reliability"
+      metric: "Successful settlement completion rate"
+      target: ">= 95%"
+      period: "90 days post-launch"
+    - id: "BRD.01.04.40d4"
+      objective: "Customer acquisition and retention"
+      metric: "90-day repeat transfer rate"
+      target: ">= 40%"
+      period: "90 days post-launch"
+
+  expected_benefits:
+    quantifiable:
+      - "User acquisition: 2,500 onboarded senders in first quarter"
+      - "Transfer volume: $1.5M aggregate transacted principal"
+    qualitative:
+      - "Validation of regulatory licensing and banking partner readiness"
+      - "Customer feedback baseline for subsequent product expansion"
+
+  cost_benefit:
+    development_costs:
+      team: "Cross-functional team of 4 engineers, 1 PM, 1 Designer over 12 weeks"
+      infrastructure: "$2,500/month cloud resources"
+      third_party: "$1,500/month compliance & identity verification SaaS"
+    total_mvp_investment: "$180,000"
+    roi_hypothesis: "Positive unit economics per transfer after reaching 10,000 monthly transactions"
+
+# =============================================================================
+# Section 5: Project Scope
+# =============================================================================
+
+project_scope:
+  _size_target: 300
+  scope_statement: >-
+    Deliver a web and mobile-responsive digital portal enabling identity-verified US
+    senders to fund remittances via debit card and disburse directly into Mexican bank
+    accounts.
+
+  core_features:
+    p1_must_have:
+      - "Sender registration and lightweight identity verification"
+      - "Guaranteed FX exchange rate lock for 10 minutes"
+      - "Debit card payment collection"
+      - "Automated SPEI payout dispatch"
+      - "Email and SMS transfer confirmation"
+    p2_should_have:
+      - "Saved recipient address book"
+      - "Recurring transfer reminders"
+
+  out_of_scope:
+    items:
+      - "Cash payout networks in Mexico"
+      - "ACH bank pull payment funding"
+      - "Corridors beyond US to Mexico"
+    rationale: "MVP prioritizes validating core transaction flow with lowest settlement risk."
+
+  workflow:
+    diagram:
+      type: sequenceDiagram
+      content: |
+        participant Sender
+        participant WebApp
+        participant PaymentGateway
+        participant SpeiPartner
+        participant Recipient
+
+        Sender->>WebApp: Enter amount & recipient CLABE
+        WebApp->>Sender: Display locked quote & fees
+        Sender->>WebApp: Submit debit card payment
+        WebApp->>PaymentGateway: Authorize payment
+        PaymentGateway-->>WebApp: Payment confirmed
+        WebApp->>SpeiPartner: Dispatch SPEI transfer
+        SpeiPartner-->>Recipient: Credit bank account
+        SpeiPartner-->>WebApp: Settlement confirmed
+        WebApp->>Sender: Notification: Transfer completed
+
+    happy_path:
+      - "Sender inputs recipient details and desired transfer amount in USD."
+      - "System displays guaranteed exchange rate and total fee."
+      - "Sender submits debit card payment and approves quote."
+      - "Payment gateway authorizes card transaction."
+      - "System initiates SPEI payout to recipient bank account."
+      - "Recipient bank confirms deposit; sender receives completion receipt."
+
+# =============================================================================
+# Section 6: Stakeholders
+# =============================================================================
+
+stakeholders:
+  _size_target: 200
+  decision_makers:
+    - role: "Executive Sponsor"
+      name: "VP of Digital Products"
+      authority: "Final scope and budget approval"
+    - role: "Product Owner"
+      name: "Lead Remittance PM"
+      authority: "Feature scope and prioritization"
+    - role: "Technical Lead"
+      name: "Principal Architect"
+      authority: "Architecture decisions and tech selection"
+
+  key_contributors:
+    - role: "Compliance Officer"
+      name: "Head of AML & Sanctions"
+      responsibility: "BSA/AML and OFAC regulatory adherence"
+    - role: "Banking Partner Lead"
+      name: "Partner Operations Director"
+      responsibility: "SPEI disbursement SLA agreement"
+
+# =============================================================================
+# Section 7: Functional Requirements
+# =============================================================================
+
+functional_requirements:
+  _size_target: 500
+  priority_definitions:
+    P1: "Must Have — essential for MVP launch; blocks go-live if missing"
+    P2: "Should Have — important but workarounds exist for MVP"
+    Future: "Next MVP cycle enhancements based on user feedback"
+
+  _authored_form:
+    _guidance: |
+      ## 7. Functional Requirements
+
+      - **BRD.01.07.10a1 — Sender Onboarding and Verification** (P1): System must enable US customers to register and complete tier-1 identity verification.
+      - **BRD.01.07.20b2 — Guaranteed Exchange Rate Lock** (P1): System must provide guaranteed real-time FX quotes locked for up to 10 minutes.
+      - **BRD.01.07.30c3 — Payout Settlement via SPEI** (P1): System must disburse funds into verified Mexican bank accounts via local banking network.
+
+      Acceptance criteria:
+
+      - **BRD.01.07.10a1 — Sender Onboarding**: Identity verification completed in < 60 seconds for 90% of applicants.
+      - **BRD.01.07.20b2 — Exchange Rate Lock**: Quote honored without slippage if accepted within 10 minutes.
+      - **BRD.01.07.30c3 — Payout Settlement**: Payout confirmed by receiving bank in < 15 minutes.
+
+  requirements:
+    - id: "BRD.01.07.10a1"
+      title: "Sender Onboarding and Verification"
+      capability: "Enable new customers to register and pass tier-1 KYC compliance."
+      priority: P1
+      realized_by: null
+      complexity:
+        rating: "3/5"
+        rationale: "Requires external KYC identity validation service and OFAC screening."
+      business_needs:
+        - "Comply with FinCEN customer identification program regulations."
+        - "Collect verified sender name, address, and government identification."
+      business_rules:
+        - "Senders must be at least 18 years old and US residents."
+        - "Users flagged on sanctions lists must be rejected immediately."
+      acceptance_criteria:
+        items:
+          - id: "BRD.01.07.10a1"
+            criterion: "Automated KYC pass rate for clean applicants >= 85%"
+            target: "85%"
+      related_requirements:
+        references:
+          - "BRD-01 (Introduction, Section 3)"
+
+    - id: "BRD.01.07.20b2"
+      title: "Guaranteed Exchange Rate Lock"
+      capability: "Provide real-time FX rate quotation locked for a 10-minute transaction window."
+      priority: P1
+      realized_by: null
+      complexity:
+        rating: "2/5"
+        rationale: "Requires FX liquidity provider integration with rate cache."
+      business_needs:
+        - "Ensure complete transparency of currency conversion rates before commitment."
+        - "Protect sender from mid-transaction market fluctuations."
+      business_rules:
+        - "Quote expires after 600 seconds; expired quotes require re-calculation."
+        - "Spread fee must remain fixed as published during active quote."
+      acceptance_criteria:
+        items:
+          - id: "BRD.01.07.20b2"
+            criterion: "Rate lock maintained without variance during 10-minute window"
+            target: "100%"
+      related_requirements:
+        references:
+          - "BRD-01 (Project Scope, Section 5)"
+
+    - id: "BRD.01.07.30c3"
+      title: "Payout Settlement via SPEI"
+      capability: "Disburse Mexican Peso funds directly into recipient bank accounts via SPEI."
+      priority: P1
+      realized_by: null
+      complexity:
+        rating: "3/5"
+        rationale: "Interacts with Mexican clearinghouse and banking partner APIs."
+      business_needs:
+        - "Enable direct bank credit without recipient branch visits."
+        - "Confirm settlement receipt with bank transaction reference."
+      business_rules:
+        - "Recipient CLABE number must be 18 digits with valid checksum."
+        - "Daily transfer limit per unverified recipient capped at $1,000 USD equivalent."
+      acceptance_criteria:
+        items:
+          - id: "BRD.01.07.30c3"
+            criterion: "Settlement delivered in < 15 minutes for 95% of transactions"
+            target: "95%"
+      related_requirements:
+        references:
+          - "BRD-01 (Business Objectives, Section 4)"
+
+# =============================================================================
+# Section 8: Architecture Decision Topics
+# =============================================================================
+
+adr_topics:
+  _size_target: 500
+  topics:
+    - id: "BRD.01.08.01a1"
+      category: Infrastructure
+      title: "Cloud Hosting & Deployment"
+      status: Pending
+      business_driver: "Requires secure, scalable containerized platform for financial transactions."
+      budget_constraint: "$2,500/month"
+      compliance_requirements: "SOC 2 Type II readiness, PCI-DSS compliance"
+      team_constraints: null
+      recommended_selection: "Managed Kubernetes / AWS EKS"
+      prd_requirements: "Specify high-availability multi-zone deployment strategy"
+
+    - id: "BRD.01.08.02b2"
+      category: Data Architecture
+      title: "Ledger Database & Transaction Store"
+      status: Pending
+      business_driver: "Immutable audit trail and ACID transaction integrity for all fund movements."
+      budget_constraint: "$1,000/month"
+      compliance_requirements: "Financial auditability, 7-year data retention"
+      team_constraints: null
+      recommended_selection: "PostgreSQL with row-level encryption"
+      prd_requirements: "Specify data retention and double-entry ledger schema"
+
+    - id: "BRD.01.08.03c3"
+      category: Integration
+      title: "Banking Partner and SPEI Gateway"
+      status: Pending
+      business_driver: "Reliable disbursement connectivity with sub-minute execution."
+      budget_constraint: null
+      compliance_requirements: "Mexican banking regulation compliance"
+      team_constraints: null
+      recommended_selection: "Direct SPEI licensed aggregator API"
+      prd_requirements: "Define webhook retry policies and failure compensation"
+
+    - id: "BRD.01.08.04d4"
+      category: Security
+      title: "Identity Verification & OFAC Screening"
+      status: Pending
+      business_driver: "Real-time compliance validation and fraud mitigation."
+      budget_constraint: "$1.50 per verification"
+      compliance_requirements: "FinCEN, OFAC, USA PATRIOT Act"
+      team_constraints: null
+      recommended_selection: "Enterprise identity verification provider"
+      prd_requirements: "Detail synchronous vs asynchronous verification flows"
+
+    - id: "BRD.01.08.05e5"
+      category: Observability
+      title: "Transaction Monitoring & Alerting"
+      status: Pending
+      business_driver: "Real-time alerting on settlement delays and abnormal error rates."
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: "OpenTelemetry with centralized logging"
+      prd_requirements: "Define latency metrics and payment failure threshold alerts"
+
+    - id: "BRD.01.08.06f6"
+      category: AI/ML
+      title: "Automated Fraud Scoring"
+      status: N/A
+      business_driver: "Not needed for MVP; rule-based thresholds suffice initially."
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: null
+      prd_requirements: null
+
+    - id: "BRD.01.08.07g7"
+      category: Technology Selection
+      title: "Backend Core Service Language"
+      status: Pending
+      business_driver: "Type safety, high performance, and rapid ecosystem development."
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: "Existing team proficiency in TypeScript/Node and Go"
+      recommended_selection: "Go or TypeScript"
+      prd_requirements: "Define service boundaries and API contracts"
+
+# =============================================================================
+# Section 9: Quality Expectations
+# =============================================================================
+
+quality_expectations:
+  _size_target: 300
+  expectations:
+    - category: performance
+      expectation: "FX quotation response rendered in under 1.5 seconds"
+    - category: reliability
+      expectation: "Transfer processing service uptime of at least 99.5%"
+    - category: security
+      expectation: "End-to-end TLS 1.3 encryption for all data in transit"
+    - category: security
+      expectation: "PCI-DSS Level 1 compliant card handling via hosted fields"
+    - category: observability
+      expectation: "Comprehensive audit logging for every state transition"
+
+# =============================================================================
+# Section 10: Constraints and Assumptions
+# =============================================================================
+
+constraints_and_assumptions:
+  _size_target: 200
+  constraints:
+    items:
+      - id: "BRD.01.10.01a1"
+        category: Budget
+        description: "MVP build budget capped at $180,000"
+        impact: "Requires utilizing off-the-shelf KYC and payment gateway APIs"
+      - id: "BRD.01.10.02b2"
+        category: Regulatory
+        description: "Must partner with licensed money transmitter"
+        impact: "Flow of funds managed under partner's MSB license"
+
+  assumptions:
+    items:
+      - id: "BRD.01.10.03c3"
+        assumption: "SPEI banking network operates 24/7 with typical 5-minute settlement"
+        validation_method: "Partner SLA review and pre-launch smoke test verification"
+        impact_if_false: "Customer expectations must be adjusted for delayed settlement"
+
+# =============================================================================
+# Section 11: Acceptance Criteria and Success Validation
+# =============================================================================
+
+acceptance_criteria:
+  _size_target: 300
+  launch_gates:
+    must_have:
+      - "All 3 P1 functional requirements implemented, verified, and tested"
+      - "Live end-to-end transaction pilot successfully completed with test funds"
+      - "KYC and OFAC compliance screening operational with partner sign-off"
+      - "Customer support runbook and incident response playbooks approved"
+    should_have:
+      - "Automated unit and integration test coverage exceeding 75%"
+      - "Promotional marketing landing pages published"
+
+  post_launch_validation:
+    thirty_day_metrics:
+      - "At least 500 unique sender transactions completed"
+      - "Zero unresolved compliance or OFAC false negative incidents"
+      - "Transaction success rate exceeding 90%"
+    ninety_day_decision_gate:
+      continue: "Scale marketing and begin BRD-02 expansion if 90-day targets met"
+      pivot: "Revise corridor or pricing model if conversion remains under 50% target"
+      maintain: "Operate at current scale if transaction volume is stable"
+      shutdown: "Discontinue product if regulatory or partner blockers arise"
+
+# =============================================================================
+# Section 12: Business Risk Management
+# =============================================================================
+
+risk_management:
+  _size_target: 300
+  risks:
+    - id: "BRD.01.12.01a1"
+      description: "Partner banking gateway outage delays SPEI settlement"
+      likelihood: Medium
+      impact: High
+      mitigation: "Implement automated fallback status updates and queue retries"
+      owner: "Technical Lead"
+    - id: "BRD.01.12.02b2"
+      description: "Regulatory scrutiny or unexpected compliance hold on funds"
+      likelihood: Low
+      impact: High
+      mitigation: "Strict pre-screening against OFAC and identity databases"
+      owner: "Compliance Officer"
+    - id: "BRD.01.12.03c3"
+      description: "Chargeback fraud on sender debit cards"
+      likelihood: Medium
+      impact: Medium
+      mitigation: "Enforce 3D Secure verification on card transactions"
+      owner: "Product Owner"
+
+# =============================================================================
+# Section 13: Approval
+# =============================================================================
+
+approval:
+  _size_target: 100
+  approvers:
+    - role: "Executive Sponsor"
+      name: "VP of Products"
+      title: "VP Digital Products"
+      date: "2026-03-29"
+    - role: "Product Owner"
+      name: "Remittance PM Lead"
+      title: "Product Manager"
+      date: "2026-03-28"
+    - role: "Technical Lead"
+      name: "Principal Architect"
+      title: "Lead Architect"
+      date: "2026-03-28"
+
+  criteria:
+    - "All P1 core requirements scoped and estimated"
+    - "Regulatory compliance posture verified by Legal"
+    - "Partner SLA commitments documented and acceptable"
+
+# =============================================================================
+# Section 14: Traceability
+# =============================================================================
+
+traceability:
+  _size_target: 100
+  tags:
+    - "@brd: BRD-01"
+
+  cross_links:
+    depends: []
+    discoverability:
+      - "@discoverability: BRD-01 (Core cross-border payment platform)"
+    chg:
+      - "@chg: CHG-141"
+
+  objectives_to_requirements:
+    - objective_id: "BRD.01.04.10a1"
+      objective: "Validate consumer demand in US-to-Mexico corridor"
+      related_frs:
+        - "BRD.01.07.10a1"
+        - "BRD.01.07.20b2"
+      coverage: Complete
+    - objective_id: "BRD.01.04.20b2"
+      objective: "Prove operational settlement speed"
+      related_frs:
+        - "BRD.01.07.30c3"
+      coverage: Complete
+
+  upstream:
+    artifacts:
+      - type: "Strategic Initiative"
+        reference: "Executive Strategy Memo 2026"
+        relevance: "Establishes retail payment modernization priority"
+
+  downstream_expected:
+    - type: PRD
+      layer: 2
+      description: "Product Requirements Document (PRD-01) detailing user stories and error handling"
+
+  cross_brd_dependencies: []
+
+  health_score:
+    bo_fr_coverage: "100%"
+    cross_brd_validated: "100%"
+    target_status: "PASS"
+
+# =============================================================================
+# Section 15: Glossary
+# =============================================================================
+
+glossary:
+  _size_target: 100
+  terms:
+    - term: CLABE
+      definition: "Clave Bancaria Estandarizada — 18-digit Mexican banking standard for account deposit"
+    - term: SPEI
+      definition: "Sistema de Pagos Electrónicos Interbancarios — electronic funds transfer system run by Bank of Mexico"
+    - term: KYC
+      definition: "Know Your Customer — identity verification requirements under banking regulations"
+    - term: OFAC
+      definition: "Office of Foreign Assets Control — US Treasury agency enforcing economic sanctions"
+
+# =============================================================================
+# Section 16: Seed Disposition
+# =============================================================================
+
+seed_disposition:
+  _size_target: 200
+  _required: false
+  _example:
+    - claim: "Every issued short code must be unique."
+      disposition: absorbed
+      brd_elements: ["BRD.01.07.be48"]
+      seed_file: seed/architecture/auth.md
+      seed_version: "2.0"
+    - claim: "Visitors follow links without creating an account."
+      disposition: absorbed
+      brd_elements: ["BRD.01.07.15e1", "BRD.01.07.6c3f"]
+      seed_file: seed/architecture/auth.md
+      seed_version: "2.0"
+    - claim: "Per-user vanity/custom short codes."
+      disposition: rejected
+      rationale: "Not a business objective for this MVP cycle; no owner."
+    - claim: "Rate-limiting / abuse protection on the shorten endpoint."
+      disposition: deferred
+      rationale: "Out of MVP scope; needs an abuse-model BRD first."
+      target_cycle: "BRD-02"
+
+# =============================================================================
+# Appendix: Lifecycle Reference
+# =============================================================================
+
+appendix:
+  _size_target: 200
+  lifecycle:
+    principles:
+      - "Each MVP is a complete cycle: BRD defines scope, development delivers, production validates"
+      - "New capabilities expand into subsequent BRDs (BRD-02, BRD-03)"
+      - "Cross-BRD dependencies in traceability maintain inter-cycle lineage"
+    when_to_start_new_cycle:
+      - "Current MVP deployed and running in production for at least 30 days"
+      - "Customer feedback and pilot metrics analyzed"
+      - "Subsequent feature roadmap prioritized and funded"
