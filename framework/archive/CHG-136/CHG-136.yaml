@@ -125,7 +125,7 @@ problem_statement:
     - framework/archive/CHG-136/CHG-136.yaml (new, this vehicle).
     - framework/archive/CHG-136/IPLAN-136.yaml (new, executing IPLAN).
     - framework/scripts/install.sh (blueprint + pre-commit scaffolding, extended smoke).
-    - deploy.sh (--no-blueprints/--no-precommit forwarding).
+    - deploy.sh (--no-blueprints/--no-precommit forwarding, --canon tag mapping).
     - framework/scripts/upgrade.sh (accept-and-ignore install-only opt-outs).
     - framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml (new, minimal consumer gate).
     - framework/governance/aidoc/BOOTSTRAP.md (steps 8-9, checklist + follow-up note).

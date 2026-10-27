@@ -985,6 +985,87 @@ class DeployScript(unittest.TestCase):
         self.assertTrue(fw.is_dir())
         self.assertFalse(fw.is_symlink())
 
+    def test_deploy_canon_symlink_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--kind",
+                "symlink",
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("--canon", proc.stderr)
+
+    def _tag_canon(self, version):
+        canon = _make_canon(self.tmp, version, f"canon-{version}")
+        _git_init(canon)
+        subprocess.run(
+            ["git", "-C", str(canon), "tag", f"framework/v{version}"],
+            check=True,
+            capture_output=True,
+        )
+        return canon
+
+    def test_deploy_canon_tag_fresh_install(self):
+        canon = self._tag_canon("9.9.9")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.9"', profile)
+
+    def test_deploy_canon_tag_brownfield_upgrade(self):
+        canon_a = _make_canon(self.tmp, "9.9.9", "canon-A")
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(canon_a))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        canon_b = self._tag_canon("9.9.10")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.10",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon_b)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        aidoc = self.project / ".aidoc"
+        profile = (aidoc / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.10"', profile)
+        marker = (aidoc / "framework" / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-9.9.10")
+
 
 class ChGateCheckHook(unittest.TestCase):
     def setUp(self):
