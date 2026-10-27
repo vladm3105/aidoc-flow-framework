@@ -172,6 +172,8 @@ In addition to the eight governance blueprints above, consumer projects instanti
   - `PreCommit` (matcher: `.*`): invokes `hooks/ch-gate-check.sh` and `hooks/pre_push_check.sh` to enforce the zero `--no-verify` invariant locally before commits reach remote CI.
 - **Consumer CI gate ([`docs/CONSUMER-CI-STARTER.md`](CONSUMER-CI-STARTER.md))**:
   `.github/` is excluded from the consumer copy, so new projects start with no CI. Adopt the starter workflow (profile-lint + `sdd_doc_lint` + `chg_lint` on PR) so the first PR is already gated.
+- **Consumer deployment standard ([`docs/CONSUMER-DEPLOYMENT-STANDARD.md`](CONSUMER-DEPLOYMENT-STANDARD.md))**:
+  Docker Compose for dev, OpenTofu Day-0/Day-2 for stage/prod infrastructure. Read before provisioning any hosted tier — stage services stay Compose; tofu owns the infrastructure, never merged modules.
 
 ## 4.2 Establish the Project Working Agreement (`AGENTS.md`)
 
