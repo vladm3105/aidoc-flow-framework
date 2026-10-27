@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 | Authority | Decision DEC-CHG-113 (framework/archive/CHG-113/CHG-113.yaml) |
 
 ---

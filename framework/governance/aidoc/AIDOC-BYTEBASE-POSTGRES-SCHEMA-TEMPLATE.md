@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-10 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.22 |
+| Framework Version | 0.96.23 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [SPEC_WORKFLOW_STANDARD.md](../../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md) |
 
 Operational blueprint for specifying relational database schemas, monotonic UUIDv7 keys,

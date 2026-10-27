@@ -1,0 +1,61 @@
+# =============================================================================
+#  IPLAN-141: BRD companion template token efficiency & example extraction
+# =============================================================================
+#  Implementation Plan authorized by CHG-141
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-141
+title: "Implementation Plan: BRD companion template token efficiency (issue #987)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.23"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-141"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-141/CHG-141.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-141/IPLAN-141.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/layers/01_BRD/examples/BRD-EXAMPLE.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C2, change_source direct, sdd_lifecycle empty"
+  order: "example extraction and template slimming precede version bump; sync and test suites verify"
+  compatibility: "all 17 top-level section keys and _size_target limits preserved exactly for structural linter and test harnesses"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-141/CHG-141.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "pytest tests/acceptance/deterministic/test_harness_template_sections.py"
+  - "pytest tests/unit/test_template_yaml.py"
+  - "pytest tests/unit/test_template_conventions.py"
+  - "pytest tests/conformance/test_seed_contract.py"
+  - "pytest tests/conformance/test_coverage_engine.py"
+  - "pytest tests/conformance/test_element_id_layer_contract.py"
+  - "pytest tests/conformance/test_fr_cap_advisory.py"
+  - "pytest tests/conformance/test_sync_version_refs.py"
