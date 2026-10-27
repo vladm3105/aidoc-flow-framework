@@ -26,7 +26,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.20 |
+| Framework Version | 0.96.21 |
 
 ## 1. Overview {#sec-1-overview}
 

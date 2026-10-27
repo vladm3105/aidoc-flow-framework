@@ -621,6 +621,88 @@ class UpgradeScript(unittest.TestCase):
         self.assertIn("OK: project/current.yaml (at 9.9.10)", proc.stdout)
         self.assertIn("UNPINNED: project/loose.md", proc.stdout)
 
+    def test_upgrade_reports_blueprint_status_and_refreshes_unmodified(self):
+        self._install_pin()
+        chg_flow_src = (
+            self.canon_b
+            / "framework"
+            / "governance"
+            / "aidoc"
+            / "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+        )
+        chg_flow_src.write_text("# Upstream v9.9.10 CHG Execution Flow\n")
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("DRIFT: project/governance/CHG_EXECUTION_FLOW.md", proc.stdout)
+        self.assertIn("OK: project/governance/QA_PROTOCOL.md (blueprint up-to-date)", proc.stdout)
+        self.assertNotIn("UNPINNED: project/governance/CHG_EXECUTION_FLOW.md", proc.stdout)
+
+        proc_refresh = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--force",
+            "--yes",
+        )
+        self.assertEqual(proc_refresh.returncode, 0, proc_refresh.stderr)
+        consumer_bp = self.project / ".aidoc" / "project" / "governance" / "CHG_EXECUTION_FLOW.md"
+        self.assertEqual(consumer_bp.read_text(), "# Upstream v9.9.10 CHG Execution Flow\n")
+
+    def test_upgrade_refresh_blueprints_preserves_consumer_customizations(self):
+        self._install_pin()
+        consumer_bp = self.project / ".aidoc" / "project" / "governance" / "CHG_EXECUTION_FLOW.md"
+        consumer_bp.write_text("# My Custom Project CHG Execution Flow\n")
+
+        chg_flow_src = (
+            self.canon_b
+            / "framework"
+            / "governance"
+            / "aidoc"
+            / "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+        )
+        chg_flow_src.write_text("# Upstream v9.9.10 CHG Execution Flow\n")
+
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--yes",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("preserved customized blueprint", proc.stdout)
+        self.assertEqual(consumer_bp.read_text(), "# My Custom Project CHG Execution Flow\n")
+
+        proc_force = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--force",
+            "--yes",
+        )
+        self.assertEqual(proc_force.returncode, 0, proc_force.stderr)
+        self.assertIn("refreshed blueprint", proc_force.stdout)
+        self.assertEqual(consumer_bp.read_text(), "# Upstream v9.9.10 CHG Execution Flow\n")
+
     def test_pin_upgrade_refuses_same_version_without_force(self):
         self._install_pin()
         proc = _run(UPGRADE, str(self.project), "--to", "9.9.9", "--canon-dir", str(self.canon_a))
