@@ -1,0 +1,52 @@
+# =============================================================================
+#  IPLAN-137: Consumer deployment standard guide
+# =============================================================================
+#  Implementation Plan authorized by CHG-137
+#  Status: Proposed
+# =============================================================================
+
+id: IPLAN-137
+title: "Implementation Plan: consumer deployment guide (issue #1050)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.19"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-137"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-137/CHG-137.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-137/IPLAN-137.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "docs/CONSUMER-DEPLOYMENT-STANDARD.md"
+    action: "create"
+    status: "DONE"
+  - path: "docs/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/ADAPTATION-GUIDE.md"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C1, change_source direct, sdd_lifecycle empty"
+  order: "guide content precedes registration edits; no dependencies beyond that"
+  link_policy: "relative links to sibling docs only (CONSUMER-CI-STARTER pattern); no links into technology-stack paths (outside repo)"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-137/CHG-137.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "markdownlint on new/edited md files"
+  - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"

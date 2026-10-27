@@ -1,0 +1,135 @@
+# =============================================================================
+#  CHG-137: Consumer deployment standard guide (Compose dev, OpenTofu stage/prod)
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 — docs-only addition)
+#  Scope: New non-normative docs/CONSUMER-DEPLOYMENT-STANDARD.md stating the
+#         verified deployment standard for consumer projects (Docker Compose
+#         for dev; OpenTofu Day-0/Day-2 for stage/prod infrastructure), indexed
+#         in docs/README.md and pointed at from docs/ADAPTATION-GUIDE.md.
+#         Issue #1050. No AGENTS.md changes (not a governance PR), no
+#         normative framework/ changes (engine-agnostic contract intact),
+#         no version bump (E005 not triggered).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: technology-stack specs 16 (full, tri-env
+#     matrix + invariants + §10 runbooks), 21 §4 Goldilocks + §4.1 module
+#     structure (via targeted reads), 11 Day-0/Day-2 split (via targeted
+#     grep), docs/README.md index table, ADAPTATION-GUIDE.md:173 CI-starter
+#     pointer, CONSUMER-CI-STARTER.md (pattern model), .markdownlint.json
+#     (rule disables), CHG-136/IPLAN-136 (vehicle model), issue #1050
+#     (filed + read back). No deployment guide exists in docs/; AGENTS.md
+#     carries zero deployment mentions (both verified by search).
+#     All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (no product requirements; DIR2C docs).
+#  7. Single issue #1050 (missing capability, review origin).
+#  8. Test specs: chg_lint, spec_gate (expect no-op: no normative files),
+#     markdownlint on new/edited md, internal-links gate, conformance
+#     suite green on PR head.
+#  11. No SDD layer-doc rewrites; new file under docs/ only — no
+#     archive/rewrite lifecycle needed.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C1, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / documentation_sync / verification
+#     phases only (no code_implementation steps); empty lifecycle; execution
+#     order holds; guide content precedes registration edits.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.19"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: none
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-137"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: none
+  version_action: none
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-137)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-137"
+  title: "Add non-normative consumer deployment guide; leave AGENTS.md and framework/ untouched"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Issue #1050: the stack mandates Compose for dev and OpenTofu for
+    stage/prod, but this repo offers consumers no deployment guide, and
+    AGENTS.md (the agent working agreement) carries no deployment content.
+    Placement decided with the operator: new docs/ guide (not an AGENTS.md
+    amendment, not a normative framework/ mandate, not another repo).
+  choice: >-
+    Author docs/CONSUMER-DEPLOYMENT-STANDARD.md as non-normative consumer
+    guidance with per-mandate citations to stack specs 11/16/21, preserving
+    the precise split (stage services stay Compose per spec 16 §3.2; tofu
+    owns Day-0/Day-2, never merged). Index in docs/README.md; one pointer
+    line in ADAPTATION-GUIDE.md beside the CI-starter pointer. No version
+    bump: no normative files change, so E005 does not trigger.
+  consequences:
+    positive:
+      - Consumers inherit the verified standard instead of rediscovering it;
+        guide cites authority per mandate, so stack drift is greppable.
+    negative:
+      - None; additive docs only, no behavior change anywhere.
+    risks:
+      - Stack specs evolve and the guide drifts; mitigated by per-mandate
+        section citations and stating only what the specs support.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    No consumer deployment guide states the Compose/dev + OpenTofu/stage-prod
+    standard (issue #1050).
+  scope:
+    - framework/archive/CHG-137/CHG-137.yaml (new, this vehicle).
+    - framework/archive/CHG-137/IPLAN-137.yaml (new, executing IPLAN).
+    - docs/CONSUMER-DEPLOYMENT-STANDARD.md (new, the guide).
+    - docs/README.md (index row).
+    - docs/ADAPTATION-GUIDE.md (pointer line).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-137/IPLAN-137.yaml"
+  steps:
+    - step: "Author authorizing CHG-137.yaml and IPLAN-137.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Write the guide with per-mandate spec citations; register index row + pointer; markdownlint-clean, chg_lint + spec_gate + suites green"
+      phase: "documentation_sync"
+    - step: "Open PR with Closes #1050; watch to green; merge; close issue record; worktree cleanup"
+      phase: "verification"
