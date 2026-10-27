@@ -27,6 +27,9 @@ events:
   - name: RequirementInvalidationEvent
     type: org.aidoc.ears.requirement.invalidated
     source: /aidoc/ears/invalidation
+  - name: EarsClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer03.ears.closed
+    source: /layers/03_ears
 
 functions:
   - name: parseEarsSyntax
@@ -52,6 +55,24 @@ functions:
     type: custom
   - name: flagDownstreamInvalidations
     operation: "urn:aidoc:functions:tracker#flagInvalidations"
+    type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
+  - name: remediateLayerFindings
+    operation: "urn:aidoc:functions:remediator#remediate"
+    type: custom
+  - name: verifyLayerBoundaryGate
+    operation: "urn:aidoc:governance:gate#verify"
+    type: custom
+  - name: sealDocumentBaseline
+    operation: "urn:aidoc:governance:document#seal"
+    type: custom
+  - name: registerGraphBaselineNode
+    operation: "urn:aidoc:governance:graph#registerNode"
+    type: custom
+  - name: emitCloudEvent
+    operation: "urn:aidoc:governance:event#emit"
     type: custom
 
 states:
@@ -140,13 +161,52 @@ states:
     type: switch
     dataConditions:
       - name: BddReadyApproved
-        condition: "${ .readinessScore >= 90 and .conflictCount == 0 and .upstreamPrdVerified == true }"
-        transition: RatifyEarsContract
+        condition: "${ .conflictCount == 0 and .upstreamPrdVerified == true and .ambiguityFlag == false }"
+        transition: InvokeReviewSagaGate
       - name: ClarificationRequired
-        condition: "${ .readinessScore >= 70 and .ambiguityFlag == true }"
+        condition: "${ .ambiguityFlag == true }"
         transition: RequestRequirementClarification
     defaultCondition:
       transition: RejectRequirementSet
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "ears-review-remediation-flow"
+            artifactId: "${ .documentId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyEarsContract
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresClarification
+        condition: "${ .requiresClarification == true or .iteration >= 3 }"
+        transition: RequestRequirementClarification
+    defaultCondition:
+      transition: RejectRequirementSet
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "requirements_engineer"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   - name: RequestRequirementClarification
     type: callback
@@ -172,9 +232,64 @@ states:
           arguments:
             documentId: "${ .documentId }"
             requirements: "${ .parsedRequirements }"
-            readinessScore: "${ .readinessScore }"
-    end:
-      terminate: true
+            bdd_ready: "PASS"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-03"
+            layer: "03_EARS"
+            documentId: "${ .documentId }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .documentId }"
+            layer: "03_EARS"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "EarsNode"
+            nodeId: "${ .documentId }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "EarsClosedAndBaselinedEvent"
+            documentId: "${ .documentId }"
+            requirements_dag: "${ .requirements_dag }"
+    produceEvents:
+      - eventRef: EarsClosedAndBaselinedEvent
+    end: true
 
   - name: RejectRequirementSet
     type: operation
@@ -188,7 +303,7 @@ states:
             documentId: "${ .documentId }"
             status: "rejected"
             rejectionReasons: "${ .conflictAnalysis.reasons }"
-            readinessScore: "${ .readinessScore }"
+            bdd_ready: "FAIL"
     end:
       terminate: true
 

@@ -9,6 +9,30 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: EARS (Layer 3)
 #  Upstream: BRD (Layer 1)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 02 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (PRD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to decompose, prioritize, and ratify the PRD.
+#       Orchestrates container boundary analysis, RICE scoring, threshold checks,
+#       stakeholder negotiation callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (PRD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (features, user stories, acceptance criteria, thresholds).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (PRD-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (PRD-SWF-TEMPLATE.yaml + PRD-GRAPH-TEMPLATE.yaml) when:
+#    - Modeling multi-container product decomposition (C4 Level 2), microservices, or distributed components
+#    - Orchestrating automated feature prioritization (MoSCoW/RICE) and quantitative threshold validation
+#    - Incorporating stakeholder scope negotiation callbacks, external product feedback events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream EARS/BDD artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (PRD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting straightforward, single-container initiatives, monolithic services, or linear feature sets
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: PRD-NN
@@ -25,6 +49,8 @@ metadata:
   document_type: "prd-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "product_owner"
+  author_playbook: "framework/playbooks/02_PRD/product_owner.md"
   layer: 2
   lifecycle: mvp-prod-newmvp
   total_sections: 15
@@ -33,12 +59,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      EARS-Ready Score target >= 90/100 (advisory readiness target).
-    scoring_criteria:
-      business_clarity: "40% (SMART objectives, capability definitions, acceptance criteria)"
-      requirements_maturity: "35% (container boundaries, stakeholder needs, problem statement)"
-      ears_translation_readiness: "20% (user journeys, quality attributes quantified)"
-      strategic_alignment: "5% (upstream BRD references)"
+      EARS-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      business_clarity: "SMART objectives, capability definitions, acceptance criteria"
+      requirements_maturity: "container boundaries, stakeholder needs, problem statement"
+      ears_translation_readiness: "user journeys, quality attributes quantified"
+      strategic_alignment: "upstream BRD references"
 
   c4_level:
     _guidance: |
@@ -75,7 +101,7 @@ document_control:
   author: "[Product Manager]"
   priority: P1
   source_document: "@brd: BRD.01.07.a1b2"
-  ears_ready_score: "94/100"
+  ears_ready_status: "PASS"
 
   revision_history:
     - version: "1.0"
@@ -231,6 +257,9 @@ component_decomposition:
         source: /aidoc/prd/scope
         correlation:
           - contextAttributeName: documentId
+      - name: PrdClosedAndBaselinedEvent
+        type: org.aidoc.sdd.layer02.prd.closed
+        source: /layers/02_prd
 
     functions:
       - name: parseInitiative
@@ -250,6 +279,24 @@ component_decomposition:
         type: custom
       - name: purgeDownstreamDrafts
         operation: "urn:aidoc:functions:compensator#purgeDrafts"
+        type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
         type: custom
 
     states:
@@ -318,12 +365,51 @@ component_decomposition:
         dataConditions:
           - name: AlignmentApproved
             condition: "${ .isAligned == true and .thresholdsValid == true }"
-            transition: RatifyProductContract
+            transition: InvokeReviewSagaGate
           - name: ScopeAdjustmentNeeded
             condition: "${ .requiresAdjustment == true }"
             transition: AwaitScopeAdjustmentCallback
         defaultCondition:
           transition: RejectProductInitiative
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "prd-review-remediation-flow"
+                artifactId: "${ .documentId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyProductContract
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
+          - name: ReviewRequiresAdjustment
+            condition: "${ .requiresAdjustment == true or .iteration >= 3 }"
+            transition: AwaitScopeAdjustmentCallback
+        defaultCondition:
+          transition: RejectProductInitiative
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "product_manager"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: AwaitScopeAdjustmentCallback
         type: callback
@@ -347,8 +433,63 @@ component_decomposition:
               refName: emitPrdIds
               arguments:
                 documentId: "${ .documentId }"
-        end:
-          terminate: true
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-01"
+                layer: "02_PRD"
+                documentId: "${ .documentId }"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "${ .documentId }"
+                layer: "02_PRD"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "PrdNode"
+                nodeId: "${ .documentId }"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "PrdClosedAndBaselinedEvent"
+                documentId: "${ .documentId }"
+                features: "${ .features }"
+        produceEvents:
+          - eventRef: PrdClosedAndBaselinedEvent
+        end: true
 
       - name: RejectProductInitiative
         type: operation
@@ -439,8 +580,9 @@ acceptance_criteria:
 constraints_and_assumptions:
   _size_target: 200
   technical_constraints:
-    - "Must deploy onto Kubernetes 1.29+ clusters"
-    - "Zero proprietary orchestrator dependencies in framework specification"
+    - "Must deploy onto Kubernetes 1.29+ clusters or containerized Linux hosts (Debian 13 / Docker CE / gVisor)"
+    - "Zero proprietary orchestrator dependencies in framework specification (Decision D-0013 / GD-13)"
+    - "All technology stack selections deferred to Layer 05 ADR per TECHNOLOGY_STACK_USAGE_GUIDE.md"
   assumptions:
     - "Network latency between ingress gateway and core services is under 2ms"
 

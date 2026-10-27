@@ -1,0 +1,129 @@
+# =============================================================================
+#  CHG-92: Reference Canonical Technology Stack GitHub Repository (vladm3105/technology-stack)
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Documentation Update)
+#  Pre-cleared: User instruction in session (2026-10-13)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.11"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-92"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      User instruction in session: add reference to github repo
+      https://github.com/vladm3105/technology-stack to get the actual tech stack
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-92)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-92"
+  title: "Reference Canonical Technology Stack GitHub Repository (vladm3105/technology-stack)"
+  status: "Ratified"
+  context: |
+    The framework's platform reference architecture document (RECOMMENDED_PLATFORM_STACK.md)
+    was synchronized under CHG-91 to cite /home/ya/devd/technology_stack as the enterprise
+    standard v2.0. However, consumers, external CI runners, and distributed agents require a public
+    upstream repository location to fetch the canonical technology stack specifications (00-19)
+    when operating outside the local workstation filesystem.
+  choice: |
+    1. Update RECOMMENDED_PLATFORM_STACK.md Document Control, Purpose, Specification Directory,
+       and Adoption Protocol to cite https://github.com/vladm3105/technology-stack alongside
+       the local development path /home/ya/devd/technology_stack.
+    2. Document git clone instructions for developers and autonomous agents to obtain the actual
+       technology stack.
+  consequences: |
+    - Clear provenance and accessibility for both local developers and remote agents.
+    - Zero broken internal links or engine hygiene regressions.
+    - Preserves engine neutrality in framework/layers/ per Decision D-0013 / GD-13.
+  alternatives_considered:
+    - option: "Only cite local filesystem path"
+      rationale_rejected: >-
+        Inaccessible to environments and agents without direct access to the local workstation path.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Reference Canonical Technology Stack GitHub Repository (vladm3105/technology-stack)"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Add explicit references and cloning guidance for the canonical technology stack repository
+    https://github.com/vladm3105/technology-stack in RECOMMENDED_PLATFORM_STACK.md.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Add upstream repository reference for enterprise technology stack"
+  components_affected:
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/CHANGELOG.md"
+    - "framework/VERSION"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-92/IPLAN-92.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-92.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-92/IPLAN-92.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-92.yaml"
+    - "test_governance.py and test_spec_hygiene.py green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

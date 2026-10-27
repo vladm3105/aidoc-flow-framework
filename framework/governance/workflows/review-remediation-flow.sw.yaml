@@ -28,7 +28,7 @@ states:
       status: "PREPARED"
       iteration: 1
       max_iterations: 3
-      threshold_score: 90.0
+      topological_pass: false
       structural_pass: false
       soft_deadline_seconds: 600
     transition: DispatchReviewCrew
@@ -175,7 +175,7 @@ states:
           refName: recordGateApproval
           arguments:
             artifact_id: "${ .artifact_id }"
-            score: "${ .readiness_score }"
+            gate_verdict: "PASS"
             status: "CLOSED"
     end: true
 

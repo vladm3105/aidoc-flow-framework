@@ -100,12 +100,15 @@ class BrdSeedDispositionCarrier(unittest.TestCase):
                     f"_example absorbed row must cite a real BRD element id, got {elem!r}",
                 )
 
-    def test_mvp_skeleton_is_tombstone(self):
-        """The retired MVP file is a tombstone pointer, not a template (#666)."""
-        doc = yaml.safe_load(BRD_MVP_TEMPLATE.read_text(encoding="utf-8")) or {}
-        self.assertEqual(set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}")
-        self.assertEqual(doc["tombstone"]["status"], "retired")
-        self.assertEqual(doc["tombstone"]["canonical_template"], "./BRD-TEMPLATE.yaml")
+    def test_mvp_template_not_resurrected(self):
+        """MVP templates were retired in CHG-08 and tombstoned files removed in CHG-89 (GD-76).
+
+        Asserts that legacy *-MVP-TEMPLATE.yaml files must not be resurrected.
+        """
+        self.assertFalse(
+            BRD_MVP_TEMPLATE.exists(),
+            "BRD-MVP-TEMPLATE.yaml resurrected — only canonical BRD-TEMPLATE.yaml is permitted (GD-76)",
+        )
 
 
 _BRD_HEAD = (

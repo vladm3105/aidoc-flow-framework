@@ -1,0 +1,181 @@
+# =============================================================================
+#  CHG-103: Framework Gap Remediation, Binary Topological Validation Parity, and Workflow Cataloging
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Specification Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-14)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-14"
+  framework_version: "0.91.22"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-103"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-14T00:00:00Z"
+  date_approved: "2026-10-14T00:00:00Z"
+  date_implemented: "2026-10-14T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-14T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-14): approved, continue
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-103)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-103"
+  title: "Synchronize Binary Topological Validation Across Governance and Catalog 30 CNCF Workflows"
+  status: "Ratified"
+  context: |
+    Comprehensive framework review following PRs #958-#978 identified key gaps and drift across
+    governance contracts, catalogs, test coverage, and documentation:
+    1. Residual Heuristic Readiness Scoring: Despite CHG-97 formally adopting Binary Topological
+       Validation (BTV) and retiring subjective >=90% score thresholds, legacy references remained
+       in DOC_GOVERNANCE_CORE.md (Principle 4), TRACEABILITY.md (Layer Readiness Gates table),
+       SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, Layer 08 IPLAN README/index, and Layer 03 EARS README/template.
+    2. Workflow Catalog Omissions: The framework expanded to 30 CNCF Serverless Workflows (.sw.yaml),
+       but framework/governance/README.md and GOVERNANCE_WORKFLOW_STANDARD.md omitted the 5 federated
+       workflows, eval-review-remediation.sw.yaml, and iplan-escalation-flow.sw.yaml. In addition,
+       test_governance_workflows.py omitted eval-review-remediation from EXPECTED_REVIEW_WORKFLOWS,
+       and root README.md still claimed 22 cataloged workflows.
+    3. Context Slicing CLI Accessibility: sdd_doc_lint/__main__.py lacked a --slice option to invoke
+       sdd_doc_lint.slice directly via the package entrypoint.
+    4. Starter Federated Templates: Downstream repositories had no template files for stack-policy.yaml
+       and contracts-registry.yaml under framework/templates/.
+    5. Broken Markdown Link: docs/audit and suggestions conclusion.md contained an unanchored link
+       to framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md that failed offline Lychee checks.
+  choice: |
+    1. Replace residual >=90% scoring statements across DOC_GOVERNANCE_CORE.md, TRACEABILITY.md,
+       SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, Layer 03 EARS, and Layer 08 IPLAN with Binary Topological
+       Validation invariants (strict DAG completeness and oracle realization).
+    2. Synchronize all 30 workflows in framework/governance/README.md, GOVERNANCE_WORKFLOW_STANDARD.md,
+       and root README.md.
+    3. Update tests/conformance/test_governance_workflows.py to register eval-review-remediation and
+       add an orphan-workflow guard.
+    4. Expose --slice in sdd_doc_lint/__main__.py delegating to sdd_doc_lint.slice.
+    5. Add STACK-POLICY-TEMPLATE.yaml and CONTRACTS-REGISTRY-TEMPLATE.yaml to framework/templates/.
+    6. Fix the broken relative link in docs/audit and suggestions conclusion.md.
+    7. Bump framework/VERSION to 0.91.22 and propagate pins via hooks/sync-version-refs.sh.
+  consequences: |
+    - Unifies framework-wide governance around Binary Topological Validation, eliminating confusion.
+    - Ensures 100% catalog and conformance parity across all 30 CNCF Serverless Workflows.
+    - Improves agent usability with package-level context slicing CLI.
+    - Provides standardized template assets for multi-project federated adopters.
+  alternatives_considered:
+    - option: "Retain legacy >=90% tables as historical reference in TRACEABILITY.md"
+      rationale_rejected: >-
+        Retaining contradictory readiness scoring alongside BTV creates split-brain guidance
+        for autonomous coding agents and human reviewers.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Framework Gap Remediation, Binary Topological Validation Parity, and Workflow Cataloging"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-14T00:00:00Z"
+  summary: |
+    Synchronize Binary Topological Validation across governance documents, catalog all 30 CNCF
+    Serverless Workflows, add context slicing CLI delegation, add federated starter templates,
+    and resolve documentation drift.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Comprehensive governance gap remediation, BTV parity, and workflow cataloging"
+  components_affected:
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/TRACEABILITY.md"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    - "framework/layers/01_BRD/BRD-00_index.TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-00_index.TEMPLATE.yaml"
+    - "framework/layers/03_EARS/README.md"
+    - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-00_index.TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+    - "framework/layers/04_BDD/BDD-00_index.TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-00_index.TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/README.md"
+    - "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md"
+    - "framework/governance/README.md"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    - "framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md"
+    - "plans/TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN.md"
+    - "README.md"
+    - "sdd_doc_lint/__main__.py"
+    - "tests/test_slice.py"
+    - "framework/templates/STACK-POLICY-TEMPLATE.yaml"
+    - "framework/templates/CONTRACTS-REGISTRY-TEMPLATE.yaml"
+    - "docs/audit and suggestions conclusion.md"
+    - "tests/conformance/test_governance_workflows.py"
+    - "tests/conformance/test_governance.py"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+    - "framework/archive/CHG-103/CHG-103.yaml"
+    - "framework/archive/CHG-103/IPLAN-103.yaml"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-103/IPLAN-103.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-103.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-103/IPLAN-103.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-103/CHG-103.yaml passing"
+    - "python3 -m sdd_doc_lint.swf_lint passing on all 30 workflows"
+    - "python3 -m unittest discover -s tests/conformance green"
+    - "full test suite passing"
+    - "lychee link check clean"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

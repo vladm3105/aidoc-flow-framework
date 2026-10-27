@@ -1,0 +1,152 @@
+# =============================================================================
+#  CHG-94: Tombstone framework/CHANGELOG.md and Retire GATE-SPEC-E008
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance Documentation & Gate Update)
+#  Pre-cleared: Founder approval in session (2026-10-13)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.13"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-94"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session: freeze framework/CHANGELOG.md as tombstone,
+      retire GATE-SPEC-E008, generate changelog on demand from CHGs during release cut-offs
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-94)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-94"
+  title: "Tombstone framework/CHANGELOG.md and Retire GATE-SPEC-E008"
+  status: "Ratified"
+  context: |
+    Hand-maintaining framework/CHANGELOG.md per-PR introduces recurring friction without
+    incremental value: every change to framework/ already authors a machine-readable,
+    linted CHG document in framework/archive/CHG-*/ containing metadata, decisions,
+    requests, and file manifests. Updating CHANGELOG.md forces agents and developers to
+    duplicate the exact same information in prose, burns context tokens, causes persistent
+    additive merge conflicts at the top of the file across parallel branches, and triggers
+    brittle CI failures under GATE-SPEC-E008. Root CHANGELOG.md was already frozen as a tombstone
+    in CHG-40 (#836); framework/CHANGELOG.md carries the exact same defect class.
+  choice: |
+    1. Freeze framework/CHANGELOG.md as a tombstone (matching root CHANGELOG.md); cease
+       per-PR manual maintenance.
+    2. Declare framework/archive/CHG-*/ + GitHub releases and PRs as the live change records
+       of truth. Human-readable changelogs can be generated from CHG archives on demand
+       during formal release cut-offs.
+    3. Retire GATE-SPEC-E008 in tests/chg/spec_gate.py, tests/conformance/test_spec_gate.py,
+       and governance gate catalogs.
+    4. Remove framework/CHANGELOG.md from hooks/check-docs-updated.sh and update AGENTS.md,
+       CONTRIBUTING.md, and README.md.
+  consequences: |
+    - Eliminates token waste and manual duplicate reporting across all future PRs.
+    - Permanently resolves merge conflict hotspot on line 16 of framework/CHANGELOG.md.
+    - Speeds up autonomous agent execution while preserving complete audit provenance via CHG YAMLs.
+  alternatives_considered:
+    - option: "Continue hand-maintaining framework/CHANGELOG.md per PR"
+      rationale_rejected: >-
+        Incurs ongoing token costs, merge conflicts, and duplicates information already in CHG files.
+    - option: "Auto-generate framework/CHANGELOG.md on every PR commit"
+      rationale_rejected: >-
+        Still mutates a shared tracked file per PR, risking race conditions and commit pollution.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Tombstone framework/CHANGELOG.md and Retire GATE-SPEC-E008"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Freeze framework/CHANGELOG.md as a tombstone, retire GATE-SPEC-E008, update spec gate
+    and conformance tests, and establish that release changelogs are generated on demand
+    from CHG archives during release cut-offs.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Tombstone framework changelog and retire GATE-SPEC-E008"
+  components_affected:
+    - "framework/CHANGELOG.md"
+    - "tests/chg/spec_gate.py"
+    - "tests/conformance/test_spec_gate.py"
+    - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+    - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+    - "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+    - "framework/layers/09_CHG/gates/GATE_ERROR_CATALOG.md"
+    - "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+    - "framework/layers/09_CHG/templates/GATE_APPROVAL_FORM.md"
+    - "hooks/check-docs-updated.sh"
+    - "AGENTS.md"
+    - "CONTRIBUTING.md"
+    - "README.md"
+    - "framework/VERSION"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-94/IPLAN-94.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-94.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-94/IPLAN-94.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-94.yaml"
+    - "spec_gate.py passing with GATE-SPEC-E008 retired"
+    - "test_spec_gate.py and conformance suite green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

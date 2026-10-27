@@ -1,0 +1,199 @@
+# =============================================================================
+#  CNCF Serverless Workflow: Master SDD Layer End-to-End Orchestration Flow
+#  Spec Version: 0.8 (YAML)
+#  Standard: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+# =============================================================================
+
+id: sdd-layer-orchestration
+name: "Master Spec-Driven Development 10-Layer End-to-End Orchestration State Machine"
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Normative CNCF Serverless Workflow state machine orchestrating the complete 10-layer
+  SDD lifecycle (BRD -> PRD -> EARS -> [Fork: BDD || ADR] -> Join: SPEC -> TDD -> IPLAN -> [Code] -> CHG -> EVAL)
+  with typed CloudEvent correlation, gate validation, baseline sealing, and automated handoffs.
+
+start: ExecuteLayer01BRD
+
+events:
+  - name: BrdClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer01.brd.closed
+    source: /layers/01_brd
+  - name: PrdClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer02.prd.closed
+    source: /layers/02_prd
+  - name: EarsClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer03.ears.closed
+    source: /layers/03_ears
+  - name: BddScenariosClosedEvent
+    type: org.aidoc.sdd.layer04.bdd.closed
+    source: /layers/04_bdd
+  - name: AdrDecisionsClosedEvent
+    type: org.aidoc.sdd.layer05.adr.closed
+    source: /layers/05_adr
+  - name: SpecContractsClosedEvent
+    type: org.aidoc.sdd.layer06.spec.closed
+    source: /layers/06_spec
+  - name: TddSuitesClosedEvent
+    type: org.aidoc.sdd.layer07.tdd.closed
+    source: /layers/07_tdd
+  - name: IplanApprovedEvent
+    type: org.aidoc.sdd.layer08.iplan.approved
+    source: /layers/08_iplan
+  - name: ChgCloseoutEvent
+    type: org.aidoc.governance.chg.closed
+    source: /governance/chg
+  - name: EvalVerificationClosedEvent
+    type: org.aidoc.sdd.layer10.eval.closed
+    source: /layers/10_eval
+  - name: SddChainCompleteEvent
+    type: org.aidoc.sdd.chain.completed
+    source: /orchestration/sdd
+
+functions:
+  - name: executeSubWorkflow
+    type: custom
+    operation: "urn:aidoc:orchestrator:subflow#execute"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
+
+states:
+  # ---------------------------------------------------------------------------
+  # Layer 01: BRD (Business Requirements Document)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer01BRD
+    type: operation
+    actions:
+      - name: invokeBrdValidation
+        subFlowRef: brd-business-validation
+    transition: ExecuteLayer02PRD
+
+  # ---------------------------------------------------------------------------
+  # Layer 02: PRD (Product Requirements Document)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer02PRD
+    type: operation
+    actions:
+      - name: invokePrdDecomposition
+        subFlowRef: prd-feature-decomposition
+    transition: ExecuteLayer03EARS
+
+  # ---------------------------------------------------------------------------
+  # Layer 03: EARS (Easy Approach to Requirements Syntax)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer03EARS
+    type: operation
+    actions:
+      - name: invokeEarsValidation
+        subFlowRef: ears-requirements-validation
+    transition: ForkLayer04And05
+
+  # ---------------------------------------------------------------------------
+  # Parallel Fork: Layer 04 (BDD) and Layer 05 (ADR)
+  # ---------------------------------------------------------------------------
+  - name: ForkLayer04And05
+    type: parallel
+    completionType: allOf
+    branches:
+      - name: ExecuteLayer04BDD
+        actions:
+          - name: runLayer04BddFlow
+            subFlowRef: bdd-acceptance-run
+      - name: ExecuteLayer05ADR
+        actions:
+          - name: runLayer05AdrFlow
+            subFlowRef: adr-decision-analysis
+    transition: ExecuteLayer06SPEC
+
+  # ---------------------------------------------------------------------------
+  # Synchronized Join: Layer 06 (SPEC)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer06SPEC
+    type: operation
+    actions:
+      - name: invokeSpecChoreography
+        subFlowRef: spec-choreography-contract
+    transition: ExecuteLayer07TDD
+
+  # ---------------------------------------------------------------------------
+  # Layer 07: TDD (Test-Driven Development)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer07TDD
+    type: operation
+    actions:
+      - name: invokeTddExecution
+        subFlowRef: tdd-test-execution
+    transition: ExecuteLayer08IPLAN
+
+  # ---------------------------------------------------------------------------
+  # Layer 08: IPLAN (Implementation Plan)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer08IPLAN
+    type: operation
+    actions:
+      - name: invokeIplanExecution
+        subFlowRef: iplan-execution-flow
+    transition: ExecuteImplementationCode
+
+  # ---------------------------------------------------------------------------
+  # Implementation Stage: Code Construction
+  # ---------------------------------------------------------------------------
+  - name: ExecuteImplementationCode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: executeCodeMutation
+        functionRef:
+          refName: executeSubWorkflow
+          arguments:
+            target: "code_implementation"
+            manifest: "${ .file_manifest }"
+    transition: ExecuteLayer09CHG
+
+  # ---------------------------------------------------------------------------
+  # Layer 09: CHG (Change Request Governance)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer09CHG
+    type: operation
+    actions:
+      - name: invokeChgGovernance
+        subFlowRef: chg-request-flow
+    transition: ExecuteLayer10EVAL
+
+  # ---------------------------------------------------------------------------
+  # Layer 10: EVAL (Evaluation & Quality Verification)
+  # ---------------------------------------------------------------------------
+  - name: ExecuteLayer10EVAL
+    type: operation
+    actions:
+      - name: invokeEvalVerification
+        subFlowRef: eval-verification-run
+    transition: FinalizeSddChain
+
+  # ---------------------------------------------------------------------------
+  # Master Chain Completion & Terminal Signoff
+  # ---------------------------------------------------------------------------
+  - name: FinalizeSddChain
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: emitFinalChainCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "SddChainCompleteEvent"
+            chain_status: "SUCCESS"
+            audit_receipt: "${ .eval_receipt_path }"
+    produceEvents:
+      - eventRef: SddChainCompleteEvent
+    end: true

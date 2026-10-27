@@ -70,11 +70,65 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         (FRAMEWORK / "governance" / "ADAPTATION_SURFACE.yaml", gov / "ADAPTATION_SURFACE.yaml"),
     ):
         shutil.copy(src, dst)
+    for layer in (
+        "01_BRD",
+        "02_PRD",
+        "03_EARS",
+        "04_BDD",
+        "05_ADR",
+        "06_SPEC",
+        "07_TDD",
+        "08_IPLAN",
+        "09_CHG",
+        "10_EVAL",
+    ):
+        prefix = layer.split("_")[1]
+        tmpl_src = FRAMEWORK / "layers" / layer / f"{prefix}-00_index.TEMPLATE.yaml"
+        if tmpl_src.exists():
+            ldir = canon / "framework" / "layers" / layer
+            ldir.mkdir(parents=True, exist_ok=True)
+            shutil.copy(tmpl_src, ldir / f"{prefix}-00_index.TEMPLATE.yaml")
+    tmpl_dir = canon / "framework" / "templates"
+    tmpl_dir.mkdir(parents=True)
+    shutil.copy(
+        FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md",
+        tmpl_dir / "AGENTS-TEMPLATE.md",
+    )
+    for tmpl_name in (
+        "STACK-POLICY-TEMPLATE.yaml",
+        "TASKFILE-TEMPLATE.yml",
+        "ENGINE-CONFIG-TEMPLATE.yaml",
+        "CONSUMER-PRECOMMIT-TEMPLATE.yaml",
+    ):
+        src = FRAMEWORK / "templates" / tmpl_name
+        if src.exists():
+            shutil.copy(src, tmpl_dir / tmpl_name)
+    # Governance blueprint sources tapped by install.sh blueprints (CHG-136).
+    for tmpl_name in (
+        "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md",
+        "AIDOC-CI-SMART-ROUTING-TEMPLATE.md",
+        "AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md",
+        "AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md",
+        "AIDOC-QA-PROTOCOL-TEMPLATE.md",
+        "AIDOC-BROWSER-TESTING-TEMPLATE.md",
+    ):
+        src = FRAMEWORK / "governance" / "aidoc" / tmpl_name
+        if src.exists():
+            shutil.copy(src, aidoc / tmpl_name)
+    for std_name in ("DURABLE_EXECUTION_STANDARD.md", "REVIEW_WORKFLOW_STANDARD.md"):
+        src = FRAMEWORK / "governance" / std_name
+        if src.exists():
+            shutil.copy(src, gov / std_name)
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
         (canon / d).mkdir(parents=True)
         (canon / d / "MARKER").write_text(marker + "\n", encoding="utf-8")
+    # The scaffolded pre-commit gate references the real hook by path: ship
+    # it so the wiring test proves executability, not just text (CHG-136).
+    hook_src = REPO_ROOT / "hooks" / "ch-gate-check.sh"
+    if hook_src.is_file():
+        shutil.copy(hook_src, canon / "hooks" / "ch-gate-check.sh")
     return canon
 
 
@@ -195,6 +249,75 @@ class InstallScript(unittest.TestCase):
             "framework/archive/ must be pruned inside the copy",
         )
         self.assertEqual((fw / "tests" / "MARKER").read_text().strip(), "canon-A")
+
+    def test_scaffolds_adr_index_and_agents_working_agreement(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        adr_index = self.project / "docs" / "sdd" / "05_ADR" / "ADR-00_index.yaml"
+        self.assertTrue(adr_index.is_file())
+        adr_content = adr_index.read_text(encoding="utf-8")
+        self.assertIn("9.9.9", adr_content)
+        self.assertNotIn("[X.Y.Z]", adr_content)
+        agents = self.project / "AGENTS.md"
+        self.assertTrue(agents.is_file())
+        agents_content = agents.read_text(encoding="utf-8")
+        self.assertIn("proj", agents_content)
+        self.assertIn("Where state lives", agents_content)
+
+    def test_no_adr_and_no_agents_flags_skip_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-adr",
+            "--no-agents",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / "docs" / "sdd" / "05_ADR").exists())
+        self.assertFalse((self.project / "AGENTS.md").exists())
+
+    def test_scaffolds_all_layer_indices_with_flag(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--all-indices",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        for layer in (
+            "01_BRD",
+            "02_PRD",
+            "03_EARS",
+            "04_BDD",
+            "05_ADR",
+            "06_SPEC",
+            "07_TDD",
+            "08_IPLAN",
+            "09_CHG",
+            "10_EVAL",
+        ):
+            prefix = layer.split("_")[1]
+            idx = self.project / "docs" / "sdd" / layer / f"{prefix}-00_index.yaml"
+            self.assertTrue(idx.is_file(), f"missing index for {layer}")
+            content = idx.read_text(encoding="utf-8")
+            self.assertIn("9.9.9", content, f"missing version in {idx}")
+            self.assertNotIn("[X.Y.Z]", content, f"unresolved placeholder in {idx}")
+
+    def test_all_indices_respects_no_adr_flag(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--all-indices",
+            "--no-adr",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        brd_idx = self.project / "docs" / "sdd" / "01_BRD" / "BRD-00_index.yaml"
+        self.assertTrue(brd_idx.is_file())
+        self.assertFalse((self.project / "docs" / "sdd" / "05_ADR").exists())
 
     def test_refuses_overwrite_without_force(self):
         first = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
@@ -345,6 +468,102 @@ class InstallScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("needs a value", proc.stderr)
 
+    def test_pin_install_sets_project_name_and_passes_profile_lint(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        profile_path = self.project / ".aidoc" / "profile.yaml"
+        profile_text = profile_path.read_text(encoding="utf-8")
+        self.assertIn('project_name: "proj"', profile_text)
+        from sdd_doc_lint.profile_lint import validate_profile
+
+        is_valid, errors = validate_profile(profile_path)
+        self.assertTrue(is_valid, f"profile_lint failed: {errors}")
+
+    def test_scaffolds_stack_policy_and_linter_runner(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        policy = self.project / "stack-policy.yaml"
+        self.assertTrue(policy.is_file())
+        self.assertIn('tenant_id: "proj"', policy.read_text(encoding="utf-8"))
+        runner = self.project / ".aidoc" / "bin" / "sdd-lint"
+        self.assertTrue(runner.is_file())
+        self.assertTrue(os.access(runner, os.X_OK))
+        taskfile = self.project / ".aidoc" / "Taskfile.yml"
+        self.assertTrue(taskfile.is_file())
+        taskfile_text = taskfile.read_text(encoding="utf-8")
+        self.assertIn("lint:", taskfile_text)
+        self.assertIn("chg-lint:", taskfile_text)
+        self.assertIn("swf-lint:", taskfile_text)
+        self.assertIn("profile-lint:", taskfile_text)
+        engine_cfg = self.project / ".aidoc" / "engine" / "engine.yaml"
+        self.assertTrue(engine_cfg.is_file())
+        self.assertIn("aidoc-flow-langgraph", engine_cfg.read_text(encoding="utf-8"))
+
+    def test_no_stack_policy_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-stack-policy",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / "stack-policy.yaml").exists())
+
+    def test_scaffolds_governance_blueprints_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        for name in (
+            "CHG_EXECUTION_FLOW.md",
+            "CI_SMART_ROUTING.md",
+            "CONFLICT_RESOLUTION.md",
+            "SELF_REVIEW_LOOP.md",
+            "QA_PROTOCOL.md",
+            "BROWSER_TESTING.md",
+            "DURABLE_EXECUTION.md",
+            "REVIEW_WORKFLOWS.md",
+        ):
+            self.assertTrue((gov / name).is_file(), f"blueprint missing: {name}")
+
+    def test_no_blueprints_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-blueprints",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        self.assertFalse(
+            any(gov.glob("*.md")) if gov.is_dir() else False,
+            "blueprints scaffolded despite --no-blueprints",
+        )
+
+    def test_scaffolds_precommit_config_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        precommit = self.project / ".pre-commit-config.yaml"
+        self.assertTrue(precommit.is_file())
+        content = precommit.read_text(encoding="utf-8")
+        self.assertIn("chg-gate-check", content)
+        self.assertIn(".aidoc/framework/hooks/ch-gate-check.sh", content)
+        hook = self.project / ".aidoc" / "framework" / "hooks" / "ch-gate-check.sh"
+        self.assertTrue(hook.is_file(), "scaffolded gate entry has no hook behind it")
+        self.assertTrue(os.access(hook, os.X_OK), "shipped hook is not executable")
+
+    def test_no_precommit_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-precommit",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / ".pre-commit-config.yaml").exists())
+
 
 class UpgradeScript(unittest.TestCase):
     """upgrade.sh — runbook step-2 re-point + drift report, both kinds."""
@@ -361,10 +580,30 @@ class UpgradeScript(unittest.TestCase):
         proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a))
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
+    def test_upgrade_ignores_install_only_opt_outs(self):
+        self._install_pin()
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            "--no-adr",
+            "--no-agents",
+            "--no-stack-policy",
+            "--no-blueprints",
+            "--no-precommit",
+            "--author",
+            "Probe Eng",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
     def test_pin_upgrade_replaces_and_reports_drift(self):
         self._install_pin()
         overrides = self.project / ".aidoc" / "project"
-        overrides.mkdir(parents=True)
+        overrides.mkdir(parents=True, exist_ok=True)
         (overrides / "old.yaml").write_text('framework_version: "9.9.8"\nfoo: 1\n')
         (overrides / "current.yaml").write_text('framework_version: "9.9.10"\nfoo: 2\n')
         (overrides / "loose.md").write_text("# no pin here\n")
@@ -382,11 +621,117 @@ class UpgradeScript(unittest.TestCase):
         self.assertIn("OK: project/current.yaml (at 9.9.10)", proc.stdout)
         self.assertIn("UNPINNED: project/loose.md", proc.stdout)
 
+    def test_upgrade_reports_blueprint_status_and_refreshes_unmodified(self):
+        self._install_pin()
+        chg_flow_src = (
+            self.canon_b
+            / "framework"
+            / "governance"
+            / "aidoc"
+            / "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+        )
+        chg_flow_src.write_text("# Upstream v9.9.10 CHG Execution Flow\n")
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("DRIFT: project/governance/CHG_EXECUTION_FLOW.md", proc.stdout)
+        self.assertIn("OK: project/governance/QA_PROTOCOL.md (blueprint up-to-date)", proc.stdout)
+        self.assertNotIn("UNPINNED: project/governance/CHG_EXECUTION_FLOW.md", proc.stdout)
+
+        proc_refresh = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--force",
+            "--yes",
+        )
+        self.assertEqual(proc_refresh.returncode, 0, proc_refresh.stderr)
+        consumer_bp = self.project / ".aidoc" / "project" / "governance" / "CHG_EXECUTION_FLOW.md"
+        self.assertEqual(consumer_bp.read_text(), "# Upstream v9.9.10 CHG Execution Flow\n")
+
+    def test_upgrade_refresh_blueprints_preserves_consumer_customizations(self):
+        self._install_pin()
+        consumer_bp = self.project / ".aidoc" / "project" / "governance" / "CHG_EXECUTION_FLOW.md"
+        consumer_bp.write_text("# My Custom Project CHG Execution Flow\n")
+
+        chg_flow_src = (
+            self.canon_b
+            / "framework"
+            / "governance"
+            / "aidoc"
+            / "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md"
+        )
+        chg_flow_src.write_text("# Upstream v9.9.10 CHG Execution Flow\n")
+
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--yes",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("preserved customized blueprint", proc.stdout)
+        self.assertEqual(consumer_bp.read_text(), "# My Custom Project CHG Execution Flow\n")
+
+        proc_force = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--refresh-blueprints",
+            "--force",
+            "--yes",
+        )
+        self.assertEqual(proc_force.returncode, 0, proc_force.stderr)
+        self.assertIn("refreshed blueprint", proc_force.stdout)
+        self.assertEqual(consumer_bp.read_text(), "# Upstream v9.9.10 CHG Execution Flow\n")
+
     def test_pin_upgrade_refuses_same_version_without_force(self):
         self._install_pin()
         proc = _run(UPGRADE, str(self.project), "--to", "9.9.9", "--canon-dir", str(self.canon_a))
         self.assertEqual(proc.returncode, 2)
         self.assertIn("already at 9.9.9", proc.stderr)
+
+    def test_pin_upgrade_refuses_git_submodule_without_force(self):
+        self._install_pin()
+        # Simulate a git submodule: .aidoc/framework/.git file (gitlink)
+        gitlink = self.project / ".aidoc" / "framework" / ".git"
+        gitlink.write_text("gitdir: ../../.git/modules/.aidoc/framework\n")
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("Git submodule", proc.stderr)
+
+        # With --force, upgrade succeeds and replaces it
+        proc_force = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            "--force",
+        )
+        self.assertEqual(proc_force.returncode, 0, proc_force.stderr)
 
     def test_upgrade_requires_yes_when_noninteractive(self):
         self._install_pin()
@@ -500,7 +845,10 @@ class UpgradeScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
     def test_upgrade_without_overrides_is_vacuous(self):
-        self._install_pin()
+        # Default installs scaffold blueprints (UNPINNED drift), so the
+        # vacuous path needs an install with nothing under .aidoc/project/.
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a), "--no-blueprints")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
         proc = _run(
             UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
         )
@@ -682,6 +1030,21 @@ class UpgradeScript(unittest.TestCase):
         profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
         self.assertIn('framework_version: "9.9.10"', profile)
 
+    def test_upgrade_backfills_missing_project_name(self):
+        self._install_pin()
+        profile_path = self.project / ".aidoc" / "profile.yaml"
+        content = profile_path.read_text(encoding="utf-8")
+        content = re.sub(
+            r"^[ \t]*project_name:.*", '  # project_name: "<broken>"', content, flags=re.MULTILINE
+        )
+        profile_path.write_text(content, encoding="utf-8")
+        proc = _run(
+            UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        reloaded = profile_path.read_text(encoding="utf-8")
+        self.assertIn('project_name: "proj"', reloaded)
+
 
 class ScriptPortabilityPins(unittest.TestCase):
     """Static pins: no GNU-only constructs may re-enter the scripts (#878)."""
@@ -718,6 +1081,183 @@ class ScriptsAreShellcheckClean(unittest.TestCase):
                     ["shellcheck", str(script)], capture_output=True, text=True, timeout=120
                 )
                 self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+
+
+class DeployScript(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="deploy-scripts-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.project = self.tmp / "proj"
+        self.project.mkdir()
+
+    def test_deploy_fresh_pin_with_flags(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--kind",
+                "pin",
+                "--no-stack-policy",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        self.assertTrue((self.project / ".aidoc" / "profile.yaml").exists())
+        self.assertFalse((self.project / "stack-policy.yaml").exists())
+
+    def test_deploy_default_kind_is_pin(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        fw = self.project / ".aidoc" / "framework"
+        self.assertTrue(fw.exists())
+        self.assertTrue(fw.is_dir())
+        self.assertFalse(fw.is_symlink())
+
+    def test_deploy_help_exits_zero(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            ["bash", str(deploy_sh), "--help"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Usage:", proc.stdout)
+
+    def test_deploy_missing_values_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        for flag in ("--target", "--kind", "--shared"):
+            proc = subprocess.run(
+                ["bash", str(deploy_sh), flag],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(proc.returncode, 2, flag)
+            self.assertIn("needs a value", proc.stderr)
+
+    def test_deploy_canon_symlink_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--kind",
+                "symlink",
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("--canon", proc.stderr)
+
+    def _tag_canon(self, version):
+        canon = _make_canon(self.tmp, version, f"canon-{version}")
+        _git_init(canon)
+        subprocess.run(
+            ["git", "-C", str(canon), "tag", f"framework/v{version}"],
+            check=True,
+            capture_output=True,
+        )
+        return canon
+
+    def test_deploy_canon_tag_fresh_install(self):
+        canon = self._tag_canon("9.9.9")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.9"', profile)
+
+    def test_deploy_canon_tag_brownfield_upgrade(self):
+        canon_a = _make_canon(self.tmp, "9.9.9", "canon-A")
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(canon_a))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        canon_b = self._tag_canon("9.9.10")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.10",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon_b)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        aidoc = self.project / ".aidoc"
+        profile = (aidoc / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.10"', profile)
+        marker = (aidoc / "framework" / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-9.9.10")
+
+
+class ChGateCheckHook(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="ch-gate-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.hook = REPO_ROOT / "hooks" / "ch-gate-check.sh"
+
+    def test_ch_gate_check_discovers_underscored_09_chg(self):
+        repo = self.tmp / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+        chg_dir = repo / "docs" / "sdd" / "09_CHG"
+        chg_dir.mkdir(parents=True)
+        (chg_dir / "CHG-01.yaml").write_text(
+            "change_control:\n  status: In-Progress\n", encoding="utf-8"
+        )
+        (repo / "main.py").write_text("print(1)\n", encoding="utf-8")
+        subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+        proc = subprocess.run(
+            [str(self.hook)], cwd=repo, capture_output=True, text=True, timeout=30
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Active CHG found", proc.stdout)
 
 
 if __name__ == "__main__":

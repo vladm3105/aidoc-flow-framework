@@ -1,0 +1,103 @@
+# CHG-00_index.TEMPLATE.yaml — Change Management Index (template)
+# SDD Namespace 09 — Change record catalog and governance gate tracking
+#
+# Index template. Copy this file to CHG-00_index.yaml in a project.
+# Dynamic registry — updated every time a Change Request (CHG) is proposed,
+# approved, implemented, or completed.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (classification, gate definitions, approval matrix),
+# see 09_CHG/README.md and governance/CHG_REQUEST_FLOWS.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "chg-registry"
+  artifact_type: "CHG-INDEX"
+  layer: 9
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_changes: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Namespace 09 CHGs)
+# =============================================================================
+# Master inventory of all formal Change Management Records for the project.
+change_records: []
+
+  # Template entry:
+  # - id: "CHG-01"
+  #   title: "[Change Request Summary]"
+  #   change_level: "C2"        # C1 (Doc/Non-normative) | C2 (Enhancement) | C3 (Breaking) | Emergency
+  #   flow_code: "DIR2C"        # SDD2C | DIR2C | SEED2C | CODE2C | CODE2S | HOTFIX
+  #   status: "Proposed"        # Proposed | Approved | In-Progress | Implemented | Completed | Rejected
+  #   entry_gate: "GATE-03"     # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC
+  #   semver_impact: "minor"    # major | minor | patch | none
+  #   iplan_ref: "IPLAN-01"     # Authorizing implementation plan
+  #   author: "[Author Name]"
+  #   date_proposed: "YYYY-MM-DD"
+  #   file_path: "CHG-01_[slug].yaml"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned Changes)
+# =============================================================================
+# Upcoming modifications, architectural refactors, or feature expansions.
+backlog: []
+
+  # Template entry:
+  # - id: "CHG-XX"              # Reserved sequential ID
+  #   title: "[Proposed Change Scope]"
+  #   priority: "Medium"        # High | Medium | Low
+  #   target_date: "YYYY-MM-DD"
+  #   notes: "[Motivation and blast radius]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Gate Registry Mapping
+# =============================================================================
+# Governance gate taxonomy connecting lifecycle transitions to verification gates.
+gates:
+  - gate: "GATE-01"
+    layers: "L1-L2"
+    artifacts: ["BRD", "PRD"]
+    definition_file: "gates/GATE-01_BUSINESS_PRODUCT.md"
+  - gate: "GATE-03"
+    layers: "L3-L5"
+    artifacts: ["EARS", "BDD", "ADR"]
+    definition_file: "gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md"
+  - gate: "GATE-06"
+    layers: "L6-L7"
+    artifacts: ["SPEC", "TDD"]
+    definition_file: "gates/GATE-06_DESIGN_TEST.md"
+  - gate: "GATE-08"
+    layers: "L8"
+    artifacts: ["IPLAN"]
+    definition_file: "gates/GATE-08_IPLAN.md"
+  - gate: "GATE-CODE"
+    layers: "Code"
+    artifacts: ["Source Code"]
+    definition_file: "gates/GATE-CODE_IMPLEMENTATION.md"
+  - gate: "GATE-SPEC"
+    layers: "Meta"
+    artifacts: ["framework/"]
+    definition_file: "gates/GATE-SPEC_FRAMEWORK.md"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_chg_created:
+    - "Add entry to change_records with status: Proposed"
+    - "Increment metadata.total_changes"
+  on_gate_approved:
+    - "Update status to Approved with gate approval evidence"
+  on_implementation_completed:
+    - "Update status to Implemented or Completed"
+    - "Verify associated IPLAN and affected artifacts conform to SDD standards"

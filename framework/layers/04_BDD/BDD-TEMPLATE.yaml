@@ -1,9 +1,20 @@
 # =============================================================================
-#  BDD-TEMPLATE.yaml — BDD Scenarios (SDD)
+#  BDD-TEMPLATE.yaml — BDD Scenarios (SDD Layer 04)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable BDD template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable BDD template for linear acceptance scenarios
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (BDD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting standard, linear Given/When/Then scenarios for atomic or monolithic features
+#    - Specifying behavioral acceptance criteria where state machine orchestration is unnecessary overhead
+#  Use the primary template (BDD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling stateful behavioral workflows, multi-step customer journeys, or distributed event sequences
+#    - Mapping Given/When/Then to state machine primitives (inject/operation/event/switch)
+#    - Requiring automated saga compensation (backward rollback teardown on scenario failure)
+#    - Orchestrating asynchronous callbacks, webhook events, or external stimuli
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators
@@ -33,16 +44,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      ADR-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-
-      ADR-Ready scoring criteria:
-        Scenario coverage (40%): all EARS requirements have scenarios
-        Gherkin quality (25%): valid syntax, atomic scenarios, executable
-        Traceability (20%): necessary-upstream tag (@ears) present + resolves
-        Edge case coverage (15%): error, recovery, parameterized scenarios
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to a verified EARS document/element (zero dangling edges).
+        2. Strict Oracle Coverage: Every EARS requirement has at least one behavioral state graph or scenario path, and every scenario maps to a downstream TDD failing test fixture prior to code implementation.
+        3. Behavioral Graph Quality: Valid state transitions, atomic execution paths, and executable preconditions/assertions.
+      Heuristic percentage readiness scores (ADR-Ready >=90%) are retired in favor of binary topological validation.
 
       Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.
       Use UTEST/ITEST for CI. BDD validates user acceptance criteria.
@@ -123,7 +130,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    ADR-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    ADR-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     Source Document: link to upstream EARS using hash-based IDs.
     Necessary-upstream: BDD (Layer 4) requires @ears (its `required_tags`); PRD/BRD are transitive.
 
@@ -140,7 +147,7 @@ document_control:
   # No ears/prd/brd reference rows — upstream trace lives on each scenario's
   # element-level `ears:` list (YAML-BDD-SCHEMA D-3); the feature's coverage is
   # the computed union of its scenarios' `ears`.
-  adr_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  adr_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -204,7 +211,7 @@ scenario_structure:
   _size_target: 800  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Scenarios are a FLAT YAML list under `scenarios:`, each discriminated by a
-    `type:` field (YAML-BDD-SCHEMA D-1/D-2) — no Gherkin `@`-tags. Required
+    `type:` field (YAML-BDD-SCHEMA D-1/D-2) — structured state transitions, no legacy Gherkin `@`-tags. Required
     fields per scenario:
       - id:       element id BDD.NN.03.xxxx (on migration, COPIED VERBATIM from
                   the source @scenario-id — never recomputed; keeps downstream
@@ -326,7 +333,7 @@ traceability:
   downstream_expected:
     - type: ADR
       layer: 5
-      description: "Architecture decisions informed by BDD scenario coverage (the registry `downstream` for BDD)"
+      description: "Architecture decisions & technology selection gate informed by BDD scenario coverage (the registry `downstream` for BDD)"
     - type: TDD
       layer: 7
       description: "Cross-reference (not a registry downstream): TDD maps BDD scenarios to test cases via SPEC contracts"
@@ -343,10 +350,10 @@ traceability:
       - "@chg: CHG-NN"
 
   health_score:
-    adr_ready: "[X]%"
+    adr_ready: "[PASS | FAIL]"
     ears_coverage: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
 # =============================================================================
 # Section 5: Glossary
@@ -359,12 +366,18 @@ glossary:
   terms:
     - term: BDD
       definition: "Behavior-Driven Development"
-    - term: Gherkin
-      definition: "Structured syntax for executable test scenarios (Given-When-Then)"
+    - term: Behavioral Graph
+      definition: >-
+        Executable state machine graph (CNCF Serverless Workflow v0.8) or structured
+        YAML scenario defining state transitions, preconditions, actions, and assertions
     - term: ADR-Ready
-      definition: "Score measuring BDD maturity for ADR transition (>=90%)"
-    - term: Scenario Outline
-      definition: "Parameterized Gherkin scenario with Examples table"
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream ADR/SPEC realization without dangling citations or uncovered scenarios
+    - term: Parameterized Scenario
+      definition: >-
+        Data-driven behavioral scenario defining input matrices and boundary
+        transitions across state graphs
     - term: "[Domain term]"
       definition: "[Definition]"
 

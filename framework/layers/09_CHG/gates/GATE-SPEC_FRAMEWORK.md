@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 > **Position**: Orthogonal to the artifact cascade — governs the `framework/`
@@ -89,7 +89,6 @@ the full gate applies.
 - [ ] change_description.why and .trigger populated (provenance for a promotion)
 - [ ] semver_impact set (major | minor | patch)
 - [ ] change_level proposed (>= C2; major => C3)
-- [ ] CHANGELOG.md entry drafted
 - [ ] For C3: downstream consumers notified (migration note per consumer)
 ```
 
@@ -111,7 +110,7 @@ protected-branch review. The validator never grants approval.
 | GATE-SPEC-E005 | `framework/VERSION` must bump when normative `framework/**` changes (archive-tier-only edits exempt — §1.2) | CI (diff-aware) | VERSION changed in the PR diff |
 | GATE-SPEC-E006 | Spec-version pins match the framework | CI (conformance) | in-repo `framework_version` pins re-declared (`sync-version-refs` clean), conformance green |
 | GATE-SPEC-E007 | Shared conformance suite passes | CI (conformance) | `tests/conformance` green |
-| GATE-SPEC-E008 | `CHANGELOG.md` updated (archive-tier-only edits exempt — §1.2) | CI (diff-aware) | CHANGELOG changed in the PR diff |
+| GATE-SPEC-E008 | [RETIRED in CHG-94] `CHANGELOG.md` updated | N/A (retired) | Retired; `framework/CHANGELOG.md` frozen as tombstone; change tracking handled by `framework/archive/CHG-*/` |
 
 > **E002 mapping (one-directional):** `major` ⇒ C3 (required). `minor` / `patch`
 > may be C2 — an additive change (a new optional knob, a new gate) reaches all
@@ -155,7 +154,7 @@ level. Signature fields stay blank for the human.
 
 | Criterion | C2 | C3 |
 |-----------|----|----|
-| All E-level checks pass (E001–E008) | Yes | Yes |
+| All E-level checks pass (E001–E007) | Yes | Yes |
 | W-level checks addressed | Review | Must address |
 | Provenance complete | Yes | Yes |
 | SemVer impact classified | Yes | Yes |
@@ -168,7 +167,7 @@ level. Signature fields stay blank for the human.
 
 ```markdown
 - [ ] GATE-SPEC-E001..E004 pass (record-level)
-- [ ] GATE-SPEC-E005..E008 pass (CI: VERSION bump, pins match, suite green, CHANGELOG)
+- [ ] GATE-SPEC-E005..E007 pass (CI: VERSION bump, pins match, suite green)
 - [ ] GATE-SPEC-W001..W003 reviewed (W003: SECURITY_REVIEW.md for agent-facing changes)
 - [ ] CHG document created (>= C2)
 - [ ] Human approval obtained per matrix (branch protection)
@@ -192,7 +191,7 @@ GATE-SPEC passes:
                                   │
                               GATE-SPEC
                  (provenance · semver · >=C2 · human approval
-                  · VERSION bump · pins match · suite green · CHANGELOG)
+                  · VERSION bump · pins match · suite green)
                                   │
                                PASSED
                                   │
@@ -213,7 +212,7 @@ GATE-SPEC passes:
 | GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped | Bump `framework/VERSION` per `semver_impact` (archive-tier-only repairs exempt — §1.2) |
 | GATE-SPEC-E006 | Conformance | Spec-version pins out of sync | Re-declare in-repo pins (`bash hooks/sync-version-refs.sh`) and re-run conformance |
 | GATE-SPEC-E007 | Conformance | Conformance suite failing | Fix the spec; never weaken a check |
-| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change (archive-tier-only repairs exempt — §1.2) |
+| GATE-SPEC-E008 | Documentation | [RETIRED in CHG-94] `CHANGELOG.md` not updated | Retired in CHG-94; `framework/CHANGELOG.md` frozen as tombstone; changelog generated on demand from CHG archives |
 | GATE-SPEC-W001 | Migration | Breaking change without a per-consumer migration note | Add a migration note for each consumer |
 | GATE-SPEC-W002 | Parity | Consumer adoption drift | Confirm all consumers track the new version |
 | GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |

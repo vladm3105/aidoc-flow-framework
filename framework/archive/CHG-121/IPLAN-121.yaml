@@ -1,0 +1,42 @@
+# =============================================================================
+#  IPLAN-121: Layer 08 (IPLAN) Distributed Multi-Agent Execution, Cryptographic Attribution & Step Evidence
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-121/CHG-121.yaml
+# =============================================================================
+
+id: "IPLAN-121"
+chg_id: "CHG-121"
+title: "Layer 08 (IPLAN) Distributed Multi-Agent Execution, Cryptographic Attribution & Step Evidence"
+status: "Completed"
+framework_version: "0.96.8"
+
+file_manifest:
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+  - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+  - "framework/governance/workflows/iplan-execution.sw.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+  - "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+  - "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+  - "tests/conformance/test_iplan_workflow.py"
+  - "framework/archive/CHG-121/CHG-121.yaml"
+  - "framework/archive/CHG-121/IPLAN-121.yaml"
+  - "plans/IPLAN-DISTRIBUTED-EXECUTION-ATTESTATION-PLAN.md"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-121.yaml and IPLAN-121.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Add §10, §11, and renumber §12 Review Log in IPLAN_WORKFLOW_STANDARD.md"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Enrich IPLAN-TEMPLATE.yaml, IPLAN-GRAPH-TEMPLATE.yaml, and EVAL-REPORT-TEMPLATE.yaml"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update IPLAN-SWF-TEMPLATE.yaml and iplan-execution.sw.yaml with timeouts, functions, and gates"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Extend test_iplan_workflow.py, bump framework/VERSION to 0.96.8, and fan out pins"
+    status: "Completed"

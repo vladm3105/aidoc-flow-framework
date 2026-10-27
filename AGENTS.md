@@ -10,7 +10,7 @@ preserves the old file.
 ## What this repo is
 
 One engine-agnostic specification (`framework/`) defining the 10-layer SDD
-flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL → Verified).
+flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → [Code] → CHG → EVAL).
 Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
 agent derives its behavior from the framework spec, templates, and playbooks
 directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
@@ -78,6 +78,22 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   weakened checks, suites green before the PR. Breaking or otherwise
   significant changes need a CHG first, then the CHG procedure — never code
   before the cascade (see Governance Gate below).
+- **Follow platform standards; do not offer or use insecure options.** Always strictly
+  follow platform, architectural, and security standards based on the approved Authoritative
+  Platform Technology Stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack`
+  specifications 00–23, including CNCF Serverless Workflow specifications, BTV binary
+  verification, gVisor container sandboxing, two-tier secrets, hermetic test isolation,
+  least privilege, and formal governance flows). Never propose, suggest, offer, or use
+  insecure options, weakened security postures, relaxed sandboxing, disabled linters/checks,
+  plain-text secret workarounds, or unsafe quick-fixes.
+- **Missing Tools Operator Escalation Protocol.** If needed tools, software, runtimes,
+  or libraries are missing from the approved technology stack (`/home/ya/devd/technology_stack`),
+  the AI agent MUST NOT invent tools or pick arbitrary unapproved external packages: the agent
+  MUST explicitly inform the operator and request instructions on what tools or software to use.
+  In autonomous sessions, always file a GitHub issue on the repository detailing the missing tool requirement.
+- **Conflict Disposition.** For anything needing real deployment, infrastructure changes,
+  or technology selection work, file GitHub issues on the repository rather than making
+  unverified local assumptions or out-of-band changes.
 
 - **NEVER push directly to `main`.** All changes must go through the `dev` branch
   via a feature branch + PR. Pushing to `main` bypasses required status checks
@@ -117,6 +133,7 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Autonomous implementation.** Routine implementation runs without human in the loop — branch, build, self-review, merge on green. Reserve confirmation for important or structural decisions: releases, destructive unmerged-work deletion, and any rule below that names a human.
 - **Never bypass verification.** `--no-verify` (or any hook-bypass flag, skip-verification, or admin override) on commit, push, or merge is forbidden — a red hook means fix the cause in the worktree and re-run to green, never route around it.
 - **Verify subagent writes; share branches.** After a subagent reports file writes, read back at least 3 specific changes before trusting `success` (phantom success has occurred). Subagents share the parent's branch and never mint their own; parallel writers need isolated worktrees.
+- **Normative spec change bump protocol.** Any change modifying normative `framework/` files (outside `framework/archive/`) must bump `framework/VERSION` (`GATE-SPEC-E005`). Always: (1) bump `framework/VERSION`, (2) append the prior version to `OLD_VERSIONS` in `hooks/sync-version-refs.sh`, (3) run `bash hooks/sync-version-refs.sh` to propagate pins, and (4) verify locally via `python3 tests/chg/spec_gate.py --base origin/dev`. Format Python code with `ruff format` before staging.
 
 ## Governance Gate (applies to ALL agents)
 
@@ -149,9 +166,10 @@ requires a C1 CHG + scoped IPLAN, every author (CHG-12, issues #772/#773). §3.1
 - CHG-L015: Lifecycle attribution (§3.1.3) — lifecycle-carrying entries need `author` (+ `chg_ref` for modules; GOV-021)
 - CHG-L017: Premature step completion (§3.4.1 E28) — no `Completed` step on a `Proposed` / `Approved` CHG
 - CHG-L018: Mandatory decision block (§1B, GD-71) — every CHG must carry a non-empty `decision:` mapping
-- Full catalog (L001–L018, BGF-00..07, SWF-L001..L007, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
+- CHG-L019: Fast-path boundary guard (§3.1.3, GOV-023) — contract integrity preserved across fast paths
+- Full catalog (L001–L019, BGF-00..07, SWF-L001..L009, GOV aliases, reserved IDs): `framework/governance/LINT_RULES.md`
 
-**Automated Workflow validation:** Run `python3 -m sdd_doc_lint.swf_lint [--warn-exit] <path>` to check declarative CNCF Serverless Workflow state machines (`SWF-L001`–`SWF-L007`).
+**Automated Workflow validation:** Run `python3 -m sdd_doc_lint.swf_lint [--warn-exit] <path>` to check declarative CNCF Serverless Workflow state machines (`SWF-L001`–`SWF-L009`).
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit codes: 0 clean, 1 error(s) (STOP), 2 usage error, 3 missing prerequisite (PyYAML).
 
@@ -235,9 +253,9 @@ When a required check fails, fix every error: diagnose from the failed logs, fix
 |---|---|
 | Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
-| Decisions | Change Requests (`CHG-*.yaml`) + `framework/governance/DECISIONS.md`; `plans/DECISIONS.md` is a retired tombstone |
+| Decisions | Change Requests (`CHG-*.yaml`); `plans/DECISIONS.md` (CHG-80) and `framework/governance/DECISIONS.md` (CHG-95) are retired tombstones |
 | Plans | `plans/<NAME>-PLAN.md` |
-| Changelog | `framework/CHANGELOG.md` (live record, GATE-SPEC-E008) — root `CHANGELOG.md` is a frozen tombstone carrying the documented `gh` query, not maintained per-PR — no `ROADMAP.md` exists |
+| Changelog | Retired tombstones (`framework/CHANGELOG.md` frozen in CHG-94, root `CHANGELOG.md` frozen in CHG-40) — live change records are `framework/archive/CHG-*/` + GitHub releases / PRs — no `ROADMAP.md` exists |
 | Lessons | `.aidoc/learning/learnings.md` — consolidated, PR-reviewed system of record; harness memory is scratch, never the record |
 
 Never put any of these in `tmp/`, and never centralize them in the `aidoc-flow`

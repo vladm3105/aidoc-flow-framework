@@ -20,7 +20,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
@@ -89,10 +89,12 @@ Where:
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| GATE-06-E001 | Readiness | SPEC TDD-Ready score < 90% | Complete missing sections, clarify ambiguities |
+| GATE-06-E001 | Readiness | SPEC fails binary topological validation (tdd_ready_status != PASS) | Complete missing sections, clarify ambiguities |
 | GATE-06-E002 | Coverage | TDD missing BDD scenario coverage | Add test case definitions for all BDD scenarios |
 | GATE-06-E003 | Consistency | TDD/SPEC misalignment | Synchronize TDD test contracts with SPEC interfaces |
 | GATE-06-E004 | Process | SPEC change without TDD update | Update TDD with test cases for changed interfaces |
+| GATE-06-E005 | Toolchain | SPEC missing toolchain ownership declaration | Declare toolchain mapping under component_overview |
+| GATE-06-E006 | Hermeticity | TDD stateful test fixture missing saga teardown compensation | Declare compensatedBy teardown action for stateful fixtures |
 
 ### 4.2 Warnings (W)
 
@@ -111,6 +113,9 @@ Where:
 | GATE-08-E002 | Order | Test files not before implementation files | Reorder manifest: tests first |
 | GATE-08-E003 | Traceability | IPLAN missing @spec/@tdd tags (SDD2C, SEED2C) | Add upstream traceability tags (exempt for DIR2C / iplan_to_code) |
 | GATE-08-E004 | Handoff | Session handoff protocol missing | Document state variables and resume protocol |
+| GATE-08-E005 | Rollback | Mutating step/state missing automated rollback procedure / saga compensation handler | Add compensatedBy compensation action for mutating states |
+| GATE-08-E006 | Completeness | Step execution incomplete without evidence or skip_audit | Account for all steps with non-empty evidence or skip_audit |
+| GATE-08-E007 | Timeouts | Mutating state missing execution timeouts | Add stateExecTimeout and actionExecTimeout |
 
 ### 5.2 Warnings (W)
 
@@ -118,7 +123,6 @@ Where:
 |------|----------|-------------|------------|
 | GATE-08-W001 | Size | File manifest exceeds 20 files | Split into multiple IPLANS |
 | GATE-08-W002 | Contracts | Shared interface without implementation contract | Define contract for multi-session work |
-| GATE-08-W003 | Rollback | No rollback procedure defined | Add revert steps |
 
 ## 6. GATE-CODE: Implementation Errors
 
@@ -158,7 +162,7 @@ protected-branch review.
 | GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped when normative `framework/**` changed (archive-tier-only repairs exempt) | Bump `framework/VERSION` per `semver_impact` |
 | GATE-SPEC-E006 | Conformance | Spec-version pins out of sync | Re-declare in-repo pins (`bash hooks/sync-version-refs.sh`) and re-run conformance |
 | GATE-SPEC-E007 | Conformance | Shared conformance suite failing | Fix the spec; never weaken a check |
-| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change (archive-tier-only repairs exempt) |
+| GATE-SPEC-E008 | Documentation | [RETIRED in CHG-94] `CHANGELOG.md` update requirement | Retired; `framework/CHANGELOG.md` frozen as tombstone; changelog generated on demand from CHG archives |
 
 ### 6b.2 Warnings (W)
 
@@ -219,7 +223,7 @@ protected-branch review.
 | Error | Frequency | Quick Fix |
 |-------|-----------|-----------|
 | GATE-03-E007 | High | Add the 2 necessary-upstream tags to ADR (`@ears` `@bdd`) |
-| GATE-06-E001 | High | Improve SPEC TDD-Ready score |
+| GATE-06-E001 | High | Resolve SPEC topological validation failures |
 | GATE-CODE-E001 | Medium | Add RCA section |
 | GATE-01-E003 | Medium | Escalate breaking change to C3 |
 

@@ -1,0 +1,126 @@
+id: iplan-escalation-flow
+name: IPLAN Execution Architectural Escalation Flow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative CNCF Serverless Workflow governing autonomous bottom-up feedback
+  and architectural escalation when iplan execution encounters contract blockers,
+  third-party library constraints, or missing platform capabilities per
+  plans/TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN.md (CHG-99).
+start: DetectExecutionBlocker
+
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+
+states:
+  - name: DetectExecutionBlocker
+    type: operation
+    actions:
+      - name: ingestExecutionError
+        functionRef:
+          refName: parseIplanFailureContext
+          arguments:
+            failure_event: "${ .failure_event }"
+            iplan_id: "${ .iplan_id }"
+            active_step: "${ .active_step }"
+    transition: ClassifyBlocker
+
+  - name: ClassifyBlocker
+    type: switch
+    dataConditions:
+      - condition: "${ .blocker_classification == 'transient_local' }"
+        transition: HandleLocalRetry
+      - condition: "${ .blocker_classification == 'architectural_contract' }"
+        transition: EscalateToArchitecture
+      - condition: "${ .blocker_classification == 'platform_capability' }"
+        transition: EscalateToPlatform
+    defaultCondition:
+      transition: EscalateUnknownBlocker
+
+  - name: HandleLocalRetry
+    type: operation
+    actions:
+      - name: executeBoundedRetry
+        functionRef:
+          refName: retryIplanStepWithBackoff
+          arguments:
+            max_attempts: 3
+    end: true
+
+  - name: EscalateToArchitecture
+    type: operation
+    actions:
+      - name: haltLocalExecutionLoop
+        functionRef:
+          refName: haltIplanRunner
+          arguments:
+            reason: "Non-retryable architectural contract mismatch detected"
+      - name: dispatchArchitecturalEscalation
+        functionRef:
+          refName: createEscalationRecord
+          arguments:
+            target_layer: "05_ADR"
+            secondary_layer: "06_SPEC"
+            escalation_type: "ARCH_CONTRACT_BLOCKER"
+    transition: GenerateRemediationDraft
+
+  - name: EscalateToPlatform
+    type: operation
+    actions:
+      - name: haltLocalExecutionLoop
+        functionRef:
+          refName: haltIplanRunner
+          arguments:
+            reason: "Underlying platform capability gap or library constraint"
+      - name: dispatchPlatformEscalation
+        functionRef:
+          refName: createEscalationRecord
+          arguments:
+            target_layer: "05_ADR"
+            escalation_type: "PLATFORM_CAPABILITY_GAP"
+    transition: GenerateRemediationDraft
+
+  - name: EscalateUnknownBlocker
+    type: operation
+    actions:
+      - name: haltWithDiagnosticReport
+        functionRef:
+          refName: logDiagnosticIncident
+          arguments:
+            severity: "HIGH"
+            action_required: "HUMAN_TRIAGE"
+    end: true
+
+  - name: GenerateRemediationDraft
+    type: operation
+    actions:
+      - name: scaffoldRemediationChangeRequest
+        functionRef:
+          refName: draftSdd2cChangeRequest
+          arguments:
+            flow: "sdd_to_code"
+            flow_code: "SDD2C"
+            change_source: "upstream"
+            entry_gate: "GATE-05"
+    transition: InvokeReviewSagaGate
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "iplan-review-remediation-flow"
+            artifactId: "${ .iplan_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        end: true
+    defaultCondition:
+      transition: EscalateUnknownBlocker

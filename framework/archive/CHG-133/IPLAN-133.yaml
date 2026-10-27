@@ -1,0 +1,93 @@
+# =============================================================================
+#  IPLAN-133: Ship SDD layer + CHG skillset
+# =============================================================================
+#  Implementation Plan authorized by CHG-133
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-133
+title: "Implementation Plan: SDD layer + CHG skillset (issue #1032)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.14"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-25"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-133"
+  date_created: "2026-10-25T21:30:00Z"
+  date_implemented: "2026-10-25T21:56:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-133/CHG-133.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-133/IPLAN-133.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-chg-flow/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-chg-author/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-chg-triage/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-iplan/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-gates/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-brd/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-prd/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-ears/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-bdd/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-adr/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-spec/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-tdd/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-eval/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/SKILLS-REGISTRY.yaml"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/skills/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C1, change_source direct, sdd_lifecycle empty"
+  publish_split: "PR A (governance+bridge, carries CHG+IPLAN) then PR B (layers, rebased onto merged A)"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit (additive files only)"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-133/CHG-133.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "bash framework/skills/_shared/scripts/check-skill-shadowing.sh <repo>"
+  - "conformance + acceptance suites green on each PR head"

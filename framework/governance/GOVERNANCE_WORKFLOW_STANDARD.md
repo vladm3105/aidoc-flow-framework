@@ -1,14 +1,21 @@
+---
+doc_id: GOV-GOVERNANCE-WORKFLOW-STANDARD
+bucket: machine-consumed-candidate
+authority: doc-leads
+consumers: [authoring, audit, traceability]
+---
+
 # Governance Workflow Standard: CNCF Serverless Workflow DSL & Executable Graphs
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.6 |
+| Version | 1.8 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Establishes the open, vendor-neutral CNCF Serverless Workflow (YAML) specification
 as the official framework standard for modeling, validating, and executing governance
@@ -16,7 +23,7 @@ flows and multi-agent lifecycle state machines.
 
 ---
 
-## 1. Purpose & Architectural Context
+## 1. Purpose & Architectural Context {#sec-1-purpose-architectural-context}
 
 The SDD framework governs complex, multi-agent development lifecycles (Change Requests,
 Review Sagas, Worktree Isolations, Seed Decompositions, Evaluation Runs, Decision Ratifications, and QA Acceptance Runs).
@@ -35,7 +42,7 @@ This specification formalizes **Machine-Executable Governance**:
 
 ---
 
-### Domain Separation: Governance Workflows vs. Implementation Workflows
+### Domain Separation: Governance Workflows vs. Implementation Workflows {#sec-domain-separation-governance-workflows-vs-implementation-workflows}
 
 To prevent conflation between repository governance policy and codebase mutation tasks:
 1. **Governance Workflows (`framework/governance/workflows/*.sw.yaml`)**:
@@ -53,8 +60,8 @@ To prevent conflation between repository governance policy and codebase mutation
 5. **Technical Specification Workflows (`framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml`)**:
    Govern distributed component interactions, event choreography, asynchronous callbacks, and distributed transaction saga compensations.
    Governed by [`framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md`](../layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md).
-6. **Architectural Decision Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
-   Govern multi-candidate trade-off analysis, MCDA utility scoring, stakeholder RFC review loops, and rejection archival sagas.
+6. **Architectural Decision & Technology Selection Workflows (`framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml`)**:
+   Govern candidate technology stack evaluation from the approved catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md)), MCDA utility scoring, stakeholder RFC review loops, stack variance workflows, and rejection archival sagas.
    Governed by [`framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md`](../layers/05_ADR/ADR_WORKFLOW_STANDARD.md).
 7. **Requirements Validation Workflows (`framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml`)**:
    Govern requirement dependency DAG resolution, syntax verification, cross-requirement conflict detection, BDD-readiness gating, and invalidation compensation sagas.
@@ -66,7 +73,54 @@ To prevent conflation between repository governance policy and codebase mutation
    Govern strategic theme ingestion, value stream mapping, quantitative ROI evaluation, executive steering committee reviews, and strategic invalidation compensation sagas.
    Governed by [`framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md`](../layers/01_BRD/BRD_WORKFLOW_STANDARD.md).
 
-## 2. Directory Structure & File Conventions
+---
+
+### The Two-Graph Architecture: Process DAG vs. Content Graph {#sec-the-two-graph-architecture-process-dag-vs-content-graph}
+
+In the SDD framework, specification engineering and document generation are structured around a dual-graph paradigm that separates **orchestration flow (control plane)** from **domain specification data (data plane)**:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                             TWO-GRAPH DUAL-PLANE ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│           GRAPH 1: PROCESS DAG (CONTROL PLANE)         │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│            (*-SWF-TEMPLATE.yaml / *.sw.yaml)           │      (*-GRAPH-TEMPLATE.yaml)       │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • Execution workflow / State machine DAG               │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Defines HOW to create, verify & ratify the doc       │ • Defines WHAT content & relations │
+│ • Orchestrates agent actions, authoring steps, gates   │ • Houses atomic nodes & typed edges│
+│ • Asynchronous callbacks & human-in-the-loop approvals │ • Enforces topological invariants  │
+│ • Saga rollback compensation (compensatedBy)           │ • BTV (Binary Topological Validate)│
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │            DOCUMENT SYNTHESIS & READ PROJECTION              │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ 1. Process DAG executes authoring & analysis steps           │
+                    │ 2. Agent populates & mutates atomic entities in Data Graph   │
+                    │ 3. BTV validates topological integrity (closure, acyclicity) │
+                    │ 4. Observability Adapter projects graph into human-facing    │
+                    │    specification deliverables (*-TEMPLATE.yaml / spec sheet) │
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+1. **Graph 1: Process DAG (Control Plane — `*-SWF-TEMPLATE.yaml` / `*.sw.yaml`)**:
+   - **Nature**: CNCF Serverless Workflow DSL v0.8 YAML state machine.
+   - **Purpose**: Defines the operational lifecycle and procedural flow of **how to create, review, evaluate, and ratify a document**.
+   - **Semantics**: Governs sequential/parallel agent actions, quantitative gating thresholds, timeouts, human-in-the-loop callback events, and compensating saga rollbacks.
+2. **Graph 2: Content Graph (Data Plane — `*-GRAPH-TEMPLATE.yaml`)**:
+   - **Nature**: SDD-GRAPH v2.0 native property graph conforming to `sdd-graph.schema.json`.
+   - **Purpose**: Defines **what content and what relationships must be present in the document**.
+   - **Semantics**: Captures atomic domain entities (capabilities, requirements, scenarios, contracts, test cases) and their typed directed edges (`realizes`, `verifies`, `constrains`, `depends_on`, `implements`, `evaluates`).
+3. **Document Generation Synergy**:
+   - Neither graph is a replacement for the other; both are required to produce a valid specification.
+   - The **Process DAG** drives the authoring agent and enforces the quality gates.
+   - The authoring agent instantiates and updates the **Content Graph**.
+   - Topological verification (**BTV**) mathematically proves referential closure and consistency.
+   - The **Observability Adapter** reads the Content Graph and projects it into the canonical human-readable specification document (`*-TEMPLATE.yaml` format).
+
+## 2. Directory Structure & File Conventions {#sec-2-directory-structure-file-conventions}
 
 All declarative workflow definitions reside in `framework/governance/workflows/`:
 
@@ -76,9 +130,12 @@ framework/governance/
 │   ├── chg-request-flow.sw.yaml              # Change classification, gates & landing
 │   ├── seed-to-module-decomposition.sw.yaml  # 5-step seed to C4-L2 module flow
 │   ├── worktree-pr-lifecycle.sw.yaml         # Worktree isolation, PR watch & cleanup
+│   ├── iplan-execution.sw.yaml               # Layer 08 implementation plan execution & closeout
+│   ├── iplan-escalation-flow.sw.yaml         # Autonomous bottom-up feedback & architectural escalation
 │   ├── eval-verification-run.sw.yaml         # Layer 10 multi-tier test execution & verification
 │   ├── review-remediation-flow.sw.yaml       # Multi-agent quality loop & 3-strike remediation saga
 │   ├── decision-ratification-flow.sw.yaml    # Decision proposal, review, founder sign-off & lock
+│   ├── decision-migration-flow.sw.yaml       # Dual-channel decision migration & bifurcation flow
 │   ├── bdd-acceptance-run.sw.yaml            # Layer 04 QA staging BDD acceptance test suite execution
 │   ├── tdd-test-execution.sw.yaml            # Layer 07 automated test suite execution & fixture rollback
 │   ├── spec-choreography-contract.sw.yaml    # Layer 06 distributed component interaction & choreography contract
@@ -86,7 +143,13 @@ framework/governance/
 │   ├── ears-requirements-validation.sw.yaml  # Layer 03 requirements syntax validation, dependency DAG resolution & BDD-readiness gating
 │   ├── prd-feature-decomposition.sw.yaml     # Layer 02 product feature decomposition, RICE prioritization & threshold gating
 │   ├── brd-business-validation.sw.yaml       # Layer 01 business requirements validation, value stream mapping & ROI gating
-│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-09)
+│   ├── sdd-layer-orchestration.sw.yaml       # Master 10-layer end-to-end SDD orchestration state machine
+│   ├── context-slicing-generation.sw.yaml    # Federated DAG context slicing & scoped digest compilation
+│   ├── cross-project-ci-dispatch.sw.yaml     # Federated cross-repo CI verification dispatch & status gates
+│   ├── multi-repo-contract-sync.sw.yaml      # Federated contract diff inspection, SDK gen & event broadcast
+│   ├── stack-policy-validation.sw.yaml       # Federated pre-implementation stack policy validation & AST scanning
+│   ├── support-ticket-escalation.sw.yaml     # Federated agent blocker ingestion & maintainer escalation
+│   └── review/                               # Dedicated per-layer review & remediation flows (REV-01..REV-10)
 │       ├── brd-review-remediation.sw.yaml    # Layer 01 BRD review remediation saga (REV-01-BRD)
 │       ├── prd-review-remediation.sw.yaml    # Layer 02 PRD review remediation saga (REV-02-PRD)
 │       ├── ears-review-remediation.sw.yaml   # Layer 03 EARS review remediation saga (REV-03-EARS)
@@ -95,7 +158,8 @@ framework/governance/
 │       ├── spec-review-remediation.sw.yaml   # Layer 06 SPEC review remediation saga (REV-06-SPEC)
 │       ├── tdd-review-remediation.sw.yaml    # Layer 07 TDD review remediation saga (REV-07-TDD)
 │       ├── iplan-review-remediation.sw.yaml  # Layer 08 IPLAN review remediation saga (REV-08-IPLAN)
-│       └── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
+│       ├── chg-review-remediation.sw.yaml    # Layer 09 CHG review remediation saga (REV-09-CHG)
+│       └── eval-review-remediation.sw.yaml   # Layer 10 EVAL review remediation saga (REV-10-EVAL)
 │
 ├── GOVERNANCE_WORKFLOW_STANDARD.md           # This normative standard
 ├── REVIEW_WORKFLOW_STANDARD.md               # Normative specification for graph-based review sagas
@@ -108,14 +172,14 @@ framework/governance/
 └── DECISION_WORKFLOW.md                      # Decision workflow embedding ratification graph
 ```
 
-### File Naming Convention
+### File Naming Convention {#sec-file-naming-convention}
 - Canonical extension: `<domain>-<process>.sw.yaml`
 - Lowercase alphanumeric slugs with hyphens (e.g., `chg-request-flow.sw.yaml`).
 - Specification Version: All workflows target `specVersion: "0.8"` of the CNCF Serverless Workflow standard.
 
 ---
 
-## 3. CNCF Serverless Workflow Mapping to SDD Governance
+## 3. CNCF Serverless Workflow Mapping to SDD Governance {#sec-3-cncf-serverless-workflow-mapping-to-sdd-governance}
 
 The framework adopts CNCF Serverless Workflow v0.8 primitives mapped directly to
 governance and agentic execution concepts:
@@ -135,31 +199,31 @@ governance and agentic execution concepts:
 
 ---
 
-## 4. Rules for Governance Graphs
+## 4. Rules for Governance Graphs {#sec-4-rules-for-governance-graphs}
 
-### Rule 1: Declarative Single Source of Truth
+### Rule 1: Declarative Single Source of Truth {#sec-rule-1-declarative-single-source-of-truth}
 The `.sw.yaml` file is the normative authority for all state transitions, gate guards, and
 allowed paths. Companion Markdown documentation (`*.md`) provides narrative context and
 renders the visual graph, but must never declare transitions not permitted by the YAML.
 
-### Rule 2: Deterministic Terminal States
+### Rule 2: Deterministic Terminal States {#sec-rule-2-deterministic-terminal-states}
 Every execution path in a workflow graph must reach an unambiguous terminal state:
 - **`end: true`**: Denotes successful phase completion and compliance sign-off.
 - **`end: { terminate: true }`**: Denotes explicit gate failure, escalation, or rejection.
 
 Unconditional loops without terminating edge conditions or retry limits are prohibited.
 
-### Rule 3: Discrete Gate Verification (`type: switch`)
+### Rule 3: Discrete Gate Verification (`type: switch`) {#sec-rule-3-discrete-gate-verification-type-switch}
 All quality gates and transition approvals must be represented as discrete `switch` states
 evaluating unambiguous boolean conditions (e.g., `"${ .eval_verdict == 'PASS' }"`).
 Conditional branches must explicitly define a `defaultCondition` preventing deadlocks.
 
-### Rule 4: Parallelism for Independent Reviews (`type: parallel`)
+### Rule 4: Parallelism for Independent Reviews (`type: parallel`) {#sec-rule-4-parallelism-for-independent-reviews-type-parallel}
 Multi-agent reviews (e.g., simultaneous checks by Architect, Security, and Auditor) must be
 modeled as `parallel` states with `completionType: allOf` to minimize latency while guaranteeing
 full consensus.
 
-### Rule 5: Human-in-the-Loop Callback Gates (`type: callback`)
+### Rule 5: Human-in-the-Loop Callback Gates (`type: callback`) {#sec-rule-5-human-in-the-loop-callback-gates-type-callback}
 States requiring explicit human confirmation (e.g. founder approval for releases per `AGENTS.md`,
 or destructive worktree cleanup approvals) must use the `callback` state pattern. Execution
 suspends until a correlated external authorization event (`kind: consumed`) is received or an
@@ -178,7 +242,7 @@ suspends until a correlated external authorization event (`kind: consumed`) is r
   transition: ProcessFounderDecision
 ```
 
-### Rule 6: Rollback and Remediation Sagas (`compensatedBy`)
+### Rule 6: Rollback and Remediation Sagas (`compensatedBy`) {#sec-rule-6-rollback-and-remediation-sagas-compensatedby}
 Destructive operations, task branch allocations, or worktree creation steps that fail downstream
 validation must declare a compensating state using the `compensatedBy` attribute. This guarantees
 clean environment restoration without orphaned branches or dirty state:
@@ -194,9 +258,24 @@ clean environment restoration without orphaned branches or dirty state:
   transition: RunFeatureImplementation
 ```
 
+### Rule 7: 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99) {#sec-rule-7-5-step-closed-layer-lifecycle-and-cloudevent-handoff-chg-112-gd-99}
+Every SDD layer workflow (embedded in `*-SWF-TEMPLATE.yaml` or declared standalone in `framework/governance/workflows/*.sw.yaml`) must enforce the canonical 5-step closed lifecycle prior to declaring completion or advancing downstream:
+
+1. **Stage 1 (Authoring)**: Domain persona authors artifact draft and establishes traceability tags.
+2. **Stage 2 (Multi-Persona Review & Remediation)**: Review saga (`invokeReviewSaga`) executes multi-persona review. Switch condition routes blocking findings to author remediation (`RemediateLayerDraft`, Circuit Breaker CB-1: max 2 remediation passes / 3 cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: Gate checkpoint (`VerifyLayerCloseoutGate`) verifies formal exit checklist (`GATE-01` through `GATE-CODE`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: Sealing state (`SealLayerDocumentBaseline`) computes SHA-256 content checksum, updates frontmatter to `Baselined`, and registers node in SDD graph (`RegisterSddGraphBaselineNode`).
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: Terminal state (`EmitLayerHandoffEvent`) emits typed CloudEvent (`produceEvents`) authorizing downstream orchestration.
+
+```text
+Stage 1: Authoring ──► Stage 2: Review/Remediate ──► Stage 3: Gate Verify ──► Stage 4: Seal Baseline ──► Stage 5: Emit CloudEvent
+```
+
+In end-to-end SDD orchestration (`sdd-layer-orchestration.sw.yaml`), completion of Layer 03 (EARS) triggers a **Parallel Fork** (`ForkLayer04And05`) into Layer 04 (BDD) and Layer 05 (ADR), which execute concurrently and achieve a **Synchronized Join** at Layer 06 (SPEC). Legacy Gherkin narrative text (`gherkin_scenarios`) is strictly proscribed; Layer 04 BDD must always emit `behavioral_state_graphs, scenarios_dag`.
+
 ---
 
-## 5. Execution Integration: LangGraph & Agent Runtimes
+## 5. Execution Integration: LangGraph & Agent Runtimes {#sec-5-execution-integration-langgraph-agent-runtimes}
 
 While the framework specification is runtime-neutral ([D-0013](DECISIONS.md)), any downstream
 agent harness consuming this framework can convert `.sw.yaml` files into executable graphs:
@@ -241,7 +320,7 @@ def load_governance_graph(yaml_path: str, action_bindings: dict) -> StateGraph:
 
 ---
 
-## 6. Multi-Tier Circuit Breakers (Anti-Infinite Loop System)
+## 6. Multi-Tier Circuit Breakers (Anti-Infinite Loop System) {#sec-6-multi-tier-circuit-breakers-anti-infinite-loop-system}
 
 To guarantee that autonomous execution never enters an uncontrolled loop, exhausts compute, or cascades errors, any conforming multi-agent engine enforces six non-negotiable circuit breakers:
 
@@ -256,7 +335,7 @@ To guarantee that autonomous execution never enters an uncontrolled loop, exhaus
 
 ---
 
-## 7. Layer 10 Terminal Lifecycle Gate Contract
+## 7. Layer 10 Terminal Lifecycle Gate Contract {#sec-7-layer-10-terminal-lifecycle-gate-contract}
 
 Change Requests and Implementation Plans conclude deterministically through the Layer 10 Evaluation gate:
 1. **Deployable Changes (Code, Schemas, Configurations, Runtime Touches):**
@@ -268,7 +347,7 @@ Change Requests and Implementation Plans conclude deterministically through the 
 
 ---
 
-## 8. Tripartite Engineering Architecture & Separation of Concerns
+## 8. Tripartite Engineering Architecture & Separation of Concerns {#sec-8-tripartite-engineering-architecture-separation-of-concerns}
 
 Conforming multi-agent project implementations separate software delivery responsibilities across three autonomous, non-overlapping engineering roles:
 
@@ -278,14 +357,14 @@ Conforming multi-agent project implementations separate software delivery respon
 | **SDET (Software Development Engineer in Test)** | Authors automated test harnesses, mock fixtures, synthetic test runners, and performance benchmarks | Test suites (`tests/*`), test scaffolding, CI testing scripts, benchmark harnesses | Directly mutating production application logic to force tests to pass |
 | **QA (Quality Assurance & Acceptance Verifier)** | Executes independent user-journey acceptance tests, end-to-end browser scenarios, compliance audits | Verification reports, test run logs, QA issue comments, failure reproduction artifacts | **HARD BLOCK: Zero production or test code mutations** (QA observes, tests, and reports; never writes fixes) |
 
-### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA)
+### 8.1 Strict Non-Code-Modifying Invariant (HARD BLOCK for QA) {#sec-81-strict-non-code-modifying-invariant-hard-block-for-qa}
 
 To prevent conflict of interest, test dilution, and cosmetic patching:
 1. **Observation & Verification Only:** QA personas and acceptance runners operate in a read-only capacity with respect to production codebases and test harness implementation.
 2. **Zero In-Place Fixes:** When an acceptance test fails, QA agents MUST NOT modify code or adjust assertions to mask the defect.
 3. **Defect Ticket & Repro Generation:** QA agents capture structured reproduction evidence (logs, DOM snapshots, network traces, failing payloads), formulate an actionable defect finding, and surface it back to the DEV persona or open a governed issue.
 
-### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract
+### 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract {#sec-82-mandatory-post-merge-issue-closure-implementation-report-contract}
 
 When a pull request merges into the target integration branch (`dev`), the delivering agent MUST close the loop by posting an explicit Implementation and Verification Report on the associated tracking issue before closing it:
 
@@ -296,7 +375,21 @@ When a pull request merges into the target integration branch (`dev`), the deliv
    - **Artifact Links:** Clickable links to updated SDD artifacts (SPEC, IPLAN, EVAL report).
 3. **Safe Publishing Mechanics:** Agents must author comment bodies via files (`gh issue comment <N> --body-file <file>`), verifying that the comment published with non-zero length.
 
-## 9. Review Log
+## 9. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98) {#sec-9-closed-dual-flow-quality-loop-authoring-review-saga-binding-chg-111-gd-98}
+
+To eliminate the decoupling between change request authoring/cascade orchestration and multi-agent review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block of change control workflows (`CHG-SWF-TEMPLATE.yaml` and `chg-request-flow.sw.yaml`) declares `author_persona: "integration_lead"` and `author_playbook: "framework/playbooks/09_CHG/integration_lead.md"`.
+   - Autonomous governance agents derive change classification, blast radius analysis, and SDD cascade propagation directly from this rubric prior to authoring change requests.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final verification and landing (`CloseoutGreenfield` in templates or `ExecuteEVALAndCloseout` in governance workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`chg-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or cascade coverage gaps are uncovered, the saga triggers an automated remediation loop, halting change landing until all P0/P1 blockers are resolved.
+
+## 10. Review Log {#sec-10-review-log}
 
 - **2026-10-05 — Pass 1 (Architectural Integrity & Primitives)**:
   - *Gap found*: Lack of formal human-in-the-loop primitive for founder OK gates in `AGENTS.md`.
@@ -335,6 +428,7 @@ When a pull request merges into the target integration branch (`dev`), the deliv
 - **2026-10-06 — Pass 11 (Tripartite Separation of Concerns & Issue Closure Contract)**:
   - *Gap found*: Lack of clear boundaries between DEV, SDET, and QA personas, creating risks of QA modifying production code during acceptance test runs. Missing formal contract for post-merge issue closure reports.
   - *Fix*: Codified Section 8 Tripartite Engineering Architecture with strict non-code-modifying invariant for QA, and formalized Section 8.2 Mandatory Post-Merge Issue Closure & Implementation Report Contract.
-- **2026-10-07 — Pass 12 (Graph-Based Review Sagas & Dedicated Structural Linter)**:
-  - *Gap found*: Review and remediation flows were only defined at a macro level (`review-remediation-flow.sw.yaml`), lacking dedicated per-layer workflows matching `REVIEW_CREWS.yaml`, a review-to-CHG handover contract, and a dedicated structural workflow linter.
-  - *Fix*: Created `REVIEW_WORKFLOW_STANDARD.md`, implemented `sdd_swf_lint` (`sdd_doc_lint/swf_lint.py`), authored 9 per-layer review & remediation workflows (`REV-01-BRD` through `REV-09-CHG`) in `framework/governance/workflows/review/`, expanded `review_report.schema.json` with `chg_handover`, and registered workflows in Section 2.
+- **2026-10-13 — Pass 13 (Decision Migration & Bifurcation Workflow)**:
+  - *Gap found*: Retirement of monolithic decisions register (`framework/governance/DECISIONS.md`) required a formal state machine to govern the bifurcation of governance rules into executable workflows and change records into CHGs.
+  - *Fix*: Authored `decision-migration-flow.sw.yaml`, modernized `decision-ratification-flow.sw.yaml` to lock decisions into CHG envelopes, registered workflow in Section 2, and synchronized `DECISION_WORKFLOW.md`.
+

@@ -1,0 +1,129 @@
+version: '3'
+
+vars:
+  PYTHONPATH: '{{.PYTHONPATH | default ".:doc_lint:sdd_doc_lint:tests/conformance"}}'
+
+env:
+  PYTHONPATH: '{{.PYTHONPATH}}'
+
+tasks:
+  default:
+    desc: List all available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  check:
+    desc: Fast inner-loop sanity checks (<15s) - linters, doc_lint, and links
+    cmds:
+      - task: lint
+      - task: chg-lint
+      - task: swf-lint
+      - task: profile-lint
+      - task: links
+
+  ci:
+    desc: Complete local CI verification (<45s) - check + full test batteries
+    cmds:
+      - task: check
+      - task: test
+
+  test:
+    desc: Run all test suites (unit, conformance, acceptance)
+    cmds:
+      - task: test:unit
+      - task: test:conformance
+      - task: test:acceptance
+
+  test:unit:
+    desc: Run unit tests (doc_lint and tests/unit, sdd_doc_lint/tests alias)
+    cmds:
+      - python3 -m unittest discover -s doc_lint/tests
+      - python3 -m unittest discover -s tests/unit
+
+  test:conformance:
+    desc: Run conformance test suite
+    cmds:
+      - PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance
+
+  test:acceptance:
+    desc: Run acceptance test suite
+    cmds:
+      - python3 -m unittest discover -s tests/acceptance
+
+  lint:
+    desc: Run local linters (markdownlint, yamllint, shellcheck)
+    cmds:
+      - |
+        if command -v markdownlint-cli2 >/dev/null 2>&1; then
+          markdownlint-cli2 "**/*.md" "#framework/**" "#aidoc/**" "#.agents/skills/**" "#tests/conformance/fixtures/refgran/**"
+        elif command -v markdownlint >/dev/null 2>&1; then
+          markdownlint "**/*.md" --ignore "framework/**" --ignore "aidoc/**" --ignore ".agents/skills/**" --ignore "tests/conformance/fixtures/refgran/**"
+        else
+          echo "markdownlint not found; skipping."
+        fi
+      - |
+        if command -v yamllint >/dev/null 2>&1; then
+          YAMLLINT_ARGS=()
+          [ -f .yamllint.yaml ] && YAMLLINT_ARGS+=(-c .yamllint.yaml)
+          [ -f .yamllint.yml ] && YAMLLINT_ARGS+=(-c .yamllint.yml)
+          if [ -d .github/workflows ]; then
+            yamllint "${YAMLLINT_ARGS[@]}" .github/workflows/
+          fi
+        else
+          echo "yamllint not found; skipping."
+        fi
+      - |
+        if command -v shellcheck >/dev/null 2>&1; then
+          find . -type f -name "*.sh" -not -path "*/.*" -not -path "./tmp/*" -not -path "*/archive/*" -exec shellcheck -S warning {} +
+        else
+          echo "shellcheck not found; skipping."
+        fi
+
+  chg-lint:
+    desc: Run CHG structural linter (defaults to latest archived CHG if none specified)
+    cmds:
+      - |
+        {{if .CLI_ARGS}}
+        python3 sdd_doc_lint/chg_lint.py {{.CLI_ARGS}}
+        {{else}}
+        LATEST_DIR="$(ls -d framework/archive/CHG-* 2>/dev/null | sort -V | tail -n 1)"
+        if [ -n "$LATEST_DIR" ]; then
+          TARGET="$(ls "$LATEST_DIR"/CHG-*.yaml 2>/dev/null | head -n 1)"
+          python3 sdd_doc_lint/chg_lint.py "$TARGET"
+        else
+          echo "No CHG target specified or found." >&2
+          exit 1
+        fi
+        {{end}}
+
+  swf-lint:
+    desc: Run Serverless Workflow state machine linter
+    cmds:
+      - python3 -m sdd_doc_lint.swf_lint framework/layers/ framework/governance/ {{.CLI_ARGS}}
+
+  profile-lint:
+    desc: Run profile schema linter on .aidoc/profile.yaml
+    cmds:
+      - python3 sdd_doc_lint/profile_lint.py {{.CLI_ARGS | default ".aidoc/profile.yaml"}}
+
+  pre-push:
+    desc: Run pre-push checks and audit trail verification
+    cmds:
+      - bash hooks/pre_push_check.sh origin/dev
+
+  links:
+    desc: Run offline internal link checking with lychee
+    cmds:
+      - |
+        if command -v lychee >/dev/null 2>&1; then
+          lychee --config .lychee.toml --offline --no-progress . {{.CLI_ARGS}}
+        else
+          echo "lychee binary not found. Install or activate via mise to verify links." >&2
+          exit 1
+        fi
+
+  sync-versions:
+    desc: Synchronize framework version references across tree
+    cmds:
+      - bash hooks/sync-version-refs.sh

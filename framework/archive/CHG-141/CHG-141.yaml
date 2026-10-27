@@ -1,0 +1,139 @@
+# =============================================================================
+#  CHG-141: BRD companion template token efficiency & example extraction
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 — layer template token efficiency)
+#  Scope: Refactor framework/layers/01_BRD/BRD-TEMPLATE.yaml from 1,180 lines
+#         (~53 KB) down to a lean schema skeleton (~270 lines) by extracting
+#         lengthy narrative business scenario mockups into
+#         framework/layers/01_BRD/examples/BRD-EXAMPLE.yaml, while strictly
+#         preserving all canonical top-level keys, _size_target definitions,
+#         and structural validation constraints. Issue #987.
+#         Normative spec change protocol applied (0.96.22 -> 0.96.23).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: framework/layers/01_BRD/BRD-TEMPLATE.yaml,
+#     framework/governance/DOC_GOVERNANCE_CORE.md,
+#     tests/acceptance/deterministic/test_harness_template_sections.py,
+#     tests/unit/test_template_yaml.py, tests/unit/test_template_conventions.py,
+#     tests/conformance/test_seed_contract.py,
+#     tests/conformance/test_coverage_engine.py,
+#     tests/conformance/test_element_id_layer_contract.py,
+#     tests/conformance/test_fr_cap_advisory.py,
+#     hooks/sync-version-refs.sh, issue #987. All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (DIR2C template token efficiency enhancement).
+#  7. Single issue #987 (high token overhead, review origin).
+#  8. Test specs: chg_lint, spec_gate, test_harness_template_sections.py,
+#     test_template_yaml.py, test_template_conventions.py,
+#     test_seed_contract.py, test_coverage_engine.py,
+#     test_element_id_layer_contract.py, test_sync_version_refs.py.
+#  11. No SDD layer-doc rewrites; template refactoring and example extraction.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C2, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / tooling_implementation / verification
+#     phases only; empty lifecycle; execution order holds.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.23"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-141"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-141)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-141"
+  title: "Streamline BRD companion template and relocate mockups to layer examples"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Issue #987: BRD-TEMPLATE.yaml was an extreme outlier at 1,180 lines (~53 KB),
+    bloated with multi-page narrative mockups, hypothetical business scenarios,
+    and verbose antipattern commentary, which imposed high token overhead on LLM
+    agent context windows and conflicted with Principle 7 of DOC_GOVERNANCE_CORE.md.
+  choice: >-
+    1. Streamline BRD-TEMPLATE.yaml into a concise, token-efficient template schema
+    (< 300 lines) preserving all 17 canonical top-level section keys, _size_target
+    budgets, element-ID contracts, and STRUCT01/COV01/SEED01 validation markers.
+    2. Relocate the complete illustrative scenario mockup and verbose examples to
+    framework/layers/01_BRD/examples/BRD-EXAMPLE.yaml for authors requiring reference prose.
+    3. Retain complete compatibility with sdd_doc_lint and acceptance test harnesses.
+  consequences:
+    positive:
+      - "Reduces BRD-TEMPLATE.yaml token footprint by ~75% (~1,180 lines down to ~270 lines)."
+      - "Satisfies DOC_GOVERNANCE_CORE.md Principle 7 (token-efficient authoring)."
+      - "Preserves full reference mockup fidelity in dedicated layer example file."
+      - "All structural linter and conformance tests continue to pass identically."
+    negative:
+      - "None; downstream consumers parsing top-level keys and _size_target are unaffected."
+    risks:
+      - "Authors relying solely on inline template comments for examples can consult the dedicated layer example file."
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    BRD-TEMPLATE.yaml token bloat (1,180 lines, ~53 KB) creates excessive overhead
+    for AI agent context windows, violating DOC_GOVERNANCE_CORE.md Principle 7 (issue #987).
+  scope:
+    - "framework/archive/CHG-141/CHG-141.yaml (new, this vehicle)."
+    - "framework/archive/CHG-141/IPLAN-141.yaml (new, executing IPLAN)."
+    - "framework/layers/01_BRD/BRD-TEMPLATE.yaml (streamline template skeleton to ~270 lines)."
+    - "framework/layers/01_BRD/examples/BRD-EXAMPLE.yaml (new, relocated illustrative scenario mockup)."
+    - "framework/VERSION (bump 0.96.22 -> 0.96.23)."
+    - "hooks/sync-version-refs.sh (append 0.96.22 to OLD_VERSIONS and sync)."
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-141/IPLAN-141.yaml"
+  steps:
+    - step: "Author authorizing CHG-141.yaml and IPLAN-141.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Create framework/layers/01_BRD/examples/BRD-EXAMPLE.yaml carrying illustrative scenario mockup"
+      phase: "tooling_implementation"
+    - step: "Streamline framework/layers/01_BRD/BRD-TEMPLATE.yaml to lean schema skeleton (< 300 lines)"
+      phase: "tooling_implementation"
+    - step: "Execute version bump protocol (0.96.22 -> 0.96.23) and sync version references"
+      phase: "verification"
+    - step: "Validate chg_lint, spec_gate, and all conformance and unit test suites; open PR with Closes #987"
+      phase: "verification"

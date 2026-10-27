@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: gate_spec_process
 weight: 0
 agent: framework-maintainer
-framework_spec_version: "0.91.4"
+framework_spec_version: "0.96.23"
 type: process-playbook
 ---
 # GATE-SPEC Framework Self-Change Process
@@ -16,7 +16,7 @@ type: process-playbook
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 ## Purpose
 
@@ -70,22 +70,9 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 
 5. **Archive ALL files before modification**
    ```sh
-   # Governance docs
-   cp governance/*.md archive/CHG-{NN}/governance/
-   
-   # Gate definitions
-   cp layers/09_CHG/gates/*.md archive/CHG-{NN}/layers/09_CHG/gates/
-   
-   # Layer READMEs
-   for d in layers/*/; do
-     [ -f "$d/README.md" ] && cp "$d/README.md" "archive/CHG-{NN}/$d"
-   done
-   
-   # Root docs
-   cp README.md AI_ASSISTANT_RULES.md archive/CHG-{NN}/root/
-   
-   # YAML files
-   cp registry/LAYER_REGISTRY.yaml archive/CHG-{NN}/registry/
+   # Copy pre-modification snapshots into flat framework archive directory:
+   # framework/archive/CHG-{NN}/<filename>
+   cp <modified-files> framework/archive/CHG-{NN}/
    ```
 
 6. **Verify archive completeness**
@@ -116,15 +103,11 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
     - Follow SemVer: major/minor/patch per classification
     - Update `LAYER_REGISTRY.yaml` `metadata.framework_version` to match
 
-11. **Create or update `CHANGELOG.md`** (GATE-SPEC-E008)
-    - Add entry with version number, date, and change summary
-    - Follow existing format (Added/Changed/Fixed sections)
+11. **Record decision in CHG Section 1B** (GD-71 / GD-78)
+    - Author formal decision mapping in `CHG-*.yaml` Section 1B (`decision_id`, `title`, `context`, `choice`, `consequences`)
+    - For architectural decisions, author structured Layer 05 ADR (`docs/sdd/05_ADR/`)
 
-12. **Add GD entry to `DECISIONS.md`** (if significant decision)
-    - Follow existing format (Status, Context, Decision, Consequences, Authority)
-    - Place before existing entries (newest first)
-
-13. **Security assessment** (GATE-SPEC-W003)
+12. **Security assessment** (GATE-SPEC-W003)
     - Review against SECURITY_REVIEW.md threats T1-T4
     - Record findings in CHG `security_assessment` section
     - For informational metadata changes: typically no blocking findings
@@ -150,7 +133,6 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 - [ ] change_description.why and .trigger populated
 - [ ] semver_impact set (major | minor | patch)
 - [ ] change_level proposed (>= C2; major => C3)
-- [ ] CHANGELOG.md entry drafted
 - [ ] For C3: downstream consumers notified (migration note per consumer)
 ```
 
@@ -158,7 +140,7 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 
 ```markdown
 - [ ] GATE-SPEC-E001..E004 pass (record-level)
-- [ ] GATE-SPEC-E005..E008 pass (VERSION bump, pins match, suite green, CHANGELOG)
+- [ ] GATE-SPEC-E005..E007 pass (VERSION bump, pins match, suite green)
 - [ ] GATE-SPEC-W001..W003 reviewed
 - [ ] CHG document created (>= C2)
 - [ ] Human approval obtained per matrix (branch protection)
@@ -171,7 +153,7 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 1. **Forgetting subdirectories** — `governance/*.md` misses `governance/chg/README.md`
 2. **Duplicate metadata keys** — Adding a new `metadata:` block when one already exists causes silent field loss
 3. **Wrong framework_version** — Must match current VERSION, not the previous one
-4. **Missing CHANGELOG** — GATE-SPEC-E008 requires it; create if absent
+4. **Missing Archive Originals** — GATE-SPEC requires archiving originals to `archive/{CHG-ID}/` before editing
 5. **Stale step statuses** — Implementation steps must be Updated to Completed
 
 ## Cross-references
@@ -180,4 +162,4 @@ existing 09_CHG playbooks (architect, auditor, security_engineer, etc.).
 - `layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md` — Full gate definition
 - `governance/DOC_GOVERNANCE_CORE.md` — §Principle 10 (Document lifecycle tracking)
 - `governance/SECURITY_REVIEW.md` — Security review checklist (W003)
-- `governance/DECISIONS.md` — GD-24 (Document control convention)
+- `governance/DECISIONS.md` — GD-24 (Document control convention, historical tombstone)

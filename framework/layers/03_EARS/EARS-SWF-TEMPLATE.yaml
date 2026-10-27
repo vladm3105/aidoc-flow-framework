@@ -8,6 +8,30 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: BDD (Layer 4)
 #  Upstream: PRD (Layer 2)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 03 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (EARS-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to parse, validate, and ratify the requirements.
+#       Orchestrates syntax parsing, DAG dependency checks, BDD-readiness gating (BTV),
+#       clarification callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (EARS-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (atomic EARS statements, quality attributes, timing bounds).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (EARS-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (EARS-SWF-TEMPLATE.yaml + EARS-GRAPH-TEMPLATE.yaml) when:
+#    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
+#    - Orchestrating automated BDD-readiness evaluation (Binary Topological Validation switch gates per CHG-97)
+#    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (EARS-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting straightforward, single-system requirements, linear feature sets, or tabular EARS clauses
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: EARS-NN
@@ -24,6 +48,8 @@ metadata:
   document_type: "ears-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "requirements_specialist"
+  author_playbook: "framework/playbooks/03_EARS/requirements_specialist.md"
   layer: 3
   lifecycle: mvp-prod-newmvp
   total_sections: 5
@@ -32,12 +58,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      BDD-Ready Score target >= 90/100 (advisory readiness target).
-    criteria:
-      requirements_clarity: "40% (EARS syntax compliance, atomicity, quantifiability)"
-      testability: "35% (BDD translation feasibility, observable verification)"
-      quality_attributes: "15% (quantified latency/throughput/retry bounds)"
-      strategic_alignment: "10% (upstream PRD traceability, business alignment)"
+      BDD-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      requirements_clarity: "EARS syntax compliance, atomicity, quantifiability"
+      testability: "BDD translation feasibility, observable verification"
+      quality_attributes: "quantified latency/throughput/retry bounds"
+      strategic_alignment: "upstream PRD traceability, business alignment"
 
   c4_level:
     _guidance: |
@@ -76,7 +102,7 @@ document_control:
   author: "[Requirements Engineer]"
   priority: P1
   source_document: "@prd: PRD.01.09.a1b2"
-  bdd_ready_score: "92/100"
+  bdd_ready_status: "PASS"
 
   revision_history:
     - version: "1.0"
@@ -188,6 +214,9 @@ requirements:
         source: /aidoc/requirements/clarification
         correlation:
           - contextAttributeName: documentId
+      - name: EarsClosedAndBaselinedEvent
+        type: org.aidoc.sdd.layer03.ears.closed
+        source: /layers/03_ears
 
     functions:
       - name: parseEarsCatalog
@@ -203,13 +232,31 @@ requirements:
         operation: "urn:aidoc:functions:conflict-checker#evaluate"
         type: custom
       - name: computeReadinessGate
-        operation: "urn:aidoc:functions:readiness#score"
+        operation: "urn:aidoc:functions:readiness#verify"
         type: custom
       - name: emitCanonicalIds
         operation: "urn:aidoc:functions:hasher#generate"
         type: custom
       - name: purgeDownstreamDrafts
         operation: "urn:aidoc:functions:compensator#purgeDrafts"
+        type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
         type: custom
 
     states:
@@ -274,7 +321,7 @@ requirements:
               refName: checkConflictMatrix
               arguments:
                 requirements: "${ .parsedRequirements }"
-          - name: scoreReadiness
+          - name: verifyBddReadiness
             functionRef:
               refName: computeReadinessGate
               arguments:
@@ -286,13 +333,52 @@ requirements:
         type: switch
         dataConditions:
           - name: ReadinessApproved
-            condition: "${ .readinessScore >= 90 and .conflictCount == 0 }"
-            transition: RatifyEarsRequirements
+            condition: "${ .conflictCount == 0 and .syntax_valid == true and .hasAmbiguity == false }"
+            transition: InvokeReviewSagaGate
           - name: AmbiguityDetected
-            condition: "${ .readinessScore >= 70 and .hasAmbiguity == true }"
+            condition: "${ .hasAmbiguity == true }"
             transition: SolicitClarificationCallback
         defaultCondition:
           transition: RejectRequirementsSet
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "ears-review-remediation-flow"
+                artifactId: "${ .documentId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyEarsRequirements
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
+          - name: ReviewRequiresClarification
+            condition: "${ .requiresClarification == true or .iteration >= 3 }"
+            transition: SolicitClarificationCallback
+        defaultCondition:
+          transition: RejectRequirementsSet
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "requirements_engineer"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: SolicitClarificationCallback
         type: callback
@@ -316,8 +402,63 @@ requirements:
               refName: emitCanonicalIds
               arguments:
                 documentId: "${ .documentId }"
-        end:
-          terminate: true
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-03"
+                layer: "03_EARS"
+                documentId: "${ .documentId }"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "${ .documentId }"
+                layer: "03_EARS"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "EarsNode"
+                nodeId: "${ .documentId }"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "EarsClosedAndBaselinedEvent"
+                documentId: "${ .documentId }"
+                requirements_dag: "${ .requirements_dag }"
+        produceEvents:
+          - eventRef: EarsClosedAndBaselinedEvent
+        end: true
 
       - name: RejectRequirementsSet
         type: operation
@@ -354,6 +495,8 @@ quality_attributes:
     Measurable quality attributes supporting EARS requirements.
     All latency metrics specify p50/p95/p99 percentiles; non-latency bounds use
     concrete numeric values and units.
+    These quality attributes directly inform downstream Multi-Criteria Decision Analysis (MCDA)
+    utility scoring during technology selection in Layer 05 (ADR) per TECHNOLOGY_STACK_USAGE_GUIDE.md.
   performance:
     - id: "EARS.01.04.p401"
       statement: "THE transaction authorization engine SHALL process requests"
@@ -409,9 +552,9 @@ traceability:
         value: "50ms"
 
   health_score:
-    bdd_ready: "92%"
+    bdd_ready: "PASS"
     prd_coverage: "100%"
-    target_score: ">=90/100"
+    target_status: "PASS"
 
 # =============================================================================
 # Section 6: Glossary (Required Section 6/6)
@@ -424,7 +567,7 @@ glossary:
     - term: EARS
       definition: "Easy Approach to Requirements Syntax"
     - term: BDD-Ready
-      definition: "Readiness metric validating requirement clarity, testability, and traceability (threshold >=90%)"
+      definition: "Binary topological verification confirming requirement clarity, testability, and 100% DAG completeness"
     - term: Dependency DAG
       definition: "Directed Acyclic Graph modeling inter-requirement prerequisite constraints"
     - term: CNCF Serverless Workflow

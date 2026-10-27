@@ -1,0 +1,140 @@
+# =============================================================================
+#  CHG-124: Platform Technology Stack Alignment, Security Invariants & Missing Tools Governance
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec Governance)
+#  Pre-cleared: Ratified plans/PLATFORM-TECH-STACK-ALIGNMENT-AND-SECURITY-GOVERNANCE-PLAN.md
+#  Scope: Strictly bind AGENTS.md, governance documents, skills, and templates to the
+#         Authoritative Platform Technology Stack (/home/ya/devd/technology_stack, specs 00-23).
+#         Prohibit insecure options, and codify the Missing Tools Operator Escalation Protocol.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.11"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-124"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.11"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T21:00:00Z"
+  date_approved: "2026-10-19T21:00:00Z"
+  date_implemented: "2026-10-19T21:30:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T21:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/PLATFORM-TECH-STACK-ALIGNMENT-AND-SECURITY-GOVERNANCE-PLAN.md
+      mandating adherence to the authoritative platform technology stack, banning insecure options,
+      and establishing the missing tools operator escalation protocol.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-124)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-124"
+  title: "Mandate Authoritative Technology Stack Adherence, Insecure Options Prohibition, and Missing Tools Governance"
+  status: "Decided"
+  date: "2026-10-19"
+  context: >-
+    The organization has established an Authoritative Platform Technology Stack codified in
+    /home/ya/devd/technology_stack (specifications 00 through 23). To prevent architectural drift,
+    insecure configurations, and unauthorized tool adoption, AI agents must strictly adhere to this
+    stack, never offer or use insecure options, and explicitly escalate missing tools to the operator.
+  choice: >-
+    1. Bind AGENTS.md, governance documents, skills, and templates to /home/ya/devd/technology_stack.
+    2. Prohibit offering or using insecure options (plaintext secrets, disabled sandboxing, relaxed permissions).
+    3. Codify the Missing Tools Operator Escalation Protocol: if a required tool is missing from the tech stack,
+       the AI agent must explicitly inform the operator and get instructions on what tools or software to use.
+    4. Modernize governance docs (RECOMMENDED_PLATFORM_STACK.md, TECHNOLOGY_STACK_USAGE_GUIDE.md,
+       AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md) to reflect Two-Tier Secrets (OCI Vault + OpenBao) and Hybrid S3.
+    5. Update templates (STACK-POLICY-TEMPLATE, MODULE-TEMPLATE, ADR/SPEC/TDD/IPLAN templates) and skills.
+  consequences:
+    positive:
+      - Absolute consistency with canonical platform stack across all projects.
+      - Zero tolerance for insecure workarounds, plaintext secrets, or relaxed sandboxing.
+      - Clear, deterministic protocol for handling tools not currently present in the tech stack.
+    negative:
+      - Agents cannot autonomously introduce unvetted third-party libraries or databases without operator instruction.
+    risks:
+      - None; preserves all SDD layer invariants and BTV binary validation.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    AI coding agents and templates previously lacked an explicit operational constraint binding
+    them strictly to /home/ya/devd/technology_stack. Without explicit rules, agents could propose
+    insecure options or guess unvetted tools when a needed utility was missing from documentation.
+  scope:
+    - Update AGENTS.md and AGENTS-TEMPLATE.md with platform standards, insecure options ban, and missing tools protocol.
+    - Update RECOMMENDED_PLATFORM_STACK.md, TECHNOLOGY_STACK_USAGE_GUIDE.md, AI_ASSISTANT_RULES.md, DOC_GOVERNANCE_CORE.md.
+    - Update skills (approval-gate, verified-planning, preprod-review, start-session, aidoc-triage).
+    - Audit and update templates (STACK-POLICY-TEMPLATE.yaml, MODULE-TEMPLATE.md, ADR, SPEC, TDD, IPLAN templates).
+    - Bump framework version to 0.96.11 and sync version references.
+
+# =============================================================================
+# Section 3: Implementation Strategy & Verification
+# =============================================================================
+
+implementation_strategy:
+  phases:
+    - phase: 1
+      name: "Working Agreements & Templates"
+      description: "Update AGENTS.md, AGENTS-TEMPLATE.md, and layer/governance templates."
+    - phase: 2
+      name: "Governance Docs Modernization"
+      description: "Update RECOMMENDED_PLATFORM_STACK.md and TECHNOLOGY_STACK_USAGE_GUIDE.md."
+    - phase: 3
+      name: "Skills Alignment"
+      description: "Update .agents/skills/ and framework/skills/."
+    - phase: 4
+      name: "Verification & Spec Bump"
+      description: "Bump version, run sync-version-refs.sh, verify conformance tests and spec gate."
+
+sdd_lifecycle: []
+
+implementation:
+  iplan_ref: "framework/archive/CHG-124/IPLAN-124.yaml"
+  steps:
+    - step: "Author authorizing CHG-124.yaml and IPLAN-124.yaml"
+      phase: "iplan_creation"
+    - step: "Update AGENTS.md and AGENTS-TEMPLATE.md with platform standards, insecure options ban, and missing tools protocol"
+      phase: "working_agreements"
+    - step: "Modernize RECOMMENDED_PLATFORM_STACK.md and TECHNOLOGY_STACK_USAGE_GUIDE.md"
+      phase: "governance_docs"
+    - step: "Align skills across .agents/ and framework/ (approval-gate, verified-planning, preprod-review, start-session)"
+      phase: "skills_alignment"
+    - step: "Audit and update templates (STACK-POLICY-TEMPLATE, MODULE-TEMPLATE, ADR, SPEC, TDD, IPLAN templates)"
+      phase: "templates_audit"
+    - step: "Add conformance tests, bump framework/VERSION to 0.96.11, run sync-version-refs.sh"
+      phase: "testing_and_spec_bump"

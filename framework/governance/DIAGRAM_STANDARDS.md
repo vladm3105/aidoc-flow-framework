@@ -1,4 +1,8 @@
 ---
+doc_id: GOV-DIAGRAM-STANDARDS
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
 title: "Diagram Standards: Mermaid-Only Requirement"
 tags:
   - framework-guide
@@ -15,21 +19,21 @@ custom_fields:
 
 # Diagram Standards
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.12 |
+| Version | 1.14 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
-## Mandatory Format: Mermaid Only
+## Mandatory Format: Mermaid Only {#sec-mandatory-format-mermaid-only}
 
 All diagrams, charts, workflows, and visual representations in SDD framework artifacts MUST use Mermaid syntax.
 
-### Requirements
+### Requirements {#sec-requirements}
 
 | Requirement | Description |
 |---|---|
@@ -38,7 +42,7 @@ All diagrams, charts, workflows, and visual representations in SDD framework art
 | **Style** | Follow the platform's diagram-generation tooling for syntax correctness |
 | **File Management** | Use the platform's diagram-generation tooling for SVG generation and embedding |
 
-### Prohibited Formats
+### Prohibited Formats {#sec-prohibited-formats}
 
 The following diagram formats are NOT permitted in any SDD artifact:
 
@@ -50,7 +54,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 | Manual arrow diagrams | `==>`, `->`, `<--` (outside Mermaid) | No styling or layout control |
 | Indented hierarchy text | Manual spacing alignment | Fragile, breaks with formatting |
 
-### Allowed Exceptions
+### Allowed Exceptions {#sec-allowed-exceptions}
 
 | Exception | Permitted Use | Example |
 |---|---|---|
@@ -58,7 +62,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 | Inline code references | Simple path or command notation | `src/main.py` |
 | Table-based data | Structured data display | Markdown tables |
 
-### Diagram Types Reference
+### Diagram Types Reference {#sec-diagram-types-reference}
 
 Use appropriate Mermaid diagram type for the content:
 
@@ -72,7 +76,7 @@ Use appropriate Mermaid diagram type for the content:
 | Timelines | `timeline` |
 | Mind maps | `mindmap` |
 
-## C4 + DFD + Sequence Ownership Model
+## C4 + DFD + Sequence Ownership Model {#sec-c4-dfd-sequence-ownership-model}
 
 Use the following model across the MVP → PROD → NEW MVP lifecycle.
 
@@ -86,7 +90,7 @@ Use the following model across the MVP → PROD → NEW MVP lifecycle.
 | SPEC (L6) | C4 L3 (Component) + DFD L3 | Component interfaces, data-flow constraints, behavior contracts |
 | Code | C4 L4 (Code) | Implementation-level class/package structure |
 
-### Diagram Intent Header (Mandatory)
+### Diagram Intent Header (Mandatory) {#sec-diagram-intent-header-mandatory}
 
 Each required diagram block MUST include an intent header immediately above the Mermaid block.
 
@@ -115,12 +119,12 @@ Validation severity defaults:
 - Warning: missing trust-boundary annotation or missing sequence exception-path branch
 - Info: optional enrichment gaps
 
-### SPEC Component Diagram Rule
+### SPEC Component Diagram Rule {#sec-spec-component-diagram-rule}
 
 - SPEC MUST NOT require embedded C4 L4 code/class diagrams as mandatory content.
 - SPEC MUST reference downstream TDD/IPLAN location where C4 L4 ownership is implemented.
 
-### Component Diagram Contract (SPEC)
+### Component Diagram Contract (SPEC) {#sec-component-diagram-contract-spec}
 
 Required fields in SPEC diagram contract subsection:
 - `@diagram: c4-l3` component-level references
@@ -128,12 +132,12 @@ Required fields in SPEC diagram contract subsection:
 - Required sequence paths for critical integrations and error handling
 - Downstream TDD path for test case ownership
 
-### Layer Enforcement Summary
+### Layer Enforcement Summary {#sec-layer-enforcement-summary}
 
 | Layer / Tier | Mandatory Checks |
 |---|---|
 | Seed (Tier 1) | `@diagram: c4-l1`, `@diagram: dfd-l1` (defined in `framework/templates/SEED-TEMPLATE.md`) |
-| Module (Tier 2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` (or `sequence-async`); required Data Sensitivity Matrix (`framework/templates/MODULE-TEMPLATE.md`) |
+| Module (Tier 2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` (or `sequence-async`); required Data Sensitivity Matrix (`framework/templates/MODULE-GRAPH-TEMPLATE.yaml` / `framework/templates/MODULE-TEMPLATE.md`) |
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
 | PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
 | EARS (L3) | No diagrams required (refinement step; inherits upstream) |
@@ -144,7 +148,7 @@ Required fields in SPEC diagram contract subsection:
 | IPLAN (L8) | No C4/DFD requirements (execution plan) |
 | Code | C4 L4 ownership declarations aligned with SPEC references |
 
-### BRD Required Diagrams by Type
+### BRD Required Diagrams by Type {#sec-brd-required-diagrams-by-type}
 
 BRD diagrams are scoped by `brd_type` (platform or feature). Required diagrams ensure consistent visual coverage across all BRDs.
 
@@ -172,7 +176,7 @@ BRD diagrams are scoped by `brd_type` (platform or feature). Required diagrams e
 
 All diagrams follow the `diagrams` registry in BRD-TEMPLATE.yaml. Each item requires: `id`, `title`, `file`, `source`, `scope`.
 
-### Interactive Diagrams (RECOMMENDED)
+### Interactive Diagrams (RECOMMENDED) {#sec-interactive-diagrams-recommended}
 
 For enhanced navigability, Mermaid diagrams MAY include click handlers to link nodes to related documents or sections. This is **optional but recommended** for traceability diagrams.
 
@@ -250,11 +254,11 @@ flowchart LR
 | **Navigation** | [FAIL] Manual | [PASS] One-click | [PASS] One-click |
 | **Recommended For** | Conceptual diagrams | Published traceability | In-document navigation |
 
-### Governance State Machines & Workflow Graphs (CNCF Serverless Workflow)
+### Governance State Machines & Workflow Graphs (CNCF Serverless Workflow) {#sec-governance-state-machines-workflow-graphs-cncf-serverless-workflow}
 
 Workflow graphs across the framework are formally declared as Directed Acyclic
 Graphs (DAGs) using the CNCF Serverless Workflow standard in YAML format (`specVersion: "0.8"`):
-1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml` and `framework/governance/workflows/review/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), 9 per-layer review & remediation flows (`workflows/review/*.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
+1. **Governance State Machines** (`framework/governance/workflows/*.sw.yaml` and `framework/governance/workflows/review/*.sw.yaml`): Defined in `GOVERNANCE_WORKFLOW_STANDARD.md` and `REVIEW_WORKFLOW_STANDARD.md`. Includes change request flow (`chg-request-flow.sw.yaml`), module decomposition (`seed-to-module-decomposition.sw.yaml`), worktree PR lifecycle (`worktree-pr-lifecycle.sw.yaml`), quality remediation saga (`review-remediation-flow.sw.yaml`), 9 per-layer review & remediation flows (`workflows/review/*.sw.yaml`), decision ratification (`decision-ratification-flow.sw.yaml`), decision migration (`decision-migration-flow.sw.yaml`), BDD acceptance run (`bdd-acceptance-run.sw.yaml`), TDD test execution (`tdd-test-execution.sw.yaml`), SPEC choreography contracts (`spec-choreography-contract.sw.yaml`), architectural decision analysis (`adr-decision-analysis.sw.yaml`), requirements validation (`ears-requirements-validation.sw.yaml`), product feature decomposition (`prd-feature-decomposition.sw.yaml`), and business requirements validation (`brd-business-validation.sw.yaml`).
 2. **Implementation Execution Graphs** (`framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml`): Defined in `IPLAN_WORKFLOW_STANDARD.md`.
 3. **Evaluation Execution State Machines** (`framework/governance/workflows/eval-verification-run.sw.yaml`): Defined in `framework/layers/10_EVAL/README.md`.
 4. **Behavioral Acceptance State Machines** (`framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml`): Defined in `framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md`.
@@ -282,20 +286,20 @@ Every workflow graph MUST maintain 1-to-1 parity with a native Mermaid `stateDia
 | Visual Diagram Kind | `@diagram: state-*` or `@diagram: flow-*` (Mermaid `stateDiagram-v2`) |
 | Parity Requirement | All states, transitions, choice conditions, and terminal sinks must match the YAML spec |
 
-### Diagram Tooling
+### Diagram Tooling {#sec-diagram-tooling}
 
 Each platform supplies its own diagram-generation tooling for Mermaid syntax
 generation, error prevention, SVG conversion, and document embedding. This
 standard defines the Mermaid-only requirement; the platform supplies the tools
 that enforce and assist it.
 
-### Enforcement
+### Enforcement {#sec-enforcement}
 
 1. **Pre-commit validation**: Quality gates check for text-based diagram patterns
 2. **Workflow enforcement**: All document-generation workflows include the Mermaid-only requirement
 3. **Review checklist**: Diagram format verification in code review
 
-### Traceability
+### Traceability {#sec-traceability}
 
 This standard applies to all SDD artifacts across Layers 1-8.
 

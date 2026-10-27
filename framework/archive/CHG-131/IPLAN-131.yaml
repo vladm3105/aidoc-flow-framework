@@ -1,0 +1,205 @@
+# =============================================================================
+#  IPLAN-131: Governance Doc Conversion Plan — Phase 2a Structured Markdown
+# =============================================================================
+#  Implementation Plan authorized by CHG-131
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-131
+title: "Implementation Plan: Phase 2a structured Markdown + slicer admission"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.14"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-26"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-131"
+  date_created: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-131/CHG-131.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-131/IPLAN-131.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/governance/ADAPTATION.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/AUTHORING_STYLE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/CI_AUTONOMOUS_PR_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/DECISION_WORKFLOW.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/DEFINITION_OF_DONE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/DIAGRAM_STANDARDS.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/DURABLE_EXECUTION_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/ENGINE_TELEMETRY.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/ID_NAMING_STANDARDS.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/LINT_RULES.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/MODULE_LAYOUT.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/NOTICES.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/REVIEW_REMEDIATION_FLOW.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/REVIEW_SAGA.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/REVIEW_TEAM.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SDD_ASSEMBLY_LINE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SECURITY_REVIEW.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SEED_CONTRACT.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/SELF_LEARNING.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/TAG_SYNTAX.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/THRESHOLD_NAMING_RULES.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/TRACEABILITY.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/WORKTREE_FLOW.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/chg/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "sdd_doc_lint/slice.py"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/layers/09_CHG/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "sdd_doc_lint/tests/test_gov_slice.py"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "tests/conformance/test_ref_granularity_parity.py"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+# =============================================================================
+# Syntax note (first deliverable per plan §Phase 2a.1 — normative for this CHG)
+# =============================================================================
+
+syntax_note:
+  front_matter:
+    keys_allowed: [doc_id, bucket, authority, consumers]
+    keys_forbidden: [status, version, last_updated]
+    rationale: >-
+      status/version/last_updated would duplicate the Document Control
+      table and trigger FM01 consistency obligations
+      (sdd_doc_lint/__init__.py AS8). doc_id values are GOV-<STEM>.
+    consumers_rule: >-
+      machine-consumed candidates carry [authoring, audit, traceability];
+      normative prose carries [authoring, audit].
+    existing_blocks: >-
+      DIAGRAM_STANDARDS.md and THRESHOLD_NAMING_RULES.md already carry
+      front-matter; the four keys were merged into their blocks without
+      reformatting (verified: no key collisions).
+  section_ids:
+    form: "## Heading {#sec-slug}"
+    slug_rule: >-
+      GitHub-compatible: lowercase, strip HTML, drop non [a-z0-9 _-],
+      spaces to hyphens; first occurrence plain, repeats get -1, -2.
+      Rationale: identical to GitHub auto-anchors wherever GitHub's own
+      punctuation-stripping agrees, so existing fragment links keep resolving;
+      the full offline link check verifies.
+    scope: "## through #### headings outside fenced code blocks only"
+  doc_versions: >-
+    Each rewritten doc keeps its Document Control table with a minor
+    version bump and Last Updated 2026-10-26 (CHG-74 precedent).
+
+# =============================================================================
+# Phase 2a findings
+# =============================================================================
+
+phase2a_findings:
+  docs_rewritten: 36
+  slicer_extension:
+    - "GOV-<STEM> front-matter admission (layer GOV, index 0)"
+    - "section-anchor elements GOV-<STEM>#sec-<slug> (GOV docs only)"
+    - "focused test sdd_doc_lint/tests/test_gov_slice.py (2 passed)"
+  smoke_query: >-
+    SddGraph(framework/governance) admits 40 document nodes;
+    GOV-LINT-RULES carries 14 section elements (e.g.
+    GOV-LINT-RULES#sec-document-control).
+  version_bump: "0.96.13 -> 0.96.14 (patch; OLD_VERSIONS appended, sync script run)"

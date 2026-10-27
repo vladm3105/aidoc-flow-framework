@@ -1,0 +1,51 @@
+# =============================================================================
+#  IPLAN-132: Fix unswept checkout pins + guard
+# =============================================================================
+#  Implementation Plan authorized by CHG-132
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-132
+title: "Implementation Plan: checkout-pin fix and conformance guard"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.14"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-26"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-132"
+  date_created: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-132/CHG-132.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-132/IPLAN-132.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "docs/STARTUP_HANDOFF.md"
+    action: "modify"
+    status: "DONE"
+  - path: "docs/ADAPTATION-GUIDE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "tests/conformance/test_sync_version_refs.py"
+    action: "modify"
+    status: "DONE"
+  - path: "plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  guard_observed_red: true
+  guard_green_after_fix: true
+  sweep_extension_declined: >-
+    Literal sweep of `checkout framework/v<old>` rejected: OLD_VERSIONS
+    contains prefix pairs (0.96.1 vs 0.96.13) that a literal replace would
+    corrupt. Loud guard test chosen instead.

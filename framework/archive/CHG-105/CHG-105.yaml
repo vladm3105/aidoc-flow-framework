@@ -1,0 +1,134 @@
+# =============================================================================
+#  CHG-105: .aidoc/ Workstation Directory Standard and Dual-Control Architecture
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Documentation)
+#  Pre-cleared: Founder approval in session (2026-10-15)
+#  Scope: Codify .aidoc/ Workstation Directory Standard
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-15"
+  framework_version: "0.91.23"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-105"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-15T00:00:00Z"
+  date_approved: "2026-10-15T00:00:00Z"
+  date_implemented: "2026-10-15T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-15T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-15): approved. Create the final version a core document in
+      /home/ya/devd/aidoc-framework/docs for .aidoc/ Workstation Directory Standard (Issue #982)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-105)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-105"
+  title: "Establish .aidoc/ Workstation Directory Standard and Dual-Control Architecture"
+  status: "Ratified"
+  context: |
+    Following ratification of the Quad-Pillar federated ecosystem, consumer repositories (such as
+    b-local-privy) demonstrated the necessity of a standardized, multi-tier .aidoc/ workstation layout:
+    1. Distinguishing between the Process Canon (vladm3105/aidoc-flow-framework), technical execution
+       engines (such as vladm3105/aidoc-flow-langgraph), and consumer application repositories.
+    2. Formalizing the Discovery Rule (ENGINE-DISCOV-01) where .aidoc/project/ overrides framework defaults.
+    3. Establishing the Quality Gate Floor Invariant (GATE-FLOOR-01) preventing overrides from relaxing checks.
+    4. Codifying the Dual-Control Generator-Critic architecture (interactive IDE drafting + LangGraph review).
+  choice: |
+    1. Author docs/AIDOC_WORKSTATION_STANDARD.md codifying the complete 3-Tier Layering Model,
+       standardized .aidoc/ workstation directory topology, Discovery Rule, and Dual-Control workflow.
+    2. Cross-reference the new core document in docs/REPO_STRUCTURE.md and docs/PROJECT.md.
+  consequences: |
+    - Establishes an immutable, unambiguous architectural guide for all consumer project repositories.
+    - Prevents divergence between interactive IDE assistants and background LangGraph workers.
+    - Guarantees project customization flexibility without forking the shared Process Canon.
+  alternatives_considered:
+    - option: "Rely only on framework/governance/aidoc/AIDOC.md without a root docs standard"
+      rationale_rejected: >-
+        AIDOC.md focuses on framework internals, whereas developers and consumers need a top-level
+        workstation architecture guide in docs/ explaining multi-pillar and multi-engine federation.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: ".aidoc/ Workstation Directory Standard and Dual-Control Architecture"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-15T00:00:00Z"
+  summary: |
+    Author docs/AIDOC_WORKSTATION_STANDARD.md defining the canonical .aidoc/ workstation layout,
+    engine discovery protocol, quality gate floor invariant, and dual-control execution model.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Core documentation establishing .aidoc/ workstation standard (Issue #982)"
+  components_affected:
+    - "docs/AIDOC_WORKSTATION_STANDARD.md"
+    - "docs/REPO_STRUCTURE.md"
+    - "docs/PROJECT.md"
+    - "framework/archive/CHG-105/CHG-105.yaml"
+    - "framework/archive/CHG-105/IPLAN-105.yaml"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-105/IPLAN-105.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-105.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-105/IPLAN-105.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-105/CHG-105.yaml passing"
+    - "python3 -m sdd_doc_lint.surface_lint . green"
+    - "bash hooks/pre_push_check.sh clean pass"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

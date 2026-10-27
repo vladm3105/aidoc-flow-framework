@@ -1,27 +1,34 @@
+---
+doc_id: GOV-REVIEW-WORKFLOW-STANDARD
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Review Workflow Standard — Graph-Based Review Flows & SAGA Mechanics
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 | Authority | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` |
 
 This document establishes the normative standard for **graph-based review, remediation, and gating workflows** across the SDD framework. It specifies the declarative CNCF Serverless Workflow state machines (DSL v0.8 YAML), per-layer review crews, SAGA compensation mechanics, playbook evaluation graphs, and the deterministic handover protocol connecting review findings to authorizing Change Requests (CHGs).
 
 ---
 
-## 1. Architectural Foundations
+## 1. Architectural Foundations {#sec-1-architectural-foundations}
 
-### 1.1 Declarative Purity & Zero Runtime Lock-in (D-0013 / GD-06)
+### 1.1 Declarative Purity & Zero Runtime Lock-in (D-0013 / GD-06) {#sec-11-declarative-purity-zero-runtime-lock-in-d-0013-gd-06}
 
 In strict accordance with Principle **D-0013 (Spec Engine-Agnostic Purity)**, review flows are defined as pure, declarative state graphs targeting `specVersion: "0.8"` of the CNCF Serverless Workflow specification. The framework bundles zero runtime orchestrator code or vendor SDKs. Any downstream execution engine (LangGraph, Temporal, AWS Step Functions, or custom agent harnesses) ingests these declarative `.sw.yaml` definitions directly via state translation.
 
-### 1.2 Two-Stage Review Architecture
+### 1.2 Two-Stage Review Architecture {#sec-12-two-stage-review-architecture}
 
 Quality assurance in autonomous agent engineering operates across two distinct stages:
 
@@ -35,9 +42,22 @@ Quality assurance in autonomous agent engineering operates across two distinct s
    - **Objective**: Verify operational correctness, anti-mock compliance, branch hygiene, and regression avoidance.
    - **Pass Criteria**: Full test suites green (unit, integration, conformance), 4-lens rubric passed, zero unhandled edge cases in exercised paths.
 
+### 1.3 Two-Graph Architecture in Review & Remediation Workflows {#sec-13-two-graph-architecture-in-review-remediation-workflows}
+
+Governance reviews and document ratification operate across two complementary graph planes:
+1. **Process DAG (Control Plane)**: Encoded in `*-review-remediation.sw.yaml` and `framework/governance/templates/REVIEW-SWF-TEMPLATE.yaml` (CNCF Serverless Workflow v0.8 DSL).
+   - Specifies the state machine of HOW review crews dispatch, how findings accumulate, how quality gates evaluate, how SAGA compensation (`compensatedBy`) executes rollback on linter breaks, and how CHG handover transitions occur.
+2. **Content Graph (Data Plane)**: Encoded in `framework/governance/templates/REVIEW_REPORT-TEMPLATE.yaml` and layer-specific content graphs (`*-GRAPH-TEMPLATE.yaml`).
+   - Specifies WHAT nodes, attributes, and relationships exist in the artifact under review and in the synthesized review report (e.g. `Finding` nodes, `Check` evaluations, `Remediation` touchpoints, and upstream/downstream traceability edges).
+
+During autonomous review and remediation loops:
+- The **Process DAG** drives the multi-lens agent crew across playbook evaluation checks, gathers findings, and manages remediation iterations.
+- The **Content Graph** models the semantic topology of both the artifact under test and the generated Review Report (`REV-RPT-NN`).
+- Binary Topological Validation (BTV) and deterministic linting (`sdd_doc_lint`, `sdd_swf_lint`) verify structural correctness, acyclicity, and closure across both graphs before document ratification or branch merging.
+
 ---
 
-## 2. Review SAGA Traversal Taxonomy
+## 2. Review SAGA Traversal Taxonomy {#sec-2-review-saga-traversal-taxonomy}
 
 Every review run executes within a governed lifecycle saga conforming to [`REVIEW_SAGA.md`](REVIEW_SAGA.md). The progression is classified into six deterministic traversal codes:
 
@@ -90,7 +110,7 @@ stateDiagram-v2
 
 ---
 
-## 3. Layer Review Workflows & Crew Parity
+## 3. Layer Review Workflows & Crew Parity {#sec-3-layer-review-workflows-crew-parity}
 
 Per [`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml), every layer defines an author persona (who drafts and applies fixes) and a specialized review crew whose weights sum to 100:
 
@@ -105,11 +125,11 @@ Per [`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml), every layer defines an author pers
 | **`07_TDD`** | `REV-07-TDD` (`tdd-review-remediation.sw.yaml`) | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `chaos_engineer: 10`, `security_engineer: 10`, `operator: 10`, `auditor: 10` |
 | **`08_IPLAN`** | `REV-08-IPLAN` (`iplan-review-remediation.sw.yaml`) | `tech_lead` | `tech_lead: 30`, `architect: 25`, `operator: 15`, `integration_lead: 12`, `auditor: 10`, `chaos_engineer: 8` |
 | **`09_CHG`** | `REV-09-CHG` (`chg-review-remediation.sw.yaml`) | `integration_lead` | `integration_lead: 30`, `architect: 20`, `chaos_engineer: 15`, `operator: 15`, `auditor: 10`, `security_engineer: 10` |
-| **`10_EVAL`** | `EVAL-WF` (`eval-verification-run.sw.yaml`) | `eval_author` | Verdict-graded via `10_IPVERIFY` playbooks (`evaluator`, `validator`, `verifier`, `report_generator`) |
+| **`10_EVAL`** | `REV-10-EVAL` (`eval-review-remediation.sw.yaml`) | `qa_lead` | `evaluator: 35`, `validator: 25`, `verifier: 20`, `report_generator: 10`, `auditor: 10` |
 
 ---
 
-## 4. SAGA Mechanics & Non-Blocking Rollback
+## 4. SAGA Mechanics & Non-Blocking Rollback {#sec-4-saga-mechanics-non-blocking-rollback}
 
 Review workflows enforce three non-negotiable SAGA properties:
 
@@ -132,7 +152,7 @@ Review workflows enforce three non-negotiable SAGA properties:
 
 ---
 
-## 5. Playbook Evaluation Graphs
+## 5. Playbook Evaluation Graphs {#sec-5-playbook-evaluation-graphs}
 
 Each of the 58 playbooks in `framework/playbooks/` represents an algorithmic evaluation DAG. Each playbook declares:
 1. **Frontmatter**: `layer`, `lens`, `weight`, `agent`.
@@ -149,11 +169,11 @@ When an agent executes a lens branch, it evaluates each check sequentially or in
 
 ---
 
-## 6. Review Report & CHG Remediation Handover
+## 6. Review Report & CHG Remediation Handover {#sec-6-review-report-chg-remediation-handover}
 
 When a review run terminates with unresolved blocking findings on an approved baseline, it emits a standardized Review Report conforming to [`review_report.schema.json`](review_report.schema.json) and [`templates/REVIEW_REPORT-TEMPLATE.yaml`](templates/REVIEW_REPORT-TEMPLATE.yaml).
 
-### Handover Protocol:
+### Handover Protocol: {#sec-handover-protocol}
 1. **Report Emission**:
    The synthesizer outputs `REV-RPT-NN.yaml` with `gate.passed: false` and populated `findings[]`.
 2. **Handover Routing**:
@@ -166,7 +186,7 @@ When a review run terminates with unresolved blocking findings on an approved ba
 
 ---
 
-## 7. Deterministic Graph Linting (`sdd_swf_lint`)
+## 7. Deterministic Graph Linting (`sdd_swf_lint`) {#sec-7-deterministic-graph-linting-sdd_swf_lint}
 
 All declarative workflow files (`.sw.yaml`) and embedded workflow templates (`*-SWF-TEMPLATE.yaml`) are validated deterministically via:
 
@@ -174,7 +194,7 @@ All declarative workflow files (`.sw.yaml`) and embedded workflow templates (`*-
 python3 -m sdd_doc_lint.swf_lint <path>
 ```
 
-### Enforced Rules:
+### Enforced Rules: {#sec-enforced-rules}
 - **`SWF-L001`**: CNCF Serverless Workflow DSL v0.8 root schema compliance.
 - **`SWF-L002`**: State types restricted to approved set (`operation`, `switch`, `parallel`, `callback`, `inject`, `sleep`, `event`).
 - **`SWF-L003`**: At least one reachable deterministic terminal state (`end: true` or `terminate: true`).

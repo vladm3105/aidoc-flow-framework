@@ -6,9 +6,9 @@
 |-------|-------|
 | Version | 2.0 |
 | Status | Approved |
-| Last Updated | 2026-10-27 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 ## Purpose
 
@@ -119,7 +119,7 @@ Draft → Approved → In Progress → Completed → Verified
 
 ```
 docs/sdd/10_EVAL/
-  EVAL-00_index.md                          # master index
+  EVAL-00_index.yaml                          # master index
   EVAL-NN/
     EVAL-NN.yaml                            # active strategy
     reports/

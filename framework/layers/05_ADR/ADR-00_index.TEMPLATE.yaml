@@ -1,0 +1,111 @@
+# ADR-00_index.TEMPLATE.yaml — Architecture Decision Records & Technology Stack Registry (template)
+# SDD Layer 5 — Architectural decision catalog and active project technology registry
+#
+# Index template. Copy this file to ADR-00_index.yaml in a project.
+# Dynamic registry — updated every time an ADR is created, approved, deprecated,
+# superseded, or whenever a technology component is introduced, updated, or decommissioned.
+#
+# For rules governing this directory (naming, status semantics, update triggers),
+# see 05_ADR/README.md and 05_ADR/ADR_WORKFLOW_STANDARD.md.
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "adr-registry"
+  artifact_type: "ADR-INDEX"
+  layer: 5
+  total_adrs: 0
+  total_technologies: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Architecture Decision Records Registry
+# =============================================================================
+# Tracks every ADR in the project. Every permanent ADR appears exactly once.
+adrs: []
+
+  # Template entry:
+  # - id: "ADR-01"
+  #   title: "[Architecture Decision Title]"
+  #   status: "Proposed"        # Proposed | Accepted | Deprecated | Superseded
+  #   status_date: "YYYY-MM-DD"
+  #   category: "Technology Selection" # Technology Selection | Infrastructure | Integration | Data Architecture | Security | Observability | AI/ML
+  #   upstream_bdd: ["BDD.04.01.0001"] # Related BDD scenarios
+  #   downstream_specs: ["SPEC-01"]    # Downstream technical specifications
+  #   impact: "High"            # High | Medium | Low
+  #   file_path: "ADR-01_[slug].yaml"
+  #   supersedes: null          # ADR-NN if this replaces an older decision
+  #   superseded_by: null       # ADR-NN if replaced
+
+# =============================================================================
+# Planned Decisions Backlog
+# =============================================================================
+# Future ADRs that have been identified from BRD/PRD/BDD but not yet drafted.
+backlog: []
+
+  # Template entry:
+  # - id: "ADR-NN"
+  #   topic: "[Decision Topic]"
+  #   source_requirements: "BDD-01 / PRD-01"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Why decision is needed]"
+
+# =============================================================================
+# Project Technology Stack & Security Monitoring Registry
+# =============================================================================
+# Canonical agent-readable inventory of all technologies adopted in the project.
+# Ingested by security monitoring (SCA, CVE scanning) and automated tool updates.
+technologies: []
+
+  # Missing Tools Protocol: Any technology registered here must be grounded in
+  # /home/ya/devd/technology_stack. If a needed tool is missing from the tech stack,
+  # the agent must explicitly inform the operator and obtain instructions before adding it.
+  # Template entry:
+  # - id: "postgres-db"
+  #   technology: "PostgreSQL"
+  #   category: "Data Architecture"     # Runtime | Data Architecture | Event Messaging | Observability | Security | Frontend | CI/CD | Infrastructure
+  #   stack_tier: "Tier-0-Core"         # Tier-0-Core | Approved-Contained | Specialized-Domain | Approved-Exception
+  #   version_constraint: ">=18.0, <19.0"
+  #   authorizing_decision: "ADR-02"    # Direct citation to Layer 05 ADR or GD reference
+  #
+  #   # ── Security Monitoring (SCA, CVE, SBOM) ──
+  #   security_monitoring:
+  #     enabled: true
+  #     purl: "pkg:docker/library/postgres@18-alpine" # Package URL standard (RFC)
+  #     cpe: "cpe:2.3:a:postgresql:postgresql:18:*:*:*:*:*:*:*"
+  #     ecosystem: "docker"              # docker | pypi | golang | npm | maven | cargo
+  #     vulnerability_scanners: ["trivy", "osv"]
+  #     severity_alert_threshold: "HIGH" # CRITICAL | HIGH | MEDIUM | LOW
+  #     license: "PostgreSQL"
+  #     license_approved: true
+  #
+  #   # ── Tools & Automated Updates (Dependabot / Renovate) ──
+  #   update_policy:
+  #     tool: "renovate"                 # dependabot | renovate | manual
+  #     cadence: "weekly"                # weekly | monthly | quarterly | manual
+  #     auto_merge_patches: true         # Allow auto-merging patch releases on green CI
+  #     manifest_path: "deploy/compose.yaml"
+  #
+  #   lifecycle_status: "Active"         # Active | Evaluating | Deprecated | Sunset
+
+# =============================================================================
+# Registry Update Triggers
+# =============================================================================
+update_triggers:
+  _guidance: "When to update this registry. Enforced at GATE-03 and GATE-SPEC."
+
+  on_adr_created:
+    - "Add entry to adrs with status: Proposed"
+    - "Increment metadata.total_adrs"
+  on_adr_accepted:
+    - "Update status to Accepted with status_date"
+    - "If ADR involves technology selection, add/update entry in technologies"
+    - "Increment metadata.total_technologies"
+  on_adr_superseded:
+    - "Update status to Superseded, record superseded_by"
+    - "Update affected technologies lifecycle_status to Deprecated or Sunset"
+  on_technology_added:
+    - "Add entry to technologies with authorizing_decision, PURL/CPE, and update_policy"
+    - "Verify technology complies with Tier-0 Enterprise Baseline or has approved ADR exception"
+  on_technology_updated:
+    - "Update version_constraint, purl, and audit date"

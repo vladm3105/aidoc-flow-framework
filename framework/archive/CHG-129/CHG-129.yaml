@@ -1,0 +1,107 @@
+# =============================================================================
+#  CHG-129: Governance Doc Conversion Plan — Phase 0 Evidence & Inventory
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Execute Phase 0 of plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md —
+#         inventory all 63 governance Markdown files per fact-block, search
+#         provenance for the governance exemption rationale, collect recorded
+#         agent failures as background. No framework/ normative edit.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-26"
+  framework_version: "0.96.13"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact: null
+  version_action: null
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-129"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: null
+  version_action: null
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-26T00:00:00Z"
+  date_approved: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-129)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-129"
+  title: "Execute Phase 0 inventory for the governance doc conversion plan"
+  status: "Decided"
+  date: "2026-10-26"
+  context: >-
+    The merged plan (plans/GOVERNANCE-DOC-AGENT-FORMAT-PLAN.md, PR #1026)
+    requires Phase 0 before any format change: a per-file, per-fact-block
+    inventory of the 63 Markdown files under framework/governance/, a
+    provenance search for the Principle 2 governance-exemption rationale
+    (Claim 3), and background collection of recorded agent failures. No
+    framework/ normative file is touched, so no version bump and no
+    GATE-SPEC review apply to this vehicle.
+  choice: >-
+    Execute Phase 0 as DIR2C C1 with GATE-CODE entry: run the inventory,
+    record the exemption-rationale search outcome (absent), and store the
+    inventory table in IPLAN-129. Terminate here if the plan's Phase 1
+    gate is not separately authorized.
+  consequences:
+    positive:
+      - Phase 0 deliverable exists as committed evidence for the Phase 1 benchmark.
+      - Exemption-rationale absence is recorded instead of assumed.
+    negative:
+      - None; read-only work plus two new archive files.
+    risks:
+      - None; no normative content changes.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    The conversion plan cannot proceed to its benchmark or pilot without a
+    measured inventory: which governance files are machine-consumed, in
+    which direction authority flows, and what guards check raw comments.
+  scope:
+    - framework/archive/CHG-129/CHG-129.yaml (new, this vehicle).
+    - framework/archive/CHG-129/IPLAN-129.yaml (new, executing IPLAN + inventory table).
+    - Read-only survey of framework/governance/**/*.md (63 files, 1139136 bytes total).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-129/IPLAN-129.yaml"
+  steps:
+    - step: "Author authorizing CHG-129.yaml and IPLAN-129.yaml"
+      phase: "iplan_creation"
+    - step: "Survey all 63 governance Markdown files (bytes, buckets, authority, consumers, inbound refs)"
+      phase: "documentation_sync"
+    - step: "Search provenance for the Principle 2 governance-exemption rationale"
+      phase: "documentation_sync"
+    - step: "Record inventory table in IPLAN-129"
+      phase: "documentation_sync"
+    - step: "Validate chg_lint and conformance agreement tests"
+      phase: "verification"

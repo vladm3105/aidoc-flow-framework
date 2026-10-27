@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 ## Overview
 
@@ -88,7 +88,7 @@ Evaluation and verification execution across Layer 10 is formally governed by th
 This state machine models and executes:
 1. **Strategy Ingestion**: Ingests trigger context and loads `EVAL-{NN}.yaml` targets, test suite commands, and PRD coverage thresholds.
 2. **Parallel Suite Execution**: Runs unit, acceptance, conformance, and security SAST suites concurrently (`type: parallel`, `completionType: allOf`).
-3. **Automated Quality Gate Checks**: Evaluates the aggregated test results and computed Evaluation Score against thresholds (advisory target: >= 90/100).
+3. **Automated Quality Gate Checks**: Evaluates the aggregated test results and verifies Binary Topological Validation (BTV PASS) against thresholds.
 4. **Immutable Receipt Generation**: Emits `EVAL-{NN}-RPT-{NNN}.yaml` report artifacts carrying full pass/fail breakdowns.
 5. **Remediation Triggering**: On failure, routes directly to the bugfix remediation flow (`REVIEW_REMEDIATION_FLOW.md`) to dispatch a C1 CHG + scoped IPLAN.
 
@@ -97,9 +97,23 @@ This state machine models and executes:
 EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
-- `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
+- `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document (standard atomic unit smoke checks)
+- `EVAL-GRAPH-TEMPLATE.yaml` — **Canonical Data Plane (Tier 2)** SDD-GRAPH v2.0 property graph slice template for evaluation strategies and verification DAGs
+- `EVAL-SWF-TEMPLATE.yaml` — **Workflow Subtype (Tier 1)** machine-executable evaluation workflow template adhering to CNCF Serverless Workflow v0.8 (see [`EVAL_WORKFLOW_STANDARD.md`](./EVAL_WORKFLOW_STANDARD.md))
 - `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report (**canon**, CHG-08 #664)
-- `EVAL-00_index.TEMPLATE.md` — master index template
+- `EVAL-00_index.TEMPLATE.yaml` — master index template in canonical 5-Quadrant YAML
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 10 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on evaluation complexity (GD-53):
+
+| Verification Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct single-suite test checks, unit smoke runs | `EVAL-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `EVAL-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-tier test matrix, automated regression gating, or remediation routing | `EVAL-SWF-TEMPLATE.yaml` | `EVAL-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating verification runs and failure sagas. |
+
+Review and remediation of evaluation strategy and report artifacts is governed by [`eval-review-remediation.sw.yaml`](../../governance/workflows/review/eval-review-remediation.sw.yaml) (`REV-10-EVAL`).
 
 > Canon note: `EVAL-RPT-TEMPLATE.yaml` is tombstoned — it lacked §4
 > `test_results` and carried the banned `EVAL-NN.BDD-NN.TC-NN.NN` ID form.
@@ -130,7 +144,7 @@ flowchart LR
 
 ```
 docs/sdd/10_EVAL/
-  EVAL-00_index.md                          # master index
+  EVAL-00_index.yaml                         # master index
   EVAL-01/                                  # owns IPLAN-01
     EVAL-01.yaml                            # active strategy document
     reports/
@@ -233,10 +247,12 @@ The monolithic strategy documents (`EVAL-01_functional_strategy.yaml`,
 `EVAL-02_unit_smoke_strategy.yaml`) were deprecated as of v2.0 and have since
 been removed. Test strategy is per-IPLAN in `EVAL-{NN}/EVAL-{NN}.yaml`.
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |------|---------|
-| `EVAL-TEMPLATE.yaml` | Per-IPLAN evaluation strategy template |
+| `EVAL-TEMPLATE.yaml` | **Default** — Per-IPLAN evaluation strategy template |
+| `EVAL-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding evaluation test cases, reports, and coverage evidence. Source of truth in git. |
+| `EVAL-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) orchestrating multi-cycle verification runs, findings remediation, and gate verdicts. |
 | `EVAL-REPORT-TEMPLATE.yaml` | Self-contained evaluation report template |
-| `EVAL-00_index.TEMPLATE.md` | Master index template |
+| `EVAL-00_index.TEMPLATE.yaml` | Master index template in canonical 5-Quadrant YAML |

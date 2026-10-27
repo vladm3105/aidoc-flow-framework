@@ -1,9 +1,20 @@
 # =============================================================================
-#  EARS-TEMPLATE.yaml — EARS Requirements (SDD)
+#  EARS-TEMPLATE.yaml — EARS Requirements (SDD Layer 03)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable EARS template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable EARS template for linear requirement statements
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (EARS-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-system requirements, linear feature sets, or tabular EARS clauses
+#    - Specifying formal requirement statements where state machine orchestration is unnecessary overhead
+#  Use the primary template (EARS-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling complex, multi-system requirement topologies, cross-service dependencies, or DAGs
+#    - Orchestrating automated BDD-readiness evaluation (Binary Topological Validation switch gates per CHG-97)
+#    - Incorporating requirement clarification callbacks, external subject-matter expert events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream BDD/ADR/SPEC artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators
@@ -40,18 +51,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      BDD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-      EARS parity check: requires trigger clause (WHEN|IF|WHILE) and
-      actor clause (THE SYSTEM SHALL) in document content.
-
-      BDD-Ready scoring criteria:
-        Requirements clarity (40%): EARS syntax compliance, atomicity, quantifiability
-        Testability (35%): BDD translation possible, observable verification, edge cases
-        Quality attribute completeness (15%): quantified targets (latency percentiles OR a concrete non-latency numeric bound + unit), security, reliability targets
-        Strategic alignment (10%): business traceability, implementation feasibility
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to a verified PRD document/element (zero dangling edges).
+        2. Strict Oracle Coverage: Every EARS requirement maps to at least one downstream BDD behavioral graph or scenario.
+        3. EARS Syntactic Invariant: Every statement requires trigger clause (WHEN|IF|WHILE) and actor clause (THE SYSTEM SHALL).
+      Heuristic percentage readiness scores (BDD-Ready >=90%) are retired in favor of binary topological validation.
 
   c4_level:
     _guidance: |
@@ -138,7 +143,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    BDD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    BDD-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     Source Document: link to upstream PRD using hash-based IDs.
   version: "1.0"
   status: Draft  # Draft | In Review | Approved
@@ -147,7 +152,7 @@ document_control:
   author: "[Requirements Engineer]"
   priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
   source_document: "@prd: PRD.NN.09.xxxx"
-  bdd_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  bdd_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -337,6 +342,9 @@ quality_attributes:
     Use @threshold: tags for values that may change:
       @threshold: PRD.NN.perf.api.p95
 
+    Technology Selection Impact: Quality attribute metrics directly define the evaluation
+    criteria and MCDA utility scoring weights for candidate technology selection at Layer 05 ADR.
+
   performance:
     - id: "EARS.NN.04.xxxx"
       statement: "THE [component] SHALL complete [operation]"
@@ -410,10 +418,10 @@ traceability:
         value: "[NN]ms"
 
   health_score:
-    bdd_ready: "[X]%"
+    bdd_ready: "[PASS | FAIL]"
     prd_coverage: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
 # =============================================================================
 # Glossary
@@ -429,7 +437,9 @@ glossary:
     - term: BDD
       definition: "Behavior-Driven Development"
     - term: BDD-Ready
-      definition: "Score measuring EARS maturity for BDD transition (>=90%)"
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream BDD realization without dangling citations or uncovered requirements
     - term: "[Domain term]"
       definition: "[Definition]"
 

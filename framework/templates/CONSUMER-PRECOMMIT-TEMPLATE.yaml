@@ -1,0 +1,16 @@
+# .pre-commit-config.yaml — minimal consumer gate (CHG-136).
+#
+# Scaffolded by framework/scripts/install.sh at project root (--no-precommit
+# to skip). Setup: pip install pre-commit && pre-commit install
+#
+# Local-only hooks: no network, no extra runtimes. The CHG gate is warn-only
+# (advises, never blocks); extend with the canon's full config only if the
+# project adopts the matching toolchains (ruff, yamllint, secret scan).
+repos:
+  - repo: local
+    hooks:
+      - id: chg-gate-check
+        name: CHG gate (change control, warn-only)
+        entry: bash .aidoc/framework/hooks/ch-gate-check.sh
+        language: system
+        pass_filenames: false

@@ -1,0 +1,102 @@
+# =============================================================================
+#  MODULE-GRAPH-TEMPLATE.yaml — Subsystem Container Architecture Graph Slice
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Governs: Tier 2 Subsystem Container boundaries, Triple-Lens modeling,
+#           data classification, process choreography, and component traceability
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "MODULE-NN_[module_slug]"
+
+metadata:
+  author: "[Engineer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "0.96.23"
+  description: "[Concise summary of subsystem role, boundaries, and architectural scope]"
+  c4_level: "c4-l2"
+  seed_ref: "SEED-domain"
+
+nodes:
+  # Upstream Context Anchor
+  - id: "SEED-domain"
+    type: "seed_intent"
+    title: "[Seed Domain Title]"
+    statement: "[Strategic seed domain scope, business intent, and governance boundary]"
+
+  # Subsystem Container (Core Subject)
+  - id: "MODULE-NN"
+    type: "system_container"
+    title: "[Module / Subsystem Name]"
+    statement: "[Precise statement of subsystem role, boundaries, and responsibilities]"
+    description: |
+      Comprehensive architectural narrative detailing container responsibilities,
+      technology selections, communication protocols, execution boundaries,
+      and failure mitigation policies.
+    properties:
+      c4_level: "c4-l2"
+      container_archetype: "api_service"  # api_service | worker | data_store | spa | gateway | library
+      approved_stack:
+        runtime: "Python 3.11+ / Node.js 20+ / Go 1.22+"
+        framework: "FastAPI / Express / Gin"
+        data_storage: "PostgreSQL / Redis"
+        observability: "OpenTelemetry / Prometheus"
+      runtime_platform: "container / serverless / k8s"
+      candidate_stack_status: "Candidate baseline identified; formal binding ratified at downstream Layer 05 ADR"
+      subsystem_invariants:
+        - id: "INV-01"
+          statement: "[Subsystem invariant statement: e.g. All mutating operations must carry an idempotency key]"
+          enforcement: "Schema validation / DB constraint / middleware"
+      trust_boundary: "Internal Subnet / DMZ / Public"
+      data_classification: "CONFIDENTIAL / INTERNAL / PUBLIC"
+      data_protection_matrix:
+        - entity: "User Credentials"
+          classification: "RESTRICTED"
+          storage_location: "Encrypted DB"
+          in_transit: "TLS 1.3"
+          at_rest: "AES-256-GCM"
+          retention_policy: "Account lifetime + 30 days"
+        - entity: "Audit Event Logs"
+          classification: "INTERNAL"
+          storage_location: "Append-only Object Storage"
+          in_transit: "mTLS"
+          at_rest: "KMS-managed SSE"
+          retention_policy: "7 years immutable"
+      choreography:
+        interactions:
+          - target: "MODULE-MM"
+            protocol: "gRPC / HTTPS / AMQP"
+            synchronicity: "sync / async"
+            payload: "RequestPayload"
+            purpose: "Data retrieval / command dispatch"
+        failure_branches:
+          - condition: "Downstream service timeout"
+            action: "Circuit breaker trips, fallback cache returned"
+          - condition: "Payload schema validation error"
+            action: "400 Bad Request emitted, logged to DLQ"
+
+  # Downstream Component Contract Anchor
+  - id: "SPEC.06.01.xxxx"
+    type: "component_contract"
+    title: "[Downstream Component Contract Title]"
+    statement: "[Public interface, wire-level protocol, and data contract specification]"
+
+edges:
+  # Seed Intent decomposes to Subsystem Container
+  - from: "SEED-domain"
+    to: "MODULE-NN"
+    relation: "decomposes_to"
+    notes: "Decomposes seed intent into subsystem container"
+    description: "Connects business seed boundary to concrete technical subsystem container."
+    rationale: "Fulfills SDD Tier 1 to Tier 2 decomposition invariant."
+
+  # Subsystem Container decomposes to Component Contract
+  - from: "MODULE-NN"
+    to: "SPEC.06.01.xxxx"
+    relation: "decomposes_to"
+    notes: "Decomposes subsystem container into component contract"
+    description: "Binds module container boundary to public wire-level component specification."
+    rationale: "Fulfills SDD Tier 2 to Tier 3 decomposition invariant."

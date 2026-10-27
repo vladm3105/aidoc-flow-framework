@@ -1,0 +1,134 @@
+# =============================================================================
+#  CHG-98: Minimal Context Slicing Engine (sdd_doc_lint/slice.py)
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Tooling / Slicing Engine)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issue #966
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.16"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: none
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-98"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: none
+  version_action: none
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): implement TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN
+      Phase 2 Minimal Context Slicing Engine (#962, #966)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-98)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-98"
+  title: "Implement Minimal Context Slicing Engine in sdd_doc_lint"
+  status: "Ratified"
+  context: |
+    Autonomous agents in multi-tier SDD workflows require access to requirement and design
+    contracts (BRD, PRD, EARS, BDD, ADR, SPEC, TDD). Without topological slicing tools,
+    agents ingest entire multi-thousand-line documents or massive workspace bundles to locate
+    upstream rationale or downstream test criteria. This results in context window saturation,
+    elevated token inference costs, and degraded reasoning accuracy.
+  choice: |
+    1. Implement a lightweight, deterministic slicing engine in sdd_doc_lint (sdd_doc_lint/slice.py).
+    2. Provide a flexible CLI interface:
+       python3 -m sdd_doc_lint.slice --target <DOC-ID or ELEM-ID> [--direction upstream|downstream|both] [--depth N] [--format yaml|markdown|json] [--docs-root <path>]
+    3. Leverage trace_graph.py primitives to locate documents and parse @-tag references.
+    4. Implement cycle-safe BFS/DFS topological extraction that isolates the causal chain and
+       prunes unrelated sibling nodes.
+    5. Support JSON, YAML, and Markdown output formats for programmatic tooling and agent prompt injection.
+    6. Author unit tests in tests/test_slice.py verifying traversal correctness, formatting, and edge cases.
+  consequences: |
+    - Coding agents can inject targeted, concise context subgraphs rather than entire documents.
+    - Drastically lowers token overhead and eliminates hallucinated contracts during implementation.
+    - Standardizes DAG traversal tooling across the aidoc-flow framework.
+  alternatives_considered:
+    - option: "Ad-hoc manual file grep by agents"
+      rationale_rejected: >-
+        Agents doing grep miss transitive upstream contracts or ingest excessive surrounding text,
+        failing to isolate exact topological dependencies.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Implement Minimal Context Slicing Engine in sdd_doc_lint"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Implement Phase 2 of TOPOLOGICAL-VALIDATION-AND-SLICING-PLAN: add sdd_doc_lint/slice.py
+    and unit test coverage in tests/test_slice.py to enable deterministic topological context slicing.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Add minimal context slicing engine to sdd_doc_lint"
+  components_affected:
+    - "sdd_doc_lint/slice.py"
+    - "tests/test_slice.py"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-98/IPLAN-98.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-98.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-98/IPLAN-98.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-98.yaml"
+    - "unittest passing on tests/test_slice.py"
+    - "spec_gate.py passing"
+    - "pre-push check and conformance suite green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

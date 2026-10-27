@@ -105,20 +105,22 @@ class InstanceFormatSingleSource(unittest.TestCase):
     def test_index_exemption_is_mention_level_not_file_level(self):
         """Mutation guard for exemption 1.
 
-        Removing it must surface the sanctioned index mentions (13 as of
-        CLEANUP-001: seven in index files plus six outside — the count grows
-        with the layer set, so re-measure deliberately rather than copying).
-        A file-level exemption would catch only those inside index files and
-        false-positive on the rest — the defect this test exists to prevent.
+        Removing it must surface the sanctioned index mentions (4 as of
+        CHG-88: zero in index files plus four outside — all 10 layer index
+        templates modernized to canonical YAML per GD-75; the count grows or
+        shrinks with layer index formats, so re-measure deliberately rather
+        than copying). A file-level exemption would catch only those inside
+        index files and false-positive on the rest — the defect this test
+        exists to prevent.
         """
         without = scan_violations(exempt_index=False)
         baseline = scan_violations()
         surfaced = len(without) - len(baseline)
         self.assertEqual(
-            13,
+            4,
             surfaced,
-            "removing the index exemption should surface exactly 9 sanctioned index mentions "
-            f"(7 inside index files + 2 outside); got {surfaced}. A result of 7 means the "
+            "removing the index exemption should surface exactly 4 sanctioned index mentions "
+            f"(0 inside index files + 4 outside); got {surfaced}. A result of 0 means the "
             "exemption was implemented at the file level.",
         )
 

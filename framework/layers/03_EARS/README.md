@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 ## Overview
 
@@ -38,9 +38,20 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `EARS-TEMPLATE.yaml` | **Default Declarative** — full template with embedded authoring guidance for single-system requirements. Self-documenting for AI agents. |
-| `EARS-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
+| `EARS-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding formal EARS requirements statements and trigger dependencies. Source of truth in git. |
+| `EARS-SWF-TEMPLATE.yaml` | **Workflow Execution Subtype (Tier 1)** — Hybrid Envelope Architecture housing an embedded CNCF Serverless Workflow state machine for complex, multi-system requirement topologies, dependency DAGs, and BDD-readiness verification. |
 | `EARS_WORKFLOW_STANDARD.md` | **Normative Standard** — formal specification defining EARS primitive to CNCF state mappings, DAG integrity rules, and invalidation compensation. |
-| `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project. |
+| `EARS-00_index.TEMPLATE.yaml` | EARS registry template — tracks planned and active EARS documents and statement patterns per project in canonical 5-Quadrant YAML. |
+
+### Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 03 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on requirement complexity (GD-59):
+
+| Requirement Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Direct component requirements, linear clauses | `EARS-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `EARS-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-system dependency DAGs, automated parsing, or invalidation sagas | `EARS-SWF-TEMPLATE.yaml` | `EARS-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating the authoring and verification lifecycle. |
 
 ## Workflow Integration & CNCF Serverless Workflow Standard
 
@@ -49,7 +60,7 @@ to orchestrate requirement verification graphs:
 - **Dependency DAGs**: Parallel resolution of inter-requirement dependencies (`@depends:`).
 - **Syntax Parsing**: Automated verification of the 5 EARS patterns (WHEN, WHILE, WHERE, IF, Ubiquitous) and mandatory response clauses (`THE [system] SHALL ... WITHIN ...`).
 - **Conflict Analysis**: Deterministic scanning for mutually exclusive states and conflicting operational triggers.
-- **BDD-Readiness Gating**: Formal evaluation against the >=90/100 readiness criteria before transition to Layer 04 (BDD).
+- **BDD-Readiness Gating**: Binary Topological Validation (BTV PASS per CHG-97) evaluation before transition to Layer 04 (BDD).
 - **Invalidation Sagas**: Automated compensation (`compensatedBy: InvalidateDownstreamArtifacts`) revoking downstream draft artifacts when requirements are rejected.
 
 See `EARS_WORKFLOW_STANDARD.md` for complete specification rules and graph invariants.

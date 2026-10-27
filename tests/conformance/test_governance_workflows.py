@@ -21,6 +21,8 @@ EXPECTED_WORKFLOWS = [
     "eval-verification-run.sw.yaml",
     "review-remediation-flow.sw.yaml",
     "decision-ratification-flow.sw.yaml",
+    "decision-migration-flow.sw.yaml",
+    "iplan-escalation-flow.sw.yaml",
     "bdd-acceptance-run.sw.yaml",
     "tdd-test-execution.sw.yaml",
     "spec-choreography-contract.sw.yaml",
@@ -28,6 +30,13 @@ EXPECTED_WORKFLOWS = [
     "ears-requirements-validation.sw.yaml",
     "prd-feature-decomposition.sw.yaml",
     "brd-business-validation.sw.yaml",
+    "iplan-execution.sw.yaml",
+    "sdd-layer-orchestration.sw.yaml",
+    "multi-repo-contract-sync.sw.yaml",
+    "cross-project-ci-dispatch.sw.yaml",
+    "context-slicing-generation.sw.yaml",
+    "stack-policy-validation.sw.yaml",
+    "support-ticket-escalation.sw.yaml",
 ]
 
 EXPECTED_REVIEW_WORKFLOWS = [
@@ -40,6 +49,7 @@ EXPECTED_REVIEW_WORKFLOWS = [
     "tdd-review-remediation.sw.yaml",
     "iplan-review-remediation.sw.yaml",
     "chg-review-remediation.sw.yaml",
+    "eval-review-remediation.sw.yaml",
 ]
 
 VALID_STATE_TYPES = {
@@ -290,6 +300,40 @@ class GovernanceWorkflowsTest(unittest.TestCase):
         self.assertIn("GD-59", decisions)
         self.assertIn("GD-60", decisions)
         self.assertIn("CNCF Serverless Workflow standard", decisions)
+
+    def test_no_orphan_workflows(self):
+        """Assert that every .sw.yaml file under workflows/ is registered in EXPECTED_*."""
+        all_actual = {
+            p.relative_to(WORKFLOWS_DIR).as_posix() for p in WORKFLOWS_DIR.glob("**/*.sw.yaml")
+        }
+        all_expected = set(EXPECTED_WORKFLOWS) | {f"review/{w}" for w in EXPECTED_REVIEW_WORKFLOWS}
+        self.assertEqual(
+            all_actual,
+            all_expected,
+            f"Orphan or missing workflows detected. Actual: {all_actual}, Expected: {all_expected}",
+        )
+
+    def test_no_residual_review_score_in_workflows(self):
+        """Assert zero residual scalar review_score conditions remain across all governance workflows and layer SWF templates (SDD-0044)."""
+        forbidden_patterns = [
+            ".review_score >= 90",
+            ".readinessScore >= 90",
+            "threshold_min_score: 90",
+            "spec_readiness_score: 95",
+        ]
+
+        all_wf_files = list(WORKFLOWS_DIR.glob("**/*.sw.yaml"))
+        layer_swf_files = list((FRAMEWORK / "layers").glob("*/*-SWF-TEMPLATE.yaml"))
+        all_files = all_wf_files + layer_swf_files
+
+        for file_path in all_files:
+            text = file_path.read_text(encoding="utf-8")
+            for pattern in forbidden_patterns:
+                self.assertNotIn(
+                    pattern,
+                    text,
+                    f"Forbidden scalar scoring pattern '{pattern}' found in {file_path.relative_to(FRAMEWORK)}",
+                )
 
 
 if __name__ == "__main__":

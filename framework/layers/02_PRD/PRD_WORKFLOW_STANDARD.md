@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 | Authority | Decision GD-60 (framework/governance/DECISIONS.md) |
 
 ---
@@ -47,35 +47,40 @@ The table below defines the formal mapping of PRD product feature decomposition 
 
 ---
 
-## 3. Dual-Template Architecture & Selection Matrix
+## 3. Two-Graph & Dual-Template Architecture Selection Matrix
 
-Layer 02 provides two canonical authoring templates. Authors and autonomous AI agents MUST select the template matching the structural complexity of the product initiative:
+Layer 02 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable process workflow with an atomic content graph to generate and ratify product specifications:
 
 ```text
-                              ┌───────────────────────────────────┐
-                              │  Does the product initiative span │
-                              │  multiple C4 containers, feature  │
-                              │  DAGs, or require RICE scoring?   │
-                              └─────────────────┬─────────────────┘
-                                                │
-                                ┌───────────────┴───────────────┐
-                                │                               │
-                                ▼ YES                           ▼ NO
-                ┌──────────────────────────────┐ ┌──────────────────────────────┐
-                │   PRD-SWF-TEMPLATE.yaml      │ │       PRD-TEMPLATE.yaml      │
-                │   (Hybrid Envelope Subtype)  │ │      (Standard Declarative)  │
-                │                              │ │                              │
-                │  - Embedded CNCF v0.8 Graph  │ │  - Declarative YAML tables   │
-                │  - Parallel Container Decomp │ │  - Standard feature backlog  │
-                │  - Automated RICE Scoring    │ │  - Single-container systems │
-                │  - Threshold Validation Gate │ │  - Monolithic initiatives    │
-                │  - Invalidation Compensation │ │                              │
-                └──────────────────────────────┘ └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 02 PRD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       PRD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (PRD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to decompose, prioritize & ratify PRD    │ • Content of WHAT features exist   │
+│ • Parallel container decomposition (C4 Level 2)        │ • Product features & user stories  │
+│ • Automated RICE scoring & threshold validation        │ • Quality thresholds (@threshold:) │
+│ • Stakeholder scope negotiation review callbacks       │ • Relational links (realizes, etc) │
+│ • Requirement invalidation saga (compensatedBy)        │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates feature decomposition & scoring   │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & container boundaries    │
+                    │ • Observability Adapter projects graph into PRD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
 ```
 
-### Selection Rules:
-1. **Use `PRD-TEMPLATE.yaml`** when the initiative targets a single container, isolated component, or monolithic service with direct, linear requirements.
-2. **Use `PRD-SWF-TEMPLATE.yaml`** when the initiative spans multiple independently deployable containers, establishes cross-container dependencies, requires multi-criteria feature prioritization (RICE), or enforces automated acceptance threshold validation.
+### Dual-Template Selection Rules:
+Authors and autonomous AI agents select the template matching the structural complexity of the product initiative:
+1. **Use Two-Graph Generation (`PRD-SWF-TEMPLATE.yaml` [Hybrid Envelope Subtype] + `PRD-GRAPH-TEMPLATE.yaml` [Property Graph])** when the initiative spans multiple independently deployable containers, establishes cross-container dependencies, requires multi-criteria feature prioritization (RICE), or enforces automated acceptance threshold validation. The Process DAG guides decomposition, populates the Content Graph, executes BTV verification, and projects the final PRD specification.
+2. **Use Companion Declarative (`PRD-TEMPLATE.yaml`)** directly when the initiative targets a single container, isolated component, or monolithic service with direct, linear requirements without branching or automated compensations.
 
 ---
 
@@ -103,6 +108,9 @@ All PRD workflow definitions (whether embedded in `PRD-SWF-TEMPLATE.yaml` or sta
 - Any state machine validating product initiatives MUST bind rejection states to an automated compensation action (`compensatedBy: InvalidateDownstreamArtifacts`).
 - The compensation action MUST revoke provisional downstream EARS requirements, BDD scenarios, ADRs, or SPEC interactions derived from the rejected features.
 
+### Invariant P-WF06: Approved Stack Candidate Elaboration
+- In Section 12/14 (`adr_topic_elaboration`), technical options proposed for evaluation must map to approved platform technology stack categories ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)), preparing concrete candidate inputs for Layer 05 ADR selection.
+
 ---
 
 ## 5. Zero-Runtime LangGraph Execution Model
@@ -118,3 +126,35 @@ When an autonomous AI agent or execution harness executes a PRD workflow via Lan
    - `switch` states evaluate JSONPath/CEL expressions against accumulated product metadata.
    - `callback` states pause the LangGraph thread using checkpointers until stakeholder scope adjustment events are posted.
    - `compensatedBy` states execute rollback handlers when execution paths terminate in rejection.
+3. **Dual-Graph Pipeline Coordination**:
+   - **Step 1 (Process DAG Orchestration)**: LangGraph drives the authoring agent through the feature decomposition workflow.
+   - **Step 2 (Content Graph Mutation)**: As operations complete, the agent instantiates and updates nodes (`product_feature`, `user_story`, `quality_threshold`) and edges (`realizes`, `verifies`, `depends_on`) in `PRD-GRAPH-TEMPLATE.yaml`.
+   - **Step 3 (Binary Topological Validation - BTV)**: The state machine executes BTV asserting container acyclicity, trace closure, and threshold validity.
+   - **Step 4 (Document Generation / Read Projection)**: The Observability Adapter compiles the validated property graph into the canonical human-readable document (`PRD-TEMPLATE.yaml` structure).
+
+---
+
+## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between artifact authoring and review crew evaluation, Layer 02 adheres to the closed dual-flow loop:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "product_owner"` and `author_playbook: "framework/playbooks/02_PRD/product_owner.md"`.
+   - Autonomous drafting agents derive their authoring constraints and product decomposition priorities directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final ratification (`RatifyProductSpecification`), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`prd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.
+
+---
+
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 02 PRD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Product owner authors feature decomposition, user stories, and performance thresholds.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `product_manager`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-01` exit criteria (`GATE-01_BUSINESS_PRODUCT.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `PrdNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `PrdClosedAndBaselinedEvent` (`org.aidoc.sdd.layer02.prd.closed`) with payload `documentId`, `features`, `@threshold:`, authorizing Layer 03 (EARS) start.

@@ -1,14 +1,21 @@
+---
+doc_id: GOV-TAG-SYNTAX
+bucket: machine-consumed-candidate
+authority: doc-leads
+consumers: [authoring, audit, traceability]
+---
+
 # `@`-Tag Syntax Reference
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Per-layer punctuation, cardinality, and worked examples for the `@<layer>:`
 trace tags. This is the **form** reference; the normative rules live elsewhere
@@ -20,7 +27,7 @@ and are cross-referenced, not duplicated:
 - **Chain order, reverse-lookup, necessary-upstream contract** — owned by
   [`TRACEABILITY.md`](TRACEABILITY.md).
 
-## Tag forms
+## Tag forms {#sec-tag-forms}
 
 A trace tag is `@<layer>: <id>` (one space after the colon). **BDD is the
 exception** — a BDD doc carries its own upstream `@ears` trace as a structured
@@ -35,7 +42,7 @@ downstream layers citing BDD scenarios via `@bdd:`. The `<id>` is:
 
 `REFGRAN01` flags a document-level tag (`TYPE-NN`) to an element-declaring target.
 
-## Cardinality — pipe-delimited multi-tags
+## Cardinality — pipe-delimited multi-tags {#sec-cardinality-pipe-delimited-multi-tags}
 
 A unit that traces to **multiple** upstream elements pipe-delimits repeated tags
 on one logical line (the value capture terminates at `|`, so each is a distinct
@@ -52,7 +59,7 @@ computed union of its scenarios, not a written tag; see `BDD-TEMPLATE.yaml`.) A
 genuine whole-document dependency (no specific element) is stated in **prose**,
 never a document-level trace tag.
 
-## Carve-outs — NOT trace citations (document-level is correct)
+## Carve-outs — NOT trace citations (document-level is correct) {#sec-carve-outs-not-trace-citations-document-level-is-correct}
 
 These use the document form and are **exempt** from `REFGRAN01`:
 
@@ -62,7 +69,7 @@ These use the document form and are **exempt** from `REFGRAN01`:
   navigation (`@tdd: TDD-01` as a "Downstream" hint on a SPEC): informational,
   points at a not-yet-or-elsewhere-realized layer.
 
-## Provenance tag — `@chg: CHG-NN` (change back-reference)
+## Provenance tag — `@chg: CHG-NN` (change back-reference) {#sec-provenance-tag-chg-chg-nn-change-back-reference}
 
 `@chg:` is **not a trace tag**: it carries no lineage (CHG is a governance
 overlay, not one of the 8 registry layers, and appears in no layer's
@@ -89,7 +96,7 @@ a modified artifact to the change record that authorized the edit:
   cites. Pipe-delimited cardinality (above) applies unchanged when one
   artifact was touched by several CHGs.
 
-## Per-layer necessary-upstream tags
+## Per-layer necessary-upstream tags {#sec-per-layer-necessary-upstream-tags}
 
 Each layer's `required_tags` (its direct upstream — see `TRACEABILITY.md`) use
 the element form when the target is element-declaring:

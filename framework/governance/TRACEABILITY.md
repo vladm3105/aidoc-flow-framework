@@ -1,22 +1,29 @@
+---
+doc_id: GOV-TRACEABILITY
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Traceability — SDD
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
-## Traceability Chain
+## Traceability Chain {#sec-traceability-chain}
 
 ```
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code → EVAL (L10) → Verified
 ```
 
-## Necessary-upstream tagging
+## Necessary-upstream tagging {#sec-necessary-upstream-tagging}
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
@@ -58,11 +65,11 @@ the forward matrix and the backward walker never disagree. The matrix is
 
 > **Cross-layer cardinality (CLEANUP-PR-F item 18):** doc numbers are
 > per-layer sequential and INDEPENDENT across layers. One BRD MAY drive
-> multiple PRDs; one PRD MAY cite multiple BRDs. The url-shortener
-> example's 1:1 numbering is coincidence, not contract. See
+> multiple PRDs; one PRD MAY cite multiple BRDs. Historical acceptance
+> fixtures' 1:1 numbering was coincidence, not contract. See
 > `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
 
-## Coverage gates (`sdd_doc_lint`)
+## Coverage gates (`sdd_doc_lint`) {#sec-coverage-gates-sdd_doc_lint}
 
 The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVERAGE-001):
 
@@ -90,7 +97,7 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
 `reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
 realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
 
-## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
+## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory) {#sec-element-id-content-drift-check-iddrift01-opt-in-advisory}
 
 Under Model 2 (D-0061 — see the D-series annex in `governance/DECISIONS.md`),
 an element ID's 4-hex hash **is** the mint-time content fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
@@ -110,7 +117,7 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
   extractor, add `rehash --fix`, reconcile the corpus, and may promote the advisory
   to a gate. See `plans/PROVISIONAL-IDS-002-PLAN.md`.
 
-## Upstream/Downstream Validation
+## Upstream/Downstream Validation {#sec-upstreamdownstream-validation}
 
 | Layer | Required Upstream Tags | Validated Downstream |
 |-------|----------------------|---------------------|
@@ -124,29 +131,29 @@ ID was minted, or a **canonical leak** (the ID was never the real hash).
 | IPLAN | @spec, @tdd | EVAL |
 | EVAL | @ears, @bdd, @tdd, @iplan | Code |
 
-## Layer Readiness Gates
+## Binary Topological Validation (BTV) {#sec-binary-topological-validation-btv}
 
-Each layer must achieve a readiness score >=90/100 before generating its immediate downstream artifact:
+Per CHG-97, qualitative heuristic readiness scores (`>=90%`) are retired in favor of strict, deterministic **Binary Topological Validation** (`PASS` / `FAIL`) verified by `sdd_doc_lint`:
 
-| Gate | Score | Criteria |
-|------|-------|----------|
-| PRD-Ready | >=90 | BRD completeness in business objectives, requirements, scope |
-| EARS-Ready | >=90 | PRD completeness in features, user stories, domain clarity |
-| BDD-Ready | >=90 | EARS syntax compliance, atomicity, testability, spec_trace links |
-| ADR-Ready | >=90 | BDD scenario coverage, scenario (YAML) quality, edge cases |
-| SPEC-Ready | >=90 | ADR decision completeness, alternatives, consequences |
-| TDD-Ready | >=90 | SPEC interface clarity, data model, behavior contracts |
-| IPLAN-Ready | >=90 | TDD test case coverage, threshold definitions, execution order |
-| EXEC-Ready | >=90 | IPLAN file manifest completeness, execution commands, session handoff |
+| Gate | Type | Deterministic Verification Criteria |
+|------|------|-------------------------------------|
+| **PRD-Ready** | Binary | 100% BRD functional requirements (@brd) resolved and mapped to PRD features (COV01). |
+| **EARS-Ready** | Binary | 100% PRD features mapped to formal EARS syntactic requirements with unbroken lineage. |
+| **BDD-Ready** | Binary | 100% EARS requirements realized by BDD behavioral state graphs or atomic scenarios (COV02). |
+| **ADR-Ready** | Binary | 100% architectural trade-offs cite upstream @ears/@bdd with verified decision rationale. |
+| **SPEC-Ready** | Binary | 100% component interfaces realize upstream BDD/ADR requirements without dangling links. |
+| **TDD-Ready** | Binary | 100% BDD scenarios paired to failing test fixtures (ACC01) prior to code generation. |
+| **IPLAN-Ready** | Binary | 100% SPEC/TDD components mapped to ordered test-first file creation manifests. |
+| **EXEC-Ready** | Binary | IPLAN execution manifest verified, file manifest complete, and session handoff verified. |
 
-## Cross-Document Dependencies & Governance Tags
+## Cross-Document Dependencies & Governance Tags {#sec-cross-document-dependencies-governance-tags}
 
 - `@depends: TYPE-NN` — Hard prerequisite. Downstream cannot exist without upstream.
 - `@discoverability: TYPE-NN` — Related document for AI search context.
 - `@chg: CHG-NN` — Provenance back-reference to authorizing change record.
 - `@threshold: TYPE.NN.key` — Performance or quality threshold reference.
 
-## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001
+## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001 {#sec-reuse-satisfied-by-reference-reuse-manifest-001}
 
 A brownfield project may **reuse an existing upstream artifact** instead of
 re-authoring it. A reused doc declares, in frontmatter:

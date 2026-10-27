@@ -1,0 +1,76 @@
+# =============================================================================
+#  IPLAN-87: Implementation Plan for ADR-00_index Modernization (CHG-87)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  document_type: "iplan-document"
+  iplan_id: "IPLAN-87"
+  chg_ref: "CHG-87"
+  status: "Completed"
+  author: "Framework Maintainer"
+  date_created: "2026-10-11T00:00:00Z"
+  target_version: "0.91.6"
+  layer: 8
+
+scope:
+  description: "Modernize ADR-00_index to YAML specification with embedded Technology Stack & Security Registry"
+  authorizing_decision: "DEC-CHG-87"
+  governance_gate: "GATE-SPEC"
+
+file_manifest:
+  - path: "framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml"
+    action: "create"
+    purpose: "Canonical YAML index template for Layer 05 containing adrs and technologies registries"
+  - path: "framework/layers/05_ADR/ADR-00_index.TEMPLATE.md"
+    action: "delete"
+    purpose: "Retire legacy Markdown index template to maintain single source of truth"
+  - path: "framework/layers/05_ADR/README.md"
+    action: "modify"
+    purpose: "Update index template reference to ADR-00_index.TEMPLATE.yaml"
+  - path: "framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md"
+    action: "modify"
+    purpose: "Add normative requirements for registering accepted ADR technologies in ADR-00_index.yaml"
+  - path: "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    action: "modify"
+    purpose: "Reference ADR-00_index.yaml as the canonical project-level technology stack registry"
+  - path: "framework/governance/DECISIONS.md"
+    action: "modify"
+    purpose: "Ratify Decision GD-74 (DEC-CHG-87)"
+  - path: "framework/VERSION"
+    action: "modify"
+    purpose: "Bump version to 0.91.6"
+  - path: "framework/CHANGELOG.md"
+    action: "modify"
+    purpose: "Record 0.91.6 release entry"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    purpose: "Add 0.91.5 to OLD_VERSIONS for fanout sweep"
+  - path: "README.md"
+    action: "modify"
+    purpose: "Update tracked framework spec version to 0.91.6 and cite Decision GD-74 / CHG-87"
+  - path: "tests/conformance/test_instance_format_ssot.py"
+    action: "modify"
+    purpose: "Update sanctioned index mention count to 12 reflecting Layer 05 YAML index template"
+
+execution_steps:
+  - step: 1
+    description: "Create ADR-00_index.TEMPLATE.yaml and delete ADR-00_index.TEMPLATE.md"
+    status: "Completed"
+  - step: 2
+    description: "Update documentation in Layer 05 README, ADR_WORKFLOW_STANDARD.md, and TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    status: "Completed"
+  - step: 3
+    description: "Ratify Decision GD-74 in DECISIONS.md and bump version to 0.91.6"
+    status: "Completed"
+  - step: 4
+    description: "Run verification battery (chg_lint, test_index_template_lint, full test suites)"
+    status: "Completed"
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-87/CHG-87.yaml"
+    - "pytest tests/conformance/test_index_template_lint.py"
+    - "python3 -m sdd_doc_lint.swf_lint framework/"
+    - "pytest tests/conformance/"
+    - "pytest tests/acceptance/"

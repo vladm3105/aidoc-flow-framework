@@ -1,0 +1,134 @@
+# =============================================================================
+#  CHG-87: Modernization of ADR-00_index to YAML with Embedded Technology Registry
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance Batch)
+#  Pre-cleared: User instruction in session (2026-10-11)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-11"
+  framework_version: "0.91.6"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-87"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-11T00:00:00Z"
+  date_approved: "2026-10-11T00:00:00Z"
+  date_implemented: "2026-10-11T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-11T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: Modernize ADR-00_index to YAML (ADR-00_index.TEMPLATE.yaml). Let's keep all these technologies into one index file."
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-87)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-87"
+  title: "Modernization of Layer 05 ADR Index to YAML with Embedded Project Technology Stack & Security Registry"
+  status: "Accepted"
+  context: |
+    Under Decision GD-73, Layer 05 (05_ADR) was ratified as the formal Technology Selection Gate where abstract
+    behavioral requirements meet concrete technological implementations. However, projects lacked a canonical,
+    agent-readable registry recording all active technologies used in the project for automated security monitoring
+    (SCA, CVE scanning, SBOM) and automated tool updates (Dependabot, Renovate). Maintaining duplicate human-readable
+    Markdown tables and machine-readable manifests causes documentation drift. Modernizing ADR-00_index to a single,
+    canonical YAML template (ADR-00_index.TEMPLATE.yaml) mirrors the pattern established in Layer 08
+    (IPLAN-00_index.TEMPLATE.yaml) and provides an unambiguous source of truth from which AI agents can generate any
+    human report on-demand.
+  choice: |
+    1. Retire ADR-00_index.TEMPLATE.md and author ADR-00_index.TEMPLATE.yaml as the canonical Layer 05 index specification.
+    2. Embed the Project Technology Stack & Security Monitoring Registry within ADR-00_index.TEMPLATE.yaml with PURL, CPE,
+       scanner thresholds, and automated update policies.
+    3. Update Layer 05 README, ADR_WORKFLOW_STANDARD.md, and TECHNOLOGY_STACK_USAGE_GUIDE.md to cite the unified YAML index.
+    4. Ratify Decision GD-74 in DECISIONS.md and bump framework version to 0.91.6.
+  consequences: |
+    - Eliminates dual-entry bookkeeping and documentation drift.
+    - Enables automated CI ingestion for security vulnerability scanning and dependency updates.
+    - AI agents can generate human-facing architecture and tech stack reports dynamically on demand.
+  alternatives_considered:
+    - option: "Option 1: Freeform Markdown table in ADR-00_index.TEMPLATE.md"
+      rationale_rejected: "Rejected. Markdown tables cannot be programmatically parsed by CI vulnerability scanners and update bots without brittle regexes."
+    - option: "Option 2: Standalone TECHNOLOGY_REGISTRY.yaml outside Layer 05"
+      rationale_rejected: "Rejected. Separating the technology inventory from the ADR layer creates a second uncoordinated artifact that drifts from decision records."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Modernize ADR-00_index to YAML with Embedded Technology Registry"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-11T00:00:00Z"
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Modernize ADR-00_index from Markdown to YAML and embed the Project Technology Stack & Security Registry"
+  touched_areas:
+    - "framework/layers/05_ADR/"
+    - "framework/governance/"
+  components:
+    - "ADR-00_index.TEMPLATE.yaml"
+    - "ADR_WORKFLOW_STANDARD.md"
+    - "TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    - "DECISIONS.md"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-87/IPLAN-87.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-87.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-87/IPLAN-87.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing"
+    - "test_index_template_lint.py passing with exactly 10 index templates"
+    - "sdd_doc_lint clean with zero STRUCT01 or ID02 errors"
+    - "pytest conformance and acceptance green"
+  audit_trail: "Multi-agent self-review per OPS-0065"

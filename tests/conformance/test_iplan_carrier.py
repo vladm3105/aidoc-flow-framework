@@ -57,14 +57,16 @@ class IplanCarrier(unittest.TestCase):
     def test_canonical_template_carries_tdd_ref(self):
         self._assert_carrier("IPLAN-TEMPLATE.yaml")
 
-    def test_mvp_skeleton_is_tombstone(self):
-        """The retired MVP file is a tombstone pointer, not a template (#666)."""
+    def test_mvp_template_not_resurrected(self):
+        """MVP templates were retired in CHG-08 and tombstoned files removed in CHG-89 (GD-76).
+
+        Asserts that legacy *-MVP-TEMPLATE.yaml files must not be resurrected.
+        """
         path = LAYER / "IPLAN-MVP-TEMPLATE.yaml"
-        self.assertTrue(path.is_file(), f"missing tombstone: {path}")
-        doc = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        self.assertEqual(set(doc), {"tombstone"}, f"MVP file regained content: {sorted(doc)}")
-        self.assertEqual(doc["tombstone"]["status"], "retired")
-        self.assertEqual(doc["tombstone"]["canonical_template"], "./IPLAN-TEMPLATE.yaml")
+        self.assertFalse(
+            path.exists(),
+            f"{path.name} resurrected — only canonical IPLAN-TEMPLATE.yaml is permitted (GD-76)",
+        )
 
     def test_traceability_key_is_still_named_tdd_references(self):
         """A positive assertion, because the negative one was unfalsifiable.

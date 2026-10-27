@@ -1,14 +1,21 @@
+---
+doc_id: GOV-AUTHORING-STYLE
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Authoring Style — token-efficient SDD documents
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-27 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Authority for **how** SDD documents are written. Templates define structure;
 this defines voice, density, and form. Apply to every layer (BRD/PRD/EARS/BDD/
@@ -21,7 +28,7 @@ across all downstream operations. Documents must be **precise and complete**,
 not **detailed and exhaustive** — completeness comes from covering every
 required template section, not from prose volume.
 
-## Eliminate
+## Eliminate {#sec-eliminate}
 
 Banned in document prose. Audit-blocking when present in a published artifact.
 
@@ -36,7 +43,7 @@ Banned in document prose. Audit-blocking when present in a published artifact.
 | Verbose introductions | restating section purpose before the content; paragraph-long preambles before the first concrete sentence |
 | Redundant restatement | repeating upstream content instead of referencing it via `@brd`/`@prd`/etc. |
 
-## Enforce
+## Enforce {#sec-enforce}
 
 | Form | Rule |
 |------|------|
@@ -52,7 +59,7 @@ Banned in document prose. Audit-blocking when present in a published artifact.
 | Complexity ratings | 1–5 scale where applicable (1 = minimal, 5 = architectural change) |
 | Impact metrics | Measurable where possible (latency p95, error rate, cost delta) |
 
-## Form preferences (descending order)
+## Form preferences (descending order) {#sec-form-preferences-descending-order}
 
 1. Tables — for any homogeneous list (≥3 items with the same attributes).
 2. Bullets — for short heterogeneous lists.
@@ -63,7 +70,7 @@ When in doubt, **collapse paragraphs into a table or bullet list** and check
 that no information is lost. If information is lost, prose is justified;
 otherwise it is wasted tokens.
 
-## Size targets
+## Size targets {#sec-size-targets}
 
 These are **defaults**; a template may relax a target via per-section
 `_guidance`. They are not hard caps — but exceeding by ≥50% is an audit
@@ -85,7 +92,7 @@ is the **document split trigger** (when a doc grows past it, split into a new
 document with its own scope), not a section target. The two are different units
 for different jobs: words guide section density; the token cap triggers a split.
 
-## Abbreviations and references
+## Abbreviations and references {#sec-abbreviations-and-references}
 
 - Use canonical abbreviations where defined (HTTP status codes, RFC numbers,
   ISO standards).
@@ -94,7 +101,7 @@ for different jobs: words guide section density; the token cap triggers a split.
 - Reference governance via filename (`see ID_NAMING_STANDARDS.md §…`) — do not
   inline quote.
 
-## Audit hook
+## Audit hook {#sec-audit-hook}
 
 The per-layer audit engine includes this rule in its Structural
 Checklist:
@@ -106,7 +113,7 @@ Violations are **Tier 2 — advisory** by default, **Tier 1 — blocking** when
 they push the document above the size-target threshold or when ≥3 banned
 phrases appear in one section.
 
-## What this is NOT
+## What this is NOT {#sec-what-this-is-not}
 
 - **Not a content reviewer.** Substantive review (correctness, traceability,
   completeness) stays with the per-layer audit content checks.

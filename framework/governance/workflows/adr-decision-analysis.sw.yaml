@@ -30,6 +30,9 @@ events:
     type: org.aidoc.sdd.adr.rfc_published
     source: /aidoc/governance/adr
     kind: produced
+  - name: AdrDecisionsClosedEvent
+    type: org.aidoc.sdd.layer05.adr.closed
+    source: /layers/05_adr
 
 functions:
   - name: ingestContextConstraints
@@ -53,6 +56,24 @@ functions:
   - name: cleanupEvaluationContext
     type: custom
     operation: aidoc:sdd:adr:cleanupContext
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
 
 states:
   # -----------------------------------------------------------------------------
@@ -70,6 +91,7 @@ states:
             bdd_tags: "${ .upstream_bdd_tags }"
             quality_attributes: "${ .quality_attributes }"
             budget_constraints: "${ .budget_constraints }"
+            approved_stack_baseline: "${ .approved_stack_baseline }"
     transition: EvaluateCandidateAlternatives
 
   # -----------------------------------------------------------------------------
@@ -87,6 +109,7 @@ states:
               arguments:
                 candidate_id: "OPT-A"
                 candidate_name: "${ .candidates.option_a.name }"
+                stack_tier: "${ .candidates.option_a.stack_tier }"
                 latency_profile: "${ .candidates.option_a.latency }"
                 resilience_profile: "${ .candidates.option_a.resilience }"
                 cost_estimate: "${ .candidates.option_a.cost }"
@@ -98,6 +121,7 @@ states:
               arguments:
                 candidate_id: "OPT-B"
                 candidate_name: "${ .candidates.option_b.name }"
+                stack_tier: "${ .candidates.option_b.stack_tier }"
                 latency_profile: "${ .candidates.option_b.latency }"
                 resilience_profile: "${ .candidates.option_b.resilience }"
                 cost_estimate: "${ .candidates.option_b.cost }"
@@ -109,6 +133,7 @@ states:
               arguments:
                 candidate_id: "OPT-C"
                 candidate_name: "${ .candidates.option_c.name }"
+                stack_tier: "${ .candidates.option_c.stack_tier }"
                 latency_profile: "${ .candidates.option_c.latency }"
                 resilience_profile: "${ .candidates.option_c.resilience }"
                 cost_estimate: "${ .candidates.option_c.cost }"
@@ -167,9 +192,48 @@ states:
     dataConditions:
       - name: ConsensusApproved
         condition: "${ .feedback.status == \"APPROVED\" and .feedback.blocking_objections == 0 }"
-        transition: RatifyArchitectureDecision
+        transition: InvokeReviewSagaGate
     defaultCondition:
       transition: RejectAndArchiveProposal
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "adr-review-remediation-flow"
+            artifactId: "${ .adr_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyArchitectureDecision
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresRFC
+        condition: "${ .requiresRFC == true or .iteration >= 3 }"
+        transition: SolicitStakeholderRFC
+    defaultCondition:
+      transition: RejectAndArchiveProposal
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "solutions_architect"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # -----------------------------------------------------------------------------
   # State 7: Ratify Architecture Decision
@@ -185,7 +249,64 @@ states:
             status: "Accepted"
             chosen_candidate: "${ .selected_candidate }"
             consequences: "${ .consequences }"
-            spec_readiness_score: 95
+            spec_ready: "PASS"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-03"
+            layer: "05_ADR"
+            documentId: "${ .adr_id }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .adr_id }"
+            layer: "05_ADR"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "AdrNode"
+            nodeId: "${ .adr_id }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "AdrDecisionsClosedEvent"
+            documentId: "${ .adr_id }"
+            decisions: "${ .selected_candidate }"
+            tech_registry: "${ .consequences }"
+    produceEvents:
+      - eventRef: AdrDecisionsClosedEvent
     end: true
 
   # -----------------------------------------------------------------------------

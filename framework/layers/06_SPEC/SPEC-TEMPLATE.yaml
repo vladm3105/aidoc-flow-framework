@@ -1,7 +1,20 @@
-# SPEC-TEMPLATE.yaml — Unified Technical Specification
-# SDD Layer 6 — Implementation-ready specification
-# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
-# Downstream: TDD (Layer 7)
+# =============================================================================
+#  SPEC-TEMPLATE.yaml — Unified Technical Specification (SDD Layer 06)
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: Implementation-ready technical specification for atomic/monolithic components
+#  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+#  Downstream: TDD (Layer 7)
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Specifying atomic, in-process monolithic components, synchronous APIs, or pure algorithmic modules
+#    - Documenting data schemas, interface signatures, and algorithms without state machine orchestration
+#  Use the primary template (SPEC-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Specifying distributed service interaction, event-driven choreography, or CloudEvent schemas
+#    - Orchestrating asynchronous webhook callbacks, concurrent service dispatches, or latency SLA checks
+#    - Requiring automated distributed saga compensation (backward recovery on downstream service failure)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+# =============================================================================
 
 doc_id: SPEC-NN
 title: "[Technical Specification Title]"
@@ -78,7 +91,7 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Author]"
   component: "[Component Name]"
-  tdd_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  tdd_ready_status: "PASS"  # deterministic BTV gate status
 
 # =============================================================================
 # Section 2: Component Overview
@@ -98,6 +111,16 @@ component_overview:
         Caller --> Component
         Component --> Dependency
   language: "[Python | TypeScript | Go | Java | ...]"
+  toolchain:
+    _required: false
+    _guidance: |
+      SPEC owns the toolchain conventions for downstream implementation and testing.
+      IPLAN execution_commands and TDD test runner conventions derive directly from these declarations.
+    runtime_version: "[Version pin, e.g. 3.13, Node 22, Go 1.24]"
+    package_manager: "[pip | poetry | npm | pnpm | cargo]"
+    setup_command: "[Command to provision virtualenv / install dependencies]"
+    type_check_command: "[Command to verify types, e.g. mypy --strict]"
+    test_runner_command: "[Command to execute test suite, e.g. pytest tests/unit/ -v]"
   dependencies:
     - name: "[Dependency Package]"
       version: "[>=X.Y.Z]"
@@ -198,6 +221,17 @@ implementation_notes:
     - "[Pattern — e.g., Repository pattern for data access]"
   performance_considerations:
     - "[Consideration — e.g., LRU cache for frequent reads]"
+  platform_stack_alignment:
+    _guidance: |
+      Ground component implementation in the approved technology stack (/home/ya/devd/technology_stack,
+      specs 00-23 and Layer 05 ADR selection). Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18,
+      NATS JetStream client, Temporal workflow activities, LiteLLM proxy, Kùzu embedded graph).
+      Missing Tools Protocol: If a needed library or tool is missing from the approved stack,
+      the agent MUST explicitly inform the operator and request instructions before proceeding.
+      Prohibition of Insecure Options: Insecure options (plaintext secrets, disabled sandboxing,
+      relaxed permissions) are strictly prohibited.
+    driver_bindings:
+      - "[Driver / SDK name and version pin]"
 
 # =============================================================================
 # Section 7: Downstream TDD Contracts
@@ -259,6 +293,6 @@ traceability:
         category: "Timing"
         value: "[NN]ms"
   health_score:
-    tdd_ready: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    tdd_ready: "[PASS | FAIL]"
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."

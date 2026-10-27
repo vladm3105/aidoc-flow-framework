@@ -1,0 +1,428 @@
+# =============================================================================
+#  CHG-SWF-TEMPLATE.yaml — CNCF Serverless Workflow Template for Change Control
+# =============================================================================
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
+#  Governs: framework/governance/CHG_REQUEST_FLOWS.md, AGENTS.md
+#  Purpose: Template for configuring change classification, gate routing,
+#           SDD cascades, and landing verification across the 6 traversal paths.
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Change control and governance cascades operate via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (CHG-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW changes are classified, routed across gates,
+#       cascaded across SDD layers, and verified before landing.
+#    2. Content Graph (Data Plane) — CHG-TEMPLATE.yaml & *-GRAPH-TEMPLATE.yaml:
+#       Defines WHAT content, affected nodes, delta impacts, invariant contracts, and
+#       dependency relationships are presented in the change control record.
+#    Both graphs work together: the Process DAG drives automated change classification and
+#    cascade traversal, populates the Content Graph, executes BTV verification, and projects
+#    the change impact into the ratified change record (CHG-NN.yaml).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (CHG-SWF-TEMPLATE.yaml + CHG-TEMPLATE.yaml — PRIMARY WORKFLOW STANDARD) when:
+#    - Orchestrating automated change request lifecycle state machines and gate routing
+#    - Executing automated SDD cascade traversal paths (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C)
+#    - Targeting autonomous AI agent execution or governance orchestrators (LangGraph/Temporal)
+#  Use the companion template (CHG-TEMPLATE.yaml — COMPANION DOCUMENT STANDARD) alone when:
+#    - Authoring individual change request documents (CHG-NN.yaml) recording proposed changes, decisions, and impact
+#    - Specifying human-authored or agent-filed change records without workflow state machine definition
+# =============================================================================
+
+id: "[change-scope]-chg-governance-flow"
+name: "[Change Scope] Governance Flow"
+version: "1.0.0"
+specVersion: "0.8"
+description: >-
+  Template governing change classification (HOTFIX, CODE2S, CODE2C, SEED2C, DIR2C, SDD2C),
+  entry gates, SDD lifecycle cascades, and verification per CHG_REQUEST_FLOWS.md.
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "chg-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "integration_lead"
+  author_playbook: "framework/playbooks/09_CHG/integration_lead.md"
+  workflow_type: "governance-change-request"
+  governed_layer: "09_CHG"
+  layer: 9
+
+start: ClassifyChangeTrigger
+
+events:
+  - name: ChgCloseoutEvent
+    type: org.aidoc.governance.chg.closed
+    source: /governance/chg
+
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
+
+states:
+  # -----------------------------------------------------------------------------
+  # State 1: Inspect Change Scope & Route
+  # -----------------------------------------------------------------------------
+  - name: ClassifyChangeTrigger
+    type: operation
+    actions:
+      - name: inspectChangeScope
+        functionRef:
+          refName: runClassificationRouter
+          arguments:
+            flow_order:
+              - "hotfix"
+              - "code_to_sdd"
+              - "code_to_code"
+              - "seed_to_code"
+              - "iplan_to_code"
+              - "sdd_to_code"
+    transition: RouteByClassification
+
+  # -----------------------------------------------------------------------------
+  # State 2: Route by Classification
+  # -----------------------------------------------------------------------------
+  - name: RouteByClassification
+    type: switch
+    dataConditions:
+      - name: RouteHotfix
+        condition: "${ .flow == 'hotfix' || .flow_code == 'HOTFIX' }"
+        transition: ExecuteHotfix
+      - name: RouteCodeToSdd
+        condition: "${ .flow == 'code_to_sdd' || .flow_code == 'CODE2S' }"
+        transition: ExecuteCodeToSdd
+      - name: RouteCodeToCode
+        condition: "${ .flow == 'code_to_code' || .flow_code == 'CODE2C' }"
+        transition: ExecuteCodeToCode
+      - name: RouteSeedToCode
+        condition: "${ .flow == 'seed_to_code' || .flow_code == 'SEED2C' }"
+        transition: ExecuteSeedToCode
+      - name: RouteIplanToCode
+        condition: "${ .flow == 'iplan_to_code' || .flow_code == 'DIR2C' }"
+        transition: ExecuteIplanToCode
+      - name: RouteSddToCode
+        condition: "${ .flow == 'sdd_to_code' || .flow_code == 'SDD2C' }"
+        transition: ExecuteSddToCode
+    defaultCondition:
+      transition: EscalateUnknownTrigger
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 1: HOTFIX
+  # -----------------------------------------------------------------------------
+  - name: ExecuteHotfix
+    type: operation
+    actions:
+      - name: deployHotfix
+        functionRef:
+          refName: executeImmediateRepair
+    transition: DraftEmergencyPostMortem
+
+  - name: DraftEmergencyPostMortem
+    type: operation
+    actions:
+      - name: authorPostMortem
+        functionRef:
+          refName: draftPostMortemAndCHG
+          arguments:
+            deadline_hours: 48
+            template: "framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md"
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 2: CODE2S (code_to_sdd)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteCodeToSdd
+    type: operation
+    actions:
+      - name: reverseEngineerSpecs
+        functionRef:
+          refName: runReverseSDDCascade
+          arguments:
+            order: ["Code", "TDD", "SPEC", "BDD", "EARS"]
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 3: CODE2C (code_to_code / Defect Repair)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteCodeToCode
+    type: operation
+    actions:
+      - name: authorBugfixCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "feedback"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+    transition: AuthorBugfixIPLAN
+
+  - name: AuthorBugfixIPLAN
+    type: operation
+    actions:
+      - name: draftBugfixIPLAN
+        functionRef:
+          refName: draftIPLAN
+          arguments:
+            subtype: "bugfix"
+    transition: ExecuteBugfixChanges
+
+  - name: ExecuteBugfixChanges
+    type: operation
+    actions:
+      - name: patchCodeAndRunRegression
+        functionRef:
+          refName: executePatchAndVerify
+    transition: CloseoutBugfix
+
+  - name: CloseoutBugfix
+    type: operation
+    actions:
+      - name: verifyBugfix
+        functionRef:
+          refName: sealBugfixCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 4: SEED2C (seed_to_code / Brownfield Spec Redesign)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteSeedToCode
+    type: operation
+    actions:
+      - name: authorBrownfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "design"
+            change_level: "C3"
+            entry_gate: "GATE-01"
+    transition: RunSeedModuleSync
+
+  - name: RunSeedModuleSync
+    type: operation
+    actions:
+      - name: syncSeedAndModules
+        functionRef:
+          refName: reconcileSeedAndModules
+    transition: ExecuteFullSDDCascade
+
+  - name: ExecuteFullSDDCascade
+    type: operation
+    actions:
+      - name: cascadeThroughLayers
+        functionRef:
+          refName: authorSDDCascade
+    transition: AuthorFullIPLAN
+
+  - name: AuthorFullIPLAN
+    type: operation
+    actions:
+      - name: createFullIPLAN
+        functionRef:
+          refName: draftIPLAN
+    transition: CloseoutSeedToCode
+
+  - name: CloseoutSeedToCode
+    type: operation
+    actions:
+      - name: verifyFullImplementation
+        functionRef:
+          refName: sealCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 5: DIR2C (iplan_to_code / Direct Task)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteIplanToCode
+    type: operation
+    actions:
+      - name: authorDirectCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "direct"
+            change_level: "C1"
+            entry_gate: "GATE-CODE"
+            sdd_lifecycle: []
+    transition: AuthorScopedIPLAN
+
+  - name: AuthorScopedIPLAN
+    type: operation
+    actions:
+      - name: draftScopedIPLAN
+        functionRef:
+          refName: draftIPLAN
+          arguments:
+            subtype: "scoped"
+    transition: ExecuteDirectChanges
+
+  - name: ExecuteDirectChanges
+    type: operation
+    actions:
+      - name: executeEditsAndVerify
+        functionRef:
+          refName: applyDirectChanges
+    transition: CloseoutDirect
+
+  - name: CloseoutDirect
+    type: operation
+    actions:
+      - name: sealDirectComplete
+        functionRef:
+          refName: sealCompleted
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Traversal Path 6: SDD2C (sdd_to_code / Greenfield Product Chain)
+  # -----------------------------------------------------------------------------
+  - name: ExecuteSddToCode
+    type: operation
+    actions:
+      - name: authorGreenfieldCHG
+        functionRef:
+          refName: draftCHGDocument
+          arguments:
+            change_source: "upstream"
+            change_level: "C3"
+            entry_gate: "GATE-01"
+    transition: ExecuteLayerChain
+
+  - name: ExecuteLayerChain
+    type: operation
+    actions:
+      - name: generateFullLayerChain
+        functionRef:
+          refName: authorTenLayerChain
+    transition: InvokeReviewSagaGate
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "chg-review-remediation-flow"
+            artifactId: "${ .changeId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: CloseoutGreenfield
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresEscalation
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+        transition: EscalateUnknownTrigger
+    defaultCondition:
+      transition: EscalateUnknownTrigger
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "governance_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
+
+  - name: CloseoutGreenfield
+    type: operation
+    actions:
+      - name: verifyGreenfield
+        functionRef:
+          refName: sealCompleted
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-08"
+            layer: "09_CHG"
+            documentId: "${ .changeId }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .changeId }"
+            layer: "09_CHG"
+            targetStatus: "Completed"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "ChgNode"
+            nodeId: "${ .changeId }"
+            status: "Completed"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "ChgCloseoutEvent"
+            chg_id: "${ .changeId }"
+            audit_trail: "${ .audit_trail }"
+            verdict: "${ .verdict }"
+    produceEvents:
+      - eventRef: ChgCloseoutEvent
+    end: true
+
+  # -----------------------------------------------------------------------------
+  # Failure / Escalation State
+  # -----------------------------------------------------------------------------
+  - name: EscalateUnknownTrigger
+    type: operation
+    actions:
+      - name: alertMaintainer
+        functionRef:
+          refName: escalateClassificationFailure
+    end:
+      terminate: true

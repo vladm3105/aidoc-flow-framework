@@ -40,13 +40,13 @@ Two pre-commit hooks automate the discipline:
 | `sync-version-refs` | `hooks/sync-version-refs.sh` | **Mechanical auto-sync.** When `framework/VERSION` changes, propagates the new version string into every doc-of-record that quotes it (playbook frontmatter, `framework_version` metadata, document-control rows). Re-stages on its own; idempotent. Silent on commits that don't bump a version. |
 | `check-docs-updated` | `hooks/check-docs-updated.sh` | **Semantic reminder.** Runs on every commit. When the staged change touches code/spec and no document-of-record, prints a checklist of likely-stale docs. **Warning only — never blocks the commit.** Authors decide whether to update or proceed (false-positive friendly). |
 
-Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (CHANGELOG entry, decision rationale, handoff narrative) that the author must write themselves.
+Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (change record in CHG archives, decision rationale, handoff narrative) that the author must write themselves.
 
 ### Documents of record — what to update for which change
 
 | Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
 |---|---|---|---|
-| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; `framework/CHANGELOG.md` entry (GATE-SPEC-E008; the root log is a frozen tombstone, not maintained per-PR) | playbook frontmatter, `framework_version` metadata, document-control rows | DECISIONS entry; CHANGELOG entry |
+| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; authorizing `framework/archive/CHG-*/` change request (both changelogs and DECISIONS registers are frozen tombstones; change rationale and decisions live in CHG archives) | playbook frontmatter, `framework_version` metadata, document-control rows | CHG request record |
 | **User-visible policy/rule** | `AGENTS.md` §Governance Gate; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
 | **Defect discovered** | Open GitHub issue with reproduction, blast radius, fix shape | — | issue body |
 | **Session milestone reached** | handoff narrative in PR description | — | handoff narrative (PRs landed, next item) |
@@ -60,7 +60,7 @@ If your change spans categories, do all the updates. The hooks above flag misses
 `check-docs-updated` prints a WARNING when:
 
 - Any of `framework/**`, `sdd_doc_lint/**`, `hooks/**`, `tests/**` is staged
-- AND no doc-of-record (`README.md`, `AGENTS.md`, `framework/CHANGELOG.md`, `framework/governance/DECISIONS.md`) is staged
+- AND no doc-of-record (`README.md`, `AGENTS.md`, `framework/VERSION`) is staged
 
 Common false positives (warning is correct to ignore):
 

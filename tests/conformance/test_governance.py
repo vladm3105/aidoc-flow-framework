@@ -23,6 +23,7 @@ EXPECTED_FILES = [
     # remaining files.
     "ID_NAMING_STANDARDS.md",
     "TRACEABILITY.md",
+    "SDD_ASSEMBLY_LINE.md",
     "TAG_SYNTAX.md",
     "DIAGRAM_STANDARDS.md",
     "THRESHOLD_NAMING_RULES.md",
@@ -33,6 +34,9 @@ EXPECTED_FILES = [
     "REVIEW_CREWS.yaml",
     "REVIEW_SAGA.md",
     "saga.schema.json",
+    "sdd-graph.schema.json",
+    "SDD_GRAPH_SCHEMA_SPECIFICATION.md",
+    "OBSERVABILITY_ADAPTER_CONTRACT.md",
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
     "PROFILE-TEMPLATE.yaml",
@@ -54,13 +58,21 @@ EXPECTED_FILES = [
     "templates/REVIEW_REPORT-TEMPLATE.yaml",
     "templates/REVIEW-SWF-TEMPLATE.yaml",
     "templates/CHG-SWF-TEMPLATE.yaml",
+    "templates/CHG-GRAPH-TEMPLATE.yaml",
     "IPLAN_WORKFLOW_STANDARD.md",
     "workflows/chg-request-flow.sw.yaml",
     "workflows/seed-to-module-decomposition.sw.yaml",
     "workflows/worktree-pr-lifecycle.sw.yaml",
+    "workflows/multi-repo-contract-sync.sw.yaml",
+    "workflows/cross-project-ci-dispatch.sw.yaml",
+    "workflows/context-slicing-generation.sw.yaml",
+    "workflows/stack-policy-validation.sw.yaml",
+    "workflows/support-ticket-escalation.sw.yaml",
     "workflows/eval-verification-run.sw.yaml",
     "workflows/review-remediation-flow.sw.yaml",
     "workflows/decision-ratification-flow.sw.yaml",
+    "workflows/decision-migration-flow.sw.yaml",
+    "workflows/iplan-escalation-flow.sw.yaml",
     "workflows/bdd-acceptance-run.sw.yaml",
     "workflows/tdd-test-execution.sw.yaml",
     "workflows/spec-choreography-contract.sw.yaml",
@@ -68,6 +80,8 @@ EXPECTED_FILES = [
     "workflows/ears-requirements-validation.sw.yaml",
     "workflows/prd-feature-decomposition.sw.yaml",
     "workflows/brd-business-validation.sw.yaml",
+    "workflows/iplan-execution.sw.yaml",
+    "workflows/sdd-layer-orchestration.sw.yaml",
     "workflows/review/brd-review-remediation.sw.yaml",
     "workflows/review/prd-review-remediation.sw.yaml",
     "workflows/review/ears-review-remediation.sw.yaml",
@@ -77,10 +91,13 @@ EXPECTED_FILES = [
     "workflows/review/tdd-review-remediation.sw.yaml",
     "workflows/review/iplan-review-remediation.sw.yaml",
     "workflows/review/chg-review-remediation.sw.yaml",
+    "workflows/review/eval-review-remediation.sw.yaml",
     "NOTICES.md",
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",
     "RECOMMENDED_PLATFORM_STACK.md",
+    "MULTI_PROJECT_FEDERATED_STANDARD.md",
+    "TECHNOLOGY_STACK_USAGE_GUIDE.md",
     "README.md",
     "CHG_REQUEST_FLOWS.md",
     "CI_AUTONOMOUS_PR_STANDARD.md",
@@ -102,7 +119,9 @@ EXPECTED_FILES = [
     "aidoc/README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
-    "chg/CHG-00_index.TEMPLATE.md",
+    "chg/CHG-SWF-TEMPLATE.yaml",
+    "chg/CHG-GRAPH-TEMPLATE.yaml",
+    "chg/CHG-00_index.TEMPLATE.yaml",
     "chg/gates/GATE-01_BUSINESS_PRODUCT.md",
     "chg/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md",
     "chg/gates/GATE-06_DESIGN_TEST.md",
@@ -332,6 +351,117 @@ class GateCheckIdParity(unittest.TestCase):
                         "*fillable* items only, since a code mentioned in prose "
                         "is a check nobody performs",
                     )
+
+
+class GateExecutionShieldingInvariants(unittest.TestCase):
+    """Execution shielding invariants for GATE-06 (SPEC/TDD) and GATE-08 (IPLAN)."""
+
+    def test_gate_06_and_gate_08_execution_shielding_invariants(self):
+        gate_06 = (CHG / "gates" / "GATE-06_DESIGN_TEST.md").read_text(encoding="utf-8")
+        gate_08 = (CHG / "gates" / "GATE-08_IPLAN.md").read_text(encoding="utf-8")
+
+        # GATE-08: E005 (saga rollback compensation), E006 (completeness), E007 (timeouts)
+        self.assertIn("GATE-08-E005", gate_08)
+        self.assertIn("GATE-08-E006", gate_08)
+        self.assertIn("GATE-08-E007", gate_08)
+        self.assertNotIn("GATE-08-W003", gate_08, "GATE-08-W003 should be elevated and removed")
+
+        # GATE-06: E005 (toolchain ownership), E006 (fixture compensation), binary topological validation
+        self.assertIn("GATE-06-E005", gate_06)
+        self.assertIn("GATE-06-E006", gate_06)
+        self.assertNotIn(
+            "score >= 90%", gate_06, "legacy percentage readiness score must be purged"
+        )
+        self.assertIn("tdd_ready_status: PASS", gate_06)
+
+
+class PlatformTechnologyStackAndSecurityInvariants(unittest.TestCase):
+    """Enforces strict platform technology stack adherence, insecure options ban, and missing tools protocol."""
+
+    def test_agents_and_templates_platform_stack_rules(self):
+        repo_root = FRAMEWORK.parent
+        agents_md = (repo_root / "AGENTS.md").read_text(encoding="utf-8")
+        agents_tmpl = (FRAMEWORK / "templates" / "AGENTS-TEMPLATE.md").read_text(encoding="utf-8")
+
+        for doc in (agents_md, agents_tmpl):
+            self.assertIn("technology_stack", doc)
+            self.assertIn("insecure options", doc)
+            self.assertIn("Missing Tools", doc)
+            self.assertIn("autonomous sessions", doc)
+            self.assertIn("Conflict Disposition", doc)
+
+    def test_governance_docs_platform_stack_rules(self):
+        rec_stack = (GOVERNANCE / "RECOMMENDED_PLATFORM_STACK.md").read_text(encoding="utf-8")
+        usage_guide = (GOVERNANCE / "TECHNOLOGY_STACK_USAGE_GUIDE.md").read_text(encoding="utf-8")
+        doc_core = (GOVERNANCE / "DOC_GOVERNANCE_CORE.md").read_text(encoding="utf-8")
+        assistant_rules = (FRAMEWORK / "AI_ASSISTANT_RULES.md").read_text(encoding="utf-8")
+
+        for doc in (rec_stack, usage_guide, doc_core, assistant_rules):
+            self.assertIn("technology_stack", doc)
+            self.assertIn("Missing Tools", doc)
+
+        self.assertIn("Two-Tier Secrets", rec_stack)
+        self.assertIn("Hybrid S3", rec_stack)
+        self.assertIn("Prohibition of Insecure Options", doc_core)
+        self.assertIn("autonomous sessions", usage_guide)
+        self.assertIn("Conflict Disposition", usage_guide)
+        self.assertIn("Conflict Disposition", doc_core)
+
+    def test_skills_and_templates_platform_stack_rules(self):
+        repo_root = FRAMEWORK.parent
+        skills_to_check = [
+            repo_root / ".agents" / "skills" / "approval-gate" / "SKILL.md",
+            repo_root / ".agents" / "skills" / "verified-planning" / "SKILL.md",
+            repo_root / ".agents" / "skills" / "start-session" / "SKILL.md",
+            FRAMEWORK / "skills" / "approval-gate" / "SKILL.md",
+            FRAMEWORK / "skills" / "verified-planning" / "SKILL.md",
+            FRAMEWORK / "skills" / "start-session" / "SKILL.md",
+        ]
+        for skill_file in skills_to_check:
+            content = skill_file.read_text(encoding="utf-8")
+            self.assertIn(
+                "technology_stack", content, f"missing tech stack reference in {skill_file}"
+            )
+            self.assertIn(
+                "insecure options", content, f"missing insecure options ban in {skill_file}"
+            )
+            self.assertIn(
+                "Missing Tools", content, f"missing tools escalation protocol in {skill_file}"
+            )
+
+        # Check templates
+        stack_policy = (FRAMEWORK / "templates" / "STACK-POLICY-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", stack_policy)
+        self.assertIn("3.15", stack_policy)
+
+        module_tmpl = (FRAMEWORK / "templates" / "MODULE-TEMPLATE.md").read_text(encoding="utf-8")
+        self.assertIn("Missing Tools", module_tmpl)
+        self.assertNotIn("CockroachDB", module_tmpl)
+
+        adr_tmpl = (FRAMEWORK / "layers" / "05_ADR" / "ADR-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", adr_tmpl)
+        self.assertIn("technology_stack", adr_tmpl)
+
+        spec_tmpl = (FRAMEWORK / "layers" / "06_SPEC" / "SPEC-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", spec_tmpl)
+        self.assertIn("technology_stack", spec_tmpl)
+
+        tdd_tmpl = (FRAMEWORK / "layers" / "07_TDD" / "TDD-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", tdd_tmpl)
+
+        iplan_tmpl = (FRAMEWORK / "layers" / "08_IPLAN" / "IPLAN-TEMPLATE.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Missing Tools", iplan_tmpl)
+        self.assertIn("INVARIANTS", iplan_tmpl)
 
 
 class GovernanceFilesNoOrphans(unittest.TestCase):

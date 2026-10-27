@@ -1,0 +1,60 @@
+# =============================================================================
+#  IPLAN-134: Ship Seed + Module skills
+# =============================================================================
+#  Implementation Plan authorized by CHG-134
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-134
+title: "Implementation Plan: Seed + Module skills (issue #1036)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.16"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-25"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-134"
+  date_created: "2026-10-25T00:00:00Z"
+  date_implemented: "2026-10-26T00:09:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-134/CHG-134.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-134/IPLAN-134.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-seed/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/sdd-module/SKILL.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/skills/SKILLS-REGISTRY.yaml"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/skills/README.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C1, change_source direct, sdd_lifecycle empty"
+  l014_l015: "pass-through: change_source direct and no seed/module doc touches, so lifecycle coverage rules do not engage"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit (additive files only)"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-134/CHG-134.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "bash framework/skills/_shared/scripts/check-skill-shadowing.sh <repo>"
+  - "conformance + acceptance suites green on PR head"

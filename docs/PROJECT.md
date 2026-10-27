@@ -4,7 +4,7 @@
 > multi-platform migration project (Hermes + Claude Code plugin, cutover
 > `v1.0.0`). Values, branches, and pins inside are frozen at the 0.53.x era —
 > read them as history, not live instruction. Live project state: repo
-> `README.md` + `CHANGELOG.md`; live spec: `framework/`; live process:
+> `README.md` (root `CHANGELOG.md` is a frozen tombstone per CHG-40); live spec: `framework/`; live process:
 > `AGENTS.md`.
 >
 > Created 2026-05-18. Companion to `docs/REPO_STRUCTURE.md` (`ROADMAP.md` was
@@ -29,7 +29,7 @@ Semantic Versioning ([semver.org](https://semver.org)). Four independent streams
 
 | Stream | File | Purpose |
 |--------|------|---------|
-| Project (migration) | `CHANGELOG.md` (`ROADMAP.md` retired) | Tracks migration milestones only |
+| Project (migration) | `CHANGELOG.md` (retired tombstone per CHG-40) | Historical migration milestones |
 | Framework spec | `framework/VERSION` | The shared contract |
 | Hermes AI | retired | Platform stream frozen at the 2026-09-07 archive |
 | Claude Code plugin | retired | Platform stream frozen at the 2026-09-07 archive |
@@ -103,9 +103,8 @@ The gated CHG process is **not** applied to migration work. Interim controls:
 
 - Pull-request review on the working branch.
 - Conventional commit messages.
-- `CHANGELOG.md` updated per change.
-- Significant decisions recorded in the decision log `plans/DECISIONS.md`;
-  spec-affecting ones graduate to `framework/governance/DECISIONS.md`.
+- `CHANGELOG.md` updated per change (historical migration only; both root and framework `CHANGELOG.md` are frozen historical tombstones).
+- Significant decisions recorded in Change Requests (`CHG-*.yaml` Section 1B); `plans/DECISIONS.md` and `framework/governance/DECISIONS.md` are frozen historical tombstones.
 
 ### After cutover — CHG re-introduced
 
@@ -131,9 +130,8 @@ gates) — see `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`.
   runs E001–E004 (provenance, `semver_impact` + major⇒C3, never-C1, C3 approval
   prep) and the `doc-chg` family routes `change_source: spec` to it.
 - **CI/CD** — runs the automatable checks on every PR as a required status
-  check. For GATE-SPEC: `tests/chg/spec_gate.py` enforces the diff-aware E005
-  (VERSION bump) + E008 (CHANGELOG), and the conformance suite enforces E006
-  (spec-version match) + E007 (suite green).
+  check. For GATE-SPEC: diff-aware checks enforce E005 (VERSION bump; E008 retired in CHG-94),
+  and the conformance suite enforces E006 (spec-version match) + E007 (suite green).
 - **Repo settings** — the *human* gate (e.g. C3 board sign-off) is enforced by
   branch protection / required reviewers on `framework/**`. A skill prepares and
   verifies the approval form but is never the authority that grants approval.
@@ -182,7 +180,7 @@ rm -rf .aidoc/framework/framework/archive
 
 | Directory | Purpose |
 |-----------|---------|
-| `framework/` | Core spec — governance, layers, playbooks, registry, skills, orientation guides, `VERSION`, `CHANGELOG.md` (minus `archive/`, pruned above) |
+| `framework/` | Core spec — governance, layers, playbooks, registry, skills, orientation guides, `VERSION`, `CHANGELOG.md` (retired tombstone) (minus `archive/`, pruned above) |
 | `docs/` | Framework documentation (including this contract and the adaptation guide) |
 | `hooks/` | Advisory hooks (`PostToolUse` + `PreCommit` — see `hooks/README.md`) |
 | `sdd_doc_lint/` | Structural linter (296+ checks) |
@@ -216,7 +214,7 @@ Projects maintain a `.aidoc/` directory with this structure:
 │   │   ├── registry/
 │   │   ├── skills/
 │   │   ├── *.md guides      # orientation docs, ship with the copy
-│   │   ├── CHANGELOG.md     # upgrade input (per-version migration notes)
+│   │   ├── CHANGELOG.md     # historical tombstone (frozen at 0.94.0; changes in archive/CHG-*/)
 │   │   └── VERSION          # pinned-version source of truth
 │   ├── docs/
 │   ├── hooks/
@@ -232,7 +230,7 @@ Projects maintain a `.aidoc/` directory with this structure:
 └── README.md
 ```
 
-This is the shape `framework/scripts/install.sh` creates on a new project.
+This is the shape `framework/scripts/install.sh` creates on a new project. Extended workstation parts (`contracts/`, `ctx-tools/`, engine modes) layer on top of this minimal set — see [`ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §1 (scaffolded-vs-authored) and [`AIDOC_WORKSTATION_STANDARD.md`](AIDOC_WORKSTATION_STANDARD.md) §3 (full topology).
 
 ### 7.3 Discovery rule
 
@@ -251,7 +249,7 @@ metadata:
   framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
   framework_path: ".aidoc/framework"
   framework_spec_path: ".aidoc/framework/framework"
-  framework_version: "0.91.4"  # Frozen 0.53.x-era pin (see banner); live version: framework/VERSION
+  framework_version: "0.96.23"  # Pinned spec version; must match .aidoc/framework/framework/VERSION
 ```
 
 ### 7.5 Updating the framework
@@ -271,6 +269,6 @@ After refreshing, verify `framework/VERSION` matches the pin in `.aidoc/profile.
 > `framework/governance/ADAPTATION.md` § "Symlink convention" —
 > `.aidoc/framework/` is a symlink to the shared framework directory
 > (canonical). The MUST-NOT below is the frozen 0.53.x-era rule, kept as
-> history; see `docs/ADAPTATION-GUIDE.md` §2 for the live convention.
+> history; see `docs/ADAPTATION-GUIDE.md` §2 and `docs/AIDOC_WORKSTATION_STANDARD.md` for the live workstation convention.
 
 Projects MUST NOT use symlinks to external framework directories. The framework must be a real cloned copy to support version pinning, local patches, and clean updates.

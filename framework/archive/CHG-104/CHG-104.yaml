@@ -1,0 +1,153 @@
+# =============================================================================
+#  CHG-104: Consumer Installation, Brownfield Upgrades, and Rollout Remediation
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Tooling Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-14: "start implementation")
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-14"
+  framework_version: "0.91.23"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-104"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-14T00:00:00Z"
+  date_approved: "2026-10-14T00:00:00Z"
+  date_implemented: "2026-10-14T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-14T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-14): start implementation
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-104)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-104"
+  title: "Remediate Consumer Installation, Brownfield Upgrades, and Multi-Project Rollout Tooling"
+  status: "Ratified"
+  context: |
+    Comprehensive framework review of consumer onboarding and deployment scripts identified key
+    operational defects hindering greenfield rollout and brownfield upgrade to the Quad-Pillar ecosystem:
+    1. install.sh failed to uncomment or set metadata.project_name in .aidoc/profile.yaml, causing
+       profile_lint.py to immediately fail schema 1.1.0 validation out of the box on fresh projects.
+    2. deploy.sh option parsing rejected consumer customization flags (--no-stack-policy, --no-adr,
+       --no-agents, --author, --canon-sha) with usage errors instead of forwarding them to install.sh.
+    3. upgrade.sh did not inspect or backfill missing metadata.project_name, leaving brownfield adopters
+       with failing profiles upon re-adoption.
+    4. hooks/ch-gate-check.sh searched only docs/sdd/09-CHG (hyphenated), emitting false-positive
+       warnings when consumers created canonical docs/sdd/09_CHG (underscored) change requests.
+    5. AGENTS-TEMPLATE.md instructed running python3 -m sdd_doc_lint without setting PYTHONPATH,
+       causing ModuleNotFoundError in consumer checkouts.
+    6. install.sh did not scaffold stack-policy.yaml or bind tenant_id per MULTI_PROJECT_FEDERATED_STANDARD.md.
+  choice: |
+    1. Update install.sh to automatically set metadata.project_name: "$proj_name" during profile creation
+       and run profile_lint.py in smoke checks.
+    2. Update deploy.sh to parse and forward all consumer flags in EXTRA_ARGS.
+    3. Update upgrade.sh to detect and backfill missing metadata.project_name during upgrades.
+    4. Update hooks/ch-gate-check.sh CHG_DIRS to inspect docs/sdd/09_CHG first.
+    5. Update install.sh to scaffold <project>/stack-policy.yaml with tenant_id: "$proj_name" (with
+       --no-stack-policy opt-out), and generate an executable runner at .aidoc/bin/sdd-lint.
+    6. Update AGENTS-TEMPLATE.md to document .aidoc/bin/sdd-lint and PYTHONPATH=.aidoc/framework.
+    7. Synchronize BOOTSTRAP.md Step 5 checklist.
+    8. Expand test_consumer_scripts.py to assert all new behaviors.
+  consequences: |
+    - Guarantees 100% turnkey readiness for newly bootstrapped repositories in the federated ecosystem.
+    - Prevents false-positive governance gate warnings and linter import failures for AI agents.
+    - Backfills missing project metadata cleanly during brownfield upgrades.
+  alternatives_considered:
+    - option: "Require manual profile editing after install.sh execution"
+      rationale_rejected: >-
+        Fails the zero-friction automation standard for autonomous agents and new project onboarding.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Consumer Installation, Brownfield Upgrades, and Rollout Remediation"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-14T00:00:00Z"
+  summary: |
+    Remediate installation script defects, enable deploy.sh flag pass-through, backfill brownfield
+    project_name on upgrade, fix hook path resolution, provide sdd-lint runner, and scaffold federated
+    stack-policy.yaml.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Consumer deployment scripts, hooks, templates, and bootstrap documentation hardening"
+  components_affected:
+    - "deploy.sh"
+    - "framework/scripts/install.sh"
+    - "framework/scripts/upgrade.sh"
+    - "hooks/ch-gate-check.sh"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "framework/governance/aidoc/BOOTSTRAP.md"
+    - "plans/CONSUMER-INSTALL-ROLLOUT-REMEDIATION-PLAN.md"
+    - "tests/conformance/test_consumer_scripts.py"
+    - "framework/archive/CHG-104/CHG-104.yaml"
+    - "framework/archive/CHG-104/IPLAN-104.yaml"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-104/IPLAN-104.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-104.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-104/IPLAN-104.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-104/CHG-104.yaml passing"
+    - "PYTHONPATH=tests/conformance python3 -m unittest tests/conformance/test_consumer_scripts.py green"
+    - "python3 -m sdd_doc_lint.surface_lint . green"
+    - >-
+      python3 .agents/skills/verified-planning/check_plan.py
+      plans/CONSUMER-INSTALL-ROLLOUT-REMEDIATION-PLAN.md passing
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

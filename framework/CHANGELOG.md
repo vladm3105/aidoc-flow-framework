@@ -1,17 +1,139 @@
-# Changelog — SDD Framework
+# Changelog — SDD Framework (FROZEN — tombstone)
 
-All notable changes to the shared engine-agnostic specification are documented here.
-This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
+This log is no longer maintained per-PR (frozen 2026-10-13 by CHG-94 for
+founder decision: hand-maintaining it costs tokens and time while
+`framework/archive/CHG-*/` and GitHub issues/PRs already track every change).
+Do not add entries here.
 
-## Document Control
+The live records are:
+- Spec changes: `framework/archive/CHG-*/CHG-*.yaml` (machine-readable authoritative records).
+- Releases: GitHub Releases + `framework/VERSION`.
+- Everything else: the issue tracker (open and closed) plus git history.
 
-| Field | Value |
-|-------|-------|
-| Version | 1.25 |
-| Status | Approved |
-| Last Updated | 2026-10-10 |
-| Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+> **On-Demand Generation**: A release-specific CHANGELOG or release notes can
+> be generated from `framework/archive/CHG-*/` on demand during formal release
+> cut-offs if requested. AI agents and maintainers do not spend tokens maintaining
+> this file per-PR.
+
+Full history of this specification is preserved in git (`git log --follow -- framework/CHANGELOG.md`)
+and below for releases up to and including [0.91.12].
+
+---
+
+## Last Maintained State (Releases 0.50.0 through 0.91.12)
+
+## [0.91.12] — 2026-10-13
+
+### Updated — Standardize Technology Stack References to Canonical GitHub Repository (C1 Governance, CHG-93 + IPLAN-93, Decision DEC-CHG-93)
+
+- **Platform Technology Stack Citations (`RECOMMENDED_PLATFORM_STACK.md`, `TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+  - Removed local workstation filesystem paths (`/home/ya/devd/technology_stack/`) from `RECOMMENDED_PLATFORM_STACK.md` and `TECHNOLOGY_STACK_USAGE_GUIDE.md`, standardizing exclusively on canonical repository citations for `https://github.com/vladm3105/technology-stack` (`vladm3105/technology-stack`).
+  - Standardized git clone instructions in Section 5.3 of `RECOMMENDED_PLATFORM_STACK.md` to clone into standard local destinations without personal workstation assumptions.
+  - Eliminated local environment leaks to preserve engine neutrality, agent autonomy across distributed environments, and portability.
+
+## [0.91.11] — 2026-10-13
+
+### Updated — Reference Canonical Technology Stack GitHub Repository (C1 Governance, CHG-92 + IPLAN-92, Decision DEC-CHG-92)
+
+- **Platform Technology Stack Upstream Repository Linkage (`RECOMMENDED_PLATFORM_STACK.md`, `TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+  - Added canonical repository citations for `https://github.com/vladm3105/technology-stack` alongside local workstation path `/home/ya/devd/technology_stack/` across Document Control, Purpose, Technology Matrix intro, Mermaid progressive refinement flowchart, and Specification Directory.
+  - Added Section 5.3 to `RECOMMENDED_PLATFORM_STACK.md` documenting git clone instructions (`git clone https://github.com/vladm3105/technology-stack.git /home/ya/devd/technology_stack`) for developers and autonomous agents to obtain the actual technology stack specifications (00–19).
+  - Modernized `TECHNOLOGY_STACK_USAGE_GUIDE.md` to reference the canonical upstream repository and local development path across all tiers, eliminating legacy path references.
+
+## [0.91.10] — 2026-10-13
+
+### Updated — Synchronize Recommended Platform Technology Stack with Enterprise Catalog (C1 Governance, CHG-91 + IPLAN-91, Decision DEC-CHG-91)
+
+- **Platform Technology Stack Reference Architecture (`RECOMMENDED_PLATFORM_STACK.md`)**:
+  - Updated authoritative enterprise catalog reference path to `/home/ya/devd/technology_stack` (Standard v2.0, Specifications 00–19).
+  - Modernized the Six Architectural Pillars and codified the Five Non-Negotiable Operational Tenets (three-layer orchestration, agent is not a principal, thin payloads, consolidated infrastructure, lossless audit fidelity).
+  - Expanded the Master Platform Technology Matrix to 37 components: added `agentd over tmux`, Cloudflare Tunnel, WezTerm + Sunshine / Moonlight remote desktop, Valkey 8 in-memory store, Apache Superset agentic BI (with Model Context Protocol and Playwright visual critic), Trivy supply-chain security, ast-grep/ruff, py-spy, k6/nats-bench/toxiproxy staging arsenal, Syft/Steampipe dynamic software inventory, and Debian 13 self-hosted ephemeral CI runner hardening.
+  - Updated SDD 10-layer execution mapping, progressive refinement flowchart, and added Tri-Environment Continuum (Dev, Stage, Prod) guidance.
+  - Published comprehensive directory of companion Specifications 00–19 and framework adoption blueprints.
+
+## [0.91.9] — 2026-10-11
+
+### Added — Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance (C2 Spec, CHG-90 + IPLAN-90, Decision DEC-CHG-90, GD-77)
+
+- **Primary Workflow Template Selection Guides (`*-SWF-TEMPLATE.yaml`)**:
+  - Authored tailored in-file selection guides in the header comment block of all primary workflow templates across Layers 01–08 (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) and Governance (`CHG-SWF-TEMPLATE.yaml`).
+  - Explicitly documents when to choose SWF: multi-container/distributed architectures, asynchronous callbacks, steering/RFC reviews, and automated saga rollback compensation (`compensatedBy`).
+- **Companion Static Template Selection Guides (`*-TEMPLATE.yaml`)**:
+  - Authored corresponding companion selection guides in the header comment block of all companion static templates across Layers 01–08 (`BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`, `BDD-TEMPLATE.yaml`, `ADR-TEMPLATE.yaml`, `SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml`, `IPLAN-TEMPLATE.yaml`) and Governance (`governance/chg/CHG-TEMPLATE.yaml`, `layers/09_CHG/CHG-TEMPLATE.yaml`).
+  - Clarifies that companion templates are optimized for single-capability, monolithic in-process components, and linear specifications where state machine logic is unnecessary overhead.
+- **Strict Byte-Identity Preservation**:
+  - Maintained strict byte-identity between `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` per CHG-08 #667.
+- **Decision Ratification**:
+  - Ratified Decision `GD-77` in `framework/governance/DECISIONS.md`.
+
+## [0.91.8] — 2026-10-11
+
+### Removed — Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard (C2 Spec, CHG-89 + IPLAN-89, Decision DEC-CHG-89, GD-76)
+
+- **Retirement of Legacy MVP Template Tombstones**:
+  - Permanently removed all eight legacy `*-MVP-TEMPLATE.yaml` tombstone pointer files across layers 01 through 08 (`01_BRD` to `08_IPLAN`), eliminating obsolete artifacts created during the single-template unification in CHG-08 (#666).
+  - Preserved pre-change copies under `framework/archive/CHG-89/templates/` (`BRD-MVP-TEMPLATE.yaml` through `IPLAN-MVP-TEMPLATE.yaml`) for permanent auditability.
+- **Conformance Anti-Resurrection Guards**:
+  - Modernized `tests/conformance/test_seed_contract.py` (`test_mvp_template_not_resurrected`) to assert `BRD-MVP-TEMPLATE.yaml` does not exist.
+  - Modernized `tests/conformance/test_iplan_carrier.py` (`test_mvp_template_not_resurrected`) to assert `IPLAN-MVP-TEMPLATE.yaml` does not exist.
+  - Added `test_no_mvp_templates_exist` to `tests/conformance/test_layers.py` asserting zero `*-MVP-TEMPLATE.*` files exist across any layer folder under `framework/layers/`.
+- **Decision Ratification**:
+  - Ratified Decision `GD-76` in `framework/governance/DECISIONS.md`.
+
+## [0.91.7] — 2026-10-11
+
+### Added — Universal AI-First 5-Quadrant YAML Index Modernization Across All SDD Layers (C2 Spec, CHG-88 + IPLAN-88, Decision DEC-CHG-88, GD-75)
+
+- **Universal 5-Quadrant YAML Index Architecture**:
+  - Modernized all remaining eight SDD layer index templates (`01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `06_SPEC`, `07_TDD`, `09_CHG`, `10_EVAL`) from legacy Markdown (`*-00_index.TEMPLATE.md`) to canonical, agent-readable YAML specifications (`*-00_index.TEMPLATE.yaml`).
+  - Standardized all 10 SDD layers around the unified 5-Quadrant schema: Quadrant 1 (Metadata & AI-First contract), Quadrant 2 (Document Registry), Quadrant 3 (Backlog & Roadmap), Quadrant 4 (Layer Intelligence & Cross-Layer Traceability), and Quadrant 5 (Agent Update Triggers).
+  - Codified the AI-first single source of truth contract: machine-readable YAML is the sole authoritative record; human-facing markdown views and reports are generated on-demand by AI agents.
+- **Historical Pre-Change Archive**:
+  - Preserved pre-change Markdown index templates in `framework/archive/CHG-88/templates/` (`BRD-00_index.TEMPLATE.md` through `EVAL-00_index.TEMPLATE.md`).
+- **Framework Registry & Standards Synchronization**:
+  - Updated `framework/registry/LAYER_REGISTRY.yaml` header comments to reflect 100% YAML index templates across all 10 layers.
+  - Updated layer READMEs and workflow standards across all layers to reference `*-00_index.TEMPLATE.yaml`.
+  - Updated conformance mutation test `tests/conformance/test_instance_format_ssot.py` to assert 6 sanctioned index mentions.
+- **Decision Ratification**:
+  - Ratified Decision `GD-75` in `framework/governance/DECISIONS.md`.
+
+## [0.91.6] — 2026-10-11
+
+### Added — Modernization of Layer 05 ADR Index to YAML with Embedded Project Technology Stack & Security Registry (C2 Spec, CHG-87 + IPLAN-87, Decision DEC-CHG-87, GD-74)
+
+- **ADR-00_index Modernization to YAML**:
+  - Authored canonical Layer 05 index template `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` (retiring legacy Markdown `ADR-00_index.TEMPLATE.md`), maintaining the 10 total index templates asserted by `test_index_template_lint.py`.
+  - Structured declarative YAML schemas for `adrs`, `backlog`, and `update_triggers`.
+- **Project Technology Stack & Security Monitoring Registry**:
+  - Embedded the canonical agent-readable technology registry within `ADR-00_index.TEMPLATE.yaml` under `technologies`.
+  - Codified security monitoring attributes: standard Package URLs (`purl`), Common Platform Enumerations (`cpe`), package ecosystem, vulnerability scanner targets (`trivy`, `osv`, `dependabot`), severity alert thresholds, and license compliance.
+  - Codified automated tool update policies: update tool (`renovate`, `dependabot`, `manual`), update cadence (`weekly`, `monthly`, `quarterly`), patch auto-merge authorization, and manifest bindings.
+- **Workflow Standards & Documentation Alignment**:
+  - Updated `framework/layers/05_ADR/README.md` to reference `ADR-00_index.TEMPLATE.yaml`.
+  - Added invariant `INV-ADR-07` to `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` requiring technology registry synchronization upon ADR acceptance.
+  - Updated `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` §2.5 to designate `ADR-00_index.yaml` as the project-level technology stack and security inventory.
+- **Decision Ratification**:
+  - Ratified Decision `GD-74` in `framework/governance/DECISIONS.md`.
+
+## [0.91.5] — 2026-10-11
+
+### Added — Enterprise Approved Technology Stack Governance, Progressive Refinement Funnel, and Layer 05 (ADR) Selection Gate (C2 Spec, CHG-86 + IPLAN-86, Decision DEC-CHG-86, GD-73)
+
+- **Normative Technology Stack Usage Guide**:
+  - Published `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` establishing the 4-tier Progressive Refinement Funnel (Tier 0 Enterprise Stack, Tier 1 Seed Vision, Tier 2 Module Decomposition, Tier 3 SDD Layer 05 Selection Gate).
+  - Codified the 4-step Stack Variance & Exception Procedure (Justification & Risk Assessment, Architecture Review Gate, Variance Documentation in ADR §10, Sunsetting / Convergence Plan).
+  - Detailed flow mappings for all 6 traversal paths (`SDD2C`, `SEED2C`, `CODE2S`, `DIR2C`, `CODE2C`, `HOTFIX`).
+- **Architectural Flow & Diagram Modernization**:
+  - Enhanced `RECOMMENDED_PLATFORM_STACK.md` with §4.1 Mermaid flowchart contrasting Problem Space (Layers 01–04) vs. Selection Gate (Layer 05) vs. Solution Space (Layers 06–08).
+  - Modernized `DECISION_WORKFLOW.md`, `SEED_TO_MODULE_DECOMPOSITION.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/layers/05_ADR/README.md`, and `adr-decision-analysis.sw.yaml`.
+- **Primary CNCF Serverless Workflow & Companion Templates Modernization**:
+  - Updated primary SWF templates (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) with candidate evaluation branches, container fixtures, and saga compensations.
+  - Synchronized companion static templates (`*-TEMPLATE.yaml`), `SEED-TEMPLATE.md`, and `MODULE-TEMPLATE.md` while strictly preserving pinned section sets (`STRUCT01`).
+- **Workflow Standards & Review Crew Alignment**:
+  - Updated normative workflow standards (`*_WORKFLOW_STANDARD.md` across Layers 01–08 and Governance).
+  - Enriched `REVIEW_CREWS.yaml` reviewer persona definitions (`architect` verifies technology stack alignment; `operator` verifies platform infrastructure compatibility).
+- **Decision Ratification**:
+  - Graduated Decision `GD-73` into `framework/governance/DECISIONS.md`.
 
 ## [0.91.4] — 2026-10-10
 

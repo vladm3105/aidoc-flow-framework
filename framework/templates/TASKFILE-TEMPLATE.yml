@@ -1,0 +1,125 @@
+# =============================================================================
+#  Canonical SDD Tasks Template (.aidoc/Taskfile.yml)
+# =============================================================================
+#  Authority: docs/AIDOC_WORKSTATION_STANDARD.md
+#  Governs: SDD lifecycle execution, linting, review crews, context slicing
+# =============================================================================
+version: '3'
+
+vars:
+  SDD_DIR: '{{.SDD_DIR | default "docs/sdd"}}'
+  ENGINE_CONFIG: '{{.ENGINE_CONFIG | default ".aidoc/engine/engine.yaml"}}'
+  PYTHONPATH: '{{.PYTHONPATH | default ".aidoc/framework:framework"}}'
+
+env:
+  PYTHONPATH: '{{.PYTHONPATH}}'
+
+tasks:
+  lint:
+    desc: "Run structural SDD linter over docs/sdd with project overrides"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint {{.SDD_DIR}} {{.CLI_ARGS}}
+
+  review:
+    desc: "Execute multi-persona review crew (live or verify-only mode)"
+    cmds:
+      - python3 -m aidoc_flow_langgraph.cli review --config {{.ENGINE_CONFIG}} {{.CLI_ARGS}}
+
+  slice:
+    desc: "Slice and pack SDD context DAG for LLM prompts (with Kùzu acceleration & native fallback)"
+    cmds:
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main slice {{.CLI_ARGS}} ||
+        python3 -m sdd_doc_lint --slice {{.CLI_ARGS}}
+
+  setup-kuzu:
+    desc: "Install Kùzu OLAP graph database into local environment for sub-millisecond edge slicing"
+    cmds:
+      - uv pip install "kuzu>=0.8.0" || pip install "kuzu>=0.8.0"
+
+  kuzu-status:
+    desc: "Check Kùzu graph engine index status and node/edge metrics"
+    cmds:
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main kuzu-status --root {{.SDD_DIR}} {{.CLI_ARGS}} ||
+        echo "aidoc-context-tools not installed. Run task sdd:setup-kuzu."
+
+  check:
+    desc: "Full SDD Gate: adaptation profile + structural linting + cryptographic review verification"
+    cmds:
+      - task: profile-lint
+      - task: lint
+      - task: review
+        vars: { CLI_ARGS: "--verify-only" }
+
+  graph-check:
+    desc: "Run Binary Topological Validation (BTV) over docs/sdd/graph/"
+    cmds:
+      - python3 -m sdd_doc_lint --graph-check {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  render:
+    desc: "Project native SDD graphs into human-readable Markdown and Mermaid specs"
+    cmds:
+      - python3 -m sdd_doc_lint --render-spec {{.CLI_ARGS}}
+
+  delta:
+    desc: "Calculate PR blast radius and extract mutated subgraph for AI review"
+    cmds:
+      - python3 -m sdd_doc_lint --render-pr-impact --base origin/main --head HEAD {{.CLI_ARGS}}
+
+  graph-cypher:
+    desc: "Execute openCypher query on SDD graph via embedded Kùzu adapter (Pillar 4)"
+    cmds:
+      - >-
+        python3 -c "import aidoc_context" 2>/dev/null &&
+        python3 -m aidoc_context.cli.main cypher --query "{{.QUERY}}" --root {{.SDD_DIR}} {{.CLI_ARGS}} ||
+        python3 -m sdd_doc_lint --cypher "{{.QUERY}}" --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  lake-export:
+    desc: "Export local SDD graph to openCypher / Apache AGE for Central Federated Read Lake"
+    cmds:
+      - python3 -m sdd_doc_lint --export-lake --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
+
+  chg-lint:
+    desc: "Run CHG structural linter on Change Requests in docs/sdd/09_CHG/"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - |
+        {{if .CLI_ARGS}}
+        python3 -m sdd_doc_lint.chg_lint {{.CLI_ARGS}}
+        {{else}}
+        TARGET="$(ls {{.SDD_DIR}}/09_CHG/CHG-*.yaml 2>/dev/null | sort -V | tail -n 1)"
+        if [ -z "$TARGET" ]; then
+          LATEST_DIR="$(ls -d {{.SDD_DIR}}/09_CHG/archive/CHG-* 2>/dev/null | sort -V | tail -n 1)"
+          [ -n "$LATEST_DIR" ] && TARGET="$(ls "$LATEST_DIR"/CHG-*.yaml 2>/dev/null | head -n 1)"
+        fi
+        if [ -n "$TARGET" ]; then
+          python3 -m sdd_doc_lint.chg_lint --sdd-root "{{.SDD_DIR}}" "$TARGET"
+        else
+          echo "No CHG target specified or found in {{.SDD_DIR}}/09_CHG/." >&2
+          exit 1
+        fi
+        {{end}}
+
+  swf-lint:
+    desc: "Run Serverless Workflow linter on declarative state machines"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint.swf_lint {{.CLI_ARGS | default .SDD_DIR}}
+
+  profile-lint:
+    desc: "Validate adaptation profile against schema 1.1.0"
+    preconditions:
+      - sh: 'python3 -c "import sdd_doc_lint" 2>/dev/null || test -d .aidoc/framework/sdd_doc_lint'
+        msg: "sdd_doc_lint not found. Install dependencies or sync .aidoc/framework."
+    cmds:
+      - python3 -m sdd_doc_lint.profile_lint {{.CLI_ARGS | default ".aidoc/profile.yaml"}}

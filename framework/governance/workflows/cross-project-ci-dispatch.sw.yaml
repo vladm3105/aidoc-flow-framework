@@ -1,0 +1,135 @@
+id: cross-project-ci-dispatch
+name: Cross-Project CI Verification Dispatch & Invariant Gate Workflow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing cross-repository CI dispatch, synthetic test oracle execution,
+  subscriber result aggregation, and merge-blocking commit status gates per MULTI_PROJECT_FEDERATED_STANDARD.md.
+start: IngestPublicationEvent
+
+states:
+  # --- Step 1: Ingest Candidate Contract Event ---
+  - name: IngestPublicationEvent
+    type: operation
+    actions:
+      - name: parseCandidateEvent
+        functionRef:
+          refName: extractEventPayload
+          arguments:
+            event_schema: "aidoc.v1.ChangeEvent"
+            required_fields:
+              - "contract_id"
+              - "version"
+              - "schema_hash"
+              - "source_project_id"
+    transition: LookupSubscribers
+
+  # --- Step 2: Query Downstream Subscribers ---
+  - name: LookupSubscribers
+    type: operation
+    actions:
+      - name: queryRegistrySubscribers
+        functionRef:
+          refName: queryContractsRegistry
+          arguments:
+            registry_manifest: "contracts-registry.yaml"
+            target_contract: "${ .contract_id }"
+    transition: EvaluateSubscriberCount
+
+  - name: EvaluateSubscriberCount
+    type: switch
+    dataConditions:
+      - condition: "${ .subscribers.length > 0 }"
+        transition: DispatchSubscriberCI
+    defaultCondition:
+      transition: NoSubscribersToDispatch
+
+  - name: NoSubscribersToDispatch
+    type: operation
+    actions:
+      - name: postImmediateGreen
+        functionRef:
+          refName: postCommitStatus
+          arguments:
+            context: "aidoc/cross-project-invariants"
+            state: "success"
+            description: "No registered downstream subscribers for this contract."
+    end:
+      terminate: true
+
+  # --- Step 3: Dispatch Parallel Synthetic Runs ---
+  - name: DispatchSubscriberCI
+    type: operation
+    actions:
+      - name: triggerSubscriberPipelines
+        functionRef:
+          refName: dispatchCrossRepoCI
+          arguments:
+            subscribers: "${ .subscribers }"
+            candidate_contract_id: "${ .contract_id }"
+            candidate_schema_hash: "${ .schema_hash }"
+            candidate_version: "${ .version }"
+            oracle_contract_proto: "test_oracle.proto"
+    transition: AwaitSubscriberVerdicts
+
+  # --- Step 4: Await & Aggregate Execution Results ---
+  - name: AwaitSubscriberVerdicts
+    type: operation
+    actions:
+      - name: collectResultPayloads
+        functionRef:
+          refName: aggregateNatsEvents
+          arguments:
+            subject: "xp.agent.v1.oracle.result"
+            correlation_id: "${ .event_id }"
+            timeout_seconds: 300
+    transition: EvaluateSubscriberVerdicts
+
+  - name: EvaluateSubscriberVerdicts
+    type: switch
+    dataConditions:
+      - condition: "${ .all_subscribers_passed == true }"
+        transition: PostProviderGreenStatus
+    defaultCondition:
+      transition: PostProviderRedBlocker
+
+  # --- Step 5: Post Provider PR Status Check ---
+  - name: PostProviderGreenStatus
+    type: operation
+    actions:
+      - name: approveProviderPR
+        functionRef:
+          refName: postCommitStatus
+          arguments:
+            context: "aidoc/cross-project-invariants"
+            state: "success"
+            description: "All downstream subscriber test suites verified clean against candidate contract."
+    end:
+      terminate: true
+
+  - name: PostProviderRedBlocker
+    type: operation
+    actions:
+      - name: blockProviderPR
+        functionRef:
+          refName: postCommitStatus
+          arguments:
+            context: "aidoc/cross-project-invariants"
+            state: "failure"
+            description: "Cross-repo invariant verification failed in one or more downstream subscribers."
+    transition: EmitBlockerEscalation
+
+  # --- Step 6: Blocker Escalation & Ticket Emission ---
+  - name: EmitBlockerEscalation
+    type: operation
+    actions:
+      - name: emitSupportTicket
+        functionRef:
+          refName: generateSupportTicket
+          arguments:
+            category: "UPSTREAM_PROJECT_DEFECT"
+            target_contract: "${ .contract_id }"
+            failed_subscribers: "${ .failed_subscribers }"
+            counterexamples: "${ .counterexamples }"
+    end:
+      terminate: true

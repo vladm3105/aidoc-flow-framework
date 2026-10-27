@@ -1,0 +1,74 @@
+# =============================================================================
+#  IPLAN-125: Framework Modernization, Toolchain Alignment & Dual Naming Parity
+# =============================================================================
+#  Implementation Plan authorized by CHG-125
+#  Status: Implemented
+# =============================================================================
+
+id: IPLAN-125
+title: "Implementation Plan: Framework Modernization, Toolchain Alignment & Dual Naming Parity"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.11"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-21"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "Framework Maintainer"
+  source_chg: "CHG-125"
+  date_created: "2026-10-21T12:00:00Z"
+  date_implemented: "2026-10-21T12:30:00Z"
+
+file_manifest:
+  - path: "doc_lint"
+    action: "create"
+    status: "DONE"
+  - path: "sdd_doc_lint/__init__.py"
+    action: "modify"
+    status: "DONE"
+  - path: "sdd_doc_lint/pyproject.toml"
+    action: "create"
+    status: "DONE"
+  - path: "aidoc"
+    action: "create"
+    status: "DONE"
+  - path: "mise.toml"
+    action: "create"
+    status: "DONE"
+  - path: "Taskfile.yml"
+    action: "modify"
+    status: "DONE"
+  - path: ".gitignore"
+    action: "modify"
+    status: "DONE"
+  - path: ".pre-commit-config.yaml"
+    action: "modify"
+    status: "DONE"
+  - path: ".markdownlintignore"
+    action: "modify"
+    status: "DONE"
+  - path: "ruff.toml"
+    action: "modify"
+    status: "DONE"
+  - path: ".lychee.toml"
+    action: "modify"
+    status: "DONE"
+  - path: ".github/workflows/markdown-lint.yml"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/check-docs-updated.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "plans/FRAMEWORK-MODERNIZATION-AND-TOOLCHAIN-ALIGNMENT-PLAN.md"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-125/CHG-125.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-125/IPLAN-125.yaml"
+    action: "create"
+    status: "DONE"

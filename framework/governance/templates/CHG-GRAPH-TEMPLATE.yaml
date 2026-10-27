@@ -1,0 +1,61 @@
+# =============================================================================
+#  CHG-GRAPH-TEMPLATE.yaml — Change Governance Graph Slice (Layer 09)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 09_CHG (Change Governance & Architectural Overlay)
+#  Parity: Full content and functional parity with CHG-TEMPLATE.yaml and CHG-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "CHG-NN_[change_slug]"
+
+metadata:
+  author: "[Change Initiator / Framework Maintainer ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Transactional governance envelope authorizing mutations to active SDD nodes]"
+  layer: "09_CHG"
+  change_control:
+    change_level: "C2"  # C1 | C2 | C3 | Emergency
+    change_source: "direct"  # upstream | midstream | design | execution | direct | spec
+    entry_gate: "GATE-SPEC"  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC
+    semver_impact: "minor"   # major | minor | patch
+    version_action: "bump"   # bump | noop | pin
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Primary Change Request Governance Envelope (Section 1 & 1B Parity)
+  # ---------------------------------------------------------------------------
+  - id: "CHG-NN"
+    type: "change_request"
+    title: "[Change Request Title: e.g. Introduce Distributed Token-Bucket Rate Limiter]"
+    statement: "[What architectural modification or requirement enhancement is being authorized?]"
+    status: "Proposed"  # Draft | Proposed | Active | Accepted | Rejected | Superseded
+    authorized_by: "SteeringCommittee"
+    properties:
+      change_level: "C2"
+      entry_gate: "GATE-06"
+      decision_id: "DEC-CHG-NN"
+      decision_title: "[Ratified Architecture Decision Title]"
+      context: "[Forces, latency constraints, and operational drivers motivating change]"
+      choice: "[Specific architectural or specification changes authorized]"
+      consequences: "[Benefits, trade-offs, and regression bounds]"
+      gate_checklist:
+        - gate: "GATE-06"
+          status: "Passed"
+          evidence: "Contract schema validated against OpenAPI 3.1"
+        - gate: "GATE-08"
+          status: "Pending"
+          evidence: "IPLAN execution pending merge"
+
+edges:
+  # Change Request authorizes downstream node mutations
+  - from: "CHG-NN"
+    to: "SPEC.06.01.xxxx"
+    relation: "authorized_by"
+    notes: "Authorizes introduction of rate-limiting gRPC headers and error statuses"
+    description: "Transactionally authorizes modification of OrderService Protobuf contract to introduce token-bucket rate limits."
+    rationale: "Fulfills SDD transactional change governance invariant (GRAPH-CARD-008)."

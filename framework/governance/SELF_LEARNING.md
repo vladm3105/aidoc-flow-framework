@@ -1,14 +1,21 @@
+---
+doc_id: GOV-SELF-LEARNING
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Self-Learning Governance
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | Approved |
-| Last Updated | 2026-09-29 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -16,7 +23,7 @@ captured, how patterns are extracted, where lessons persist, and how they
 inject into future sessions. Prevents repeated mistakes, preserves successful
 workflows, and builds project-specific institutional knowledge.
 
-## Architecture
+## Architecture {#sec-architecture}
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -37,7 +44,7 @@ workflows, and builds project-specific institutional knowledge.
 (Harness hook and store names in this diagram are illustrative — see
 Knowledge tiers Tier 1 and the harness-optional notes under Capture/Inject.)
 
-## Knowledge tiers
+## Knowledge tiers {#sec-knowledge-tiers}
 
 The loop runs on the Two-Tier Project Knowledge Architecture (#779):
 
@@ -52,7 +59,7 @@ read on demand. Tier 3 is not a knowledge store — it is the feedback contract
 that keeps tooling defects out of project memory. (No Tier-3 storage and no
 universal log ship in this version.)
 
-## File Locations
+## File Locations {#sec-file-locations}
 
 | Component | Path | Purpose |
 |-----------|------|---------|
@@ -65,9 +72,9 @@ Trajectory paths are harness-provided examples, resolved at runtime — a
 harness without trajectory capture runs the loop on portable sources
 (`git log`, session notes, the repo tracker).
 
-## Capture Phase
+## Capture Phase {#sec-capture-phase}
 
-### What gets captured
+### What gets captured {#sec-what-gets-captured}
 
 Where the harness exposes a session-close hook (e.g. `session.post`), every
 session trajectory is logged through it. Harnesses without one capture from
@@ -83,16 +90,16 @@ portable sources instead (`git log`, session notes, the repo tracker):
 | `toolCalls` | assistant messages with tool-invocation parts | Activity level |
 | `errors` | tool results with isError=true | Failure count |
 
-### What does NOT get captured
+### What does NOT get captured {#sec-what-does-not-get-captured}
 
 - Full message content (privacy, size)
 - API keys, credentials, secrets
 - User personal information
 - File contents (only metadata)
 
-## Extract Phase
+## Extract Phase {#sec-extract-phase}
 
-### Pattern categories
+### Pattern categories {#sec-pattern-categories}
 
 | Category | Signal | Example |
 |----------|--------|---------|
@@ -102,7 +109,7 @@ portable sources instead (`git log`, session notes, the repo tracker):
 | `project-rule` | Constraint discovered through trial | "Debian images only, not Alpine" |
 | `preference` | User correction or style preference | "No emojis in governance docs" |
 
-### Extraction criteria
+### Extraction criteria {#sec-extraction-criteria}
 
 A pattern qualifies as a learning when:
 
@@ -114,9 +121,9 @@ A pattern qualifies as a learning when:
 
 Single-occurrence events are logged but not promoted to learnings.
 
-## Consolidate Phase
+## Consolidate Phase {#sec-consolidate-phase}
 
-### Learnings file format
+### Learnings file format {#sec-learnings-file-format}
 
 `.aidoc/learning/learnings.md` uses this structure:
 
@@ -139,14 +146,14 @@ Single-occurrence events are logged but not promoted to learnings.
 - **Evidence**: SDD-09 observability generation
 ```
 
-### Deduplication rules
+### Deduplication rules {#sec-deduplication-rules}
 
 - **Merge** entries describing the same lesson (update count, keep latest evidence)
 - **Promote** entries with count >= 5 toward Tier 1 (`AGENTS.md`, `.agents/rules/`, or a linter/static check); without a Tier-1 surface they stay in `learnings.md`
 - **Age out** entries older than 30 days that haven't been observed recently
 - **Archive** aged-out entries to `.aidoc/learning/archive/{year}-{month}.md`
 
-### Consolidation schedule
+### Consolidation schedule {#sec-consolidation-schedule}
 
 | Trigger | Method | Scope |
 |---------|--------|-------|
@@ -154,9 +161,9 @@ Single-occurrence events are logged but not promoted to learnings.
 | Manual | `/self-learn` slash command | Current session + recent trajectories |
 | Post-session | Agent self-trigger | After error-heavy or correction-heavy sessions |
 
-## Inject Phase
+## Inject Phase {#sec-inject-phase}
 
-### System prompt injection
+### System prompt injection {#sec-system-prompt-injection}
 
 Where the harness supports injection hooks (e.g. `learn-inject`), top lessons
 are appended to the system prompt. Otherwise the apply mode reads Tier 2 on
@@ -166,7 +173,7 @@ demand at session start:
 - **Priority**: Most recent + highest count lessons first
 - **Scope**: Only lessons with count >= 2 (exclude single-occurrence noise)
 
-### Memory integration
+### Memory integration {#sec-memory-integration}
 
 Lessons with count >= 5 are promoted toward Tier 1. Where the project keeps a
 memory file (e.g. `MEMORY.md`), they land under:
@@ -177,7 +184,7 @@ memory file (e.g. `MEMORY.md`), they land under:
 - [From self-learn] Validate all cross-references after delegation
 ```
 
-### Governance rule promotion
+### Governance rule promotion {#sec-governance-rule-promotion}
 
 Lessons that become project-wide constraints are proposed as updates to the
 appropriate governance document — through the owning repo's authorizing CHG
@@ -198,7 +205,7 @@ changes in the self-learn report. Solo projects use self-approved C3 (owner
 as Technical Lead) — the CHG record still exists, only the approver is the
 owner.
 
-### Framework and governance feedback submission
+### Framework and governance feedback submission {#sec-framework-and-governance-feedback-submission}
 
 When the self-learn skill modifies governance or framework files, it submits
 tracking issues for auditability:
@@ -212,7 +219,7 @@ This ensures governance changes are tracked in issue trackers, not just in
 files. The framework maintainer can see what project-level fixes should be
 upstreamed.
 
-### Feedback-submit contract (§7.4 hardening)
+### Feedback-submit contract (§7.4 hardening) {#sec-feedback-submit-contract-74-hardening}
 
 Every learning cycle that modifies a governed document MUST close the loop in
 the same cycle — an unsubmitted governance change is invisible to every
@@ -231,7 +238,7 @@ consumer outside this session:
 4. Session-start duty: review injected learnings AND the open feedback
    issues on the tracker before planning work.
 
-## Verification Checklist
+## Verification Checklist {#sec-verification-checklist}
 
 After running a learning cycle (`/self-learn`), verify:
 
@@ -249,15 +256,15 @@ After running a learning cycle (`/self-learn`), verify:
 - [ ] Project governance changes submitted to project repo
 - [ ] Each feedback issue read back to verify publication
 
-## Prevention Rules
+## Prevention Rules {#sec-prevention-rules}
 
-### Rule 1: Never capture full message content
+### Rule 1: Never capture full message content {#sec-rule-1-never-capture-full-message-content}
 
 Trajectory logs store metadata only (turns, tool calls, errors). Full message
 content stays in the session trajectory store and is not duplicated into JSONL
 logs.
 
-### Rule 2: Governance updates are additive, cited, and CHG-traced
+### Rule 2: Governance updates are additive, cited, and CHG-traced {#sec-rule-2-governance-updates-are-additive-cited-and-chg-traced}
 
 Self-learn never writes governance documents directly: every governance update
 rides an authorizing CHG and an In-Progress IPLAN in the owning repo — solo or
@@ -268,44 +275,44 @@ Constraints: only add rules (never remove safety invariants), cite the learning
 source in the update, keep each update to one rule or sentence, and log all
 changes in the self-learn report.
 
-### Rule 3: Cap injection size
+### Rule 3: Cap injection size {#sec-rule-3-cap-injection-size}
 
 The system prompt injection must not exceed 3KB. If learnings exceed this, keep
 only the top 20 by recency * count score. Overflow stays in `learnings.md` for
 manual review.
 
-### Rule 4: Age out aggressively
+### Rule 4: Age out aggressively {#sec-rule-4-age-out-aggressively}
 
 Stale learnings add noise. 30-day expiry with re-observation resets the timer.
 If a lesson hasn't been relevant in 30 days, it's probably not a durable
 pattern.
 
-### Rule 5: Don't learn from cancelled sessions
+### Rule 5: Don't learn from cancelled sessions {#sec-rule-5-dont-learn-from-cancelled-sessions}
 
 Sessions with `outcome: "cancelled"` may have incomplete trajectories. Only
 extract patterns from `completed` or `error` sessions.
 
-## Agent Responsibilities
+## Agent Responsibilities {#sec-agent-responsibilities}
 
-### Primary agent (build)
+### Primary agent (build) {#sec-primary-agent-build}
 
 - Review injected learnings at session start
 - Apply learnings during execution
 - Flag new patterns for extraction when user corrects behavior
 
-### Subagents (explore, general)
+### Subagents (explore, general) {#sec-subagents-explore-general}
 
 - Do NOT write to learnings.md directly
 - Report findings to parent agent for consolidation
 
-### Compose agent
+### Compose agent {#sec-compose-agent}
 
 - Runs learning cycle as part of workflow orchestration
 - Can trigger `/self-learn` between workflow phases
 
-## Integration with Existing Governance
+## Integration with Existing Governance {#sec-integration-with-existing-governance}
 
-### SDD Reference Integrity (§6)
+### SDD Reference Integrity (§6) {#sec-sdd-reference-integrity-6}
 
 Self-learning reinforces DOC_GOVERNANCE_CORE.md §6 by:
 
@@ -313,7 +320,7 @@ Self-learning reinforces DOC_GOVERNANCE_CORE.md §6 by:
 - Tracking which subagent delegation patterns succeed vs fail
 - Injecting "validate references after delegation" as a high-priority learning
 
-### Decision Workflow (DECISION_WORKFLOW.md)
+### Decision Workflow (DECISION_WORKFLOW.md) {#sec-decision-workflow-decision_workflowmd}
 
 Self-learning captures:
 
@@ -321,7 +328,7 @@ Self-learning captures:
 - Which seed-to-module-to-SDD sequences worked smoothly
 - Module number confusion patterns
 
-### notices.md (RCA)
+### notices.md (RCA) {#sec-noticesmd-rca}
 
 Self-learning feeds into notices.md by:
 
@@ -329,7 +336,7 @@ Self-learning feeds into notices.md by:
 - Flagging when prevention rules are being violated (same error despite rule)
 - Tracking rule effectiveness (is the rule actually preventing the issue?)
 
-## Cross-References
+## Cross-References {#sec-cross-references}
 
 - `framework/skills/submit-feedback/` — Framework-level feedback filing workflow
 - `DOC_GOVERNANCE_CORE.md` — Governance principles

@@ -4,18 +4,20 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-17 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 ## Template Usage
 
-- **Dual-Template Selection (GD-51 through GD-61)**:
-  - **Standard Templates (`layers/0X_TYPE/TYPE-TEMPLATE.yaml`)**: Use for straightforward, atomic, or linear artifacts where declarative specification without execution graph state transitions is sufficient.
-  - **Workflow Templates (`layers/0X_TYPE/TYPE-SWF-TEMPLATE.yaml`)**: Use when the artifact models complex state transitions, multi-branch parallel operations, automated evaluation runners, distributed choreography contracts, or saga compensation rollbacks. These templates follow the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow v0.8 YAML state machine (`workflow_definition`).
+- **Three-Tier Layer Model & Template Selection (GD-51 through GD-61, GD-99 through GD-113)**:
+  - **Tier 1 (Workflow Templates — `layers/0X_TYPE/TYPE-SWF-TEMPLATE.yaml`)**: Use when the artifact models complex state transitions, multi-branch parallel operations, automated evaluation runners, distributed choreography contracts, or saga compensation rollbacks. These templates follow the **Hybrid Envelope Architecture** (`subtype: workflow`), preserving full structural schema compliance (`STRUCT01-10`) with `sdd_doc_lint` while housing an embedded CNCF Serverless Workflow v0.8 YAML state machine (`workflow_definition`).
+  - **Tier 2 (Canonical Graph Templates — `layers/0X_TYPE/TYPE-GRAPH-TEMPLATE.yaml`)**: Use for the SDD-GRAPH v2.0 property graph data plane committed to git. Provides strongly-typed node entities and dependency edges for openCypher/Kùzu slicing and deterministic DAG validation (`BTV PASS`).
+  - **Tier 3 (Compiled Markdown — `*.md`)**: Rendered dynamically on demand via `sdd_doc_lint --render-spec <graph.yaml>` for PR summaries and human review.
+  - **Standard Declarative Templates (`layers/0X_TYPE/TYPE-TEMPLATE.yaml`)**: Use for straightforward, atomic, or linear artifacts where declarative specification without execution graph state transitions is sufficient.
 - **Normative Workflow Standards**: When authoring workflow-enabled artifacts or understanding layer state machines, consult `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` and the per-layer specification standard `layers/0X_TYPE/TYPE_WORKFLOW_STANDARD.md`.
 - Fill placeholder fields (`[text]`, `xxxx`) with actual values.
 - Do not remove `_guidance`, `_note`, `_example`, or `_antipatterns` fields — they are ignored by validators but provide context.
@@ -38,9 +40,9 @@
 6.  SPEC — component interfaces, data models, behavior contracts (from EARS + BDD + ADR)
 7.  TDD  — test case definitions with inputs/outputs/edge cases (from EARS + BDD + ADR + SPEC)
 8.  IPLAN — file manifest, bash commands, session handoff (from SPEC + TDD)
-9.  CHG  — change management overlay: gates, versioning, audit trail (governance overlay, operational namespace 09 — outside the sequential lifecycle, not outside the numbering)
-10. EVAL — evaluation & QA governance: test strategy, coverage matrices (from EARS + BDD + TDD + IPLAN)
-11. Code — implementation from IPLAN
+    [Code Execution] — implementation from IPLAN, verified against TDD/BDD
+9.  CHG   — change management overlay: gates, versioning, audit trail (governance overlay, operational namespace 09)
+10. EVAL  — evaluation & QA governance: test strategy, coverage matrices (from EARS + BDD + TDD + IPLAN)
 ```
 
 ## EARS Syntax Distinction Invariant
@@ -84,6 +86,15 @@ AI agents MUST NOT bypass verification gates:
 - Auto-merge only when every required check is green. Boundary detection (`REVIEW_REMEDIATION_FLOW.md` audit-trail check) is the backstop, not the permission.
 
 If a hook blocks legitimate work, fix the underlying cause or escalate to the human — the hook is never the problem to route around.
+
+## Platform Technology Stack Compliance & Insecure Options Prohibition
+
+AI assistants operating within the SDD framework MUST strictly adhere to the Authoritative Platform Technology Stack (`/home/ya/devd/technology_stack` / `vladm3105/technology-stack` specifications 00–23):
+
+1. **Mandatory Stack Adherence**: All runtime components, frameworks, persistence mechanisms, message queues, and tools selected or generated in SDD layers (Seed, Module, ADR, SPEC, TDD, IPLAN, Code) MUST strictly draw from the approved platform stack (e.g. Debian 13, Docker CE + gVisor `runsc`, PostgreSQL 18, Bytebase, Valkey 8 / Redis 7.2, NATS JetStream, Temporal, ClickHouse, Embedded Kùzu, Two-Tier Secrets with OCI Vault + OpenBao).
+2. **Strict Prohibition of Insecure Options**: AI agents must NEVER propose, offer, suggest, or use insecure options, relaxed sandboxing (`runc` bypasses without authorization), disabled linters or verification, plain-text secret workarounds on disk or in command lines, or lax container permissions.
+3. **Missing Tools Operator Escalation Protocol**: If any tool, software, runtime, or library required for a task or implementation is missing from the approved technology stack (`/home/ya/devd/technology_stack`), the AI agent MUST NOT invent tools or pick arbitrary unapproved external packages: the agent MUST explicitly inform the operator and request instructions on what tools or software to use before proceeding. In autonomous sessions, always file a GitHub issue on the repository detailing the missing tool requirement.
+4. **Conflict Disposition**: For anything needing real deployment, infrastructure changes, container runtime provisioning, or technology selection work, AI agents MUST file GitHub issues on the repository rather than making unverified local assumptions or out-of-band modifications.
 
 ## IPLAN Status Lifecycle
 
@@ -177,6 +188,25 @@ its companion, and `gates/GATE-*.md` define the checks. See especially
 `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
 checklist (§3.4 of `DOC_GOVERNANCE_CORE.md`) is a MANDATORY PROCESS GATE —
 complete it BEFORE writing any CHG document.
+
+## Graph Engine & Context Slicing: When and How to Use Kùzu
+
+Per the **Quad-Pillar Architecture Standard** and **Decision D-0013 / GD-13** (zero-runtime framework neutrality), AI assistants must follow these operational rules when querying, slicing, or managing repository specifications:
+
+1. **The Three-Tier Layer Model**:
+   - **Tier 1 (Workflow Execution)**: `*-SWF-TEMPLATE.yaml` (CNCF Serverless Workflow v0.8) used by orchestrators (LangGraph/Temporal) to execute authoring, reviews, and gates.
+   - **Tier 2 (Canonical Data Plane)**: `*-GRAPH-TEMPLATE.yaml` (SDD-GRAPH v2.0) committed to git (`docs/sdd/graph/` or per-layer). This is the single data-plane source of truth.
+   - **Tier 3 (Compiled Presentation)**: `*.md` rendered dynamically on demand via `sdd_doc_lint --render-spec <graph.yaml>`.
+2. **Context Slicing Before Code Execution (`IPLAN → Code`)**:
+   - Autonomous agents preparing to implement an IPLAN task MUST extract the minimal topological ancestor closure ($\text{Ancestors}(T_k) \cap \{\text{SPEC}, \text{BDD}, \text{ADR}, \text{EARS}, \text{TDD}\}$).
+   - Use the **FastMCP protocol tool** `aidoc_slice_context(task_id)` or CLI `aidoc-ctx slice --task <ID>`.
+   - This invokes embedded Kùzu (`kuzu>=0.8.0`) under the hood via Pillar 4 (`aidoc-context-tools`), running variable-length openCypher traversals in $<1\,\text{ms}$ and reducing prompt token load by 60–80%.
+   - In minimal CI environments where Kùzu is not installed, `aidoc-context-tools` automatically and gracefully falls back to pure-Python DFS.
+3. **Ad-Hoc Architecture & Impact Inquiries**:
+   - When evaluating cross-layer dependencies, identifying unverified endpoints, or calculating PR blast radius, agents should issue openCypher queries via the FastMCP tool `aidoc_cypher_query(query)` (e.g. `MATCH (n:ArtifactNode {layer: 'SPEC'})-[:DEPENDS_ON]->(b:ArtifactNode {layer: 'BDD'}) RETURN n.node_id, b.node_id`).
+4. **Zero Binary Bloat Invariant (GD-13)**:
+   - AI assistants MUST NEVER commit Kùzu database files, `.kuzu` directories, or compiled binaries into consumer `.aidoc/` or git repositories.
+   - Kùzu instances must always run in-memory (`:memory:`) or within ignored workstation cache directories (`.aidoc/cache/`). The git-tracked `*.graph.yaml` files remain the canonical store.
 
 ## Delegation and concurrency pointers
 

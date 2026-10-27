@@ -1,0 +1,93 @@
+# =============================================================================
+#  SPEC-GRAPH-TEMPLATE.yaml — Component Contract Graph Slice (Layer 06)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 06_SPEC (Technical Specifications & Component Contracts)
+#  Parity: Full content and functional parity with SPEC-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "SPEC-NN_[component_slug]"
+
+metadata:
+  author: "[API Lead / Tech Lead / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[C4-L3 component contracts, interface endpoints, and data exchange schemas]"
+  layer: "06_SPEC"
+  c4_level: "component"
+  tdd_ready_target: "PASS"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Core Interface Contract (Section 3 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "SPEC.06.01.xxxx"
+    type: "component_contract"
+    title: "[API Interface Contract: e.g. Order Ingestion gRPC Service]"
+    target_file: "proto/order/v1/order_service.proto"
+    properties:
+      protocol: "grpc"  # grpc | http | cloudevents | graphql
+      schema_ref: "proto/order/v1/order_service.proto"
+      service_name: "OrderService"
+      endpoints:
+        - method: "CreateOrder"
+          rpc_type: "unary"
+          request_type: "CreateOrderRequest"
+          response_type: "CreateOrderResponse"
+          error_envelope: "google.rpc.Status"
+          rate_limit_rps: 500
+
+  # ---------------------------------------------------------------------------
+  # REST / HTTP Webhook Ingress Contract
+  # ---------------------------------------------------------------------------
+  - id: "SPEC.06.02.xxxx"
+    type: "component_contract"
+    title: "[HTTP REST Webhook Ingress Contract: e.g. Merchant Notification Hook]"
+    target_file: "openapi/v1/merchant_webhook.yaml"
+    properties:
+      protocol: "http"
+      schema_ref: "openapi/v1/merchant_webhook.yaml"
+      route: "POST /v1/merchants/webhooks/orders"
+      auth_scheme: "Bearer HMAC-SHA256"
+      expected_status_codes: [200, 400, 401, 503]
+
+  # ---------------------------------------------------------------------------
+  # Event-Driven Choreography Schema (CloudEvents Parity)
+  # ---------------------------------------------------------------------------
+  - id: "SPEC.06.03.xxxx"
+    type: "component_contract"
+    title: "[CloudEvents Contract: e.g. OrderSettled Event Envelope]"
+    target_file: "schemas/events/order_settled.json"
+    properties:
+      protocol: "cloudevents"
+      schema_ref: "schemas/events/order_settled.json"
+      event_type: "io.aidoc.order.settled.v1"
+      source_topic: "orders.lifecycle.settled"
+      serialization: "json"
+
+edges:
+  # Component Contract realizes Formal Requirement (Layer 03 EARS)
+  - from: "SPEC.06.01.xxxx"
+    to: "EARS.03.02.xxxx"
+    relation: "realizes"
+    notes: "Provides the technical gRPC endpoint implementing event-driven order placement"
+    description: "Defines the Protobuf message schemas and RPC method signature fulfilling the order submission event contract."
+    rationale: "Translates behavioral EARS requirement into compile-time typed code interfaces."
+
+  - from: "SPEC.06.02.xxxx"
+    to: "EARS.03.02.xxxx"
+    relation: "realizes"
+    notes: "Implements HTTP merchant callback notification"
+    description: "Exposes OpenAPI webhook specification for outbound merchant delivery notifications."
+    rationale: "Provides backward compatibility for merchants lacking gRPC infrastructure."
+
+  - from: "SPEC.06.03.xxxx"
+    to: "EARS.03.01.xxxx"
+    relation: "realizes"
+    notes: "Emits immutable CloudEvents schema for ubiquitous audit compliance"
+    description: "Specifies CloudEvents JSON schema for audit logging events dispatched to Kafka topics."
+    rationale: "Standardizes audit event format across disparate consumer microservices."

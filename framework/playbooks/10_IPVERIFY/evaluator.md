@@ -178,7 +178,7 @@ Else:
 ### Step 9: Update EVAL-00 Index
 
 ```
-1. Update EVAL-00_index.md:
+1. Update EVAL-00_index.yaml:
    - Latest report for this EVAL
    - Latest verdict
    - Total cycles
@@ -215,7 +215,7 @@ document_control:
   iplan_version: "2.0"
   eval_version: "1.0"
   cycle: 1
-  run_date: "2026-10-27T14:30:00"
+  run_date: "2026-10-13T14:30:00"
   trigger: initial_eval
   status: FAIL
 

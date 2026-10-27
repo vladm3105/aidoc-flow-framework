@@ -9,6 +9,30 @@
 #  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
 #  Downstream: PRD (Layer 2)
 #  Upstream: Strategic Business Intent / Enterprise Portfolio
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 01 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (BRD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to create, evaluate, review, and ratify the BRD.
+#       Orchestrates strategic theme parsing, value stream mapping, ROI gating,
+#       steering callbacks, and invalidation compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (BRD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (business drivers, objectives, capabilities, acceptance criteria).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (BRD-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (BRD-SWF-TEMPLATE.yaml + BRD-GRAPH-TEMPLATE.yaml) when:
+#    - Modeling multi-stream value flows, cross-department handoffs, or customer journeys
+#    - Orchestrating automated ROI feasibility evaluation and quantitative cost-benefit gates
+#    - Incorporating executive steering committee callbacks, formal sign-off events, or timeouts
+#    - Requiring automated strategic compensation (e.g. invalidating downstream initiative allocations)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (BRD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting single-capability business requirements, direct business processes, or focused enhancements
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: BRD-NN
@@ -25,6 +49,8 @@ metadata:
   document_type: "brd-document"
   subtype: "workflow"
   workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "business_analyst"
+  author_playbook: "framework/playbooks/01_BRD/business_analyst.md"
   layer: 1
   lifecycle: mvp-prod-newmvp
   total_sections: 16
@@ -33,12 +59,12 @@ metadata:
     _guidance: |
       Structural validation performed via sdd_doc_lint (STRUCT01).
       Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
-      PRD-Ready Score target >= 90/100 (advisory readiness target).
-    scoring_criteria:
-      strategic_clarity: "35% (SMART objectives, business drivers, vision statement)"
-      value_stream_completeness: "30% (operational capabilities, customer journey flow)"
-      economic_feasibility: "20% (quantified ROI, cost/benefit, payback duration)"
-      stakeholder_alignment: "15% (executive sponsors, governance RACI, approval gates)"
+      PRD-Ready: BTV PASS (deterministic quality gate).
+    verification_criteria:
+      strategic_clarity: "SMART objectives, business drivers, vision statement"
+      value_stream_completeness: "operational capabilities, customer journey flow"
+      economic_feasibility: "quantified ROI, cost/benefit, payback duration"
+      stakeholder_alignment: "executive sponsors, governance RACI, approval gates"
 
   c4_level:
     _guidance: |
@@ -263,11 +289,13 @@ adr_topics:
   _size_target: 150
   _guidance: |
     Strategic technology topics requiring downstream architectural decision records in Layer 05 (ADR).
+    Per BL-VENDOR-NAME-SCOPE and TECHNOLOGY_STACK_USAGE_GUIDE.md, topic titles must describe business
+    capabilities rather than product names, while candidate evaluations reference the approved platform stack.
   topics:
     - topic: "Distributed Event Choreography vs Orchestration"
-      rationale: "Requires formal trade-off analysis between decoupled eventing and centralized workflow state"
+      rationale: "Requires formal trade-off analysis between decoupled eventing (NATS JetStream) and centralized workflow state (Temporal Server)"
     - topic: "Reconciliation Ledger Storage Paradigm"
-      rationale: "Comparison between relational SQL audit tables and distributed append-only ledger"
+      rationale: "Comparison between relational transactional tables (PostgreSQL 18 with xp.ledger) and append-only OLAP storage (ClickHouse)"
 
 # =============================================================================
 # Section 13: Traceability (Required Section 13/17)
@@ -392,6 +420,9 @@ value_stream_mapping:
         source: /aidoc/steering/approval
         correlation:
           - contextAttributeName: initiativeId
+      - name: BrdClosedAndBaselinedEvent
+        type: org.aidoc.sdd.layer01.brd.closed
+        source: /layers/01_brd
 
     functions:
       - name: parseStrategicInitiative
@@ -420,6 +451,24 @@ value_stream_mapping:
         type: custom
       - name: purgeDownstreamInitiativeAllocations
         operation: "urn:aidoc:functions:compensator#purgeAllocations"
+        type: custom
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
         type: custom
 
     states:
@@ -483,12 +532,51 @@ value_stream_mapping:
         dataConditions:
           - name: InitiativeApproved
             condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
-            transition: RatifyBusinessSpecification
+            transition: InvokeReviewSagaGate
           - name: ExecutiveReviewRequired
             condition: "${ .requiresExecutiveReview == true }"
             transition: AwaitSteeringCommitteeCallback
         defaultCondition:
           transition: RejectBusinessInitiative
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "brd-review-remediation-flow"
+                artifactId: "${ .initiativeId }"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyBusinessSpecification
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
+          - name: ReviewRequiresEscalation
+            condition: "${ .requiresEscalation == true or .iteration >= 3 }"
+            transition: AwaitSteeringCommitteeCallback
+        defaultCondition:
+          transition: RejectBusinessInitiative
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "business_analyst"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: AwaitSteeringCommitteeCallback
         type: callback
@@ -512,6 +600,62 @@ value_stream_mapping:
               refName: emitCanonicalBrdIds
               arguments:
                 initiativeId: "${ .initiativeId }"
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-01"
+                layer: "01_BRD"
+                documentId: "${ .initiativeId }"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "${ .initiativeId }"
+                layer: "01_BRD"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "BrdNode"
+                nodeId: "${ .initiativeId }"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "BrdClosedAndBaselinedEvent"
+                initiativeId: "${ .initiativeId }"
+                brd_tags: "${ .brd_tags }"
+        produceEvents:
+          - eventRef: BrdClosedAndBaselinedEvent
         end: true
 
       - name: RejectBusinessInitiative

@@ -1,0 +1,171 @@
+# =============================================================================
+#  CHG-121: Layer 08 (IPLAN) Distributed Multi-Agent Execution, Cryptographic Attribution & Step Evidence
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Ratified plans/IPLAN-DISTRIBUTED-EXECUTION-ATTESTATION-PLAN.md
+#  Scope: Bridge Layer 08 (IPLAN) natively to the iplanic distributed execution
+#         architecture (aidoc-flow-iplanic and aidoc-flow-iplan-standard), establishing
+#         dual-identity agent attribution, step-level digital signatures, pre-flight
+#         handover verification, evidence TTL, execution timeouts, step-completeness
+#         auditing, and Layer 10 (EVAL) post-validation evidence bridge.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-19"
+  framework_version: "0.96.8"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-121"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  new_version: "0.96.8"
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-19T14:40:00Z"
+  date_approved: "2026-10-19T14:40:00Z"
+  date_implemented: "2026-10-19T14:55:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-19T14:40:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized per verified implementation plan plans/IPLAN-DISTRIBUTED-EXECUTION-ATTESTATION-PLAN.md
+      establishing distributed multi-agent cryptographic attribution, step attestations, evidence TTL, and EVAL integration.
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-121)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-121"
+  title: "Formal Decision: Layer 08 (IPLAN) Distributed Multi-Agent Execution, Cryptographic Attribution & Step Evidence"
+  date: "2026-10-19"
+  status: Accepted
+  context: |
+    Layer 08 (IPLAN) in aidoc-flow-framework relied on self-reported string statuses (status: Completed)
+    without cryptographic proof of execution, exposing distributed multi-agent workflows to phantom completion,
+    cross-worker state drift, and lack of attribution. Furthermore, mutating workflow states lacked state-level
+    wall-clock timeouts and step-completeness auditing, creating vulnerabilities to infinite worker loops, hung
+    processes, and accidental step omission. Finally, Layer 10 (EVAL) lacked a standardized cryptographic receipt
+    bridge to verify Layer 08 execution evidence post-validation without re-running long developer builds.
+  choice: |
+    Execute comprehensive Layer 08 distributed execution and attestation enhancement per plans/IPLAN-DISTRIBUTED-EXECUTION-ATTESTATION-PLAN.md:
+    1. Codify §10 (Cryptographic Agent Attribution & Step Digital Signatures) and §11 (Distributed Worker Handover,
+       Timeouts & Completeness) in IPLAN_WORKFLOW_STANDARD.md, and renumber Review Log to §12.
+    2. Format Section 9 execution evidence receipts to align natively with iplan-evidence-bundle.schema.json,
+       including valid_until TTL, output_tree_sha state invariants, and Layer 10 EVAL ingestion.
+    3. Add root-level intake_control with provenance (_required: false) to IPLAN-TEMPLATE.yaml for L1 Assurance intake.
+    4. Enrich work_orders.orders[] in IPLAN-TEMPLATE.yaml with attestation and skip_audit structures.
+    5. Add attestation properties and pre-flight verification edges (canonical relation: "verifies") in IPLAN-GRAPH-TEMPLATE.yaml.
+    6. Enrich Section 2 iplan_context in EVAL-REPORT-TEMPLATE.yaml with iplan_receipt_ref and receipt_seal_hash.
+    7. In IPLAN-SWF-TEMPLATE.yaml and iplan-execution.sw.yaml:
+       - Declare verifyAttestationReceipt and verifyStepCompleteness functions.
+       - Add state and action timeouts (stateExecTimeout: PT15M, actionExecTimeout: PT5M).
+       - Insert EvaluatePreFlightGate switch state and VerifyStepExecutionCompleteness state.
+       - Add AttestStepCompletion actions under mutating states.
+    8. Add conformance tests in test_iplan_workflow.py verifying signatures, _UNSIGNED schema fallback, and completeness.
+    9. Bump framework/VERSION from 0.96.7 to 0.96.8 per GATE-SPEC-E005, append 0.96.7 to OLD_VERSIONS, and fan out pins.
+  consequences: |
+    - Coding agents and distributed runners gain non-repudiable cryptographic proof of execution facts.
+    - Downstream workers assert upstream state consistency before execution, preventing state drift.
+    - Silent step skipping is mathematically eliminated via the Step-Execution Completeness Gate.
+    - Runaway worker loops and hung subprocesses are bounded by native CNCF SWF timeouts.
+    - Layer 10 (EVAL) reliably post-validates Layer 08 code mutations using detached evidence receipts.
+    - 100% backward compatibility maintained via _required: false on all new template fields.
+    - Requires framework version bump from 0.96.7 to 0.96.8 per GATE-SPEC-E005.
+  alternatives_considered:
+    - option: "Rely exclusively on Git commit hashes without detached digital signatures"
+      rationale_rejected: >-
+        Rejected because Git commits do not capture command stdout digests, test exit codes, or cryptographic
+        attribution to specific agent keypairs registered in Iplanic.
+    - option: "Introduce custom verifies_preflight_of edge relation in SDD graph"
+      rationale_rejected: >-
+        Rejected per Pass 1 review finding: sdd-graph.schema.json restricts relations to 9 canonical enums;
+        using canonical 'verifies' with properties.verification_type preserves strict schema validity.
+
+# =============================================================================
+# Section 2: Artifacts Modified
+# =============================================================================
+
+artifacts_modified:
+  - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    action: modify
+    rationale: "Align Section 9 receipt with iplan-evidence-bundle, add §10 attribution and §11 handover/completeness/timeouts, renumber Review Log to §12."
+  - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+    action: modify
+    rationale: "Add optional intake_control.provenance, and enrich work_orders.orders[] with attestation and skip_audit."
+  - path: "framework/layers/08_IPLAN/IPLAN-GRAPH-TEMPLATE.yaml"
+    action: modify
+    rationale: "Add attestation and timeout properties to task_action nodes and downstream preflight verifies edges."
+  - path: "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    action: modify
+    rationale: "Add state timeouts, functions, EvaluatePreFlightGate switch state, and VerifyStepExecutionCompleteness state."
+  - path: "framework/governance/workflows/iplan-execution.sw.yaml"
+    action: modify
+    rationale: "Mirror workflow state machine updates into shared governance catalog."
+  - path: "framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml"
+    action: modify
+    rationale: "Enrich Section 2 iplan_context with iplan_receipt_ref and receipt_seal_hash for EVAL post-validation."
+  - path: "tests/conformance/test_iplan_workflow.py"
+    action: modify
+    rationale: "Add test_distributed_attestation_and_iplanic_compatibility verifying attestation, timeouts, and completeness."
+  - path: "framework/VERSION"
+    action: modify
+    rationale: "Bump framework version from 0.96.7 to 0.96.8 per GATE-SPEC-E005."
+  - path: "hooks/sync-version-refs.sh"
+    action: modify
+    rationale: "Append 0.96.7 to OLD_VERSIONS and propagate version references repo-wide."
+
+# =============================================================================
+# Section 3: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-121/IPLAN-121.yaml"
+  steps:
+    - step: "Author authorizing CHG-121.yaml and IPLAN-121.yaml"
+      phase: "iplan_creation"
+    - step: "Add §10, §11, and renumber §12 Review Log in IPLAN_WORKFLOW_STANDARD.md"
+      phase: "spec_alignment"
+    - step: "Enrich IPLAN-TEMPLATE.yaml, IPLAN-GRAPH-TEMPLATE.yaml, and EVAL-REPORT-TEMPLATE.yaml"
+      phase: "template_enhancement"
+    - step: "Update IPLAN-SWF-TEMPLATE.yaml and iplan-execution.sw.yaml with timeouts, functions, and gates"
+      phase: "swf_enhancement"
+    - step: "Extend test_iplan_workflow.py, bump framework/VERSION to 0.96.8, and fan out pins"
+      phase: "verification_and_governance"
+
+verification_plan:
+  automated_checks:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-121/CHG-121.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint framework/governance/workflows/iplan-execution.sw.yaml"
+    - "pytest tests/conformance/test_iplan_workflow.py"
+    - "pytest tests/conformance/test_governance_workflows.py"
+    - "pytest tests/conformance/test_layers.py"
+    - "pytest tests/conformance/test_sdd_graph_schema.py"
+    - "pytest tests/acceptance/deterministic/test_layer_iplan.py"
+    - "hooks/pre_push_check.sh"
+    - "python3 tests/chg/spec_gate.py --base origin/dev"

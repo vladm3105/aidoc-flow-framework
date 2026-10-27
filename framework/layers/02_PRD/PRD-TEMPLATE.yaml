@@ -1,9 +1,20 @@
 # =============================================================================
-#  PRD-TEMPLATE.yaml — Product Requirements Document (SDD)
+#  PRD-TEMPLATE.yaml — Product Requirements Document (SDD Layer 02)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable PRD template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable PRD template for linear product requirements
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (PRD-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-container initiatives, monolithic services, or linear feature sets
+#    - Specifying product requirements where state machine orchestration is unnecessary overhead
+#  Use the primary template (PRD-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-container product decomposition (C4 Level 2), microservices, or distributed components
+#    - Orchestrating automated feature prioritization (MoSCoW/RICE) and quantitative threshold validation
+#    - Incorporating stakeholder scope negotiation callbacks, external product feedback events, or timeouts
+#    - Requiring automated compensation (invalidating provisional downstream EARS/BDD artifacts on rejection)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators
@@ -33,15 +44,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-      Scoring criteria:
-        Business clarity (40%): SMART objectives, capability definitions, acceptance criteria
-        Requirements maturity (35%): system boundaries, stakeholder requirements, problem statement
-        EARS translation readiness (20%): user journeys, quality attributes quantified
-        Strategic alignment (5%): domain references
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to a verified BRD document/element (zero dangling edges).
+        2. Strict Oracle Coverage: Every business capability and user journey maps to downstream EARS functional requirements.
+        3. Schema Compliance: Valid YAML syntax, required sections present, and atomic element IDs.
+      Heuristic percentage readiness scores (EARS-Ready >=90%) are retired in favor of binary topological validation.
 
   c4_level:
     _guidance: |
@@ -129,7 +137,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    EARS-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     BRD Reference: link to upstream BRD using hash-based IDs.
   product_name: "[Product Name]"
   version: "1.0"
@@ -142,7 +150,7 @@ document_control:
   brd_reference: "@brd: BRD.NN.07.xxxx"
   priority: High
   target_release: "[MVP Launch Date]"
-  ears_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  ears_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -351,8 +359,8 @@ component_decomposition:
     Component IDs are SHORT KEBAB-CASE names (e.g. "redirect-handler",
     "mapping-store") — descriptive labels scoped to this PRD, not
     cross-layer trace targets. Future framework work may promote
-    component decomposition to a first-class `02b_DECOMP` layer (item
-    #19 in FRAMEWORK-TODO); for now this PRD subsection is the home.
+    component decomposition to a dedicated module layer;
+    for now this PRD subsection is the home.
   components:
     - id: "<short-kebab-component-name>"
       responsibility: "<one-line description of what this component owns>"
@@ -616,7 +624,9 @@ traceability:
   adr_topic_elaboration:
     _guidance: |
       Specify technical options for each BRD Section 8 topic so ADR can
-      evaluate them. Do NOT reference specific ADR numbers (ADR-01, etc.) — except a platform PRD MAY cite ADRs already decided (see the traceability guidance above).
+      evaluate them against the approved platform technology stack (see
+      framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md). Do NOT reference specific
+      ADR numbers (ADR-01, etc.) — except a platform PRD MAY cite ADRs already decided (see the traceability guidance above).
     topics:
       - topic: "[Topic from BRD Section 8]"
         brd_reference: "@brd: BRD.NN.08.xxxx"
@@ -634,8 +644,8 @@ traceability:
 
   health_score:
     brd_coverage: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
   ears_cross_reference:
     _note: |

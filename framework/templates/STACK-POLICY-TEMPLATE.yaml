@@ -1,0 +1,66 @@
+# =============================================================================
+#  Stack Policy Contract Template (stack-policy.yaml)
+# =============================================================================
+#  Standard: aidoc.v1.StackPolicyContract (stack_policy.proto)
+#  Authority: framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md
+#  Governs: Pre-implementation stack policy validation & AST guardrails
+# =============================================================================
+
+tenant_id: "example-org"
+policy_version: "2.0.0"
+
+# -----------------------------------------------------------------------------
+# Runtime Constraints (Approved Tech Stack: specs 00-23)
+# -----------------------------------------------------------------------------
+runtime:
+  language: "python"                    # "python" (3.15 default via uv) | "rust" (stable) | "go" (1.25) | "typescript" (Node 24 LTS)
+  version_or_edition: "3.15"            # e.g., "3.15", "stable", "1.25", "24"
+  target_triple: "x86_64-unknown-linux-musl"
+  compiler_flags:
+    - "-Werror"
+    - "-Wall"
+
+# -----------------------------------------------------------------------------
+# Architectural Boundaries & AST Patterns (Security Invariants)
+# -----------------------------------------------------------------------------
+boundaries:
+  allow_unsafe: false                   # Must be false for memory-safe stacks
+  strict_allowlist: true                # Rejects any unapproved dependency crate/package
+  prohibit_insecure_options: true       # Forbids plaintext secrets, relaxed sandboxing, unencrypted transport
+  banned_patterns:
+    - "eval("
+    - "exec("
+    - "os.system("
+    - "__import__("
+
+# -----------------------------------------------------------------------------
+# Dependency Policy & License Verification
+# Note: Missing Tools Protocol applies — if a required package is missing from
+# the approved stack (/home/ya/devd/technology_stack), the agent must explicitly
+# inform the operator and request instructions before adding it.
+# -----------------------------------------------------------------------------
+dependencies:
+  prohibited_licenses:
+    - "GPL-3.0"
+    - "AGPL-3.0"
+    - "SSPL"
+    - "Commons-Clause"
+  allowed_packages:
+    - name: "pydantic"
+      version_constraint: ">=2.6.0,<3.0.0"
+      approved_features: []
+    - name: "pyyaml"
+      version_constraint: ">=6.0"
+      approved_features: []
+    - name: "jsonschema"
+      version_constraint: ">=4.20.0"
+      approved_features: []
+
+# -----------------------------------------------------------------------------
+# Verification Oracles & Gate Thresholds
+# -----------------------------------------------------------------------------
+verification_oracles:
+  linter_cmd: "ruff check ."
+  test_cmd: "pytest -v tests/"
+  line_coverage_threshold: 85
+  branch_coverage_threshold: 80

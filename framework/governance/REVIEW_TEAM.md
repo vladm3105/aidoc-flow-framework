@@ -1,14 +1,21 @@
+---
+doc_id: GOV-REVIEW-TEAM
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Review Team — multi-perspective review, remediation & authoring
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 `REVIEW_REMEDIATION_FLOW.md` defines *when* review/remediation fire (the trigger
 points) and *what* an engine must surface (findings, readiness score, remediation
@@ -22,7 +29,7 @@ agent runtime — each engine binds these to its own mechanism (e.g. independent
 review agents, or a single model applying every lens). The machine-readable crews
 live in `REVIEW_CREWS.yaml`.
 
-## The team
+## The team {#sec-the-team}
 
 A **review team** for a layer is:
 
@@ -36,7 +43,7 @@ A **review team** for a layer is:
 - a **synthesizer** — reduces the crew's outputs into one result;
 - run over a shared **blackboard** in a chosen **mode**.
 
-### Blackboard (the shared exchange)
+### Blackboard (the shared exchange) {#sec-blackboard-the-shared-exchange}
 
 A per-artifact workspace with one **slot per persona** plus a **synthesis slot**.
 Each persona **reads** the artifact under review (and, in `sequential` mode, peers'
@@ -45,7 +52,7 @@ all slots and writes the unified result. It is a **hub** (mediated by the engine
 orchestrator), not a peer-to-peer mesh — personas exchange information only through
 structured slots, never by directly invoking each other.
 
-### Persona-output contract (one slot)
+### Persona-output contract (one slot) {#sec-persona-output-contract-one-slot}
 
 Each persona deposits a structured record (engine-agnostic shape):
 
@@ -60,7 +67,7 @@ findings:
 lens_score: 0-100           # this lens's readiness assessment
 ```
 
-### Modes
+### Modes {#sec-modes}
 
 - `independent` (default): personas run in isolation, then the synthesizer
   reduces — higher signal-independence, fewer anchoring effects, parallelizable.
@@ -70,7 +77,7 @@ lens_score: 0-100           # this lens's readiness assessment
 
 Collectively, `independent` and `sequential` are referred to as multi-persona **`team`** mode.
 
-## Operations — three shapes, one team
+## Operations — three shapes, one team {#sec-operations-three-shapes-one-team}
 
 - **Review.** The crew reviews the artifact; synthesis produces the unified
   findings + readiness score.
@@ -85,7 +92,7 @@ Collectively, `independent` and `sequential` are referred to as multi-persona **
 > See also `REVIEW_SAGA.md` for the saga state machine and journal contract
 > that governs the durable progression of this loop.
 
-### Strip author self-claim before lens fan-out (CLEANUP-PR-B item 9)
+### Strip author self-claim before lens fan-out (CLEANUP-PR-B item 9) {#sec-strip-author-self-claim-before-lens-fan-out-cleanup-pr-b-item-9}
 
 Author-self-assessment fields in the artifact body create an anchor
 effect on the lens output (a lens reading "the author thinks this
@@ -124,7 +131,7 @@ the engine — not the review mode, and not a self-declaration:
    read the number) and is permitted **only** under the reads-directly
    structural condition, never as a general escape from the primary strip.
 
-### No-findings rationale (CLEANUP-PR-B item 8)
+### No-findings rationale (CLEANUP-PR-B item 8) {#sec-no-findings-rationale-cleanup-pr-b-item-8}
 
 A lens returning `lens_score: 100` with `findings: []` (zero findings)
 MUST accompany its persona-output record with a `no_findings_rationale`
@@ -137,7 +144,7 @@ genuinely cleared the artifact must say *what* it cleared, otherwise
 the score is unsubstantiated. Filing any finding (P3 included)
 bypasses the rationale requirement — findings ARE the rationale.
 
-### Threshold-resolution gate (CLEANUP-PR-D item 16 / TH-RES-001)
+### Threshold-resolution gate (CLEANUP-PR-D item 16 / TH-RES-001) {#sec-threshold-resolution-gate-cleanup-pr-d-item-16-th-res-001}
 
 Every downstream `@threshold: PRD.NN.<category>.<key>` citation MUST
 resolve to a `full_id:` entry in the host PRD's
@@ -160,7 +167,7 @@ Component decomposition is currently a PRD subsection (Option A,
 2026-06-11). A future promotion to a first-class `02b_DECOMP` layer
 is tracked as Option B in issue #491.
 
-### Fixer-introduced regressions (CLEANUP-PR-B item 10)
+### Fixer-introduced regressions (CLEANUP-PR-B item 10) {#sec-fixer-introduced-regressions-cleanup-pr-b-item-10}
 
 A finding whose **location** matches a row in the previous iteration's
 "Fixes Applied" table carries `fixer_introduced: true` in the
@@ -182,7 +189,7 @@ iter-(N-1) value (no improvement credit for a fix that regressed).
 Detection is the synthesizer's responsibility: it compares iter-N
 finding locations to iter-(N-1) Fixes Applied entries.
 
-## Scoring, conflicts & the gate
+## Scoring, conflicts & the gate {#sec-scoring-conflicts-the-gate}
 
 - **Aggregate score (deterministic).** The readiness score is the **weighted
   average** of the crew's `lens_score`s using the per-layer persona weights in
@@ -199,7 +206,7 @@ finding locations to iter-(N-1) Fixes Applied entries.
   **advisory enrichment above** that floor — so a borderline artifact cannot flap
   pass/fail across runs on model variance.
 
-## Weight allocation rules
+## Weight allocation rules {#sec-weight-allocation-rules}
 
 For each layer's review crew, the `chaos_engineer` and `security_engineer`
 weights are biased by where each concern naturally lands at that layer.
@@ -231,7 +238,7 @@ The numeric allocations themselves live in `REVIEW_CREWS.yaml` (the single
 source of truth); this section codifies the *rules* by which those numbers
 are chosen, so future rebalances have a stable framework.
 
-## Synthesis = reduce + narrative
+## Synthesis = reduce + narrative {#sec-synthesis-reduce-narrative}
 
 1. **Reduce (deterministic, gating).** Merge/dedup findings (`location` + `id`),
    take max severity, compute the weighted/capped score, record **coverage**
@@ -239,15 +246,15 @@ are chosen, so future rebalances have a stable framework.
 2. **Narrative (advisory).** An executive-summary chairperson pass over the reduced
    findings. It explains; it does not decide.
 
-## Playbooks
+## Playbooks {#sec-playbooks}
 
 Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; 69 files total across the playbooks tree, including per-layer READMEs and lens playbooks).
 
-### Why
+### Why {#sec-why}
 
 The lens names in `REVIEW_CREWS.yaml` are layer-specialized by intent (e.g., `business_analyst` at BRD vs `product_owner` at PRD vs `requirements_specialist` at EARS are three distinct reasoning modes). Without a per-layer failure-mode catalog, a generic lens agent reasons about all layers identically and misses layer-specific gaps. Playbooks supply the catalog without forking the agent.
 
-### File location
+### File location {#sec-file-location}
 
 ```
 framework/playbooks/
@@ -262,7 +269,7 @@ framework/playbooks/
 
 Layer directory is `<NN>_<LAYER>` matching the `framework/layers/` convention. Lens filename matches the persona name in `REVIEW_CREWS.yaml` (snake_case, `.md` suffix).
 
-### Required frontmatter
+### Required frontmatter {#sec-required-frontmatter}
 
 ```yaml
 ---
@@ -274,7 +281,7 @@ framework_spec_version: "<framework/VERSION>"  # must equal framework/VERSION (s
 ---
 ```
 
-### Required content sections
+### Required content sections {#sec-required-content-sections}
 
 1. **Reasoning frame** — 2-3 paragraphs covering three sub-requirements:
    (a) what this lens uniquely sees at this layer altitude;
@@ -284,18 +291,18 @@ framework_spec_version: "<framework/VERSION>"  # must equal framework/VERSION (s
 3. **Beyond-checklist** — escape hatch for layer-specific failure modes the checklist does not cover. Finding must cite `beyond-checklist:<principle-tag>` and reference the reasoning frame.
 4. **Scoring** — 0-100 rubric tied to checklist coverage and beyond-checklist density.
 
-### Finding citation rule (binding contract)
+### Finding citation rule (binding contract) {#sec-finding-citation-rule-binding-contract}
 
 Every finding produced by a lens MUST cite either a checklist check (`check: "C1"`) or a beyond-checklist principle (`check: "beyond-checklist:<tag>"`). The synthesizer **discards** findings without a citation or with a fabricated check id, logging the discard in `report.md`. This is the deterministic floor of the playbook contract.
 
-### Coverage emission
+### Coverage emission {#sec-coverage-emission}
 
 The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
 
 
 **CHG layer (CHG-RT-001, 2026-06-12)** — CHG is an overlay (not a lifecycle layer per `framework/governance/chg/README.md`) but uses the same playbook contract. Playbooks at `framework/playbooks/09_CHG/` cover the CHG crew (integration_lead/architect/chaos_engineer/operator/auditor/security_engineer with weights 30/20/15/15/10/10 summing to 100). the CHG audit engine injects them per the per-lens dispatch pattern.
 
-## Necessary upstream + transitive trace
+## Necessary upstream + transitive trace {#sec-necessary-upstream-transitive-trace}
 
 A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query over that graph (no such script ships in this repo — the traversal is the normative capability, outside the spec).
 
@@ -321,7 +328,7 @@ Enforcement is split:
 
 Tags above the necessary set (decorative lineage carried for human readability — e.g. an ADR that wants to show its `@brd:` origin even though `required_tags=[ears, bdd]`) are permitted; the lint rule still demands they resolve.
 
-### Optional downstream slots (CLEANUP-PR-C item 14)
+### Optional downstream slots (CLEANUP-PR-C item 14) {#sec-optional-downstream-slots-cleanup-pr-c-item-14}
 
 A layer **MAY** emit per-line `@<downstream>:` slots as forward-pointer
 navigation hints (e.g. EARS lines emit `@bdd: BDD-NN` indicating which
@@ -351,7 +358,7 @@ the framework formalizes them as optional + non-canonical.
 
 *Origin (necessary-upstream contract):* NECESSARY-UPSTREAM-001 (framework spec `0.15.2` → `0.16.0`) replaced the cumulative-trace contract — every downstream layer redeclaring every upstream layer in `required_tags` — after a TDD-RT-001 cascade exposed trace fabrication when an upstream layer was genuinely absent from a project (`@prd:` tags emitted with no PRD layer authored).
 
-## Resilience & security
+## Resilience & security {#sec-resilience-security}
 
 - **Partial crews.** If a persona does not return, the reduce proceeds on the crew
   that did and records `coverage`. Below a crew's declared **quorum**, the result
@@ -365,7 +372,7 @@ the framework formalizes them as optional + non-canonical.
 > (`PARTIAL_TIMEOUT`, break-circuit policy) that complements the
 > partial-crew resilience described here.
 
-## Conformance & adaptation
+## Conformance & adaptation {#sec-conformance-adaptation}
 
 - A conforming engine maps each persona to its agent mechanism and produces the
   persona-output + report shape above; it declares which trigger points it runs as
@@ -377,7 +384,7 @@ the framework formalizes them as optional + non-canonical.
 - The `review_mode` knob (`ADAPTATION_SURFACE.yaml`) lets a consuming project pick
   `team` or `single_pass`; it never weakens the deterministic gate floor.
 
-## Cross-references
+## Cross-references {#sec-cross-references}
 
 - `REVIEW_REMEDIATION_FLOW.md` — the loop and trigger points this team serves.
 - `REVIEW_CREWS.yaml` — the machine-readable per-layer crews + weights.

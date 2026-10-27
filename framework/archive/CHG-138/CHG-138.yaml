@@ -1,0 +1,132 @@
+# =============================================================================
+#  CHG-138: Extend turnkey scaffolding to remaining SDD layer indices
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 — consumer tooling enhancement)
+#  Scope: Extend framework/scripts/install.sh and deploy.sh with --all-indices
+#         flag to idempotently scaffold index templates across all canonical
+#         SDD layers (01_BRD through 10_EVAL) with uniform date/version token
+#         substitution and non-destructive overwrite guards.
+#         Issue #988. Normative spec change protocol applied (0.96.19 -> 0.96.20).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: framework/scripts/install.sh, deploy.sh,
+#     framework/layers/*/*-00_index.TEMPLATE.yaml (all 10 layers),
+#     tests/conformance/test_consumer_scripts.py, hooks/sync-version-refs.sh,
+#     issue #988. All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (DIR2C tooling enhancement).
+#  7. Single issue #988 (missing capability, review origin).
+#  8. Test specs: chg_lint, spec_gate, test_consumer_scripts.py (new unit
+#     coverage for --all-indices, existing tests passing), test_sync_version_refs.py.
+#  11. No SDD layer-doc rewrites; tooling under framework/scripts/ and deploy.sh.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C2, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / tooling_implementation / verification
+#     phases only; empty lifecycle; execution order holds.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.20"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-138"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-138)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-138"
+  title: "Add --all-indices option to install.sh and deploy.sh for turnkey SDD layer indices"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Issue #988: install.sh only scaffolds the Layer 05 ADR index during consumer
+    bootstrapping, forcing engineers and agents adopting full SDD lifecycles to
+    manually copy and token-replace *-00_index.TEMPLATE.yaml across the other 9
+    layers (01_BRD through 04_BDD, 06_SPEC through 10_EVAL).
+  choice: >-
+    Introduce --all-indices option in framework/scripts/install.sh (and passthrough
+    in deploy.sh). When passed, install.sh iterates through all 10 canonical SDD
+    layers, scaffolding any missing index file from its canonical template with
+    standard [X.Y.Z] -> $VERSION and YYYY-MM-DD -> $TODAY token substitution.
+    Default behavior without --all-indices remains strictly backward-compatible,
+    scaffolding only Layer 05 ADR index unless --no-adr is given. Existing index
+    files are never overwritten without --force.
+  consequences:
+    positive:
+      - Consumers can bootstrap turnkey SDD indices in a single command.
+      - Default installations remain backward-compatible without unexpected files.
+      - Automated token replacement avoids manual copy errors.
+    negative:
+      - None; opt-in flag leaves existing bootstrap flows unaffected.
+    risks:
+      - Minimal canons in test fixtures might omit certain layer templates;
+        mitigated by checking template existence before attempting copy.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    install.sh scaffolds only docs/sdd/05_ADR/ADR-00_index.yaml, omitting index
+    scaffolding for remaining SDD layers despite canonical templates existing (issue #988).
+  scope:
+    - framework/archive/CHG-138/CHG-138.yaml (new, this vehicle).
+    - framework/archive/CHG-138/IPLAN-138.yaml (new, executing IPLAN).
+    - framework/scripts/install.sh (add --all-indices and layer scaffolding loop).
+    - deploy.sh (pass --all-indices through).
+    - tests/conformance/test_consumer_scripts.py (unit test --all-indices behavior).
+    - framework/VERSION (bump 0.96.19 -> 0.96.20).
+    - hooks/sync-version-refs.sh (append 0.96.19 to OLD_VERSIONS and sync).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-138/IPLAN-138.yaml"
+  steps:
+    - step: "Author authorizing CHG-138.yaml and IPLAN-138.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Implement --all-indices option and layer index scaffolding loop in install.sh and deploy.sh"
+      phase: "tooling_implementation"
+    - step: "Add conformance tests in test_consumer_scripts.py verifying --all-indices and default behavior"
+      phase: "verification"
+    - step: "Execute version bump protocol (0.96.19 -> 0.96.20) and sync version references"
+      phase: "verification"
+    - step: "Validate chg_lint, spec_gate, and full test suite; open PR with Closes #988"
+      phase: "verification"

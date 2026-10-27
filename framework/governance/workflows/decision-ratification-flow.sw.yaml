@@ -3,7 +3,7 @@
 # ===============================================================================
 # Specification: CNCF Serverless Workflow DSL v0.8 (YAML)
 # Standard Authority: framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md
-# Governs: framework/governance/DECISION_WORKFLOW.md, DECISIONS.md
+# Governs: framework/governance/DECISION_WORKFLOW.md, framework/governance/chg/CHG-TEMPLATE.yaml
 # Runtime Architecture: Pure declarative YAML; zero runtime lock-in (D-0013)
 # ===============================================================================
 
@@ -136,12 +136,18 @@ states:
             status: "Locked"
             ratified_date: "${ .timestamp }"
             approved_by: "founder"
-      - name: AppendToDecisionsRegister
+      - name: LockDecisionInChangeRequest
         functionRef:
-          refName: syncDecisionsMarkdown
+          refName: lockChgDecisionSection
           arguments:
-            register_path: "framework/governance/DECISIONS.md"
+            chg_path: "framework/archive/CHG-${ .chg_id }/CHG-${ .chg_id }.yaml"
             decision_entry: "${ .decision_record }"
+      - name: DispatchWorkflowSyncIfGovernanceRule
+        functionRef:
+          refName: synchronizeGovernanceGraph
+          arguments:
+            rule_type: "${ .rule_type }"
+            workflow_path: "${ .governance_workflow_path }"
     transition: MonitorDecisionLifecycle
 
   # -----------------------------------------------------------------------------

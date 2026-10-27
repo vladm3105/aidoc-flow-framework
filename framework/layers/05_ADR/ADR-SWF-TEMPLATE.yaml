@@ -11,9 +11,32 @@
 #    _antipatterns — common mistakes to avoid
 #    _note         — contextual clarification
 #    _example      — sample values for reference
-#
 #  Downstream: SPEC (Layer 6)
 #  Upstream: EARS (L3), BDD (L4)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 05 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (ADR-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to evaluate, score, and ratify decisions.
+#       Orchestrates candidate evaluation fan-out, MCDA scoring, RFC callbacks,
+#       and rejection archival compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (ADR-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (candidate options, decision topics, evaluation criteria, trade-offs).
+#    Both graphs work together to generate a document: the Process DAG drives evaluation
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (ADR-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (ADR-SWF-TEMPLATE.yaml + ADR-GRAPH-TEMPLATE.yaml) when:
+#    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
+#    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
+#    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
+#    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (ADR-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
+#    - State machine orchestration, asynchronous callbacks, and automated compensations are not needed
 # =============================================================================
 
 id: ADR-NN
@@ -30,7 +53,9 @@ metadata:
   document_type: "adr-document"
   layer: 5
   subtype: "workflow"
-  workflow_spec: "0.8"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "architect"
+  author_playbook: "framework/playbooks/05_ADR/architect.md"
   workflow_engine: "cncf-serverless-workflow"
   lifecycle: mvp-prod-newmvp
   total_sections: 10
@@ -38,7 +63,7 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling and sdd_doc_lint.
-      SPEC-Ready Score: >=90/100 is the advisory readability target.
+      SPEC-Ready: BTV PASS is the deterministic quality gate.
   c4_level:
     value: none
   diagram_standard:
@@ -76,7 +101,7 @@ document_control:
     - "[Tech Lead Name]"
   author: "[Author Name]"
   version: "1.0"
-  spec_ready_score: "[Score]/100"
+  spec_ready_status: "PASS"
   revision_history:
     - version: "1.0"
       date: "YYYY-MM-DDTHH:MM:SS"
@@ -131,22 +156,26 @@ decision:
 
 alternatives:
   _size_target: 200
+  _guidance: |
+    Evaluate 2-3 candidate alternatives drawn from the approved platform stack (vladm3105/technology-stack)
+    per TECHNOLOGY_STACK_USAGE_GUIDE.md. If a candidate is outside the approved stack, an architectural
+    variance must be documented and submitted to the review crew.
   considered:
     - id: "ADR.NN.04.xxxx"
-      name: "[Selected Option]"
+      name: "[Option A: Approved Platform Stack (e.g. PostgreSQL 18 with xp.ledger)]"
       selected: true
       source: "@seed: ARCH-NN"
-      decision: "Selected — [highest MCDA utility score]"
+      decision: "Selected — [highest MCDA utility score and full platform stack alignment]"
     - id: "ADR.NN.04.xxxx"
-      name: "[Alternative B]"
+      name: "[Alternative B: Alternative Approved Platform Component (e.g. ClickHouse OLAP)]"
       selected: false
       source: "@seed: ARCH-NN"
-      decision: "Rejected — [failed latency threshold]"
+      decision: "Rejected — [failed transactional consistency threshold]"
     - id: "ADR.NN.04.xxxx"
-      name: "[Alternative C]"
+      name: "[Alternative C: Architectural Variance (if applicable)]"
       selected: false
       source: "@seed: ARCH-NN"
-      decision: "Rejected — [cost exceeds operational budget]"
+      decision: "Rejected — [operational overhead exceeds benefit; standard stack sufficient]"
 
 # =============================================================================
 # Section 5: Consequences
@@ -212,6 +241,28 @@ architecture_flow:
         kind: consumed
         correlation:
           - attribute: proposalId
+      - name: AdrDecisionsClosedEvent
+        type: org.aidoc.sdd.layer05.adr.closed
+        source: /layers/05_adr
+    functions:
+      - name: invokeReviewSaga
+        operation: "urn:aidoc:workflows:review-saga#invoke"
+        type: custom
+      - name: remediateLayerFindings
+        operation: "urn:aidoc:functions:remediator#remediate"
+        type: custom
+      - name: verifyLayerBoundaryGate
+        operation: "urn:aidoc:governance:gate#verify"
+        type: custom
+      - name: sealDocumentBaseline
+        operation: "urn:aidoc:governance:document#seal"
+        type: custom
+      - name: registerGraphBaselineNode
+        operation: "urn:aidoc:governance:graph#registerNode"
+        type: custom
+      - name: emitCloudEvent
+        operation: "urn:aidoc:governance:event#emit"
+        type: custom
     states:
       - name: IngestDecisionContext
         type: operation
@@ -222,6 +273,7 @@ architecture_flow:
               arguments:
                 adr_id: "ADR-NN"
                 quality_attributes: ["latency", "throughput", "cost", "security"]
+                approved_stack_baseline: "vladm3105/technology-stack"
         transition: EvaluateCandidatesConcurrently
 
       - name: EvaluateCandidatesConcurrently
@@ -281,9 +333,48 @@ architecture_flow:
         dataConditions:
           - name: ConsensusApproved
             condition: "${ .feedback.status == \"APPROVED\" }"
-            transition: RatifyDecision
+            transition: InvokeReviewSagaGate
         defaultCondition:
           transition: RejectAndArchive
+
+      - name: InvokeReviewSagaGate
+        type: operation
+        actions:
+          - name: runLayerReviewSagaAction
+            functionRef:
+              refName: invokeReviewSaga
+              arguments:
+                workflowId: "adr-review-remediation-flow"
+                artifactId: "ADR-NN"
+        transition: EvaluateReviewSagaResult
+
+      - name: EvaluateReviewSagaResult
+        type: switch
+        dataConditions:
+          - name: ReviewGateApproved
+            condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+            transition: RatifyDecision
+          - name: ReviewRequiresRemediation
+            condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+            transition: RemediateLayerDraft
+          - name: ReviewRequiresRFC
+            condition: "${ .requiresRFC == true or .iteration >= 3 }"
+            transition: SolicitStakeholderRFC
+        defaultCondition:
+          transition: RejectAndArchive
+
+      - name: RemediateLayerDraft
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: applyRemediationFixes
+            functionRef:
+              refName: remediateLayerFindings
+              arguments:
+                author: "solutions_architect"
+                findings: "${ .unresolved_findings }"
+                iteration: "${ .iteration }"
+        transition: InvokeReviewSagaGate
 
       - name: RatifyDecision
         type: operation
@@ -294,6 +385,63 @@ architecture_flow:
               arguments:
                 adr_id: "ADR-NN"
                 status: "Accepted"
+        transition: VerifyLayerCloseoutGate
+
+      - name: VerifyLayerCloseoutGate
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: runLayerGateChecklist
+            functionRef:
+              refName: verifyLayerBoundaryGate
+              arguments:
+                gateId: "GATE-03"
+                layer: "05_ADR"
+                documentId: "ADR-NN"
+        transition: SealLayerDocumentBaseline
+
+      - name: SealLayerDocumentBaseline
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: sealFrontmatterStatus
+            functionRef:
+              refName: sealDocumentBaseline
+              arguments:
+                documentId: "ADR-NN"
+                layer: "05_ADR"
+                targetStatus: "Baselined"
+                checksumAlgorithm: "SHA-256"
+        transition: RegisterSddGraphBaselineNode
+
+      - name: RegisterSddGraphBaselineNode
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: updateGraphNode
+            functionRef:
+              refName: registerGraphBaselineNode
+              arguments:
+                nodeType: "AdrNode"
+                nodeId: "ADR-NN"
+                status: "Baselined"
+                lockIncomingEdges: true
+        transition: EmitLayerHandoffEvent
+
+      - name: EmitLayerHandoffEvent
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: publishCompletionEvent
+            functionRef:
+              refName: emitCloudEvent
+              arguments:
+                event: "AdrDecisionsClosedEvent"
+                documentId: "ADR-NN"
+                decisions: "${ .decisions }"
+                tech_registry: "${ .tech_registry }"
+        produceEvents:
+          - eventRef: AdrDecisionsClosedEvent
         end: true
 
       - name: RejectAndArchive
@@ -379,8 +527,8 @@ traceability:
     chg:
       - "@chg: CHG-NN"
   health_score:
-    spec_ready: "95%"
-    target_score: ">=90/100"
+    spec_ready: "PASS"
+    target_status: "PASS"
 
 # =============================================================================
 # Section 10: Related Decisions
@@ -407,7 +555,7 @@ glossary:
     - term: MCDA
       definition: "Multi-Criteria Decision Analysis"
     - term: SPEC-Ready
-      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
+      definition: "Binary topological verification confirming 100% DAG completeness and downstream SPEC realization"
 
 # =============================================================================
 # Appendix: MVP Lifecycle

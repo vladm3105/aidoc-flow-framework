@@ -15,6 +15,21 @@ Engine-agnostic agent skills shipped with the SDD framework. Adapted 2026-09-27 
 | `memory-hygiene/` | repair memory-store drift — index 1:1, links, hooks; `lint.py` gate | canon `memory-hygiene/` + `lint.py` (MIT GlassOnTin) |
 | `preprod-review/` | before release/rollout widening blast radius — 5 parallel lenses + verify + verdict | canon `preprod-review/` + `references/` |
 | `recall/` | retrieve task-relevant memories via read-only subagent, not full-store read | canon `recall/SKILL.md` |
+| `sdd-chg-author/` | CHG authoring — §3.4 first, §3.4.1 + `chg_lint` after, no code steps | layer `09_CHG/CHG-TEMPLATE.yaml` + `DOC_GOVERNANCE_CORE.md` |
+| `sdd-chg-flow/` | classify change into one CHG flow before authoring the CHG | `governance/CHG_REQUEST_FLOWS.md` §1 router |
+| `sdd-chg-triage/` | pre-implementation go/no-go — verify claims live, verdict GO/STALE/SUPERSEDED | `aidoc-triage` + Mode B validation |
+| `sdd-gates/` | run GATE-01→GATE-CODE for touched layers, dispose via error catalog | `layers/09_CHG/gates/` |
+| `sdd-iplan/` | IPLAN authoring — In Progress, authorizing CHG, full file manifest | layer `08_IPLAN/IPLAN-TEMPLATE.yaml` |
+| `sdd-module/` | seed → module decomposition — Triple-Lens, standard layout, L014/L015 lifecycle | `governance/SEED_TO_MODULE_DECOMPOSITION.md` + `MODULE_LAYOUT.md` |
+| `sdd-adr/` | architecture decisions — options, trade-offs, Selected reason | layer `05_ADR/ADR-TEMPLATE.yaml` |
+| `sdd-bdd/` | BDD scenarios — Given-When-Then mapped to state-machine primitives | layer `04_BDD/BDD-TEMPLATE.yaml` |
+| `sdd-brd/` | business objectives, ROI, scope everything traces to | layer `01_BRD/BRD-TEMPLATE.yaml` |
+| `sdd-ears/` | formal requirements — WHEN-THE-SHALL, atomic and testable | layer `03_EARS/EARS-TEMPLATE.yaml` |
+| `sdd-eval/` | EVAL runs — per-metric PASS/FAIL verdicts + receipt closeout | layer `10_EVAL/EVAL-TEMPLATE.yaml` |
+| `sdd-prd/` | personas + feature scopes with EARS-ready acceptance criteria | layer `02_PRD/PRD-TEMPLATE.yaml` |
+| `sdd-seed/` | seed authoring — frozen per version, attributed, gap-gated | `governance/SEED_CONTRACT.md` |
+| `sdd-spec/` | component interfaces, wire contracts, schemas; SPEC owns toolchain | layer `06_SPEC/SPEC-TEMPLATE.yaml` |
+| `sdd-tdd/` | test cases with assertions and verification criteria | layer `07_TDD/TDD-TEMPLATE.yaml` |
 | `second-opinion/` | independent fresh-context judgment before high-stakes output ships | canon `second-opinion/` + judge in `_shared/agents/` |
 | `self-learn/` | capture/consolidate/apply durable lessons — apply/capture/consolidate modes | canon `self-learn/SKILL.md` |
 | `ship-it/` | watch a PR you opened to merge-on-green — required checks, carve-outs, cleanup | canon `ship-it/SKILL.md` (mined netresearch) |

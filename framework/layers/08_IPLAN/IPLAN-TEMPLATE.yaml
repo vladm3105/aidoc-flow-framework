@@ -1,11 +1,21 @@
-# IPLAN-TEMPLATE.yaml — Implementation Plan
-# SDD Layer 8 — Mandatory execution bridge from SPEC to source code
-# One IPLAN per SPEC component.
+# =============================================================================
+#  IPLAN-TEMPLATE.yaml — Implementation Plan (SDD Layer 08)
+# =============================================================================
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: Execution bridge from SPEC/TDD to source code for linear tasks
+#  One IPLAN per SPEC component. All IPLANs go through CHG (§3.0 unified flow).
+#  Registry: IPLAN-00_index.yaml tracks all plans.
 #
-# All IPLANs go through CHG (§3.0 unified flow).
-# Registry: IPLAN-00_index.yaml tracks all plans.
-#
-# IPLAN is the Layer 8 execution bridge from SPEC/TDD to code.
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (IPLAN-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, linear implementation checklists, docs-only changes, or single-file edits
+#    - Specifying task steps without state machine orchestration or automated rollback compensation
+#  Use the primary template (IPLAN-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Orchestrating multi-step codebase mutations, multi-file refactoring, or migrations
+#    - Requiring automated verification switch gates after each implementation task
+#    - Requiring native saga compensation (automated rollback commands if verification fails)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+# =============================================================================
 
 doc_id: IPLAN-NN
 title: "[Implementation Plan Title]"
@@ -46,13 +56,28 @@ metadata:
       See framework/registry/LAYER_REGISTRY.yaml id_patterns.
 
 # =============================================================================
+# Intake Control (Optional L1 Initiator Provenance for Iplanic Import)
+# =============================================================================
+intake_control:
+  _required: false
+  _guidance: |
+    Optional intake-time control metadata for L1 Initiator Provenance
+    when importing into Iplanic (IPLAN-ASSURANCE.md §2, iplan-document.schema.json).
+    Excluded from the canonical plan payload before signature computation.
+  provenance:
+    initiator_key_id: "[key-initiator-01]"
+    algorithm: "ed25519"  # ed25519 | hmac-sha256
+    signed_at: "YYYY-MM-DDTHH:MM:SS"
+    value: "[lowercase hex signature over canonical IPLAN]"
+
+# =============================================================================
 # Section 1: Document Control
 # =============================================================================
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    One IPLAN per SPEC component. Created when TDD reaches
-    IPLAN-Ready >=90/100.
+    One IPLAN per SPEC component. Created when TDD passes the
+    deterministic IPLAN-Ready gate (BTV PASS).
 
     `subtype` selects which sections this IPLAN must carry. Values
     (CLEANUP-PR-E; `audit_fix` added 0.54.0; `bugfix` added 0.56.0;
@@ -264,7 +289,7 @@ file_manifest:
     - path: "<unit test for the component, per the @spec language>"
       description: "<what this file is for, in one line>"
       order: 1
-      status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+      status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | PARTIAL | DONE | SKIPPED
       session: null
       verified: false
       tdd_ref: "@tdd: TDD.NN.04.xxxx | @tdd: TDD.NN.04.yyyy"
@@ -299,7 +324,7 @@ tdd_consistency:
     - Rule D: TDDs and IPLANs MUST reference same language
     - Rule E: TDD-00_index and IPLAN-00_index MUST show consistent statuses
 
-    Enforcement: Lint rules TDD-SYNC-001 through TDD-SYNC-007.
+    Enforcement: Lint rules TDD-SYNC-A through TDD-SYNC-E (per LINT_RULES.md).
 
     Docs-only IPLANs (subtype docs, manifest with no code/test bindings)
     set status: not-applicable with a one-line reason in issues[] — never
@@ -314,7 +339,7 @@ tdd_consistency:
     language_consistent: null  # boolean or null
     index_synchronized: null  # boolean or null
   issues: []
-    # - rule: "TDD-SYNC-003"
+    # - rule: "TDD-SYNC-A"
     #   description: "Status not propagated"
     #   file: "path/to/file"
     #   severity: warning
@@ -335,6 +360,14 @@ execution_commands:
     below are illustrative only — replace them with your `@spec` toolchain's
     equivalents (e.g. Node: `npm ci` / `npm test`; Go: `go mod download` /
     `go test ./...`).
+
+    SECURITY & PLATFORM TOOLING INVARIANTS:
+    Commands must strictly adhere to the approved platform technology stack (/home/ya/devd/technology_stack,
+    specs 00-23). Insecure command flags (e.g. `--insecure`, `--privileged`, `--no-verify`, or passing
+    plaintext secrets in environment flags) are STRICTLY FORBIDDEN.
+    Missing Tools Protocol: If a task execution requires a tool, binary, or CLI utility not present in
+    the approved technology stack, the agent MUST explicitly inform the operator and request instructions
+    on what tools or software to use before running or adding the command.
   setup:
     - "# Provision the toolchain + dependencies from @spec (env, package install, scaffold dirs)"
     - "# example (Python): python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
@@ -361,6 +394,59 @@ execution_commands:
   validation:
     - "# Run the @spec toolchain's test + type-check + lint gates"
     - "# example (Python): python -m pytest tests/ -v --cov && python -m mypy --strict && python -m ruff check"
+  work_orders:
+    _guidance: |
+      Optional structured work packages bridging high-level implementation commands
+      to atomic agent execution tasks (adopted from aidoc-flow-iplan-standard).
+      Each work order specifies dispatchability, ordered typed TODOs, allowed actions,
+      acceptance criteria, and evidence requirements.
+    orders: []
+    # - work_order_id: "WORK-001"
+    #   dispatchable: true
+    #   step_ref: "STEP-001"
+    #   todos:
+    #     - todo_id: "TODO-001"
+    #       description: "Author unit tests for component contract"
+    #       type: test  # inspect | edit | create | delete | test | review | document | verify
+    #       priority: P0  # P0 | P1 | P2 | P3
+    #       allowed_actions: ["read", "create", "modify", "run_command", "request_clarification"]
+    #       acceptance_criteria:
+    #         - "Test suite asserts all SPEC contract invariants"
+    #       evidence_required:
+    #         - event_type: "test.passed"
+    #           artifact_type: "pytest_xml"
+    #           description: "Unit test suite executes with exit code 0"
+    #       attestation:
+    #         executor_id: "exec:m7k3x9a2b4c6e8f1"
+    #         protocol_agent_id: "agent:coder_unit_01"
+    #         occurred_at: "YYYY-MM-DDTHH:MM:SS"
+    #         valid_until: "YYYY-MM-DDTHH:MM:SS"
+    #         evidence_summary:
+    #           command: "pytest tests/unit/ -v"
+    #           exit_code: 0
+    #           output_tree_sha: "e3b0c442..."
+    #         signature:
+    #           key_id: "key-worker-01-ed25519"
+    #           algorithm: "ed25519"  # ed25519 | hmac-sha256
+    #           value: "4f6a7b8c..."  # or null for _UNSIGNED fallback
+    #   skip_audit:
+    #     justification: "[Reason for skipping step]"
+    #     authorized_by: "[approver]"
+    #     approved_at: "YYYY-MM-DDTHH:MM:SS"
+
+# =============================================================================
+# Section 3b: Failure Handling Policy (Autonomous Agent Resilience)
+# =============================================================================
+failure_handling:
+  _required: false
+  _guidance: |
+    Execution policy governing autonomous agent behavior upon encountering blockers,
+    ambiguities, or test failures (adopted from aidoc-flow-iplan-standard task.schema.json).
+  on_blocker: "pause_and_notify"
+  on_ambiguity: "request_clarification"
+  on_test_failure: "retry_remediation"  # up to max_attempts before saga compensation
+  on_policy_denial: "abort_and_rollback"
+  on_partial_completion: "checkpoint_state"
 
 # =============================================================================
 # Section 4: Implementation Contracts

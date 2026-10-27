@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-09 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -71,7 +71,7 @@ transitions between C4 levels; they have no C4 zoom level of their own.
 framework/
   README.md              This file.
   VERSION                Framework spec version (SemVer).
-  CHANGELOG.md           Version history — document-of-record for spec changes (E008).
+  CHANGELOG.md           Version history (retired tombstone frozen in CHG-94; live change records in archive/CHG-*/ and GitHub releases).
   SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  End-to-end SDD authoring guide (the one
                          root doc engines vendor alongside the spec subtrees).
   QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
@@ -80,12 +80,10 @@ framework/
   LEARNED_LESSONS.md     Institutional knowledge from live sessions (incident
                          evidence preserved verbatim; era caveats in header).
   layers/                The 10 layer definitions — one folder per layer (01_BRD
-                         through 10_EVAL). Artifact layers (01–07) contain both
-                         document and CNCF SWF templates ({TYPE}-TEMPLATE.yaml and
-                         {TYPE}-SWF-TEMPLATE.yaml) and standards ({TYPE}_WORKFLOW_STANDARD.md);
-                         governance layers (08_IPLAN, 09_CHG, 10_EVAL) house operational
-                         workflows under `framework/governance/workflows/` and standards
-                         under `framework/governance/`.
+                         through 10_EVAL). Each layer carries the Three-Tier Architecture:
+                         Tier 1 execution flow (*-SWF-TEMPLATE.yaml), Tier 2 canonical data
+                         plane (*-GRAPH-TEMPLATE.yaml), Tier 3 compiled markdown, and the
+                         standard declarative template alternative (*-TEMPLATE.yaml).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 11 folders:
                          one per layer (01_BRD through 09_CHG) plus 10_EVAL
@@ -104,7 +102,7 @@ framework/
                          (templates/); the CHG change-management overlay (gates incl.
                          GATE-SPEC, the framework-spec change gate; templates); the project
                          adaptation surface (ADAPTATION.md + ADAPTATION_SURFACE.yaml);
-                         and DECISIONS.md, the spec-level decision register.
+                         and DECISIONS.md, the spec-level decision register (retired tombstone).
                          See governance/README.md.
   archive/               Archived originals from CHG-modified documents.
                          Structure: archive/{CHG-ID}/ (vehicle files at
@@ -178,7 +176,7 @@ Framework-spec changes (edits to `framework/` itself) route through
 **GATE-SPEC** — the meta gate orthogonal to the artifact cascade. GATE-SPEC
 enforces: provenance justification, SemVer classification (≥ C2, never C1),
 `framework/VERSION` bump, spec-version pin re-declaration,
-conformance suite green, and `CHANGELOG.md` update. Archive-tier-only repairs
+and conformance suite green. Archive-tier-only repairs
 (`framework/archive/**`) are not spec changes and skip the gate. See
 [`layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`](layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md)
 for the full gate definition.

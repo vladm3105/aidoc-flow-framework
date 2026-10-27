@@ -1,14 +1,21 @@
+---
+doc_id: GOV-REVIEW-SAGA
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Review Saga — lifecycle contract for the review-team's create→review→revise loop
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 `REVIEW_TEAM.md` defines *what* the review team is (crew of personas, blackboard,
 synthesizer, scoring/gate, partial-crew resilience). This document defines the
@@ -30,7 +37,7 @@ formally codified in `framework/governance/REVIEW_WORKFLOW_STANDARD.md`,
 `framework/governance/workflows/review-remediation-flow.sw.yaml`, and the per-layer
 review workflows in `framework/governance/workflows/review/` (`REV-01-BRD` through `REV-09-CHG`).
 
-## States
+## States {#sec-states}
 
 The saga's run-level and branch-level states share one state machine. Each
 state-typed value belongs to either the **run** (the overall review run) or to
@@ -51,7 +58,7 @@ unambiguous about which scope they apply to.
 | `CLOSED` | run | Terminal. The run completed cleanly. |
 | `PARTIAL_TIMEOUT` | run | Terminal-this-process. The break-circuit (or hard timeout) fired; the journal is durably written and a future invocation may resume from this checkpoint. |
 
-## Transition table
+## Transition table {#sec-transition-table}
 
 Engine-agnostic. Engines MAY enforce transitions preemptively (runtime code)
 or cooperatively (prompts that direct an LLM to validate against this table
@@ -71,14 +78,14 @@ before writing the journal).
 | `CLOSED` | (terminal) |
 | `PARTIAL_TIMEOUT` | (terminal-this-process; future invocations resume from this journal state by re-entering one of the allowed source states) |
 
-## Journal schema
+## Journal schema {#sec-journal-schema}
 
 Each run produces a durable journal file. The journal is the authoritative
 record of the saga's progression and the basis of lifecycle conformance
 verification. Every conforming implementation must produce a journal matching `saga.schema.json`
 (this file's companion).
 
-### Required fields
+### Required fields {#sec-required-fields}
 
 | Field | Type | Description |
 |---|---|---|
@@ -94,7 +101,7 @@ verification. Every conforming implementation must produce a journal matching `s
 | `transitions` | array of objects | Append-only log of state changes (schema below). |
 | `compensation_actions` | array of objects | Append-only log of compensation events (schema below). |
 
-### Optional fields
+### Optional fields {#sec-optional-fields}
 
 | Field | Type | Notes |
 |---|---|---|
@@ -113,24 +120,24 @@ genuinely needs to extend transitions (e.g., to carry a saga correlation
 ID across distributed branches), that extension goes through a follow-up
 CHG to the schema, not a unilateral implementation addition.
 
-### `branches[<persona>]` sub-object
+### `branches[<persona>]` sub-object {#sec-branches-sub-object}
 
 Required: `branch_id` (string), `status` (one of the branch-scoped states),
 `attempt` (integer, 0-based).
 Optional: `started_at`, `ended_at` (ISO 8601 UTC), `error_code` (string).
 
-### `transitions[]` entry
+### `transitions[]` entry {#sec-transitions-entry}
 
 Required: `ts` (ISO 8601 UTC), `to` (state string), `scope` (string: `"run"` or `"branch:<persona>"`) — matching the schema's required `["ts", "to", "scope"]`.
 Optional: `from` (state string, or null on the initial entry).
 
-### `compensation_actions[]` entry
+### `compensation_actions[]` entry {#sec-compensation_actions-entry}
 
 Required: `ts` (ISO 8601 UTC), `branch` (persona name), `reason` (string —
 the `error_code` or a human-readable cause), `action` (one of `retry`,
 `skip`, `escalate`).
 
-## Break-circuit policy
+## Break-circuit policy {#sec-break-circuit-policy}
 
 Cooperative graceful-exit mechanism: every orchestrator that participates in
 the saga MUST monitor its own wall-clock against an implementation-defined
@@ -140,7 +147,7 @@ checkpoint boundaries (per-orchestrator-role table below), the orchestrator chec
 elapsed time and exits cleanly with status `PARTIAL_TIMEOUT` if the soft
 deadline has been crossed.
 
-### Checkpoint boundaries by orchestrator role
+### Checkpoint boundaries by orchestrator role {#sec-checkpoint-boundaries-by-orchestrator-role}
 
 | Orchestrator role | Checkpoint boundaries |
 |---|---|
@@ -150,7 +157,7 @@ deadline has been crossed.
 | Review-team dispatcher (the shared fan-out) | After each crew fan-out completes; before the reduce step. |
 | Saga runtime (preemptive engines) | Per-branch via implementation-defined per-persona timeout configuration; hard-timeout-during-branch maps to `PARTIAL_TIMEOUT`. |
 
-### Behavior at checkpoint
+### Behavior at checkpoint {#sec-behavior-at-checkpoint}
 
 ```text
 1. Read elapsed wall-clock since orchestrator start.
@@ -168,14 +175,14 @@ state — NOT `PARTIAL_TIMEOUT`. Both outcomes are valid graceful-degradation
 states; conformance accepts either as evidence the journal captured useful
 state.
 
-### Soft-deadline values
+### Soft-deadline values {#sec-soft-deadline-values}
 
 The spec does not prescribe specific numbers — engines pick values
 appropriate to their runtime. The contract is that SOFT_DEADLINE ≤
 HARD_TIMEOUT − 300s. Per-platform numeric choices are documented in each
 platform's own engineering docs (not in this engine-agnostic spec).
 
-## Framework spec-version declaration
+## Framework spec-version declaration {#sec-framework-spec-version-declaration}
 
 A consuming implementation records which framework spec version it conforms
 to (the `framework/VERSION` value at the time of adoption) in its own
@@ -189,7 +196,7 @@ equality.
 This declaration-vs-implementation distinction allows a multi-phase adoption
 where the spec changes in one phase and consumer implementations land later.
 
-## Enforcement asymmetry — honest caveat
+## Enforcement asymmetry — honest caveat {#sec-enforcement-asymmetry-honest-caveat}
 
 Engines MAY enforce this contract via different mechanisms:
 
@@ -206,7 +213,7 @@ adherence + greppable break-circuit invariant), not the enforcement
 mechanism. Binding of these enforcement modes is documented in the
 consumer's own engineering documentation, not in this engine-agnostic spec.
 
-## Cross-references
+## Cross-references {#sec-cross-references}
 
 - `REVIEW_TEAM.md` — the operational semantics (create / review / remediate)
   this saga lifecycle wraps. The loop's WHAT lives there; the loop's HOW

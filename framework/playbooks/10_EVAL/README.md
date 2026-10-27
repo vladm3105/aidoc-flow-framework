@@ -6,9 +6,9 @@
 |-------|-------|
 | Version | 1.0 |
 | Status | Approved |
-| Last Updated | 2026-10-27 |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 ## Purpose
 
@@ -52,7 +52,7 @@ IPLAN Completed
 
 ```
 docs/sdd/10_EVAL/
-  EVAL-00_index.md              # master index
+  EVAL-00_index.yaml              # master index
   EVAL-NN/
     EVAL-NN.yaml                # active strategy
     reports/
@@ -63,6 +63,8 @@ docs/sdd/10_EVAL/
 
 - **Template**: `framework/layers/10_EVAL/EVAL-TEMPLATE.yaml`
 - **Report Template**: `framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml`
+- **Graph Template (Tier 2)**: `framework/layers/10_EVAL/EVAL-GRAPH-TEMPLATE.yaml`
+- **Workflow Template (Tier 1)**: `framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml`
 - **ID Standard**: `framework/governance/ID_NAMING_STANDARDS.md`
 - **Lint Rules**: `framework/governance/LINT_RULES.md` §Evaluation (L10)
 - **Verification Playbooks**: `playbooks/10_IPVERIFY/` (evaluator, verifier, etc.)

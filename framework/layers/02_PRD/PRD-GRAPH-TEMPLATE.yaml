@@ -1,0 +1,268 @@
+# =============================================================================
+#  PRD-GRAPH-TEMPLATE.yaml — Product Requirements Graph Slice (Layer 02)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 02_PRD (Product Requirements Document)
+#  C4 Level: Container (product features, functional blocks, system boundaries)
+#  Parity: Full content and functional parity with PRD-TEMPLATE.yaml & PRD-SWF-TEMPLATE.yaml
+#
+#  CONVENTION:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common authoring pitfalls to avoid
+#    _example      — concrete example values for reference
+#
+#  DOWNSTREAM: EARS (Layer 3), BDD (Layer 4)
+#  UPSTREAM:   BRD (Layer 1)
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "PRD-NN_[product_feature_slug]"
+
+# =============================================================================
+# Metadata & Executive Context (Section 1–5 Parity)
+# =============================================================================
+
+metadata:
+  author: "[Product Manager / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Comprehensive functional product capabilities, user personas, container bounds, user journeys, and SLA targets]"
+  layer: "02_PRD"
+  c4_level: "container"
+  ears_ready_target: "PASS"
+
+  # ---------------------------------------------------------------------------
+  # Problem Statement & Business Opportunity (Section 3 Parity)
+  # ---------------------------------------------------------------------------
+  problem_statement:
+    problem: "[Concise 1-2 sentence description of the user and product problem]"
+    impact: "[Quantifiable impact on revenue, customer churn, operational burden, or conversion rate]"
+    opportunity: "[Strategic market window or competitive differentiator addressed by this product release]"
+    current_state:
+      - "[Pain Point 1: e.g. 18% of mobile checkout attempts fail due to synchronous payment gateway timeouts]"
+      - "[Pain Point 2: e.g. Customer support spends 120 hours/month manually reconciling duplicate orders]"
+      - "[Pain Point 3: e.g. Lack of quick-reorder capability causes a 24% lower repeat purchase rate]"
+
+  # ---------------------------------------------------------------------------
+  # MVP Core Hypothesis (Section 2 Parity)
+  # ---------------------------------------------------------------------------
+  mvp_hypothesis:
+    statement: "We believe that [target users] will [key outcome] if we provide [MVP product solution]."
+    validation: "We will know this is true when [>=30% repeat checkout within 30 days and zero duplicate charges]."
+
+  # ---------------------------------------------------------------------------
+  # Target Personas & User Profiles (Section 4 Parity)
+  # ---------------------------------------------------------------------------
+  target_audience:
+    primary_persona:
+      name: "Alex the Mobile Shopper"
+      role: "EndUser"
+      key_characteristic: "Time-constrained consumer purchasing via smartphone under erratic network conditions"
+      main_pain_point: "Frustrated by repetitive checkout forms, payment re-entry, and dropped mobile connections"
+      success_criteria: "Complete repeat order in under 5 seconds with guaranteed zero duplicate charges"
+      usage_frequency: "Daily to weekly"
+    secondary_personas:
+      - name: "Morgan the Platform Operations Lead"
+        role: "PlatformOperator"
+        key_characteristic: "Site reliability engineer responsible for order processing SLAs and queue depth"
+        main_pain_point: "Lack of granular telemetry when payment partner degrades during flash sales"
+        success_criteria: "Real-time visibility into gateway p99 latency and automated dead-letter alerting"
+
+  # ---------------------------------------------------------------------------
+  # Success Metrics & KPIs (Section 5 Parity)
+  # ---------------------------------------------------------------------------
+  success_metrics:
+    mvp_validation_30day:
+      - metric: "Checkout Completion Rate"
+        baseline: "82%"
+        target: ">=95%"
+        measurement: "Completed checkout sessions / Total initiated checkout sessions"
+      - metric: "Duplicate Order Ingestion Rate"
+        baseline: "1.2%"
+        target: "0.0%"
+        measurement: "Count of duplicate order IDs processed within 24-hour window"
+    business_90day:
+      - metric: "Merchant 90-Day Retention"
+        target: ">=88%"
+        decision_threshold: "<75% = Pivot product architecture"
+    decision_gate:
+      proceed: "All targets met: Advance to full multi-region production rollout"
+      iterate: "60-80% targets met: Refine UI feedback loops and retry mechanisms"
+      pivot: "<60% targets met: Re-evaluate payment orchestration architecture"
+
+  # ---------------------------------------------------------------------------
+  # Scope Bounds (Section 7 Parity)
+  # ---------------------------------------------------------------------------
+  scope:
+    in_scope:
+      - "[P1-Must: Synchronous order ingestion gateway with idempotent request deduplication]"
+      - "[P1-Must: One-click reorder user interaction flow for returning consumers]"
+      - "[P1-Must: Real-time latency and throughput telemetry bounding p99 < 50ms]"
+      - "[P2-Should: Automated email and push settlement receipt notifications]"
+    out_of_scope:
+      - "[Out-of-scope: Multi-currency cryptocurrency settlement — deferred to Phase 2]"
+      - "[Out-of-scope: Physical POS barcode scanning hardware integration — out of boundary]"
+
+# =============================================================================
+# Graph Nodes: Atomic Product Capabilities (C4 Level 2)
+# =============================================================================
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Node 1: Core Functional Product Capability (Section 4, 7 & 9 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.04.xxxx"
+    type: "product_capability"
+    title: "[Product Capability Title: e.g. Synchronous Order Ingestion Gateway]"
+    statement: "[Functional capability provided by the system container to target personas]"
+    description: |
+      Provides a high-throughput, fault-tolerant REST ingestion gateway that receives,
+      validates, and commits customer order payloads into the core transaction log.
+      The capability guarantees transactional idempotency over a rolling 24-hour window,
+      rejects malformed payloads with RFC-7807 problem details within 10ms, and dispatches
+      validated order events to downstream asynchronous ledger containers.
+    properties:
+      persona: "EndUser"
+      priority: "P1-Must"  # MoSCoW: P1-Must | P2-Should | P3-Could | P4-Wont
+      release_phase: "MVP"
+      feature_flag: "feature.order_gateway.v2"
+      sla_threshold: "p99 < 50ms at 5,000 TPS"
+
+      # User Story (Section 8 Parity)
+      user_story:
+        role: "Registered Merchant"
+        want: "submit batch order requests via a unified HTTPS REST gateway with guaranteed idempotency"
+        so_that: "duplicate payment transactions are eliminated during network retries and settlement latency is minimized"
+
+      # Verifiable Acceptance Criteria (Section 9 & 11 Parity)
+      acceptance_criteria:
+        - "[AC-01: Idempotency Verification] Repeated requests with identical Idempotency-Key within a 24-hour window must return the cached HTTP 200 response without re-triggering ledger debit."
+        - "[AC-02: Strict Schema Validation] Ingestion payload must validate against OrderIngestionSchema within 10ms, rejecting malformed requests with HTTP 422 and RFC-7807 problem details."
+        - "[AC-03: Asynchronous Event Dispatch] Validated orders must commit to the local transactional outbox and emit OrderCreatedEvent to Kafka within 15ms."
+
+      # Edge Cases & Exception Handling (Section 9 Parity)
+      edge_cases:
+        - "[EC-01: Banking Clearing Timeout] If partner bank clearing times out after 3,000ms, mark order as 'pending_reconciliation' and enqueue for background polling."
+        - "[EC-02: Simultaneous Duplicate Requests] Concurrent requests bearing identical idempotency keys are serialized using distributed Redis redlock with a 500ms acquisition timeout."
+
+      # Telemetry & Operational KPIs (Section 5 & 10 Parity)
+      telemetry_and_kpis:
+        event_name: "order.ingestion.submitted"
+        metric_latency: "order_ingestion_duration_seconds"
+        target_p99: "50ms"
+
+      # Container Boundaries & Dependencies (Section 7b Parity)
+      dependencies:
+        upstream_brd: "@brd: BRD.01.07.xxxx"
+        container_subsystem: "order-gateway-service"
+
+  # ---------------------------------------------------------------------------
+  # Node 2: User Journey Flow / Interaction Capability (Section 5 & 8 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.05.xxxx"
+    type: "product_capability"
+    title: "[User Journey Flow: e.g. One-Click Reorder Checkout Flow]"
+    statement: "[Step-by-step user interaction flow from cart review to settlement confirmation]"
+    description: |
+      Guides returning consumers through a streamlined 1-click reorder journey.
+      The flow pre-authenticates customer credentials, pre-populates tokenized payment
+      instruments and shipping destinations from historical records, presents a 5-second
+      undo grace period, and optimistically transitions the client UI to a confirmed state
+      while asynchronous ledger settlement completes in the background.
+    properties:
+      persona: "EndUser"
+      priority: "P1-Must"
+      interaction_type: "asynchronous_flow"
+
+      # Step-by-Step Interaction Flow (Section 9 User Journey Parity)
+      interaction_steps:
+        - "Step 1 [Initiation]: User taps 'Quick Reorder' on mobile client; client sends GET /orders/previous-metadata."
+        - "Step 2 [Pre-validation]: Gateway verifies SKU availability in local cache and validates customer credit token."
+        - "Step 3 [Confirmation]: Client displays 5-second undo toast; upon expiration, client sends POST /orders/instant."
+        - "Step 4 [Settlement Receipt]: System displays animated success confirmation and generates downloadable PDF receipt."
+
+      # Fallback & Degradation Behavior
+      fallback_behavior: "If saved payment instrument is invalid or expired, gracefully redirect user to standard multi-step payment form with pre-populated cart."
+
+      # UI / UX Interaction Requirements (Section 10 Parity)
+      ui_ux_requirements:
+        - "Optimistic UI state update on tap with immediate visual feedback"
+        - "Sub-100ms button state transition on confirmation"
+        - "Accessible WCAG 2.1 AA compliant color contrast on confirmation banners"
+
+  # ---------------------------------------------------------------------------
+  # Node 3: Quality Attribute & Operational SLA Bound (Section 7b & 8 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "PRD.02.08.xxxx"
+    type: "product_capability"
+    title: "[Product Performance Threshold: e.g. Ingestion Gateway Latency & Throughput SLA]"
+    statement: "[Quantitative NFR bounding ingestion latency to p99 < 50ms at 5,000 TPS]"
+    description: |
+      Defines the operational latency, throughput, and error envelope required by downstream
+      ADR, SPEC, and TDD layers to ensure system stability during peak holiday shopping surges.
+      Requires in-memory validation caches, non-blocking asynchronous event dispatch, and
+      automated circuit breaker protection against downstream banking clearing latency.
+    properties:
+      metric: "latency_p99"
+      threshold: "50ms"
+      unit: "ms"
+      full_id: "PRD.02.perf.ingestion.p99"
+      target_tps: 5000
+      error_budget_percentage: "0.05%"
+      telemetry_metric: "order_gateway_request_duration_seconds"
+      monitoring_alert: "PagerDuty alert fires if p99 latency exceeds 50ms for 3 consecutive 1-minute intervals."
+
+# =============================================================================
+# Graph Edges: Directed Semantic Dependencies & Contracts
+# =============================================================================
+
+edges:
+  # ---------------------------------------------------------------------------
+  # Edge 1: Realizes Upstream Business Capability (Layer 01 BRD -> Layer 02 PRD)
+  # ---------------------------------------------------------------------------
+  - from: "PRD.02.04.xxxx"
+    to: "BRD.01.07.xxxx"
+    relation: "realizes"
+    notes: "Realizes merchant order settlement capability defined in BRD.01.07.xxxx"
+    description: |
+      Realizes the upstream business capability by providing a high-throughput synchronous
+      HTTP REST API with guaranteed idempotency and transactional ledger recording, satisfying
+      the executive strategic objective for automated payment reconciliation.
+    rationale: "Decouples public API ingress from downstream asynchronous settlement engines, preventing client timeouts during banking clearing delays."
+    properties:
+      protocol: "HTTPS/REST"
+      idempotency_window: "24h"
+
+  # ---------------------------------------------------------------------------
+  # Edge 2: Realizes Product Interaction Flow (User Journey -> Core Capability)
+  # ---------------------------------------------------------------------------
+  - from: "PRD.02.05.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "User interaction journey realizing the order ingestion product capability"
+    description: |
+      Provides the consumer-facing mobile and web checkout interaction model that feeds
+      validated order payloads into the synchronous order ingestion gateway.
+    rationale: "Minimizes user checkout friction and cart abandonment while ensuring all orders pass through the unified validation gateway."
+    properties:
+      flow_type: "one_click_checkout"
+      grace_period_seconds: 5
+
+  # ---------------------------------------------------------------------------
+  # Edge 3: Operational Constraint (SLA Threshold -> Core Capability)
+  # ---------------------------------------------------------------------------
+  - from: "PRD.02.08.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "constrains"
+    notes: "Latency and throughput SLA bounding the order ingestion gateway"
+    description: |
+      Enforces strict operational boundaries (p99 latency < 50ms under 5,000 TPS) on the
+      gateway implementation, requiring downstream ADR decisions to utilize in-memory
+      validation caches and non-blocking I/O.
+    rationale: "Prevents downstream database saturation and guarantees sub-second user checkout responsiveness during flash-sale events."
+    properties:
+      max_p99_latency_ms: 50
+      peak_tps: 5000

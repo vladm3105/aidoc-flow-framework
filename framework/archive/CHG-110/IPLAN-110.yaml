@@ -1,0 +1,49 @@
+# =============================================================================
+#  IPLAN-110: Embedded Kùzu Acceleration Adapter & Central Lake Exporter
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-110/CHG-110.yaml
+# =============================================================================
+
+id: "IPLAN-110"
+chg_id: "CHG-110"
+title: "Embedded Kùzu Acceleration Adapter & Central Lake Exporter"
+status: "Completed"
+framework_version: "0.93.0"
+
+file_manifest:
+  - "plans/KUZU-GRAPH-ADAPTER-AND-LAKE-EXPORTER-PLAN.md"
+  - "docs/FEDERATED_READ_LAKE_PATTERN.md"
+  - "sdd_doc_lint/kuzu_adapter.py"
+  - "sdd_doc_lint/lake_exporter.py"
+  - "sdd_doc_lint/graph_engine.py"
+  - "sdd_doc_lint/__main__.py"
+  - "framework/templates/TASKFILE-TEMPLATE.yml"
+  - "framework/templates/AGENTS-TEMPLATE.md"
+  - "framework/scripts/install.sh"
+  - "framework/scripts/upgrade.sh"
+  - "tests/unit/test_kuzu_adapter.py"
+  - "tests/unit/test_lake_exporter.py"
+  - "framework/archive/CHG-110/CHG-110.yaml"
+  - "framework/archive/CHG-110/IPLAN-110.yaml"
+  - "framework/VERSION"
+  - "hooks/sync-version-refs.sh"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-110.yaml, IPLAN-110.yaml, and KUZU-GRAPH-ADAPTER-AND-LAKE-EXPORTER-PLAN.md"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Implement sdd_doc_lint/kuzu_adapter.py and lazy fallback in graph_engine.py"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Implement sdd_doc_lint/lake_exporter.py for openCypher and Apache AGE formats"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update Taskfile templates, AGENTS-TEMPLATE.md, install.sh, and upgrade.sh"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Author unit tests for kuzu_adapter and lake_exporter"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Bump framework/VERSION to 0.93.0, sync version refs, and run full test suites"
+    status: "Completed"

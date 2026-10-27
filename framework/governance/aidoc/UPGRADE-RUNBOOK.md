@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -27,15 +27,16 @@ performs. Conflict resolution (step 3), conformance (step 4), and recording
 
 ### 1. Read the canon-side inputs
 
-- The canon `CHANGELOG.md` entry for the new version (breaking changes,
+- The canon release notes and Change Request archives for the new version
+  in `framework/archive/CHG-*/` and GitHub Releases (breaking changes,
   migration notes per W001).
 - Your overrides' authored-against `framework_version` pins — anything older
   than the new canon is a candidate conflict.
 
 ### 2. Re-point `framework_path`
 
-- **Symlink consumers:** retarget `.aidoc/framework` at the new canon
-  location and update `framework_version` in `.aidoc/profile.yaml` to the new
+- **Git submodule consumers:** update the submodule pin to the new canon release
+  tag or commit SHA, and update `framework_version` in `.aidoc/profile.yaml` to the new
   `X.Y.Z`.
 - **Pinned-copy consumers:** stage the new tree aside first (repeat the
   `docs/PROJECT.md` §7.1 allowlist copy at the new canon tree —
@@ -68,6 +69,12 @@ project's intent forward onto the new upstream text; if the upstream gate got
 stricter, the override follows it up, never down. Delete overrides that now
 duplicate upstream verbatim.
 
+For standard scaffolded governance blueprints in `.aidoc/project/governance/`
+(such as `CHG_EXECUTION_FLOW.md` or `QA_PROTOCOL.md`), pass `--refresh-blueprints`
+to `upgrade.sh` to refresh unmodified blueprints to the target canon. Any
+blueprint customized by the consumer is automatically preserved unless `--force`
+is explicitly specified.
+
 ### 4. Re-run conformance
 
 Re-pass the shared conformance suite against the re-pointed tree (from the
@@ -83,8 +90,8 @@ The upgrade is not done until the suite is green on the new version.
 ### 5. Record it
 
 - Update the override `framework_version` pins to the new canon version.
-- Record the upgrade in the consumer changelog (old version → new version,
-  conflicts resolved, suite result).
+- Record the upgrade in the consumer change record (authoring a CHG request under
+  `docs/sdd/09_CHG/`, noting old version → new version, conflicts resolved, suite result).
 
 ## Who owes the upgrade
 
@@ -106,5 +113,5 @@ purpose — prose-only vehicle; the follow-up is now closed.)
 ## See also
 
 - `BOOTSTRAP.md` — the initial-deploy procedure this runbook extends
-- `AIDOC.md` — the contract (structure, discovery rule, symlink convention)
+- `AIDOC.md` — the contract (structure, discovery rule, attachment models)
 - `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` — the spec gate (W001/W002, re-adoption box)

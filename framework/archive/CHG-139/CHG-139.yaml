@@ -1,0 +1,138 @@
+# =============================================================================
+#  CHG-139: Upgrade blueprint refresh and drift reporting harmonization
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 — consumer tooling enhancement)
+#  Scope: Extend framework/scripts/upgrade.sh with --refresh-blueprints option
+#         to non-destructively refresh standard governance blueprints and root
+#         pre-commit gate, while harmonizing stale detector reporting to
+#         recognize standard scaffolded blueprints and eliminate false UNPINNED
+#         noise. Issue #1048. Normative spec change protocol applied (0.96.20 -> 0.96.21).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: framework/scripts/upgrade.sh, install.sh,
+#     deploy.sh, UPGRADE-RUNBOOK.md, tests/conformance/test_consumer_scripts.py,
+#     hooks/sync-version-refs.sh, issue #1048. All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (DIR2C tooling enhancement).
+#  7. Single issue #1048 (missing capability, review origin).
+#  8. Test specs: chg_lint, spec_gate, test_consumer_scripts.py (unit tests for
+#     --refresh-blueprints, non-destructive preserve, and drift detection),
+#     test_sync_version_refs.py.
+#  11. No SDD layer-doc rewrites; tooling under framework/scripts/ and deploy.sh.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C2, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / tooling_implementation / verification
+#     phases only; empty lifecycle; execution order holds.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.21"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-139"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-139)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-139"
+  title: "Add --refresh-blueprints to upgrade.sh and harmonize blueprint drift reporting"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Issue #1048: upgrade.sh never refreshes installer-scaffolded files (8 blueprints
+    in .aidoc/project/governance/ and root .pre-commit-config.yaml), leaving consumers
+    on stale blueprints without update mechanism. Furthermore, because blueprint
+    markdown files lack YAML framework_version: pins, upgrade.sh reports 8 UNPINNED
+    lines on every standard install upgrade.
+  choice: >-
+    1. Harmonize upgrade.sh stale detector: recognize standard scaffolded governance
+    blueprints in .aidoc/project/governance/. If a blueprint matches canon, report OK
+    (blueprint up-to-date); if it differs, report DRIFT with explicit guidance to pass
+    --refresh-blueprints, silencing false UNPINNED noise.
+    2. Add --refresh-blueprints flag to upgrade.sh and deploy.sh: when passed, standard
+    blueprints (and missing root .pre-commit-config.yaml) are updated to new canon.
+    Consumer edits are safely preserved (only refreshed if matching old canon or if
+    --force is specified).
+    3. Document the workflow in framework/governance/aidoc/UPGRADE-RUNBOOK.md.
+  consequences:
+    positive:
+      - Consumers can easily keep operational governance blueprints current with upstream.
+      - Consumer customizations are safely protected against blind clobbering.
+      - Eliminates 8 confusing UNPINNED lines during standard upgrades.
+    negative:
+      - None; opt-in flag and non-destructive defaults ensure safety.
+    risks:
+      - Unintended overwrite of consumer customizations; mitigated by comparing
+        content against previous canon before overwriting unless --force is given.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    upgrade.sh leaves scaffolded governance blueprints at install-time content
+    forever with no refresh option, and stale detector outputs 8 UNPINNED lines (issue #1048).
+  scope:
+    - framework/archive/CHG-139/CHG-139.yaml (new, this vehicle).
+    - framework/archive/CHG-139/IPLAN-139.yaml (new, executing IPLAN).
+    - framework/scripts/upgrade.sh (stale detector harmonization, --refresh-blueprints).
+    - deploy.sh (pass --refresh-blueprints through).
+    - framework/governance/aidoc/UPGRADE-RUNBOOK.md (step 3 guidance).
+    - tests/conformance/test_consumer_scripts.py (unit tests for refresh & drift).
+    - framework/VERSION (bump 0.96.20 -> 0.96.21).
+    - hooks/sync-version-refs.sh (append 0.96.20 to OLD_VERSIONS and sync).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-139/IPLAN-139.yaml"
+  steps:
+    - step: "Author authorizing CHG-139.yaml and IPLAN-139.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Implement --refresh-blueprints option and blueprint drift detection in upgrade.sh and deploy.sh"
+      phase: "tooling_implementation"
+    - step: "Update UPGRADE-RUNBOOK.md step 3 with blueprint refresh runbook"
+      phase: "documentation_sync"
+    - step: "Add conformance tests in test_consumer_scripts.py verifying --refresh-blueprints and drift reporting"
+      phase: "verification"
+    - step: "Execute version bump protocol (0.96.20 -> 0.96.21) and sync version references"
+      phase: "verification"
+    - step: "Validate chg_lint, spec_gate, and test suites; open PR with Closes #1048"
+      phase: "verification"

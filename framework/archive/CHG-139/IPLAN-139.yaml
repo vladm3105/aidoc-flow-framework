@@ -1,0 +1,61 @@
+# =============================================================================
+#  IPLAN-139: Upgrade blueprint refresh and drift harmonization
+# =============================================================================
+#  Implementation Plan authorized by CHG-139
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-139
+title: "Implementation Plan: upgrade blueprint refresh and drift harmonization (issue #1048)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.21"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-139"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-139/CHG-139.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-139/IPLAN-139.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/scripts/upgrade.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "deploy.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/aidoc/UPGRADE-RUNBOOK.md"
+    action: "modify"
+    status: "DONE"
+  - path: "tests/conformance/test_consumer_scripts.py"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C2, change_source direct, sdd_lifecycle empty"
+  order: "upgrade.sh and deploy.sh logic precedes docs and tests; version bump + sync precedes final verification"
+  compatibility: "blueprints preserved by default unless --refresh-blueprints is given; modified blueprints preserved unless --force is given"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-139/CHG-139.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "pytest tests/conformance/test_consumer_scripts.py"
+  - "pytest tests/conformance/test_sync_version_refs.py"

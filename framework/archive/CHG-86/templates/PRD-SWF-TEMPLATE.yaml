@@ -1,0 +1,490 @@
+# =============================================================================
+#  PRD-SWF-TEMPLATE.yaml — Product Requirements Workflow Document (SDD Layer 02)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (Workflow Subtype)
+#  Purpose: Hybrid Envelope template embedding CNCF Serverless Workflow v0.8
+#           for multi-container product decomposition, feature prioritization,
+#           and acceptance threshold validation
+#  Lifecycle: MVP → PROD → NEW MVP
+#  Standard: CNCF Serverless Workflow DSL v0.8 (YAML)
+#  Downstream: EARS (Layer 3)
+#  Upstream: BRD (Layer 1)
+# =============================================================================
+
+id: PRD-NN
+doc_id: PRD-NN
+title: "[Product Requirements Workflow Title]"
+
+# =============================================================================
+# Template Metadata (Template Configuration)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "prd-document"
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  layer: 2
+  lifecycle: mvp-prod-newmvp
+  total_sections: 15
+  last_updated: "2026-10-05"
+  validation:
+    _guidance: |
+      Structural validation performed via sdd_doc_lint (STRUCT01).
+      Workflow graph integrity validated via CNCF v0.8 JSON Schema and DAG reachability.
+      EARS-Ready Score target >= 90/100 (advisory readiness target).
+    scoring_criteria:
+      business_clarity: "40% (SMART objectives, capability definitions, acceptance criteria)"
+      requirements_maturity: "35% (container boundaries, stakeholder needs, problem statement)"
+      ears_translation_readiness: "20% (user journeys, quality attributes quantified)"
+      strategic_alignment: "5% (upstream BRD references)"
+
+  c4_level:
+    _guidance: |
+      PRD is Container level in the C4 model. Content describes product features,
+      functional blocks, and container boundaries.
+    value: container
+
+  tags:
+    - prd-document
+    - layer-2-artifact
+    - workflow-subtype
+    - cncf-serverless-workflow
+
+  deliverable_type:
+    value: code
+
+  id_standard:
+    state: canonical
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control (Required Section 1/15)
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  version: "1.0"
+  status: Draft
+  date_created: "2026-10-05T00:00:00Z"
+  last_updated: "2026-10-05T00:00:00Z"
+  author: "[Product Manager]"
+  priority: P1
+  source_document: "@brd: BRD.01.07.a1b2"
+  ears_ready_score: "94/100"
+
+  revision_history:
+    - version: "1.0"
+      date: "2026-10-05T00:00:00Z"
+      author: "[Name]"
+      changes: "Initial PRD workflow draft with embedded CNCF container decomposition state machine"
+
+# =============================================================================
+# Section 2: Executive Summary (Required Section 2/15)
+# =============================================================================
+
+executive_summary:
+  _size_target: 200
+  vision: |
+    Deliver an enterprise-grade, resilient, multi-container product capability
+    orchestrated through declarative workflows and clear service boundaries.
+  target_launch: "2026-Q4"
+  core_value_proposition: |
+    Automates containerized feature delivery, eliminates manual prioritization drift,
+    and enforces strict performance acceptance thresholds anchored to business goals.
+
+# =============================================================================
+# Section 3: Problem Statement (Required Section 3/15)
+# =============================================================================
+
+problem_statement:
+  _size_target: 200
+  current_state: |
+    Existing monolithic architectures create coupling bottlenecks and opaque feature dependencies.
+  impact: |
+    Deployments require lockstep releases, feature prioritization lacks quantitative rigor,
+    and SLA breaches occur without automated rollback compensation.
+  opportunity: |
+    Adopt a decomposed container topology with declarative workflow orchestration and
+    RICE feature scoring.
+
+# =============================================================================
+# Section 4: Target Audience & Personas (Required Section 4/15)
+# =============================================================================
+
+target_audience:
+  _size_target: 300
+  primary_persona:
+    name: "Enterprise Operator"
+    role: "Platform Engineer"
+    pain_points:
+      - "Unpredictable service latency under burst load"
+      - "Lack of automated canary rollback during degradations"
+    needs:
+      - "Declarative container interfaces and measurable SLA thresholds"
+  secondary_persona:
+    name: "Business Analyst"
+    role: "Domain Specialist"
+    pain_points:
+      - "Lack of visibility into upstream requirement fulfillment"
+    needs:
+      - "Direct traceability from business objectives to product features"
+
+# =============================================================================
+# Section 5: Success Metrics & KPIs (Required Section 5/15)
+# =============================================================================
+
+success_metrics:
+  _size_target: 300
+  primary_kpi:
+    metric: "Transaction Processing Latency (p95)"
+    target: "<50ms"
+    baseline: "180ms"
+  secondary_kpis:
+    - metric: "System Availability"
+      target: "99.99%"
+    - metric: "Feature Delivery Cycle Time"
+      target: "<2 weeks"
+  decision_gate:
+    proceed: "All targets met → Full production promotion"
+    iterate: "80-95% targets met → Targeted performance tuning"
+    pivot: "<80% targets met → Re-evaluate container architecture"
+
+# =============================================================================
+# Section 6: Goals & Objectives (Required Section 6/15)
+# =============================================================================
+
+goals_and_objectives:
+  _size_target: 200
+  primary:
+    - id: "PRD.01.06.g101"
+      goal: "Decompose core monolithic processing into resilient container services"
+      metric: "Service Autonomy"
+      target: "100% isolated deployment pipelines"
+      timeline: "MVP Launch"
+  secondary:
+    - id: "PRD.01.06.g102"
+      objective: "Establish automated acceptance threshold validation"
+      priority: P1
+      success_criteria: "Zero downstream EARS requirements without quantitative bounds"
+
+# =============================================================================
+# Section 7: Scope & Requirements (Required Section 7/15)
+# =============================================================================
+
+scope_and_requirements:
+  _size_target: 400
+  in_scope:
+    features:
+      - id: 1
+        name: "Ingress Gateway API Container"
+        priority: P1-Must
+      - id: 2
+        name: "Core Domain Transaction Service"
+        priority: P1-Must
+      - id: 3
+        name: "Event-Driven Persistence & Audit Store"
+        priority: P1-Must
+  out_of_scope:
+    - "Legacy monolithic batch reporting systems"
+    - "Manual approval spreadsheets"
+
+# =============================================================================
+# Section 7b: Component Decomposition (Optional Section, embeds CNCF Workflow)
+# =============================================================================
+
+component_decomposition:
+  _size_target: 400
+  _required: false
+  components:
+    - id: "ingress-gateway"
+      responsibility: "Handles TLS termination, JWT authentication, and request routing"
+      thresholds:
+        - key: "gateway_p95"
+          full_id: "PRD.01.perf.gateway.p95"
+          value: 15
+          unit: "ms"
+          source: "@brd: BRD.01.07.a1b2"
+    - id: "transaction-processor"
+      responsibility: "Executes core financial validation and settlement logic"
+      thresholds:
+        - key: "settlement_p95"
+          full_id: "PRD.01.perf.settlement.p95"
+          value: 35
+          unit: "ms"
+          source: "@brd: BRD.01.07.a1b2"
+
+  workflow_definition:
+    id: prd-container-decomposition-graph
+    name: PRD Container Decomposition and Threshold Validation Graph
+    version: "1.0.0"
+    specVersion: "0.8"
+    start: IngestProductInitiative
+
+    events:
+      - name: ScopeAdjustmentEvent
+        type: org.aidoc.prd.scope.adjusted
+        source: /aidoc/prd/scope
+        correlation:
+          - contextAttributeName: documentId
+
+    functions:
+      - name: parseInitiative
+        operation: "urn:aidoc:functions:prd-parser#parse"
+        type: custom
+      - name: decomposeContainers
+        operation: "urn:aidoc:functions:decomposer#run"
+        type: custom
+      - name: computeRiceScoring
+        operation: "urn:aidoc:functions:prioritization#rice"
+        type: custom
+      - name: verifyThresholds
+        operation: "urn:aidoc:functions:thresholds#verify"
+        type: custom
+      - name: emitPrdIds
+        operation: "urn:aidoc:functions:hasher#generate"
+        type: custom
+      - name: purgeDownstreamDrafts
+        operation: "urn:aidoc:functions:compensator#purgeDrafts"
+        type: custom
+
+    states:
+      - name: IngestProductInitiative
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: parseInitiativeAction
+            functionRef:
+              refName: parseInitiative
+              arguments:
+                documentId: "${ .documentId }"
+        transition: DecomposeContainersParallel
+
+      - name: DecomposeContainersParallel
+        type: parallel
+        branches:
+          - name: GatewayContainerBranch
+            actions:
+              - name: decomposeGatewayAction
+                functionRef:
+                  refName: decomposeContainers
+                  arguments:
+                    tier: "gateway"
+          - name: CoreServiceContainerBranch
+            actions:
+              - name: decomposeCoreAction
+                functionRef:
+                  refName: decomposeContainers
+                  arguments:
+                    tier: "core"
+          - name: PersistenceContainerBranch
+            actions:
+              - name: decomposeStorageAction
+                functionRef:
+                  refName: decomposeContainers
+                  arguments:
+                    tier: "storage"
+        completionType: allOf
+        transition: CalculateFeaturePriority
+
+      - name: CalculateFeaturePriority
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: scoreRiceAction
+            functionRef:
+              refName: computeRiceScoring
+              arguments:
+                features: "${ .decomposedFeatures }"
+        transition: ValidateAcceptanceThresholds
+
+      - name: ValidateAcceptanceThresholds
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: checkThresholdAction
+            functionRef:
+              refName: verifyThresholds
+              arguments:
+                thresholds: "${ .thresholds }"
+        transition: EvaluateAlignmentGate
+
+      - name: EvaluateAlignmentGate
+        type: switch
+        dataConditions:
+          - name: AlignmentApproved
+            condition: "${ .isAligned == true and .thresholdsValid == true }"
+            transition: RatifyProductContract
+          - name: ScopeAdjustmentNeeded
+            condition: "${ .requiresAdjustment == true }"
+            transition: AwaitScopeAdjustmentCallback
+        defaultCondition:
+          transition: RejectProductInitiative
+
+      - name: AwaitScopeAdjustmentCallback
+        type: callback
+        action:
+          name: notifyScopeAdjustment
+          functionRef:
+            refName: verifyThresholds
+            arguments:
+              documentId: "${ .documentId }"
+        eventRef: ScopeAdjustmentEvent
+        timeouts:
+          eventTimeout: PT48H
+        transition: CalculateFeaturePriority
+
+      - name: RatifyProductContract
+        type: operation
+        actionMode: sequential
+        actions:
+          - name: emitCanonicalPrdIdsAction
+            functionRef:
+              refName: emitPrdIds
+              arguments:
+                documentId: "${ .documentId }"
+        end:
+          terminate: true
+
+      - name: RejectProductInitiative
+        type: operation
+        compensatedBy: RollbackDownstreamArtifacts
+        actionMode: sequential
+        actions:
+          - name: recordRejection
+            functionRef:
+              refName: verifyThresholds
+              arguments:
+                status: "rejected"
+        end:
+          terminate: true
+
+      - name: RollbackDownstreamArtifacts
+        type: operation
+        usedForCompensation: true
+        actionMode: sequential
+        actions:
+          - name: purgeDraftsAction
+            functionRef:
+              refName: purgeDownstreamDrafts
+              arguments:
+                documentId: "${ .documentId }"
+                affectedLayers: ["03_EARS", "04_BDD", "05_ADR", "06_SPEC"]
+
+# =============================================================================
+# Section 8: User Stories & Roles (Required Section 8/15)
+# =============================================================================
+
+user_stories:
+  _size_target: 400
+  stories:
+    - id: "PRD.01.08.u101"
+      title: "Real-Time Payment Ingress"
+      narrative: "As a platform client, I want low-latency payment submission so that transactions settle reliably."
+      acceptance_criteria:
+        - "Ingress gateway acknowledges requests within 15ms"
+        - "Transactions carry cryptographic trace headers"
+
+# =============================================================================
+# Section 9: Functional Requirements (Required Section 9/15)
+# =============================================================================
+
+functional_requirements:
+  _size_target: 500
+  features:
+    - id: "PRD.01.09.f201"
+      name: "TokenValidationService"
+      description: "Validates OAuth2 bearer tokens and rate limits incoming client connections."
+      priority: P1
+      traceability: "@brd: BRD.01.07.a1b2"
+    - id: "PRD.01.09.f202"
+      name: "TransactionSettlementEngine"
+      description: "Processes double-entry bookkeeping journal entries with ACID guarantees."
+      priority: P1
+      traceability: "@brd: BRD.01.07.a1b2"
+
+# =============================================================================
+# Section 10: Customer-Facing Content (Required Section 10/15)
+# =============================================================================
+
+customer_facing_content:
+  _size_target: 300
+  documentation:
+    - title: "Developer Quickstart Guide"
+      summary: "Instructions for integrating with the ingress API gateway."
+  error_messages:
+    - code: "ERR_GATEWAY_TIMEOUT"
+      description: "Gateway unable to reach downstream transaction processor within SLA window."
+
+# =============================================================================
+# Section 11: Acceptance Criteria (Required Section 11/15)
+# =============================================================================
+
+acceptance_criteria:
+  _size_target: 300
+  criteria:
+    - id: "AC-01"
+      description: "All API responses adhere to OpenAPI 3.1 specifications"
+    - id: "AC-02"
+      description: "P95 end-to-end processing latency stays strictly below 50ms under peak load"
+
+# =============================================================================
+# Section 12: Constraints and Assumptions (Required Section 12/15)
+# =============================================================================
+
+constraints_and_assumptions:
+  _size_target: 200
+  technical_constraints:
+    - "Must deploy onto Kubernetes 1.29+ clusters"
+    - "Zero proprietary orchestrator dependencies in framework specification"
+  assumptions:
+    - "Network latency between ingress gateway and core services is under 2ms"
+
+# =============================================================================
+# Section 13: Risk Assessment & Mitigation (Required Section 13/15)
+# =============================================================================
+
+risk_assessment:
+  _size_target: 300
+  risks:
+    - id: "RSK-01"
+      description: "Downstream storage partition failure during settlement"
+      probability: Low
+      impact: Critical
+      mitigation: "Deploy multi-AZ transactional database clusters with automatic failover"
+
+# =============================================================================
+# Section 14: Traceability (Required Section 14/15)
+# =============================================================================
+
+traceability:
+  _size_target: 100
+  tags:
+    - "@prd: PRD-NN"
+  upstream:
+    brd_references:
+      - "@brd: BRD.01.07.a1b2"
+  downstream_expected:
+    - type: EARS
+      layer: 3
+      description: "Formal EARS requirements mapped from functional requirements"
+
+# =============================================================================
+# Section 15: Glossary (Required Section 15/15)
+# =============================================================================
+
+glossary:
+  _size_target: 100
+  terms:
+    - term: PRD
+      definition: "Product Requirements Document"
+    - term: Container
+      definition: "C4 model architectural boundary representing an independently deployable runtime"
+    - term: RICE
+      definition: "Prioritization framework evaluating Reach, Impact, Confidence, and Effort"
+    - term: CNCF Serverless Workflow
+      definition: "Vendor-neutral declarative workflow standard for stateful orchestrations"

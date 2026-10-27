@@ -1,25 +1,169 @@
-# Framework Governance Decisions
+# Framework Governance Decisions (RETIRED / TOMBSTONE)
 
-Durable record of decisions about the **shared specification** and its
-governance. The spec is the contract every platform implements, so decisions
-that shape it live here — with the spec — not inside any one platform and not
-only in a migration-time log. Spec-affecting entries from the project's
-migration decision log graduate here once change management governs the spec.
-
-A change to this file is itself a framework-spec change: it passes **GATE-SPEC**
-(`../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`) like any other change to the spec.
-
-Newest first. Timestamps are ISO 8601 UTC.
-
+> [!IMPORTANT]
+> **`framework/governance/DECISIONS.md` is RETIRED and FROZEN as a permanent tombstone per Decision DEC-CHG-95 / GD-78.**
+> 
+> The monolithic decisions register has been bifurcated into its two fundamental concerns:
+> 1. **Active Governance Rules & Invariants**: Migrated to executable CNCF Serverless Workflow state machines ([`framework/governance/workflows/*.sw.yaml`](workflows/)), governance standards ([`GOVERNANCE_WORKFLOW_STANDARD.md`](GOVERNANCE_WORKFLOW_STANDARD.md), [`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md), [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)), and layer specifications.
+> 2. **Operational Change Decisions & Evolution**: Authored and tracked directly in their authorizing Change Requests ([`framework/archive/CHG-*/CHG-*.yaml`](../archive/) Section 1B `decision:` block) and enforced by structural linter rule `CHG-L018`.
+> 
+> The historical entries below (**GD-01 through GD-77**) are preserved strictly for permanent citation, git permalink integrity, and conformance test backward compatibility. **Do not add new entries here.** All future framework changes author decisions in `CHG-NN.yaml`.
 
 ## Document Control
 | Field | Value |
-|-------|-------|
-| Version | 1.32 |
-| Status | Approved |
-| Last Updated | 2026-10-10 |
+|---|---|
+| Version | 1.38 |
+| Status | Retired / Tombstone |
+| Retired In | CHG-95 (0.91.14) |
+| Last Updated | 2026-10-13 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
+| Successor Surfaces | `framework/governance/workflows/*.sw.yaml` (Governance Rules) + `framework/archive/CHG-*/` (Change Decisions) |
+
+---
+
+## GD-78 — Retirement and Tombstone of Governance Decisions Register & Migration to Executable Workflows and Change Requests (CHG-95, 0.91.14 C2 Spec)
+
+- **Status**: Ratified / Tombstone
+- **Date**: 2026-10-13
+- **Driver**: `framework/governance/DECISIONS.md` conflated two distinct concerns: (1) active governance rules and architectural invariants, and (2) historical change requests tracking framework evolution. This created a 3,200-line monolithic file that consumed excessive context tokens, introduced split-brain divergence against declarative workflow graphs (`.sw.yaml`), and duplicated information already captured in structured Change Requests (`CHG-NN.yaml` Section 1B `decision:` block). Following the retirement of `plans/DECISIONS.md` (CHG-80 / GD-71) and `framework/CHANGELOG.md` (CHG-94 / GD-78), this decision retires `framework/governance/DECISIONS.md` as a frozen historical tombstone.
+- **Decision**:
+  1. **Bifurcation of Concerns**:
+     - Active governance rules, state machines, and invariants are codified in declarative CNCF Serverless Workflows (`framework/governance/workflows/*.sw.yaml`), governance standards (`GOVERNANCE_WORKFLOW_STANDARD.md`, `CHG_REQUEST_FLOWS.md`), and layer specifications.
+     - Operational change decisions, rationale, context, and consequences are authored exclusively in `CHG-NN.yaml` Section 1B and archived under `framework/archive/CHG-NN/` (enforced by `CHG-L018`).
+  2. **Frozen Historical Tombstone**:
+     - Freeze `framework/governance/DECISIONS.md` as a read-only tombstone. Entries `GD-01` through `GD-77` are preserved intact for backward compatibility with citations and conformance tests. No future entries may be appended.
+  3. **Executable Decision Migration Flow**:
+     - Ratify CNCF Serverless Workflow `framework/governance/workflows/decision-migration-flow.sw.yaml` and companion Mermaid diagrams in `DECISION_WORKFLOW.md`.
+  4. **Ratification Flow Modernization**:
+     - Update `framework/governance/workflows/decision-ratification-flow.sw.yaml` State 7 to lock decisions in `CHG-NN.yaml` and dispatch governance workflow sync rather than appending to markdown registers.
+- **Consequences**:
+  - Eliminates 3,200-line maintenance overhead and context bloat across future AI agent interactions.
+  - Establishes single source of truth for governance rules in executable `.sw.yaml` graphs and for change rationale in `CHG-NN.yaml`.
+  - Zero disruption to existing conformance tests asserting historical GD citations.
+
+---
+
+## GD-77 — Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance (CHG-90, 0.91.9 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: The framework maintains dual-template support across Layers 01–08 and Governance (Layer 09 CHG): primary machine-executable CNCF Serverless Workflow templates (`*-SWF-TEMPLATE.yaml`) and companion static declarative templates (`*-TEMPLATE.yaml`). While documented in layer READMEs and governance decisions (GD-61, GD-73), the template files themselves lacked in-file selection guidance in their comment headers. Consequently, AI agents and engineers inspecting layer folders lacked immediate, in-file guidance on which template to choose for a given initiative.
+- **Decision**:
+  1. **Primary Template Selection Guide (`*-SWF-TEMPLATE.yaml`)**:
+     - Author tailored in-file selection guides in the header comment block of all primary workflow templates across Layers 01–08 (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) and Governance (`CHG-SWF-TEMPLATE.yaml`).
+     - Explicitly define the operational triggers for selecting SWF: distributed/multi-container architectures, asynchronous callbacks, steering/RFC reviews, and automated saga rollback compensation (`compensatedBy`).
+  2. **Companion Template Selection Guide (`*-TEMPLATE.yaml`)**:
+     - Author corresponding companion selection guides in the header comment block of all companion static templates across Layers 01–08 (`BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`, `BDD-TEMPLATE.yaml`, `ADR-TEMPLATE.yaml`, `SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml`, `IPLAN-TEMPLATE.yaml`) and Governance (`governance/chg/CHG-TEMPLATE.yaml`, `layers/09_CHG/CHG-TEMPLATE.yaml`).
+     - Clarify that companion templates are optimized for single-capability, monolithic in-process components, and linear specifications where state machine logic is unnecessary overhead.
+  3. **Preservation of Strict Byte Identity**:
+     - Maintain strict byte-identity between `framework/governance/chg/CHG-TEMPLATE.yaml` and `framework/layers/09_CHG/CHG-TEMPLATE.yaml` per CHG-08 #667.
+- **Consequences**:
+  - Eliminates ambiguity for AI agents and human engineers when authoring new SDD documents.
+  - Formally codifies the primary vs. companion template hierarchy directly inside the templates.
+  - Zero structural risk to linters (YAML comments are ignored by both `sdd_doc_lint` and `swf_lint`).
+
+---
+
+## GD-76 — Permanent Retirement of Legacy MVP Template Tombstones & Conformance Anti-Resurrection Guard (CHG-89, 0.91.8 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: In CHG-08 (#666), the framework unified around single canonical templates (`*-TEMPLATE.yaml`) across all SDD layers, leaving 11-line pointer tombstones (`*-MVP-TEMPLATE.yaml`) in layers 01 through 08. Following the completion of the universal YAML index modernization (CHG-87, CHG-88), these legacy tombstone files serve no active runtime or spec function and clutter layer directories. However, conformance test suites in `test_seed_contract.py` and `test_iplan_carrier.py` retained positive assertions verifying their existence as tombstones. This change permanently removes all 8 legacy MVP template tombstones, archives historical snapshots for audit continuity, and converts conformance tests into ironclad anti-resurrection guards.
+- **Decision**:
+  1. **Permanent Removal of Legacy MVP Tombstones**:
+     - Remove `*-MVP-TEMPLATE.yaml` across Layers 01 (`01_BRD`), 02 (`02_PRD`), 03 (`03_EARS`), 04 (`04_BDD`), 05 (`05_ADR`), 06 (`06_SPEC`), 07 (`07_TDD`), and 08 (`08_IPLAN`).
+     - Archive pre-change copies of all 8 tombstones under `framework/archive/CHG-89/templates/` for historical continuity.
+  2. **Conformance Anti-Resurrection Guards**:
+     - Convert `test_seed_contract.py:test_mvp_skeleton_is_tombstone` to `test_mvp_template_not_resurrected`, asserting `self.assertFalse(BRD_MVP_TEMPLATE.exists())`.
+     - Convert `test_iplan_carrier.py:test_mvp_skeleton_is_tombstone` to `test_mvp_template_not_resurrected`, asserting `self.assertFalse(path.exists())`.
+     - Add `test_no_mvp_templates_exist` to `tests/conformance/test_layers.py` asserting that zero `*-MVP-TEMPLATE.*` files exist across any layer folder under `framework/layers/`.
+- **Consequences**:
+  - Eliminates all obsolete MVP template pointer files from the active spec surface.
+  - Conformance test suites actively enforce that MVP templates cannot be resurrected.
+  - Canonical templates (`*-TEMPLATE.yaml`) remain the sole authorized authoring vehicle.
+
+---
+
+## GD-75 — Universal AI-First 5-Quadrant YAML Index Modernization Across All SDD Layers (CHG-88, 0.91.7 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Following the ratification of Decision GD-74 (modernizing Layer 05 ADR index to YAML with embedded technology registry) and the pre-existing Layer 08 YAML index (`IPLAN-00_index.TEMPLATE.yaml`), the remaining eight SDD layers (`01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `06_SPEC`, `07_TDD`, `09_CHG`, `10_EVAL`) retained legacy Markdown index templates (`*-00_index.TEMPLATE.md`). In an agentic, AI-first workflow, Markdown tables require brittle regex parsing and encourage dual-entry bookkeeping drift. Making machine-readable YAML the sole source of truth across all 10 SDD layers enables deterministic AI ingestion, automated cross-layer trace verification, and dynamic generation of human-facing documentation on demand.
+- **Decision**:
+  1. **Retirement of Remaining Markdown Index Templates**:
+     - Remove `*-00_index.TEMPLATE.md` across Layers 01, 02, 03, 04, 06, 07, 09, and 10.
+     - Archive pre-change Markdown index templates in `framework/archive/CHG-88/templates/`.
+     - Author canonical YAML index templates (`*-00_index.TEMPLATE.yaml`) across all eight layers, preserving the 10 total index templates asserted by `test_index_template_lint.py`.
+  2. **Canonical 5-Quadrant YAML Index Architecture**:
+     - Standardize all 10 SDD layer indices around the 5-Quadrant specification:
+       - **Quadrant 1 (Metadata)**: `schema_version: "1.0"`, `framework_version`, `document_type`, `artifact_type: "<LAYER>-INDEX"`, layer number, `status: "Active"`, and explicit `format_ssot` contract.
+       - **Quadrant 2 (Document Registry)**: Strongly typed collection of active layer instances (`brds`, `prds`, `requirements_documents`, `bdd_suites`, `adrs`, `specs`, `test_suites`, `plans`, `change_records`, `evaluations`).
+       - **Quadrant 3 (Backlog)**: Standardized `backlog: []` capturing planned modules, MVP cycles, future specifications, or candidate changes.
+       - **Quadrant 4 (Layer Intelligence & Cross-Layer Traceability)**: Domain-specific matrices, module taxonomies, quality thresholds, statement patterns, and verification tracks.
+       - **Quadrant 5 (Agent Update Triggers)**: Declarative lifecycle update policies defining when and how AI agents maintain index synchronization.
+  3. **Framework Registry & Standards Synchronization**:
+     - Update `framework/registry/LAYER_REGISTRY.yaml` header comments to document 100% YAML index templates across all 10 layers.
+     - Update layer READMEs and workflow standards to cite `*-00_index.TEMPLATE.yaml`.
+     - Update conformance mutation test `tests/conformance/test_instance_format_ssot.py` assertion to 4 sanctioned index mentions.
+- **Consequences**:
+  - Establishes a 100% unified, machine-readable YAML index foundation across all 10 SDD layers.
+  - Eliminates human/machine bookkeeping drift; AI agents generate human-facing views on-demand.
+  - Enables fully automated, deterministic cross-layer trace validation and lifecycle synchronization.
+
+---
+
+## GD-74 — Modernization of Layer 05 ADR Index to YAML (`ADR-00_index.TEMPLATE.yaml`) with Embedded Project Technology Stack & Security Registry (CHG-87, 0.91.6 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Under Decision GD-73, Layer 05 (05_ADR) was established as the formal Technology Selection Gate where abstract behavioral requirements meet concrete technological implementations. However, projects lacked a canonical, agent-readable registry recording all active technologies used in the project for automated security monitoring (SCA, CVE scanning, SBOM) and automated tool updates (Dependabot, Renovate). Maintaining duplicate human-readable Markdown tables and machine-readable manifests causes documentation drift. Modernizing ADR-00_index to a single, canonical YAML template (`ADR-00_index.TEMPLATE.yaml`) mirrors the pattern established in Layer 08 (`IPLAN-00_index.TEMPLATE.yaml`) and provides an unambiguous source of truth from which AI agents can generate any human report on-demand.
+- **Decision**:
+  1. **Retirement of Markdown Index Template**:
+     - Remove `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
+     - Author `framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml` as the canonical Layer 05 index specification, preserving the 10 total index templates asserted by `test_index_template_lint.py`.
+  2. **Unified Agent-Readable YAML Specification**:
+     - `metadata`: Schema version 1.0.0, layer 5, document_type `adr-registry`, artifact_type `ADR-INDEX`, tracking total ADRs and active technologies.
+     - `adrs`: Catalog of active, proposed, deprecated, and superseded ADRs.
+     - `backlog`: Backlog of planned architecture decisions identified from requirements.
+     - `technologies`: Active project technology stack registry housing:
+       - Architectural domain, enterprise stack tier (`Tier-0-Core`, `Approved-Contained`, `Specialized-Domain`, `Approved-Exception`), version constraints, and authorizing ADR citation.
+       - Security Monitoring: Package URL standard (`purl`), Common Platform Enumerations (`cpe`), package ecosystem, vulnerability scanner targets (`trivy`, `osv`, `dependabot`), severity alert thresholds, and license compliance.
+       - Automated Tool Updates: Update manager (`renovate`, `dependabot`, `manual`), update cadence, auto-merge patch flags, and manifest bindings.
+       - Lifecycle status (`Active`, `Evaluating`, `Deprecated`, `Sunset`).
+     - `update_triggers`: Explicit quality gate update triggers enforced at GATE-03 and GATE-SPEC.
+  3. **Normative Standards & Guide Alignment**:
+     - Update `framework/layers/05_ADR/README.md` to reference `ADR-00_index.TEMPLATE.yaml`.
+     - Update `framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md` with invariant `INV-ADR-07` mandating technology registry synchronization upon ADR acceptance.
+     - Update `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` §2.5 to cite `ADR-00_index.yaml` as the project-level technology stack and security inventory.
+
+---
+
+## GD-73 — Enterprise Approved Technology Stack Governance, Progressive Refinement Funnel, and Layer 05 (ADR) Technology Selection Gate (CHG-86, 0.91.5 C2 Spec)
+
+- **Status**: Ratified
+- **Date**: 2026-10-11
+- **Driver**: Formalize the integration of the enterprise approved technology stack catalog (`/mnt/e/dev/technology_stack/`) with the 10-layer SDD framework. Resolve architectural ambiguity by refuting an 11th "Technology Decision Record" (TDR) layer; establish Layer 05 (ADR) as the authoritative Technology Selection Gate following BDD; codify the Progressive Refinement Funnel from Tier 0 enterprise stack to concrete code contracts; and modernize all primary CNCF Serverless Workflow templates (`*-SWF-TEMPLATE.yaml`), companion static templates, and workflow standards across Layers 01–08.
+- **Decision**:
+  1. **Rejection of 11th SDD Layer**: Affirm the 10-layer SDD specification integrity (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code → EVAL). Technology selection is an architectural decision; creating a dedicated "TDR" layer creates an artificial dichotomy, causes pipeline bloat, and breaks cross-layer traceability.
+  2. **Layer 05 ADR as the Formal Technology Selection Gate**:
+     - Upstream layers (BRD, PRD, EARS, BDD) define the problem space: business intent, functional scope, measurable quality attributes (SLAs), and behavioral scenarios without premature technology lock-in.
+     - Layer 05 ADR resolves the concrete technology stack by evaluating candidate options from the approved technology stack catalog via concurrent fan-out and multi-criteria decision analysis (MCDA).
+     - Downstream layers (SPEC, TDD, IPLAN, Code) inherit ratified technology contracts: wire interfaces (gRPC/Protobuf, CloudEvents v1.0), storage schemas (PostgreSQL 18 UUIDv7, Bytebase DDL migrations), event transport (NATS JetStream), and workflow orchestration (Temporal).
+  3. **Normative Technology Stack Usage Guide (`TECHNOLOGY_STACK_USAGE_GUIDE.md`)**:
+     - Author `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` defining the 4-tier Progressive Refinement Funnel (Tier 0 Enterprise Stack, Tier 1 Seed Vision, Tier 2 Module Decomposition, Tier 3 SDD Layer 05 Selection Gate).
+     - Detail flow mappings across traversal paths (`SDD2C`, `SEED2C`, `CODE2S`, `DIR2C`, `CODE2C`, `HOTFIX`).
+     - Codify the 4-step Stack Variance & Exception Procedure (Justification & Risk Assessment, Architecture Review Gate, Variance Documentation in ADR §10, Sunsetting / Convergence Plan).
+  4. **Architectural Graphs & Flows Modernization**:
+     - Update `RECOMMENDED_PLATFORM_STACK.md` §4.1 with Mermaid flowchart illustrating Problem Space vs. Selection Gate vs. Solution Space.
+     - Update `DECISION_WORKFLOW.md`, `SEED_TO_MODULE_DECOMPOSITION.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `framework/layers/05_ADR/README.md`, and `adr-decision-analysis.sw.yaml`.
+  5. **Template Modernization & Dual-Template Parity**:
+     - Update primary CNCF Serverless Workflow templates (`BRD-SWF-TEMPLATE.yaml`, `PRD-SWF-TEMPLATE.yaml`, `EARS-SWF-TEMPLATE.yaml`, `BDD-SWF-TEMPLATE.yaml`, `ADR-SWF-TEMPLATE.yaml`, `SPEC-SWF-TEMPLATE.yaml`, `TDD-SWF-TEMPLATE.yaml`, `IPLAN-SWF-TEMPLATE.yaml`) with approved stack guidance, candidate evaluation branches, container fixtures, and saga compensations.
+     - Synchronize companion static templates (`*-TEMPLATE.yaml`) and seed/module templates while strictly preserving pinned section sets (`STRUCT01`).
+  6. **Workflow Standards & Review Crew Alignment**:
+     - Update normative standards (`*_WORKFLOW_STANDARD.md` across Layers 01–08 and Governance).
+     - Enrich `REVIEW_CREWS.yaml` reviewer persona definitions: `architect` verifies technology stack catalog alignment; `operator` verifies platform infrastructure compatibility.
+- **Consequences**: Teams systematically evaluate and bind enterprise-approved technologies without ad-hoc selections, while retaining strict engine neutrality (D-0013 / GD-13) and maintaining 100% backward compatibility across the 10-layer SDD specification.
 
 ---
 

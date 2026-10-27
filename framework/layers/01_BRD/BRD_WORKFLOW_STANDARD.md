@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 | Authority | Decision GD-61 (framework/governance/DECISIONS.md) |
 
 ---
@@ -46,35 +46,40 @@ The table below defines the formal mapping of BRD business requirement primitive
 
 ---
 
-## 3. Dual-Template Architecture & Selection Matrix
+## 3. Two-Graph & Dual-Template Architecture Selection Matrix
 
-Layer 01 provides two canonical authoring templates. Authors and autonomous AI agents MUST select the template matching the structural complexity of the business initiative:
+Layer 01 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable process workflow with an atomic content graph to generate and ratify business requirements:
 
 ```text
-                              ┌───────────────────────────────────┐
-                              │  Does the business initiative     │
-                              │  span multiple value streams,     │
-                              │  ROI models, or executive gates?  │
-                              └─────────────────┬─────────────────┘
-                                                │
-                                ┌───────────────┴───────────────┐
-                                │                               │
-                                ▼ YES                           ▼ NO
-                ┌──────────────────────────────┐ ┌──────────────────────────────┐
-                │   BRD-SWF-TEMPLATE.yaml      │ │       BRD-TEMPLATE.yaml      │
-                │   (Hybrid Envelope Subtype)  │ │      (Standard Declarative)  │
-                │                              │ │                              │
-                │  - Embedded CNCF v0.8 Graph  │ │  - Declarative YAML tables   │
-                │  - Parallel Value Streams    │ │  - Standard objective table  │
-                │  - Automated ROI Calculation │ │  - Single-capability apps   │
-                │  - Steering Review Callback  │ │  - Small/focused initiatives │
-                │  - Invalidation Compensation │ │                              │
-                └──────────────────────────────┘ └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 01 BRD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       BRD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (BRD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to create, evaluate & ratify the BRD     │ • Content of WHAT entities exist   │
+│ • Value stream mapping (Customer, Ops, Financial)      │ • Business drivers & objectives    │
+│ • Automated quantitative ROI & feasibility gating      │ • Operational capabilities         │
+│ • Executive steering committee review callbacks        │ • Relational links (realizes, etc) │
+│ • Strategic invalidation saga (compensatedBy)          │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates authoring & verification steps    │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & acyclicity              │
+                    │ • Observability Adapter projects graph into BRD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
 ```
 
-### Selection Rules:
-1. **Use `BRD-TEMPLATE.yaml`** when the business initiative is focused on a single capability, direct business workflow, or minor enhancement with straightforward stakeholder alignment.
-2. **Use `BRD-SWF-TEMPLATE.yaml`** when the initiative spans multiple operational value streams, requires formal financial feasibility/ROI verification, involves multi-party executive steering reviews, or mandates automated invalidation rollbacks.
+### Dual-Template Selection Rules:
+Authors and autonomous AI agents select the template matching the structural complexity of the business initiative:
+1. **Use Two-Graph Generation (`BRD-SWF-TEMPLATE.yaml` [Hybrid Envelope Subtype] + `BRD-GRAPH-TEMPLATE.yaml` [Property Graph])** when the initiative spans multiple operational value streams, requires formal financial feasibility/ROI verification, involves multi-party executive steering reviews, or mandates automated invalidation rollbacks. The Process DAG guides authoring, populates the Content Graph, executes BTV verification, and projects the final BRD specification.
+2. **Use Companion Declarative (`BRD-TEMPLATE.yaml`)** directly when the business initiative is focused on a single capability, direct business workflow, or minor enhancement with straightforward stakeholder alignment where state machine orchestration is not needed.
 
 ---
 
@@ -102,6 +107,9 @@ All BRD workflow definitions (whether embedded in `BRD-SWF-TEMPLATE.yaml` or sta
 - Any state machine validating business initiatives MUST bind rejection or cancellation states to an automated compensation action (`compensatedBy: InvalidateStrategicInitiatives`).
 - The compensation action MUST revoke provisional downstream PRD draft allocations, reserved capacity, and portfolio slots.
 
+### Invariant B-WF06: Strategic Architecture Topic Framing
+- Section 8 (`adr_topics`) must frame required decisions as business capabilities rather than prematurely hardcoding specific technology vendors, while recording candidate baselines that prioritize options from the approved enterprise technology stack ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)) for downstream Layer 05 ADR evaluation.
+
 ---
 
 ## 5. Zero-Runtime LangGraph Execution Model
@@ -117,3 +125,35 @@ When an autonomous AI agent or execution harness executes a BRD workflow via Lan
    - `switch` states evaluate JSONPath/CEL expressions against accumulated business metrics.
    - `callback` states pause the LangGraph thread using checkpointers until executive steering approval events are posted.
    - `compensatedBy` states execute rollback handlers when execution paths terminate in rejection.
+3. **Dual-Graph Pipeline Coordination**:
+   - **Step 1 (Process DAG Orchestration)**: LangGraph drives the authoring agent through the state machine.
+   - **Step 2 (Content Graph Mutation)**: As operations complete, the agent instantiates and updates nodes (`business_driver`, `strategic_objective`, `operational_capability`) and edges (`realizes`, `verifies`) in `BRD-GRAPH-TEMPLATE.yaml`.
+   - **Step 3 (Binary Topological Validation - BTV)**: The state machine executes BTV asserting DAG integrity, trace closure, and schema conformance.
+   - **Step 4 (Document Generation / Read Projection)**: The Observability Adapter compiles the validated property graph into the canonical human-readable document (`BRD-TEMPLATE.yaml` structure).
+
+---
+
+## 6. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between artifact authoring and review crew evaluation, Layer 01 adheres to the closed dual-flow loop:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "business_analyst"` and `author_playbook: "framework/playbooks/01_BRD/business_analyst.md"`.
+   - Autonomous drafting agents derive their authoring constraints and strategic themes directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final ratification (`RatifyBusinessSpecification`), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`brd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defects are uncovered, the saga executes an automated remediation loop, halting ratification until all P0/P1 blockers are resolved.
+
+---
+
+## 7. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 01 BRD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Business analyst authors strategic theme, value stream decomposition, and quantitative ROI analysis.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `business_analyst`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-01` exit criteria (`GATE-01_BUSINESS_PRODUCT.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `BrdNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `BrdClosedAndBaselinedEvent` (`org.aidoc.sdd.layer01.brd.closed`) with payload `initiativeId`, `brd_tags`, authorizing Layer 02 (PRD) start.

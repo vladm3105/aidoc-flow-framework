@@ -1,0 +1,102 @@
+# EARS-00_index.TEMPLATE.yaml — EARS Formal Requirements Index (template)
+# SDD Layer 3 — Master index and syntax patterns for Easy Approach to Requirements Syntax
+#
+# Index template. Copy this file to EARS-00_index.yaml in a project.
+# Dynamic registry — updated every time an EARS document is created, status changed,
+# or requirements verified.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, EARS syntax patterns, quality gates),
+# see 03_EARS/README.md and 03_EARS/EARS_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "ears-registry"
+  artifact_type: "EARS-INDEX"
+  layer: 3
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_documents: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 03 EARS)
+# =============================================================================
+# Master inventory of all authored EARS requirement documents for the project.
+requirements_documents: []
+
+  # Template entry:
+  # - id: "EARS-01"
+  #   title: "[Formal Requirements Scope]"
+  #   status: "Draft"           # Draft | Review | Approved | Implemented | Verified | Deprecated
+  #   related_prd: "PRD-01"     # Upstream PRD reference (1-hop necessary upstream)
+  #   statement_types: ["Event-driven", "State-driven", "Unwanted"]
+  #   total_requirements: 0     # Count of formal EARS statements
+  #   btv_status: "PASS"        # Binary Topological Validation (BTV PASS required for BDD gate per CHG-97)
+  #   file_path: "EARS-01_[slug].yaml"
+  #   lead: "[Requirements Specialist / QA Lead]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned EARS)
+# =============================================================================
+# Future requirement specifications derived from PRD functional features.
+backlog: []
+
+  # Template entry:
+  # - id: "EARS-02"             # Reserved sequential ID
+  #   title: "[Upcoming Formal Requirements]"
+  #   source_prd: "PRD-02"
+  #   priority: "High"          # High | Medium | Low
+  #   notes: "[Scope summary]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Canonical Statement Patterns
+# =============================================================================
+# Canonical syntax reference rules used by AI agents to construct valid EARS statements.
+statement_patterns:
+  - type: "Event-driven"
+    pattern: "WHEN [trigger], THE [system] SHALL [response] WITHIN [timing]"
+    usage: "Triggered actions and event reactions"
+  - type: "State-driven"
+    pattern: "WHILE [state], THE [system] SHALL [behavior]"
+    usage: "Continuous system conditions and invariants"
+  - type: "Optional"
+    pattern: "WHERE [feature enabled], THE [system] SHALL [behavior]"
+    usage: "Feature-flagged or configuration-gated capabilities"
+  - type: "Unwanted"
+    pattern: "IF [condition], THE [system] SHALL [recovery] WITHIN [timing]"
+    usage: "Error handling, exceptions, and fault recovery"
+  - type: "Ubiquitous"
+    pattern: "THE [system] SHALL [requirement]"
+    usage: "Always-on constraints and universal behaviors"
+
+traceability_summary:
+  layer: 3
+  upstream_layer: 2
+  upstream_artifact: "PRD"
+  downstream_layer: 4
+  downstream_artifact: "BDD"
+  trace_contract: "PRD -> EARS -> BDD"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_ears_created:
+    - "Add entry to requirements_documents with status: Draft"
+    - "Increment metadata.total_documents"
+    - "Remove corresponding entry from backlog if present"
+  on_status_change:
+    - "Update status and last_updated timestamp in requirements_documents"
+    - "When status moves to Approved, assert Binary Topological Validation (BTV) PASS per CHG-97"
+  on_verification:
+    - "Update status to Verified when all downstream BDD scenarios and tests pass"

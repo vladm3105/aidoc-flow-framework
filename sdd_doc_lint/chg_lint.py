@@ -55,6 +55,9 @@ Checks:
   CHG-L018: Mandatory formal decision block (DECISION_WORKFLOW.md) — every
     CHG must carry a non-empty `decision` section with `decision_id`, `title`,
     `choice`, and `consequences`.
+  CHG-L019: Fast-path boundary guard (§3.1.3 router, GOV-023) — a fast-path
+    change (HOTFIX, CODE2C, DIR2C) must not touch contract-bearing layers
+    (03_EARS, 04_BDD, 05_ADR, 06_SPEC) without an SDD lifecycle step (SDD2C required).
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -87,7 +90,7 @@ VALID_STATUS_ORDER = ["Proposed", "Approved", "In-Progress", "Implemented", "Com
 # Rule IDs this linter can emit. Imported by the catalog guard
 # (tests/conformance/test_lint_catalog.py) so the linter cannot drift out of
 # sync with framework/governance/LINT_RULES.md (#715).
-CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 19))
+CODES = frozenset(f"CHG-L{i:03d}" for i in range(1, 20))
 
 
 def check_status_lifecycle(
@@ -996,6 +999,7 @@ def lint_chg(
     check_lifecycle_attribution(data, errors, warnings, passes)
     check_premature_step_completion(data, errors, warnings, passes)
     check_decision_block(data, errors, warnings, passes)
+    check_fast_path_boundary_guard(data, errors, warnings, passes)
 
     return errors, warnings, passes
 
@@ -1372,6 +1376,84 @@ def check_decision_block(
         return
 
     passes.append("CHG-L018: formal decision block present and complete")
+
+
+def check_fast_path_boundary_guard(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L019: Fast-path boundary guard (§3.1.3 router, GOV-023).
+
+    A fast-path change (HOTFIX, CODE2C, DIR2C) must not touch contract-bearing
+    documents (03_EARS, 04_BDD, 05_ADR, 06_SPEC contract documents) without an
+    SDD lifecycle step (SDD2C required). Fast-path changes are intended for
+    repairs, tooling, or non-normative updates; public interface and behavioral
+    contract changes require full SDD cascade authoring.
+    """
+    control = data.get("change_control", {})
+    if not isinstance(control, dict):
+        control = {}
+    flow = str(control.get("flow") or "")
+    flow_code = str(control.get("flow_code") or "")
+
+    fast_path_codes = {"HOTFIX", "CODE2C", "DIR2C"}
+    fast_path_flows = {"hotfix", "code_to_code", "iplan_to_code"}
+
+    is_fast_path = (flow_code in fast_path_codes) or (flow in fast_path_flows)
+    if not is_fast_path:
+        passes.append("CHG-L019: non-fast-path change — boundary guard not applicable")
+        return
+
+    impl = data.get("implementation", {})
+    sdd_steps = []
+    if isinstance(impl, dict):
+        for s in impl.get("steps") or []:
+            if isinstance(s, dict) and s.get("phase") == "sdd_lifecycle":
+                sdd_steps.append(s)
+
+    touched_paths: set[str] = set()
+
+    scope = data.get("scope", {})
+    if isinstance(scope, dict):
+        for c in scope.get("components_affected") or []:
+            if isinstance(c, str):
+                touched_paths.add(c)
+
+    for a in data.get("artifacts_modified") or []:
+        if isinstance(a, str):
+            touched_paths.add(a)
+        elif isinstance(a, dict) and "file" in a:
+            touched_paths.add(str(a["file"]))
+
+    if isinstance(impl, dict):
+        for s in impl.get("steps") or []:
+            if isinstance(s, dict):
+                art = s.get("artifact")
+                if isinstance(art, str):
+                    touched_paths.add(art)
+
+    contract_violations = []
+    contract_layer_re = re.compile(
+        r"(?:^|/)(?:03_EARS|04_BDD|05_ADR|06_SPEC)/([A-Z]+-\d+[^/]*\.(?:md|ya?ml))$"
+    )
+
+    for path in sorted(touched_paths):
+        base = Path(path).name
+        if "TEMPLATE" in base or "README" in base or "WORKFLOW_STANDARD" in base:
+            continue
+        m = contract_layer_re.search(path)
+        if m:
+            contract_violations.append(path)
+
+    if contract_violations and not sdd_steps:
+        violating_list = ", ".join(contract_violations)
+        eff_code = flow_code or flow or "fast-path"
+        errors.append(
+            f"CHG-L019: Fast-path change ({eff_code}) touches contract-bearing file(s) "
+            f"({violating_list}) without SDD lifecycle update (SDD2C required)"
+        )
+        return
+
+    passes.append("CHG-L019: fast-path boundary guard passed (contract integrity preserved)")
 
 
 def main(argv: list[str] | None = None) -> int:

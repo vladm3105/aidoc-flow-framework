@@ -1,0 +1,56 @@
+# =============================================================================
+#  IPLAN-90: Standardized Dual-Template Selection Guides Across Layers 01–08 and Governance
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-90/CHG-90.yaml
+# =============================================================================
+
+id: "IPLAN-90"
+chg_id: "CHG-90"
+title: "Standardized In-File Dual-Template Selection Guides Across Layers 01–08 and Governance"
+status: "In Progress"
+framework_version: "0.91.9"
+
+file_manifest:
+  - "framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml"
+  - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+  - "framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml"
+  - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+  - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+  - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+  - "framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml"
+  - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+  - "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+  - "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+  - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+  - "framework/layers/07_TDD/TDD-TEMPLATE.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+  - "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+  - "framework/governance/templates/CHG-SWF-TEMPLATE.yaml"
+  - "framework/governance/chg/CHG-TEMPLATE.yaml"
+  - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+  - "framework/governance/DECISIONS.md"
+  - "framework/VERSION"
+  - "framework/CHANGELOG.md"
+  - "hooks/sync-version-refs.sh"
+
+tasks:
+  - id: "TASK-01"
+    name: "Update Layer 01–04 Templates with Selection Guides"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Update Layer 05–08 Templates with Selection Guides"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update Layer 09 / Governance Templates with Selection Guides"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Ratify Decision GD-77 in framework/governance/DECISIONS.md"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Bump version to 0.91.9, update CHANGELOG.md, and run sync-version-refs.sh"
+    status: "Completed"
+  - id: "TASK-06"
+    name: "Run full conformance suite and SWF/CHG linters"
+    status: "Completed"

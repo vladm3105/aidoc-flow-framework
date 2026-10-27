@@ -31,6 +31,13 @@
 #                     installs; must contain framework/VERSION; pin kind only).
 #   --author NAME     fill the README author placeholder (default: git
 #                     user.name, falling back to the current user).
+#   --all-indices     scaffold index files for all 10 canonical SDD layers
+#                     (01_BRD through 10_EVAL) instead of Layer 05 ADR only
+#   --no-adr          skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
+#   --no-agents       skip scaffolding root AGENTS.md
+#   --no-stack-policy skip scaffolding root stack-policy.yaml
+#   --no-blueprints   skip scaffolding .aidoc/project/governance/ blueprints
+#   --no-precommit    skip scaffolding root .pre-commit-config.yaml
 #   --dry-run         print every mutation without performing it (read-only
 #                     VERSION/tag checks still run for local canons).
 #   --force           replace an existing <project>/.aidoc wholesale
@@ -73,7 +80,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; ALL_INDICES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0; NO_BLUEPRINTS=0; NO_PRECOMMIT=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -83,6 +90,12 @@ while [ $# -gt 0 ]; do
     --shared) need_value "$@"; SHARED="$2"; shift 2 ;;
     --canon-dir) need_value "$@"; CANON_DIR="$2"; shift 2 ;;
     --author) need_value "$@"; AUTHOR="$2"; shift 2 ;;
+    --all-indices) ALL_INDICES=1; shift ;;
+    --no-adr) NO_ADR=1; shift ;;
+    --no-agents) NO_AGENTS=1; shift ;;
+    --no-stack-policy) NO_STACK_POLICY=1; shift ;;
+    --no-blueprints) NO_BLUEPRINTS=1; shift ;;
+    --no-precommit) NO_PRECOMMIT=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
@@ -93,10 +106,14 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$PROJECT" ] || { usage >&2; refuse "missing <project-dir>"; }
 [ "$KIND" = pin ] || [ "$KIND" = symlink ] || refuse "--kind must be pin or symlink"
+if [ "$KIND" = symlink ]; then
+  log "[WARNING] Symlink distribution is deprecated per docs/AIDOC_WORKSTATION_STANDARD.md; use --kind pin or submodules for CI portability"
+fi
 [ -f "$ALLOWLIST" ] || die "allowlist not found: $ALLOWLIST"
 
 [ -d "$PROJECT" ] || refuse "project dir must exist: $PROJECT"
 PROJECT="$(cd -- "$PROJECT" && pwd)" # resolve symlinks/traversal; all writes stay under it
+PROJ_NAME="$(basename "$PROJECT")"
 AIDOC="$PROJECT/.aidoc"
 if [ -e "$AIDOC" ] && [ "$FORCE" != 1 ]; then
   refuse "$AIDOC already exists (pass --force to replace it wholesale)"
@@ -180,27 +197,219 @@ if [ -e "$AIDOC" ] && [ "$FORCE" = 1 ]; then
     if [ ! -t 0 ]; then
       refuse "not a TTY — pass --yes to confirm replacing $AIDOC non-interactively (or --dry-run to preview)"
     fi
-    printf '%s\n' "install.sh: WARNING: --force removes the existing $AIDOC wholesale (including .aidoc/project/ overrides)."
+    printf '%s\n' "install.sh: WARNING: --force replaces $AIDOC/framework (preserving profile.yaml and project overrides)."
     read -r -p "install.sh: proceed? [y/N] " ans || ans=""
     case "$ans" in [Yy]|[Yy][Ee][Ss]) ;; *) refuse "aborted by operator" ;; esac
   fi
-  run "rm -rf $AIDOC" rm -rf "$AIDOC"
+  # GAP-FW-02: Non-destructive replacement - remove only the framework payload
+  if [ -e "$AIDOC/framework" ]; then
+    run "rm -rf $AIDOC/framework" rm -rf "$AIDOC/framework"
+  fi
 fi
 run "mkdir -p $AIDOC" mkdir -p "$AIDOC"
-for src in "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md:$AIDOC/README.md" \
-           "framework/governance/PROFILE-TEMPLATE.yaml:$AIDOC/profile.yaml"; do
-  from="$CANON/${src%%:*}"; to="${src##*:}"
-  [ "$DRY_RUN" = 1 ] || [ -f "$from" ] || die "canon template missing: $from"
-  run "cp $from $to" cp "$from" "$to"
-done
-if [ "$DRY_RUN" != 1 ]; then
-  AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&|\\]/\\&/g')"
-  pinsub "$AIDOC/README.md" "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g"
-  pinsub "$AIDOC/profile.yaml" -E "s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
-  log "README placeholders filled (date=$TODAY author=$AUTHOR version=$VERSION)"
-  log "profile.yaml pinned at framework_version $VERSION"
+
+# Copy README only if missing
+if [ ! -f "$AIDOC/README.md" ]; then
+  src="framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+  [ "$DRY_RUN" = 1 ] || [ -f "$CANON/$src" ] || die "canon template missing: $CANON/$src"
+  run "cp $CANON/$src $AIDOC/README.md" cp "$CANON/$src" "$AIDOC/README.md"
+  if [ "$DRY_RUN" != 1 ]; then
+    AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&|\\]/\\&/g')"
+    pinsub "$AIDOC/README.md" "s/YYYY-MM-DD/$TODAY/; s|<your name>|$AUTHOR_ESC|; s/X\\.Y\\.Z/$VERSION/g"
+  fi
+fi
+
+# Copy profile.yaml only if missing; if present, re-pin framework_version
+if [ ! -f "$AIDOC/profile.yaml" ]; then
+  src="framework/governance/PROFILE-TEMPLATE.yaml"
+  [ "$DRY_RUN" = 1 ] || [ -f "$CANON/$src" ] || die "canon template missing: $CANON/$src"
+  run "cp $CANON/$src $AIDOC/profile.yaml" cp "$CANON/$src" "$AIDOC/profile.yaml"
+  if [ "$DRY_RUN" != 1 ]; then
+    pinsub "$AIDOC/profile.yaml" -E "s/^[[:space:]]*#[[:space:]]*project_name:.*/  project_name: \"$PROJ_NAME\"/; s/^(  framework_version: ).*/\\1\"$VERSION\"/; s/^(  last_updated: ).*/\\1\"$TODAY\"/"
+  fi
 else
-  log "(dry-run: placeholder fill + version pin skipped)"
+  if [ "$DRY_RUN" != 1 ]; then
+    pinsub "$AIDOC/profile.yaml" -E "s/^[[:space:]]*#[[:space:]]*project_name:.*/  project_name: \"$PROJ_NAME\"/; s/^([[:space:]]*framework_version:[[:space:]]*).*/\\1\"$VERSION\"/"
+    log "existing profile.yaml preserved and re-pinned to $VERSION"
+  fi
+fi
+
+# Scaffold SDD layer indices
+if [ "$ALL_INDICES" = 1 ]; then
+  for pair in \
+    "01_BRD/BRD-00_index.TEMPLATE.yaml:01_BRD/BRD-00_index.yaml:Layer 01 BRD" \
+    "02_PRD/PRD-00_index.TEMPLATE.yaml:02_PRD/PRD-00_index.yaml:Layer 02 PRD" \
+    "03_EARS/EARS-00_index.TEMPLATE.yaml:03_EARS/EARS-00_index.yaml:Layer 03 EARS" \
+    "04_BDD/BDD-00_index.TEMPLATE.yaml:04_BDD/BDD-00_index.yaml:Layer 04 BDD" \
+    "05_ADR/ADR-00_index.TEMPLATE.yaml:05_ADR/ADR-00_index.yaml:Layer 05 ADR" \
+    "06_SPEC/SPEC-00_index.TEMPLATE.yaml:06_SPEC/SPEC-00_index.yaml:Layer 06 SPEC" \
+    "07_TDD/TDD-00_index.TEMPLATE.yaml:07_TDD/TDD-00_index.yaml:Layer 07 TDD" \
+    "08_IPLAN/IPLAN-00_index.TEMPLATE.yaml:08_IPLAN/IPLAN-00_index.yaml:Layer 08 IPLAN" \
+    "09_CHG/CHG-00_index.TEMPLATE.yaml:09_CHG/CHG-00_index.yaml:Layer 09 CHG" \
+    "10_EVAL/EVAL-00_index.TEMPLATE.yaml:10_EVAL/EVAL-00_index.yaml:Layer 10 EVAL"; do
+    src_rel="${pair%%:*}"
+    rest="${pair#*:}"
+    dst_rel="${rest%%:*}"
+    label="${rest#*:}"
+    if [ "$src_rel" = "05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ "$NO_ADR" = 1 ]; then
+      continue
+    fi
+    src="$CANON/framework/layers/$src_rel"
+    dst="$PROJECT/docs/sdd/$dst_rel"
+    layer_dir="$(dirname "$dst")"
+    if [ -f "$src" ]; then
+      if [ ! -f "$dst" ]; then
+        run "mkdir -p $layer_dir" mkdir -p "$layer_dir"
+        run "cp $src $dst" cp "$src" "$dst"
+        if [ "$DRY_RUN" != 1 ]; then
+          pinsub "$dst" -E "s/(\\[X\\.Y\\.Z\\]|\"0\\.0\\.0\")/$VERSION/g; s/YYYY-MM-DD/$TODAY/g"
+          log "scaffolded $label index at docs/sdd/$dst_rel"
+        fi
+      else
+        log "existing docs/sdd/$dst_rel preserved"
+      fi
+    fi
+  done
+elif [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ]; then
+  adr_dir="$PROJECT/docs/sdd/05_ADR"
+  adr_index="$adr_dir/ADR-00_index.yaml"
+  if [ ! -f "$adr_index" ]; then
+    run "mkdir -p $adr_dir" mkdir -p "$adr_dir"
+    run "cp $CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml $adr_index" cp "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" "$adr_index"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$adr_index" -E "s/(\\[X\\.Y\\.Z\\]|\"0\\.0\\.0\")/$VERSION/g; s/YYYY-MM-DD/$TODAY/g"
+      log "scaffolded Layer 05 ADR index at docs/sdd/05_ADR/ADR-00_index.yaml"
+    fi
+  else
+    log "existing docs/sdd/05_ADR/ADR-00_index.yaml preserved"
+  fi
+fi
+
+# Scaffold root AGENTS.md
+if [ "$NO_AGENTS" != 1 ] && [ -f "$CANON/framework/templates/AGENTS-TEMPLATE.md" ]; then
+  agents_doc="$PROJECT/AGENTS.md"
+  if [ ! -f "$agents_doc" ]; then
+    run "cp $CANON/framework/templates/AGENTS-TEMPLATE.md $agents_doc" cp "$CANON/framework/templates/AGENTS-TEMPLATE.md" "$agents_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$agents_doc" "s/<project-name>/$PROJ_NAME/g"
+      log "scaffolded working agreement at AGENTS.md"
+    fi
+  else
+    log "existing AGENTS.md preserved"
+  fi
+fi
+
+# Scaffold root stack-policy.yaml
+if [ "$NO_STACK_POLICY" != 1 ] && [ -f "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" ]; then
+  policy_doc="$PROJECT/stack-policy.yaml"
+  if [ ! -f "$policy_doc" ]; then
+    run "cp $CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml $policy_doc" cp "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" "$policy_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      pinsub "$policy_doc" -E "s/^(tenant_id:[[:space:]]*)\"[^\"]*\"/\\1\"$PROJ_NAME\"/"
+      log "scaffolded stack policy at stack-policy.yaml"
+    fi
+  else
+    log "existing stack-policy.yaml preserved"
+  fi
+fi
+
+# Scaffold canonical SDD tasks at .aidoc/Taskfile.yml
+if [ -f "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" ]; then
+  aidoc_taskfile="$AIDOC/Taskfile.yml"
+  if [ ! -f "$aidoc_taskfile" ]; then
+    run "cp $CANON/framework/templates/TASKFILE-TEMPLATE.yml $aidoc_taskfile" cp "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" "$aidoc_taskfile"
+    log "scaffolded canonical SDD tasks at .aidoc/Taskfile.yml"
+  else
+    log "existing .aidoc/Taskfile.yml preserved"
+  fi
+fi
+
+# Scaffold docs/sdd/graph for SDD-GRAPH v2.0 property graph slices
+graph_dir="$PROJECT/docs/sdd/graph"
+run "mkdir -p $graph_dir" mkdir -p "$graph_dir"
+log "scaffolded graph slice directory at docs/sdd/graph"
+
+# Scaffold .aidoc/cache for local Kùzu graph indices and AST cache
+cache_dir="$AIDOC/cache"
+run "mkdir -p $cache_dir" mkdir -p "$cache_dir"
+if [ "$DRY_RUN" != 1 ] && [ ! -f "$cache_dir/.gitignore" ]; then
+  cat << 'CACHE_GITIGNORE_EOF' > "$cache_dir/.gitignore"
+# Workstation cache directory (Kùzu embedded database, AST caches)
+*
+!.gitignore
+CACHE_GITIGNORE_EOF
+  log "scaffolded workstation cache directory at .aidoc/cache"
+fi
+
+# Scaffold active engine config at .aidoc/engine/engine.yaml
+if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
+  engine_dir="$AIDOC/engine"
+  engine_cfg="$engine_dir/engine.yaml"
+  run "mkdir -p $engine_dir" mkdir -p "$engine_dir"
+  if [ ! -f "$engine_cfg" ]; then
+    run "cp $CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml $engine_cfg" cp "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" "$engine_cfg"
+    log "scaffolded engine config at .aidoc/engine/engine.yaml"
+  else
+    log "existing .aidoc/engine/engine.yaml preserved"
+  fi
+fi
+
+# Scaffold operational governance blueprints at .aidoc/project/governance
+# (STARTUP_HANDOFF step 4; --no-blueprints to skip)
+if [ "$NO_BLUEPRINTS" != 1 ]; then
+  gov_dst="$AIDOC/project/governance"
+  run "mkdir -p $gov_dst" mkdir -p "$gov_dst"
+  for pair in \
+    "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md:CHG_EXECUTION_FLOW.md" \
+    "aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md:CI_SMART_ROUTING.md" \
+    "aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md:CONFLICT_RESOLUTION.md" \
+    "aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md:SELF_REVIEW_LOOP.md" \
+    "aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md:QA_PROTOCOL.md" \
+    "aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md:BROWSER_TESTING.md" \
+    "DURABLE_EXECUTION_STANDARD.md:DURABLE_EXECUTION.md" \
+    "REVIEW_WORKFLOW_STANDARD.md:REVIEW_WORKFLOWS.md"; do
+    src="$CANON/framework/governance/${pair%%:*}"
+    dst="$gov_dst/${pair##*:}"
+    if [ -f "$src" ] && [ ! -f "$dst" ]; then
+      run "cp $src $dst" cp "$src" "$dst"
+      if [ "$DRY_RUN" != 1 ]; then
+        log "scaffolded governance blueprint at .aidoc/project/governance/${pair##*:}"
+      fi
+    elif [ -f "$dst" ]; then
+      log "existing .aidoc/project/governance/${pair##*:} preserved"
+    fi
+  done
+fi
+
+# Scaffold minimal consumer pre-commit gate at project root (--no-precommit to skip)
+if [ "$NO_PRECOMMIT" != 1 ] && [ -f "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" ]; then
+  precommit_doc="$PROJECT/.pre-commit-config.yaml"
+  if [ ! -f "$precommit_doc" ]; then
+    run "cp $CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml $precommit_doc" cp "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" "$precommit_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      log "scaffolded consumer pre-commit gate at .pre-commit-config.yaml"
+    fi
+  else
+    log "existing .pre-commit-config.yaml preserved"
+  fi
+fi
+
+# Scaffold linter runner at .aidoc/bin/sdd-lint (backward-compatible shim)
+bin_dir="$AIDOC/bin"
+runner="$bin_dir/sdd-lint"
+run "mkdir -p $bin_dir" mkdir -p "$bin_dir"
+if [ "$DRY_RUN" != 1 ]; then
+  cat << 'RUNNER_EOF' > "$runner"
+#!/usr/bin/env bash
+# sdd-lint — portable runner for sdd_doc_lint in consumer repositories
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if command -v task >/dev/null 2>&1 && [ -f "$SCRIPT_DIR/Taskfile.yml" ]; then
+  exec task --taskfile "$SCRIPT_DIR/Taskfile.yml" lint -- "$@"
+fi
+PYTHONPATH="$SCRIPT_DIR/framework" exec python3 -m sdd_doc_lint "$@"
+RUNNER_EOF
+  chmod +x "$runner"
+  log "scaffolded linter runner at .aidoc/bin/sdd-lint"
 fi
 
 # BOOTSTRAP step 3: attach the framework (pin or symlink).
@@ -227,16 +436,27 @@ if [ "$DRY_RUN" = 1 ]; then log "(dry-run: smoke checks skipped)"; log "done (dr
 if [ ! -f "$AIDOC/README.md" ] || [ ! -f "$AIDOC/profile.yaml" ]; then
   die "smoke: README/profile missing"
 fi
+if [ -f "$CANON/framework/templates/TASKFILE-TEMPLATE.yml" ] && [ ! -f "$AIDOC/Taskfile.yml" ]; then
+  die "smoke: Taskfile missing"
+fi
 if readlink -f "$AIDOC/framework" >/dev/null 2>&1; then :;
 elif [ -e "$AIDOC/framework" ]; then :; # readlink -f missing (macOS): -e follows links too
 else die "smoke: .aidoc/framework does not resolve"; fi
-PINNED="$(sed -n -E 's/^  framework_version: "?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
+PINNED="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
 [ "$PINNED" = "$VERSION" ] || die "smoke: profile pins $PINNED, canon is $VERSION"
 SURFACE="$AIDOC/framework/framework/governance/ADAPTATION_SURFACE.yaml"
 [ -f "$SURFACE" ] || die "smoke: incomplete copy — ADAPTATION_SURFACE.yaml missing"
-if command -v python3 >/dev/null; then
+
+PY_RUNNER=""
+if command -v uv >/dev/null && uv run python -c "import yaml" >/dev/null 2>&1; then
+  PY_RUNNER="uv run python"
+elif command -v python3 >/dev/null; then
+  PY_RUNNER="python3"
+fi
+
+if [ -n "$PY_RUNNER" ]; then
   rc=0
-  python3 - "$AIDOC/profile.yaml" "$SURFACE" <<'EOF' || rc=$?
+  $PY_RUNNER - "$AIDOC/profile.yaml" "$SURFACE" <<'EOF' || rc=$?
 import sys
 try:
     import yaml
@@ -251,10 +471,75 @@ if unknown:
     print(f"unknown profile keys: {unknown}", file=sys.stderr)
     sys.exit(1)
 EOF
-  if [ "$rc" = 0 ]; then log "smoke: profile keys within the closed surface";
+  if [ "$rc" = 0 ]; then
+    log "smoke: profile keys within the closed surface"
+    if [ -f "$AIDOC/framework/sdd_doc_lint/profile_lint.py" ]; then
+      rc_prof=0
+      $PY_RUNNER "$AIDOC/framework/sdd_doc_lint/profile_lint.py" "$AIDOC/profile.yaml" >/dev/null 2>&1 || rc_prof=$?
+      if [ "$rc_prof" = 0 ]; then
+        log "smoke: profile schema 1.1.0 validation clean"
+      else
+        die "smoke: profile validation failed (check profile_lint.py)"
+      fi
+    fi
   elif [ "$rc" = 2 ]; then log "WARNING: PyYAML unavailable — profile keys NOT verified (check BOOTSTRAP step 5 manually)";
   else die "smoke: profile.yaml carries unknown keys"; fi
 else
   log "WARNING: python3 unavailable — profile keys NOT verified (check BOOTSTRAP step 5 manually)"
+fi
+
+# BOOTSTRAP step 5: assert every scaffolded artifact (opt-outs respected).
+if [ "$NO_AGENTS" != 1 ] && [ -f "$CANON/framework/templates/AGENTS-TEMPLATE.md" ] && [ ! -f "$PROJECT/AGENTS.md" ]; then
+  die "smoke: AGENTS.md missing"
+fi
+if [ "$NO_STACK_POLICY" != 1 ] && [ -f "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" ] && [ ! -f "$PROJECT/stack-policy.yaml" ]; then
+  die "smoke: stack-policy.yaml missing"
+fi
+if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ] && [ ! -f "$AIDOC/engine/engine.yaml" ]; then
+  die "smoke: .aidoc/engine/engine.yaml missing"
+fi
+if [ "$ALL_INDICES" = 1 ]; then
+  for pair in \
+    "01_BRD/BRD-00_index.TEMPLATE.yaml:01_BRD/BRD-00_index.yaml" \
+    "02_PRD/PRD-00_index.TEMPLATE.yaml:02_PRD/PRD-00_index.yaml" \
+    "03_EARS/EARS-00_index.TEMPLATE.yaml:03_EARS/EARS-00_index.yaml" \
+    "04_BDD/BDD-00_index.TEMPLATE.yaml:04_BDD/BDD-00_index.yaml" \
+    "05_ADR/ADR-00_index.TEMPLATE.yaml:05_ADR/ADR-00_index.yaml" \
+    "06_SPEC/SPEC-00_index.TEMPLATE.yaml:06_SPEC/SPEC-00_index.yaml" \
+    "07_TDD/TDD-00_index.TEMPLATE.yaml:07_TDD/TDD-00_index.yaml" \
+    "08_IPLAN/IPLAN-00_index.TEMPLATE.yaml:08_IPLAN/IPLAN-00_index.yaml" \
+    "09_CHG/CHG-00_index.TEMPLATE.yaml:09_CHG/CHG-00_index.yaml" \
+    "10_EVAL/EVAL-00_index.TEMPLATE.yaml:10_EVAL/EVAL-00_index.yaml"; do
+    src_rel="${pair%%:*}"
+    dst_rel="${pair##*:}"
+    if [ "$src_rel" = "05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ "$NO_ADR" = 1 ]; then
+      continue
+    fi
+    if [ -f "$CANON/framework/layers/$src_rel" ] && [ ! -f "$PROJECT/docs/sdd/$dst_rel" ]; then
+      die "smoke: docs/sdd/$dst_rel missing"
+    fi
+  done
+elif [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ ! -f "$PROJECT/docs/sdd/05_ADR/ADR-00_index.yaml" ]; then
+  die "smoke: docs/sdd/05_ADR/ADR-00_index.yaml missing"
+fi
+[ -d "$PROJECT/docs/sdd/graph" ] || die "smoke: docs/sdd/graph missing"
+[ -f "$AIDOC/cache/.gitignore" ] || die "smoke: .aidoc/cache/.gitignore missing"
+if [ "$NO_BLUEPRINTS" != 1 ]; then
+  for pair in \
+    "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md:CHG_EXECUTION_FLOW.md" \
+    "aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md:CI_SMART_ROUTING.md" \
+    "aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md:CONFLICT_RESOLUTION.md" \
+    "aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md:SELF_REVIEW_LOOP.md" \
+    "aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md:QA_PROTOCOL.md" \
+    "aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md:BROWSER_TESTING.md" \
+    "DURABLE_EXECUTION_STANDARD.md:DURABLE_EXECUTION.md" \
+    "REVIEW_WORKFLOW_STANDARD.md:REVIEW_WORKFLOWS.md"; do
+    if [ -f "$CANON/framework/governance/${pair%%:*}" ] && [ ! -f "$AIDOC/project/governance/${pair##*:}" ]; then
+      die "smoke: governance blueprint missing: .aidoc/project/governance/${pair##*:}"
+    fi
+  done
+fi
+if [ "$NO_PRECOMMIT" != 1 ] && [ -f "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" ] && [ ! -f "$PROJECT/.pre-commit-config.yaml" ]; then
+  die "smoke: .pre-commit-config.yaml missing"
 fi
 log "done: kind=$KIND version=$VERSION aidoc=$AIDOC"

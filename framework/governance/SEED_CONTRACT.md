@@ -1,14 +1,21 @@
+---
+doc_id: GOV-SEED-CONTRACT
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Seed Contract
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer (AI agent + owner, CHG-11) |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 The normative contract over the `seed/` input tier — the human-authored source
@@ -19,7 +26,7 @@ what the seed says, and nothing forbade "fixing" the seed when an audit found a
 gap. This document closes that gap. It is engine-agnostic — it constrains the
 artifacts, not any platform's runtime.
 
-## Scope
+## Scope {#sec-scope}
 
 `<project>/seed/` holds the raw, human-authored requirements a cycle starts
 from (a brief, a stakeholder note, a prior-art dump). Per the framework's 4-tier
@@ -38,9 +45,9 @@ The second human-input tier, `<project>/chg/`, is out of this contract's scope
 — it is governed by the CHG gates (`chg/`). The seed is the *initial* input;
 `chg/` is the *ongoing* one.
 
-## The three rules
+## The three rules {#sec-the-three-rules}
 
-### 1. Frozen per version
+### 1. Frozen per version {#sec-1-frozen-per-version}
 
 A **published** seed version is immutable: once the first BRD of a cycle is
 authored against seed vN, the vN files of that cycle are **historical input**
@@ -60,7 +67,7 @@ In short: the seed captures the cycle's starting point **per version**;
 `chg/` captures everything after it; a supersede moves the starting point
 forward without rewriting history.
 
-### 2. Total disposition
+### 2. Total disposition {#sec-2-total-disposition}
 
 Every claim the seed makes has **exactly one** disposition in the BRD set of
 that cycle:
@@ -84,7 +91,7 @@ claim against vN+1, update the pin, and confirm the disposition still holds.
 A row pinned to an archived version after its supersede has landed is stale —
 `SEED01` fails it deterministically (see Enforcement split).
 
-### 3. BRD is the absorption point
+### 3. BRD is the absorption point {#sec-3-brd-is-the-absorption-point}
 
 A seed claim first surfacing at PRD or later — with no BRD row accounting for
 it — is a **gap**, not a shortcut. The BRD is where the chain first accounts
@@ -92,7 +99,7 @@ for the seed; a claim that skips it has no traceable origin. A `deferred` claim
 SHOULD also appear in the BRD's `out_of_scope:` declaration, and the ledger row
 is what makes that deferral traceable back to its seed input.
 
-## Seed document control
+## Seed document control {#sec-seed-document-control}
 
 Every seed file carries a control header — frontmatter, not prose — so the
 tier versions without disturbing its human-readable form. The canonical starter
@@ -108,7 +115,7 @@ document_control:
   author: "ai-agent: <id> + human: <name>"
   created_date: "2026-09-01"
   last_updated: "2026-09-24"
-  framework_version: "0.91.4"
+  framework_version: "0.96.23"
   supersedes:
     - "seed/architecture/auth.md v1.0 (docs/sdd/09-CHG/archive/CHG-NN/seed/auth-v1.md)"
   revision_history:
@@ -124,7 +131,7 @@ human; `chg_ref` names the authorizing CHG; each `revision_history` entry
 describes the change in one line. A published version's control block is as
 immutable as its prose.
 
-## AI-attribution rule (GOV-021)
+## AI-attribution rule (GOV-021) {#sec-ai-attribution-rule-gov-021}
 
 Any document an AI agent creates or modifies in a versioned tier **must**
 carry `document_control` + metadata naming the agent, the supervising human,
@@ -137,7 +144,7 @@ future reader cannot tell curated history from drift. The deterministic half
 carrier completeness on tiers whose shape the linter cannot parse stays with
 the reviewer lens — the same split as the seed contract's own enforcement.
 
-## Enforcement split
+## Enforcement split {#sec-enforcement-split}
 
 The contract is enforced by mechanisms with deliberately different reach.
 Reading any gate as stronger than it is invites treating a green lint as
@@ -154,7 +161,7 @@ a claim the seed prose makes is absent from the ledger. Completeness is a
 reading judgement and lives with the auditor lens. Authoring the ledger is the
 business-analyst lens's check **C8**.
 
-## Authority
+## Authority {#sec-authority}
 
 This contract; `layers/01_BRD/BRD-TEMPLATE.yaml` (`seed_disposition:` carrier
 with `seed_version` pin); `LINT_RULES.md` (`SEED01`, `GOV-020`, `GOV-021`);
@@ -165,9 +172,9 @@ frozen-forever) as updated by **GD-36** (frozen-per-version).
 
 ---
 
-## Seed Gap Review Gate
+## Seed Gap Review Gate {#sec-seed-gap-review-gate}
 
-### When it fires
+### When it fires {#sec-when-it-fires}
 
 **Primary:** After BRD generation, before PRD generation. All BRDs must be
 generated before running the review. This is the earliest point where seed
@@ -177,7 +184,7 @@ coverage can be validated.
 that propagate through the entire SDD chain. The secondary gate catches stale
 references before they accumulate.
 
-### What it checks
+### What it checks {#sec-what-it-checks}
 
 1. Cross-reference every BRD's functional requirements against `seed/architecture/`
    and `seed/agent-surface/`
@@ -186,7 +193,7 @@ references before they accumulate.
 4. After seed supersedes: confirm every vN-pinned ledger row was re-pointed or
    re-disposed, then grep all SDD files for stale terms
 
-### Decision
+### Decision {#sec-decision}
 
 | Outcome | Action |
 |---------|--------|
@@ -196,13 +203,13 @@ references before they accumulate.
 | **Stale pins found** | Re-point or re-dispose the rows in the same CHG lifecycle (`SEED01` fails them until fixed) |
 | **Stale references found** | Grep and fix all affected SDD files |
 
-### Why after BRD, not after IPLAN
+### Why after BRD, not after IPLAN {#sec-why-after-brd-not-after-iplan}
 
 - BRDs are the first formal SDD layer — gaps caught here propagate to zero downstream files
 - By IPLAN completion, the full SDD chain has embedded the gaps
 - Fixing after IPLAN requires touching 14+ files; fixing after BRD requires touching 9 files
 
-### Scope of regeneration
+### Scope of regeneration {#sec-scope-of-regeneration}
 
 When a seed gap review triggers a new SDD iteration:
 - Only affected layers are regenerated, not the entire chain
@@ -214,7 +221,7 @@ When a seed gap review triggers a new SDD iteration:
 - A CHG record is created if existing SDD documents are rewritten
 
 
-## End-to-End Supersede Lifecycle (Seed → Module → SDD)
+## End-to-End Supersede Lifecycle (Seed → Module → SDD) {#sec-end-to-end-supersede-lifecycle-seed-module-sdd}
 
 When environmental realities or architectural vision shift mid-lifecycle, the update
 executes under a SEED2C (F3) Change Request through the ordered cascade:
@@ -226,7 +233,7 @@ executes under a SEED2C (F3) Change Request through the ordered cascade:
 
 2. **Phase 0b — `module_lifecycle: sync` (The Living Bridge):**
    - Seed docs never feed BRDs in isolation; modules bridge seed principles into technical constraints (`Seed → Module → SDD`).
-   - Every module touched by the seed change is analyzed and updated per the normative 5-step methodology in [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md) and formatted per [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+   - Every module touched by the seed change is analyzed and updated per the normative 5-step methodology in [`framework/governance/SEED_TO_MODULE_DECOMPOSITION.md`](SEED_TO_MODULE_DECOMPOSITION.md), authored in Native SDD Graph format per [`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml), and projected per [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
    - The module’s C4-L2 container boundaries, DFD-L2 data sensitivity matrix, and process sequences are refreshed to reflect the new seed realities.
    - Touched modules are archived to `docs/sdd/09-CHG/archive/{CHG-ID}/modules/` and updated in `docs/modules/` (re-pointing seed references, updating invariants).
 

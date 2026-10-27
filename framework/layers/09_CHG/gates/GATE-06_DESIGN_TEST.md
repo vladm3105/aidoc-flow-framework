@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 > **Position**: Between architecture decisions and Layers 6-7 (SPEC, TDD)
@@ -74,10 +74,12 @@ Before entering GATE-06, the change request must satisfy:
 
 | Check ID | Description | Severity | Validation |
 |----------|-------------|----------|------------|
-| GATE-06-E001 | SPEC must have TDD-Ready score >= 90% | ERROR | Score check |
+| GATE-06-E001 | SPEC must pass binary topological validation (tdd_ready_status: PASS) | ERROR | Topological readiness check |
 | GATE-06-E002 | TDD must cover all BDD scenarios | ERROR | BDD-to-TDD coverage check |
 | GATE-06-E003 | TDD/SPEC sync: test contracts must match SPEC interfaces | ERROR | Cross-reference validation |
 | GATE-06-E004 | SPEC change must update TDD before proceeding | ERROR | TDD compliance check |
+| GATE-06-E005 | SPEC must declare toolchain ownership (language, runtime, package manager, test runner) | ERROR | Toolchain ownership check |
+| GATE-06-E006 | TDD stateful test fixtures must declare saga teardown compensation (compensatedBy) | ERROR | Fixture hermeticity check |
 
 ### 3.2 Warning Checks (Non-Blocking)
 
@@ -103,7 +105,7 @@ All SPEC changes MUST flow through TDD:
 ```
 1. Update SPEC to define implementation contract
 2. Update TDD to define test cases for changed interfaces
-3. Verify TDD.Ready score >= 90%
+3. Verify binary topological validation (tdd_ready_status: PASS)
 4. Update IPLAN to reflect test-first implementation order
 ```
 
@@ -127,7 +129,7 @@ To pass GATE-06, the change must satisfy:
 |-----------|----|----|---|
 | All E-level checks pass | Yes | Yes | Yes |
 | W-level checks addressed | No | Review | Must address |
-| SPEC TDD-Ready score >= 90% | Yes | Yes | Yes |
+| SPEC binary topological validation (tdd_ready_status: PASS) | Yes | Yes | Yes |
 | TDD covers all BDD scenarios | Yes | Yes | Yes |
 | SPEC-TDD synchronization verified | Yes | Yes | Yes |
 
@@ -136,7 +138,7 @@ To pass GATE-06, the change must satisfy:
 ```markdown
 - [ ] GATE-06-E* checks all pass
 - [ ] GATE-06-W* checks reviewed
-- [ ] SPEC has >= 90% TDD-Ready score
+- [ ] SPEC passes binary topological validation (tdd_ready_status: PASS)
 - [ ] TDD covers all BDD scenarios with test cases
 - [ ] TDD test contracts match SPEC interfaces
 - [ ] SPEC change reflected in TDD
@@ -176,10 +178,12 @@ After passing GATE-06:
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| GATE-06-E001 | Readiness | SPEC TDD-Ready score < 90% | Complete missing sections, clarify ambiguities |
+| GATE-06-E001 | Readiness | SPEC fails binary topological validation (tdd_ready_status != PASS) | Complete missing sections, clarify ambiguities |
 | GATE-06-E002 | Coverage | TDD missing BDD scenario coverage | Add test case definitions for all BDD scenarios |
 | GATE-06-E003 | Consistency | TDD/SPEC misalignment | Synchronize TDD test contracts with SPEC interfaces |
 | GATE-06-E004 | Process | SPEC change without TDD update | Update TDD with test cases for changed interfaces |
+| GATE-06-E005 | Toolchain | SPEC missing toolchain ownership declaration | Declare toolchain mapping under component_overview |
+| GATE-06-E006 | Hermeticity | TDD stateful test fixture missing saga teardown compensation | Declare compensatedBy teardown action for stateful fixtures |
 | GATE-06-W001 | Performance | Algorithm change without baseline | Document current performance metrics |
 | GATE-06-W002 | Complexity | High implementation complexity | Consider decomposition into smaller SPEC components |
 
@@ -187,7 +191,7 @@ After passing GATE-06:
 
 ```markdown
 ## GATE-06-E001 Resolution
-Improve SPEC TDD-Ready score:
+Resolve SPEC topological validation failures:
 
 1. Complete all required sections:
    - Interface definitions with type signatures
@@ -214,8 +218,14 @@ Updated SPEC flow:
 
 1. Modify SPEC component interfaces
 2. Add/modify TDD test cases for changed interfaces
-3. Verify TDD.Ready score
+3. Verify binary topological validation (tdd_ready_status: PASS)
 4. Update IPLAN for test-first implementation order
+
+## GATE-06-E005 Resolution
+Declare explicit toolchain mapping under component_overview with language, runtime_version, package_manager, and command runners.
+
+## GATE-06-E006 Resolution
+Declare compensatedBy: TeardownFixturesCompensation for stateful fixtures in TDD.
 ```
 
 ---

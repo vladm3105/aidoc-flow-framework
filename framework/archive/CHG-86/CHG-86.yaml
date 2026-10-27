@@ -1,0 +1,193 @@
+# =============================================================================
+#  CHG-86: Approved Technology Stack Integration & Selection Governance
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Spec / Governance Batch)
+#  Pre-cleared: User instruction in session (2026-10-11)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-11"
+  framework_version: "0.91.5"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-86"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-11T00:00:00Z"
+  date_approved: "2026-10-11T00:00:00Z"
+  date_implemented: "2026-10-11T00:00:00Z"
+  gate_approval:
+    approver: "Lead Architect"
+    date: "2026-10-11T00:00:00Z"
+    verdict: Approved
+    evidence: "User instruction in session: address the gaps and implement the plan"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-86)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-86"
+  title: "Approved Technology Stack Integration, Multi-Tier Selection Governance, and SWF Template Modernization"
+  status: "Accepted"
+  context: |
+    While CHG-83 / GD-72 established recommended platform blueprints (RECOMMENDED_PLATFORM_STACK.md), projects lacked
+    a unified governance framework dictating how and when the enterprise technology stack (/mnt/e/dev/technology_stack)
+    is applied. Specifically, developers and AI agents need clarity on whether technology selection requires an 11th layer
+    (rejected: technology selection is an architectural decision belonging in Layer 05 ADR), where in the lifecycle
+    selection occurs (after BDD and before SPEC), how primary CNCF Serverless Workflow (SWF) templates reflect recommended
+    technologies, and how variance requests are governed without compromising engine-agnostic purity.
+  choice: |
+    1. Author framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md formalizing the multi-tier progressive refinement model
+       (Tier 0 Enterprise Stack, Tier 1 Seed Invariants, Tier 2 Module Containers, Layers 01-04 Problem Space, Layer 05 ADR
+       Selection Gate, Layers 06-10 Solution Space) and stack variance procedures.
+    2. Update architectural diagrams and visual state machines in RECOMMENDED_PLATFORM_STACK.md, DECISION_WORKFLOW.md,
+       SEED_TO_MODULE_DECOMPOSITION.md, SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, and Layer 05 README to reflect the selection gate.
+    3. Update primary CNCF Serverless Workflow templates (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN SWF templates) and companion
+       static templates with recommended platform selections while preserving pinned section counts (EXPECTED).
+    4. Modernize normative workflow standards (*_WORKFLOW_STANDARD.md across Layers 01-08 and Governance) to specify
+       candidate evaluation, testcontainer verification, and schema contract generation primitives.
+    5. Enhance REVIEW_CREWS.yaml to enforce technology stack alignment checks during Architect and Operator reviews.
+    6. Graduate specification decision to framework/governance/DECISIONS.md as Decision GD-73 under GATE-SPEC.
+  consequences: |
+    - Clear, deterministic placement of technology decisions at Layer 05 (ADR) immediately after BDD scenarios.
+    - Zero pipeline bloat: preserved 10-layer SDD contract without introducing a redundant TDR layer.
+    - Full conformance with test_spec_hygiene.py: zero engine-token leakage in core framework.
+    - Full synchronization between primary SWF templates and companion static templates without altering pinned section counts.
+  alternatives_considered:
+    - option: "Introduce an 11th SDD Layer: Technology Decision Records (TDR)"
+      rationale_rejected: "Rejected because technology choices are inherently architectural decisions. Creating a separate layer causes pipeline bloat, breaks the 10-layer model, and introduces an artificial separation between architecture and technology."
+    - option: "Perform technology selection during PRD authoring"
+      rationale_rejected: "Rejected because product requirements must remain technology-agnostic. Choosing technologies before BDD bypasses critical behavioral failure scenarios and latency constraints."
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Approved Technology Stack Integration & Selection Governance"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-11T00:00:00Z"
+  summary: |
+    Integrate our enterprise technology stack (/mnt/e/dev/technology_stack) into the framework across all tiers
+    and layers, update visual flows and CNCF state machines, modernize primary SWF templates and workflow standards,
+    and formalize the technology selection gate at Layer 05 (ADR) after BDD.
+  rationale: |
+    Eliminates architectural ambiguity, unifies multi-project tooling around approved open-source standards,
+    and provides clear execution templates for autonomous AI coding agents.
+
+# =============================================================================
+# Section 3: Scope & Impact Analysis
+# =============================================================================
+
+scope:
+  components:
+    - "framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    - "framework/governance/RECOMMENDED_PLATFORM_STACK.md"
+    - "framework/governance/DECISION_WORKFLOW.md"
+    - "framework/governance/SEED_TO_MODULE_DECOMPOSITION.md"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    - "framework/layers/05_ADR/README.md"
+    - "framework/governance/workflows/adr-decision-analysis.sw.yaml"
+    - "framework/layers/01_BRD/BRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-SWF-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-SWF-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-SWF-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-SWF-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-SWF-TEMPLATE.yaml"
+    - "framework/layers/07_TDD/TDD-SWF-TEMPLATE.yaml"
+    - "framework/layers/08_IPLAN/IPLAN-SWF-TEMPLATE.yaml"
+    - "framework/layers/01_BRD/BRD-TEMPLATE.yaml"
+    - "framework/layers/02_PRD/PRD-TEMPLATE.yaml"
+    - "framework/layers/03_EARS/EARS-TEMPLATE.yaml"
+    - "framework/layers/04_BDD/BDD-TEMPLATE.yaml"
+    - "framework/layers/05_ADR/ADR-TEMPLATE.yaml"
+    - "framework/layers/06_SPEC/SPEC-TEMPLATE.yaml"
+    - "framework/templates/SEED-TEMPLATE.md"
+    - "framework/templates/MODULE-TEMPLATE.md"
+    - "framework/layers/01_BRD/BRD_WORKFLOW_STANDARD.md"
+    - "framework/layers/02_PRD/PRD_WORKFLOW_STANDARD.md"
+    - "framework/layers/03_EARS/EARS_WORKFLOW_STANDARD.md"
+    - "framework/layers/04_BDD/BDD_WORKFLOW_STANDARD.md"
+    - "framework/layers/05_ADR/ADR_WORKFLOW_STANDARD.md"
+    - "framework/layers/06_SPEC/SPEC_WORKFLOW_STANDARD.md"
+    - "framework/layers/07_TDD/TDD_WORKFLOW_STANDARD.md"
+    - "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    - "framework/governance/REVIEW_CREWS.yaml"
+    - "framework/governance/DECISIONS.md"
+    - "framework/CHANGELOG.md"
+    - "plans/TECHSTACK-SELECTION-GOVERNANCE-PLAN.md"
+  in_scope:
+    - "Authoring TECHNOLOGY_STACK_USAGE_GUIDE.md"
+    - "Updating diagrams in RECOMMENDED_PLATFORM_STACK.md, DECISION_WORKFLOW.md, SEED_TO_MODULE_DECOMPOSITION.md, SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, and Layer 05 README"
+    - "Modernizing primary SWF templates and synchronizing companion static templates"
+    - "Modernizing normative workflow standards"
+    - "Enriching REVIEW_CREWS.yaml"
+    - "Adding GD-73 and updating CHANGELOG.md"
+  out_of_scope:
+    - "Adding an 11th SDD layer (TDR)"
+    - "Leaking banned engine tokens (mcp, plugin, hermes) into core framework"
+    - "Altering pinned section counts in test_required_section_sets.py"
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-86/IPLAN-86.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-86.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-86/IPLAN-86.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Governance Audit Trail
+# =============================================================================
+
+verification:
+  suite: conformance
+  test_plan:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-86/CHG-86.yaml"
+    - "python3 -m sdd_doc_lint.swf_lint --warn-exit framework/layers/"
+    - "pytest tests/conformance/test_required_section_sets.py"
+    - "pytest tests/conformance/test_spec_hygiene.py"
+    - "python3 .agents/skills/verified-planning/check_plan.py plans/TECHSTACK-SELECTION-GOVERNANCE-PLAN.md"
+  audit_trail:
+    - date: "2026-10-11T00:00:00Z"
+      reviewer: "orchestrator"
+      action: "Authoring of CHG-86 proposal and implementation plan"
+      verdict: "APPROVED"
+    - date: "2026-10-11T00:00:00Z"
+      reviewer: "spec-auditor"
+      action: "Verification battery clean across all conformance tests"
+      verdict: "APPROVED"

@@ -1,14 +1,21 @@
+---
+doc_id: GOV-SEED-TO-MODULE-DECOMPOSITION
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Seed to Module Decomposition: Methodology & Governance
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
-| Last Updated | 2026-10-06 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
@@ -16,26 +23,29 @@ into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard
 
 ---
 
-## 1. Purpose & Architectural Context
+## 1. Purpose & Architectural Context {#sec-1-purpose-architectural-context}
 
 The SDD framework separates initial human intent from formal development execution:
 
 ```
+Tier 0 Enterprise Baseline: Approved Tech Stack (vladm3105/technology-stack)
+  │   • Master platform blueprint: Debian 13, Docker/gVisor, PG18 HA, Temporal, NATS, ClickHouse
+  ▼
 Tier 1 Inputs: Seed Documents (<project>/seed/)
   │   • C4-L1 System Context: external actors, platforms, strategic intent, invariants
   │   • Frozen per version (GD-36 / SEED_CONTRACT.md R1)
   ▼
 [Seed → Module Decomposition Flow] ◄── THIS SPECIFICATION
-  │   • Decomposes broad seed vision into bounded architectural subsystems
+  │   • Decomposes broad seed vision into bounded architectural subsystems (C4-L2 containers)
   ▼
 Tier 2 Domain Source: Module Layer (docs/modules/MODULE-NN_*)
-  │   • C4-L2 Container: deployable services, datastores, dependencies
+  │   • C4-L2 Container: deployable services, datastores, dependencies (mapped to approved archetypes)
   │   • DFD-L2 Data Movement: trust boundaries, data sensitivity (PII/secrets)
   │   • Sequence Choreography: sync/async workflows, failure & timeout paths
-  │   • Living domain source of truth (MODULE_LAYOUT.md / MODULE-TEMPLATE.md)
+  │   • Living domain source of truth (MODULE_LAYOUT.md / MODULE-GRAPH-TEMPLATE.yaml / MODULE-TEMPLATE.md)
   ▼
 Tier 2 SDD Execution: Formal 10-Layer Chain (docs/sdd/01_BRD → ...)
-      • Refines L1/L2 domains into C4-L3 Component (SPEC) and C4-L4 Code
+      • Problem Space (01-04) → Layer 05 ADR Selection Gate → Solution Space (06-10)
 ```
 
 Without a rigorous decomposition flow, teams either leap directly from broad vision into code,
@@ -44,7 +54,7 @@ This document governs that transition.
 
 ---
 
-## 2. The Triple-Lens Modeling Standard
+## 2. The Triple-Lens Modeling Standard {#sec-2-the-triple-lens-modeling-standard}
 
 Every module in `docs/modules/MODULE-NN_*` represents an architectural subsystem or **C4-L2 Container**.
 A module specification is not complete until analyzed through **three complementary lenses**:
@@ -64,23 +74,23 @@ A module specification is not complete until analyzed through **three complement
  • Datastores & message brokers       • Sensitive data (PII, secrets, auth)  • Error recovery & timeouts
 ```
 
-### Lens 1: Structural Architecture (C4-L2 Container)
+### Lens 1: Structural Architecture (C4-L2 Container) {#sec-lens-1-structural-architecture-c4-l2-container}
 - Identifies the runnable services, workers, APIs, databases, caches, and third-party SaaS integrations.
 - Focuses on deployment and execution boundaries (not internal classes or functions, which belong in C4-L3 SPEC).
 
-### Lens 2: Data Movement & Sensitivity (DFD-L2)
+### Lens 2: Data Movement & Sensitivity (DFD-L2) {#sec-lens-2-data-movement-sensitivity-dfd-l2}
 - Traces data entities as they enter the module, transform, get persisted, and exit to downstream systems.
 - Mandates explicit **Trust Boundaries** (e.g., Public Internet, DMZ/Ingress, Private Subnet, Encrypted Vault).
 - Enforces data classification (Public, Internal, Confidential, Restricted/PII) to ensure data protection by design.
 
-### Lens 3: Process Choreography & Failure Handling (Sequence / Flow)
+### Lens 3: Process Choreography & Failure Handling (Sequence / Flow) {#sec-lens-3-process-choreography-failure-handling-sequence-flow}
 - Maps the dynamic, chronological interactions between containers for critical business transactions.
 - Distinguishes synchronous calls (blocking HTTP/gRPC) from asynchronous messaging (queues, events).
 - Mandates explicit exception branches (`alt` / `opt` in Mermaid) for timeouts, circuit-breaker trips, and degraded modes.
 
 ---
 
-## 3. The 5-Step Decomposition Methodology
+## 3. The 5-Step Decomposition Methodology {#sec-3-the-5-step-decomposition-methodology}
 
 Architects and AI agents follow this 5-step sequence when decomposing Seed documents into modules:
 
@@ -94,21 +104,22 @@ flowchart TD
     S5 --> M[docs/modules/MODULE-01..NN]
 ```
 
-### Step 1: Domain Boundary Discovery (Bounded Contexts)
+### Step 1: Domain Boundary Discovery (Bounded Contexts) {#sec-step-1-domain-boundary-discovery-bounded-contexts}
 1. Read the Seed documents (`<project>/seed/vision/`, `<project>/seed/architecture/`, `<project>/seed/agent-surface/`).
 2. Identify high-cohesion, low-coupling capability clusters (e.g. Identity/Auth, Data Ingestion, Storage, Analytics, Observability).
 3. Assign each bounded domain a canonical module identifier and slug: `MODULE-NN_slug` (e.g., `MODULE-01_server`, `MODULE-03_auth`).
 4. Document the core responsibility, explicit in-scope items, and explicit out-of-scope boundaries handed off to peer modules.
 
-### Step 2: Structural Container Modeling (C4-L2)
-1. Deconstruct the domain into its discrete executable units:
-   - Primary applications, API servers, background daemons, queue consumers.
-   - Dedicated persistence engines (relational DB, document store, cache, object storage).
+### Step 2: Structural Container Modeling (C4-L2) {#sec-step-2-structural-container-modeling-c4-l2}
+1. Deconstruct the domain into its discrete executable units mapped to approved platform container archetypes ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](TECHNOLOGY_STACK_USAGE_GUIDE.md)):
+   - Primary applications, API servers, background daemons, queue consumers (e.g. Temporal Workers, LangGraph Activities).
+   - Dedicated persistence engines (relational DB: PostgreSQL 18 HA with `xp.ledger`, analytical store: ClickHouse, cache: Redis 7, object storage: MinIO/S3).
+   - Messaging and event brokers (NATS JetStream clustered broker with CloudEvents v1.0).
    - Upstream clients and external third-party services.
 2. Render a native Mermaid `C4Container` or container flowchart tagged with `@diagram: c4-l2`.
 3. Adhere to the rule: **Do NOT embed C4-L3 Component or C4-L4 Code details** in the module. Keep the focus strictly at container boundaries.
 
-### Step 3: Data Movement, Trust Boundaries & Sensitivity Mapping (DFD-L2)
+### Step 3: Data Movement, Trust Boundaries & Sensitivity Mapping (DFD-L2) {#sec-step-3-data-movement-trust-boundaries-sensitivity-mapping-dfd-l2}
 1. Trace the input streams, data transformations, and storage targets for the module.
 2. Define explicit perimeters around security zones:
    - Untrusted Zone (Public Web, mobile clients, external webhooks).
@@ -118,7 +129,7 @@ flowchart TD
 3. Tag the diagram block with `@diagram: dfd-l2`.
 4. Populate the **Data Sensitivity & Protection Matrix** classifying every data entity.
 
-### Step 4: Inter-Module Process Choreography & Failure Paths (Sequence)
+### Step 4: Inter-Module Process Choreography & Failure Paths (Sequence) {#sec-step-4-inter-module-process-choreography-failure-paths-sequence}
 1. Identify the 2–3 mission-critical transactions traversing this module (e.g., User Login, Bulk Ingest, Transaction Settlement).
 2. Model the chronological message flow using native Mermaid `sequenceDiagram` tagged with `@diagram: sequence-sync` or `@diagram: sequence-async`.
 3. Require explicit error paths:
@@ -126,14 +137,14 @@ flowchart TD
    - Is fallback to cache, queuing, or immediate fail-fast enforced?
    - How are retry storms and cascading failures prevented?
 
-### Step 5: Integrity, Invariant & Traceability Audit
+### Step 5: Integrity, Invariant & Traceability Audit {#sec-step-5-integrity-invariant-traceability-audit}
 1. Verify that every invariant and non-goal stated in the Seed documents is mapped to at least one module's `constraints.md` or invariant section.
 2. Confirm zero circular container dependencies across the module registry (`MODULE-00_index.md`).
 3. Verify that all sensitive data fields (PII/secrets) have cryptographic transit and at-rest controls defined before sign-off.
 
 ---
 
-## 4. Data Classification Taxonomy
+## 4. Data Classification Taxonomy {#sec-4-data-classification-taxonomy}
 
 All modules must classify data entities using this standard 4-tier taxonomy:
 
@@ -146,13 +157,13 @@ All modules must classify data entities using this standard 4-tier taxonomy:
 
 ---
 
-## 5. Lifecycle & Governance Rules
+## 5. Lifecycle & Governance Rules {#sec-5-lifecycle-governance-rules}
 
 1. **Bootstrap Timing (SDD2C / F1)**:
    - During new project onboarding, the Seed-to-Module decomposition runs immediately after Seed drafting and BEFORE the first BRD is authored (`SEED_CONTRACT.md` R1).
 2. **Seed Supersede Timing (SEED2C / F3 Phase 0b)**:
    - When a Seed document is superseded (e.g., architecture direction changes or new environmental realities emerge), the architect runs Phase 0b Module Synchronization following this 5-step methodology before any downstream SDD documents are amended.
 3. **Template Mandate**:
-   - Every module document must adhere to [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
+   - Every module document adheres to the Dual-Plane CQRS standard: machine-authored in Native SDD Graph format per [`framework/templates/MODULE-GRAPH-TEMPLATE.yaml`](../templates/MODULE-GRAPH-TEMPLATE.yaml) and projected to human-readable Markdown matching [`framework/templates/MODULE-TEMPLATE.md`](../templates/MODULE-TEMPLATE.md).
 4. **Hard Review Gate**:
    - The module decomposition must achieve human architect sign-off (`Status: Active`) before development teams or AI agents author the downstream BRD, PRD, and SPEC layers.

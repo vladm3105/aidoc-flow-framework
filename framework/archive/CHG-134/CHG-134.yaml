@@ -1,0 +1,133 @@
+# =============================================================================
+#  CHG-134: Ship Seed + Module skills in framework/skills/
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Documentation)
+#  Scope: Add 2 engine-agnostic skills (sdd-seed, sdd-module) under
+#         framework/skills/, update SKILLS-REGISTRY.yaml + README.md index,
+#         bump framework/VERSION 0.96.16 -> 0.96.17 (patch, repo practice)
+#         with pin propagation. Issue #1036, follow-on to CHG-133 (#1032).
+#         No seed/module doc touches; no product-behavior change.
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-25):
+#  1. Read every referenced file: SEED_CONTRACT.md (§three rules, GOV-021
+#     attribution), SEED_TO_MODULE_DECOMPOSITION.md (Triple-Lens),
+#     MODULE_LAYOUT.md (directory structure), LINT_RULES.md CHG-L014/L015 +
+#     GOV-020/021, skills README + registry, CHG-133/IPLAN-133 precedent.
+#     All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (no product requirements; DIR2C docs/tooling).
+#  7. Single issue #1036; adjacent closed seed-governance issues (#684, #733,
+#     #899, #901) are not the same fix.
+#  8. Test specs: check-skill-shadowing.sh, chg_lint, spec_gate,
+#     conformance + acceptance suites in the PR.
+#  11. No SDD/seed/module document modifications (new skill files only).
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C1, GATE-CODE entry. This CHG touches no seed/module docs,
+#     so CHG-L014/L015 pass through untouched (they govern lifecycle-carrying
+#     sources touching seed/module docs).
+#  13-14. Steps use documentation_sync / iplan_creation phases only, empty
+#     lifecycle, execution order holds; no code_implementation steps.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-25"
+  framework_version: "0.96.16"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-134"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-25T00:00:00Z"
+  date_approved: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:09:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-134)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-134"
+  title: "Ship Seed + Module skills under framework/skills/"
+  status: "Decided"
+  date: "2026-10-25"
+  context: >-
+    Issue #1036: framework/skills/ ships 13 layer/CHG skills (CHG-133) but no
+    Seed or Module skill, while seed/module governance is normative and
+    CHG-L014/L015 lint lifecycle coverage agents hand-rolling modules will
+    trip. DIR2C/F2 carries the change: docs/tooling, unrelated to any prior
+    IPLAN, no product-behavior change. Skills stay engine-agnostic
+    (<skills-root>, no engine names); registry remains the single owner.
+  choice: >-
+    Add framework/skills/sdd-seed (seed authoring per SEED_CONTRACT, frozen
+    per version, total disposition, AI-attribution) and
+    framework/skills/sdd-module (Triple-Lens decomposition per
+    SEED_TO_MODULE_DECOMPOSITION.md + MODULE_LAYOUT.md, lifecycle entries
+    with author + chg_ref per L014/L015). Update SKILLS-REGISTRY.yaml and
+    README.md in the same PR; bump framework/VERSION 0.96.16 -> 0.96.17
+    (patch, repo practice) with OLD_VERSIONS + pin propagation.
+  consequences:
+    positive:
+      - Seed and Module surfaces become dispatchable skills; SEED2C authors
+        stop hand-rolling against linted contracts.
+      - Registry + readme stay the single indexed record.
+    negative:
+      - None; additive skills + index + version metadata only.
+    risks:
+      - Skill-name collision with future skills; mitigated by
+        check-skill-shadowing.sh in the PR.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    No Seed or Module skill ships in framework/skills/ (issue #1036).
+  scope:
+    - framework/skills/sdd-seed/SKILL.md (new).
+    - framework/skills/sdd-module/SKILL.md (new).
+    - framework/skills/SKILLS-REGISTRY.yaml (2 entries).
+    - framework/skills/README.md (2 index rows).
+    - framework/VERSION (0.96.16 -> 0.96.17) + pin propagation.
+    - framework/archive/CHG-134/CHG-134.yaml (new, this vehicle).
+    - framework/archive/CHG-134/IPLAN-134.yaml (new, executing IPLAN).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-134/IPLAN-134.yaml"
+  steps:
+    - step: "Author authorizing CHG-134.yaml and IPLAN-134.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Write sdd-seed + sdd-module + registry/readme; VERSION bump + pin propagation; shadowing + chg_lint + spec_gate + suites green"
+      phase: "documentation_sync"
+    - step: "Open PR with Closes #1036; watch to green; merge; close issue record; worktree cleanup"
+      phase: "verification"

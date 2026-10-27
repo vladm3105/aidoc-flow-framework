@@ -1,14 +1,21 @@
+---
+doc_id: GOV-REVIEW-REMEDIATION-FLOW
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Review, Remediation & Gate Flow
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 The layer flow (BRD → … → IPLAN, with CHG and EVAL) describes how artifacts are **created**. This
 document models the orthogonal **quality loop** every artifact passes through —
@@ -17,9 +24,9 @@ engine may attach that loop. It is an engine-agnostic **light contract**: it
 defines *what* happens and *when*, and what an engine must surface; it does not
 prescribe *how* an engine implements the checks.
 
-## The quality loop
+## The quality loop {#sec-the-quality-loop}
 
-### Two-Stage Review & Fix Architecture
+### Two-Stage Review & Fix Architecture {#sec-two-stage-review-fix-architecture}
 
 Quality assurance in autonomous agent engineering operates across two distinct,
 sequential stages:
@@ -31,7 +38,7 @@ sequential stages:
      modes, and contract misalignments BEFORE any implementation code is written.
    - **Pass Criteria:** 100% resolution of blocking findings (zero `P0`/`P1` or
      `critical`/`medium` issues); deterministic schema and structural conformance
-     verified; readiness score advisory target evaluated.
+     verified; Binary Topological Validation (`BTV PASS`) evaluated.
 
 2. **Stage B: Implementation PR Review (Post-Implementation / Pre-Merge)**
    - **Target:** Implementation code diffs, integration tests, IPLAN manifest
@@ -45,7 +52,7 @@ Each artifact moves through this loop before it is allowed to drive the
 downstream layer:
 
 ```text
-Draft ─▶ Review ─▶ (findings + readiness score)
+Draft ─▶ Review ─▶ (findings + BTV DAG validation)
              │
              ├─ gate floor passed ─▶ Gate pass ─▶ Approved ─▶ downstream
              │
@@ -54,19 +61,20 @@ Draft ─▶ Review ─▶ (findings + readiness score)
                                     └────────────────────────────┘
 ```
 
-- **Review** produces *findings* (concrete, located issues) and an advisory *readiness
-  score* against the layer's calibration target (e.g. target ≥ 90/100).
-- **Remediation** applies fixes for the blocking findings, then the artifact is
-  re-reviewed. The loop repeats until the gate floor passes.
+- **Review** produces *findings* (concrete, located issues) and executes deterministic
+  *Binary Topological Validation (BTV)* against the layer's DAG contract.
+- **Remediation** applies fixes for the blocking findings via the in-situ remediation loop
+  (`RemediateLayerDraft` in `*-SWF-TEMPLATE.yaml`), then the artifact is re-reviewed.
+  The loop repeats until the gate floor passes.
 - **Gate** is the existing readiness/CHG checkpoint — the normative gate floor requires
-  deterministic structural lint passage (`structural_pass: true`) and zero unresolved
-  blocking findings (`no_blocking: true`). The numeric readiness score and executive
-  narrative are advisory calibration enrichment above that floor.
+  deterministic structural lint passage (`structural_pass: true`), Binary Topological
+  Validation (`btv_pass: true`), and zero unresolved blocking findings (`no_blocking: true`).
+  Qualitative readiness scores, if computed, are non-normative advisory calibration enrichment.
 
 This loop is layer-agnostic: it applies identically to every artifact (BRD …
 IPLAN, CHG, EVAL), using that layer's own template, required tags, and threshold.
 
-### Iteration cap
+### Iteration cap {#sec-iteration-cap}
 
 The loop's *"repeats until the gate passes"* clause carries an implicit
 upper bound: a saga that never converges cannot run forever. The framework
@@ -97,7 +105,7 @@ This cap is the documented stopping criterion that complements the
 gate threshold: gate decides *did we converge?*, cap decides *did we
 spend too long trying?*.
 
-### Break-circuit checkpoint placement
+### Break-circuit checkpoint placement {#sec-break-circuit-checkpoint-placement}
 
 Beyond the iteration cap (a *count* bound), each stage also honors a
 *wall-clock* break-circuit checkpoint so a single long stage degrades
@@ -116,7 +124,7 @@ Engines implement the check by comparing elapsed time against the
 set saga `status: "PARTIAL_TIMEOUT"`, preserve any reduced findings, and exit
 cleanly for the caller to re-invoke.
 
-## Executable State Machine (CNCF Serverless Workflow)
+## Executable State Machine (CNCF Serverless Workflow) {#sec-executable-state-machine-cncf-serverless-workflow}
 
 To eliminate procedural drift and provide a deterministic, machine-executable definition
 of this quality loop for autonomous AI coding agents and multi-agent crews (e.g. via LangGraph
@@ -157,7 +165,7 @@ stateDiagram-v2
     EmitPartialTimeoutCheckpoint --> [*]
 ```
 
-### State-to-Primitive Mapping
+### State-to-Primitive Mapping {#sec-state-to-primitive-mapping}
 
 | Workflow State | CNCF State Type | Operational Semantics |
 |---|---|---|
@@ -173,7 +181,7 @@ stateDiagram-v2
 | `EscalateToFounder` | `operation` (end) | Transitions saga to `ESCALATED`, halts autonomous looping, alerts maintainer |
 | `EmitPartialTimeoutCheckpoint` | `operation` (end) | Transitions saga to `PARTIAL_TIMEOUT`, writes durable checkpoint journal |
 
-## Refined & Hardened Architectural Blueprints
+## Refined & Hardened Architectural Blueprints {#sec-refined-hardened-architectural-blueprints}
 
 To guarantee industrial-grade robustness and zero unhandled failure modes across multi-agent review lifecycles, the review and remediation architecture is hardened around four formal operational pillars:
 
@@ -217,7 +225,7 @@ flowchart TD
     AuthorizeCHG --> SubFlow([Handover to CHG Workflow])
 ```
 
-### 1. The Dual-Path Remediation Fork (In-Cycle vs Governed CHG)
+### 1. The Dual-Path Remediation Fork (In-Cycle vs Governed CHG) {#sec-1-the-dual-path-remediation-fork-in-cycle-vs-governed-chg}
 
 A critical failure mode in naive agent workflows is treating drafting defects and baseline defects identically:
 - **In-Cycle Drafting Remediation (`REV-AUTO`)**: When an artifact is undergoing initial drafting (`artifact.status == "Draft"`), defects detected during review are remediated directly within the review cycle by the designated layer author (per `REVIEW_CREWS.yaml`). The saga permits at most 2 remediation passes (3 review cycles total) under circuit breaker `CB-1`.
@@ -226,7 +234,7 @@ A critical failure mode in naive agent workflows is treating drafting defects an
   2. Map all blocking findings into the `validation_findings` of a new remediation IPLAN.
   3. Route the change through the authorized change flow ([`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) — typically `CODE2C`, `DIR2C`, or `SEED2C`).
 
-### 2. Formal Traversal Codes Taxonomy
+### 2. Formal Traversal Codes Taxonomy {#sec-2-formal-traversal-codes-taxonomy}
 
 Every execution path through a review saga yields exactly one deterministic traversal code:
 
@@ -240,7 +248,7 @@ Every execution path through a review saga yields exactly one deterministic trav
 | **`REV-ESCL`** | Exhaustion Halt | Saga reaches iteration cap (3 cycles / 2 remediation passes) without converging. | Flags saga as `ESCALATED`; halts autonomous looping (`CB-1`); alerts human maintainer with unpassed findings. | `EscalateToFounder` |
 | **`REV-ROLL`** | Saga Rollback | Remediation patch breaks structural integrity or introduces syntax corruptions. | Executes `RollbackRemediationPatch`; reverts workspace dirty changes; aborts cycle with escalation. | `RollbackRemediationPatch` |
 
-### 3. Executable Review Sagas Catalog (`framework/governance/workflows/review/`)
+### 3. Executable Review Sagas Catalog (`framework/governance/workflows/review/`) {#sec-3-executable-review-sagas-catalog-frameworkgovernanceworkflowsreview}
 
 The framework ships dedicated CNCF Serverless Workflow v0.8 definitions for every governed layer, binding the author and review crew from [`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml):
 
@@ -258,7 +266,7 @@ The framework ships dedicated CNCF Serverless Workflow v0.8 definitions for ever
 
 *Note on Layer 10 (EVAL):* Layer 10 is not crew-scored with weighted personas; it is verdict-graded via `10_IPVERIFY` playbooks and governed by [`eval-verification-run.sw.yaml`](workflows/eval-verification-run.sw.yaml).
 
-### 4. Review Report to CHG Handover Contract
+### 4. Review Report to CHG Handover Contract {#sec-4-review-report-to-chg-handover-contract}
 
 When `REV-CHG` triggers, the review findings transition seamlessly into change governance via the canonical schema ([`review_report.schema.json`](review_report.schema.json)):
 
@@ -278,28 +286,28 @@ chg_handover:
 
 This ensures that no autonomous agent can apply out-of-band patches to production specifications without complete auditability and gate enforcement.
 
-## Trigger points
+## Trigger points {#sec-trigger-points}
 
 A trigger point is a named moment in a project's lifecycle where an engine may
 run part of the loop. The four canonical points:
 
 | Trigger | Fires when | Loop action |
 |---------|------------|-------------|
-| `on_author` | An artifact is created or edited | Review the artifact → findings + readiness score |
-| `on_gate_fail` | A review scores below the gate threshold | Enter remediation, then re-review |
-| `pre_promotion` | Before generating/authoring the downstream layer | The gate must pass (review is current and ≥ threshold) |
+| `on_author` | An artifact is created or edited | Review the artifact → findings + readiness assessment |
+| `on_gate_fail` | A review identifies blocking findings or fails BTV | Enter remediation, then re-review |
+| `pre_promotion` | Before generating/authoring the downstream layer | The gate must pass (BTV PASS, review current and zero blockers) |
 | `pre_merge` | An artifact enters shared history (integration / pull request) | Run the review gate over the changed artifacts |
 
 `on_author` and `pre_merge` are the two *automatable* points (an engine may fire
 them without a human asking); `on_gate_fail` and `pre_promotion` are loop/flow
 control that map to existing capabilities (remediation and the readiness gate).
 
-## Light conformance contract
+## Light conformance contract {#sec-light-conformance-contract}
 
 For each trigger point an engine **supports**, it MUST surface:
 
 1. **Findings** — the concrete, located issues (not just a pass/fail).
-2. **Readiness score** — the artifact's score against the layer gate threshold.
+2. **Readiness verdict / score** — the artifact's BTV status (PASS/FAIL) and optional advisory score against the layer gate.
 3. **Remediation path** — how to fix the findings (which capability the user or
    agent invokes next).
 
@@ -322,7 +330,7 @@ engines bind them).
 > use the deterministic check as a fast gate and defer the semantic score to its
 > review capability — both are valid ways to satisfy the contract.
 
-## Independent review at `pre_merge` (the automated gate)
+## Independent review at `pre_merge` (the automated gate) {#sec-independent-review-at-pre_merge-the-automated-gate}
 
 An engine MAY automate the `pre_merge` trigger as an **independent review gate**.
 When it does, these engine-agnostic rules apply (the *how* — runner, model,
@@ -415,7 +423,7 @@ entry, never as an absent failure.
 > never replaces the human sign-off a spec change demands. See
 > `DEFINITION_OF_DONE.md`.
 
-## Relationship to existing governance
+## Relationship to existing governance {#sec-relationship-to-existing-governance}
 
 - **Readiness gate (≥ threshold):** the `Gate` stage. Unchanged.
 - **Change management (CHG gates):** govern *changes* to existing artifacts; the
@@ -424,7 +432,7 @@ entry, never as an absent failure.
   the loop's stages correspond to these statuses — `Review` ↔ In Review,
   `Gate pass` ↔ Approved.
 
-## Mechanical author-side pre-push gate (aidoc-flow workspace layer)
+## Mechanical author-side pre-push gate (aidoc-flow workspace layer) {#sec-mechanical-author-side-pre-push-gate-aidoc-flow-workspace-layer}
 
 > **Scope note (GD-06):** this section is a **workspace convention**, not part
 > of the engine-agnostic contract. It is a documented exception — retained here
@@ -459,10 +467,10 @@ The two layers are complementary:
   looking at content quality.
 
 A change may pass the mechanical gate (phrase present) but still fail
-the artifact-review gate (findings unremediated, score below threshold),
+the artifact-review gate (blocking findings unremediated, BTV FAIL),
 or vice versa. Both must pass for a merge.
 
-## Cross-references
+## Cross-references {#sec-cross-references}
 
 - `DOC_GOVERNANCE_CORE.md` — governance principles and the readiness-gate baseline.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.

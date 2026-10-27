@@ -4,6 +4,29 @@
 #  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
 #  Downstream: IPLAN (Layer 8), EVAL (Layer 10)
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 07 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (TDD-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to arrange, execute, and verify test suites.
+#       Orchestrates test fixture provisioning, test matrix dispatch, flaky retry backoffs,
+#       quality gate evaluation, and fixture teardown compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (TDD-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (test cases, assertions, fixtures, BDD pairings, SPEC contracts).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (TDD-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (TDD-SWF-TEMPLATE.yaml + TDD-GRAPH-TEMPLATE.yaml) when:
+#    - Orchestrating stateful test workflows, fixture lifecycles, or integration test suites
+#    - Mapping Arrange-Act-Assert phases to state machine primitives (inject/operation/switch)
+#    - Incorporating automated flaky failure backoff retries and saga teardown compensation
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (TDD-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting isolated, atomic unit tests, static test matrices, or pure function assertions
+#    - State machine orchestration, automated retry backoff, and saga teardown are not needed
 # =============================================================================
 
 doc_id: TDD-NN
@@ -17,6 +40,10 @@ metadata:
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
   document_type: "tdd-document"
   layer: 7
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "qa_lead"
+  author_playbook: "framework/playbooks/07_TDD/qa_lead.md"
   total_sections: 7
   last_updated: "YYYY-MM-DD"
   deliverable_type: code
@@ -54,7 +81,7 @@ document_control:
   component: "[Component Name]"
   subtype: workflow  # Declares the CNCF Serverless Workflow subtype
   source_spec: "@spec: SPEC-NN"
-  iplan_ready_score: "[Score]/100"
+  iplan_ready_status: "PASS"
 
 # =============================================================================
 # Section 2: Test Strategy
@@ -64,7 +91,13 @@ test_strategy:
   frameworks:
     unit: "pytest >= 8.0"
     integration: "testcontainers >= 4.0"
-  isolation_strategy: "Hermetic containerized fixtures with automated teardown compensation"
+  isolation_strategy: "Hermetic containerized fixtures (e.g. testcontainers with PostgreSQL 18 and NATS JetStream) with automated teardown compensation"
+  fixture_hermeticity:
+    _required: false
+    _guidance: |
+      Stateful fixtures allocating external resources (testcontainers, ephemeral databases,
+      mock servers, temporary directories) must declare automated teardown compensation
+      (compensatedBy: TeardownFixturesCompensation) to prevent dirty state from leaking across test runs.
   flaky_policy:
     max_retries: 3
     backoff: "exponential-jitter"
@@ -106,6 +139,31 @@ workflow:
 
   start: ArrangeTestFixtures
 
+  events:
+    - name: TddSuitesClosedEvent
+      type: org.aidoc.sdd.layer07.tdd.closed
+      source: /layers/07_tdd
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
+      type: custom
+
   states:
     # --- Phase: Arrange (Compensable) ---
     - name: ArrangeTestFixtures
@@ -118,7 +176,11 @@ workflow:
             refName: fixtureProvisioner
             arguments:
               component: "[Component Name]"
+              containerFixtures:
+                - "postgres:18-alpine"
+                - "nats:latest -js"
               seedFile: "tests/fixtures/seed.sql"
+              platformStackTier: "APPROVED"
       transition: ActExecuteTests
 
     # --- Phase: Act ---
@@ -197,7 +259,46 @@ workflow:
             refName: fixtureCleaner
             arguments:
               purgeDatabases: false
-      transition: TestRunSucceeded
+      transition: InvokeReviewSagaGate
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "tdd-review-remediation-flow"
+              artifactId: "TDD-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+          transition: TestRunSucceeded
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresQuarantine
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: QuarantineDefect
+      defaultCondition:
+        transition: QuarantineDefect
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "test_engineer"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
 
     # --- Terminal States ---
     - name: TestRunSucceeded
@@ -205,6 +306,63 @@ workflow:
       description: "Terminal success state: test suite passed all assertions"
       data:
         verdict: "PASSED"
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-06"
+              layer: "07_TDD"
+              documentId: "TDD-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "TDD-NN"
+              layer: "07_TDD"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "TddNode"
+              nodeId: "TDD-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "TddSuitesClosedEvent"
+              documentId: "TDD-NN"
+              test_suites: "${ .test_suites }"
+              coverage_target: "${ .coverage_target }"
+      produceEvents:
+        - eventRef: TddSuitesClosedEvent
       end: true
 
     - name: TestRunFailed

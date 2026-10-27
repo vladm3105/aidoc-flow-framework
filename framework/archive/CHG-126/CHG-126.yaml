@@ -1,0 +1,118 @@
+# =============================================================================
+#  CHG-126: AIDOC Workstation Topology Consolidation & doc_lint Alias Parity
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Workstation Standard)
+#  Scope: Modernize framework/governance/aidoc/AIDOC.md to reflect unified docs/
+#         documentation hierarchy (docs/seed, docs/modules, docs/sdd/09_CHG),
+#         atomic seed archiving under docs/sdd/09_CHG/archive/{CHG-ID}/seed/,
+#         and doc_lint canonical linter naming with sdd_doc_lint alias.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-23"
+  framework_version: "0.96.12"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-126"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-23T08:50:00Z"
+  date_approved: "2026-10-23T08:50:00Z"
+  date_implemented: "2026-10-23T08:55:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-23T08:50:00Z"
+    verdict: Approved
+    evidence: >-
+      Authorized update to framework/governance/aidoc/AIDOC.md consolidating documentation
+      topology under docs/, formalizing seed pre-change archiving under
+      docs/sdd/09_CHG/archive/{CHG-ID}/seed/, and aligning structural linter naming
+      with doc_lint and backward-compatible sdd_doc_lint alias.
+  supersedes:
+    - "framework/archive/CHG-126/AIDOC.md"
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-126)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-126"
+  title: "Consolidate AIDOC Workstation Documentation Topology and Formalize doc_lint Parity"
+  status: "Decided"
+  date: "2026-10-23"
+  context: >-
+    In AIDOC.md, the high-level tier overview historically referenced a phantom root-level
+    chg/ folder, omitted the explicit tier placement of architectural modules (docs/modules/)
+    and seeds (docs/seed/), and did not yet reflect the linter modernization from CHG-125
+    which introduced doc_lint with sdd_doc_lint backward compatibility.
+  choice: >-
+    1. Update the 4-tier diagram and table in AIDOC.md to represent the unified docs/
+       hierarchy: docs/seed/ (Inputs), docs/modules/ (Domain Architecture), and docs/sdd/
+       (Process Chain with 09_CHG governance and pre-change archives).
+    2. Clarify atomic seed archiving under docs/sdd/09_CHG/archive/{CHG-ID}/seed/.
+    3. Update the Quad-Pillar .aidoc/ tree to reflect doc_lint/ as the canonical structural
+       linter with sdd_doc_lint alias support.
+    4. Bump framework/VERSION from 0.96.11 to 0.96.12 per GATE-SPEC-E005.
+  consequences:
+    positive:
+      - Removes confusion around non-existent root chg/ directory.
+      - Fully aligns AIDOC.md with SEED_CONTRACT.md, MODULE_LAYOUT.md, and CHG-125.
+      - Clarifies how seeds, modules, and SDD layers version atomically inside 09_CHG archives.
+    negative:
+      - None.
+    risks:
+      - None; purely normative specification clarification without behavioral regressions.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    AIDOC.md contained outdated tier descriptions citing root-level chg/, lacked clarity
+    on seed and module paths, and did not reflect doc_lint naming with sdd_doc_lint compatibility.
+  scope:
+    - framework/governance/aidoc/AIDOC.md topology and linter nomenclature.
+    - framework/VERSION bump to 0.96.12 and sync-version-refs propagation.
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-126/IPLAN-126.yaml"
+  steps:
+    - step: "Archive original AIDOC.md into framework/archive/CHG-126/AIDOC.md"
+      phase: "archive_originals"
+    - step: "Author authorizing CHG-126.yaml and IPLAN-126.yaml"
+      phase: "iplan_creation"
+    - step: "Update framework/governance/aidoc/AIDOC.md topology and doc_lint naming"
+      phase: "documentation_sync"
+    - step: "Bump framework/VERSION and run hooks/sync-version-refs.sh"
+      phase: "version_propagation"
+    - step: "Validate chg_lint, spec_gate, and test suites"
+      phase: "verification"

@@ -63,6 +63,9 @@ iplan_context:
   chgs_since_last_eval: []               # e.g. ["CHG-08"] if re-eval after CHG
   relevant_bdd: ["BDD-NN"]               # BDD scenarios in scope
   relevant_tdd: ["TDD-NN"]               # TDD documents in scope
+  iplan_receipt_ref: "RCPT-08-0001"      # Execution evidence receipt ID (§9 receipt standard)
+  # Digest sealing executed step attestations (§9 receipt standard)
+  receipt_seal_hash: "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
 
 # =============================================================================
 # Section 3: Results
@@ -119,14 +122,14 @@ test_results:
     test case ID from the EVAL document (EVAL.NN.SS.xxxx format).
 
   _example:
-  - eval_case_id: "EVAL.NN.SS.xxxx"      # test case ID from EVAL document
-    source_id: "TDD.NN.SS.xxxx"           # upstream source element ID
-    source_type: tdd_test_case             # tdd_test_case | bdd_scenario
-    name: "[Test case name]"
-    status: passed                         # passed | failed | skipped
-    duration_ms: 0                         # execution time in milliseconds
-    test_file: "[path/to/test_file.go]"    # implementation file
-    error_message: null                    # null on pass; assertion failure on fail
+    - eval_case_id: "EVAL.NN.SS.xxxx"      # test case ID from EVAL document
+      source_id: "TDD.NN.SS.xxxx"           # upstream source element ID
+      source_type: tdd_test_case             # tdd_test_case | bdd_scenario
+      name: "[Test case name]"
+      status: passed                         # passed | failed | skipped
+      duration_ms: 0                         # execution time in milliseconds
+      test_file: "[path/to/test_file.go]"    # implementation file
+      error_message: null                    # null on pass; assertion failure on fail
 
 # =============================================================================
 # Section 5: Findings — one per failure (derived from test_results where status=failed)
@@ -141,16 +144,16 @@ findings:
     A finding is only RESOLVED when a subsequent cycle passes that test case.
 
   _example:
-  - id: "F-001"
-    eval_case_id: "EVAL.NN.SS.xxxx"       # test case that failed
-    source_id: "BDD.NN.SS.xxxx"           # upstream source (BDD scenario ID)
-    name: "[Short description of the failure]"
-    severity: P0                            # P0 | P1 | P2
-    status: OPEN
-    error_message: "[Actual error or assertion failure]"
-    test_file: "[path/to/test_file.go]"
-    regression: false                       # true if passed last cycle, fails this one
-    cycles_open: 1                          # consecutive cycles this finding is open
+    - id: "F-001"
+      eval_case_id: "EVAL.NN.SS.xxxx"       # test case that failed
+      source_id: "BDD.NN.SS.xxxx"           # upstream source (BDD scenario ID)
+      name: "[Short description of the failure]"
+      severity: P0                            # P0 | P1 | P2
+      status: OPEN
+      error_message: "[Actual error or assertion failure]"
+      test_file: "[path/to/test_file.go]"
+      regression: false                       # true if passed last cycle, fails this one
+      cycles_open: 1                          # consecutive cycles this finding is open
 
 # =============================================================================
 # Section 6: Resolved This Cycle
@@ -183,21 +186,21 @@ quality_thresholds:
     Compare actual results against targets from the EVAL document.
     Each metric gets a verdict: PASS or FAIL. Must mirror the EVAL strategy's thresholds.
   _example:
-  - metric: "p0_critical_pass_rate"
-    target: 100
-    actual: 0
-    gate: error
-    verdict: FAIL
-  - metric: "p1_high_pass_rate"
-    target: 100
-    actual: 0
-    gate: error
-    verdict: FAIL
-  - metric: "coverage_percent"
-    target: 100
-    actual: 0
-    gate: error
-    verdict: FAIL
+    - metric: "p0_critical_pass_rate"
+      target: 100
+      actual: 0
+      gate: error
+      verdict: FAIL
+    - metric: "p1_high_pass_rate"
+      target: 100
+      actual: 0
+      gate: error
+      verdict: FAIL
+    - metric: "coverage_percent"
+      target: 100
+      actual: 0
+      gate: error
+      verdict: FAIL
 
 # =============================================================================
 # Section 9: Verdict

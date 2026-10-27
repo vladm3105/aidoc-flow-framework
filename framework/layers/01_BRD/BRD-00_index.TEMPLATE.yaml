@@ -1,0 +1,96 @@
+# BRD-00_index.TEMPLATE.yaml — Business Requirements Document Index (template)
+# SDD Layer 1 — Master index and roadmap for all Business Requirements Documents
+#
+# Index template. Copy this file to BRD-00_index.yaml in a project.
+# Dynamic registry — updated every time a BRD is created, status changed,
+# graduated from backlog/sketch, or completed.
+#
+# Format SSOT: Machine-readable YAML is the sole source of truth;
+# human views are generated on-demand by AI agents.
+#
+# For rules governing this directory (naming, allocation rules, module taxonomy),
+# see 01_BRD/README.md and 01_BRD/BRD_WORKFLOW_STANDARD.md.
+
+# =============================================================================
+# Quadrant 1: Metadata & AI-First Contract
+# =============================================================================
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation
+  document_type: "brd-registry"
+  artifact_type: "BRD-INDEX"
+  layer: 1
+  status: "Active"
+  format_ssot: "Machine-readable YAML is the sole source of truth; human views are generated on-demand by AI agents."
+  total_brds: 0
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 2: Document Registry (Layer 01 BRDs)
+# =============================================================================
+# Master inventory of all authored Business Requirements Documents for the project.
+brds: []
+
+  # Template entry:
+  # - id: "BRD-01"
+  #   title: "[Business Module Name]"
+  #   module: "[Module Category ID, e.g. M1]"
+  #   type: "Core"              # Core | Domain | Extension | Platform
+  #   status: "Draft"           # Draft | In Review | Approved | Deprecated
+  #   prd_ready: false          # Set to true when PRD-Ready gate criteria pass
+  #   file_path: "BRD-01_[slug].yaml"
+  #   owner: "[Lead / Business Analyst]"
+  #   last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Quadrant 3: Backlog (Planned BRDs & Roadmap Cycles)
+# =============================================================================
+# Project roadmap home. Enumerate MVP cycles and candidate modules here.
+# Sketch/Planned entries are trace-inert until graduated to full BRDs.
+backlog: []
+
+  # Template entry:
+  # - id: "BRD-02"              # Reserved sequential ID
+  #   title: "[Planned Module Title]"
+  #   cycle: "MVP-1"            # Target release iteration
+  #   priority: "High"          # High | Medium | Low
+  #   target_prod: "YYYY-Q1"
+  #   depends_on: ["BRD-01"]    # Sequencing dependencies across cycles
+  #   status: "Planned"         # Planned | Sketch
+  #   notes: "[Scope hypothesis or business objective]"
+
+# =============================================================================
+# Quadrant 4: Layer Intelligence & Module Taxonomy
+# =============================================================================
+# Taxonomy grouping BRDs into foundational modules and business domain modules.
+module_categories: []
+
+  # Template entry:
+  # - id: "M1"
+  #   name: "Core Foundation"
+  #   scope: "Authentication, tenant management, base primitives"
+  #   lead: "[Architect / Tech Lead]"
+  #   status: "Active"          # Pending | Active | Completed
+
+traceability_summary:
+  layer: 1
+  downstream_layer: 2
+  downstream_artifact: "PRD"
+  trace_contract: "BRD -> PRD (1-hop transitive chain to Code)"
+
+# =============================================================================
+# Quadrant 5: Agent Update Triggers & Maintenance Policies
+# =============================================================================
+update_triggers:
+  _guidance: "When and how AI agents maintain this registry."
+
+  on_brd_created:
+    - "Add entry to brds with status: Draft and prd_ready: false"
+    - "Increment metadata.total_brds"
+    - "Remove or mark graduated from backlog if previously listed"
+  on_status_change:
+    - "Update status and last_updated timestamp in brds"
+    - "When status moves to Approved, verify PRD-Ready (Binary Topological Validation PASS per CHG-97)"
+  on_brd_graduated:
+    - "Transition backlog item to brds registry"
+    - "Assign sequential BRD-NN identifier and file path"

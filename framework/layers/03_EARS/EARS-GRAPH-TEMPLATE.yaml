@@ -1,0 +1,128 @@
+# =============================================================================
+#  EARS-GRAPH-TEMPLATE.yaml — Formal Requirements Graph Slice (Layer 03)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 03_EARS (Easy Approach to Requirements Syntax)
+#  Parity: Full content and functional parity with EARS-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "EARS-NN_[feature_slug]"
+
+metadata:
+  author: "[Requirements Engineer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Exhaustive formal behavioral requirements mapped across the 5 canonical EARS patterns]"
+  layer: "03_EARS"
+  bdd_ready_target: "PASS"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Pattern 1: Ubiquitous Requirement (Always Active)
+  # ---------------------------------------------------------------------------
+  - id: "EARS.03.01.xxxx"
+    type: "formal_requirement"
+    title: "[Ubiquitous Requirement Title: e.g. Audit Logging Invariant]"
+    statement: "The OrderService shall record an immutable SHA-256 audit entry for all order mutations."
+    pattern: "ubiquitous"
+    properties:
+      rationale: "Regulatory mandate for enterprise auditability"
+      subsystem: "AuditLedger"
+
+  # ---------------------------------------------------------------------------
+  # Pattern 2: Event-Driven Requirement (Triggered by External Event)
+  # ---------------------------------------------------------------------------
+  - id: "EARS.03.02.xxxx"
+    type: "formal_requirement"
+    title: "[Event-Driven Requirement Title: e.g. Order Placed Ingestion]"
+    statement: >-
+      When an OrderSubmitted event is received, the OrderGateway shall validate
+      customer inventory reservation within 20ms.
+    pattern: "event_driven"
+    properties:
+      trigger_event: "OrderSubmitted"
+      precondition: "Customer session is authenticated and active"
+      expected_response: "Validate inventory and emit OrderValidated event"
+
+  # ---------------------------------------------------------------------------
+  # Pattern 3: State-Driven Requirement (Active While in Specified State)
+  # ---------------------------------------------------------------------------
+  - id: "EARS.03.03.xxxx"
+    type: "formal_requirement"
+    title: "[State-Driven Requirement Title: e.g. Settlement Processing Window]"
+    statement: >-
+      While the system is in MaintenanceMode, the OrderGateway shall buffer
+      incoming requests with HTTP 503 Retry-After headers.
+    pattern: "state_driven"
+    properties:
+      system_state: "MaintenanceMode"
+      handling_action: "Buffer requests to Redis queue and return HTTP 503"
+
+  # ---------------------------------------------------------------------------
+  # Pattern 4: Optional Feature Requirement (Conditional Configuration)
+  # ---------------------------------------------------------------------------
+  - id: "EARS.03.04.xxxx"
+    type: "formal_requirement"
+    title: "[Optional Requirement Title: e.g. Fraud Screening Scoring]"
+    statement: >-
+      Where the fraud_screening feature flag is enabled, the OrderGateway shall query
+      the external risk scoring engine before dispatch.
+    pattern: "optional"
+    properties:
+      feature_flag: "feature.fraud_screening.enabled"
+      timeout_ms: 100
+
+  # ---------------------------------------------------------------------------
+  # Pattern 5: Unwanted Event / Error Handling Requirement
+  # ---------------------------------------------------------------------------
+  - id: "EARS.03.05.xxxx"
+    type: "formal_requirement"
+    title: "[Unwanted Event Requirement Title: e.g. Payment Gateway Failure]"
+    statement: >-
+      If the payment gateway connection times out, then the OrderService shall
+      trigger automated compensation and notify the merchant.
+    pattern: "unwanted"
+    properties:
+      error_condition: "GatewayTimeoutException"
+      recovery_action: "Execute saga rollback and publish OrderPaymentFailed event"
+
+edges:
+  # Formal Requirements realize Upstream Product Capability (Layer 02 PRD)
+  - from: "EARS.03.01.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Enforces continuous auditability invariant on order ingestion"
+    description: "Binds the ubiquitous requirement to order ingestion container, ensuring cryptographic ledger commits on every transaction."
+    rationale: "Fulfills SOC2 and financial regulatory compliance mandates."
+
+  - from: "EARS.03.02.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Realizes the primary event-driven ingestion path"
+    description: "Specifies the precise event trigger and sub-20ms inventory reservation constraint for incoming orders."
+    rationale: "Guarantees low-latency checkout execution required by the PRD SLA."
+
+  - from: "EARS.03.03.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Defines system behavior during maintenance state"
+    description: "Enforces non-destructive buffering and HTTP 503 Retry-After headers during container maintenance windows."
+    rationale: "Prevents customer checkout loss during rolling cluster upgrades."
+
+  - from: "EARS.03.04.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Conditionally activates risk assessment feature"
+    description: "Hooks the optional fraud screening scoring engine into the order ingestion path when configured via feature flag."
+    rationale: "Allows zero-downtime canary enablement of risk evaluation."
+
+  - from: "EARS.03.05.xxxx"
+    to: "PRD.02.04.xxxx"
+    relation: "realizes"
+    notes: "Specifies deterministic error recovery and saga initiation"
+    description: "Coordinates automated saga rollback compensation and merchant notification when payment partner times out."
+    rationale: "Eliminates orphaned financial transactions and manual reconciliation."

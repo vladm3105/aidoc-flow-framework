@@ -80,12 +80,14 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 Overlays: markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
 plan-of-record for a single change.
 
-### Dual-Template Architecture (Standard vs. Workflow-Driven)
+### Three-Tier Architecture & Dual-Template Selection Matrix
 
-Every layer provides two authoring templates:
+Every layer provides a coherent set of complementary authoring representations:
 
-- **Standard Templates** (`{TYPE}-TEMPLATE.yaml`): Declarative, structured specifications for standard features.
-- **Workflow Templates** (`{TYPE}-SWF-TEMPLATE.yaml`): Workflow-driven specifications employing the **Hybrid Envelope Architecture** (`subtype: workflow`) to house embedded [CNCF Serverless Workflow](https://serverlessworkflow.io/) v0.8 DSL state machines. These govern complex, long-running, multi-step, or compensatory lifecycle processes (e.g., strategic ROI gating, acceptance test runners, ADR decision matrices, saga rollbacks) while maintaining 100% structural schema compliance with `sdd_doc_lint`.
+- **Tier 1: Executable Workflows (`{TYPE}-SWF-TEMPLATE.yaml`)**: Workflow-driven specifications employing the **Hybrid Envelope Architecture** (`subtype: workflow`) to house embedded [CNCF Serverless Workflow](https://serverlessworkflow.io/) v0.8 DSL state machines. These govern complex, long-running, multi-step, or compensatory lifecycle processes (e.g., strategic ROI gating, acceptance test runners, ADR decision matrices, saga rollbacks) while maintaining 100% structural schema compliance with `sdd_doc_lint`.
+- **Tier 2: Canonical Data Plane Graph (`{TYPE}-GRAPH-TEMPLATE.yaml`)**: Strongly-typed property graph representations conforming to **SDD-GRAPH v2.0**, optimized for Kùzu/openCypher topological querying, selective agent context slicing (`sdd_doc_lint.slice`), and deterministic Binary Topological Validation (`BTV PASS`).
+- **Tier 3: Presentation Projection (`*.md`)**: Compiled human-readable Markdown views generated for documentation rendering and pull-request inspection.
+- **Standard Declarative Templates (`{TYPE}-TEMPLATE.yaml`)**: Concise, declarative specifications for atomic requirements and single-component artifacts.
 
 Document numbers are **per-layer counters with no cross-layer alignment**; an upstream
 item may fan out to many downstream documents. Lineage is carried by `@`-tags and
@@ -166,7 +168,7 @@ framework's contract completes the model rather than exposing a weakness.
 3. **Traverse the chain** BRD → … → IPLAN, assigning content-hash IDs and cumulative tags;
    keep references resolving and coverage complete.
 4. **Gate it** (CHG): deterministic floor (IDs, references, required tags, coverage) +
-   no unresolved P0/P1; the numeric readiness score is advisory.
+   no unresolved P0/P1; the deterministic Binary Topological Validation (`BTV PASS`) floor is the merge gate.
 5. **Validate the oracle** at EARS/BDD with a PO before building.
 6. **Build test-first** from the IPLANs; sessions hand off via the IPLAN session-handoff.
 7. **Observe reality**, then **adapt** via CHG — the chain is a control loop, not a
@@ -300,11 +302,12 @@ the spec, templates, and playbooks directly — no platform-specific wrapper nee
 
 | Tool | Purpose |
 |------|---------|
-| `sdd_doc_lint/` | Structural linter — 320+ deterministic checks against layer standard and workflow templates |
+| `sdd_doc_lint/` | Structural linter — 320+ deterministic checks against layer standard, graph, and workflow templates |
+| `sdd_doc_lint/slice.py` | DAG context slicing engine (`--slice`) — extracts topological subgraph context digests for agents |
 | `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 | `hooks/ch-gate-check.sh` | PreCommit advisory hook (also pre-commit) — warns on code without an active CHG |
 | `hooks/sync-version-refs.sh` | Version synchronization hook — propagates framework version across playbooks and metadata |
-| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (22 cataloged workflows: 13 core lifecycle + 9 review-remediation) |
+| `framework/governance/workflows/` | Declarative CNCF Serverless Workflow state machines (30 cataloged workflows: 15 core lifecycle + 5 federated + 10 review-remediation) |
 
 The former platforms (Hermes MCP server, Claude Code plugin) were archived on
 2026-09-07 and their code has since been removed — no live platform code
@@ -313,14 +316,14 @@ remains; the framework is the whole product.
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0` in the 0.53.x era);
-the project is in **post-cutover development** tracking framework spec **`0.91.4`**.
-The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61) and aligned with the ecosystem's authoritative platform technology stack (Decision GD-72, Change Request CHG-83), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
+the project is in **post-cutover development** tracking framework spec **`0.96.23`**.
+The framework has fully adopted the **CNCF Serverless Workflow v0.8 specification** across all 10 SDD layers (PRs #904 through #926, Decisions GD-51 through GD-61), aligned with the ecosystem's authoritative platform technology stack (Decisions GD-72 and GD-73, Change Requests CHG-83 and CHG-86), modernized the ADR index and technology stack registry to machine-readable YAML (Decision GD-74, Change Request CHG-87), established the **Universal AI-First 5-Quadrant YAML Index Architecture** across all 10 SDD layers (Decision GD-75, Change Request CHG-88), permanently retired legacy MVP template tombstones with conformance anti-resurrection guards (Decision GD-76, Change Request CHG-89), and codified in-file bidirectional Dual-Template Selection Guides across Layers 01–08 and Governance (Decision GD-77, Change Request CHG-90), establishing vendor-neutral declarative state machines, the Dual-Template Architecture, automated SCA/CVE security tracking, deterministic agent ingestion, and copy-pasteable operational blueprints. Platforms (Hermes, Claude Code plugin) have been archived — the framework is self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-10-10); it is not
+> *This overview is a point-in-time snapshot (as of 2026-10-11); it is not
 > wired into the version-sync hook. For live version state see `framework/VERSION`.*
 
 Development is tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
-the live document-of-record for spec changes is [`framework/CHANGELOG.md`](framework/CHANGELOG.md) (the root `CHANGELOG.md` is a frozen tombstone).
+change records are preserved in `framework/archive/CHG-*/` and GitHub Releases (both root and framework `CHANGELOG.md` are frozen historical tombstones).
 
 ## Contributing
 
@@ -335,7 +338,7 @@ for the vulnerability-reporting policy.
 
 ## Documentation
 
-- [`framework/CHANGELOG.md`](framework/CHANGELOG.md) — live document-of-record for spec changes (GATE-SPEC-E008); root `CHANGELOG.md` is a frozen tombstone.
+- [`framework/CHANGELOG.md`](framework/CHANGELOG.md) — frozen tombstone (retired in CHG-94 alongside root `CHANGELOG.md`); live change records are in `framework/archive/CHG-*/` + GitHub releases.
 - [`framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`](framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) — end-to-end SDD practitioner guide covering dual-template architecture, structural linting, and saga rollback compensation.
 - [`framework/AI_ASSISTANT_RULES.md`](framework/AI_ASSISTANT_RULES.md) — instructions for AI coding assistants on selecting templates, respecting gates, and preventing drift.
 - [`framework/README.md`](framework/README.md) — the engine-agnostic SDD specification and layer architecture.
@@ -352,7 +355,8 @@ for the vulnerability-reporting policy.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - [`plans/ACCEPTANCE-HISTORY.md`](plans/ACCEPTANCE-HISTORY.md) — retired acceptance-test methodology (moved from `tests/ACCEPTANCE.md`, CHG-08 #670).
 - [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
-- [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
+- [`docs/README.md`](docs/README.md) — docs reading map (start here).
+- [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — project kickoff guide; the 2026-05 brief moved to [`docs/history/STARTUP-BRIEF-2026-05-20.md`](docs/history/STARTUP-BRIEF-2026-05-20.md) (CHG-128).
 
 ## Pre-migration history
 

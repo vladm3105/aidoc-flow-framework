@@ -1,0 +1,137 @@
+# =============================================================================
+#  IPLAN-129: Governance Doc Conversion Plan — Phase 0 Evidence & Inventory
+# =============================================================================
+#  Implementation Plan authorized by CHG-129
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-129
+title: "Implementation Plan: Phase 0 governance inventory (read-only survey)"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.13"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-26"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-129"
+  date_created: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-129/CHG-129.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-129/IPLAN-129.yaml"
+    action: "create"
+    status: "DONE"
+
+# =============================================================================
+# Phase 0 findings (recorded evidence — blocks nothing, informs Phase 1)
+# =============================================================================
+
+phase0_findings:
+  survey_date: "2026-10-26"
+  scope: "framework/governance/**/*.md — 63 files, 1139136 bytes total"
+  bucket_distribution:
+    normative_prose_discursive: 29
+    machine_consumed_candidate: 7
+    tombstone: 1
+    sub_project_docs_aidoc: 16
+    workflow_adjacent_forms: 10
+  exemption_rationale_search: >-
+    No rationale found. The Principle 2 scope note
+    (framework/governance/DOC_GOVERNANCE_CORE.md:16) cites GD-17 only for
+    per-layer extensions and the mandate's effective condition; GD-17
+    (framework/governance/DECISIONS.md:2209) decides the single source for
+    layer instance format and gives no rationale for the governance
+    exemption. Grep over the decisions register for exemption language
+    surfaced only unrelated exemptions (code/IPLAN paths, TAG01, §3.13
+    bootstrap). Recorded as an unexplained scope boundary per the plan:
+    extending YAML-first to governance requires GATE-SPEC human sign-off
+    on that basis.
+  recorded_failures_search: >-
+    No recorded agent failure was found in CHG archives or issues that is
+    attributed to governance Markdown format (as opposed to rule
+    complexity). Historical causation is not a gate for any phase; the
+    Phase 1 frozen benchmark is the deciding evidence.
+  machine_consumed_candidates:
+    - "framework/governance/CHG_REQUEST_FLOWS.md (bidirectional; §1 router is the Phase 1 test block)"
+    - "framework/governance/LINT_RULES.md (bidirectional; catalog guard both ways)"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md (bidirectional; §3.1.3 router kernel)"
+    - "framework/governance/ID_NAMING_STANDARDS.md (doc-leads; 15 referencing tests/lint/hooks files)"
+    - "framework/governance/TAG_SYNTAX.md (doc-leads)"
+    - "framework/governance/THRESHOLD_NAMING_RULES.md (doc-leads)"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md (doc-leads)"
+
+inventory_table_markdown: |
+  | File | Bytes | Bucket | Authority | Machine consumers (tests/lint/hooks) | Inbound refs (ex-archive) |
+  | --- | --- | --- | --- | --- | --- |
+  | `framework/governance/ADAPTATION.md` | 20959 | normative prose / discursive | doc-leads | 6 | 48 |
+  | `framework/governance/AUTHORING_STYLE.md` | 5717 | normative prose / discursive | doc-leads | 2 | 19 |
+  | `framework/governance/CHG_REQUEST_FLOWS.md` | 26813 | machine-consumed candidate (pending Phase 1 proof) | bidirectional | 3 | 40 |
+  | `framework/governance/CI_AUTONOMOUS_PR_STANDARD.md` | 11597 | normative prose / discursive | doc-leads | 4 | 16 |
+  | `framework/governance/DECISIONS.md` | 261548 | tombstone (never touch) | n/a | 18 | 100 |
+  | `framework/governance/DECISION_WORKFLOW.md` | 18265 | normative prose / discursive | doc-leads | 3 | 15 |
+  | `framework/governance/DEFINITION_OF_DONE.md` | 4304 | normative prose / discursive | doc-leads | 1 | 11 |
+  | `framework/governance/DIAGRAM_STANDARDS.md` | 16152 | normative prose / discursive | doc-leads | 5 | 22 |
+  | `framework/governance/DOC_GOVERNANCE_CORE.md` | 46774 | machine-consumed candidate (pending Phase 1 proof) | bidirectional | 7 | 51 |
+  | `framework/governance/DURABLE_EXECUTION_STANDARD.md` | 26463 | normative prose / discursive | doc-leads | 1 | 16 |
+  | `framework/governance/ENGINE_TELEMETRY.md` | 5149 | normative prose / discursive | doc-leads | 1 | 7 |
+  | `framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md` | 35604 | machine-consumed candidate (pending Phase 1 proof) | doc-leads | 3 | 37 |
+  | `framework/governance/ID_NAMING_STANDARDS.md` | 25685 | machine-consumed candidate (pending Phase 1 proof) | doc-leads | 12 | 59 |
+  | `framework/governance/IPLAN_WORKFLOW_STANDARD.md` | 33474 | normative prose / discursive | doc-leads | 2 | 19 |
+  | `framework/governance/LINT_RULES.md` | 37910 | machine-consumed candidate (pending Phase 1 proof) | bidirectional | 10 | 44 |
+  | `framework/governance/MODULE_LAYOUT.md` | 9429 | normative prose / discursive | doc-leads | 2 | 11 |
+  | `framework/governance/MULTI_PROJECT_FEDERATED_STANDARD.md` | 32984 | normative prose / discursive | doc-leads | 3 | 22 |
+  | `framework/governance/NOTICES.md` | 10907 | normative prose / discursive | doc-leads | 1 | 10 |
+  | `framework/governance/OBSERVABILITY_ADAPTER_CONTRACT.md` | 6951 | normative prose / discursive | doc-leads | 2 | 5 |
+  | `framework/governance/README.md` | 17279 | normative prose / discursive | doc-leads | 34 | 137 |
+  | `framework/governance/RECOMMENDED_PLATFORM_STACK.md` | 32928 | normative prose / discursive | doc-leads | 1 | 19 |
+  | `framework/governance/REVIEW_REMEDIATION_FLOW.md` | 29660 | normative prose / discursive | doc-leads | 4 | 32 |
+  | `framework/governance/REVIEW_SAGA.md` | 12943 | normative prose / discursive | doc-leads | 3 | 16 |
+  | `framework/governance/REVIEW_TEAM.md` | 21236 | normative prose / discursive | doc-leads | 4 | 21 |
+  | `framework/governance/REVIEW_WORKFLOW_STANDARD.md` | 13152 | normative prose / discursive | doc-leads | 3 | 29 |
+  | `framework/governance/SDD_ASSEMBLY_LINE.md` | 12141 | normative prose / discursive | doc-leads | 1 | 3 |
+  | `framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md` | 11481 | normative prose / discursive | doc-leads | 4 | 24 |
+  | `framework/governance/SECURITY_REVIEW.md` | 4305 | normative prose / discursive | doc-leads | 1 | 20 |
+  | `framework/governance/SEED_CONTRACT.md` | 13046 | normative prose / discursive | doc-leads | 3 | 27 |
+  | `framework/governance/SEED_TO_MODULE_DECOMPOSITION.md` | 10776 | normative prose / discursive | doc-leads | 3 | 15 |
+  | `framework/governance/SELF_LEARNING.md` | 14836 | normative prose / discursive | doc-leads | 2 | 12 |
+  | `framework/governance/TAG_SYNTAX.md` | 5201 | machine-consumed candidate (pending Phase 1 proof) | doc-leads | 4 | 13 |
+  | `framework/governance/TECHNOLOGY_STACK_USAGE_GUIDE.md` | 19949 | normative prose / discursive | doc-leads | 1 | 29 |
+  | `framework/governance/THRESHOLD_NAMING_RULES.md` | 27615 | machine-consumed candidate (pending Phase 1 proof) | doc-leads | 1 | 7 |
+  | `framework/governance/TRACEABILITY.md` | 10399 | normative prose / discursive | doc-leads | 5 | 27 |
+  | `framework/governance/WORKTREE_FLOW.md` | 10740 | normative prose / discursive | doc-leads | 1 | 29 |
+  | `framework/governance/aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md` | 4577 | sub-project docs (unchanged) | doc-leads | 1 | 9 |
+  | `framework/governance/aidoc/AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md` | 4417 | sub-project docs (unchanged) | doc-leads | 1 | 7 |
+  | `framework/governance/aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` | 16941 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md` | 5784 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md` | 4178 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md` | 4604 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md` | 5355 | sub-project docs (unchanged) | doc-leads | 1 | 7 |
+  | `framework/governance/aidoc/AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md` | 4245 | sub-project docs (unchanged) | doc-leads | 1 | 7 |
+  | `framework/governance/aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md` | 4565 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md` | 11332 | sub-project docs (unchanged) | doc-leads | 2 | 11 |
+  | `framework/governance/aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md` | 5867 | sub-project docs (unchanged) | doc-leads | 1 | 8 |
+  | `framework/governance/aidoc/AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md` | 9031 | sub-project docs (unchanged) | doc-leads | 1 | 7 |
+  | `framework/governance/aidoc/AIDOC.md` | 9148 | sub-project docs (unchanged) | doc-leads | 3 | 52 |
+  | `framework/governance/aidoc/BOOTSTRAP.md` | 6384 | sub-project docs (unchanged) | doc-leads | 2 | 15 |
+  | `framework/governance/aidoc/README.md` | 3247 | sub-project docs (unchanged) | doc-leads | 34 | 137 |
+  | `framework/governance/aidoc/UPGRADE-RUNBOOK.md` | 4792 | sub-project docs (unchanged) | doc-leads | 1 | 10 |
+  | `framework/governance/chg/README.md` | 25576 | normative prose / discursive | doc-leads | 34 | 137 |
+  | `framework/governance/chg/gates/GATE-01_BUSINESS_PRODUCT.md` | 6960 | workflow-adjacent form (unchanged) | doc-leads | 1 | 13 |
+  | `framework/governance/chg/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md` | 10741 | workflow-adjacent form (unchanged) | doc-leads | 1 | 13 |
+  | `framework/governance/chg/gates/GATE-06_DESIGN_TEST.md` | 8401 | workflow-adjacent form (unchanged) | doc-leads | 1 | 11 |
+  | `framework/governance/chg/gates/GATE-08_IPLAN.md` | 9990 | workflow-adjacent form (unchanged) | doc-leads | 1 | 17 |
+  | `framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md` | 11095 | workflow-adjacent form (unchanged) | doc-leads | 1 | 18 |
+  | `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` | 12556 | workflow-adjacent form (unchanged) | doc-leads | 2 | 24 |
+  | `framework/governance/chg/gates/GATE_ERROR_CATALOG.md` | 13584 | workflow-adjacent form (unchanged) | doc-leads | 3 | 21 |
+  | `framework/governance/chg/gates/GATE_INTERACTION_DIAGRAM.md` | 11619 | workflow-adjacent form (unchanged) | doc-leads | 1 | 18 |
+  | `framework/governance/chg/templates/GATE_APPROVAL_FORM.md` | 11619 | workflow-adjacent form (unchanged) | doc-leads | 1 | 19 |
+  | `framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md` | 8156 | workflow-adjacent form (unchanged) | doc-leads | 1 | 10 |

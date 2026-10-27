@@ -61,9 +61,9 @@ graph TB
     end
 
     subgraph ModuleBoundary["MODULE-NN Container Boundary"]
-        MainService["[Module Service / Daemon]<br/>(e.g., Go / Python API Engine)"]
-        CacheStore[("Cache / Ephemeral Store<br/>(e.g., Redis Cluster)")]
-        PrimaryDB[("Primary Datastore<br/>(e.g., PostgreSQL / CockroachDB)")]
+        MainService["[Module Service / Daemon]<br/>(e.g., Python 3.15 / Go 1.25 Engine)"]
+        CacheStore[("Cache / Ephemeral Store<br/>(e.g., Valkey 8 / Redis 7.2)")]
+        PrimaryDB[("Primary Datastore<br/>(e.g., PostgreSQL 18)")]
     end
 
     ClientApp -->|HTTPS / gRPC| MainService
@@ -71,6 +71,13 @@ graph TB
     MainService -->|TCP / Session Cache| CacheStore
     MainService -->|Encrypted TCP / Persistent State| PrimaryDB
 ```
+
+### 2.1 Container Archetype & Approved Stack Mapping
+- **Container Archetype:** [Ingress Gateway | Compute Worker | Event Broker | Relational Primary DB | Analytical Datastore | Workflow Orchestrator]
+- **Approved Stack Category:** [e.g. Platform Database Layer, Workflow Engine, Transport Broker per `TECHNOLOGY_STACK_USAGE_GUIDE.md`]
+- **Baseline Candidate(s):** [e.g. PostgreSQL 18, Bytebase, NATS JetStream, Temporal, Valkey 8 from `/home/ya/devd/technology_stack`]
+- **Selection Status:** Candidate baseline identified; formal binding ratified at downstream Layer 05 ADR.
+- **Missing Tools Protocol:** If a needed technology or tool is missing from the approved stack (`/home/ya/devd/technology_stack`), the agent MUST explicitly inform the operator and request instructions before proceeding. Never propose unapproved databases or runtimes.
 
 ---
 

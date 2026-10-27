@@ -1,0 +1,46 @@
+# =============================================================================
+#  IPLAN-94: Tombstone framework/CHANGELOG.md and Retire GATE-SPEC-E008
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-94/CHG-94.yaml
+# =============================================================================
+
+id: "IPLAN-94"
+chg_id: "CHG-94"
+title: "Tombstone framework/CHANGELOG.md and Retire GATE-SPEC-E008"
+status: "Completed"
+framework_version: "0.91.13"
+
+file_manifest:
+  - "framework/CHANGELOG.md"
+  - "tests/chg/spec_gate.py"
+  - "tests/conformance/test_spec_gate.py"
+  - "framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md"
+  - "framework/layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+  - "framework/governance/chg/gates/GATE_ERROR_CATALOG.md"
+  - "framework/layers/09_CHG/gates/GATE_ERROR_CATALOG.md"
+  - "framework/governance/chg/templates/GATE_APPROVAL_FORM.md"
+  - "framework/layers/09_CHG/templates/GATE_APPROVAL_FORM.md"
+  - "hooks/check-docs-updated.sh"
+  - "AGENTS.md"
+  - "CONTRIBUTING.md"
+  - "README.md"
+  - "framework/VERSION"
+  - "framework/archive/CHG-94/CHG-94.yaml"
+  - "framework/archive/CHG-94/IPLAN-94.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-94.yaml and IPLAN-94.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Tombstone framework/CHANGELOG.md with frozen notice and on-demand generation note"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Retire GATE-SPEC-E008 in spec_gate.py, test_spec_gate.py, and governance catalogs"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Update hooks/check-docs-updated.sh, AGENTS.md, CONTRIBUTING.md, and README.md"
+    status: "Completed"
+  - id: "TASK-05"
+    name: "Bump framework/VERSION to 0.91.13, sync version references, and verify tests green"
+    status: "Completed"

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 The `.aidoc/` directory is the project customization layer for every project
 that uses the framework. This directory holds the governance documents for
@@ -20,7 +20,7 @@ bootstrap (`BOOTSTRAP.md`) and upgrade (`UPGRADE-RUNBOOK.md`) runbooks.
 
 | File | Covers |
 |------|--------|
-| `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, symlink convention. |
+| `AIDOC.md` | Canonical reference for the `.aidoc/` project override layer — directory structure, discovery rule, distribution and attachment models (submodule, pinned copy). |
 | `AIDOC-SCAFFOLD-TEMPLATE.md` | Template for bootstrapping a new project's `.aidoc/` directory. |
 | `AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md` | Operational execution handbook template for autonomous change processing (`.aidoc/project/governance/CHG_EXECUTION_FLOW.md`). |
 | `AIDOC-CI-SMART-ROUTING-TEMPLATE.md` | Operational template for CI smart change detection and anti-deadlock status check orchestration. |
@@ -31,7 +31,7 @@ bootstrap (`BOOTSTRAP.md`) and upgrade (`UPGRADE-RUNBOOK.md`) runbooks.
 | `AIDOC-TEMPORAL-LANGGRAPH-RUNTIME-TEMPLATE.md` | Temporal Python workflow orchestration and LangGraph Core reasoning activity integration. |
 | `AIDOC-BYTEBASE-POSTGRES-SCHEMA-TEMPLATE.md` | PostgreSQL 18 native UUIDv7 and Bytebase Model Context Protocol schema migration standard. |
 | `AIDOC-NATS-CLOUDEVENTS-PROTOBUF-TEMPLATE.md` | CloudEvents v1.0 and Protobuf binary wire contract standard over NATS JetStream. |
-| `AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md` | gVisor `runsc` syscall sandboxing, non-root execution, and Infisical in-memory secret injection. |
+| `AIDOC-GVISOR-SANDBOX-EXECUTION-PROFILE.md` | gVisor `runsc` syscall sandboxing, non-root execution, and Two-Tier Secrets (OCI Vault + OpenBao) in-memory injection. |
 | `AIDOC-LANGFUSE-HYPERDX-OBSERVABILITY-TEMPLATE.md` | Langfuse Prompt CMS, evaluation dataset integration, and HyperDX distributed tracing. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template for `.aidoc/profile.yaml` (in `governance/`). |
 | `BOOTSTRAP.md` | Step-by-step bootstrap procedure + shape validation for a new project's `.aidoc/`. |

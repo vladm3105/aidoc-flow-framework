@@ -1,9 +1,20 @@
 # =============================================================================
-#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD)
+#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD Layer 05)
 # =============================================================================
-#  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable ADR template
+#  Document Authority: COMPANION STANDARD (Static Declarative)
+#  Purpose: AI-consumable + human-reviewable ADR template for linear decision records
 #  Lifecycle: MVP → PROD → NEW MVP
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use this template (ADR-TEMPLATE.yaml — COMPANION STANDARD) when:
+#    - Documenting straightforward, single-candidate architectural decisions, direct technology binds, or localized choices
+#    - Specifying architectural decisions where state machine orchestration is unnecessary overhead
+#  Use the primary template (ADR-SWF-TEMPLATE.yaml — PRIMARY STANDARD) instead when:
+#    - Modeling multi-candidate architectural trade-off analysis with concurrent evaluation fan-out
+#    - Orchestrating automated Multi-Criteria Decision Analysis (MCDA) utility scoring and consensus switch gates
+#    - Incorporating stakeholder RFC review callbacks, external feedback events, or timeouts
+#    - Requiring automated compensation (archiving rejected proposals and cleaning evaluation contexts)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators
@@ -40,22 +51,12 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     _guidance: |
-      Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (advisory readiness target), a
-      preflight check, and cross-document consistency.
-      SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-
-      SPEC-Ready scoring criteria:
-        Decision completeness (30%): clear decision with rationale, alternatives evaluated
-        Architecture clarity (25%): required decision sequenceDiagram (@diagram: sequence-*) present, integration points defined
-        Consequence analysis (20%): positive outcomes, trade-offs, costs documented
-        Traceability (15%): upstream EARS/BDD tags complete
-        Verification (10%): success criteria defined, BDD cross-refs present
-
-      Status-to-score mapping:
-        >= 90%: Accepted
-        70-89%: Proposed
-        < 70%: Draft (significant work needed)
+      Validation is performed deterministically by sdd_doc_lint.
+      Quality gating is strictly binary (PASS / FAIL) based on topological graph completeness:
+        1. Strict DAG Completeness: Every @-pointer resolves to verified upstream EARS/BDD elements (zero dangling edges).
+        2. Strict Oracle Coverage: Every architectural decision is realized downstream by SPEC component contracts and TDD fixtures.
+        3. Architectural Rigor: Clear rationale, alternatives evaluated, sequenceDiagram (@diagram: sequence-*) present, and consequences analyzed.
+      Heuristic percentage readiness scores (SPEC-Ready >=90%) are retired in favor of binary topological validation.
 
   c4_level:
     _guidance: |
@@ -144,7 +145,7 @@ document_control:
       Proposed → Accepted → Deprecated → Superseded
       (NOT Draft/In Review/Approved)
 
-    SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
+    SPEC-Ready: BTV PASS is the deterministic quality gate (BTV PASS / FAIL).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded
   date: "YYYY-MM-DD"
@@ -153,7 +154,7 @@ document_control:
     - "[Tech Lead Name]"
   author: "[Author Name]"
   version: "1.0"
-  spec_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
+  spec_ready_status: "PASS"  # deterministic BTV gate status
 
   revision_history:
     - version: "1.0"
@@ -232,10 +233,17 @@ alternatives:
     The FULL analysis (pros/cons/cost) lives in the seed document.
     The ADR focuses on the selected option's consequences, not re-surveying alternatives.
 
-    Per governance/DECISION_WORKFLOW.md §3:
-      "SDD ADR selects, doesn't re-survey. The ADR's 'Alternatives Considered'
-      section briefly lists options (from the module/seed), but the full analysis
-      stays in the seed. The ADR focuses on the selected option and its consequences."
+    Per governance/DECISION_WORKFLOW.md §3 and TECHNOLOGY_STACK_USAGE_GUIDE.md:
+      "SDD ADR selects, doesn't re-survey. Layer 05 ADR is the formal Technology
+      Selection Gate immediately following BDD. Candidate alternatives must be evaluated
+      strictly against the approved platform technology stack (/home/ya/devd/technology_stack,
+      specs 00-23). If needed tools or software are missing from the approved stack, the
+      Missing Tools Operator Escalation Protocol MUST be invoked: explicitly inform the
+      operator and obtain instructions on what tools to use before proceeding. Agents must
+      NEVER propose, offer, or accept insecure options (e.g. plaintext secrets, disabled
+      sandboxing, relaxed permissions). If an off-stack candidate is authorized by the operator,
+      Section 7 implementation_assessment must document the Variance / Exception Justification
+      approved by Architecture."
 
   _antipatterns:
     - "FAIL: duplicating seed analysis (pros/cons/cost) — that belongs in seed docs"
@@ -418,9 +426,9 @@ traceability:
       - "@chg: CHG-NN"
 
   health_score:
-    spec_ready: "[X]%"
-    target_score: ">=90/100"  # advisory readability target, not a merge gate
-    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
+    spec_ready: "[PASS | FAIL]"
+    target_status: "PASS"  # deterministic binary topological gate
+    _note: "Gate status is deterministic — computed by structural and topological linters. BTV PASS is required for downstream progression."
 
 # =============================================================================
 # Section 10: Related Decisions
@@ -453,7 +461,9 @@ glossary:
     - term: ADR
       definition: "Architecture Decision Record"
     - term: SPEC-Ready
-      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
+      definition: >-
+        Binary topological verification confirming 100% DAG completeness and
+        downstream SPEC realization without dangling citations or unmapped decisions
     - term: "[Domain term]"
       definition: "[Definition]"
 

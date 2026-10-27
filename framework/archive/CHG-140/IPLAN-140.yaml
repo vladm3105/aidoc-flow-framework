@@ -1,0 +1,59 @@
+# =============================================================================
+#  IPLAN-140: IPLAN subtype-aware deterministic lint enforcement
+# =============================================================================
+#  Implementation Plan authorized by CHG-140
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-140
+title: "Implementation Plan: deterministic IPLAN subtype lint enforcement (issue #1046)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.22"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-140"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-140/CHG-140.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-140/IPLAN-140.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "sdd_doc_lint/__init__.py"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/governance/IPLAN_WORKFLOW_STANDARD.md"
+    action: "modify"
+    status: "DONE"
+  - path: "sdd_doc_lint/tests/test_iplan_subtype_lint.py"
+    action: "create"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C2, change_source direct, sdd_lifecycle empty"
+  order: "linter implementation precedes tests and docs update; version bump + sync precedes final verification"
+  compatibility: "documents omitting subtype only check unconditional required sections; documents declaring subtype enforce conditional sections"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-140/CHG-140.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "pytest sdd_doc_lint/tests/test_iplan_subtype_lint.py"
+  - "pytest tests/acceptance/deterministic/test_layer_iplan.py"
+  - "pytest tests/conformance/test_sync_version_refs.py"

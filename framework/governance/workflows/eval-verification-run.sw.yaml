@@ -16,7 +16,7 @@ description: >-
   quality gate evaluation, static EVAL-REPORT receipt generation, and remediation loops.
 
 metadata:
-  framework_version: "0.91.4"
+  framework_version: "0.96.23"
   workflow_type: "governance-evaluation-execution"
   governed_layer: "10_EVAL"
   traceability_tags:
@@ -25,6 +25,37 @@ metadata:
     - "@standard: CNCF-Serverless-Workflow-0.8"
 
 start: IngestEvaluationTrigger
+
+events:
+  - name: EvalVerificationClosedEvent
+    type: org.aidoc.sdd.layer10.eval.closed
+    source: /layers/10_eval
+
+functions:
+  - name: invokeReviewSaga
+    type: custom
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+  - name: remediateLayerFindings
+    type: custom
+    operation: "urn:aidoc:functions:remediator#remediate"
+  - name: verifyLayerBoundaryGate
+    type: custom
+    operation: "urn:aidoc:governance:gate#verify"
+  - name: sealDocumentBaseline
+    type: custom
+    operation: "urn:aidoc:governance:document#seal"
+  - name: registerGraphBaselineNode
+    type: custom
+    operation: "urn:aidoc:governance:graph#registerNode"
+  - name: emitCloudEvent
+    type: custom
+    operation: "urn:aidoc:governance:event#emit"
+  - name: verifyReceiptSeal
+    type: custom
+    operation: "urn:aidoc:governance:receipt#verifySeal"
+  - name: checkTreeInvariance
+    type: custom
+    operation: "urn:aidoc:governance:git#checkTreeSha"
 
 states:
   # ---------------------------------------------------------------------------
@@ -48,8 +79,30 @@ states:
           refName: loadEvalStrategyFn
           arguments:
             eval_strategy_path: "docs/sdd/10_EVAL/EVAL-{NN}/EVAL-{NN}.yaml"
-            threshold_min_score: 90
-    transition: ExecuteParallelTestSuites
+            verify_btv_pass: true
+      - name: verifyIplanReceiptSeal
+        functionRef:
+          refName: verifyReceiptSeal
+          arguments:
+            receipt_ref: "${ .iplan_context.iplan_receipt_ref }"
+            expected_seal_hash: "${ .iplan_context.receipt_seal_hash }"
+      - name: assertTreeInvariance
+        functionRef:
+          refName: checkTreeInvariance
+          arguments:
+            expected_tree_sha: "${ .receipt.output_tree_sha }"
+    transition: EvaluateReceiptGate
+
+  # ---------------------------------------------------------------------------
+  # State 1b: Evaluate Receipt Gate (Cryptographic Seal & Tree Invariance)
+  # ---------------------------------------------------------------------------
+  - name: EvaluateReceiptGate
+    type: switch
+    dataConditions:
+      - condition: "${ .receipt_verified == true and .tree_clean == true }"
+        transition: ExecuteParallelTestSuites
+    defaultCondition:
+      transition: ExecutionBlockedTerminal
 
   # ---------------------------------------------------------------------------
   # State 2: Parallel Test Suite Execution (All-Of)
@@ -115,13 +168,52 @@ states:
     type: switch
     dataConditions:
       - name: EvaluationPassed
-        condition: "${ .score >= 90 and .blocker_count == 0 and .critical_count == 0 }"
-        transition: EmitPassingReportReceipt
+        condition: "${ .gate_passed == true and .blocker_count == 0 and .critical_count == 0 }"
+        transition: InvokeReviewSagaGate
       - name: EvaluationFailed
-        condition: "${ .score < 90 or .blocker_count > 0 or .critical_count > 0 }"
+        condition: "${ .gate_passed == false or .blocker_count > 0 or .critical_count > 0 }"
         transition: HandleEvaluationFailure
     defaultCondition:
       transition: HandleEvaluationFailure
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "eval-review-remediation-flow"
+            artifactId: "${ .eval_id }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: EmitPassingReportReceipt
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresDefectHandling
+        condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+        transition: HandleEvaluationFailure
+    defaultCondition:
+      transition: HandleEvaluationFailure
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "eval_lead"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   # ---------------------------------------------------------------------------
   # State 5: Terminal Success Path (Emit Report & Mark Verified)
@@ -142,6 +234,63 @@ states:
           arguments:
             target_document: "IPLAN-{NN}"
             new_status: "Verified"
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-CODE"
+            layer: "10_EVAL"
+            documentId: "${ .eval_id }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .eval_id }"
+            layer: "10_EVAL"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "EvalNode"
+            nodeId: "${ .eval_id }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "EvalVerificationClosedEvent"
+            eval_id: "${ .eval_id }"
+            receipt_path: "docs/sdd/10_EVAL/EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml"
+            verdict: "PASS"
+    produceEvents:
+      - eventRef: EvalVerificationClosedEvent
     end: true
 
   # ---------------------------------------------------------------------------
@@ -177,4 +326,11 @@ states:
           arguments:
             flow: "REVIEW_REMEDIATION_FLOW.md"
             action: "Create C1 CHG + scoped IPLAN"
+    end: true
+
+  # ---------------------------------------------------------------------------
+  # State 8: Terminal Blocked State (Receipt Seal or Tree Hash Mismatch)
+  # ---------------------------------------------------------------------------
+  - name: ExecutionBlockedTerminal
+    type: operation
     end: true

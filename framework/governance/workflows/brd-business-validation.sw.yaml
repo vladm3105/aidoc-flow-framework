@@ -27,6 +27,9 @@ events:
   - name: StrategicInitiativeInvalidatedEvent
     type: org.aidoc.brd.initiative.invalidated
     source: /aidoc/brd/invalidation
+  - name: BrdClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer01.brd.closed
+    source: /layers/01_brd
 
 functions:
   - name: parseStrategicInitiative
@@ -55,6 +58,24 @@ functions:
     type: custom
   - name: purgeDownstreamInitiativeAllocations
     operation: "urn:aidoc:functions:compensator#purgeAllocations"
+    type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
+  - name: remediateLayerFindings
+    operation: "urn:aidoc:functions:remediator#remediate"
+    type: custom
+  - name: verifyLayerBoundaryGate
+    operation: "urn:aidoc:governance:gate#verify"
+    type: custom
+  - name: sealDocumentBaseline
+    operation: "urn:aidoc:governance:document#seal"
+    type: custom
+  - name: registerGraphBaselineNode
+    operation: "urn:aidoc:governance:graph#registerNode"
+    type: custom
+  - name: emitCloudEvent
+    operation: "urn:aidoc:governance:event#emit"
     type: custom
 
 states:
@@ -128,12 +149,51 @@ states:
     dataConditions:
       - name: InitiativeApproved
         condition: "${ .roiViable == true and .strategicFit == true and .budgetApproved == true }"
-        transition: RatifyBusinessSpecification
+        transition: InvokeReviewSagaGate
       - name: ExecutiveReviewRequired
         condition: "${ .requiresExecutiveReview == true }"
         transition: AwaitSteeringCommitteeCallback
     defaultCondition:
       transition: RejectBusinessInitiative
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "brd-review-remediation-flow"
+            artifactId: "${ .initiativeId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyBusinessSpecification
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresEscalation
+        condition: "${ .requiresEscalation == true or .iteration >= 3 }"
+        transition: AwaitSteeringCommitteeCallback
+    defaultCondition:
+      transition: RejectBusinessInitiative
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "business_analyst"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   - name: AwaitSteeringCommitteeCallback
     type: callback
@@ -161,8 +221,63 @@ states:
             initiativeId: "${ .initiativeId }"
             businessObjectives: "${ .business_objectives }"
             functionalRequirements: "${ .functional_requirements }"
-    end:
-      terminate: true
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-01"
+            layer: "01_BRD"
+            documentId: "${ .initiativeId }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .initiativeId }"
+            layer: "01_BRD"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "BrdNode"
+            nodeId: "${ .initiativeId }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "BrdClosedAndBaselinedEvent"
+            initiativeId: "${ .initiativeId }"
+            brd_tags: "${ .brd_tags }"
+    produceEvents:
+      - eventRef: BrdClosedAndBaselinedEvent
+    end: true
 
   - name: RejectBusinessInitiative
     type: operation

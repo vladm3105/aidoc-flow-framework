@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 ## C4 Model Position
@@ -59,10 +59,20 @@ See template `metadata.id_standard` for details.
 | Test case shape | Section 4 test case definitions |
 | Upstream | EARS + BDD + ADR + SPEC |
 | Downstream | IPLAN, EVAL |
-| Template model | Dual-template (Standard vs Workflow) |
+| Template model | Three-Tier Model & Dual-template Selection |
 | Core assets | Template + index + README + Workflow Standard |
 
-## Test Formats: Standard vs. Stateful Workflow
+## Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 07 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on test complexity (GD-55):
+
+| Test Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Pure unit tests, static mocks, isolated assertions | `TDD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `TDD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Multi-tier test suites, fixture provisioning, or rollback sagas | `TDD-SWF-TEMPLATE.yaml` | `TDD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating test suites and cleanup sagas. |
+
+### Test Formats: Standard vs. Stateful Workflow
 
 The framework provides two complementary approaches to TDD authoring:
 
@@ -119,6 +129,7 @@ Section 4 (cases)     tdd_ref links      Phase 1-5           (after validation)
 | File | Purpose |
 |------|---------|
 | `TDD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `TDD-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for stateful test execution and fixture sagas. |
+| `TDD-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding test cases, assertions, and verification links to SPEC and BDD. Source of truth in git. |
+| `TDD-SWF-TEMPLATE.yaml` | **Workflow Subtype (Tier 1)** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for stateful test execution and fixture sagas. |
 | `TDD_WORKFLOW_STANDARD.md` | Normative standard specifying Arrange/Act/Assert mapping to CNCF Serverless Workflow state primitives. |
-| `TDD-00_index.TEMPLATE.md` | TDD registry template — tracks planned and active TDDs per project |
+| `TDD-00_index.TEMPLATE.yaml` | TDD registry template — tracks planned and active TDDs and test suites per project in canonical 5-Quadrant YAML |

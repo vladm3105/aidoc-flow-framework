@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 07 (Test-Driven Development / TDD) test suites and runners using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -137,11 +137,39 @@ graph TD
 
 ---
 
-## 7. Dual-Template Selection Discipline
+## 7. Two-Graph Architecture & Dual-Template Selection Discipline
 
-Authors choose between two canonical templates based on test complexity:
+Layer 07 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable test orchestration workflow with an atomic test specification content graph:
 
-| Criteria | Standard [`TDD-TEMPLATE.yaml`](./TDD-TEMPLATE.yaml) | Hybrid [`TDD-SWF-TEMPLATE.yaml`](./TDD-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 07 TDD TWO-GRAPH ARCHITECTURE                                │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       TDD-SWF-TEMPLATE.yaml (Hybrid Envelope)          │       (TDD-GRAPH-TEMPLATE.yaml)    │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to arrange, execute & verify test suites │ • Content of WHAT test cases exist │
+│ • Multi-tier concurrent branches & flaky retry backoffs│ • Test cases, assertions & fixtures│
+│ • Automated quality gate evaluation switch states      │ • BDD scenario links & SPEC traces │
+│ • First-class fixture teardown saga compensation       │ • Relational links (verifies etc)  │
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates test execution & fixture teardown │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & test case pairing       │
+                    │ • Observability Adapter projects graph into TDD-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors choose between authoring configurations based on test complexity:
+
+| Criteria | Standard Companion [`TDD-TEMPLATE.yaml`](./TDD-TEMPLATE.yaml) | Two-Graph [`TDD-SWF-TEMPLATE.yaml`](./TDD-SWF-TEMPLATE.yaml) + [`TDD-GRAPH-TEMPLATE.yaml`](./TDD-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Test Case Type** | Pure functions, isolated unit tests, static mocks | Multi-tier tests, integration with external containers, databases |
 | **Execution Flow** | Flat, sequential test execution | Concurrent branches, retry backoffs, conditional gates |
@@ -180,12 +208,40 @@ def compile_tdd_workflow(swf_data: dict) -> StateGraph:
 ### 9.2 Database Migration and Asynchronous Contract Testing
 
 When testing components that interact with persistent databases or asynchronous queues:
-1. **Database Migration Testing:** Test suites verifying database entities MUST test schema upgrades and rollbacks against ephemeral containerized instances of the target database engine, validating schema idempotency and backward compatibility.
+1. **Database Migration Testing:** Test suites verifying database entities MUST test schema upgrades and rollbacks against ephemeral containerized instances of the target database engine (e.g. PostgreSQL 18), validating schema idempotency and backward compatibility.
 2. **Asynchronous Contract Testing:** Tests for event producers and consumers validate envelope conformance (CloudEvents v1.0), strongly-typed schema serialization, and message deduplication under simulated at-least-once delivery.
+3. **Approved Technology Stack Fixtures:** Integration test workflows MUST provision hermetic test fixtures matching the approved technology stack selected in Layer 05 ADR (e.g., PostgreSQL 18 testcontainers, NATS JetStream server fixtures, Temporal test environments) per [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md).
 
 ---
 
-## 10. Review Log
+## 10. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between TDD test suite authoring and review crew evaluation while respecting the distinction between test runner execution and document quality gating:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "qa_lead"` and `author_playbook: "framework/playbooks/07_TDD/qa_lead.md"`.
+   - Autonomous drafting agents derive test case structuring, assertion determinism, and NFR boundary verification directly from this rubric prior to authoring.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Following test suite execution and fixture teardown (`NormalTeardown` in templates or `ExecuteFixtureTeardown` in runner workflows), the workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`tdd-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or defective test fixtures are uncovered, the saga executes an automated remediation loop, halting sign-off until all P0/P1 blockers are resolved.
+
+---
+
+## 11. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 07 TDD implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: QA lead authors executable test case specifications, assertion fixtures, and mock configurations paired with upstream SPEC contracts.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `qa_lead`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-06` exit criteria (`GATE-06_SPEC_TDD.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `TddNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `TddSuitesClosedEvent` (`org.aidoc.sdd.layer07.tdd.closed`) with payload `test_suites`, `tdd_checksum`, authorizing downstream Layer 08 (IPLAN) execution.
+
+---
+
+## 12. Review Log
 
 - **2026-10-05 — Pass 1 (Initial Ratification)**:
   - Ratified hybrid envelope architecture, Arrange-Act-Assert mapping, and suite runner workflow (`tdd-test-execution.sw.yaml`).

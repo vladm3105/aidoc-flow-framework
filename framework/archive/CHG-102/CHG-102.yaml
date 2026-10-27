@@ -1,0 +1,146 @@
+# =============================================================================
+#  CHG-102: Layer 10 CNCF Review Remediation Workflow, Workflow Standard, and Parity
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 Governance & Specification Hardening)
+#  Pre-cleared: Founder approval in session (2026-10-13), Issue #975
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-14"
+  framework_version: "0.91.20"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-102"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-14T00:00:00Z"
+  date_approved: "2026-10-14T00:00:00Z"
+  date_implemented: "2026-10-14T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-14T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): approved, continue (Issue #975)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-102)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-102"
+  title: "Establish Layer 10 CNCF Serverless Workflow Review Remediation and Standard Parity"
+  status: "Ratified"
+  context: |
+    Issue #975 identified three gaps in Layer 10 (EVAL/IPVERIFY) and plans documentation:
+    1. Missing Review Remediation Workflow: While Layers 01 through 09 provide declarative CNCF
+       Serverless Workflow state machines in framework/governance/workflows/review/, Layer 10
+       was missing its companion eval-review-remediation.sw.yaml.
+    2. Missing Workflow Standard and Template: Layers 01 through 08 have dedicated workflow standard
+       documents and *-SWF-TEMPLATE.yaml files, but Layer 10 had neither EVAL_WORKFLOW_STANDARD.md
+       nor EVAL-SWF-TEMPLATE.yaml.
+    3. Broken Relative Markdown Link: plans/ACCEPTANCE-HISTORY.md:196 contained a broken link
+       [../tests/README.md](../../tests/README.md) which stepped two levels up and escaped the repo root.
+  choice: |
+    1. Author framework/governance/workflows/review/eval-review-remediation.sw.yaml adhering to
+       CNCF Serverless Workflow DSL v0.8.
+    2. Author framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md and EVAL-SWF-TEMPLATE.yaml adhering
+       to the Hybrid Envelope Architecture.
+    3. Fix the broken link in plans/ACCEPTANCE-HISTORY.md:196 to point to ../tests/README.md.
+    4. Update framework/governance/REVIEW_WORKFLOW_STANDARD.md and framework/layers/10_EVAL/README.md
+       to reference the new Layer 10 workflow standard, review workflow, and template.
+    5. Add conformance test tests/conformance/test_eval_workflow.py to validate Layer 10 workflow
+       standard, template, and review remediation graph integrity.
+    6. Bump framework/VERSION to 0.91.20 and sweep references via hooks/sync-version-refs.sh.
+  consequences: |
+    - Completes Layer 10 parity with Layers 01 through 09 across the SDD framework.
+    - Enables autonomous AI coding agents to orchestrate automated review remediation sagas for Layer 10.
+    - Resolves the dead link in plans/ACCEPTANCE-HISTORY.md.
+  alternatives_considered:
+    - option: "Rely solely on eval-verification-run.sw.yaml without review remediation"
+      rationale_rejected: >-
+        eval-verification-run executes test suites, but does not orchestrate the multi-persona review
+        saga for the evaluation strategy and report artifacts itself. Parity with other SDD layers
+        requires a dedicated review remediation workflow.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Layer 10 CNCF Review Remediation Workflow, Workflow Standard, and Parity"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-14T00:00:00Z"
+  summary: |
+    Author Layer 10 CNCF Serverless Workflow review remediation state machine, workflow standard,
+    and hybrid template, fix broken acceptance history plan link, and synchronize conformance tests.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Complete Layer 10 CNCF Serverless Workflow specification and fix broken link (Issue #975)"
+  components_affected:
+    - "framework/governance/workflows/review/eval-review-remediation.sw.yaml"
+    - "framework/layers/10_EVAL/EVAL_WORKFLOW_STANDARD.md"
+    - "framework/layers/10_EVAL/EVAL-SWF-TEMPLATE.yaml"
+    - "plans/ACCEPTANCE-HISTORY.md"
+    - "framework/governance/REVIEW_WORKFLOW_STANDARD.md"
+    - "framework/layers/10_EVAL/README.md"
+    - "tests/conformance/test_eval_workflow.py"
+    - "tests/conformance/test_governance.py"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-102/IPLAN-102.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-102.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-102/IPLAN-102.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-102.yaml"
+    - "swf_lint.py passing on eval-review-remediation.sw.yaml and EVAL-SWF-TEMPLATE.yaml"
+    - "test_eval_workflow.py passing"
+    - "conformance suites green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

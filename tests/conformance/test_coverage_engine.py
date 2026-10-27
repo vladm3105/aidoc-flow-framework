@@ -179,14 +179,14 @@ class TagSyntaxPage(unittest.TestCase):
 class SPEC00CoverageSection(unittest.TestCase):
     def test_coverage_section_and_necessary_upstream_present(self):
         # CLEANUP-001: single framework copy — the vendored platform mirror is gone.
-        tpl = (FRAMEWORK / "layers" / "06_SPEC" / "SPEC-00_index.TEMPLATE.md").read_text(
+        tpl = (FRAMEWORK / "layers" / "06_SPEC" / "SPEC-00_index.TEMPLATE.yaml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("## Coverage", tpl)
+        self.assertIn("coverage_contract:", tpl)
         self.assertIn("COV02", tpl)
-        self.assertIn("**Upstream (necessary)**: EARS, BDD, ADR", tpl)
+        self.assertIn('upstream_artifacts: ["EARS", "BDD", "ADR"]', tpl)
         # the stale cumulative form is gone from the necessary-upstream line
-        self.assertNotIn("**Upstream**: BRD, PRD, EARS, BDD, ADR", tpl)
+        self.assertNotIn('"BRD"', tpl.split("upstream_artifacts:")[1].split("downstream_layer:")[0])
 
 
 class BRDTemplateRule(unittest.TestCase):

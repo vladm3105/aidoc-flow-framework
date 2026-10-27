@@ -46,7 +46,7 @@ no tests implemented.
 - **Lint rules TDD-SYNC-001 through TDD-SYNC-007** enforce cross-layer consistency.
 - **IPLAN completion gate (§3.7)** includes 8 mandatory checks, including TDD sync.
 - **verify_iplan_status.sh** script runs 6 automated checks before Completed status is allowed.
-- **Source of truth**: IPLAN-00_index.yaml is authoritative for IPLAN status; TDD-00_index.md
+- **Source of truth**: IPLAN-00_index.yaml is authoritative for IPLAN status; TDD-00_index.yaml
   is a convenience mirror. Never treat the index as authoritative for IPLAN.
 
 ### Key Rule
@@ -232,7 +232,7 @@ When modifying existing SDD documents via CHG:
 - Two-track testing strategy: Functional (EVAL-F: EARS+BDD) and Unit/Smoke (EVAL-U:
   TDD+IPLAN).
 - 156 BDD scenarios mapped to functional test cases; 104 TDD test case IDs (not 78 —
-  TDD-00_index.md count is inaccurate) mapped to unit/smoke test cases.
+  TDD-00_index.yaml count is inaccurate) mapped to unit/smoke test cases.
 
 ### 5.8 Docker & Deployment
 

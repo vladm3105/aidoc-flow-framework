@@ -8,8 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
-
+| Framework Version | 0.96.23 |
 
 ## Overview
 
@@ -20,30 +19,43 @@ pattern. Each ADR addresses ONE decision, synthesizing inputs from EARS and BDD 
 
 ## C4 Model Position
 
-ADR is the **decision bridge** between Container (PRD) and Component (SPEC) — it does not have its own C4 level. ADR records architectural decisions that shape the Component-level design.
+ADR is the **decision bridge** between Container (PRD) and Component (SPEC) — it does not have its own C4 level. ADR records architectural decisions that shape the Component-level design and serves as the **formal technology selection gate** immediately after BDD (governed by [`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
 
 ```text
-Context (BRD)    — business environment, actors, boundaries
-  └─ EARS/BDD    — formalize Context→Container transition
-Container (PRD)  — product features, functional blocks
-  └─ ADR         — decisions that shape Component architecture        ← this layer
-Component (SPEC) — component interfaces, data models, behavior contracts
-  └─ TDD         — test case definitions validating SPEC contracts
-  └─ IPLAN       — execution plan bridging TDD to Code
+Problem Space (Technology-Agnostic):
+  Context (BRD)    — business environment, actors, boundaries
+    └─ PRD         — product features, functional blocks, ADR topics
+    └─ EARS        — timing constraints, latency budgets, throughput SLAs
+    └─ BDD         — executable acceptance scenarios & failure modes
+Technology Selection Gate:
+  ADR (Layer 5)    — selects ONE architecture & stack choice via MCDA     ← this layer
+Solution Space (Technology-Bound):
+  Component (SPEC) — component interfaces, data models, behavior contracts
+    └─ TDD         — test case definitions validating SPEC contracts
+    └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
-## Files
+## Files & Templates
 
 | File | Purpose |
 |---|---|
 | `ADR-TEMPLATE.yaml` | **Standard** — static template with embedded authoring guidance for atomic architectural decisions. |
-| `ADR-SWF-TEMPLATE.yaml` | **Workflow** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
+| `ADR-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding architecture decisions, trade-offs, and driver links. Source of truth in git. |
+| `ADR-SWF-TEMPLATE.yaml` | **Workflow (Tier 1)** — Hybrid Envelope Architecture housing an executable CNCF Serverless Workflow state machine for multi-candidate trade-off analysis. |
 | `ADR_WORKFLOW_STANDARD.md` | **Normative Standard** — formal mapping of architecture decision evaluation primitives to CNCF Serverless Workflow state machines. |
-| `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project. |
+| `ADR-00_index.TEMPLATE.yaml` | ADR & Project Technology Stack Registry template — tracks planned/active ADRs and houses the canonical agent-readable technology inventory for security monitoring and automated updates. |
 
-## Dual-Template Architecture
+## Three-Tier Architecture & Dual-Template Selection Matrix
 
-Layer 05 supports two complementary authoring templates depending on decision complexity:
+Layer 05 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on decision complexity (GD-57):
+
+| Decision Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Single-candidate, localized design choice | `ADR-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `ADR-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| High-stakes multi-candidate trade-offs (MCDA), RFC reviews, or invalidation sagas | `ADR-SWF-TEMPLATE.yaml` | `ADR-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating candidate evaluation and score weighting. |
+
+### Template Implementations
 
 1. **Standard Template (`ADR-TEMPLATE.yaml`)**:
    - Best for straightforward, single-candidate decisions or localized design choices.
@@ -66,10 +78,10 @@ Proposed → Accepted → Deprecated → Superseded
 
 (NOT Draft/In Review/Approved)
 
-| Status | SPEC-Ready Score | Meaning |
+| Status | Gating Criteria | Meaning |
 |---|---|---|
-| Proposed | 70-89% | Decision under evaluation |
-| Accepted | >=90% | Decision approved, ready for SPEC |
+| Proposed | Draft / Under Review | Decision under evaluation |
+| Accepted | Binary Topological Pass | Decision approved, 100% DAG completeness, ready for SPEC |
 | Deprecated | — | Decision no longer relevant |
 | Superseded | — | Replaced by newer ADR |
 

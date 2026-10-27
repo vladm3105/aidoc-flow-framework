@@ -104,6 +104,35 @@ class SyncVersionRefsCoverage(unittest.TestCase):
             f"swept-form pins in docs/ missing from OLD_VERSIONS: {stray} — extend the list",
         )
 
+    def test_checkout_pins_current(self):
+        """Every `checkout framework/vX` literal outside archive/ pins the current VERSION.
+
+        The bare checkout form is not swept by sync-version-refs.sh (literal
+        sweep would risk prefix corruption across OLD_VERSIONS, e.g. 0.96.1
+        inside 0.96.13), so this guard fails loudly instead of drifting
+        silently (CHG-132, issue #1030).
+        """
+        pattern = re.compile(r"checkout framework/v(\d+\.\d+\.\d+)")
+        current = _current()
+        stale: dict[str, list[str]] = {}
+        for root in (REPO_ROOT / "docs", REPO_ROOT / ".aidoc"):
+            if not root.is_dir():
+                continue
+            for path in sorted(root.rglob("*")):
+                if not path.is_file() or "archive/CHG-" in path.as_posix():
+                    continue
+                try:
+                    text = path.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError):
+                    continue
+                for version in pattern.findall(text):
+                    if version != current:
+                        stale.setdefault(version, []).append(str(path.relative_to(REPO_ROOT)))
+        self.assertFalse(
+            stale,
+            f"stale checkout pins (not {current}): {stale} — update to the current VERSION",
+        )
+
     def test_hook_syntax_valid(self):
         """The hook parses under bash (catches refactor breakage)."""
         import subprocess

@@ -27,6 +27,9 @@ events:
   - name: ProductRequirementInvalidatedEvent
     type: org.aidoc.prd.feature.invalidated
     source: /aidoc/prd/invalidation
+  - name: PrdClosedAndBaselinedEvent
+    type: org.aidoc.sdd.layer02.prd.closed
+    source: /layers/02_prd
 
 functions:
   - name: parseProductInitiative
@@ -52,6 +55,24 @@ functions:
     type: custom
   - name: purgeDownstreamDraftArtifacts
     operation: "urn:aidoc:functions:compensator#purgeDownstreamDrafts"
+    type: custom
+  - name: invokeReviewSaga
+    operation: "urn:aidoc:workflows:review-saga#invoke"
+    type: custom
+  - name: remediateLayerFindings
+    operation: "urn:aidoc:functions:remediator#remediate"
+    type: custom
+  - name: verifyLayerBoundaryGate
+    operation: "urn:aidoc:governance:gate#verify"
+    type: custom
+  - name: sealDocumentBaseline
+    operation: "urn:aidoc:governance:document#seal"
+    type: custom
+  - name: registerGraphBaselineNode
+    operation: "urn:aidoc:governance:graph#registerNode"
+    type: custom
+  - name: emitCloudEvent
+    operation: "urn:aidoc:governance:event#emit"
     type: custom
 
 states:
@@ -140,12 +161,51 @@ states:
     dataConditions:
       - name: AlignmentApproved
         condition: "${ .brdAlignmentVerified == true and .unanchoredFeatureCount == 0 and .minimumViabilityMet == true }"
-        transition: RatifyProductSpecification
+        transition: InvokeReviewSagaGate
       - name: ScopeAdjustmentRequired
         condition: "${ .exceedsBudgetOrTimeline == true and .negotiableScope == true }"
         transition: SolicitScopeAdjustment
     defaultCondition:
       transition: RejectProductFeatureSet
+
+  - name: InvokeReviewSagaGate
+    type: operation
+    actions:
+      - name: runLayerReviewSagaAction
+        functionRef:
+          refName: invokeReviewSaga
+          arguments:
+            workflowId: "prd-review-remediation-flow"
+            artifactId: "${ .documentId }"
+    transition: EvaluateReviewSagaResult
+
+  - name: EvaluateReviewSagaResult
+    type: switch
+    dataConditions:
+      - name: ReviewGateApproved
+        condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+        transition: RatifyProductSpecification
+      - name: ReviewRequiresRemediation
+        condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+        transition: RemediateLayerDraft
+      - name: ReviewRequiresAdjustment
+        condition: "${ .requiresAdjustment == true or .iteration >= 3 }"
+        transition: SolicitScopeAdjustment
+    defaultCondition:
+      transition: RejectProductFeatureSet
+
+  - name: RemediateLayerDraft
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: applyRemediationFixes
+        functionRef:
+          refName: remediateLayerFindings
+          arguments:
+            author: "product_manager"
+            findings: "${ .unresolved_findings }"
+            iteration: "${ .iteration }"
+    transition: InvokeReviewSagaGate
 
   - name: SolicitScopeAdjustment
     type: callback
@@ -172,8 +232,63 @@ states:
             documentId: "${ .documentId }"
             features: "${ .decomposedFeatures }"
             status: "Approved"
-    end:
-      terminate: true
+    transition: VerifyLayerCloseoutGate
+
+  - name: VerifyLayerCloseoutGate
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: runLayerGateChecklist
+        functionRef:
+          refName: verifyLayerBoundaryGate
+          arguments:
+            gateId: "GATE-01"
+            layer: "02_PRD"
+            documentId: "${ .documentId }"
+    transition: SealLayerDocumentBaseline
+
+  - name: SealLayerDocumentBaseline
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: sealFrontmatterStatus
+        functionRef:
+          refName: sealDocumentBaseline
+          arguments:
+            documentId: "${ .documentId }"
+            layer: "02_PRD"
+            targetStatus: "Baselined"
+            checksumAlgorithm: "SHA-256"
+    transition: RegisterSddGraphBaselineNode
+
+  - name: RegisterSddGraphBaselineNode
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: updateGraphNode
+        functionRef:
+          refName: registerGraphBaselineNode
+          arguments:
+            nodeType: "PrdNode"
+            nodeId: "${ .documentId }"
+            status: "Baselined"
+            lockIncomingEdges: true
+    transition: EmitLayerHandoffEvent
+
+  - name: EmitLayerHandoffEvent
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: publishCompletionEvent
+        functionRef:
+          refName: emitCloudEvent
+          arguments:
+            event: "PrdClosedAndBaselinedEvent"
+            documentId: "${ .documentId }"
+            features: "${ .decomposedFeatures }"
+    produceEvents:
+      - eventRef: PrdClosedAndBaselinedEvent
+    end: true
 
   - name: RejectProductFeatureSet
     type: operation

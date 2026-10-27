@@ -1,0 +1,74 @@
+# =============================================================================
+#  ADR-GRAPH-TEMPLATE.yaml — Architecture Decision Graph Slice (Layer 05)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 05_ADR (Architecture Decision Records)
+#  Parity: Full content and functional parity with ADR-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "ADR-NN_[decision_slug]"
+
+metadata:
+  author: "[Principal Architect / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Deprecated | Superseded
+  framework_version: "[X.Y.Z]"
+  description: "[Architectural trade-off analysis, technology evaluation, and structural design choices]"
+  layer: "05_ADR"
+  decision_makers:
+    - "[Architect Name / Role]"
+    - "[Tech Lead Name / Role]"
+  spec_ready_target: "PASS"
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Primary Architectural Decision Record (Sections 2, 3, 4 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "ADR.05.01.xxxx"
+    type: "architectural_decision"
+    title: "[Architecture Decision Title: e.g. Adopt Redis Cluster for Distributed Session Cache]"
+    context: >-
+      The order gateway requires sub-5ms distributed session state lookup under 50,000 active
+      concurrent WebSocket connections. The current PostgreSQL session store experiences high
+      connection pool exhaustion and query latency spikes during flash sales.
+    decision: >-
+      Deploy an in-memory Redis 7.x Cluster with master-replica replication across 3 availability
+      zones, utilizing token-bucket rate limiting and key eviction policies.
+    consequences: >-
+      Positive: Reduces session lookup latency from 28ms to 1.8ms; decouples auth validation from
+      relational database.
+      Negative: Introduces distributed caching infrastructure overhead and potential session
+      invalidation desync during partition events.
+    status: "Accepted"  # Proposed | Accepted | Deprecated | Superseded
+    properties:
+      decision_category: "infrastructure_selection"
+      evaluation_method: "multi_criteria_tradeoff_analysis"
+      alternatives_considered:
+        - option: "Memcached distributed cluster"
+          pros: "Simpler key-value semantics and lower memory footprint"
+          cons: "Lacks native cluster replication, persistence, and pub/sub capabilities"
+          verdict: "Rejected"
+        - option: "In-process memory cache with sticky sessions"
+          pros: "Zero network hop latency"
+          cons: "Fails horizontal scaling and breaks stateless container invariants"
+          verdict: "Rejected"
+
+edges:
+  # Architectural Decision constrains Downstream Component Contract (Layer 06 SPEC)
+  - from: "ADR.05.01.xxxx"
+    to: "SPEC.06.01.xxxx"
+    relation: "constrains"
+    notes: "Mandates Redis cluster client protocol and connection pooling limits for the gateway"
+    description: "Requires the gRPC service interface to incorporate Redis connection pool parameters and cluster topology routing."
+    rationale: "Ensures that implementation contracts adhere strictly to the ratified architectural infrastructure decision."
+
+  # Architectural Decision constrains Upstream Formal Requirement (Layer 03 EARS)
+  - from: "ADR.05.01.xxxx"
+    to: "EARS.03.02.xxxx"
+    relation: "constrains"
+    notes: "Bounds the latency and state durability guarantees of event-driven order ingestion"
+    description: "Establishes physical performance boundaries on event-driven ingestion timing by guaranteeing sub-2ms session resolution."
+    rationale: "Prevents requirements from assuming unrealistic latency bounds unsupported by infrastructure."

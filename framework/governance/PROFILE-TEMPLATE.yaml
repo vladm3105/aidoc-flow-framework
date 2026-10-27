@@ -23,9 +23,9 @@ metadata:
   schema_version: "1.1.0"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-10-07"
-  framework_version: "0.91.4"
+  framework_version: "0.96.23"
   # project_name: "<your project>"
-  framework_path: ".aidoc/framework"  # symlink to shared framework; engines resolve via readlink -f
+  framework_path: ".aidoc/framework"  # attached via Git submodule or pinned copy; engines resolve via readlink -f
 
 # =============================================================================
 #  Adaptation knobs (15 — see ADAPTATION_SURFACE.yaml for the closed set)
@@ -40,7 +40,9 @@ metadata:
 #
 # review_mode: team
 
-# audit_threshold raises the per-layer readiness-score gate floor.
+# audit_threshold raises the per-layer readiness-score gate floor for legacy
+# heuristic models. Modern gates are evaluated deterministically via BTV PASS
+# and zero blocking findings (P0/P1 = 0).
 # Raise-only: a value lower than the framework default is ignored.
 # Framework default: 90 per layer.
 #
@@ -61,7 +63,7 @@ metadata:
 # Disabling a skippable layer applies the cascade rule.
 # Default: all 10 layers active.
 #
-# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, EVAL]
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, CHG, EVAL]
 
 # section_toggles disables template-declared OPTIONAL sections.
 # Required sections are not toggleable — toggling them is out of surface

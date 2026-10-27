@@ -1,14 +1,21 @@
+---
+doc_id: GOV-DURABLE-EXECUTION-STANDARD
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # Durable Multi-Agent Execution Standard: 3-Tier Architecture for Autonomous SDD Engineering
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Establishes the engine-agnostic 3-tier runtime execution architecture for running autonomous,
 high-assurance Specification-Driven Development (SDD) multi-agent systems with durable state,
@@ -16,7 +23,7 @@ cognitive reasoning graphs, and deterministic side effects.
 
 ---
 
-## 1. Purpose & Foundational Law
+## 1. Purpose & Foundational Law {#sec-1-purpose-foundational-law}
 
 The SDD framework standardizes specifications, declarative workflow graphs (`.sw.yaml`), review crews,
 and quality gates across the 10 SDD layers (01_BRD through 10_EVAL). Per **Decision [GD-13 / D-0013](DECISIONS.md)**,
@@ -34,7 +41,7 @@ implements this standard to execute framework workflows with absolute durability
 
 ---
 
-## 2. The 3-Tier Execution Architecture
+## 2. The 3-Tier Execution Architecture {#sec-2-the-3-tier-execution-architecture}
 
 The runtime platform is strictly partitioned into three complementary tiers:
 
@@ -55,17 +62,17 @@ The runtime platform is strictly partitioned into three complementary tiers:
         Data Plane: Artifact Store (URIs only) · Control Plane: Thin State Tokens
 ```
 
-### Tier 1: Durable Workflow (Control & SAGA)
+### Tier 1: Durable Workflow (Control & SAGA) {#sec-tier-1-durable-workflow-control-saga}
 - **Role**: State machine orchestration, lifecycle gating, timeout enforcement, durable human-in-the-loop pauses, and reverse-order SAGA rollback.
 - **Characteristics**: Deterministic, replayable code. It never calls an LLM directly, never reads system clocks or random numbers, and never performs I/O.
 - **Durability**: Survives worker crashes, host reboots, and rolling platform deployments without losing execution progress or duplicating side effects.
 
-### Tier 2: Graph-Based Cognitive Flows (Reasoning & Auditing)
+### Tier 2: Graph-Based Cognitive Flows (Reasoning & Auditing) {#sec-tier-2-graph-based-cognitive-flows-reasoning-auditing}
 - **Role**: Cognitive deliberation, multi-persona review crews ([`REVIEW_CREWS.yaml`](REVIEW_CREWS.yaml)), requirement decomposition, planning, and diagnostic root-cause analysis.
 - **Characteristics**: Non-deterministic reasoning cycles modeled as directed graphs. Nodes represent prompt/model invocations or tool synthesis steps.
 - **Execution Boundary**: Every cognitive node that calls an LLM or remote tool is dispatched as an isolated, retryable activity from the Tier 1 workflow.
 
-### Tier 3: Deterministic Effect & Verification Services (Execution & Gating)
+### Tier 3: Deterministic Effect & Verification Services (Execution & Gating) {#sec-tier-3-deterministic-effect-verification-services-execution-gating}
 - **Role**: Interacting with the real world—filesystem, git repositories, compilers, linters ([`sdd_doc_lint`](../../sdd_doc_lint/), [`sdd_swf_lint`](../../sdd_doc_lint/swf_lint.py)), test suites, and remote forge APIs.
 - **Characteristics**: 100% deterministic CLIs and services.
 - **Gate Floor**: Outputs are returned as structured data values, evaluating the normative deterministic quality gate floor:
@@ -73,7 +80,7 @@ The runtime platform is strictly partitioned into three complementary tiers:
 
 ---
 
-## 3. The Golden Rule of Autonomous Execution
+## 3. The Golden Rule of Autonomous Execution {#sec-3-the-golden-rule-of-autonomous-execution}
 
 > **Reasoning in Cognitive Graphs, Effects in Deterministic Services, Control in Durable Workflows.**
 >
@@ -83,7 +90,7 @@ The runtime platform is strictly partitioned into three complementary tiers:
 
 ---
 
-## 4. Unified Role & Agent Taxonomy (`RoleSpec`)
+## 4. Unified Role & Agent Taxonomy (`RoleSpec`) {#sec-4-unified-role-agent-taxonomy-rolespec}
 
 Agents are not hardcoded monolithic entities. An agent is a registered **role** defined by a declarative specification (`RoleSpec`):
 
@@ -103,7 +110,7 @@ role_spec:
   max_loops: 1
 ```
 
-### The Three Kinds
+### The Three Kinds {#sec-the-three-kinds}
 
 | Kind | Uses an LLM? | Runtime Construct | Framework Mapping & Examples |
 |---|---|---|---|
@@ -111,18 +118,18 @@ role_spec:
 | **`executor`** (Autonomous Coding Agent) | Yes (internal tool loop) | Long-running activity wrapping an agent CLI in an isolated worktree | Code implementer (e.g. Claude Code, Antigravity, custom coding CLI behind an adapter) |
 | **`service`** (Deterministic Tool) | No | Plain activity / deterministic execution step | Workspace manager (`git worktree`), Linters (`sdd_doc_lint`, `sdd_swf_lint`), Compilers, Test runners, PR Publisher |
 
-### Role Maintenance & Registration
+### Role Maintenance & Registration {#sec-role-maintenance-registration}
 - The number of roles is **unbounded**. Adding a role is a configuration event in the platform's role registry, not an architectural redesign.
 - Every role that mutates physical state (`effectful: true`) MUST name an idempotent compensation service (`compensation`).
 
 ---
 
-## 5. SAGA Compensation & Rollback Invariants
+## 5. SAGA Compensation & Rollback Invariants {#sec-5-saga-compensation-rollback-invariants}
 
 Autonomous development workflows can fail at any stage (validation failure, test breakdown, quota exhaustion, human rejection).
 Rollback must be instantaneous, reliable, and deterministic.
 
-### Invariants:
+### Invariants: {#sec-invariants}
 1. **No LLM in Rollback**: No generative model is ever instructed to "revert what it did". Rollbacks are executed exclusively by deterministic services:
    - `git worktree remove --force <path>`
    - `git branch -D <feature-branch>`
@@ -134,7 +141,7 @@ Rollback must be instantaneous, reliable, and deterministic.
 
 ---
 
-## 6. Thin State vs. Data Plane Separation
+## 6. Thin State vs. Data Plane Separation {#sec-6-thin-state-vs-data-plane-separation}
 
 To prevent event history bloat and payload serialization crashes, platforms enforce strict separation between the **Control Plane** and the **Data Plane**:
 
@@ -161,12 +168,12 @@ To prevent event history bloat and payload serialization crashes, platforms enfo
 
 ---
 
-## 7. Event History Limits & Capacity Budgeting
+## 7. Event History Limits & Capacity Budgeting {#sec-7-event-history-limits-capacity-budgeting}
 
 Durable execution engines track execution through an append-only event log.
 Platforms must budget runs to guarantee they operate well below event limits:
 
-### Event Budget Formula:
+### Event Budget Formula: {#sec-event-budget-formula}
 $$\text{Worst-Case Activities} = A_{\text{init}} + \sum_{r \in \text{Roles}} (N_{r} \times L_{r}) + A_{\text{verify}} \times L_{\text{remediation}} + A_{\text{cleanup}}$$
 
 Where:
@@ -175,13 +182,13 @@ Where:
 - $L_{\text{remediation}}$: In-band remediation iteration cap (default $\le 3$, per CB-1)
 - $A_{\text{verify}}$: Verification stages (Static, Lint, Compile, Test, Security)
 
-### Budget Benchmarks:
+### Budget Benchmarks: {#sec-budget-benchmarks}
 - Typical SDD Run: $\approx 25$ activities ($\approx 150$ workflow events).
 - Worst-Case Exhausted Run: $\approx 52$ activities ($\approx 330$ workflow events).
 - **Safety Margin**: A 330-event worst-case run consumes $\approx 3\%$ of standard platform warning thresholds (10,240 events), leaving vast headroom for multi-persona crew fan-out.
 - **Run Sizing Guardrail**: If an extraordinary run exceeds $5,000$ events, it MUST partition into **Child Workflows** or execute **Continue-As-New** carrying the task cache forward.
 
-### 7.1 Cognitive Loop Heartbeat & Event Compression Protocol
+### 7.1 Cognitive Loop Heartbeat & Event Compression Protocol {#sec-71-cognitive-loop-heartbeat-event-compression-protocol}
 
 To maintain the event budget above while executing deep multi-step agent reasoning:
 1. **Activity Event Compression Invariant:**
@@ -191,7 +198,7 @@ To maintain the event budget above while executing deep multi-step agent reasoni
 
 ---
 
-## 8. CNCF Serverless Workflow (`.sw.yaml`) Compilation Mapping
+## 8. CNCF Serverless Workflow (`.sw.yaml`) Compilation Mapping {#sec-8-cncf-serverless-workflow-swyaml-compilation-mapping}
 
 Platforms ingest framework declarative workflows ([`framework/governance/workflows/`](workflows/)) and map them directly to 3-tier runtime execution:
 
@@ -208,7 +215,7 @@ Platforms ingest framework declarative workflows ([`framework/governance/workflo
 
 ---
 
-## 9. Dual-Path Remediation Integration (`REV-AUTO` vs. `REV-CHG`)
+## 9. Dual-Path Remediation Integration (`REV-AUTO` vs. `REV-CHG`) {#sec-9-dual-path-remediation-integration-rev-auto-vs-rev-chg}
 
 Review and verification failures are handled through the formal dual-path routing contract defined in [`REVIEW_REMEDIATION_FLOW.md`](REVIEW_REMEDIATION_FLOW.md):
 
@@ -236,7 +243,7 @@ flowchart TD
 
 ---
 
-## 10. Worker Topology & Locality Guardrails
+## 10. Worker Topology & Locality Guardrails {#sec-10-worker-topology-locality-guardrails}
 
 To prevent concurrency hazards and resource contention, workers are separated into two distinct pools:
 
@@ -245,7 +252,7 @@ To prevent concurrency hazards and resource contention, workers are separated in
 | **`agents`** | Cognitive graph nodes, LLM prompts, tool reasoning | I/O-bound (network, API calls), stateless | Horizontal auto-scaling (high concurrency per node: 50–100) |
 | **`exec`** | Git worktrees, compilers, test execution, linters | CPU/Disk/Memory bound, stateful filesystem | Vertical sizing, bounded concurrency (2–4 per host) |
 
-### The Filesystem Locality Sharp Edge:
+### The Filesystem Locality Sharp Edge: {#sec-the-filesystem-locality-sharp-edge}
 Git worktrees and build caches require atomic local disk access. If multiple `exec` activities for the same task run across disparate physical hosts sharing a network filesystem (e.g. NFS/SMB/EFS), file-locking and cache-coherency failures will occur.
 
 **Required Locality Solutions (Choose One)**:
@@ -254,7 +261,7 @@ Git worktrees and build caches require atomic local disk access. If multiple `ex
 
 ---
 
-## 11. Layer-Specific Durable Architecture: IPLAN, CHG & EVAL Execution Focus
+## 11. Layer-Specific Durable Architecture: IPLAN, CHG & EVAL Execution Focus {#sec-11-layer-specific-durable-architecture-iplan-chg-eval-execution-focus}
 
 While the 3-tier architecture governs all SDD workflows across the 10 layers, durable execution guarantees are mission-critical for three downstream execution and governance layers: **IPLAN (Layer 08)**, **CHG (Layer 09)**, and **EVAL / IPVERIFY (Layer 10)**.
 
@@ -290,7 +297,7 @@ flowchart TD
     E4 -- "Fail (REV-CHG / Exhausted)" --> E5 --> C1
 ```
 
-### 11.1 Layer 08 — IPLAN (Implementation Planning & Code Execution)
+### 11.1 Layer 08 — IPLAN (Implementation Planning & Code Execution) {#sec-111-layer-08-iplan-implementation-planning-code-execution}
 The IPLAN layer bridges design artifacts (SPEC/TDD/ADR) to filesystem mutations and source code changes. Without durable workflow orchestration, partial patches, executor crashes, or worktree leaks leave the repository in an inconsistent state.
 
 1. **Workspace Lifecycle as Tier 3 Deterministic Service**:
@@ -308,7 +315,7 @@ The IPLAN layer bridges design artifacts (SPEC/TDD/ADR) to filesystem mutations 
    - Teardown of the feature worktree is registered as the foundational SAGA compensation.
    - **Order Guard Invariant ([`WORKTREE_FLOW.md`](WORKTREE_FLOW.md) §3.8)**: The compensation activity must execute `git worktree remove` *before* executing branch deletion (`git branch -D` or remote deletion). Deleting the branch before removing the worktree creates git metadata corruption and orphaned references.
 
-### 11.2 Layer 09 — CHG (Governance Change Management & Gate Control)
+### 11.2 Layer 09 — CHG (Governance Change Management & Gate Control) {#sec-112-layer-09-chg-governance-change-management-gate-control}
 The CHG layer governs change authorization, automated quality gates, and branch promotion. Durable execution prevents unrecorded modifications, skipped approvals, and race conditions during promotion.
 
 1. **Change Lifecycle State Machine**:
@@ -327,7 +334,7 @@ The CHG layer governs change authorization, automated quality gates, and branch 
    - The workflow polls PR status checks via durable timers (e.g., 15s intervals), verifies merge eligibility (`mergeStateStatus == CLEAN`), and triggers squash merge.
    - Following successful squash merge, the workflow orchestrates final branch cleanup and records the closing commit SHA in the CHG document.
 
-### 11.3 Layer 10 — EVAL / IPVERIFY (Automated Verification, Audits & Reviews)
+### 11.3 Layer 10 — EVAL / IPVERIFY (Automated Verification, Audits & Reviews) {#sec-113-layer-10-eval-ipverify-automated-verification-audits-reviews}
 The EVAL / IPVERIFY layer establishes deterministic proof of correctness before change completion. Durable execution enables parallel adversarial audits, robust fixture lifecycle management, and systematic failure routing.
 
 1. **Automated Multi-Tier Verification Suite Orchestration**:
@@ -355,7 +362,7 @@ The EVAL / IPVERIFY layer establishes deterministic proof of correctness before 
 
 ---
 
-## 12. References & Governance Traceability
+## 12. References & Governance Traceability {#sec-12-references-governance-traceability}
 
 - **Engine-Agnostic Law**: [Decision GD-13 / D-0013](DECISIONS.md)
 - **Worktree Invariants & Order Guard**: [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md)

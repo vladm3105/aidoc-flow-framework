@@ -23,7 +23,7 @@
 ```
 aidoc-flow-framework/
 ├── README.md                       Project overview
-├── CHANGELOG.md                    Project-level changelog (Keep a Changelog)
+├── CHANGELOG.md                    Project-level changelog (frozen historical tombstone per CHG-40)
 ├── SECURITY.md                     Security policy / vulnerability reporting
 ├── LICENSE
 ├── .pre-commit-config.yaml         Pre-commit hooks (lint / format / security)
@@ -37,7 +37,8 @@ aidoc-flow-framework/
 │   ├── PROJECT.md                   Versioning, branches, milestones, change management
 │   ├── TAGGING.md                   Git-tag policy
 │   ├── SUPPORT.md                   Support channels + how to get help
-│   └── STARTUP_HANDOFF.md
+│   ├── STARTUP_HANDOFF.md
+│   └── AIDOC_WORKSTATION_STANDARD.md .aidoc/ Workstation standard & dual-control
 │
 ├── framework/                       SHARED engine-agnostic specification (the contract)
 │   ├── VERSION                      Framework spec SemVer
@@ -67,15 +68,7 @@ aidoc-flow-framework/
 │   ├── smoke/                         Post-deploy smoke tests
 │   └── chg/                           GATE-SPEC diff-aware guard
 │
-├── examples/              # url-shortener/ — acceptance-test example
-│   └── url-shortener/
-│       ├── seed/                    Human input — the acceptance-test seed
-│       ├── chg/                     Human input — change request for Phase 2
-│       ├── docs/                    AI output — produced 10-layer chain (committed)
-│       ├── .aidoc/                  Project overrides — see framework/governance/aidoc/
-│       │                            (committed)
-│       └── logs/<TS>/               Tool internals — gitignored, ephemeral
-├── archive/                         Archived: platforms, plans, tools, legacy
+├── .aidoc/                            Local project configuration and learnings
 └── .github/
 ```
 
@@ -91,16 +84,15 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 | `legacy/ucx_flow_v3/01_BRD … 08_IPLAN/`          | `framework/layers/`                      |
 | `legacy/ucx_flow_v3/LAYER_REGISTRY.yaml`         | `framework/registry/`                    |
 | `legacy/ucx_flow_v3/CHG/`, `legacy/governance/`  | `framework/governance/`                  |
-| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `archive/platforms/hermes/` (archived)   |
-| `.claude/` skills (`doc-*`), agents, commands    | `archive/platforms/claude-code-plugin/` (archived) |
+| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `legacy-ucx-v3.2-read-only` branch (platforms archived)   |
+| `.claude/` skills (`doc-*`), agents, commands    | `legacy-ucx-v3.2-read-only` branch (platforms archived) |
 | `legacy/ai_dev_ssd_flow_v2/`                     | dropped (superseded by `framework/`)     |
-| `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
+| `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by structured SDD layers, Change Requests, and GitHub releases |
 | `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |
 
 > Content was **copied** out of `legacy/` and adapted during Phases 1–3 (the
 > legacy copy stayed untouched throughout). At the Phase 5 cutover the
 > `legacy/` tree was **removed** from the working tree (P5-T2) and the pristine
 > pre-migration project is preserved on the protected, read-only branch
-> **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was ported
-> into the Claude Code plugin in Phase 3; the root loader is removed at cutover
-> (the plugin is the distribution).
+> **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was retired
+> alongside platform archives; the framework specification is platform-agnostic.

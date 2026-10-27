@@ -1,14 +1,21 @@
+---
+doc_id: GOV-LINT-RULES
+bucket: machine-consumed-candidate
+authority: bidirectional
+consumers: [authoring, audit, traceability]
+---
+
 # Lint Rules Catalog
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
-| Last Updated | 2026-10-09 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -17,7 +24,7 @@ structure. Each rule has a stable **ID**, a one-line **meaning**, a typical
 one exists). The reference implementation is `sdd_doc_lint` — the canonical
 source since CLEANUP-001 retired the platform-vendored copies. The
 `tests/conformance/test_lint_catalog.py` guard keeps catalog and code in sync
-(#715): every ID in the linters' `CODES` registries (`CHG-L001–L017`,
+(#715): every ID in the linters' `CODES` registries (`CHG-L001–L019`,
 `BGF-00–07`) appears here, and every catalogued table-row ID is either emitted
 in `sdd_doc_lint/` sources, an alias of an emitted ID, or marked **Reserved**.
 
@@ -30,7 +37,7 @@ machine behavior.
 Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 `build` phase and errors in `gate-code`); the column gives the common tier.
 
-## Structure & schema
+## Structure & schema {#sec-structure-schema}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -42,7 +49,7 @@ Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 | `PH01` | A placeholder / unfilled token (e.g. `TODO`, `XXX`, `{…}`) remains in the body. | error | `AUTHORING_STYLE.md` |
 | `SEED01` | A BRD `seed_disposition:` ledger row is malformed (missing claim, illegal disposition, `absorbed` with no/unresolvable BRD element, `rejected` with no rationale, or `deferred` with no rationale/target cycle) or carries a `seed_version` pin that does not match the cited seed file's `document_control.version` — the named `seed_file:` when the row carries one (#723), else any corpus seed file (legacy set-membership). Deterministic half of the seed contract; the auditor lens (C8) owns completeness. Silent when the optional carrier is absent; unpinned rows pass as before; pinned rows skip when the seed file is absent from the corpus. | error | `SEED_CONTRACT.md` |
 
-## What `STRUCT01` requires, and why it can exceed `total_sections`
+## What `STRUCT01` requires, and why it can exceed `total_sections` {#sec-what-struct01-requires-and-why-it-can-exceed-total_sections}
 
 **These are two different counts, and four layers disagree by design.** Reading them as the
 same number is why #557 was filed against a template that was correct.
@@ -76,7 +83,7 @@ three add. A reader who generalises "differs ⇒ has backmatter" gets IPLAN exac
 `tests/conformance/test_required_section_sets.py` pins all eight derived sets, IPLAN's `2`
 included, so the direction cannot drift unnoticed.
 
-### `_required: false` marks OPTIONAL CONTENT, not "unnumbered"
+### `_required: false` marks OPTIONAL CONTENT, not "unnumbered" {#sec-_required-false-marks-optional-content-not-unnumbered}
 
 The marker's one meaning is that the section may be **absent**. `PRD`'s
 `component_decomposition` is the worked example: *"OPTIONAL — only required when downstream
@@ -88,7 +95,7 @@ layer's authoring guidance calls required — **removes a live assertion** and m
 where required backmatter is unenforced. `tests/conformance/test_required_section_sets.py` pins
 each layer's derived count so that edit cannot be made silently.
 
-## Identifiers
+## Identifiers {#sec-identifiers}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -100,11 +107,11 @@ each layer's derived count so that edit cannot be made silently.
 | `IDDRIFT01` | `rehash --check`: an element's content no longer matches its declared ID hash (drift since the ID was minted). | warning (advisory opt-in) | `ID_NAMING_STANDARDS.md` |
 | `FRCAP01` | A BRD carries more functional requirements than GD-14's SHOULD cap of 5. Counts the element IDs under the FR section and BEFORE its literal `Acceptance criteria:` line — the same boundary `COV01` grades — so acceptance criteria do not count. Escaped (`Future` / `realized_by:`) requirements DO count: the cap is about document size, not coverage obligation. **Never escalates** — GD-14 states the cap as a SHOULD. | warning (advisory) | GD-14, `../layers/01_BRD/BRD-TEMPLATE.yaml` |
 
-## Traceability & coverage
+## Traceability & coverage {#sec-traceability-coverage}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
-| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). Exemption (GD-46): an IPLAN declaring `tdd_consistency.status: not-applicable` is exempt from the `tdd` tag — the N/A status names the waived contract; `@spec:` stays required. | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
+| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). Exemption (GD-46): an IPLAN declaring `tdd_consistency.status: not-applicable` is exempt from the `tdd` tag — the N/A status names the waived contract; `@spec:` stays required. Exemption (#1041): an ADR index with empty `adrs: []` and `technologies: []` is exempt from upstream tags — the empty registry names the waived contract; a non-empty index stays enforced. | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
 | `TRACE-RES-001` | A trace tag does not resolve to an existing target document/element. | error | `TRACEABILITY.md` |
 | `REFGRAN01` | A document-level trace tag points to an element-declaring layer where an element-level citation is required (GD-03 reference granularity). | warning | `TAG_SYNTAX.md` |
 | `COV01` | Forward coverage: an in-scope BRD functional requirement is cited by no PRD, or reaches no downstream SPEC/IPLAN. | warning→error | `TRACEABILITY.md` |
@@ -114,7 +121,7 @@ each layer's derived count so that edit cannot be made silently.
 | `REG01` | New-layer registration: a layer entry is missing a mandatory registration field (`number`, `artifact`, `name`, `folder`, `extensions`, `required_tags`, `can_reference`, `error_prefix`, `optional`, `description`, `template`, `downstream`) or a registration follow-up (`total_layers`, `layer_groups`, `realizing_layers`, `c4_mapping`, upstream `downstream`, new lint rule IDs). The full checklist lives in the `LAYER_REGISTRY.yaml` header comment. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `registry/LAYER_REGISTRY.yaml`, `registry/README.md` |
 | `CSC01` | Cross-layer cardinality / deliverable-type mismatch between a child doc and its parent. | error | `ID_NAMING_STANDARDS.md` |
 
-## Thresholds
+## Thresholds {#sec-thresholds}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -122,7 +129,7 @@ each layer's derived count so that edit cannot be made silently.
 | `TH02` | A threshold's suffix/value is inconsistent with the corpus's other uses of the same key. | warning | `THRESHOLD_NAMING_RULES.md` |
 | `TH-RES-001` | An `@threshold:` reference is unresolved — not declared in the cited source document's threshold section. | error | `THRESHOLD_NAMING_RULES.md`, `TRACEABILITY.md` |
 
-## Style
+## Style {#sec-style}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -131,16 +138,16 @@ each layer's derived count so that edit cannot be made silently.
 | `STY03` | The document body exceeds its word-count target. | error | `AUTHORING_STYLE.md` |
 | `STALE01` | Status is `Approved` but a required freshness field (e.g. `last_audited_spec`) is missing — the artifact may be stale. | warning | `DEFINITION_OF_DONE.md` |
 
-## Reuse
+## Reuse {#sec-reuse}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
 | `REUSE01` | The document is satisfied by reference (`reuse: referenced`) — it is not re-audited; the reuse target is named. | warning (advisory) | `TRACEABILITY.md` |
 | `REUSE02` | A `reuse:` declaration violates its contract — unknown `reuse.state` (expected `authored`/`referenced`), or a missing / URL / malformed / unresolvable-in-repo `reuse.target`. | error | `TRACEABILITY.md` |
 
-## Governance (CHG)
+## Governance (CHG) {#sec-governance-chg}
 
-The machine checks live in `sdd_doc_lint/chg_lint.py` (`CODES`: `CHG-L001`–`CHG-L018`;
+The machine checks live in `sdd_doc_lint/chg_lint.py` (`CODES`: `CHG-L001`–`CHG-L019`;
 `CHG-L012` is catalogued with the IPLAN rows below).
 `GOV-*` rows below are the governance-contract prose; where a `GOV-*` rule is
 enforced by a `CHG-L*` check the row says **Alias of** that check, and where
@@ -165,6 +172,7 @@ nothing emits it the row says **Reserved**.
 | `CHG-L016` | Archive snapshots exist — every cited `archive_path` resolves to a file on disk and is git-tracked. Unresolvable paths warn (fixtures/out-of-tree refs are unverifiable); resolvable-but-ignored paths error (never land without `-f`); resolvable-but-unstaged paths warn. | error (ignored) / warning (missing, unstaged) | `DOC_GOVERNANCE_CORE.md` §3.4.1 C18 |
 | `CHG-L017` | Premature step completion — on a `Proposed` / `Approved` CHG no `implementation.steps[]` entry may be marked `Completed`; `In-Progress` and beyond pass (executor's record). Deterministic half of the step-status invariant; the full code-written-and-verified judgement stays with the reviewer lens. | error | `DOC_GOVERNANCE_CORE.md` §3.4.1 E28 |
 | `CHG-L018` | Mandatory formal decision block — every CHG must carry a non-empty `decision` mapping with `decision_id`, `title`, `choice`, and `consequences`. Big changes document trade-offs and alternatives; small fixes state concise 1-2 sentence choice and rationale. Governance alias: `GOV-022`. | error | `DECISION_WORKFLOW.md`, `CHG-TEMPLATE.yaml` §decision |
+| `CHG-L019` | Fast-path boundary guard — a fast-path change (HOTFIX, CODE2C, DIR2C) must not touch contract-bearing layers (03_EARS, 04_BDD, 05_ADR, 06_SPEC) without an SDD lifecycle step (SDD2C required). Governance alias: `GOV-023`. | error | `DOC_GOVERNANCE_CORE.md` §3.1.3 router + `governance/CHG_REQUEST_FLOWS.md` |
 | `GOV-008` | A CHG document was created without completing the creation checklist (§CHG creation checklist). The checklist is a MANDATORY PROCESS GATE — blocking prerequisite, not post-hoc validation. The "write before read" pattern has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). **Reserved** — documented contract, no machine check emits this ID yet. | error | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist MANDATORY PROCESS GATE |
 | `GOV-009` | A CHG document's `traceability.upstream.ears_references` or `bdd_references` is empty when the CHG describes a change that affects authenticated or requirement-traced functionality. Checklist item #5 requires citing specific EARS/BDD IDs. TAG01 covers general traceability but not CHG-specific upstream citation. **Reserved** — documented contract, no machine check emits this ID yet. | warning | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist item #5 |
 | `GOV-010` | A CHG document's `implementation.steps` contains a step without a `phase` field, or a step with `phase: code_implementation`. Every step MUST have `phase: sdd_lifecycle`, `phase: iplan_creation`, or `phase: documentation_sync` (doc-only milestones, #775). Code implementation steps belong exclusively in IPLAN. Added after CHG-04, CHG-06, CHG-08 violated SDD-first ordering. **Reserved** — overlaps `CHG-L003`'s code-step check, but the phase-presence half has no emitter. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` + checklist item #13 |
@@ -180,6 +188,7 @@ nothing emits it the row says **Reserved**.
 | `GOV-020` | A SEED2C / F3 (brownfield) CHG touches seed or module docs without covering them in its lifecycle — seed touches need a `seed_scope` record (`no-change` cites checked files; new domains are created; changed assumptions are superseded with non-empty `entries`, never rewritten) and module touches need a `module_lifecycle` entry (archive → sync → version, affected modules only). Other flows are untouched by this rule. **Alias of `CHG-L014`** — enforced there. | error | `governance/CHG_REQUEST_FLOWS.md` §4 |
 | `GOV-021` | A document an AI agent created or modified in a versioned tier lacks `document_control` + metadata (agent id, supervising human, authorizing CHG, change description) — or a seed/module lifecycle entry lacks `author`/`chg_ref` attribution. When the original document has no carrier, the AI agent must create it in the next version during update. Carriers already exist in all ten layer templates + governance docs (GD-24); the seed carrier ships with this rule. **Alias of `CHG-L015`** for the lifecycle-entry half — enforced there; the carrier half stays with the reviewer lens. | error (lifecycle-entry half) + reviewer lens (carrier half) | `SEED_CONTRACT.md` (AI-attribution rule) |
 | `GOV-022` | A CHG document was created without the mandatory `decision:` block or is missing required decision fields (`decision_id`, `title`, `choice`, `consequences`). Every change request must articulate its decision. **Alias of `CHG-L018`** — enforced there. | error | `DECISION_WORKFLOW.md` + `CHG-TEMPLATE.yaml` §decision |
+| `GOV-023` | A fast-path change (HOTFIX, CODE2C, DIR2C) touches contract-bearing files without an SDD lifecycle step. Public interface and contract changes require full SDD cascade authoring (SDD2C). **Alias of `CHG-L019`** — enforced there. | error | `DOC_GOVERNANCE_CORE.md` §3.1.3 router + `governance/CHG_REQUEST_FLOWS.md` |
 | `CHG-L012` | SDD sync on IPLAN completion: a referenced IPLAN is `Completed` but its `completion_spec_sync:` block does not attest the SPEC/TDD check (`spec_checked`/`tdd_checked` must be true; `diverged: true` must name the follow-up `chg_ref`). The check validates the attestation shape, not the codebase comparison itself. | warning | `DOC_GOVERNANCE_CORE.md` §IPLAN Lifecycle, `IPLAN-TEMPLATE.yaml` (`completion_spec_sync:`) |
 | `IPLAN01` | An IPLAN step modifies a function or constructor signature without documenting the current signature, the new signature, that it is a breaking change, and which callers must be updated. Auditor-lens prose — verify the `breaking_change:` block against the declared schema artifact before implementation. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `IPLAN-TEMPLATE.yaml` (`execution_commands.breaking_change:`) |
 | `BGF-00` | A bugfix IPLAN file is unreadable, empty, or not a YAML mapping — there is no repair to validate. Structural pre-check before BGF-01..07. | error | `sdd_doc_lint/bugfix_lint.py` |
@@ -191,7 +200,7 @@ nothing emits it the row says **Reserved**.
 | `BGF-06` | A bugfix IPLAN's manifest names files outside the repair scope, or a DONE entry names a file missing on disk (manifest accuracy per §3.5-equivalent). Scope creep turns a repair into an unreviewed feature. | error | `DOC_GOVERNANCE_CORE.md` §IPLAN Lifecycle (manifest accuracy) |
 | `BGF-07` | A bugfix IPLAN's parent is not an original terminal IPLAN (parent is itself a bugfix, or is still active). Fix-on-fix chains hide thrashing; failed attempts run rollback, then a new sibling cites `prior_attempts`. | error | `IPLAN-TEMPLATE.yaml` (`document_control` bugfix guidance) |
 
-## TDD ↔ IPLAN sync
+## TDD ↔ IPLAN sync {#sec-tdd-iplan-sync}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -201,7 +210,7 @@ nothing emits it the row says **Reserved**.
 | `TDD-SYNC-D` | Language consistency: a TDD and its owning IPLAN reference different test-file languages for the same component. After a language pivot both layers must be updated in the same change. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync |
 | `TDD-SYNC-E` | Index synchronization: the TDD index and the IPLAN index show inconsistent IPLAN statuses. The IPLAN index is the source of truth; when an IPLAN status changes, both indexes must be updated. **Reserved** — documented contract, no machine check emits this ID yet. | warning (advisory) | `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync |
 
-## Evaluation (L10)
+## Evaluation (L10) {#sec-evaluation-l10}
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -215,7 +224,7 @@ nothing emits it the row says **Reserved**.
 | `EVAL-ID-001` | An EVAL test case `id` does not follow the `EVAL.NN.SS.xxxx` element ID format (per `ID_NAMING_STANDARDS.md`). The ID is independent from the source — source type and source document are tracked via `source_type` and `source_id` fields only. The old dash-in-ID format (`EVAL-01.TDD-01.4d64`) is incorrect. | error | `EVAL-TEMPLATE.yaml` §id_standard |
 | `EVAL-SRC-001` | An EVAL `test_design` entry has a missing or incomplete source reference. Each test case must have exactly one `source_type` and one `source_id` (or neither for non-source-derived tests). Create separate test cases for each source element. | error | `EVAL-TEMPLATE.yaml` §id_standard, §test_design |
  
-## CNCF Serverless Workflow (SWF-L001–L007)
+## CNCF Serverless Workflow (SWF-L001–L009) {#sec-cncf-serverless-workflow-swf-l001l009}
  
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
@@ -226,3 +235,15 @@ nothing emits it the row says **Reserved**.
 | `SWF-L005` | SAGA Compensation Integrity — states declaring `compensatedBy` must target a defined operation state responsible for rollback. | error | `DURABLE_EXECUTION_STANDARD.md` §4 (SAGA reversibility) |
 | `SWF-L006` | Parallel Branch Completeness — parallel state branches must define unique branch names and non-empty action definitions. | error | `DURABLE_EXECUTION_STANDARD.md` §2 |
 | `SWF-L007` | Review Crew Parity — review workflow action personas and crew functions must strictly match the definitions in `REVIEW_CREWS.yaml`. | error | `REVIEW_WORKFLOW_STANDARD.md`, `REVIEW_CREWS.yaml` |
+| `SWF-L008` | Review Saga & Author Playbook Binding — layer workflow templates (`*-SWF-TEMPLATE.yaml`) must declare valid `author_persona` and existing `author_playbook` metadata, and invoke the layer review saga subflow. | error | `plans/LAYER-SWF-PLAYBOOK-INTEGRATION-PLAN.md`, `REVIEW_CREWS.yaml` |
+| `SWF-L009` | Layer Workflow Closeout & Handoff Compliance — layer workflows and templates must define in-situ remediation loop, layer boundary gate verification, baseline sealing, and downstream handoff CloudEvent emission. | error | `plans/LAYER-SWF-CLOSE-CYCLE-AND-HANDOFF-PLAN.md`, `GOVERNANCE_WORKFLOW_STANDARD.md` §Rule 7 |
+
+## Governance Surface Lint (SURF-001–SURF-004) {#sec-governance-surface-lint-surf-001surf-004}
+
+| ID | Meaning | Severity | Contract |
+|----|---------|----------|----------|
+| `SURF-001` | Loose `DECISIONS.md` detected at repository root, `docs/`, or `plans/`. Monolithic decision logs are retired per GD-71 and GD-78; architectural decisions belong in Layer 05 (`docs/sdd/05_ADR/`) and change decisions belong in Layer 09 (`CHG-*.yaml` Section 1B). | error | `DECISION_WORKFLOW.md`, GD-71, GD-78 |
+| `SURF-002` | Loose `ROADMAP.md` detected at repository root, `docs/`, or `plans/`. Monolithic roadmaps are retired; feature planning lives in `plans/*-PLAN.md` and GitHub milestones. | warning | `BOOTSTRAP.md`, `ADAPTATION-GUIDE.md` |
+| `SURF-003` | Loose `CHANGELOG.md` detected at repository root or `docs/`. Monolithic change logs are retired per CHG-40 and CHG-94; change provenance lives in `framework/archive/CHG-*/` and release notes. | warning | `GATE-SPEC_FRAMEWORK.md`, CHG-40, CHG-94 |
+| `SURF-004` | Loose `HANDOFF.md` detected at repository root, `docs/`, or `plans/`. Session handoffs live on the active GitHub issue and plan; loose handoff files are retired. | error | `AGENTS.md` ("Where state lives") |
+

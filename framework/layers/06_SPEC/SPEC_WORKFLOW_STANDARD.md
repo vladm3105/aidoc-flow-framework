@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 Establishes the normative standard for modeling, specifying, and orchestrating Layer 06 (Technical Specification / SPEC) distributed interaction sequences, event choreography, and saga rollback compensation using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 
@@ -139,11 +139,39 @@ graph TD
 
 ---
 
-## 6. Dual-Template Selection Discipline
+## 6. Two-Graph Architecture & Dual-Template Selection Discipline
 
-Authors choose between the standard static template and the workflow-enabled hybrid template based on component architecture:
+Layer 06 employs the framework's **Two-Graph Dual-Plane Architecture**, pairing an executable component choreography workflow with an atomic technical specification content graph:
 
-| Selection Criteria | Standard [`SPEC-TEMPLATE.yaml`](./SPEC-TEMPLATE.yaml) | Hybrid [`SPEC-SWF-TEMPLATE.yaml`](./SPEC-SWF-TEMPLATE.yaml) |
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          LAYER 06 SPEC TWO-GRAPH ARCHITECTURE                               │
+├────────────────────────────────────────────────────────┬────────────────────────────────────┤
+│          GRAPH 1: PROCESS DAG (CONTROL PLANE)          │   GRAPH 2: CONTENT GRAPH (DATA)    │
+│       SPEC-SWF-TEMPLATE.yaml (Hybrid Envelope)         │       (SPEC-GRAPH-TEMPLATE.yaml)   │
+├────────────────────────────────────────────────────────┼────────────────────────────────────┤
+│ • CNCF Serverless Workflow v0.8 state machine DAG      │ • SDD-GRAPH v2.0 Property Graph    │
+│ • Flow of HOW to choreograph & verify components       │ • Content of WHAT interfaces exist │
+│ • Distributed transaction sequencing & callbacks       │ • Public exports, methods, schemas │
+│ • Automated SLA & threshold verification switch gates  │ • Event contracts & data models    │
+│ • Distributed saga rollback compensation               │ • Relational links (implements etc)│
+│ • Validated via LangGraph / Temporal state machine     │ • Validated via BTV engine         │
+└───────────────────────────┬────────────────────────────┴─────────────────┬──────────────────┘
+                            │                                              │
+                            ▼                                              ▼
+                    ┌──────────────────────────────────────────────────────────────┐
+                    │               DOCUMENT GENERATION & PROJECTION               │
+                    ├──────────────────────────────────────────────────────────────┤
+                    │ • Process DAG orchestrates choreography & contract checks    │
+                    │ • Agent actions populate and mutate atomic nodes in Data     │
+                    │ • BTV verifies topological closure & contract consistency    │
+                    │ • Observability Adapter projects graph into SPEC-TEMPLATE.yaml│
+                    └──────────────────────────────────────────────────────────────┘
+```
+
+Authors choose between authoring configurations based on component architecture:
+
+| Selection Criteria | Standard Companion [`SPEC-TEMPLATE.yaml`](./SPEC-TEMPLATE.yaml) | Two-Graph [`SPEC-SWF-TEMPLATE.yaml`](./SPEC-SWF-TEMPLATE.yaml) + [`SPEC-GRAPH-TEMPLATE.yaml`](./SPEC-GRAPH-TEMPLATE.yaml) |
 |---|---|---|
 | **Architecture Scope** | In-process component, utility library, pure algorithmic model | Distributed microservice, event-driven subsystem, multi-party saga |
 | **Interaction Nature** | Synchronous method calls, standard function exports | Asynchronous callbacks, webhooks, parallel service invocations |
@@ -194,4 +222,34 @@ When specifying distributed components that persist state or exchange asynchrono
    - Persistent data structures in Section 4 (`data_models:`) specify monotonic time-ordered primary keys (such as UUIDv7) to preserve index locality on high-throughput stores.
    - For retrieval-augmented or semantic components, declare embedding dimensions, distance metrics (cosine, inner product, L2), and indexing strategies.
    - Schema modifications require versioned, idempotent declarative migrations tested for forward and backward compatibility.
+3. **Approved Technology Stack Realization:**
+   - Component contracts in Section 3 and Section 4 must realize the specific technology selections ratified in upstream Layer 05 ADR from the approved enterprise stack catalog ([`TECHNOLOGY_STACK_USAGE_GUIDE.md`](../../governance/TECHNOLOGY_STACK_USAGE_GUIDE.md)).
+   - Bindings must detail concrete wire and storage idioms: PostgreSQL 18 with monotonic UUIDv7 keys and Bytebase declarative DDL migrations, NATS JetStream pub/sub subjects, gRPC Protobuf services, LiteLLM gateway integrations, and Temporal activity boundaries.
+
+---
+
+## 10. Closed Dual-Flow Quality Loop: Authoring & Review Saga Binding (CHG-111, GD-98)
+
+To eliminate the decoupling between technical specification authoring and review crew evaluation:
+
+1. **Explicit Author Rubric Binding**:
+   - The document envelope `metadata:` block declares `author_persona: "architect"` and `author_playbook: "framework/playbooks/06_SPEC/architect.md"`.
+   - Autonomous drafting agents derive component interface contracts, interaction choreography, and NFR assertions directly from this rubric prior to drafting.
+
+2. **Mandatory Review Saga Invalidation & Gating**:
+   - Prior to final choreography finalization (`FinalizeChoreography` in templates or `CommitDistributedTransaction` in standalone workflows), the authoring workflow executes `InvokeReviewSagaGate` via the `invokeReviewSaga` custom function, invoking the designated review saga subflow (`spec-review-remediation-flow`).
+   - The review saga coordinates multi-agent review crew evaluation across persona playbooks, enforcing the quality gate condition:
+     `${ .blocking_findings == 0 and .gate_passed == true }`.
+   - If findings or architectural defects are uncovered, the saga executes an automated remediation loop, halting commit and finalizing until all P0/P1 blockers are resolved.
+
+---
+
+## 11. 5-Step Closed Layer Lifecycle and CloudEvent Handoff (CHG-112, GD-99)
+
+Layer 06 SPEC implements the standardized 5-step closed lifecycle:
+1. **Stage 1 (Authoring)**: Architect authors interface contracts, interaction choreography state machines, and data schemas joining upstream BDD and ADR inputs.
+2. **Stage 2 (Review & Remediation)**: Review saga executes multi-persona review. Unresolved blockers trigger author remediation (`RemediateLayerDraft`, author: `architect`) before re-entering `InvokeReviewSagaGate` (Circuit Breaker CB-1: max 2 remediation passes / 3 review cycles).
+3. **Stage 3 (Layer Boundary Gate Verification)**: `VerifyLayerCloseoutGate` verifies `GATE-06` exit criteria (`GATE-06_SPEC_TDD.md`).
+4. **Stage 4 (Baseline Sealing & SDD Graph Lineage)**: `SealLayerDocumentBaseline` seals frontmatter status to `Baselined` with SHA-256 checksum; `RegisterSddGraphBaselineNode` registers `SpecNode` in SDD graph and locks incoming edges.
+5. **Stage 5 (Downstream Handoff CloudEvent Emission)**: `EmitLayerHandoffEvent` publishes `SpecContractsClosedEvent` (`org.aidoc.sdd.layer06.spec.closed`) with payload `interfaces`, `event_contracts`, `spec_checksum`, authorizing downstream Layer 07 (TDD) execution.
 

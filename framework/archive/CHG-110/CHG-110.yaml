@@ -1,0 +1,152 @@
+# =============================================================================
+#  CHG-110: Embedded Kùzu Acceleration Adapter & Central Lake Exporter
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Architecture & Spec & Tooling)
+#  Pre-cleared: Founder approval in session (2026-10-16)
+#  Scope: Embedded Kùzu openCypher adapter, Central Federated Read Lake exporter
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-16"
+  framework_version: "0.93.0"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: minor
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-110"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-16T00:00:00Z"
+  date_approved: "2026-10-16T00:00:00Z"
+  date_implemented: "2026-10-16T20:50:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-16T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-16): Option B Governance-First (CHG-110)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-110)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-110"
+  title: "Embedded Kùzu Acceleration Adapter and Central Federated Read Lake Exporter"
+  status: "Ratified"
+  context: |
+    Following the codification of the Native SDD Graph Schema (CHG-108) and 10 Layer Graph
+    Templates (CHG-109), multi-repository fleet scaling requires balancing local hermetic isolation
+    with enterprise-wide cross-project lineage:
+    1. Local Query Performance: Autonomous AI agents require expressive openCypher query capabilities
+       for multi-hop traversal, cycle detection, and unverified requirement queries. Pure-Python
+       in-memory traversal lacks a declarative query language and indexed join performance.
+    2. Zero-Daemon CI Invariant: Client-server graph engines (Neo4j, Dgraph) cannot run in ephemeral,
+       air-gapped CI runners or concurrent git worktrees due to file lock and port collisions.
+    3. Global Blast Radius: Evaluating system-wide impact of contract changes across sibling repos
+       requires projecting local edge graphs into a central federated lake.
+  choice: |
+    Implement Pattern PAT-GRAPH-001 (docs/FEDERATED_READ_LAKE_PATTERN.md):
+    1. Tier 1 Edge Acceleration (Embedded Kùzu): Implement sdd_doc_lint/kuzu_adapter.py providing
+       in-process openCypher execution backed by Kùzu.
+    2. Engine Neutrality Guard (Decision D-0013): Preserve pure-Python fallback (SddGraph) when
+       kuzu is not installed; kuzu remains an optional acceleration dependency.
+    3. Tier 2 Central Lake Exporter: Implement sdd_doc_lint/lake_exporter.py projecting local graph
+       slices into openCypher DDL/DML batches for Memgraph (devd:7687) and PostgreSQL 18 + Apache AGE.
+    4. Workstation Integration: Expose task sdd:graph-cypher and task sdd:lake-export in Taskfile.
+  consequences: |
+    - Sub-millisecond openCypher queries locally without background daemons.
+    - Zero breaking changes to pure-Python CI pipelines or existing document linters.
+    - Full interoperability with Memgraph and PostgreSQL 18 + Apache AGE central graph lakes.
+  alternatives_considered:
+    - option: "Mandate Neo4j client-server for all local and central operations"
+      rationale_rejected: >-
+        Breaks zero-daemon CI invariant, consumes excessive RAM (>1GB JVM), and causes port
+        collisions across parallel git worktrees.
+    - option: "Rely solely on pure-Python traversal without openCypher"
+      rationale_rejected: >-
+        Forces complex multi-hop path and variable-length pattern matching into brittle custom
+        Python code rather than standard declarative graph queries.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Embedded Kùzu Acceleration Adapter & Central Lake Exporter"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-16T00:00:00Z"
+  summary: |
+    Operationalize Pattern PAT-GRAPH-001 by implementing the embedded Kùzu openCypher adapter
+    with pure-Python fallback, and the Central Federated Read Lake exporter for Memgraph and
+    PostgreSQL 18 + Apache AGE.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: >-
+    Embedded Kùzu Acceleration Adapter and Central Federated Read Lake Exporter (CHG-110, GD-97)
+  components_affected:
+    - "plans/KUZU-GRAPH-ADAPTER-AND-LAKE-EXPORTER-PLAN.md"
+    - "docs/FEDERATED_READ_LAKE_PATTERN.md"
+    - "sdd_doc_lint/kuzu_adapter.py"
+    - "sdd_doc_lint/lake_exporter.py"
+    - "sdd_doc_lint/graph_engine.py"
+    - "sdd_doc_lint/__main__.py"
+    - "framework/templates/TASKFILE-TEMPLATE.yml"
+    - "framework/templates/AGENTS-TEMPLATE.md"
+    - "framework/scripts/install.sh"
+    - "framework/scripts/upgrade.sh"
+    - "tests/unit/test_kuzu_adapter.py"
+    - "tests/unit/test_lake_exporter.py"
+    - "framework/archive/CHG-110/CHG-110.yaml"
+    - "framework/archive/CHG-110/IPLAN-110.yaml"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-110/IPLAN-110.yaml"
+  steps:
+    - step: "Author authorizing CHG-110.yaml and IPLAN-110.yaml"
+      phase: "iplan_creation"
+    - step: "Implement sdd_doc_lint/kuzu_adapter.py and lazy fallback in graph_engine.py"
+      phase: "adapter_implementation"
+    - step: "Implement sdd_doc_lint/lake_exporter.py for openCypher and Apache AGE"
+      phase: "exporter_implementation"
+    - step: "Update Taskfile and installer scripts for graph-cypher and lake-export"
+      phase: "tooling_parity"
+    - step: "Author test suites (test_kuzu_adapter.py, test_lake_exporter.py)"
+      phase: "verification"
+    - step: "Bump framework/VERSION to 0.93.0 and synchronize references"
+      phase: "version_fanout"

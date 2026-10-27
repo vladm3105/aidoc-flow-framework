@@ -1,0 +1,158 @@
+# =============================================================================
+#  CHG-95: Retire and Tombstone framework/governance/DECISIONS.md
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 Governance Spec & Workflow Modernization)
+#  Pre-cleared: Founder approval in session (2026-10-13)
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-13"
+  framework_version: "0.91.14"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-SPEC
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-95"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: bump
+  author: "Framework Maintainer"
+  date_proposed: "2026-10-13T00:00:00Z"
+  date_approved: "2026-10-13T00:00:00Z"
+  date_implemented: "2026-10-13T00:00:00Z"
+  gate_approval:
+    approver: "Founder"
+    date: "2026-10-13T00:00:00Z"
+    verdict: Approved
+    evidence: >-
+      Founder approval in session (2026-10-13): retire framework/governance/DECISIONS.md
+      as tombstone, migrate governance rules to CNCF Serverless Workflows and change
+      decisions to CHG requests (#958)
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-95)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-95"
+  title: "Retire and Tombstone framework/governance/DECISIONS.md"
+  status: "Ratified"
+  context: |
+    framework/governance/DECISIONS.md historically served a dual purpose: (1) capturing
+    active governance rules and architectural invariants, and (2) logging historical change
+    records. This conflation created a 3,200-line monolithic markdown ledger that burned
+    AI agent context tokens, introduced split-brain divergence against declarative workflow
+    graphs (*.sw.yaml), and duplicated information already captured in structured Change
+    Requests (CHG-NN.yaml Section 1B). Following the deprecation of plans/DECISIONS.md in
+    CHG-80 (GD-71) and the tombstoning of framework/CHANGELOG.md in CHG-94 (GD-78), maintaining
+    a monolithic markdown decision register is an obsolete anti-pattern.
+  choice: |
+    1. Freeze framework/governance/DECISIONS.md as a read-only historical tombstone at
+       GD-77 (Document Control v1.38). Preserve entries GD-01 through GD-77 for permalink
+       integrity and conformance test backward compatibility.
+    2. Migrate active governance rules and invariants to executable CNCF Serverless Workflows
+       (framework/governance/workflows/*.sw.yaml) and governance standards.
+    3. Migrate operational change decisions exclusively to structured Change Requests
+       (framework/archive/CHG-*/CHG-*.yaml Section 1B decision: block) enforced by CHG-L018.
+    4. Ratify new CNCF Serverless Workflow framework/governance/workflows/decision-migration-flow.sw.yaml
+       and embed companion Mermaid diagrams in DECISION_WORKFLOW.md.
+    5. Modernize framework/governance/workflows/decision-ratification-flow.sw.yaml State 7 to lock
+       decisions in CHG-NN.yaml and dispatch workflow graph sync rather than appending to markdown registers.
+  consequences: |
+    - Eliminates 3,200 lines / 258 KB of token overhead across AI agent interactions.
+    - Establishes single source of truth for governance rules in declarative .sw.yaml graphs
+      and for change rationale in CHG-NN.yaml.
+    - Conformance tests asserting historical GD citations remain 100% green without modification.
+  alternatives_considered:
+    - option: "Continue maintaining framework/governance/DECISIONS.md as a manual append ledger"
+      rationale_rejected: >-
+        Burns significant context tokens per session, creates split-brain risks against
+        active .sw.yaml workflows, and duplicates CHG archives.
+    - option: "Delete framework/governance/DECISIONS.md completely"
+      rationale_rejected: >-
+        Breaks existing conformance test assertions (e.g. test_module_contract.py, test_seed_contract.py)
+        and invalidates permanent historical git citations.
+
+# =============================================================================
+# Section 2: Request Summary
+# =============================================================================
+
+request:
+  title: "Retire and Tombstone framework/governance/DECISIONS.md"
+  author: "Framework Maintainer"
+  date_submitted: "2026-10-13T00:00:00Z"
+  summary: |
+    Retire framework/governance/DECISIONS.md as a frozen tombstone, codify the
+    decision-migration-flow.sw.yaml CNCF Serverless Workflow, update decision-ratification-flow.sw.yaml,
+    embed companion Mermaid diagrams in DECISION_WORKFLOW.md, and synchronize governance standards.
+
+# =============================================================================
+# Section 3: Scope & Impact
+# =============================================================================
+
+scope:
+  description: "Tombstone governance decisions register and ratify migration workflow"
+  components_affected:
+    - "framework/governance/DECISIONS.md"
+    - "framework/governance/DECISION_WORKFLOW.md"
+    - "framework/governance/workflows/decision-migration-flow.sw.yaml"
+    - "framework/governance/workflows/decision-ratification-flow.sw.yaml"
+    - "framework/governance/GOVERNANCE_WORKFLOW_STANDARD.md"
+    - "framework/governance/DIAGRAM_STANDARDS.md"
+    - "framework/governance/README.md"
+    - "tests/conformance/test_governance_workflows.py"
+    - "AGENTS.md"
+    - "CONTRIBUTING.md"
+    - "README.md"
+    - "framework/VERSION"
+    - "hooks/sync-version-refs.sh"
+  breaking_changes: false
+  backward_compatible: true
+
+# =============================================================================
+# Section 4: Implementation Steps
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-95/IPLAN-95.yaml"
+  steps:
+    - step: "Author authorizing IPLAN-95.yaml"
+      phase: "iplan_creation"
+      artifact: "framework/archive/CHG-95/IPLAN-95.yaml"
+      archive_path: null
+      current_version: null
+      new_version: "1.0"
+      status: Completed
+
+# =============================================================================
+# Section 5: Verification & Audit
+# =============================================================================
+
+verification:
+  deterministic_checks:
+    - "chg_lint.py passing on CHG-95.yaml"
+    - "swf_lint passing on framework/governance/workflows/"
+    - "spec_gate.py passing with VERSION bump to 0.91.14"
+    - "test_governance_workflows.py and full conformance suite green"
+  audit_trail: "Multi-agent self-review per OPS-0065 (founder approved in session)"

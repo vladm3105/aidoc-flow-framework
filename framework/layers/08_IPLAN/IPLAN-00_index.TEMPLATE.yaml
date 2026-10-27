@@ -60,7 +60,7 @@ registry:
 # Backlog
 # =============================================================================
 # Future IPLANs that have been identified but not yet drafted.
-# Promote to registry.plans when the TDD reaches IPLAN-Ready >=90/100.
+# Promote to registry.plans when the TDD reaches IPLAN-Ready (BTV PASS per CHG-97).
 backlog: []
 
   # Template entry:
@@ -78,7 +78,7 @@ backlog: []
 execution_path:
   _guidance: |
     Derived from SPEC dependency graph:
-      1. Inventory all TDD files with IPLAN-Ready >=90/100
+      1. Inventory all TDD files with IPLAN-Ready (BTV PASS per CHG-97)
       2. Extract internal dependencies from each SPEC's interfaces section
       3. Build dependency graph (topological sort)
       4. Group independent SPECs into parallel tiers
@@ -152,7 +152,7 @@ status_history: []
   #     - from: "BACKLOG"
   #       to: "Draft"
   #       date: "YYYY-MM-DD"
-  #       reason: "TDD-NN reached IPLAN-Ready >=90/100"
+  #       reason: "TDD-NN reached IPLAN-Ready (BTV PASS per CHG-97)"
   #     - from: "Draft"
   #       to: "In Progress"
   #       date: "YYYY-MM-DD"

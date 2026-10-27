@@ -18,12 +18,13 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
 
 # Documents of record (resynced #663: AGENTS.md is the working agreement,
 # CLAUDE.md retired (removed); resynced #836: root CHANGELOG.md is a frozen
-# tombstone, so only the live framework log reminds)
+# tombstone; resynced CHG-94: framework/CHANGELOG.md is a frozen tombstone;
+# resynced CHG-95: framework/governance/DECISIONS.md is a frozen tombstone,
+# so framework/VERSION and AGENTS remind)
 DOCS_OF_RECORD=(
   "README.md"
   "AGENTS.md"
-  "framework/CHANGELOG.md"
-  "framework/governance/DECISIONS.md"
+  "framework/VERSION"
 )
 
 # Check if any doc-of-record was touched
@@ -43,7 +44,7 @@ fi
 code_changed=0
 while IFS= read -r f; do
   case "$f" in
-    framework/*|sdd_doc_lint/*|hooks/*|tests/*)
+    framework/*|doc_lint/*|sdd_doc_lint/*|hooks/*|tests/*)
       code_changed=1
       break
       ;;

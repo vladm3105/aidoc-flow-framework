@@ -1,0 +1,393 @@
+# =============================================================================
+#  IPLAN-SWF-TEMPLATE.yaml — Executable Implementation Plan (CNCF v0.8 DSL)
+# =============================================================================
+#  SDD Layer 8 — Mandatory execution bridge from SPEC/TDD to source code
+#  Adopts CNCF Serverless Workflow (YAML) v0.8 for machine-executable task DAGs,
+#  deterministic gate switches, and native saga rollback compensation.
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 08 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (IPLAN-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to mutate codebase, verify tasks, and rollback.
+#       Orchestrates step tasks, verification switches, and native saga rollback compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (IPLAN-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (implementation tasks, contracts, file touchpoints, dependencies).
+#    Both graphs work together to generate a document: the Process DAG drives execution
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated plan into the human-readable document (IPLAN-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (IPLAN-SWF-TEMPLATE.yaml + IPLAN-GRAPH-TEMPLATE.yaml) when:
+#    - Orchestrating multi-step codebase mutations, multi-file refactoring, or migrations
+#    - Requiring automated verification switch gates after each implementation task
+#    - Requiring native saga compensation (automated rollback commands if verification fails)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (IPLAN-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Documenting straightforward, linear implementation checklists, docs-only changes, or single-file edits
+#    - State machine orchestration, automated verification switches, and saga rollbacks are not needed
+# =============================================================================
+
+doc_id: IPLAN-NN
+title: "[Implementation Plan Title]"
+
+# =============================================================================
+# Template Metadata (SDD Envelope)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"
+  document_type: "iplan-document"
+  layer: 8
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "tech_lead"
+  author_playbook: "framework/playbooks/08_IPLAN/tech_lead.md"
+  workflow_standard: "CNCF-Serverless-Workflow-0.8"
+  total_sections: 6
+  last_updated: "2026-10-05"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+    - cncf-workflow
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  iplan_id: "IPLAN-NN"
+  flow: sdd_to_code  # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: SDD2C   # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
+  subtype: workflow  # code_build | deploy | combined | workflow | audit_fix | bugfix | docs
+  source_spec: "@spec: SPEC-NN"  # Required for SDD2C/SEED2C; optional for DIR2C (iplan_to_code)
+  status: Draft  # Draft | Approved | In Progress | Completed | Verified
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Engineer / AI Persona]"
+  complexity: 2
+  estimated_files: 5
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest (Static Inventory)
+# =============================================================================
+
+file_manifest:
+  files:
+    - path: "src/component.py"
+      description: "Source code implementation fulfilling SPEC contracts"
+      order: 1
+      status: PENDING
+      session: 1
+      verified: false
+    - path: "tests/unit/test_component.py"
+      description: "Unit test suite covering TDD assertions"
+      order: 2
+      status: PENDING
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 2b: TDD↔IPLAN Consistency Tracking
+# =============================================================================
+
+tdd_consistency:
+  status: complete  # complete | partial | not-applicable
+  tdd_ref: "@tdd: TDD.NN.01.0001"
+  coverage_percentage: 100
+
+# =============================================================================
+# Section 3: Executable Workflow Graph (CNCF Serverless Workflow v0.8)
+# =============================================================================
+
+workflow:
+  id: iplan-nn-workflow
+  name: "Component Execution Workflow"
+  version: "1.0"
+  specVersion: "0.8"
+  start: Step1_PreFlightCheck
+
+  events:
+    - name: IplanApprovedEvent
+      type: org.aidoc.sdd.layer08.iplan.approved
+      source: /layers/08_iplan
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
+      type: custom
+
+  states:
+    # --- Step 1: Pre-flight Verification ---
+    - name: Step1_PreFlightCheck
+      type: operation
+      actions:
+        - name: verifyGitWorkspace
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git status --porcelain"
+      transition: Step2_SnapshotOriginals
+
+    # --- Step 2: Pre-change Snapshots ---
+    - name: Step2_SnapshotOriginals
+      type: operation
+      actions:
+        - name: snapshotFiles
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "mkdir -p archive/CHG-NN/ && cp src/component.py archive/CHG-NN/"
+      transition: Step3_ImplementTestsFirst
+
+    # --- Step 3: Test Implementation (TDD First) ---
+    - name: Step3_ImplementTestsFirst
+      type: operation
+      compensatedBy: CleanupTestFiles
+      actions:
+        - name: writeUnitTests
+          metadata:
+            "@spec": "SPEC-NN"
+            "@tdd": "TDD.NN.01.0001"
+          functionRef:
+            refName: writeFileContent
+            arguments:
+              target_file: "tests/unit/test_component.py"
+              persona: "qa_lead"
+      transition: Step4_ImplementSourceCode
+
+    # --- Step 4: Source Implementation ---
+    - name: Step4_ImplementSourceCode
+      type: operation
+      compensatedBy: RollbackSourceFiles
+      actions:
+        - name: writeComponentLogic
+          metadata:
+            "@spec": "SPEC-NN"
+            "@req": "PRD-NN.FR-01"
+          functionRef:
+            refName: editFileContent
+            arguments:
+              target_file: "src/component.py"
+              persona: "developer"
+      transition: Step5_VerifyImplementationSuite
+
+    # --- Step 5: Verification Gate Check ---
+    - name: Step5_VerifyImplementationSuite
+      type: operation
+      actions:
+        - name: runPytest
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "pytest tests/unit/test_component.py"
+        - name: runLinters
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "ruff check src/component.py"
+      transition: EvaluateVerificationGate
+
+    - name: EvaluateVerificationGate
+      type: switch
+      dataConditions:
+        - condition: "${ .pytest.exit_code == 0 and .ruff.exit_code == 0 }"
+          transition: InvokeReviewSagaGate
+      defaultCondition:
+        transition: TriggerSagaRollback
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "iplan-review-remediation-flow"
+              artifactId: "IPLAN-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .review_score >= 90 and .blocking_findings == 0 and .gate_passed == true }"
+          transition: Step6_CommitAndSignoff
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresRollback
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: TriggerSagaRollback
+      defaultCondition:
+        transition: TriggerSagaRollback
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "implementation_engineer"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
+
+    # --- Step 6: Terminal Success ---
+    - name: Step6_CommitAndSignoff
+      type: operation
+      actions:
+        - name: stageAndCommit
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git add src/ tests/ && git commit -m 'feat: implement component per IPLAN-NN'"
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-08"
+              layer: "08_IPLAN"
+              documentId: "IPLAN-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "IPLAN-NN"
+              layer: "08_IPLAN"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "IplanNode"
+              nodeId: "IPLAN-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "IplanApprovedEvent"
+              iplan_id: "IPLAN-NN"
+              file_manifest: "${ .file_manifest }"
+              tasks: "${ .tasks }"
+      produceEvents:
+        - eventRef: IplanApprovedEvent
+      end: true
+
+    # --- Saga Compensation Handlers (Executable Rollbacks) ---
+    - name: TriggerSagaRollback
+      type: operation
+      actions:
+        - name: logFailure
+          functionRef:
+            refName: logError
+            arguments:
+              message: "Verification tests failed. Triggering automated saga rollback."
+      transition: RollbackSourceFiles
+
+    - name: RollbackSourceFiles
+      type: operation
+      actions:
+        - name: revertSource
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "git checkout HEAD -- src/component.py"
+      transition: CleanupTestFiles
+
+    - name: CleanupTestFiles
+      type: operation
+      actions:
+        - name: removeTest
+          functionRef:
+            refName: runCommand
+            arguments:
+              command: "rm -f tests/unit/test_component.py"
+      end:
+        terminate: true
+
+# =============================================================================
+# Section 4: Implementation Contracts & Invariants
+# =============================================================================
+
+implementation_contracts:
+  invariants:
+    - "Component satisfies all SPEC-NN algorithmic invariants"
+    - "No global mutable state outside the instantiated component scope"
+    - "Implementation strictly aligns with approved technology stack selected in Layer 05 ADR"
+    - "Distributed task activities orchestrate saga compensation rollbacks upon failure"
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+
+session_handoff:
+  current_phase: "Ready for Execution"
+  completed_states: []
+  pending_states:
+    - "Step1_PreFlightCheck"
+    - "Step2_SnapshotOriginals"
+    - "Step3_ImplementTestsFirst"
+    - "Step4_ImplementSourceCode"
+    - "Step5_VerifyImplementationSuite"
+    - "Step6_CommitAndSignoff"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+
+traceability:
+  upstream:
+    - "@spec: SPEC-NN"
+    - "@tdd: TDD.NN.01.0001"
+  downstream:
+    - "@code: src/component.py"
+    - "@test: tests/unit/test_component.py"

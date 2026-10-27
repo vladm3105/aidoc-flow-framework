@@ -1,25 +1,32 @@
+---
+doc_id: GOV-NOTICES
+bucket: normative-prose
+authority: doc-leads
+consumers: [authoring, audit]
+---
+
 # SDD Document Generation — Root Cause Analysis & Prevention
 
-## Document Control
+## Document Control {#sec-document-control}
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 Tracks issues encountered during SDD document generation, their root causes,
 prevention rules, and verification checklists. This document is the canonical
 reference for known failure modes and their mitigations.
 
-## Issue Registry
+## Issue Registry {#sec-issue-registry}
 
 All issues encountered during SDD generation, ordered by severity.
 
-### Issue 1: Hallucinated cross-references in downstream documents (HIGH)
+### Issue 1: Hallucinated cross-references in downstream documents (HIGH) {#sec-issue-1-hallucinated-cross-references-in-downstream-documents-high}
 
 **What happened:** SPEC-09 contained 18 fake EARS IDs (`EARS.09.00.*`,
 `EARS.09.01.*`), 11 fake BDD IDs (`BDD.09.00.*`, `BDD.09.01.*`), a typo
@@ -36,7 +43,7 @@ validating output references against upstream files.
 - Rule 1: Pass source IDs to subagents (see §Prevention Rules)
 - Rule 2: Validate references after delegation
 
-### Issue 2: Duplicate BDD scenario ID (MEDIUM)
+### Issue 2: Duplicate BDD scenario ID (MEDIUM) {#sec-issue-2-duplicate-bdd-scenario-id-medium}
 
 **What happened:** BDD-09 scenario `BDD.09.03.i3j4` was assigned to two
 different scenarios.
@@ -47,7 +54,7 @@ mentally without maintaining a running set of used IDs.
 **Prevention:**
 - Rule 3: Track assigned IDs during manual creation
 
-### Issue 3: Wrong EARS pattern for liveness (LOW)
+### Issue 3: Wrong EARS pattern for liveness (LOW) {#sec-issue-3-wrong-ears-pattern-for-liveness-low}
 
 **What happened:** EARS-09 requirement used `IF the Go service process is
 alive` (unwanted behavior) instead of `WHILE the Go service process is alive`
@@ -58,7 +65,7 @@ alive` (unwanted behavior) instead of `WHILE the Go service process is alive`
 **Prevention:**
 - Rule 4: Verify EARS pattern semantics
 
-### Issue 4: Old file conflict (MEDIUM)
+### Issue 4: Old file conflict (MEDIUM) {#sec-issue-4-old-file-conflict-medium}
 
 **What happened:** An old `TDD-09_go_unit_tests_addendum.yaml` from a prior
 session existed alongside the new `TDD-09_observability_logging.yaml`.
@@ -68,7 +75,7 @@ session existed alongside the new `TDD-09_observability_logging.yaml`.
 **Prevention:**
 - Rule 5: Archive old documents before reusing IDs
 
-### Issue 5: TDD↔IPLAN cross-layer consistency bugs (HIGH)
+### Issue 5: TDD↔IPLAN cross-layer consistency bugs (HIGH) {#sec-issue-5-tddiplan-cross-layer-consistency-bugs-high}
 
 **Date:** 2026-10-05
 
@@ -87,9 +94,9 @@ drift out of sync:
 **Prevention:**
 - Rule 6: TDD↔IPLAN cross-layer consistency (5 rules)
 
-## Prevention Rules
+## Prevention Rules {#sec-prevention-rules}
 
-### Rule 1: Pass source IDs to subagents (prevents Issue 1)
+### Rule 1: Pass source IDs to subagents (prevents Issue 1) {#sec-rule-1-pass-source-ids-to-subagents-prevents-issue-1}
 
 When delegating SDD document creation, the delegation prompt MUST include the
 actual upstream element IDs. Copy the ID lists from the source files into the
@@ -119,7 +126,7 @@ grep -F '<cited-ADR-ID>' <adr-source-file>
 grep -oP 'id: "\K[^"]+' <file> | sort | uniq -d  # Should return nothing
 ```
 
-### Rule 2: Validate references after delegation (prevents Issue 1)
+### Rule 2: Validate references after delegation (prevents Issue 1) {#sec-rule-2-validate-references-after-delegation-prevents-issue-1}
 
 After a subagent completes an SDD document, run these checks before
 integrating:
@@ -138,7 +145,7 @@ grep -i 'ers\.' <file>                         # Should return nothing
 grep -oP 'id: "\K[^"]+' <file> | sort | uniq -d  # Should return nothing
 ```
 
-### Rule 3: Track assigned IDs during manual creation (prevents Issue 2)
+### Rule 3: Track assigned IDs during manual creation (prevents Issue 2) {#sec-rule-3-track-assigned-ids-during-manual-creation-prevents-issue-2}
 
 When creating documents directly (not delegated), maintain a running set:
 
@@ -147,7 +154,7 @@ When creating documents directly (not delegated), maintain a running set:
 2. After completing the file, run `sort | uniq -d` on the ID list
 3. For BDD: verify 1:1 mapping between EARS requirements and BDD scenarios
 
-### Rule 4: Verify EARS pattern semantics (prevents Issue 3)
+### Rule 4: Verify EARS pattern semantics (prevents Issue 3) {#sec-rule-4-verify-ears-pattern-semantics-prevents-issue-3}
 
 When authoring EARS requirements, apply this decision tree:
 
@@ -169,7 +176,7 @@ Is this a normal operating state?
 - "Collector is unreachable" = error → IF, not WHILE
 - "All telemetry flows through Collector" = universal → THE-SHALL, not WHEN
 
-### Rule 5: Archive old documents before reusing IDs (prevents Issue 4)
+### Rule 5: Archive old documents before reusing IDs (prevents Issue 4) {#sec-rule-5-archive-old-documents-before-reusing-ids-prevents-issue-4}
 
 Before assigning an SDD ID that may have been used in a prior session:
 
@@ -178,7 +185,7 @@ Before assigning an SDD ID that may have been used in a prior session:
    `<project>/sdd/09-CHG/archive/<CHG-ID>/`
 3. Only then create the new document with that ID
 
-### Rule 6: TDD↔IPLAN cross-layer consistency (prevents Issue 5)
+### Rule 6: TDD↔IPLAN cross-layer consistency (prevents Issue 5) {#sec-rule-6-tddiplan-cross-layer-consistency-prevents-issue-5}
 
 **Rule A: Status propagation.** IPLAN `DONE` + `verified: true` → update TDD
 `pending` → `implemented`.
@@ -198,7 +205,7 @@ is the source of truth.
 **Enforcement:** Lint rules `TDD-SYNC-A` through `TDD-SYNC-E` in
 `LINT_RULES.md` (advisory).
 
-## Concurrency traps
+## Concurrency traps {#sec-concurrency-traps}
 
 Three traps measured when multiple agents share one working tree. All are
 process rules, not tool checks:
@@ -222,7 +229,7 @@ process rules, not tool checks:
   Governed archive snapshots must be explicitly added and verified with
   `git ls-files` / `git check-ignore -v` (see `.gitignore` scope note).
 
-## Verification Checklist
+## Verification Checklist {#sec-verification-checklist}
 
 After completing any SDD layer, verify:
 
@@ -237,14 +244,14 @@ After completing any SDD layer, verify:
 - [ ] Dates are current (not from prior sessions)
 - [ ] No conflicting files with same ID from prior sessions
 
-## Cross-References
+## Cross-References {#sec-cross-references}
 
 - `DOC_GOVERNANCE_CORE.md` §6 — SDD Reference Integrity Rules
 - `LINT_RULES.md` — TDD-SYNC-A through TDD-SYNC-E, EVAL-001 through EVAL-003
 - `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync
 - `ID_NAMING_STANDARDS.md` — Element ID format verification
 
-### Issue 7: Index document counts drift from source YAML (MEDIUM)
+### Issue 7: Index document counts drift from source YAML (MEDIUM) {#sec-issue-7-index-document-counts-drift-from-source-yaml-medium}
 
 **What happened:** TDD-00_index.md stated "78 TDD test cases" but actual TDD
 YAML IDs total 104 (verified via `grep -c '^\s*- id: TDD\.' docs/sdd/07_TDD/TDD-0*.yaml`).
@@ -256,7 +263,7 @@ when TDD documents grew.
 - Rule: EVAL layer and any downstream doc must compute counts from source YAML, not copy from upstream index
 - Rule: Add `grep -c` verification to pre-commit checklist for count-dependent docs
 
-### Issue 8: Coverage summary contradicts entries (MEDIUM)
+### Issue 8: Coverage summary contradicts entries (MEDIUM) {#sec-issue-8-coverage-summary-contradicts-entries-medium}
 
 **What happened:** EVAL-01 and EVAL-02 had `coverage_matrix.entries` with
 `status: implemented, coverage: 100` while the `summary` block said

@@ -69,6 +69,11 @@ if _floor_error is not None:
     print(_floor_error, file=sys.stderr)
     raise SystemExit(EXIT_MISSING_PREREQUISITE)
 
+# Dual-naming alias guard: ensure doc_lint and sdd_doc_lint share singleton identity
+if __name__ in sys.modules:
+    sys.modules.setdefault("sdd_doc_lint", sys.modules[__name__])
+    sys.modules.setdefault("doc_lint", sys.modules[__name__])
+
 import hashlib
 import os
 import re
@@ -498,7 +503,14 @@ def _normalise_heading(heading: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", h).strip("_")
 
 
-def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[str, int]:
+_VALID_IPLAN_SUBTYPES = frozenset(
+    {"code_build", "deploy", "combined", "workflow", "audit_fix", "bugfix", "docs"}
+)
+
+
+def _load_section_targets(
+    artifact: str, registry: Path | None = None, subtype: str | None = None
+) -> dict[str, int]:
     """Return ``{section_key: _size_target}`` from the layer's TEMPLATE.yaml.
     Returns ``{}`` when the template cannot be loaded — callers fall back to
     the flat default.
@@ -543,15 +555,17 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
             # but still get STY02 size-budget enforcement.
             if body.get("_required") is False:
                 continue
-            # CLEANUP-PR-F: sections marked `_required_when_subtype: [...]`
-            # are conditionally required based on the artifact's
-            # `document_control.subtype` value (per CLEANUP-PR-E item 17).
-            # The corpus-level lint cannot determine the artifact's
-            # subtype without parsing every instance doc; defer the
-            # subtype-aware required-section check to the layer's
-            # `doc-<layer>-audit` SKILL (which does parse the artifact).
-            if isinstance(body.get("_required_when_subtype"), list):
-                continue
+            # Sections marked `_required_when_subtype: [...]` are conditionally
+            # required based on the artifact's `document_control.subtype` value
+            # (per CLEANUP-PR-E item 17, issue #1046, ratified in CHG-140).
+            # When subtype is provided, sections matching that subtype are
+            # included in STRUCT01 targets. If subtype is omitted or does not
+            # match, the section is excluded (preserving backward compatibility
+            # when no subtype is declared).
+            gated = body.get("_required_when_subtype")
+            if isinstance(gated, list):
+                if subtype is None or subtype not in gated:
+                    continue
             target = body.get("_size_target")
             out[key] = target if isinstance(target, int) else _SECTION_TARGET_WORDS
     return out
@@ -636,6 +650,14 @@ def _check_style(
     return findings
 
 
+def compute_reviewed_sha256(raw_content: str) -> str:
+    """Compute deterministic SHA-256 over document body excluding frontmatter."""
+    body = re.sub(r"^---\n.*?\n---\n?", "", raw_content, flags=re.DOTALL)
+    normalized = body.replace("\r\n", "\n").replace("\r", "\n")
+    normalized = normalized.strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
 def lint_text(
     text: str,
     artifact: str,
@@ -682,11 +704,52 @@ def lint_text(
             )
         )
 
+    # Cryptographic Review Verification (GATE-FLOOR-01)
+    _review_log = (_fm or {}).get("review_log")
+    if isinstance(_review_log, list) and _review_log:
+        last_review = _review_log[-1] if isinstance(_review_log[-1], dict) else {}
+        expected_sha = last_review.get("reviewed_sha256")
+        if expected_sha:
+            computed_sha = compute_reviewed_sha256(text)
+            if computed_sha.lower() != str(expected_sha).lower():
+                findings.append(
+                    Finding(
+                        rel,
+                        1,
+                        "REV01",
+                        f"STALE_REVIEW_DETECTED: Document body has been modified after review "
+                        f"(expected SHA-256 '{expected_sha}', got '{computed_sha}')",
+                        severity="error",
+                    )
+                )
+        verdict = str(last_review.get("verdict", "")).upper()
+        if verdict == "ESCALATED":
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REV02",
+                    "UNRESOLVED_BLOCKERS: Latest review verdict is ESCALATED",
+                    severity="error",
+                )
+            )
+        blocking_remaining = last_review.get("blocking_remaining")
+        if isinstance(blocking_remaining, int) and blocking_remaining > 0:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REV03",
+                    f"UNRESOLVED_BLOCKERS: Review reports {blocking_remaining} unresolved blocking finding(s)",
+                    severity="error",
+                )
+            )
+
     for i, line in enumerate(lines, 1):
         # Trace tags: collect which upstream layers are referenced + validate the id form.
         for m in _TAG.finditer(line):
             seen_tags.add(m.group(1))
-            val = m.group(2)
+            val = m.group(2).rstrip(".,:;!?)'\"")
             if not (doc_re.match(val) or elem_re.match(val)):
                 findings.append(
                     Finding(rel, i, "ID01", f"malformed trace-tag id '@{m.group(1)}: {val}'")
@@ -793,8 +856,20 @@ def lint_text(
         and isinstance(_consistency, dict)
         and str(_consistency.get("status") or "").strip().lower() == "not-applicable"
     )
+    # Empty-registry ADR index (GD-46 precedent, #1041): no decision or
+    # technology records exist yet, so there is nothing to trace upstream —
+    # the emptiness names the waived contract at its own point. Dual signal
+    # (`adrs: []` and `technologies: []`); any records without tags stay red.
+    _empty_adr = (
+        artifact == "ADR"
+        and isinstance(_fm, dict)
+        and _fm.get("adrs") == []
+        and _fm.get("technologies") == []
+    )
     for tag in required:
         if tag == "tdd" and _na_iplan:
+            continue
+        if _empty_adr:
             continue
         if tag not in seen_tags:
             findings.append(
@@ -1649,7 +1724,34 @@ def _check_required_template_sections(
     fm = _extract_frontmatter(text, rel)
     if _is_index_doc(rel, fm):
         return findings
-    targets = _load_section_targets(artifact, registry)
+
+    subtype = None
+    if isinstance(fm, dict):
+        doc_control = fm.get("document_control")
+        if isinstance(doc_control, dict):
+            subtype = doc_control.get("subtype")
+        if subtype is None:
+            subtype = fm.get("subtype")
+        if isinstance(subtype, str):
+            subtype = subtype.strip()
+
+    if artifact and artifact.upper() in ("IPLAN", "IPLAN-DOCUMENT"):
+        if subtype and subtype not in _VALID_IPLAN_SUBTYPES:
+            findings.append(
+                Finding(
+                    code="STRUCT01",
+                    severity="error",
+                    path=rel,
+                    line=1,
+                    section="document_control",
+                    message=(
+                        f"unrecognized IPLAN subtype: '{subtype}'. "
+                        f"Valid subtypes are: {', '.join(sorted(_VALID_IPLAN_SUBTYPES))}"
+                    ),
+                )
+            )
+
+    targets = _load_section_targets(artifact, registry, subtype=subtype)
     if not targets:
         return findings
     # A section is a `##` heading on the Markdown carrier and a TOP-LEVEL KEY on
@@ -2110,7 +2212,7 @@ def _check_trace_resolution(
                 # artifact's own layer. Per TRACE-RES-FIXUP-001 Fix 1.
                 if my_layer_n and tag_layer_n and tag_layer_n > my_layer_n:
                     continue
-                value = m.group(2)
+                value = m.group(2).rstrip(".,:;!?)'\"")
                 if not (doc_re.match(value) or elem_re.match(value)):
                     continue
                 # LINT-TRACE-RES-SINGLE-FILE: on a single-file run, only

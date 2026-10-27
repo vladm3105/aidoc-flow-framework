@@ -1,0 +1,51 @@
+# =============================================================================
+#  IPLAN-135: Skill dispatch map in SDD_ASSEMBLY_LINE.md
+# =============================================================================
+#  Implementation Plan authorized by CHG-135
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-135
+title: "Implementation Plan: sdd-* dispatch guidance (issue #1039)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.17"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-26"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-135"
+  date_created: "2026-10-26T00:00:00Z"
+  date_implemented: "2026-10-26T23:31:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-135/CHG-135.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-135/IPLAN-135.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/governance/SDD_ASSEMBLY_LINE.md"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C1, change_source direct, sdd_lifecycle empty"
+  link_policy: "code-span references only in §5 (no new markdown links); anchor follows {#sec-N-slug} convention"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-135/CHG-135.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "markdownlint + internal-links (CI) on the PR head"
+  - "conformance + acceptance suites green on PR head"

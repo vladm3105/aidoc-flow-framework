@@ -1,0 +1,32 @@
+# =============================================================================
+#  IPLAN-105: .aidoc/ Workstation Directory Standard and Dual-Control Architecture
+# =============================================================================
+#  Implementation Plan authorized by framework/archive/CHG-105/CHG-105.yaml
+# =============================================================================
+
+id: "IPLAN-105"
+chg_id: "CHG-105"
+title: ".aidoc/ Workstation Directory Standard and Dual-Control Architecture"
+status: "Completed"
+framework_version: "0.91.23"
+
+file_manifest:
+  - "docs/AIDOC_WORKSTATION_STANDARD.md"
+  - "docs/REPO_STRUCTURE.md"
+  - "docs/PROJECT.md"
+  - "framework/archive/CHG-105/CHG-105.yaml"
+  - "framework/archive/CHG-105/IPLAN-105.yaml"
+
+tasks:
+  - id: "TASK-01"
+    name: "Author authorizing CHG-105.yaml and IPLAN-105.yaml"
+    status: "Completed"
+  - id: "TASK-02"
+    name: "Author docs/AIDOC_WORKSTATION_STANDARD.md"
+    status: "Completed"
+  - id: "TASK-03"
+    name: "Update docs/REPO_STRUCTURE.md and docs/PROJECT.md with cross-references"
+    status: "Completed"
+  - id: "TASK-04"
+    name: "Run verification battery and linting suite"
+    status: "Completed"

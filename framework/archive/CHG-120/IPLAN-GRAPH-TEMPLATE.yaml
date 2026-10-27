@@ -1,0 +1,114 @@
+# =============================================================================
+#  IPLAN-GRAPH-TEMPLATE.yaml — Implementation DAG & Saga Rollback Slice (Layer 08)
+# =============================================================================
+#  Standard: SDD-GRAPH v2.0 (Native Property Graph Schema)
+#  Authority: framework/governance/SDD_GRAPH_SCHEMA_SPECIFICATION.md
+#  Layer: 08_IPLAN (Implementation Plan & Execution Bridge)
+#  Parity: Full content and functional parity with IPLAN-SWF-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "2.0-graph"
+slice_id: "IPLAN-NN_[task_slug]"
+initiative_ref: "INIT-NN_[feature_slug]"
+
+metadata:
+  author: "[Engineer / AI Agent ID]"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  status: "Draft"  # Draft | Active | Completed | Verified
+  framework_version: "[X.Y.Z]"
+  description: "[Machine-executable code mutation DAG, pre-flight checks, and automated saga rollback]"
+  layer: "08_IPLAN"
+  flow: "sdd_to_code"  # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
+  flow_code: "SDD2C"   # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
+  tdd_consistency:
+    status: "complete"
+    coverage_percentage: 100
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Task 1: Atomic Code Implementation Task (Section 2 & 3 Parity)
+  # ---------------------------------------------------------------------------
+  - id: "TASK.08.01.xxxx"
+    type: "task_action"
+    title: "[Implement Order Ingestion gRPC Handler]"
+    action: "create_file"  # apply_patch | create_file | run_script
+    target_file: "src/order_gateway/handler.py"
+    command: "python3 -m pytest tests/unit/test_order_service.py"
+    compensation: "rm -f src/order_gateway/handler.py"
+    properties:
+      session: 1
+      estimated_lines: 120
+      description: "Creates gRPC handler implementing CreateOrder method with Redis validation"
+
+  # ---------------------------------------------------------------------------
+  # Task 1 Rollback: Automated Saga Compensation Action (Mandatory 1:1 Invariant)
+  # ---------------------------------------------------------------------------
+  - id: "TASK.08.01.xxxx_rollback"
+    type: "task_action"
+    title: "[Rollback Order Ingestion Handler on Verification Failure]"
+    action: "run_script"
+    target_file: "src/order_gateway/handler.py"
+    command: "rm -f src/order_gateway/handler.py"
+    properties:
+      saga_step: "compensate_task_01"
+      trigger_condition: "Pre-flight or unit test verification failure"
+
+  # ---------------------------------------------------------------------------
+  # Task 2: Atomic Code Mutation Task (Patching Existing Module)
+  # ---------------------------------------------------------------------------
+  - id: "TASK.08.02.xxxx"
+    type: "task_action"
+    title: "[Register Handler Route in Main Ingress Router]"
+    action: "apply_patch"
+    target_file: "src/order_gateway/router.py"
+    command: "python3 -m pytest tests/integration/test_inventory_concurrency.py"
+    compensation: "git checkout -- src/order_gateway/router.py"
+    properties:
+      session: 1
+      estimated_lines: 15
+      description: "Registers the new CreateOrder service with the server listener"
+
+  # ---------------------------------------------------------------------------
+  # Task 2 Rollback: Automated Saga Compensation Action
+  # ---------------------------------------------------------------------------
+  - id: "TASK.08.02.xxxx_rollback"
+    type: "task_action"
+    title: "[Rollback Router Patch on Integration Failure]"
+    action: "run_script"
+    target_file: "src/order_gateway/router.py"
+    command: "git checkout -- src/order_gateway/router.py"
+    properties:
+      saga_step: "compensate_task_02"
+      trigger_condition: "Integration test assertion failure"
+
+edges:
+  # Implementation Tasks implement Upstream Test Fixtures (Layer 07 TDD)
+  - from: "TASK.08.01.xxxx"
+    to: "TDD.07.01.xxxx"
+    relation: "implements"
+    notes: "Test-First Invariant: task implements the logic proven by unit test fixture"
+    description: "Implements the concrete gRPC handler logic required to turn the failing unit test red-to-green."
+    rationale: "Enforces strict test-first development invariant (GRAPH-CARD-006)."
+
+  - from: "TASK.08.02.xxxx"
+    to: "TDD.07.02.xxxx"
+    relation: "implements"
+    notes: "Task wires the concurrency integration route"
+    description: "Patches ingress router to bind endpoint handler into testcontainer integration route."
+    rationale: "Satisfies multi-container integration test proof."
+
+  # Implementation Tasks MUST have 1:1 Saga Compensation Edges (GRAPH-CARD-007)
+  - from: "TASK.08.01.xxxx"
+    to: "TASK.08.01.xxxx_rollback"
+    relation: "compensated_by"
+    notes: "Automated backward recovery if Task 01 verification fails"
+    description: "Executes clean filesystem removal of handler file if post-task unit tests fail."
+    rationale: "Fulfills the mandatory SDD Saga Rollback Invariant (GRAPH-CARD-007)."
+
+  - from: "TASK.08.02.xxxx"
+    to: "TASK.08.02.xxxx_rollback"
+    relation: "compensated_by"
+    notes: "Automated backward recovery if Task 02 verification fails"
+    description: "Reverts router git diff cleanly if integration tests fail, leaving repository in pristine state."
+    rationale: "Prevents dirty git state and partial commit contamination during autonomous agent execution."

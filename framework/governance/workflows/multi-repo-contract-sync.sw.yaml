@@ -1,0 +1,173 @@
+id: multi-repo-contract-sync
+name: Multi-Repository Contract Synchronization & Publication Workflow
+version: "1.0"
+specVersion: "0.8"
+description: >-
+  Normative state machine governing cross-repository contract publication, protobuf linting,
+  behavioral state graph verification, breaking change detection (buf breaking), polyglot SDK stub
+  compilation, registry updates, and CloudEvent emission per MULTI_PROJECT_FEDERATED_STANDARD.md.
+start: InspectContractDiff
+
+states:
+  # --- Step 1: Inspect Modified Contracts ---
+  - name: InspectContractDiff
+    type: operation
+    actions:
+      - name: detectChangedContracts
+        functionRef:
+          refName: runGitDiffInspection
+          arguments:
+            target_patterns:
+              - "proto/**/*.proto"
+              - "docs/sdd/06_SPEC/contracts/**/*.proto"
+              - "docs/sdd/04_BDD/**/*.sw.yaml"
+              - "schemas/**/*.json"
+    transition: EvaluateContractChanges
+
+  - name: EvaluateContractChanges
+    type: switch
+    dataConditions:
+      - condition: "${ .has_contract_changes == true }"
+        transition: ValidateContractSyntax
+    defaultCondition:
+      transition: NoContractChangesEnd
+
+  - name: NoContractChangesEnd
+    type: operation
+    actions:
+      - name: logNoOp
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "NO_CONTRACT_CHANGES"
+            message: "No exported wire schemas or behavioral state graphs modified."
+    end:
+      terminate: true
+
+  # --- Step 2: Validate Contract Syntax & Graphs ---
+  - name: ValidateContractSyntax
+    type: parallel
+    branches:
+      - name: ValidateProtobufSyntax
+        actions:
+          - name: runBufLint
+            functionRef:
+              refName: executeBufLint
+              arguments:
+                config: "buf.yaml"
+      - name: ValidateBehavioralGraphs
+        actions:
+          - name: runSwfLint
+            functionRef:
+              refName: executeSwfLint
+              arguments:
+                target_paths: "${ .modified_bdd_graphs }"
+    completionType: allOf
+    transition: CheckBackwardCompatibility
+
+  # --- Step 3: Check Backward Compatibility (Anti-Contract Erosion) ---
+  - name: CheckBackwardCompatibility
+    type: operation
+    actions:
+      - name: runBufBreaking
+        functionRef:
+          refName: executeBufBreaking
+          arguments:
+            against_ref: "origin/dev"
+    transition: EvaluateBreakingChanges
+
+  - name: EvaluateBreakingChanges
+    type: switch
+    dataConditions:
+      - condition: "${ .breaking_detected == true and (.flow_code != 'SEED2C' and .flow_code != 'SDD2C') }"
+        transition: RejectContractErosion
+    defaultCondition:
+      transition: CompilePolyglotSDKs
+
+  - name: RejectContractErosion
+    type: operation
+    actions:
+      - name: blockCandidatePR
+        functionRef:
+          refName: postMergeBlocker
+          arguments:
+            reason: "BREAKING_CONTRACT_CHANGE"
+            rule: "ANTI_EROSION_GATE"
+            required_flows: ["SEED2C", "SDD2C"]
+            message: "Wire contract alteration detected without authorizing SEED2C (F3) or SDD2C (F1) change request."
+    end:
+      terminate: true
+
+  # --- Step 4: Polyglot SDK Stub Compilation ---
+  - name: CompilePolyglotSDKs
+    type: operation
+    actions:
+      - name: runBufGenerate
+        functionRef:
+          refName: executeBufGenerate
+          arguments:
+            template: "buf.gen.yaml"
+            targets:
+              - "python"
+              - "typescript"
+              - "go"
+              - "rust"
+    transition: UpdateCentralRegistryManifest
+
+  # --- Step 5: Update Central Registry Manifest ---
+  - name: UpdateCentralRegistryManifest
+    type: operation
+    compensatedBy: RollbackRegistryUpdate
+    actions:
+      - name: updateContractsRegistry
+        functionRef:
+          refName: executeRegistryUpdate
+          arguments:
+            registry_file: "contracts-registry.yaml"
+            contract_id: "${ .contract_id }"
+            schema_hash: "${ .schema_sha256 }"
+            schema_type: "${ .schema_type }"
+            version: "${ .candidate_version }"
+    transition: EmitContractPublishedEvent
+
+  # --- Step 6: Emit NATS JetStream CloudEvent ---
+  - name: EmitContractPublishedEvent
+    type: operation
+    actions:
+      - name: publishCloudEvent
+        functionRef:
+          refName: emitNatsCloudEvent
+          arguments:
+            subject: "xp.agent.v1.chg.contract.published"
+            payload:
+              contract_id: "${ .contract_id }"
+              version: "${ .candidate_version }"
+              schema_hash: "${ .schema_sha256 }"
+              schema_type: "${ .schema_type }"
+              source_repo: "${ .repository }"
+    transition: SyncCompleted
+
+  - name: SyncCompleted
+    type: operation
+    actions:
+      - name: recordSyncSuccess
+        functionRef:
+          refName: reportStatus
+          arguments:
+            status: "SUCCESS"
+            message: "Contract schema validated, compiled, registered, and published to event mesh."
+    end:
+      terminate: true
+
+  # --- Compensation SAGA ---
+  - name: RollbackRegistryUpdate
+    type: operation
+    actions:
+      - name: revertRegistryEntry
+        functionRef:
+          refName: executeRegistryRevert
+          arguments:
+            registry_file: "contracts-registry.yaml"
+            contract_id: "${ .contract_id }"
+    end:
+      terminate: true

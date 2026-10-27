@@ -4,6 +4,29 @@
 #  Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 #  Downstream: TDD (Layer 7), IPLAN (Layer 8)
 #  Subtype: workflow (CNCF Serverless Workflow v0.8 YAML)
+#
+#  TWO-GRAPH ARCHITECTURE (Process DAG vs. Content Graph):
+#  Layer 06 artifact generation operates via two complementary graph models:
+#    1. Process DAG (Control Plane) — This template (SPEC-SWF-TEMPLATE.yaml):
+#       Defines the execution flow of HOW to choreograph, verify, and compensate interactions.
+#       Orchestrates service dispatch, payload validation, async callbacks, SLA checks,
+#       and distributed saga rollback compensation.
+#    2. Content Graph (Data Plane) — SDD-GRAPH v2.0 (SPEC-GRAPH-TEMPLATE.yaml):
+#       Defines WHAT content, entities, properties, and relationships must be presented
+#       in the document (interfaces, methods, schemas, event contracts, data models).
+#    Both graphs work together to generate a document: the Process DAG drives authoring
+#    and validation, populates the Content Graph, executes BTV verification, and projects
+#    the validated specification into the human-readable document (SPEC-TEMPLATE.yaml view).
+#
+#  TEMPLATE SELECTION GUIDE:
+#  Use the Two-Graph approach (SPEC-SWF-TEMPLATE.yaml + SPEC-GRAPH-TEMPLATE.yaml) when:
+#    - Specifying distributed service interaction, event-driven choreography, or CloudEvent schemas
+#    - Orchestrating asynchronous webhook callbacks, concurrent service dispatches, or latency SLA checks
+#    - Requiring automated distributed saga compensation (backward recovery on downstream service failure)
+#    - Targeting autonomous AI agent execution or workflow orchestrators (LangGraph/Temporal)
+#  Use the companion template (SPEC-TEMPLATE.yaml — COMPANION STANDARD) directly when:
+#    - Specifying atomic, in-process monolithic components, synchronous APIs, or pure algorithmic modules
+#    - State machine orchestration, asynchronous callbacks, and distributed compensations are not needed
 # =============================================================================
 
 doc_id: SPEC-NN
@@ -17,6 +40,10 @@ metadata:
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "spec-document"
   layer: 6
+  subtype: "workflow"
+  workflow_spec: "CNCF-Serverless-Workflow-v0.8"
+  author_persona: "architect"
+  author_playbook: "framework/playbooks/06_SPEC/architect.md"
   total_sections: 8
   last_updated: "2026-10-05"
   deliverable_type: code
@@ -71,7 +98,7 @@ document_control:
   author: "[Author]"
   component: "[Distributed Component Name]"
   subtype: workflow  # Declares the CNCF Serverless Workflow subtype
-  tdd_ready_score: "[Score]/100"
+  tdd_ready_status: "PASS"
 
 # =============================================================================
 # Section 2: Component Overview
@@ -88,6 +115,16 @@ component_overview:
         Component --> ServiceA[Downstream Service A]
         Component --> ServiceB[Downstream Service B]
   language: "[Python | TypeScript | Go | Java | ...]"
+  toolchain:
+    _required: false
+    _guidance: |
+      SPEC owns the toolchain conventions for downstream implementation and testing.
+      IPLAN execution_commands and TDD test runner conventions derive directly from these declarations.
+    runtime_version: "[Version pin, e.g. 3.13, Node 22, Go 1.24]"
+    package_manager: "[pip | poetry | npm | pnpm | cargo]"
+    setup_command: "[Command to provision virtualenv / install dependencies]"
+    type_check_command: "[Command to verify types, e.g. mypy --strict]"
+    test_runner_command: "[Command to execute test suite, e.g. pytest tests/unit/ -v]"
   dependencies:
     - name: "[Dependency / Client SDK]"
       version: "[>=X.Y.Z]"
@@ -99,26 +136,43 @@ component_overview:
 interfaces:
   _size_target: 500
   exports:
-    - name: "[ClassName | HandlerFunction]"
-      type: "[class | async function | message_handler]"
-      signature: "[def handle_request(event: CloudEvent) -> ChoreographyReceipt:]"
-      description: "[Interface contract and invocation semantics]"
+    - name: "[ClassName | HandlerFunction | GrpcServicer]"
+      type: "[class | async function | message_handler | grpc_service]"
+      signature: "[def handle_request(event: CloudEvent) -> ChoreographyReceipt: | rpc ProcessCommand(CommandRequest) returns (CommandReceipt)]"
+      description: "[Interface contract, transport binding (gRPC/Protobuf, NATS JetStream, REST), and invocation semantics]"
       errors:
         - "[ErrorType]: [When raised or returned]"
+  event_contracts:
+    _guidance: |
+      For asynchronous event-driven interfaces. Specifies the event envelope
+      (CloudEvents v1.0 standard), wire format schema (Protobuf v3, Avro, or JSON Schema),
+      transport subject/topic (e.g. NATS JetStream, Kafka), and deduplication requirements.
+    events:
+      - name: "[EventName]"
+        type: "[domain.entity.action]"
+        envelope_standard: "CloudEvents v1.0"
+        schema_format: "[Protobuf v3 | JSON Schema | Avro]"
+        schema_definition: "[path/to/contract.proto or inline IDL]"
+        deduplication_key: "[field_name (e.g. id, message_id)]"
 
 # =============================================================================
 # Section 4: Data Models
 # =============================================================================
 data_models:
   _size_target: 400
+  _guidance: |
+    Define typed data structures passed through component interfaces.
+    For relational and persistent storage entities, specify monotonic time-ordered
+    primary keys (UUIDv7), immutable ledger fields, and Bytebase declarative DDL
+    migration requirements where applicable.
   models:
     - name: "[ModelName]"
-      type: "[dataclass | TypedDict | Pydantic BaseModel]"
+      type: "[dataclass | TypedDict | Pydantic BaseModel | Protobuf Message]"
       fields:
         - name: "[field_name]"
-          type: "[Type]"
+          type: "[Type (e.g. UUIDv7, Timestamp, String, Vector768)]"
           required: true
-          description: "[Field purpose]"
+          description: "[Field purpose, constraints, and validation]"
 
 # =============================================================================
 # Section 5: Behavior
@@ -161,6 +215,29 @@ workflow:
       source: "https://aidoc.io/spec/partner"
       correlation:
         - contextAttributeName: "correlationid"
+    - name: SpecContractsClosedEvent
+      type: "io.aidoc.spec.closed"
+      source: "/layers/06_spec"
+
+  functions:
+    - name: invokeReviewSaga
+      operation: "urn:aidoc:workflows:review-saga#invoke"
+      type: custom
+    - name: remediateLayerFindings
+      operation: "urn:aidoc:functions:remediator#remediate"
+      type: custom
+    - name: verifyLayerBoundaryGate
+      operation: "urn:aidoc:governance:gate#verify"
+      type: custom
+    - name: sealDocumentBaseline
+      operation: "urn:aidoc:governance:document#seal"
+      type: custom
+    - name: registerGraphBaselineNode
+      operation: "urn:aidoc:governance:graph#registerNode"
+      type: custom
+    - name: emitCloudEvent
+      operation: "urn:aidoc:governance:event#emit"
+      type: custom
 
   states:
     - name: IngestRequest
@@ -250,9 +327,48 @@ workflow:
       dataConditions:
         - name: SLAVerified
           condition: "${ .sla_met == true }"
-          transition: FinalizeChoreography
+          transition: InvokeReviewSagaGate
       defaultCondition:
         transition: CompensateDistributedSaga
+
+    - name: InvokeReviewSagaGate
+      type: operation
+      actions:
+        - name: runLayerReviewSagaAction
+          functionRef:
+            refName: invokeReviewSaga
+            arguments:
+              workflowId: "spec-review-remediation-flow"
+              artifactId: "SPEC-NN"
+      transition: EvaluateReviewSagaResult
+
+    - name: EvaluateReviewSagaResult
+      type: switch
+      dataConditions:
+        - name: ReviewGateApproved
+          condition: "${ .blocking_findings == 0 and .gate_passed == true }"
+          transition: FinalizeChoreography
+        - name: ReviewRequiresRemediation
+          condition: "${ .blocking_findings > 0 and .iteration < 3 }"
+          transition: RemediateLayerDraft
+        - name: ReviewRequiresEscalation
+          condition: "${ .blocking_findings > 0 or .iteration >= 3 }"
+          transition: CompensateDistributedSaga
+      defaultCondition:
+        transition: CompensateDistributedSaga
+
+    - name: RemediateLayerDraft
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: applyRemediationFixes
+          functionRef:
+            refName: remediateLayerFindings
+            arguments:
+              author: "technical_lead"
+              findings: "${ .unresolved_findings }"
+              iteration: "${ .iteration }"
+      transition: InvokeReviewSagaGate
 
     - name: CompensateDistributedSaga
       type: operation
@@ -279,6 +395,63 @@ workflow:
         - name: emitSuccessEvent
           functionRef:
             refName: eventBroadcaster
+      transition: VerifyLayerCloseoutGate
+
+    - name: VerifyLayerCloseoutGate
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: runLayerGateChecklist
+          functionRef:
+            refName: verifyLayerBoundaryGate
+            arguments:
+              gateId: "GATE-06"
+              layer: "06_SPEC"
+              documentId: "SPEC-NN"
+      transition: SealLayerDocumentBaseline
+
+    - name: SealLayerDocumentBaseline
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: sealFrontmatterStatus
+          functionRef:
+            refName: sealDocumentBaseline
+            arguments:
+              documentId: "SPEC-NN"
+              layer: "06_SPEC"
+              targetStatus: "Baselined"
+              checksumAlgorithm: "SHA-256"
+      transition: RegisterSddGraphBaselineNode
+
+    - name: RegisterSddGraphBaselineNode
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: updateGraphNode
+          functionRef:
+            refName: registerGraphBaselineNode
+            arguments:
+              nodeType: "SpecNode"
+              nodeId: "SPEC-NN"
+              status: "Baselined"
+              lockIncomingEdges: true
+      transition: EmitLayerHandoffEvent
+
+    - name: EmitLayerHandoffEvent
+      type: operation
+      actionMode: sequential
+      actions:
+        - name: publishCompletionEvent
+          functionRef:
+            refName: emitCloudEvent
+            arguments:
+              event: "SpecContractsClosedEvent"
+              documentId: "SPEC-NN"
+              contracts: "${ .contracts }"
+              api_schemas: "${ .api_schemas }"
+      produceEvents:
+        - eventRef: SpecContractsClosedEvent
       end: true
 
     - name: EmitFailureReceipt
@@ -302,6 +475,13 @@ implementation_notes:
     - "[Pattern — e.g., Saga orchestrator pattern with backward recovery]"
   performance_considerations:
     - "[Performance — e.g., Parallel branch timeout capped at 500ms]"
+  platform_stack_alignment:
+    _guidance: |
+      Ground component implementation in the approved technology stack (Layer 05 ADR selection).
+      Specify concrete driver bindings (e.g. asyncpg/PostgreSQL 18, NATS JetStream client,
+      Temporal workflow activities, LiteLLM proxy) while maintaining engine neutrality.
+    driver_bindings:
+      - "[Driver / SDK name and version pin]"
 
 # =============================================================================
 # Section 7: Downstream TDD Contracts
@@ -352,5 +532,5 @@ traceability:
         category: "Timing"
         value: "200ms"
   health_score:
-    tdd_ready: "[X]%"
-    target_score: ">=90/100"
+    tdd_ready: "PASS"
+    target_status: "PASS"

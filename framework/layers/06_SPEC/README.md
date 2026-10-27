@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 
 
 ## C4 Model Position
@@ -47,11 +47,11 @@ Implementation-ready technical specification for a single software component. De
 |--------------------|-------------------|
 | Metadata model | `schema_version: 1.0` unified model |
 | Traceability | Flat upstream tags |
-| Template model | Dual-template (Standard vs Workflow) |
+| Template model | Three-Tier Model & Dual-template Selection |
 | Upstream | EARS + BDD + ADR |
 | Downstream | TDD → IPLAN → Code |
 | Document shape | 8 core sections |
-| Readiness gate | TDD-Ready score >= 90% (GATE-06) |
+| Readiness gate | TDD-Ready (BTV PASS, GATE-06) |
 
 ## Element IDs
 
@@ -71,7 +71,17 @@ SPEC cites its necessary upstream (Layer 6 `required_tags`) — `@ears` + `@bdd`
 @adr: ADR.NN.03.xxxx     (architecture decisions constraining the design)
 ```
 
-## Specification Formats: Standard vs. Distributed Choreography Workflow
+## Three-Tier Architecture & Dual-Template Selection Matrix
+
+Layer 06 supports three complementary representations per the SDD Three-Tier Model and Dual-Template selection based on component complexity (GD-56):
+
+| Component Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
+|---|---|---|---|
+| Monolithic library, pure algorithm, in-process API | `SPEC-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Graph-first repository, AI agent slicing | `SPEC-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
+| Distributed microservices, event-driven callbacks, or saga rollbacks | `SPEC-SWF-TEMPLATE.yaml` | `SPEC-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating interaction contracts and compensating transactions. |
+
+### Specification Formats: Standard vs. Distributed Choreography Workflow
 
 The framework provides two complementary approaches to SPEC authoring:
 
@@ -94,7 +104,7 @@ The framework provides two complementary approaches to SPEC authoring:
 | File | Purpose |
 |------|---------|
 | `SPEC-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `SPEC-SWF-TEMPLATE.yaml` | **Workflow Subtype** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for distributed component choreography and saga compensation. |
+| `SPEC-GRAPH-TEMPLATE.yaml` | **Canonical Data Plane (Tier 2)** — SDD-GRAPH v2.0 property graph slice encoding component interfaces, data contracts, and behavior rules. Source of truth in git. |
+| `SPEC-SWF-TEMPLATE.yaml` | **Workflow Subtype (Tier 1)** — Hybrid Envelope housing CNCF Serverless Workflow (v0.8) for distributed component choreography and saga compensation. |
 | `SPEC_WORKFLOW_STANDARD.md` | Normative standard specifying interface/event mapping to CNCF Serverless Workflow state primitives. |
-| `SPEC-MVP-TEMPLATE.yaml` | Minimal template for rapid prototyping. |
-| `SPEC-00_index.TEMPLATE.md` | SPEC registry template — tracks planned and active SPECs per project |
+| `SPEC-00_index.TEMPLATE.yaml` | SPEC registry template — tracks planned and active SPECs per project in canonical 5-Quadrant YAML |

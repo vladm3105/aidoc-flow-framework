@@ -1,18 +1,18 @@
-# `.aidoc/` Blueprint: gVisor (`runsc`) Sandbox & Infisical Execution Profile
+# `.aidoc/` Blueprint: gVisor (`runsc`) Sandbox & Two-Tier Secrets Execution Profile
 
 ## Document Control
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-10-10 |
+| Last Updated | 2026-10-19 |
 | Author | Framework Maintainer |
-| Framework Version | 0.91.4 |
+| Framework Version | 0.96.23 |
 | Authority | [RECOMMENDED_PLATFORM_STACK.md](../RECOMMENDED_PLATFORM_STACK.md) & [WORKTREE_FLOW.md](../WORKTREE_FLOW.md) |
 
 Operational blueprint defining the security, runtime isolation, and secret injection profile
-for running autonomous coding agents and untrusted dynamic tasks under **gVisor (`runsc`)** and **Infisical**.
+for running autonomous coding agents and untrusted dynamic tasks under **gVisor (`runsc`)** and **Two-Tier Secrets (OCI Vault + OpenBao)**.
 
 ---
 
@@ -27,7 +27,7 @@ for running autonomous coding agents and untrusted dynamic tasks under **gVisor 
 4. **Least-Privilege Non-Root Execution:**
    Containers execute as non-root user (`USER 1000:1000` or host `${UID}:${GID}`) with all capabilities dropped (`--cap-drop=ALL`) and read-only root filesystems (`--read-only`).
 5. **In-Memory Secret Provisioning:**
-   Secrets MUST NOT be written to `.env` files or baked into images. Under `--network=none`, secrets are either injected into container environment variables by executing `infisical run -- docker run -e ...` on the host, or fetched in-process via an Infisical host socket proxy.
+   Secrets MUST NOT be written to `.env` files or baked into images. Under `--network=none`, secrets are provisioned in-memory via the Two-Tier Secrets architecture: Tier 1 infrastructure secrets in OCI Vault, Tier 2 runtime secrets via OpenBao (`bao agent` injecting secrets into `/dev/shm/secrets/` or passed via host-mediated environment injection at container spawn with short-TTL tokens). Long-lived secrets or plaintext environment files are strictly prohibited.
 
 ---
 
@@ -79,8 +79,8 @@ services:
       # LiteLLM UNIX domain socket for LLM proxy calls
       - /var/run/litellm.sock:/var/run/litellm.sock:rw
       
-      # Infisical machine identity configuration
-      - /etc/infisical/auth.json:/etc/infisical/auth.json:ro
+      # OpenBao runtime machine credentials / token
+      - /dev/shm/secrets/bao-token:/etc/openbao/token:ro
     
     environment:
       - WORKSPACE_DIR=/workspace
@@ -88,9 +88,8 @@ services:
       - OPENAI_API_KEY=unused-proxy-auth
       - LITELLM_SOCKET=/var/run/litellm.sock
     
-    # In-memory secret injection entrypoint (host or socket proxy)
-    entrypoint: ["infisical", "run", "--env=${INFISICAL_ENV:-dev}", "--path=/agent-worker", "--"]
-    command: ["python3", "-m", "worker.run_task"]
+    # In-memory secret injection entrypoint
+    entrypoint: ["python3", "-m", "worker.run_task"]
 ```
 
 ---
@@ -100,9 +99,8 @@ services:
 When dispatching an ephemeral task CLI runner from Temporal activities:
 
 ```bash
-# Execute with host-level secret injection to support strict --network=none isolation
-infisical run --env="${INFISICAL_ENV:-dev}" --path=/agent-worker -- \
-  docker run --rm \
+# Execute with OpenBao runtime credentials passed via secure RAM mount (/dev/shm)
+docker run --rm \
     --runtime="${DOCKER_RUNTIME:-runsc}" \
     --network=none \
     --user="${UID:-1000}:${GID:-1000}" \
