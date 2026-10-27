@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: architect
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.96.21"
+framework_spec_version: "0.96.22"
 ---
 # architect lens — IPLAN layer
 

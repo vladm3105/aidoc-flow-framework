@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.21 |
+| Framework Version | 0.96.22 |
 | Authority | [Decision GD-73](DECISIONS.md#gd-73) (DEC-CHG-86), [Decision GD-72](DECISIONS.md#gd-72) (DEC-CHG-83), [Decision D-0013 / GD-13](DECISIONS.md), [CHG-91](../archive/CHG-91/CHG-91.yaml), [CHG-92](../archive/CHG-92/CHG-92.yaml) & [CHG-93](../archive/CHG-93/CHG-93.yaml) |
 | Technology Stack Source | [vladm3105/technology-stack](https://github.com/vladm3105/technology-stack) (Standard v2.0, Specifications 00–23) |
 

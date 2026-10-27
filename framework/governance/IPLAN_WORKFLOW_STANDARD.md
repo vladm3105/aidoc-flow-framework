@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.21 |
+| Framework Version | 0.96.22 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 08
 (Implementation Plan / IPLAN) task graphs using the CNCF Serverless Workflow v0.8 specification
@@ -113,7 +113,7 @@ title: "[Component Implementation Plan]"
 # --- Top-Level SDD Envelope (Preserved for STRUCT01 / TAG01) ---
 metadata:
   schema_version: "2.0"
-  framework_version: "0.96.21"
+  framework_version: "0.96.22"
   document_type: "iplan-document"
   layer: 8
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
@@ -124,9 +124,9 @@ document_control:
   flow: "sdd_to_code"      # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
   flow_code: "SDD2C"       # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
   subtype: workflow        # code_build | deploy | combined | workflow | audit_fix | bugfix | docs
-  # NOTE: `_required_when_subtype` sections are advisory until deterministic
-  # enforcement lands (issue #1046) — the corpus linter defers them and no
-  # audit skill owns them yet. Authors must still satisfy their subtype.
+  # NOTE: `_required_when_subtype` sections are deterministically enforced
+  # by sdd_doc_lint (STRUCT01) per CHG-140 (issue #1046) based on declared
+  # document_control.subtype. Authors must satisfy their subtype's required sections.
   source_spec: "@spec: SPEC-NN"  # Required for SDD2C/SEED2C; optional for DIR2C (iplan_to_code)
   status: Draft
   version: "1.0"
