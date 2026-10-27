@@ -41,6 +41,10 @@
 #                         VERSION/tag checks still run for local canons).
 #   --force               skip the "already at target" refusal (re-install
 #                         the same version; still never converts kinds).
+#   --refresh-blueprints  refresh standard governance blueprints in
+#                         .aidoc/project/governance/ to target canon;
+#                         preserves consumer-modified blueprints unless
+#                         --force is also passed.
 #   --yes                 confirm the destructive re-point without prompting
 #                         (required for non-interactive use; --dry-run never
 #                         prompts and never mutates).
@@ -75,7 +79,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; TO=""; CANON_SHA=""; KIND=""; SHARED=""; CANON_DIR=""; CONF_CMD=""; DRY_RUN=0; FORCE=0; YES=0
+PROJECT=""; TO=""; CANON_SHA=""; KIND=""; SHARED=""; CANON_DIR=""; CONF_CMD=""; DRY_RUN=0; FORCE=0; YES=0; REFRESH_BLUEPRINTS=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -88,9 +92,10 @@ while [ $# -gt 0 ]; do
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
+    --refresh-blueprints) REFRESH_BLUEPRINTS=1; shift ;;
     # Install-time-only flags: accepted and ignored (upgrade never
     # scaffolds; deploy.sh forwards install flags on both paths) — CHG-136.
-    --no-adr|--no-agents|--no-stack-policy|--no-blueprints|--no-precommit) shift ;;
+    --no-adr|--no-agents|--no-stack-policy|--no-blueprints|--no-precommit|--all-indices) shift ;;
     --author) need_value "$@"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     --*) refuse "unknown flag $1 (see --help)" ;;
@@ -144,10 +149,21 @@ fi
 CURRENT="$(sed -n -E 's/^[[:space:]]*framework_version:[[:space:]]*"?([^"]+)"?/\1/p' "$AIDOC/profile.yaml" | head -1)"
 [ -n "$CURRENT" ] || die "no framework_version pin in $AIDOC/profile.yaml"
 
-SCRATCH=""
-cleanup() { [ -z "$SCRATCH" ] || rm -rf "$SCRATCH"; }
+SCRATCH=""; BP_CUSTOM_DIR=""
+cleanup() { [ -z "$SCRATCH" ] || rm -rf "$SCRATCH"; [ -z "$BP_CUSTOM_DIR" ] || rm -rf "$BP_CUSTOM_DIR"; }
 trap cleanup EXIT
 CANON=""
+
+BLUEPRINT_PAIRS=(
+  "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md:CHG_EXECUTION_FLOW.md"
+  "aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md:CI_SMART_ROUTING.md"
+  "aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md:CONFLICT_RESOLUTION.md"
+  "aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md:SELF_REVIEW_LOOP.md"
+  "aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md:QA_PROTOCOL.md"
+  "aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md:BROWSER_TESTING.md"
+  "DURABLE_EXECUTION_STANDARD.md:DURABLE_EXECUTION.md"
+  "REVIEW_WORKFLOW_STANDARD.md:REVIEW_WORKFLOWS.md"
+)
 if [ "$KIND" = symlink ]; then
   [ -d "$SHARED" ] || refuse "shared canon not a directory: $SHARED"
   CANON="$(cd -- "$SHARED" && pwd)" || refuse "cannot resolve --shared: $SHARED"
@@ -205,13 +221,45 @@ if [ "$DRY_RUN" = 1 ]; then
 elif [ ! -d "$AIDOC/project" ]; then
   log "no .aidoc/project/ overrides — nothing to diff (runbook step 3 vacuous)"
 else
+  BP_CUSTOM_DIR="$(mktemp -d "${TMPDIR:-/tmp}/bp_custom.XXXXXX")"
+  for pair in "${BLUEPRINT_PAIRS[@]}"; do
+    src_rel="${pair%%:*}"
+    dst_name="${pair##*:}"
+    dst="$AIDOC/project/governance/$dst_name"
+    old_canon="$FW/framework/governance/$src_rel"
+    if [ -f "$dst" ] && [ -f "$old_canon" ] && ! cmp -s "$dst" "$old_canon"; then
+      touch "$BP_CUSTOM_DIR/$dst_name"
+    fi
+  done
+
   DRIFT=0
   while IFS= read -r f; do
     pin="$(sed -n -E 's/^[[:space:]]*framework_version: "?([0-9][^"]*)"?/\1/p' "$f" | head -1)"
     rel="${f#"$AIDOC"/}"
-    if [ -z "$pin" ]; then echo "UNPINNED: $rel (no authored-against framework_version)";
-    elif [ "$pin" = "$NEW" ]; then echo "OK: $rel (at $NEW)";
-    else echo "DRIFT: $rel (authored against $pin, canon now $NEW)"; DRIFT=$((DRIFT+1)); fi
+    bp_match=""
+    for pair in "${BLUEPRINT_PAIRS[@]}"; do
+      dst_name="${pair##*:}"
+      if [ "$rel" = "project/governance/$dst_name" ]; then
+        bp_match="${pair%%:*}"
+        break
+      fi
+    done
+    if [ -n "$bp_match" ]; then
+      canon_bp="$CANON/framework/governance/$bp_match"
+      if [ -f "$canon_bp" ] && cmp -s "$f" "$canon_bp"; then
+        echo "OK: $rel (blueprint up-to-date)"
+      else
+        echo "DRIFT: $rel (blueprint differs from canon; pass --refresh-blueprints to update)"
+        DRIFT=$((DRIFT+1))
+      fi
+    elif [ -z "$pin" ]; then
+      echo "UNPINNED: $rel (no authored-against framework_version)"
+    elif [ "$pin" = "$NEW" ]; then
+      echo "OK: $rel (at $NEW)"
+    else
+      echo "DRIFT: $rel (authored against $pin, canon now $NEW)"
+      DRIFT=$((DRIFT+1))
+    fi
   done < <(find "$AIDOC/project" -type f | sort)
   [ "$DRIFT" = 0 ] || log "$DRIFT override(s) older than $NEW — resolve per runbook step 3 (carry intent forward, never weaken gates)"
 fi
@@ -286,6 +334,40 @@ if [ "$DRY_RUN" != 1 ]; then
     mkdir -p "$AIDOC/engine"
     cp "$FW/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" "$AIDOC/engine/engine.yaml"
     log "scaffolded missing .aidoc/engine/engine.yaml"
+  fi
+
+  # Harmonize consumer pre-commit gate if missing
+  if [ ! -f "$PROJECT/.pre-commit-config.yaml" ] && [ -f "$FW/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" ]; then
+    cp "$FW/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" "$PROJECT/.pre-commit-config.yaml"
+    log "scaffolded missing .pre-commit-config.yaml"
+  elif [ -f "$PROJECT/.pre-commit-config.yaml" ] && (! grep -q 'chg-lint' "$PROJECT/.pre-commit-config.yaml"); then
+    log "note: existing .pre-commit-config.yaml lacks chg-lint hook — consider harmonizing with framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml"
+  fi
+
+  # Harmonize governance blueprints if --refresh-blueprints was passed
+  if [ "$REFRESH_BLUEPRINTS" = 1 ]; then
+    gov_dst="$AIDOC/project/governance"
+    mkdir -p "$gov_dst"
+    for pair in "${BLUEPRINT_PAIRS[@]}"; do
+      src_rel="${pair%%:*}"
+      dst_name="${pair##*:}"
+      src="$CANON/framework/governance/$src_rel"
+      dst="$gov_dst/$dst_name"
+      if [ ! -f "$src" ]; then
+        continue
+      fi
+      if [ ! -f "$dst" ]; then
+        cp "$src" "$dst"
+        log "scaffolded missing blueprint at .aidoc/project/governance/$dst_name"
+      elif cmp -s "$dst" "$src"; then
+        log "blueprint .aidoc/project/governance/$dst_name is up-to-date"
+      elif [ -n "$BP_CUSTOM_DIR" ] && [ -f "$BP_CUSTOM_DIR/$dst_name" ] && [ "$FORCE" != 1 ]; then
+        log "preserved customized blueprint at .aidoc/project/governance/$dst_name (pass --force to overwrite)"
+      else
+        cp "$src" "$dst"
+        log "refreshed blueprint at .aidoc/project/governance/$dst_name"
+      fi
+    done
   fi
 fi
 

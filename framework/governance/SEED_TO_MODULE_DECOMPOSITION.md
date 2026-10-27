@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.20 |
+| Framework Version | 0.96.21 |
 
 Defines the normative methodology and governance rules for analyzing Tier 1 Seed documents
 into Tier 2 Module specifications. Establishes the Triple-Lens modeling standard

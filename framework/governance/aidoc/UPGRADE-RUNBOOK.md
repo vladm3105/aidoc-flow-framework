@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-02 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.20 |
+| Framework Version | 0.96.21 |
 
 When the canon ships a new `framework/VERSION`, every consumer owes
 re-adoption (GATE-SPEC flow diagram: "consumers re-adopt the new
@@ -68,6 +68,12 @@ Resolve each conflict in the override WITHOUT weakening gates: carry the
 project's intent forward onto the new upstream text; if the upstream gate got
 stricter, the override follows it up, never down. Delete overrides that now
 duplicate upstream verbatim.
+
+For standard scaffolded governance blueprints in `.aidoc/project/governance/`
+(such as `CHG_EXECUTION_FLOW.md` or `QA_PROTOCOL.md`), pass `--refresh-blueprints`
+to `upgrade.sh` to refresh unmodified blueprints to the target canon. Any
+blueprint customized by the consumer is automatically preserved unless `--force`
+is explicitly specified.
 
 ### 4. Re-run conformance
 
