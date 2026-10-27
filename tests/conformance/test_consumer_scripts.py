@@ -70,12 +70,24 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         (FRAMEWORK / "governance" / "ADAPTATION_SURFACE.yaml", gov / "ADAPTATION_SURFACE.yaml"),
     ):
         shutil.copy(src, dst)
-    layers_05 = canon / "framework" / "layers" / "05_ADR"
-    layers_05.mkdir(parents=True)
-    shutil.copy(
-        FRAMEWORK / "layers" / "05_ADR" / "ADR-00_index.TEMPLATE.yaml",
-        layers_05 / "ADR-00_index.TEMPLATE.yaml",
-    )
+    for layer in (
+        "01_BRD",
+        "02_PRD",
+        "03_EARS",
+        "04_BDD",
+        "05_ADR",
+        "06_SPEC",
+        "07_TDD",
+        "08_IPLAN",
+        "09_CHG",
+        "10_EVAL",
+    ):
+        prefix = layer.split("_")[1]
+        tmpl_src = FRAMEWORK / "layers" / layer / f"{prefix}-00_index.TEMPLATE.yaml"
+        if tmpl_src.exists():
+            ldir = canon / "framework" / "layers" / layer
+            ldir.mkdir(parents=True, exist_ok=True)
+            shutil.copy(tmpl_src, ldir / f"{prefix}-00_index.TEMPLATE.yaml")
     tmpl_dir = canon / "framework" / "templates"
     tmpl_dir.mkdir(parents=True)
     shutil.copy(
@@ -264,6 +276,48 @@ class InstallScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertFalse((self.project / "docs" / "sdd" / "05_ADR").exists())
         self.assertFalse((self.project / "AGENTS.md").exists())
+
+    def test_scaffolds_all_layer_indices_with_flag(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--all-indices",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        for layer in (
+            "01_BRD",
+            "02_PRD",
+            "03_EARS",
+            "04_BDD",
+            "05_ADR",
+            "06_SPEC",
+            "07_TDD",
+            "08_IPLAN",
+            "09_CHG",
+            "10_EVAL",
+        ):
+            prefix = layer.split("_")[1]
+            idx = self.project / "docs" / "sdd" / layer / f"{prefix}-00_index.yaml"
+            self.assertTrue(idx.is_file(), f"missing index for {layer}")
+            content = idx.read_text(encoding="utf-8")
+            self.assertIn("9.9.9", content, f"missing version in {idx}")
+            self.assertNotIn("[X.Y.Z]", content, f"unresolved placeholder in {idx}")
+
+    def test_all_indices_respects_no_adr_flag(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--all-indices",
+            "--no-adr",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        brd_idx = self.project / "docs" / "sdd" / "01_BRD" / "BRD-00_index.yaml"
+        self.assertTrue(brd_idx.is_file())
+        self.assertFalse((self.project / "docs" / "sdd" / "05_ADR").exists())
 
     def test_refuses_overwrite_without_force(self):
         first = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))

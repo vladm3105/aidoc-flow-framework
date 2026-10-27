@@ -1,0 +1,58 @@
+# =============================================================================
+#  IPLAN-138: Turnkey SDD layer index scaffolding
+# =============================================================================
+#  Implementation Plan authorized by CHG-138
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-138
+title: "Implementation Plan: turnkey SDD layer index scaffolding (issue #988)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.20"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-138"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-138/CHG-138.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-138/IPLAN-138.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/scripts/install.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "deploy.sh"
+    action: "modify"
+    status: "DONE"
+  - path: "tests/conformance/test_consumer_scripts.py"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "DONE"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C2, change_source direct, sdd_lifecycle empty"
+  order: "tooling logic in install.sh + deploy.sh precedes tests; version bump + sync precedes final verification"
+  compatibility: "default without --all-indices leaves existing installation behavior intact (only Layer 05 ADR index scaffolded)"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-138/CHG-138.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "pytest tests/conformance/test_consumer_scripts.py"
+  - "pytest tests/conformance/test_sync_version_refs.py"
