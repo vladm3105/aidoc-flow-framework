@@ -37,9 +37,7 @@ def _doc_text():
 
 # Files whose ASCII trees must agree with the installer: stack-policy.yaml
 # lives at project root (#1042, regression remainder of #1022/CHG-128).
-SCAFFOLD_TEMPLATE = (
-    REPO_ROOT / "framework" / "governance" / "aidoc" / "AIDOC-SCAFFOLD-TEMPLATE.md"
-)
+SCAFFOLD_TEMPLATE = REPO_ROOT / "framework" / "governance" / "aidoc" / "AIDOC-SCAFFOLD-TEMPLATE.md"
 AIDOC_DOC = REPO_ROOT / "framework" / "governance" / "aidoc" / "AIDOC.md"
 PARITY_DOCS = (SCAFFOLD_TEMPLATE, AIDOC_DOC)
 INSTALL_SCRIPT = REPO_ROOT / "framework" / "scripts" / "install.sh"
@@ -71,7 +69,7 @@ def _stack_policy_placements(text):
         match = _BRANCH_RE.match(raw)
         if match:
             depth = len(match.group(0)) // 4
-            name = raw[match.end():]
+            name = raw[match.end() :]
         else:
             depth = 0
             name = stripped
