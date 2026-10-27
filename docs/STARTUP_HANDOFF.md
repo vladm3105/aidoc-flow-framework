@@ -64,7 +64,7 @@ Review `<project>/.aidoc/profile.yaml` (seeded from `PROFILE-TEMPLATE.yaml`). Tu
 
 #### Step 4: Instantiate Operational Governance Blueprints
 
-Instantiate the required operational blueprints under `<project>/.aidoc/project/governance/` (see [`docs/ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.1):
+`install.sh` scaffolds the 8 required operational blueprints under `<project>/.aidoc/project/governance/` by default (`--no-blueprints` to skip; the installer smoke-asserts their presence). The commands below are the manual fallback (submodule consumers, opted-out installs); see [`docs/ADAPTATION-GUIDE.md`](ADAPTATION-GUIDE.md) §4.1:
 
 ```bash
 mkdir -p <project>/.aidoc/project/governance

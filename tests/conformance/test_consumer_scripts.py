@@ -86,10 +86,27 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         "STACK-POLICY-TEMPLATE.yaml",
         "TASKFILE-TEMPLATE.yml",
         "ENGINE-CONFIG-TEMPLATE.yaml",
+        "CONSUMER-PRECOMMIT-TEMPLATE.yaml",
     ):
         src = FRAMEWORK / "templates" / tmpl_name
         if src.exists():
             shutil.copy(src, tmpl_dir / tmpl_name)
+    # Governance blueprint sources tapped by install.sh blueprints (CHG-136).
+    for tmpl_name in (
+        "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md",
+        "AIDOC-CI-SMART-ROUTING-TEMPLATE.md",
+        "AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md",
+        "AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md",
+        "AIDOC-QA-PROTOCOL-TEMPLATE.md",
+        "AIDOC-BROWSER-TESTING-TEMPLATE.md",
+    ):
+        src = FRAMEWORK / "governance" / "aidoc" / tmpl_name
+        if src.exists():
+            shutil.copy(src, aidoc / tmpl_name)
+    for std_name in ("DURABLE_EXECUTION_STANDARD.md", "REVIEW_WORKFLOW_STANDARD.md"):
+        src = FRAMEWORK / "governance" / std_name
+        if src.exists():
+            shutil.copy(src, gov / std_name)
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
@@ -434,6 +451,57 @@ class InstallScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertFalse((self.project / "stack-policy.yaml").exists())
 
+    def test_scaffolds_governance_blueprints_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        for name in (
+            "CHG_EXECUTION_FLOW.md",
+            "CI_SMART_ROUTING.md",
+            "CONFLICT_RESOLUTION.md",
+            "SELF_REVIEW_LOOP.md",
+            "QA_PROTOCOL.md",
+            "BROWSER_TESTING.md",
+            "DURABLE_EXECUTION.md",
+            "REVIEW_WORKFLOWS.md",
+        ):
+            self.assertTrue((gov / name).is_file(), f"blueprint missing: {name}")
+
+    def test_no_blueprints_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-blueprints",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        self.assertFalse(
+            any(gov.glob("*.md")) if gov.is_dir() else False,
+            "blueprints scaffolded despite --no-blueprints",
+        )
+
+    def test_scaffolds_precommit_config_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        precommit = self.project / ".pre-commit-config.yaml"
+        self.assertTrue(precommit.is_file())
+        content = precommit.read_text(encoding="utf-8")
+        self.assertIn("chg-gate-check", content)
+        self.assertIn(".aidoc/framework/hooks/ch-gate-check.sh", content)
+
+    def test_no_precommit_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-precommit",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / ".pre-commit-config.yaml").exists())
+
 
 class UpgradeScript(unittest.TestCase):
     """upgrade.sh — runbook step-2 re-point + drift report, both kinds."""
@@ -450,10 +518,28 @@ class UpgradeScript(unittest.TestCase):
         proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a))
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
+    def test_upgrade_ignores_install_only_opt_outs(self):
+        self._install_pin()
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            "--no-adr",
+            "--no-agents",
+            "--no-stack-policy",
+            "--no-blueprints",
+            "--no-precommit",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
     def test_pin_upgrade_replaces_and_reports_drift(self):
         self._install_pin()
         overrides = self.project / ".aidoc" / "project"
-        overrides.mkdir(parents=True)
+        overrides.mkdir(parents=True, exist_ok=True)
         (overrides / "old.yaml").write_text('framework_version: "9.9.8"\nfoo: 1\n')
         (overrides / "current.yaml").write_text('framework_version: "9.9.10"\nfoo: 2\n')
         (overrides / "loose.md").write_text("# no pin here\n")
@@ -613,7 +699,10 @@ class UpgradeScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
     def test_upgrade_without_overrides_is_vacuous(self):
-        self._install_pin()
+        # Default installs scaffold blueprints (UNPINNED drift), so the
+        # vacuous path needs an install with nothing under .aidoc/project/.
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a), "--no-blueprints")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
         proc = _run(
             UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
         )

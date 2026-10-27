@@ -34,6 +34,8 @@
 #   --no-adr          skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
 #   --no-agents       skip scaffolding root AGENTS.md
 #   --no-stack-policy skip scaffolding root stack-policy.yaml
+#   --no-blueprints   skip scaffolding .aidoc/project/governance/ blueprints
+#   --no-precommit    skip scaffolding root .pre-commit-config.yaml
 #   --dry-run         print every mutation without performing it (read-only
 #                     VERSION/tag checks still run for local canons).
 #   --force           replace an existing <project>/.aidoc wholesale
@@ -76,7 +78,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0; NO_BLUEPRINTS=0; NO_PRECOMMIT=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -89,6 +91,8 @@ while [ $# -gt 0 ]; do
     --no-adr) NO_ADR=1; shift ;;
     --no-agents) NO_AGENTS=1; shift ;;
     --no-stack-policy) NO_STACK_POLICY=1; shift ;;
+    --no-blueprints) NO_BLUEPRINTS=1; shift ;;
+    --no-precommit) NO_PRECOMMIT=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
@@ -312,6 +316,46 @@ if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ]; then
   fi
 fi
 
+# Scaffold operational governance blueprints at .aidoc/project/governance
+# (STARTUP_HANDOFF step 4; --no-blueprints to skip)
+if [ "$NO_BLUEPRINTS" != 1 ]; then
+  gov_dst="$AIDOC/project/governance"
+  run "mkdir -p $gov_dst" mkdir -p "$gov_dst"
+  for pair in \
+    "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md:CHG_EXECUTION_FLOW.md" \
+    "aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md:CI_SMART_ROUTING.md" \
+    "aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md:CONFLICT_RESOLUTION.md" \
+    "aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md:SELF_REVIEW_LOOP.md" \
+    "aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md:QA_PROTOCOL.md" \
+    "aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md:BROWSER_TESTING.md" \
+    "DURABLE_EXECUTION_STANDARD.md:DURABLE_EXECUTION.md" \
+    "REVIEW_WORKFLOW_STANDARD.md:REVIEW_WORKFLOWS.md"; do
+    src="$CANON/framework/governance/${pair%%:*}"
+    dst="$gov_dst/${pair##*:}"
+    if [ -f "$src" ] && [ ! -f "$dst" ]; then
+      run "cp $src $dst" cp "$src" "$dst"
+      if [ "$DRY_RUN" != 1 ]; then
+        log "scaffolded governance blueprint at .aidoc/project/governance/${pair##*:}"
+      fi
+    elif [ -f "$dst" ]; then
+      log "existing .aidoc/project/governance/${pair##*:} preserved"
+    fi
+  done
+fi
+
+# Scaffold minimal consumer pre-commit gate at project root (--no-precommit to skip)
+if [ "$NO_PRECOMMIT" != 1 ] && [ -f "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" ]; then
+  precommit_doc="$PROJECT/.pre-commit-config.yaml"
+  if [ ! -f "$precommit_doc" ]; then
+    run "cp $CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml $precommit_doc" cp "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" "$precommit_doc"
+    if [ "$DRY_RUN" != 1 ]; then
+      log "scaffolded consumer pre-commit gate at .pre-commit-config.yaml"
+    fi
+  else
+    log "existing .pre-commit-config.yaml preserved"
+  fi
+fi
+
 # Scaffold linter runner at .aidoc/bin/sdd-lint (backward-compatible shim)
 bin_dir="$AIDOC/bin"
 runner="$bin_dir/sdd-lint"
@@ -404,5 +448,39 @@ EOF
   else die "smoke: profile.yaml carries unknown keys"; fi
 else
   log "WARNING: python3 unavailable — profile keys NOT verified (check BOOTSTRAP step 5 manually)"
+fi
+
+# BOOTSTRAP step 5: assert every scaffolded artifact (opt-outs respected).
+if [ "$NO_AGENTS" != 1 ] && [ -f "$CANON/framework/templates/AGENTS-TEMPLATE.md" ] && [ ! -f "$PROJECT/AGENTS.md" ]; then
+  die "smoke: AGENTS.md missing"
+fi
+if [ "$NO_STACK_POLICY" != 1 ] && [ -f "$CANON/framework/templates/STACK-POLICY-TEMPLATE.yaml" ] && [ ! -f "$PROJECT/stack-policy.yaml" ]; then
+  die "smoke: stack-policy.yaml missing"
+fi
+if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ] && [ ! -f "$AIDOC/engine/engine.yaml" ]; then
+  die "smoke: .aidoc/engine/engine.yaml missing"
+fi
+if [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ ! -f "$PROJECT/docs/sdd/05_ADR/ADR-00_index.yaml" ]; then
+  die "smoke: docs/sdd/05_ADR/ADR-00_index.yaml missing"
+fi
+[ -d "$PROJECT/docs/sdd/graph" ] || die "smoke: docs/sdd/graph missing"
+[ -f "$AIDOC/cache/.gitignore" ] || die "smoke: .aidoc/cache/.gitignore missing"
+if [ "$NO_BLUEPRINTS" != 1 ]; then
+  for pair in \
+    "aidoc/AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md:CHG_EXECUTION_FLOW.md" \
+    "aidoc/AIDOC-CI-SMART-ROUTING-TEMPLATE.md:CI_SMART_ROUTING.md" \
+    "aidoc/AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md:CONFLICT_RESOLUTION.md" \
+    "aidoc/AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md:SELF_REVIEW_LOOP.md" \
+    "aidoc/AIDOC-QA-PROTOCOL-TEMPLATE.md:QA_PROTOCOL.md" \
+    "aidoc/AIDOC-BROWSER-TESTING-TEMPLATE.md:BROWSER_TESTING.md" \
+    "DURABLE_EXECUTION_STANDARD.md:DURABLE_EXECUTION.md" \
+    "REVIEW_WORKFLOW_STANDARD.md:REVIEW_WORKFLOWS.md"; do
+    if [ -f "$CANON/framework/governance/${pair%%:*}" ] && [ ! -f "$AIDOC/project/governance/${pair##*:}" ]; then
+      die "smoke: governance blueprint missing: .aidoc/project/governance/${pair##*:}"
+    fi
+  done
+fi
+if [ "$NO_PRECOMMIT" != 1 ] && [ -f "$CANON/framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml" ] && [ ! -f "$PROJECT/.pre-commit-config.yaml" ]; then
+  die "smoke: .pre-commit-config.yaml missing"
 fi
 log "done: kind=$KIND version=$VERSION aidoc=$AIDOC"

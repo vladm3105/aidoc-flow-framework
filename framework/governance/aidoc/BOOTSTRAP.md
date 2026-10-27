@@ -77,6 +77,8 @@ Sanctioned attachment mechanisms:
    echo "*" > <project>/.aidoc/cache/.gitignore
    echo "!.gitignore" >> <project>/.aidoc/cache/.gitignore
    ```
+8. Instantiate the 8 operational governance blueprints under `<project>/.aidoc/project/governance/` (STARTUP_HANDOFF step 4; `--no-blueprints` to skip).
+9. Scaffold the minimal consumer pre-commit gate at `<project>/.pre-commit-config.yaml` (warn-only CHG gate; `--no-precommit` to skip).
 
 ### 5. Smoke-verify the shape
 
@@ -94,7 +96,11 @@ The fresh `.aidoc/` passes when ALL of these hold:
 - [ ] `docs/sdd/graph/` directory is present for SDD-GRAPH v2.0 manifests.
 - [ ] `.aidoc/cache/` exists and is gitignored (ensures zero binary bloat per GD-13).
 - [ ] Working agreement `<project>/AGENTS.md` is established (from `framework/templates/AGENTS-TEMPLATE.md`) instructing `task sdd:lint` and `task sdd:check`.
+- [ ] Operational governance blueprints are present under `.aidoc/project/governance/` (or explicitly opted out via `--no-blueprints`).
+- [ ] Consumer pre-commit gate `.pre-commit-config.yaml` is present at project root (or explicitly opted out via `--no-precommit`).
 - [ ] Zero forbidden monolithic files exist at repository root or `docs/`: no loose `DECISIONS.md`, `ROADMAP.md`, `CHANGELOG.md`, or `docs/HANDOFF.md`.
+
+Follow-up (not part of the shape pass): adopt `.github/workflows/sdd-gate.yml` per `docs/CONSUMER-CI-STARTER.md` and make it a required check, and wire the `PreCommit` entry in `hooks/hooks.json` for the consumer's editor/agent.
 
 ## What is NOT part of the contract
 

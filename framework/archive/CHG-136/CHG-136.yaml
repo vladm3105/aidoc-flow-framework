@@ -124,6 +124,16 @@ problem_statement:
   scope:
     - framework/archive/CHG-136/CHG-136.yaml (new, this vehicle).
     - framework/archive/CHG-136/IPLAN-136.yaml (new, executing IPLAN).
+    - framework/scripts/install.sh (blueprint + pre-commit scaffolding, extended smoke).
+    - deploy.sh (--no-blueprints/--no-precommit forwarding).
+    - framework/scripts/upgrade.sh (accept-and-ignore install-only opt-outs).
+    - framework/templates/CONSUMER-PRECOMMIT-TEMPLATE.yaml (new, minimal consumer gate).
+    - framework/governance/aidoc/BOOTSTRAP.md (steps 8-9, checklist + follow-up note).
+    - docs/STARTUP_HANDOFF.md (step 4 installer-default note).
+    - tests/conformance/test_consumer_scripts.py (fixture sources + 5 focused tests).
+    - framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md (G2 root-path trees).
+    - framework/governance/aidoc/AIDOC.md (G2 root-path tree).
+    - tests/conformance/test_consumer_manifest.py (ScaffoldStackPolicyParity guard).
 
 # =============================================================================
 # Section 3: Implementation Steps & IPLAN Link

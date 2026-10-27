@@ -31,6 +31,8 @@ Options:
   --no-stack-policy     Skip scaffolding stack-policy.yaml
   --no-adr              Skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
   --no-agents           Skip scaffolding AGENTS.md
+  --no-blueprints       Skip scaffolding .aidoc/project/governance/ blueprints
+  --no-precommit        Skip scaffolding .pre-commit-config.yaml
   --author <name>       Set author name for scaffolded docs
   --canon-sha <sha>     Verify canon commit SHA
   -h, --help            Show this help message
@@ -50,6 +52,8 @@ while [[ $# -gt 0 ]]; do
     --no-stack-policy) EXTRA_ARGS+=("--no-stack-policy"); shift ;;
     --no-adr) EXTRA_ARGS+=("--no-adr"); shift ;;
     --no-agents) EXTRA_ARGS+=("--no-agents"); shift ;;
+    --no-blueprints) EXTRA_ARGS+=("--no-blueprints"); shift ;;
+    --no-precommit) EXTRA_ARGS+=("--no-precommit"); shift ;;
     --author) [[ $# -ge 2 ]] || { echo "ERROR: --author needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--author" "$2"); shift 2 ;;
     --canon-sha) [[ $# -ge 2 ]] || { echo "ERROR: --canon-sha needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--canon-sha" "$2"); shift 2 ;;
     -h|--help) usage ;;
