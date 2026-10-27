@@ -847,8 +847,20 @@ def lint_text(
         and isinstance(_consistency, dict)
         and str(_consistency.get("status") or "").strip().lower() == "not-applicable"
     )
+    # Empty-registry ADR index (GD-46 precedent, #1041): no decision or
+    # technology records exist yet, so there is nothing to trace upstream —
+    # the emptiness names the waived contract at its own point. Dual signal
+    # (`adrs: []` and `technologies: []`); any records without tags stay red.
+    _empty_adr = (
+        artifact == "ADR"
+        and isinstance(_fm, dict)
+        and _fm.get("adrs") == []
+        and _fm.get("technologies") == []
+    )
     for tag in required:
         if tag == "tdd" and _na_iplan:
+            continue
+        if _empty_adr:
             continue
         if tag not in seen_tags:
             findings.append(

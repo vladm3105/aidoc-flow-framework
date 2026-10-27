@@ -34,8 +34,8 @@ adrs: []
   #   downstream_specs: ["SPEC-01"]    # Downstream technical specifications
   #   impact: "High"            # High | Medium | Low
   #   file_path: "ADR-01_[slug].yaml"
-  #   supersedes: null          # ADR-XX if this replaces an older decision
-  #   superseded_by: null       # ADR-YY if replaced
+  #   supersedes: null          # ADR-NN if this replaces an older decision
+  #   superseded_by: null       # ADR-NN if replaced
 
 # =============================================================================
 # Planned Decisions Backlog
@@ -44,7 +44,7 @@ adrs: []
 backlog: []
 
   # Template entry:
-  # - id: "ADR-XX"
+  # - id: "ADR-NN"
   #   topic: "[Decision Topic]"
   #   source_requirements: "BDD-01 / PRD-01"
   #   priority: "High"          # High | Medium | Low
