@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.18 |
+| Framework Version | 0.96.19 |
 
 Establishes the engine-agnostic 3-tier runtime execution architecture for running autonomous,
 high-assurance Specification-Driven Development (SDD) multi-agent systems with durable state,

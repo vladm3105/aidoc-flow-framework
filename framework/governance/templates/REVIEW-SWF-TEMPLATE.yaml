@@ -39,7 +39,7 @@ description: >-
   and mutating remediation cycle with rollback compensation.
 
 metadata:
-  framework_version: "0.96.18"
+  framework_version: "0.96.19"
   governed_layer: "[01_BRD|02_PRD|03_EARS|04_BDD|05_ADR|06_SPEC|07_TDD|08_IPLAN|09_CHG]"
   workflow_type: "governance-review-saga"
 
