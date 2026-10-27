@@ -43,12 +43,11 @@ The question `.aidoc/` answers: **"what is different about THIS project?"**
 
 ## What `.aidoc/` contains
 
-Per the ratified Workstation Standard ([`docs/AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md)), `.aidoc/` houses all four Quad-Pillar federated components:
+Per the ratified Workstation Standard ([`docs/AIDOC_WORKSTATION_STANDARD.md`](../../../docs/AIDOC_WORKSTATION_STANDARD.md)), `.aidoc/` houses the Quad-Pillar federated components (Pillar 2 stack-policy.yaml lives at project root):
 
 ```text
 .aidoc/
 ├── profile.yaml              # project profile — adaptation knobs (closed surface)
-├── stack-policy.yaml         # ⭐ Pillar 2: Enterprise Tech Stack Policy (schema 1.0.0)
 ├── Taskfile.yml              # ⭐ Canonical SDD task runner (sdd:lint, sdd:review, sdd:slice, sdd:check)
 ├── project/                  # ⭐ Tier 1: Project-specific overrides & specialized governance
 │   ├── Taskfile.yml          # Optional project-specific task overrides

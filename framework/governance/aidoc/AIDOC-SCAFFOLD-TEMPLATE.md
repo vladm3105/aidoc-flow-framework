@@ -12,8 +12,9 @@
 
 This directory is the project customization layer for the aidoc-flow-framework.
 It holds the project profile (adaptation knobs), technical engine bindings, canonical
-task definitions, enterprise stack policies, and project-specific overrides that take
-precedence over the framework's defaults.
+task definitions, and project-specific overrides that take
+precedence over the framework's defaults. (Pillar 2 stack-policy.yaml lives
+at project root, scaffolded by the installer.)
 
 ## Project tier overview
 
@@ -27,9 +28,9 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 │   └── architecture/        # Architecture domains (scaffold: SEED-TEMPLATE.md)
 │       └── auth.md
 ├── docs/sdd/                # Tier 2 AI outputs: formal 10-layer SDD chain
+├── stack-policy.yaml        # Pillar 2: Enterprise Tech Stack Policy (installer-scaffolded at root)
 ├── .aidoc/                  # Tier 3 Project customization layer (this directory)
 │   ├── profile.yaml         # project profile — adaptation knobs (closed surface)
-│   ├── stack-policy.yaml    # Pillar 2: Enterprise Tech Stack Policy
 │   ├── Taskfile.yml         # Canonical SDD task runner (sdd:lint, sdd:review, sdd:slice, sdd:check)
 │   ├── project/             # project-specific overrides & specialized playbooks
 │   │   ├── governance/      # rule overrides (e.g. CHG_EXECUTION_FLOW.md)
@@ -48,7 +49,6 @@ A consumer project structures files into four explicit tiers (`README.md`, `AIDO
 ```text
 .aidoc/
 ├── profile.yaml             # project profile — adaptation knobs
-├── stack-policy.yaml        # Pillar 2: Enterprise Tech Stack Policy
 ├── Taskfile.yml             # Canonical SDD task runner
 ├── project/                 # project-specific overrides
 │   ├── governance/          # rule overrides (same structure as framework/)
