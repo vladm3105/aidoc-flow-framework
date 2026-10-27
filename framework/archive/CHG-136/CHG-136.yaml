@@ -1,0 +1,140 @@
+# =============================================================================
+#  CHG-136: Consumer kickoff & deployment-aidoc remediation
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C1 — docs, scripts, small tooling)
+#  Scope: Fix five filed defects from the kickoff/deployment review:
+#         #1041 scaffold fails Step 6 lint-clean (TAG01 + PH01),
+#         #1042 scaffold template draws stack-policy.yaml under .aidoc/,
+#         #1043 no pre-commit CHG-gate wiring scaffolded,
+#         #1044 deploy.sh bypasses the remote-tag path,
+#         #1045 stale wording nits. GAP-1 (submodule refusal) closed as
+#         intended behavior — no issue. Bump framework/VERSION
+#         0.96.18 -> 0.96.19 (patch, repo practice) with pin propagation.
+#         AGENTS.md wording twin of #1045 deliberately untouched (governance
+#         surface; deferred, noted on the issue).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: install.sh (usage + :260-270 scaffold),
+#     deploy.sh (full, :44-57 parser, :82-109 dispatch), upgrade.sh
+#     (:95-130 detection/refusals), allowlist.txt (full),
+#     AIDOC-SCAFFOLD-TEMPLATE.md (:25-54 trees), BOOTSTRAP.md (:71,89),
+#     STARTUP_HANDOFF.md (:95-123 steps 5-6), LINT_RULES.md (:27-28, :150,
+#     :174-175), chg_lint.py (:815 PH01, :858 TAG01, :1395-1456 L019),
+#     ADR-00_index.TEMPLATE.yaml (:37,38,47 tokens),
+#     test_consumer_scripts.py (:409,435 root assertions),
+#     read-pin-currency-log.sh (:1-25), Taskfile.yml (:31-47 runners),
+#     CHG-135/IPLAN-135 (vehicle model), issues #1041-1045 (filed + read
+#     back), #1022/#691/#988 (dupe search — no open duplicates).
+#     All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (no product requirements; DIR2C tooling/docs).
+#  7. Five issues #1041-1045, one per defect; GAP-1 closed with rationale
+#     (manual submodule path correct, no blocked case).
+#  8. Test specs: conformance consumer-scripts class, tests/unit + doc_lint
+#     discover suites, chg_lint, spec_gate, Step 6 fresh-fixture run.
+#  11. No SDD layer-doc rewrites; only a TEMPLATE comment reword
+#     (L019-exempt basename) — no archive/rewrite lifecycle needed.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C1, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / documentation_sync / verification
+#     phases only (no code_implementation steps); empty lifecycle; execution order
+#     holds; G2 path decision precedes dependent smoke/gate steps.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.18"
+  change_level:
+    value: C1
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-136"
+  status: In-Progress
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C1
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: null
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-136)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-136"
+  title: "Remediate consumer kickoff/deployment gaps via DIR2C tooling/docs change"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Kickoff/deployment review filed #1041-1045 (G1 reproduced live on a
+    throwaway scaffold; G2/GAP-2/GAP-3/nits verified by file reads; GAP-1
+    closed as intended behavior). The defects are tooling/docs scope with
+    no product-behavior change, fitting DIR2C C1.
+  choice: >-
+    Fix under DIR2C: reproduce-first G1 (scaffold-scoped exemption or valid
+    seed ADR), root-path reconciliation for stack-policy.yaml (template +
+    guides + tests), pre-commit wiring scaffold-or-document decision,
+    --canon forwarding through deploy.sh or documented local-canon intent,
+    pin-currency reuse, deploy-subtype documentation, and wording nits.
+    Bump framework/VERSION 0.96.18 -> 0.96.19 with OLD_VERSIONS + pin
+    propagation. Single PR with Closes #1041, Closes #1042, Closes #1043,
+    Closes #1044, Closes #1045 (one keyword per reference).
+  consequences:
+    positive:
+      - Fresh scaffolds pass the guide's own verification; template and
+        installer agree; consumers receive gate wiring or an explicit
+        pointer; no parallel drift machinery.
+    negative:
+      - None; tooling/docs scope, covering tests updated in the same PR.
+    risks:
+      - Scaffold-scoped lint exemptions could mask real placeholders;
+        mitigated by scoping to scaffold/template paths only.
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    Consumer kickoff contradicts its own verification gate (#1041) and four
+    further deployment-aidoc gaps (#1042-1045).
+  scope:
+    - framework/archive/CHG-136/CHG-136.yaml (new, this vehicle).
+    - framework/archive/CHG-136/IPLAN-136.yaml (new, executing IPLAN).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-136/IPLAN-136.yaml"
+  steps:
+    - step: "Author authorizing CHG-136.yaml and IPLAN-136.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Apply G1/G2/GAP-2/GAP-3/drift-docs/nits fixes per IPLAN manifest; VERSION bump + pin propagation; suites green"
+      phase: "documentation_sync"
+    - step: "Open PR with Closes keywords; watch to green; merge; post closing comments with evidence; worktree cleanup"
+      phase: "verification"

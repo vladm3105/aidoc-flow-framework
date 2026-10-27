@@ -1,0 +1,84 @@
+# =============================================================================
+#  IPLAN-136: Consumer kickoff & deployment-aidoc remediation
+# =============================================================================
+#  Implementation Plan authorized by CHG-136
+#  Status: In Progress
+# =============================================================================
+
+id: IPLAN-136
+title: "Implementation Plan: kickoff/deployment gaps (issues #1041-1045)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.18"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-10-27"
+
+document_control:
+  version: "1.0"
+  status: In Progress
+  author: "AI agent (framework maintainer review pending)"
+  source_chg: "CHG-136"
+  date_created: "2026-10-27T00:00:00Z"
+  date_implemented: null
+
+file_manifest:
+  - path: "framework/archive/CHG-136/CHG-136.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-136/IPLAN-136.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml"
+    action: "modify"
+    status: "TODO"
+  - path: "sdd_doc_lint/__init__.py"
+    action: "modify"
+    status: "TODO"
+  - path: "docs/STARTUP_HANDOFF.md"
+    action: "modify"
+    status: "TODO"
+  - path: "framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+    action: "modify"
+    status: "TODO"
+  - path: "docs/ADAPTATION-GUIDE.md"
+    action: "modify"
+    status: "TODO"
+  - path: "docs/AIDOC_WORKSTATION_STANDARD.md"
+    action: "modify"
+    status: "TODO"
+  - path: "framework/scripts/install.sh"
+    action: "modify"
+    status: "TODO"
+  - path: "deploy.sh"
+    action: "modify"
+    status: "TODO"
+  - path: "tests/conformance/test_consumer_scripts.py"
+    action: "modify"
+    status: "TODO"
+  - path: "framework/governance/LINT_RULES.md"
+    action: "modify"
+    status: "TODO"
+  - path: "CONTRIBUTING.md"
+    action: "modify"
+    status: "TODO"
+  - path: "framework/VERSION"
+    action: "modify"
+    status: "TODO"
+  - path: "hooks/sync-version-refs.sh"
+    action: "modify"
+    status: "TODO"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C1, change_source direct, sdd_lifecycle empty"
+  order: "G2 path decision precedes dependent smoke (G4) and gate (GAP-3) steps; G1 repro already DONE (#1041)"
+  gap1_disposition: "GAP-1 closed without code: upgrade.sh submodule refusal gives exact manual recovery; no blocked case"
+  link_policy: "code-span references for new prose where possible to keep the internal-links gate quiet"
+  rollback: "Revert PR branch before merge; post-merge revert via revert commit"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-136/CHG-136.yaml"
+  - "python3 tests/chg/spec_gate.py --base origin/dev"
+  - "PYTHONPATH=tests/conformance python3 -m unittest discover -s tests/conformance"
+  - "python3 -m unittest discover -s tests/unit"
+  - "fresh-fixture kickoff: install.sh to temp dir, then STARTUP_HANDOFF Step 6 commands, expect clean"
