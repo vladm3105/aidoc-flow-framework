@@ -1,0 +1,137 @@
+# =============================================================================
+#  CHG-140: IPLAN _required_when_subtype deterministic lint enforcement
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 — linter & governance enforcement)
+#  Scope: Implement deterministic subtype-aware structural validation in
+#         sdd_doc_lint for Layer 08 IPLAN instances based on
+#         document_control.subtype and template _required_when_subtype declarations.
+#         Update IPLAN_WORKFLOW_STANDARD.md note. Issue #1046.
+#         Normative spec change protocol applied (0.96.21 -> 0.96.22).
+# -----------------------------------------------------------------------------
+#  §3.4 checklist record (completed BEFORE writing, 2026-10-27):
+#  1. Read every referenced file: sdd_doc_lint/__init__.py,
+#     framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml,
+#     framework/governance/IPLAN_WORKFLOW_STANDARD.md,
+#     tests/acceptance/deterministic/test_layer_iplan.py,
+#     tests/acceptance/deterministic/test_harness_template_sections.py,
+#     hooks/sync-version-refs.sh, issue #1046. All exist as cited.
+#  2-4,6,9,10,15. N/A (no client/server split, no structs, no webhooks,
+#     no callers, no migrations).
+#  5. N/A (DIR2C linter tooling & governance standard note).
+#  7. Single issue #1046 (missing capability, review origin).
+#  8. Test specs: chg_lint, spec_gate, sdd_doc_lint unit tests covering
+#     code_build, deploy, combined, invalid subtype, and missing section findings,
+#     acceptance test suite, test_sync_version_refs.py.
+#  11. No SDD layer-doc rewrites; governance standard note and linter logic.
+#  12. DIR2C validity: change_source direct, sdd_lifecycle [] (empty
+#     lifecycle), C2, GATE-CODE entry.
+#  13-14. Steps use iplan_creation / tooling_implementation / verification
+#     phases only; empty lifecycle; execution order holds.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-27"
+  framework_version: "0.96.22"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: patch
+  version_action:
+    value: bump
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-140"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: patch
+  version_action: bump
+  author: "AI agent (framework maintainer review pending)"
+  date_proposed: "2026-10-27T00:00:00Z"
+  date_approved: "2026-10-27T00:00:00Z"
+  date_implemented: "2026-10-27T00:00:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-140)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-140"
+  title: "Implement deterministic subtype-aware section enforcement in sdd_doc_lint"
+  status: "Decided"
+  date: "2026-10-27"
+  context: >-
+    Issue #1046: IPLAN-TEMPLATE.yaml declares subtype-conditional required sections
+    via _required_when_subtype, but sdd_doc_lint skipped them deferring to a nonexistent
+    audit skill, leaving conditional sections (e.g. rollback_procedure for deploy,
+    file_manifest for code_build) unenforced on instance documents.
+  choice: >-
+    1. Implement deterministic subtype-aware structural validation in sdd_doc_lint
+    (_load_section_targets and _check_required_template_sections). When an artifact
+    instance provides document_control.subtype, load both unconditional sections and
+    conditional sections matching the subtype.
+    2. Enforce valid subtype enum (code_build, deploy, combined, workflow, audit_fix,
+    bugfix, docs) per IPLAN_WORKFLOW_STANDARD.md:126.
+    3. Update the advisory note in framework/governance/IPLAN_WORKFLOW_STANDARD.md
+    to reflect deterministic STRUCT01 enforcement.
+  consequences:
+    positive:
+      - "Closes the enforcement gap: IPLAN instances now deterministically validate required sections for their declared subtype."
+      - "Eliminates phantom pointer to nonexistent audit skill."
+      - "Backward compatibility preserved: documents without subtype only enforce unconditional sections."
+    negative:
+      - "None; valid golden fixtures already satisfy their subtype section requirements."
+    risks:
+      - "Broken instances with missing subtype sections will now fail STRUCT01; this is the intended contract enforcement."
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    IPLAN _required_when_subtype sections are enforced nowhere because sdd_doc_lint
+    explicitly skipped them deferring to a nonexistent audit skill (issue #1046).
+  scope:
+    - framework/archive/CHG-140/CHG-140.yaml (new, this vehicle).
+    - framework/archive/CHG-140/IPLAN-140.yaml (new, executing IPLAN).
+    - sdd_doc_lint/__init__.py (implement subtype-aware section targets & validation).
+    - framework/governance/IPLAN_WORKFLOW_STANDARD.md (update advisory note).
+    - sdd_doc_lint/tests/test_iplan_subtype_lint.py (new unit test suite).
+    - framework/VERSION (bump 0.96.21 -> 0.96.22).
+    - hooks/sync-version-refs.sh (append 0.96.21 to OLD_VERSIONS and sync).
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-140/IPLAN-140.yaml"
+  steps:
+    - step: "Author authorizing CHG-140.yaml and IPLAN-140.yaml (§3.4 done, §3.4.1 on write)"
+      phase: "iplan_creation"
+    - step: "Implement subtype-aware conditional section enforcement and subtype enum validation in sdd_doc_lint"
+      phase: "tooling_implementation"
+    - step: "Update governance note in IPLAN_WORKFLOW_STANDARD.md"
+      phase: "documentation_sync"
+    - step: "Add unit tests in sdd_doc_lint/tests/test_iplan_subtype_lint.py"
+      phase: "verification"
+    - step: "Execute version bump protocol (0.96.21 -> 0.96.22) and sync version references"
+      phase: "verification"
+    - step: "Validate chg_lint, spec_gate, and all test suites; open PR with Closes #1046"
+      phase: "verification"

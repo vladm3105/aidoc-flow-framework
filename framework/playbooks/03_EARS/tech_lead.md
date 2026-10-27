@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: tech_lead
 weight: 25
 agent: solutions-architect
-framework_spec_version: "0.96.21"
+framework_spec_version: "0.96.22"
 ---
 # tech_lead lens — EARS layer
 

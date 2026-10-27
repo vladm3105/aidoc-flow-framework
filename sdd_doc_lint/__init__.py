@@ -503,7 +503,14 @@ def _normalise_heading(heading: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", h).strip("_")
 
 
-def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[str, int]:
+_VALID_IPLAN_SUBTYPES = frozenset(
+    {"code_build", "deploy", "combined", "workflow", "audit_fix", "bugfix", "docs"}
+)
+
+
+def _load_section_targets(
+    artifact: str, registry: Path | None = None, subtype: str | None = None
+) -> dict[str, int]:
     """Return ``{section_key: _size_target}`` from the layer's TEMPLATE.yaml.
     Returns ``{}`` when the template cannot be loaded — callers fall back to
     the flat default.
@@ -548,15 +555,17 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
             # but still get STY02 size-budget enforcement.
             if body.get("_required") is False:
                 continue
-            # CLEANUP-PR-F: sections marked `_required_when_subtype: [...]`
-            # are conditionally required based on the artifact's
-            # `document_control.subtype` value (per CLEANUP-PR-E item 17).
-            # The corpus-level lint cannot determine the artifact's
-            # subtype without parsing every instance doc; defer the
-            # subtype-aware required-section check to the layer's
-            # `doc-<layer>-audit` SKILL (which does parse the artifact).
-            if isinstance(body.get("_required_when_subtype"), list):
-                continue
+            # Sections marked `_required_when_subtype: [...]` are conditionally
+            # required based on the artifact's `document_control.subtype` value
+            # (per CLEANUP-PR-E item 17, issue #1046, ratified in CHG-140).
+            # When subtype is provided, sections matching that subtype are
+            # included in STRUCT01 targets. If subtype is omitted or does not
+            # match, the section is excluded (preserving backward compatibility
+            # when no subtype is declared).
+            gated = body.get("_required_when_subtype")
+            if isinstance(gated, list):
+                if subtype is None or subtype not in gated:
+                    continue
             target = body.get("_size_target")
             out[key] = target if isinstance(target, int) else _SECTION_TARGET_WORDS
     return out
@@ -1715,7 +1724,34 @@ def _check_required_template_sections(
     fm = _extract_frontmatter(text, rel)
     if _is_index_doc(rel, fm):
         return findings
-    targets = _load_section_targets(artifact, registry)
+
+    subtype = None
+    if isinstance(fm, dict):
+        doc_control = fm.get("document_control")
+        if isinstance(doc_control, dict):
+            subtype = doc_control.get("subtype")
+        if subtype is None:
+            subtype = fm.get("subtype")
+        if isinstance(subtype, str):
+            subtype = subtype.strip()
+
+    if artifact and artifact.upper() in ("IPLAN", "IPLAN-DOCUMENT"):
+        if subtype and subtype not in _VALID_IPLAN_SUBTYPES:
+            findings.append(
+                Finding(
+                    code="STRUCT01",
+                    severity="error",
+                    path=rel,
+                    line=1,
+                    section="document_control",
+                    message=(
+                        f"unrecognized IPLAN subtype: '{subtype}'. "
+                        f"Valid subtypes are: {', '.join(sorted(_VALID_IPLAN_SUBTYPES))}"
+                    ),
+                )
+            )
+
+    targets = _load_section_targets(artifact, registry, subtype=subtype)
     if not targets:
         return findings
     # A section is a `##` heading on the Markdown carrier and a TOP-LEVEL KEY on
