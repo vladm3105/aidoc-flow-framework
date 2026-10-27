@@ -65,7 +65,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-136"
-  status: In-Progress
+  status: Implemented
   flow: iplan_to_code
   flow_code: DIR2C
   change_level: C1
@@ -76,7 +76,7 @@ change_control:
   author: "AI agent (framework maintainer review pending)"
   date_proposed: "2026-10-27T00:00:00Z"
   date_approved: "2026-10-27T00:00:00Z"
-  date_implemented: null
+  date_implemented: "2026-10-27T01:12:24Z"
   supersedes: []
 
 # =============================================================================
@@ -134,6 +134,14 @@ problem_statement:
     - framework/governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md (G2 root-path trees).
     - framework/governance/aidoc/AIDOC.md (G2 root-path tree).
     - tests/conformance/test_consumer_manifest.py (ScaffoldStackPolicyParity guard).
+    - sdd_doc_lint/__init__.py (TAG01 empty-ADR-registry exemption, GD-46 precedent).
+    - framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml (ADR-XX/YY comment tokens to ADR-NN).
+    - sdd_doc_lint/tests/test_tag01_empty_adr_exemption.py (new, 5 focused tests).
+    - framework/governance/IPLAN_WORKFLOW_STANDARD.md (subtype advisory note, #1046).
+    - docs/CONSUMER-CI-STARTER.md (pin-currency scheduled-check pointer).
+    - framework/governance/LINT_RULES.md + CONTRIBUTING.md (#1045 nits).
+    - framework/governance/IPLAN_WORKFLOW_STANDARD.md (subtype advisory note pointing at #1046; enforcement itself rides #1046, not this vehicle).
+    - deploy.sh (--target/--kind/--shared value guards, --help exit 0; #1047).
 
 # =============================================================================
 # Section 3: Implementation Steps & IPLAN Link
