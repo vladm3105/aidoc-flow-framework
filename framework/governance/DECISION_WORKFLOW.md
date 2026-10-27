@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.19 |
+| Framework Version | 0.96.20 |
 
 
 Defines the authorship boundaries, lifecycle, and decision-making procedures across

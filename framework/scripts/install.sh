@@ -31,6 +31,8 @@
 #                     installs; must contain framework/VERSION; pin kind only).
 #   --author NAME     fill the README author placeholder (default: git
 #                     user.name, falling back to the current user).
+#   --all-indices     scaffold index files for all 10 canonical SDD layers
+#                     (01_BRD through 10_EVAL) instead of Layer 05 ADR only
 #   --no-adr          skip scaffolding docs/sdd/05_ADR/ADR-00_index.yaml
 #   --no-agents       skip scaffolding root AGENTS.md
 #   --no-stack-policy skip scaffolding root stack-policy.yaml
@@ -78,7 +80,7 @@ pinsub() { # pinsub <file> <sed args...>: portable in-place sed (no GNU -i;
   else rm -f "$tmp"; die "substitution failed: $file"; fi
 }
 
-PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0; NO_BLUEPRINTS=0; NO_PRECOMMIT=0
+PROJECT=""; CANON_TAG=""; CANON_SHA=""; KIND="pin"; SHARED=""; CANON_DIR=""; AUTHOR=""; DRY_RUN=0; FORCE=0; YES=0; ALL_INDICES=0; NO_ADR=0; NO_AGENTS=0; NO_STACK_POLICY=0; NO_BLUEPRINTS=0; NO_PRECOMMIT=0
 need_value() { [ $# -ge 2 ] || refuse "$1 needs a value"; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -88,6 +90,7 @@ while [ $# -gt 0 ]; do
     --shared) need_value "$@"; SHARED="$2"; shift 2 ;;
     --canon-dir) need_value "$@"; CANON_DIR="$2"; shift 2 ;;
     --author) need_value "$@"; AUTHOR="$2"; shift 2 ;;
+    --all-indices) ALL_INDICES=1; shift ;;
     --no-adr) NO_ADR=1; shift ;;
     --no-agents) NO_AGENTS=1; shift ;;
     --no-stack-policy) NO_STACK_POLICY=1; shift ;;
@@ -231,8 +234,43 @@ else
   fi
 fi
 
-# Scaffold Layer 05 ADR index
-if [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ]; then
+# Scaffold SDD layer indices
+if [ "$ALL_INDICES" = 1 ]; then
+  for pair in \
+    "01_BRD/BRD-00_index.TEMPLATE.yaml:01_BRD/BRD-00_index.yaml:Layer 01 BRD" \
+    "02_PRD/PRD-00_index.TEMPLATE.yaml:02_PRD/PRD-00_index.yaml:Layer 02 PRD" \
+    "03_EARS/EARS-00_index.TEMPLATE.yaml:03_EARS/EARS-00_index.yaml:Layer 03 EARS" \
+    "04_BDD/BDD-00_index.TEMPLATE.yaml:04_BDD/BDD-00_index.yaml:Layer 04 BDD" \
+    "05_ADR/ADR-00_index.TEMPLATE.yaml:05_ADR/ADR-00_index.yaml:Layer 05 ADR" \
+    "06_SPEC/SPEC-00_index.TEMPLATE.yaml:06_SPEC/SPEC-00_index.yaml:Layer 06 SPEC" \
+    "07_TDD/TDD-00_index.TEMPLATE.yaml:07_TDD/TDD-00_index.yaml:Layer 07 TDD" \
+    "08_IPLAN/IPLAN-00_index.TEMPLATE.yaml:08_IPLAN/IPLAN-00_index.yaml:Layer 08 IPLAN" \
+    "09_CHG/CHG-00_index.TEMPLATE.yaml:09_CHG/CHG-00_index.yaml:Layer 09 CHG" \
+    "10_EVAL/EVAL-00_index.TEMPLATE.yaml:10_EVAL/EVAL-00_index.yaml:Layer 10 EVAL"; do
+    src_rel="${pair%%:*}"
+    rest="${pair#*:}"
+    dst_rel="${rest%%:*}"
+    label="${rest#*:}"
+    if [ "$src_rel" = "05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ "$NO_ADR" = 1 ]; then
+      continue
+    fi
+    src="$CANON/framework/layers/$src_rel"
+    dst="$PROJECT/docs/sdd/$dst_rel"
+    layer_dir="$(dirname "$dst")"
+    if [ -f "$src" ]; then
+      if [ ! -f "$dst" ]; then
+        run "mkdir -p $layer_dir" mkdir -p "$layer_dir"
+        run "cp $src $dst" cp "$src" "$dst"
+        if [ "$DRY_RUN" != 1 ]; then
+          pinsub "$dst" -E "s/(\\[X\\.Y\\.Z\\]|\"0\\.0\\.0\")/$VERSION/g; s/YYYY-MM-DD/$TODAY/g"
+          log "scaffolded $label index at docs/sdd/$dst_rel"
+        fi
+      else
+        log "existing docs/sdd/$dst_rel preserved"
+      fi
+    fi
+  done
+elif [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ]; then
   adr_dir="$PROJECT/docs/sdd/05_ADR"
   adr_index="$adr_dir/ADR-00_index.yaml"
   if [ ! -f "$adr_index" ]; then
@@ -460,7 +498,28 @@ fi
 if [ -f "$CANON/framework/templates/ENGINE-CONFIG-TEMPLATE.yaml" ] && [ ! -f "$AIDOC/engine/engine.yaml" ]; then
   die "smoke: .aidoc/engine/engine.yaml missing"
 fi
-if [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ ! -f "$PROJECT/docs/sdd/05_ADR/ADR-00_index.yaml" ]; then
+if [ "$ALL_INDICES" = 1 ]; then
+  for pair in \
+    "01_BRD/BRD-00_index.TEMPLATE.yaml:01_BRD/BRD-00_index.yaml" \
+    "02_PRD/PRD-00_index.TEMPLATE.yaml:02_PRD/PRD-00_index.yaml" \
+    "03_EARS/EARS-00_index.TEMPLATE.yaml:03_EARS/EARS-00_index.yaml" \
+    "04_BDD/BDD-00_index.TEMPLATE.yaml:04_BDD/BDD-00_index.yaml" \
+    "05_ADR/ADR-00_index.TEMPLATE.yaml:05_ADR/ADR-00_index.yaml" \
+    "06_SPEC/SPEC-00_index.TEMPLATE.yaml:06_SPEC/SPEC-00_index.yaml" \
+    "07_TDD/TDD-00_index.TEMPLATE.yaml:07_TDD/TDD-00_index.yaml" \
+    "08_IPLAN/IPLAN-00_index.TEMPLATE.yaml:08_IPLAN/IPLAN-00_index.yaml" \
+    "09_CHG/CHG-00_index.TEMPLATE.yaml:09_CHG/CHG-00_index.yaml" \
+    "10_EVAL/EVAL-00_index.TEMPLATE.yaml:10_EVAL/EVAL-00_index.yaml"; do
+    src_rel="${pair%%:*}"
+    dst_rel="${pair##*:}"
+    if [ "$src_rel" = "05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ "$NO_ADR" = 1 ]; then
+      continue
+    fi
+    if [ -f "$CANON/framework/layers/$src_rel" ] && [ ! -f "$PROJECT/docs/sdd/$dst_rel" ]; then
+      die "smoke: docs/sdd/$dst_rel missing"
+    fi
+  done
+elif [ "$NO_ADR" != 1 ] && [ -f "$CANON/framework/layers/05_ADR/ADR-00_index.TEMPLATE.yaml" ] && [ ! -f "$PROJECT/docs/sdd/05_ADR/ADR-00_index.yaml" ]; then
   die "smoke: docs/sdd/05_ADR/ADR-00_index.yaml missing"
 fi
 [ -d "$PROJECT/docs/sdd/graph" ] || die "smoke: docs/sdd/graph missing"

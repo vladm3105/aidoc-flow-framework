@@ -41,6 +41,7 @@ Options:
   --no-blueprints       Skip scaffolding .aidoc/project/governance/ blueprints
   --no-precommit        Skip scaffolding .pre-commit-config.yaml
   --author <name>       Set author name for scaffolded docs
+  --all-indices         Scaffold indices for all 10 SDD layers (01_BRD through 10_EVAL)
   --canon-sha <sha>     Verify canon commit SHA
   -h, --help            Show this help message
 EOF
@@ -62,6 +63,7 @@ while [[ $# -gt 0 ]]; do
     --no-agents) EXTRA_ARGS+=("--no-agents"); shift ;;
     --no-blueprints) EXTRA_ARGS+=("--no-blueprints"); shift ;;
     --no-precommit) EXTRA_ARGS+=("--no-precommit"); shift ;;
+    --all-indices) EXTRA_ARGS+=("--all-indices"); shift ;;
     --author) [[ $# -ge 2 ]] || { echo "ERROR: --author needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--author" "$2"); shift 2 ;;
     --canon-sha) [[ $# -ge 2 ]] || { echo "ERROR: --canon-sha needs a value" >&2; exit 1; }; EXTRA_ARGS+=("--canon-sha" "$2"); shift 2 ;;
     -h|--help) USAGE_EXIT=0; usage ;;

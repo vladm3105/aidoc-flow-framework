@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: architect
 weight: 20
 agent: solutions-architect
-framework_spec_version: "0.96.19"
+framework_spec_version: "0.96.20"
 ---
 # architect lens — CHG layer
 

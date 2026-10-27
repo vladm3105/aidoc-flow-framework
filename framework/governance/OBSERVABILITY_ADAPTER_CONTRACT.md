@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Ratified |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.19 |
+| Framework Version | 0.96.20 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md) Principle 2 |
 
 ---
