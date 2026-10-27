@@ -40,7 +40,7 @@ Two pre-commit hooks automate the discipline:
 | `sync-version-refs` | `hooks/sync-version-refs.sh` | **Mechanical auto-sync.** When `framework/VERSION` changes, propagates the new version string into every doc-of-record that quotes it (playbook frontmatter, `framework_version` metadata, document-control rows). Re-stages on its own; idempotent. Silent on commits that don't bump a version. |
 | `check-docs-updated` | `hooks/check-docs-updated.sh` | **Semantic reminder.** Runs on every commit. When the staged change touches code/spec and no document-of-record, prints a checklist of likely-stale docs. **Warning only — never blocks the commit.** Authors decide whether to update or proceed (false-positive friendly). |
 
-Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (CHANGELOG entry, decision rationale, handoff narrative) that the author must write themselves.
+Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (change record in CHG archives, decision rationale, handoff narrative) that the author must write themselves.
 
 ### Documents of record — what to update for which change
 

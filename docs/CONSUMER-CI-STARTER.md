@@ -59,3 +59,8 @@ jobs:
 3. Extend from here, never by trigger filtering: add `swf_lint` over
    declarative workflows, `graph-check` over `docs/sdd/graph/`, and the
    project's own test suites as further jobs.
+4. Add a scheduled pin-currency check (no push signal ships with the
+   framework): weekly, compare `.aidoc/profile.yaml` `framework_version`
+   against the latest canon release (`gh release view --repo
+   vladm3105/aidoc-flow-framework --json tagName`) and open the
+   re-adoption work per `UPGRADE-RUNBOOK.md` on lag.

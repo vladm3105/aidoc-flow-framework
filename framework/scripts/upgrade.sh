@@ -88,6 +88,10 @@ while [ $# -gt 0 ]; do
     --dry-run) DRY_RUN=1; shift ;;
     --force) FORCE=1; shift ;;
     --yes) YES=1; shift ;;
+    # Install-time-only flags: accepted and ignored (upgrade never
+    # scaffolds; deploy.sh forwards install flags on both paths) — CHG-136.
+    --no-adr|--no-agents|--no-stack-policy|--no-blueprints|--no-precommit) shift ;;
+    --author) need_value "$@"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     --*) refuse "unknown flag $1 (see --help)" ;;
     *) [ -z "$PROJECT" ] || refuse "one <project-dir> only"; PROJECT="$1"; shift ;;

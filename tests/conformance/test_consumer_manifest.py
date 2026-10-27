@@ -35,6 +35,54 @@ def _doc_text():
     return PROJECT_DOC.read_text(encoding="utf-8")
 
 
+# Files whose ASCII trees must agree with the installer: stack-policy.yaml
+# lives at project root (#1042, regression remainder of #1022/CHG-128).
+SCAFFOLD_TEMPLATE = REPO_ROOT / "framework" / "governance" / "aidoc" / "AIDOC-SCAFFOLD-TEMPLATE.md"
+AIDOC_DOC = REPO_ROOT / "framework" / "governance" / "aidoc" / "AIDOC.md"
+PARITY_DOCS = (SCAFFOLD_TEMPLATE, AIDOC_DOC)
+INSTALL_SCRIPT = REPO_ROOT / "framework" / "scripts" / "install.sh"
+
+# One tree level is 4 characters: `│   `, `    `, `├── `, or `└── `.
+_BRANCH_RE = re.compile(r"^(?:\u2502   |    |\u251c\u2500\u2500 |\u2514\u2500\u2500 )+")
+
+
+def _stack_policy_placements(text):
+    """Yield (lineno, line, under_aidoc) for tree-drawn stack-policy.yaml lines.
+
+    Parses ```text fences as 4-char-per-level trees, tracking ancestor
+    directories on a depth stack. Only lines inside fences are considered,
+    so prose mentions of stack-policy.yaml never trip the guard.
+    """
+    in_fence = False
+    stack = []
+    for lineno, raw in enumerate(text.splitlines(), start=1):
+        stripped = raw.strip()
+        if stripped.startswith("```"):
+            if not in_fence and stripped.startswith("```text"):
+                in_fence = True
+                stack = []
+            else:
+                in_fence = False
+            continue
+        if not in_fence or not stripped:
+            continue
+        match = _BRANCH_RE.match(raw)
+        if match:
+            depth = len(match.group(0)) // 4
+            name = raw[match.end() :]
+        else:
+            depth = 0
+            name = stripped
+        first = name.split()[0] if name.split() else ""
+        if not first or first == "...":
+            continue
+        stack = stack[:depth]
+        if first.startswith("stack-policy.yaml"):
+            yield lineno, raw.rstrip(), any(s.startswith(".aidoc/") for s in stack)
+        if first.endswith("/"):
+            stack.append(first)
+
+
 def _ship_from_doc(text):
     match = re.search(r"cp -r /tmp/aidoc-framework/\{([^}]*)\} \.aidoc/framework/", text)
     assert match is not None, (
@@ -77,6 +125,40 @@ class ConsumerManifest(unittest.TestCase):
                 (REPO_ROOT / "framework" / name).is_file(),
                 f"upgrade input missing from shipped tree: framework/{name}",
             )
+
+
+class ScaffoldStackPolicyParity(unittest.TestCase):
+    def test_no_aidoc_nested_stack_policy(self):
+        """No tree draws stack-policy.yaml under .aidoc/ (#1042)."""
+        bad = []
+        for doc in PARITY_DOCS:
+            for lineno, line, under_aidoc in _stack_policy_placements(
+                doc.read_text(encoding="utf-8")
+            ):
+                if under_aidoc:
+                    bad.append(f"{doc.name}:{lineno}: {line.strip()}")
+        self.assertEqual(bad, [], "stack-policy.yaml drawn under .aidoc/")
+
+    def test_root_stack_policy_drawn(self):
+        """The template still draws a root stack-policy.yaml (anti-vacuity)."""
+        found = [
+            (lineno, under_aidoc)
+            for lineno, _, under_aidoc in _stack_policy_placements(
+                SCAFFOLD_TEMPLATE.read_text(encoding="utf-8")
+            )
+        ]
+        self.assertTrue(found, "template draws no stack-policy.yaml at all")
+        self.assertTrue(
+            any(not under_aidoc for _, under_aidoc in found),
+            "template draws stack-policy.yaml only under .aidoc/",
+        )
+
+    def test_installer_scaffolds_root(self):
+        """install.sh scaffolds $PROJECT/stack-policy.yaml (#1042)."""
+        self.assertIn(
+            'policy_doc="$PROJECT/stack-policy.yaml"',
+            INSTALL_SCRIPT.read_text(encoding="utf-8"),
+        )
 
 
 if __name__ == "__main__":

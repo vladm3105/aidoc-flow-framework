@@ -86,15 +86,37 @@ def _make_canon(parent: Path, version: str, marker: str) -> Path:
         "STACK-POLICY-TEMPLATE.yaml",
         "TASKFILE-TEMPLATE.yml",
         "ENGINE-CONFIG-TEMPLATE.yaml",
+        "CONSUMER-PRECOMMIT-TEMPLATE.yaml",
     ):
         src = FRAMEWORK / "templates" / tmpl_name
         if src.exists():
             shutil.copy(src, tmpl_dir / tmpl_name)
+    # Governance blueprint sources tapped by install.sh blueprints (CHG-136).
+    for tmpl_name in (
+        "AIDOC-CHG-EXECUTION-FLOW-TEMPLATE.md",
+        "AIDOC-CI-SMART-ROUTING-TEMPLATE.md",
+        "AIDOC-CONFLICT-RESOLUTION-TEMPLATE.md",
+        "AIDOC-SELF-REVIEW-LOOP-TEMPLATE.md",
+        "AIDOC-QA-PROTOCOL-TEMPLATE.md",
+        "AIDOC-BROWSER-TESTING-TEMPLATE.md",
+    ):
+        src = FRAMEWORK / "governance" / "aidoc" / tmpl_name
+        if src.exists():
+            shutil.copy(src, aidoc / tmpl_name)
+    for std_name in ("DURABLE_EXECUTION_STANDARD.md", "REVIEW_WORKFLOW_STANDARD.md"):
+        src = FRAMEWORK / "governance" / std_name
+        if src.exists():
+            shutil.copy(src, gov / std_name)
     (canon / "framework" / "archive").mkdir(parents=True)
     (canon / "framework" / "archive" / "FROZEN").write_text("canon-dev history\n", encoding="utf-8")
     for d in ("docs", "hooks", "sdd_doc_lint", "tests"):
         (canon / d).mkdir(parents=True)
         (canon / d / "MARKER").write_text(marker + "\n", encoding="utf-8")
+    # The scaffolded pre-commit gate references the real hook by path: ship
+    # it so the wiring test proves executability, not just text (CHG-136).
+    hook_src = REPO_ROOT / "hooks" / "ch-gate-check.sh"
+    if hook_src.is_file():
+        shutil.copy(hook_src, canon / "hooks" / "ch-gate-check.sh")
     return canon
 
 
@@ -434,6 +456,60 @@ class InstallScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertFalse((self.project / "stack-policy.yaml").exists())
 
+    def test_scaffolds_governance_blueprints_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        for name in (
+            "CHG_EXECUTION_FLOW.md",
+            "CI_SMART_ROUTING.md",
+            "CONFLICT_RESOLUTION.md",
+            "SELF_REVIEW_LOOP.md",
+            "QA_PROTOCOL.md",
+            "BROWSER_TESTING.md",
+            "DURABLE_EXECUTION.md",
+            "REVIEW_WORKFLOWS.md",
+        ):
+            self.assertTrue((gov / name).is_file(), f"blueprint missing: {name}")
+
+    def test_no_blueprints_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-blueprints",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        gov = self.project / ".aidoc" / "project" / "governance"
+        self.assertFalse(
+            any(gov.glob("*.md")) if gov.is_dir() else False,
+            "blueprints scaffolded despite --no-blueprints",
+        )
+
+    def test_scaffolds_precommit_config_by_default(self):
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        precommit = self.project / ".pre-commit-config.yaml"
+        self.assertTrue(precommit.is_file())
+        content = precommit.read_text(encoding="utf-8")
+        self.assertIn("chg-gate-check", content)
+        self.assertIn(".aidoc/framework/hooks/ch-gate-check.sh", content)
+        hook = self.project / ".aidoc" / "framework" / "hooks" / "ch-gate-check.sh"
+        self.assertTrue(hook.is_file(), "scaffolded gate entry has no hook behind it")
+        self.assertTrue(os.access(hook, os.X_OK), "shipped hook is not executable")
+
+    def test_no_precommit_flag_skips_scaffolding(self):
+        proc = _run(
+            INSTALL,
+            str(self.project),
+            "--canon-dir",
+            str(self.canon),
+            "--no-precommit",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertFalse((self.project / ".pre-commit-config.yaml").exists())
+
 
 class UpgradeScript(unittest.TestCase):
     """upgrade.sh — runbook step-2 re-point + drift report, both kinds."""
@@ -450,10 +526,30 @@ class UpgradeScript(unittest.TestCase):
         proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a))
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
+    def test_upgrade_ignores_install_only_opt_outs(self):
+        self._install_pin()
+        proc = _run(
+            UPGRADE,
+            str(self.project),
+            "--to",
+            "9.9.10",
+            "--canon-dir",
+            str(self.canon_b),
+            "--yes",
+            "--no-adr",
+            "--no-agents",
+            "--no-stack-policy",
+            "--no-blueprints",
+            "--no-precommit",
+            "--author",
+            "Probe Eng",
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
     def test_pin_upgrade_replaces_and_reports_drift(self):
         self._install_pin()
         overrides = self.project / ".aidoc" / "project"
-        overrides.mkdir(parents=True)
+        overrides.mkdir(parents=True, exist_ok=True)
         (overrides / "old.yaml").write_text('framework_version: "9.9.8"\nfoo: 1\n')
         (overrides / "current.yaml").write_text('framework_version: "9.9.10"\nfoo: 2\n')
         (overrides / "loose.md").write_text("# no pin here\n")
@@ -613,7 +709,10 @@ class UpgradeScript(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
     def test_upgrade_without_overrides_is_vacuous(self):
-        self._install_pin()
+        # Default installs scaffold blueprints (UNPINNED drift), so the
+        # vacuous path needs an install with nothing under .aidoc/project/.
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(self.canon_a), "--no-blueprints")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
         proc = _run(
             UPGRADE, str(self.project), "--to", "9.9.10", "--canon-dir", str(self.canon_b), "--yes"
         )
@@ -895,6 +994,110 @@ class DeployScript(unittest.TestCase):
         self.assertTrue(fw.exists())
         self.assertTrue(fw.is_dir())
         self.assertFalse(fw.is_symlink())
+
+    def test_deploy_help_exits_zero(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            ["bash", str(deploy_sh), "--help"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("Usage:", proc.stdout)
+
+    def test_deploy_missing_values_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        for flag in ("--target", "--kind", "--shared"):
+            proc = subprocess.run(
+                ["bash", str(deploy_sh), flag],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(proc.returncode, 2, flag)
+            self.assertIn("needs a value", proc.stderr)
+
+    def test_deploy_canon_symlink_refused(self):
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--kind",
+                "symlink",
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("--canon", proc.stderr)
+
+    def _tag_canon(self, version):
+        canon = _make_canon(self.tmp, version, f"canon-{version}")
+        _git_init(canon)
+        subprocess.run(
+            ["git", "-C", str(canon), "tag", f"framework/v{version}"],
+            check=True,
+            capture_output=True,
+        )
+        return canon
+
+    def test_deploy_canon_tag_fresh_install(self):
+        canon = self._tag_canon("9.9.9")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.9",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        profile = (self.project / ".aidoc" / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.9"', profile)
+
+    def test_deploy_canon_tag_brownfield_upgrade(self):
+        canon_a = _make_canon(self.tmp, "9.9.9", "canon-A")
+        proc = _run(INSTALL, str(self.project), "--canon-dir", str(canon_a))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        canon_b = self._tag_canon("9.9.10")
+        deploy_sh = REPO_ROOT / "deploy.sh"
+        proc = subprocess.run(
+            [
+                "bash",
+                str(deploy_sh),
+                "--target",
+                str(self.project),
+                "--canon",
+                "framework/v9.9.10",
+                "--yes",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={**dict(os.environ), "AIDOC_CANON_URL": str(canon_b)},
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        aidoc = self.project / ".aidoc"
+        profile = (aidoc / "profile.yaml").read_text(encoding="utf-8")
+        self.assertIn('framework_version: "9.9.10"', profile)
+        marker = (aidoc / "framework" / "tests" / "MARKER").read_text().strip()
+        self.assertEqual(marker, "canon-9.9.10")
 
 
 class ChGateCheckHook(unittest.TestCase):

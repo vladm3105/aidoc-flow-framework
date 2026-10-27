@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-14 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.18 |
+| Framework Version | 0.96.19 |
 
 Establishes the normative standard for modeling, validating, and executing Layer 10 (Evaluation & Quality Verification / EVAL) execution plans, test suite runners, and quality gate receipts using the CNCF Serverless Workflow v0.8 specification in YAML format within the SDD Hybrid Envelope Architecture.
 

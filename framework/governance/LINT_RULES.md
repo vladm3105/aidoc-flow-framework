@@ -15,7 +15,7 @@ consumers: [authoring, audit, traceability]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.18 |
+| Framework Version | 0.96.19 |
 
 The normative catalog of the deterministic lint rules a conforming platform's
 document linter emits over the `@`-tag / element graph and per-artifact
@@ -24,7 +24,7 @@ structure. Each rule has a stable **ID**, a one-line **meaning**, a typical
 one exists). The reference implementation is `sdd_doc_lint` — the canonical
 source since CLEANUP-001 retired the platform-vendored copies. The
 `tests/conformance/test_lint_catalog.py` guard keeps catalog and code in sync
-(#715): every ID in the linters' `CODES` registries (`CHG-L001–L017`,
+(#715): every ID in the linters' `CODES` registries (`CHG-L001–L019`,
 `BGF-00–07`) appears here, and every catalogued table-row ID is either emitted
 in `sdd_doc_lint/` sources, an alias of an emitted ID, or marked **Reserved**.
 
@@ -111,7 +111,7 @@ each layer's derived count so that edit cannot be made silently.
 
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
-| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). Exemption (GD-46): an IPLAN declaring `tdd_consistency.status: not-applicable` is exempt from the `tdd` tag — the N/A status names the waived contract; `@spec:` stays required. | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
+| `TAG01` | The artifact is missing a required upstream tag (necessary-upstream / cumulative traceability). Exemption (GD-46): an IPLAN declaring `tdd_consistency.status: not-applicable` is exempt from the `tdd` tag — the N/A status names the waived contract; `@spec:` stays required. Exemption (#1041): an ADR index with empty `adrs: []` and `technologies: []` is exempt from upstream tags — the empty registry names the waived contract; a non-empty index stays enforced. | error | `TRACEABILITY.md`, `TAG_SYNTAX.md` |
 | `TRACE-RES-001` | A trace tag does not resolve to an existing target document/element. | error | `TRACEABILITY.md` |
 | `REFGRAN01` | A document-level trace tag points to an element-declaring layer where an element-level citation is required (GD-03 reference granularity). | warning | `TAG_SYNTAX.md` |
 | `COV01` | Forward coverage: an in-scope BRD functional requirement is cited by no PRD, or reaches no downstream SPEC/IPLAN. | warning→error | `TRACEABILITY.md` |

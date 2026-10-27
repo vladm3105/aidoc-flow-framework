@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.18 |
+| Framework Version | 0.96.19 |
 
 
 `LAYER_REGISTRY.yaml` is the **authoritative, machine-readable definition** of

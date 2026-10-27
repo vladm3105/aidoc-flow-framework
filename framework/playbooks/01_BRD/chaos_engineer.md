@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: chaos_engineer
 weight: 12
 agent: chaos-engineer
-framework_spec_version: "0.96.18"
+framework_spec_version: "0.96.19"
 ---
 # chaos_engineer lens — BRD layer
 
