@@ -12,8 +12,9 @@ standard → the one contract section → the rest only as needed.
 | 3 | [`AIDOC_WORKSTATION_STANDARD.md`](AIDOC_WORKSTATION_STANDARD.md) | Canonical `.aidoc/` workstation: discovery, gate floor, dual-control review, Taskfile tasks |
 | 4 | [`CONSUMER-CI-STARTER.md`](CONSUMER-CI-STARTER.md) | Copy-paste minimal CI gate for new consumer repos |
 | 5 | [`CONSUMER-DEPLOYMENT-STANDARD.md`](CONSUMER-DEPLOYMENT-STANDARD.md) | Deployment standard: Compose for dev, OpenTofu Day-0/Day-2 for stage/prod |
-| 6 | [`PROJECT.md`](PROJECT.md) §7 | Integration contract: consumer allowlist, directory shape, pinning (the rest of the file is frozen migration history) |
-| 7 | [`SUPPORT.md`](SUPPORT.md) | Where to file what — only **Direct on GitHub** is live; the plugin/website channels are retired |
+| 6 | [`AUTHENTICATION-STANDARD.md`](AUTHENTICATION-STANDARD.md) | Universal authentication standard: Authentik OIDC, Forward-Auth, and agent delegation |
+| 7 | [`PROJECT.md`](PROJECT.md) §7 | Integration contract: consumer allowlist, directory shape, pinning (the rest of the file is frozen migration history) |
+| 8 | [`SUPPORT.md`](SUPPORT.md) | Where to file what — only **Direct on GitHub** is live; the plugin/website channels are retired |
 
 ## Canon-repo process (not consumer kickoff)
 
