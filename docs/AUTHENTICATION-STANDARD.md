@@ -1,7 +1,7 @@
 # AIDOC Ecosystem Authentication Standard
 
-**Status:** Approved Standard v1.0  
-**Target Scope:** All `aidoc-*` spoke repositories (`aidoc-flow-*`, `aidoc-observability-monitoring`, `aidoc-hybrid-ci`, etc.)  
+**Status:** Approved Standard v1.0
+**Target Scope:** All `aidoc-*` spoke repositories (`aidoc-flow-*`, `aidoc-observability-monitoring`, `aidoc-hybrid-ci`, etc.)
 **Companion Documents:**
 
 - [`platform-identity`](../../platform-identity/README.md) — Canonical Identity Repository (Blueprints, SDK, Tests)
@@ -79,7 +79,7 @@ async def get_resource(claims: TokenClaims = Depends(require_authenticated_user)
     allowed = {"developer", "project-admin", "platform-admin"}
     if not set(claims.groups).intersection(allowed):
         raise HTTPException(status_code=403, detail="Insufficient group permissions")
-    
+
     return {"status": "ok", "user": claims.sub, "roles": claims.groups}
 ```
 
