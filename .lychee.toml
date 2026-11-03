@@ -40,4 +40,5 @@ exclude = [
   "/business/", "/operations/", "/iplanic/", "/interlog/",
   "/engramory/", "/iplan-standard/", "/aidoc-flow-ci/",
   "/knowledge-rag/", "/web-site/",
+  "/platform-identity/", "/technology_stack/", "/technology-stack/",
 ]

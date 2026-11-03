@@ -85,18 +85,6 @@ tasks:
     cmds:
       - python3 -m sdd_doc_lint --export-lake --graph-path {{.SDD_DIR}}/graph/ {{.CLI_ARGS}}
 
-  sync-engramory:
-    desc: "Synchronize local 10-layer SDD corpus into Engramory knowledge graph core"
-    cmds:
-      - >-
-        if command -v engramory >/dev/null 2>&1; then
-          engramory sdd ingest --sdd-root "{{.SDD_DIR}}" {{.CLI_ARGS}};
-        elif uv run engramory --version >/dev/null 2>&1; then
-          uv run engramory sdd ingest --sdd-root "{{.SDD_DIR}}" {{.CLI_ARGS}};
-        else
-          echo "sdd:sync-engramory: engramory CLI not found; skipping.";
-        fi
-
   chg-lint:
     desc: "Run CHG structural linter on Change Requests in docs/sdd/09_CHG/"
     preconditions:

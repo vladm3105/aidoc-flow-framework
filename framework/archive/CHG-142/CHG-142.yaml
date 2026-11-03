@@ -59,10 +59,11 @@ decision:
     Provide automated CI workflows, Taskfile recipes, and agent MCP configurations for
     seamless ecosystem ingestion.
   choice: >-
-    1. Implement sync-engramory in Taskfile.yml and framework/templates/TASKFILE-TEMPLATE.yml.
+    1. Implement sync-engramory in root Taskfile.yml for repo-level SDD synchronization.
     2. Add continuous synchronization GitHub Action .github/workflows/engramory-sync.yml.
-    3. Provide standard agent MCP definitions in .cursor/mcp.json and framework templates.
+    3. Provide standard agent MCP definitions in .cursor/mcp.json.
     4. Author docs/ENGRAMORY_KNOWLEDGE_SYNC_ARCHITECTURE.md codifying the CQRS model.
+    5. Update .lychee.toml and docs/AUTHENTICATION-STANDARD.md markdownlint.
   consequences:
     positive:
       - "Downstream repositories can continuously ingest 10-layer SDD corpora on push/merge."
@@ -86,11 +87,10 @@ problem_statement:
     - "framework/archive/CHG-142/IPLAN-142.yaml (new, executing IPLAN)."
     - "docs/ENGRAMORY_KNOWLEDGE_SYNC_ARCHITECTURE.md (new, CQRS architecture)."
     - "Taskfile.yml (add sync-engramory task)."
-    - "framework/templates/TASKFILE-TEMPLATE.yml (add sync-engramory task template)."
     - ".github/workflows/engramory-sync.yml (new, CI sync workflow)."
-    - "framework/governance/workflows/engramory-sync.yml (new, workflow template)."
     - ".cursor/mcp.json (new, agent MCP configuration)."
-    - "framework/templates/CURSOR-MCP-TEMPLATE.json (new, agent MCP template)."
+    - ".lychee.toml (add cross-repo excludes)."
+    - "docs/AUTHENTICATION-STANDARD.md (fix markdownlint list and heading formatting)."
 
 # =============================================================================
 # Section 3: Implementation Steps & IPLAN Link
@@ -101,11 +101,13 @@ implementation:
   steps:
     - step: "Author authorizing CHG-142.yaml and IPLAN-142.yaml"
       phase: "iplan_creation"
-    - step: "Add sync-engramory task to Taskfile.yml and TASKFILE-TEMPLATE.yml"
+    - step: "Add sync-engramory task to Taskfile.yml"
       phase: "tooling_implementation"
-    - step: "Create .github/workflows/engramory-sync.yml and governance workflow template"
+    - step: "Create .github/workflows/engramory-sync.yml CI workflow"
       phase: "tooling_implementation"
-    - step: "Create .cursor/mcp.json and CURSOR-MCP-TEMPLATE.json for agent integration"
+    - step: "Create .cursor/mcp.json for agent integration"
+      phase: "tooling_implementation"
+    - step: "Update .lychee.toml and docs/AUTHENTICATION-STANDARD.md lint"
       phase: "tooling_implementation"
     - step: "Run chg_lint, validation tests, and verify clean working tree"
       phase: "verification"
