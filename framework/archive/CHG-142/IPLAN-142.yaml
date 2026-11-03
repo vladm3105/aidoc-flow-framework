@@ -1,0 +1,62 @@
+# =============================================================================
+#  IPLAN-142: Automate continuous SDD knowledge ingestion into Engramory core
+# =============================================================================
+#  Implementation Plan authorized by CHG-142
+#  Status: Implemented
+# =============================================================================
+
+id: IPLAN-142
+title: "Implementation Plan: Continuous SDD Knowledge Ingestion into Engramory Core (issue #1057)"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.96.23"
+  document_type: "iplan-document"
+  layer: 8
+  last_updated: "2026-11-03"
+
+document_control:
+  version: "1.0"
+  status: Implemented
+  author: "AI coding agent (framework maintainer review pending)"
+  source_chg: "CHG-142"
+  date_created: "2026-11-03T09:30:00Z"
+  date_implemented: "2026-11-03T09:40:00Z"
+
+file_manifest:
+  - path: "framework/archive/CHG-142/CHG-142.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/archive/CHG-142/IPLAN-142.yaml"
+    action: "create"
+    status: "DONE"
+  - path: "docs/ENGRAMORY_KNOWLEDGE_SYNC_ARCHITECTURE.md"
+    action: "create"
+    status: "DONE"
+  - path: "Taskfile.yml"
+    action: "modify"
+    status: "DONE"
+  - path: "framework/templates/TASKFILE-TEMPLATE.yml"
+    action: "modify"
+    status: "DONE"
+  - path: ".github/workflows/engramory-sync.yml"
+    action: "create"
+    status: "DONE"
+  - path: "framework/governance/workflows/engramory-sync.yml"
+    action: "create"
+    status: "DONE"
+  - path: ".cursor/mcp.json"
+    action: "create"
+    status: "DONE"
+  - path: "framework/templates/CURSOR-MCP-TEMPLATE.json"
+    action: "create"
+    status: "DONE"
+
+phase_findings:
+  vehicle: "DIR2C/F2 C2, change_source direct, sdd_lifecycle empty"
+  order: "Taskfile recipes and CI workflows precede documentation and MCP template integration"
+  compatibility: "Non-breaking; recipes gracefully skip when Engramory CLI is absent"
+  rollback: "Revert PR branch before merge"
+
+verification:
+  - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-142/CHG-142.yaml"
+  - "task check"

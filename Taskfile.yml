@@ -127,3 +127,15 @@ tasks:
     desc: Synchronize framework version references across tree
     cmds:
       - bash hooks/sync-version-refs.sh
+
+  sync-engramory:
+    desc: Synchronize framework SDD layers and specifications into Engramory core
+    cmds:
+      - |
+        if command -v engramory >/dev/null 2>&1; then
+          engramory sdd ingest --sdd-root framework/layers/ --project-id aidoc-framework {{.CLI_ARGS}}
+        elif uv run engramory --version >/dev/null 2>&1; then
+          uv run engramory sdd ingest --sdd-root framework/layers/ --project-id aidoc-framework {{.CLI_ARGS}}
+        else
+          echo "engramory CLI not found; skipping."
+        fi

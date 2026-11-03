@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "engramory": {
+      "command": "engramory",
+      "args": ["mcp", "--transport", "stdio"],
+      "env": {
+        "ENGRAMORY_PG_DSN": "${env:ENGRAMORY_PG_DSN}",
+        "NEO4J_URI": "${env:NEO4J_URI}"
+      }
+    },
+    "aidoc-ctx": {
+      "command": "aidoc-ctx",
+      "args": ["serve", "--mcp"]
+    }
+  }
+}
