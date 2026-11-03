@@ -1,0 +1,113 @@
+# =============================================================================
+#  CHG-142: Automate continuous SDD knowledge ingestion into Engramory core
+# =============================================================================
+#  Authorizing Change Request per framework/governance/CHG_REQUEST_FLOWS.md
+#  Flow: DIR2C (iplan_to_code, Level C2 — continuous ingestion & agent tooling)
+#  Scope: Provide Taskfile sync-engramory tasks, GitHub Actions sync workflows,
+#         agent MCP configuration templates, and CQRS dual-core integration
+#         documentation linking AIDoc Framework to Engramory. Issue #1057.
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-11-03"
+  framework_version: "0.96.23"
+  change_level:
+    value: C2
+  change_source:
+    value: direct
+  semver_impact:
+    value: minor
+  version_action:
+    value: none
+  entry_gate:
+    value: GATE-CODE
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-142"
+  status: Implemented
+  flow: iplan_to_code
+  flow_code: DIR2C
+  change_level: C2
+  change_source: direct
+  entry_gate: GATE-CODE
+  semver_impact: minor
+  version_action: none
+  author: "AI coding agent (framework maintainer review pending)"
+  date_proposed: "2026-11-03T09:30:00Z"
+  date_approved: "2026-11-03T09:30:00Z"
+  date_implemented: "2026-11-03T09:40:00Z"
+  supersedes: []
+
+# =============================================================================
+# Section 1B: Formal Decision (DEC-CHG-142)
+# =============================================================================
+
+decision:
+  decision_id: "DEC-CHG-142"
+  title: "Automate Continuous SDD Knowledge Ingestion into Engramory Core"
+  status: "Decided"
+  date: "2026-11-03"
+  context: >-
+    Issue #1057: Establish the architectural CQRS contract between AIDoc Framework
+    (write authority / ground truth) and Engramory (read authority / graph & vector core).
+    Provide automated CI workflows, Taskfile recipes, and agent MCP configurations for
+    seamless ecosystem ingestion.
+  choice: >-
+    1. Implement sync-engramory in root Taskfile.yml for repo-level SDD synchronization.
+    2. Add continuous synchronization GitHub Action .github/workflows/engramory-sync.yml.
+    3. Provide standard agent MCP definitions in .cursor/mcp.json.
+    4. Author docs/ENGRAMORY_KNOWLEDGE_SYNC_ARCHITECTURE.md codifying the CQRS model.
+    5. Update .lychee.toml and docs/AUTHENTICATION-STANDARD.md markdownlint.
+  consequences:
+    positive:
+      - "Downstream repositories can continuously ingest 10-layer SDD corpora on push/merge."
+      - "Coding agents receive minimal ancestor closures (~1,500 tokens) via Engramory MCP."
+      - "Preserves Markdown files in Git as the immutable write authority."
+    negative:
+      - "None; synchronization is non-blocking and gracefully skipped if Engramory CLI is absent."
+    risks:
+      - "Network connectivity to staging Engramory instances is required for remote sync."
+
+# =============================================================================
+# Section 2: Problem Statement & Scope
+# =============================================================================
+
+problem_statement:
+  summary: >-
+    AIDoc Framework lacked standardized recipes, workflows, and agent profiles to
+    continuously push 10-layer SDD documentation into Engramory core (issue #1057).
+  scope:
+    - "framework/archive/CHG-142/CHG-142.yaml (new, this vehicle)."
+    - "framework/archive/CHG-142/IPLAN-142.yaml (new, executing IPLAN)."
+    - "docs/ENGRAMORY_KNOWLEDGE_SYNC_ARCHITECTURE.md (new, CQRS architecture)."
+    - "Taskfile.yml (add sync-engramory task)."
+    - ".github/workflows/engramory-sync.yml (new, CI sync workflow)."
+    - ".cursor/mcp.json (new, agent MCP configuration)."
+    - ".lychee.toml (add cross-repo excludes)."
+    - "docs/AUTHENTICATION-STANDARD.md (fix markdownlint list and heading formatting)."
+
+# =============================================================================
+# Section 3: Implementation Steps & IPLAN Link
+# =============================================================================
+
+implementation:
+  iplan_ref: "framework/archive/CHG-142/IPLAN-142.yaml"
+  steps:
+    - step: "Author authorizing CHG-142.yaml and IPLAN-142.yaml"
+      phase: "iplan_creation"
+    - step: "Add sync-engramory task to Taskfile.yml"
+      phase: "tooling_implementation"
+    - step: "Create .github/workflows/engramory-sync.yml CI workflow"
+      phase: "tooling_implementation"
+    - step: "Create .cursor/mcp.json for agent integration"
+      phase: "tooling_implementation"
+    - step: "Update .lychee.toml and docs/AUTHENTICATION-STANDARD.md lint"
+      phase: "tooling_implementation"
+    - step: "Run chg_lint, validation tests, and verify clean working tree"
+      phase: "verification"

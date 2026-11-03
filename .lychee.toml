@@ -38,6 +38,7 @@ exclude_path = ["framework/archive/", "aidoc/archive/", "platforms", "examples",
 exclude = [
   "/archive/platforms/", "/examples/", "/tests/",
   "/business/", "/operations/", "/iplanic/", "/interlog/",
-  "/engramory/", "/iplan-standard/", "/aidoc-flow-ci/",
+  "/engramory/", "/iplan-standard/", "/aidoc-flow-ci/", "/aidoc-hybrid-ci/",
   "/knowledge-rag/", "/web-site/",
+  "/platform-identity/", "/technology_stack/", "/technology-stack/",
 ]

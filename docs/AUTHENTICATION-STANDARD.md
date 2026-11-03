@@ -1,8 +1,9 @@
 # AIDOC Ecosystem Authentication Standard
 
-**Status:** Approved Standard v1.0  
-**Target Scope:** All `aidoc-*` spoke repositories (`aidoc-flow-*`, `aidoc-observability-monitoring`, `aidoc-hybrid-ci`, etc.)  
+**Status:** Approved Standard v1.0
+**Target Scope:** All `aidoc-*` spoke repositories (`aidoc-flow-*`, `aidoc-observability-monitoring`, `aidoc-hybrid-ci`, etc.)
 **Companion Documents:**
+
 - [`platform-identity`](../../platform-identity/README.md) — Canonical Identity Repository (Blueprints, SDK, Tests)
 - [`06-security-rbac.md`](../../technology_stack/06-security-rbac.md) — Platform RBAC & Two-Tier Secrets
 - [`27-customer-and-agent-identity.md`](../../technology_stack/27-customer-and-agent-identity.md) — Four Identity Planes Architecture
@@ -30,6 +31,7 @@ Every AIDOC service implements authentication according to its operational surfa
 Spoke microservices verify caller JWTs **statelessly** using Authentik's public JWKS endpoint. Services do not hold database connections to Authentik or shared HMAC secrets.
 
 ### Installation
+
 Add `platform-identity` client to your repository's dependencies or copy [`client/jwks.py`](../../platform-identity/client/jwks.py):
 
 ```toml
@@ -77,7 +79,7 @@ async def get_resource(claims: TokenClaims = Depends(require_authenticated_user)
     allowed = {"developer", "project-admin", "platform-admin"}
     if not set(claims.groups).intersection(allowed):
         raise HTTPException(status_code=403, detail="Insufficient group permissions")
-    
+
     return {"status": "ok", "user": claims.sub, "roles": claims.groups}
 ```
 
@@ -86,18 +88,20 @@ async def get_resource(claims: TokenClaims = Depends(require_authenticated_user)
 ## 3. Web UI Protection (Forward-Auth Pattern)
 
 For internal web tools and consoles (e.g., HyperDX, Coroot, Superset, Bytebase):
-* Do **not** build custom login pages.
-* Attach the Authentik Forward-Auth Outpost middleware to the Traefik router or Cloudflare Access application.
-* Authentik validates user identity, evaluates WebAuthn MFA, and forwards authenticated claims upstream:
-  * `X-authentik-username`
-  * `X-authentik-email`
-  * `X-authentik-groups`
+
+- Do **not** build custom login pages.
+- Attach the Authentik Forward-Auth Outpost middleware to the Traefik router or Cloudflare Access application.
+- Authentik validates user identity, evaluates WebAuthn MFA, and forwards authenticated claims upstream:
+  - `X-authentik-username`
+  - `X-authentik-email`
+  - `X-authentik-groups`
 
 ---
 
 ## 4. AI Agent Delegation (Plane A Invariants)
 
 When an AI agent in a Temporal workflow or LangGraph execution calls tools (MCP servers, APIs):
+
 1. **Never pass user tokens into workflow history:** Workflow definitions pass execution context references (`run_id`, `project`, `consent_id`), never cleartext access tokens.
 2. **Activity-Side Exchange:** The activity worker uses [`client/delegation.py`](../../platform-identity/client/delegation.py) to narrow scopes strictly to what the target tool requires.
 3. **Mandatory Consent for `execute`:** Any effectful tool action (database migrations, git pushes, payment actions) requires a valid human `consent_id`.
@@ -110,5 +114,5 @@ When an AI agent in a Temporal workflow or LangGraph execution calls tools (MCP 
 
 Per [`aidoc-hybrid-ci`](../../aidoc-hybrid-ci/README.md), fast inner-loop checks (`task check` <15s, `task ci` <45s) **must never depend on the live stage Authentik instance**.
 
-* Local unit tests mock the JWKS response using synthetic RSA key pairs (see [`tests/test_jwks.py`](../../platform-identity/tests/test_jwks.py)).
-* Staging integration tests verify the live Authentik OIDC discovery endpoint during outer-loop E2E pipeline executions.
+- Local unit tests mock the JWKS response using synthetic RSA key pairs (see [`tests/test_jwks.py`](../../platform-identity/tests/test_jwks.py)).
+- Staging integration tests verify the live Authentik OIDC discovery endpoint during outer-loop E2E pipeline executions.
