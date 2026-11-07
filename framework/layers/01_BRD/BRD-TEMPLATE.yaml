@@ -48,8 +48,8 @@ metadata:
     - layer-1-artifact
     - shared-architecture
   deliverable_type:
-    _guidance: "Identifies deliverable category (code | document | ux | risk | process). Inherited downstream."
-    value: code
+    _guidance: "Identifies deliverable category (code | document | contract | infrastructure | workflow | media | ux | risk | process). Inherited downstream via CSC01."
+    value: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process
   brd_type:
     _guidance: "platform (foundational tech stack, ADR decided early) | feature (business features, standard flow)"
     value: feature

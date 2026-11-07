@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.23 |
+| Framework Version | 0.96.24 |
 
 
 ## C4 Model Position
@@ -77,9 +77,9 @@ Layer 06 supports three complementary representations per the SDD Three-Tier Mod
 
 | Component Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
 |---|---|---|---|
-| Monolithic library, pure algorithm, in-process API | `SPEC-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Monolithic library, pure algorithm, in-process API, schema/data contract, infrastructure module, prose document, or media asset pipeline | `SPEC-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead across code and non-code deliverables. |
 | Graph-first repository, AI agent slicing | `SPEC-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
-| Distributed microservices, event-driven callbacks, or saga rollbacks | `SPEC-SWF-TEMPLATE.yaml` | `SPEC-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating interaction contracts and compensating transactions. |
+| Distributed microservices, multi-agent workflow DAGs, event-driven callbacks, or saga rollbacks | `SPEC-SWF-TEMPLATE.yaml` | `SPEC-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating interaction contracts, agent handoffs, and compensating transactions. |
 
 ### Specification Formats: Standard vs. Distributed Choreography Workflow
 

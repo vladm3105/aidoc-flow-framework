@@ -33,7 +33,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # Synced automatically from framework/VERSION via hooks/sync-version-refs.sh.
-  framework_version: "0.96.23"  # synced from framework/VERSION
+  framework_version: "0.96.24"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this
@@ -162,8 +162,9 @@ layers:
     optional: false
     description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Post-completion repairs use the bugfix subtype (parent_iplan + source_chg); layers/08_IPLAN/tmp/ was retired in 0.56.0."
     template: "IPLAN-TEMPLATE.yaml"
-    downstream: [CODE, EVAL] # CODE is a legitimate terminal sink but NOT a
-                             # registered SDD document layer (see `code.note`
+    downstream: [CODE, EVAL] # CODE is the canonical deliverable sink (source code,
+                             # workflow DAGs, schemas, infra, docs, or media assets)
+                             # and NOT a registered SDD document layer (see `code.note`
                              # below); EVAL is the governance terminal (#708).
 
   - number: 9
@@ -282,8 +283,8 @@ c4_mapping:
     level: c4-l4
     artifact: CODE
     diagram_tags: ["@diagram: c4-l4"]
-    description: "Source code class/package structure — C4-L4 ownership declared in code, referenced by IPLAN"
-    note: "Not an SDD document layer — code is the output target"
+    description: "Source code class/package structure or realized deliverable artifacts (workflows, contracts, infra, docs, media) — C4-L4 ownership declared in deliverable, referenced by IPLAN"
+    note: "Not an SDD document layer — CODE is the canonical deliverable output sink across all deliverable_type values"
 
   evaluation_governance:
     level: governance

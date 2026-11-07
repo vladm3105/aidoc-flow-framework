@@ -101,9 +101,9 @@ metadata:
 
   deliverable_type:
     _guidance: |
-      Inherited from upstream BRD. Identifies primary deliverable category.
+      Inherited from upstream BRD (enforced by CSC01). Identifies primary deliverable category.
       All routes point to the unified SPEC (Layer 6) — no subtypes.
-    value: code  # code | document | ux | risk | process
+    value: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process
 
   id_standard:
     state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)

@@ -83,7 +83,10 @@
           "consequences": { "type": "string" },
           "target_file": { "type": "string" },
           "command": { "type": "string" },
-          "action": { "type": "string" },
+          "action": {
+            "type": "string",
+            "description": "Task execution primitive (e.g., apply_patch | create_file | run_script | dispatch_agent | validate_schema | render_asset)"
+          },
           "compensation": { "type": "string" },
           "status": {
             "type": "string",
@@ -91,7 +94,10 @@
           },
           "supersedes": { "type": "string" },
           "authorized_by": { "type": "string" },
-          "properties": { "type": "object" }
+          "properties": {
+            "type": "object",
+            "description": "Typed node attributes (e.g., container_archetype: api_service|worker|data_store|spa|gateway|library|workflow_dag|agent_persona|media_pipeline|infra_module; protocol: grpc|http|cloudevents|tool_protocol|cncf_workflow|json_schema|opentofu_hcl|media_spec|markdown)"
+          }
         }
       }
     },

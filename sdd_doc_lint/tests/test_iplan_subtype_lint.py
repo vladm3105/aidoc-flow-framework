@@ -232,6 +232,51 @@ class IplanSubtypeLintTests(unittest.TestCase):
         struct01 = [f for f in findings if f["code"] == "STRUCT01"]
         self.assertEqual(struct01, [], f"expected no STRUCT01 for valid docs IPLAN, got {struct01}")
 
+    def test_workflow_subtype_requires_workflow_manifest_and_contracts(self):
+        body = textwrap.dedent("""
+            doc_id: IPLAN-08
+            title: "Workflow Plan"
+            document_control:
+              subtype: workflow
+              status: In-Progress
+            tdd_consistency:
+              status: verified
+            traceability:
+              upstream: []
+        """).strip()
+        findings = self._run_lint_with_name(body, "IPLAN-08_test.yaml")
+        struct01_sections = {f["section"] for f in findings if f["code"] == "STRUCT01"}
+        self.assertIn("file_manifest", struct01_sections)
+        self.assertIn("implementation_contracts", struct01_sections)
+        self.assertIn("session_handoff", struct01_sections)
+        self.assertNotIn("execution_commands", struct01_sections)
+        self.assertNotIn("rollback_procedure", struct01_sections)
+
+        valid_body = textwrap.dedent("""
+            doc_id: IPLAN-08
+            title: "Workflow Plan"
+            document_control:
+              subtype: workflow
+              status: In-Progress
+            tdd_consistency:
+              status: verified
+            traceability:
+              upstream: []
+            file_manifest:
+              files: []
+            implementation_contracts:
+              contracts: []
+            session_handoff:
+              sessions: []
+        """).strip()
+        valid_findings = self._run_lint_with_name(valid_body, "IPLAN-08_test.yaml")
+        valid_struct01 = [f for f in valid_findings if f["code"] == "STRUCT01"]
+        self.assertEqual(
+            valid_struct01,
+            [],
+            f"expected no STRUCT01 for valid workflow IPLAN, got {valid_struct01}",
+        )
+
     def test_iplan_markdown_carrier_enforces_subtype(self):
         body = textwrap.dedent("""
             ---

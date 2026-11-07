@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Ratified |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.23 |
+| Framework Version | 0.96.24 |
 | Authority | Decision DEC-CHG-108 / GD-95, [`DOC_GOVERNANCE_CORE.md`](DOC_GOVERNANCE_CORE.md), [`IPLAN_WORKFLOW_STANDARD.md`](IPLAN_WORKFLOW_STANDARD.md) |
 
 ---
@@ -45,7 +45,7 @@ metadata:
   created_date: "2026-10-16"
   last_updated: "2026-10-16"
   status: "Active"
-  framework_version: "0.96.23"
+  framework_version: "0.96.24"
   description: "OAuth2 and JWT token verification capability"
 
 nodes:
@@ -70,7 +70,7 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 
 ### 3.2 Tier 2: Subsystem Container (`system_container`) {#sec-32-tier-2-subsystem-container-system_container}
 - **ID Pattern**: `MODULE-NN` (e.g. `MODULE-01` or template `MODULE-NN`)
-- **Properties**: `title`, `statement` (subsystem role), `description`, `properties.c4_level: "c4-l2"`, `properties.container_archetype` (`api_service` | `worker` | `data_store` | `spa` | `gateway` | `library`), `properties.approved_stack`, `properties.runtime_platform`, `properties.candidate_stack_status`, `properties.subsystem_invariants`, `properties.trust_boundary`, `properties.data_classification`, `properties.data_protection_matrix`, `properties.choreography` (`interactions`, `failure_branches`).
+- **Properties**: `title`, `statement` (subsystem role), `description`, `properties.c4_level: "c4-l2"`, `properties.container_archetype` (`api_service` | `worker` | `data_store` | `spa` | `gateway` | `library` | `workflow_dag` | `agent_persona` | `media_pipeline` | `infra_module`), `properties.approved_stack`, `properties.runtime_platform`, `properties.candidate_stack_status`, `properties.subsystem_invariants`, `properties.trust_boundary`, `properties.data_classification`, `properties.data_protection_matrix`, `properties.choreography` (`interactions`, `failure_branches`).
 - **Role**: Defines architectural subsystem container (C4-L2), data movement boundaries, trust enclaves, and inter-module process choreography.
 
 ### 3.3 Layer 01: Business Objective (`business_objective`) {#sec-33-layer-01-business-objective-business_objective}
@@ -100,18 +100,18 @@ Every node carries an immutable 4-segment content-hash ID (`TYPE.NN.SS.xxxx` or 
 
 ### 3.8 Layer 06: Component Contract (`component_contract`) {#sec-38-layer-06-component-contract-component_contract}
 - **ID Pattern**: `SPEC.NN.SS.xxxx`
-- **Properties**: `title`, `target_file`, `properties.protocol` (`grpc` | `http` | `cloudevents`), `properties.schema_ref`.
-- **Role**: Buildable interface specification and wire contract (C4-L3).
+- **Properties**: `title`, `target_file`, `properties.protocol` (`grpc` | `http` | `cloudevents` | `tool_protocol` | `cncf_workflow` | `json_schema` | `opentofu_hcl` | `media_spec` | `markdown`), `properties.schema_ref`.
+- **Role**: Buildable interface specification and wire/artifact contract (C4-L3).
 
 ### 3.9 Layer 07: Test Fixture (`test_fixture`) {#sec-39-layer-07-test-fixture-test_fixture}
 - **ID Pattern**: `TDD.NN.SS.xxxx`
 - **Properties**: `title`, `target_file`, `command` (e.g. `pytest tests/unit/test_jwt.py`), `properties.test_function`.
-- **Role**: Concrete test code proving scenario satisfaction, authored test-first.
+- **Role**: Concrete test code or verification oracle proving scenario satisfaction, authored test-first.
 
 ### 3.10 Layer 08: Implementation Task (`task_action`) {#sec-310-layer-08-implementation-task-task_action}
 - **ID Pattern**: `TASK.NN.SS.xxxx` (rollback: `TASK.NN.SS.xxxx_rollback`)
-- **Properties**: `title`, `action` (`apply_patch` | `create_file` | `run_script`), `target_file`, `compensation`.
-- **Role**: Executable code mutation DAG with native saga rollback compensation.
+- **Properties**: `title`, `action` (`apply_patch` | `create_file` | `run_script` | `dispatch_agent` | `validate_schema` | `render_asset`), `target_file`, `compensation`.
+- **Role**: Executable deliverable mutation or workflow execution DAG with native saga rollback compensation.
 
 ### 3.11 Layer 09 Overlay: Change Request (`change_request`) {#sec-311-layer-09-overlay-change-request-change_request}
 - **ID Pattern**: `CHG-NN`

@@ -47,6 +47,7 @@ metadata:
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   total_sections: 6
   last_updated: "2026-10-05"
+  deliverable_type: workflow  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   tags:
     - iplan-document
     - layer-8-artifact

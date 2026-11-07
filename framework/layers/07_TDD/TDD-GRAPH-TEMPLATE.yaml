@@ -25,7 +25,11 @@ metadata:
 
 nodes:
   # ---------------------------------------------------------------------------
-  # Unit Test Proof Fixture (Section 4 Parity)
+  # Unit Test / Verification Oracle Proof Fixture (Section 4 Parity)
+  # Note: `test_fixture` nodes represent any deterministic verification oracle —
+  # unit/integration/e2e code tests, JSON Schema / OpenAPI contract validators,
+  # workflow state-transition assertions, infrastructure policy checks, or media
+  # asset probes (e.g. ffprobe / perceptual hash thresholds).
   # ---------------------------------------------------------------------------
   - id: "TDD.07.01.xxxx"
     type: "test_fixture"

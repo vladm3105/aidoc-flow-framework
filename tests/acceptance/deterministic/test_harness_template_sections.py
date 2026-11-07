@@ -57,6 +57,21 @@ class TemplateSectionsTests(unittest.TestCase):
         self.assertNotIn("observability_hooks", sections)
         self.assertNotIn("runbook_reference", sections)
 
+    def test_iplan_workflow_includes_manifest_and_contracts_sections(self):
+        """IPLAN subtype `workflow` requires file_manifest,
+        implementation_contracts, and session_handoff, while excluding
+        execution_commands and deploy sections (to align with IPLAN-SWF-TEMPLATE.yaml)."""
+        sections = template_sections("IPLAN", subtype="workflow")
+        self.assertIn("file_manifest", sections)
+        self.assertIn("implementation_contracts", sections)
+        self.assertIn("session_handoff", sections)
+        self.assertNotIn("execution_commands", sections)
+        self.assertNotIn("rollback_procedure", sections)
+        self.assertNotIn("smoke_tests", sections)
+        self.assertNotIn("canary_metrics", sections)
+        self.assertNotIn("observability_hooks", sections)
+        self.assertNotIn("runbook_reference", sections)
+
     def test_iplan_none_subtype_excludes_gated_sections(self):
         """When `subtype=None` (caller doesn't know), sections gated by
         `_required_when_subtype:` are excluded. Conservative default —
