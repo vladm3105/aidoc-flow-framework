@@ -15,7 +15,7 @@ consumers: [authoring, audit]
 | Status | Approved |
 | Last Updated | 2026-10-26 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.24 |
+| Framework Version | 0.96.25 |
 
 
 Defines the project module directory structure and naming conventions.

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-05 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.24 |
+| Framework Version | 0.96.25 |
 
 
 ## C4 Model Position
@@ -68,9 +68,9 @@ Layer 07 supports three complementary representations per the SDD Three-Tier Mod
 
 | Test Profile | Primary Artifact | Secondary Artifact | Operational Rationale |
 |---|---|---|---|
-| Pure unit tests, static mocks, isolated assertions | `TDD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead. |
+| Pure unit tests, static mocks, isolated assertions, or declarative artifact verification oracles (`jsonschema`, `spectral`, `tofu test`, `markdownlint-cli2`, `ffprobe`) | `TDD-TEMPLATE.yaml` | — | Declarative, lightweight, lowest overhead across code and non-code deliverables. |
 | Graph-first repository, AI agent slicing | `TDD-GRAPH-TEMPLATE.yaml` | Compiled `.md` | Discrete property graph nodes and edges optimized for Kùzu / openCypher context slicing. |
-| Multi-tier test suites, fixture provisioning, or rollback sagas | `TDD-SWF-TEMPLATE.yaml` | `TDD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating test suites and cleanup sagas. |
+| Multi-tier test suites, multi-agent workflow verification, fixture provisioning, or rollback sagas | `TDD-SWF-TEMPLATE.yaml` | `TDD-GRAPH-TEMPLATE.yaml` | Embedded CNCF v0.8 workflow orchestrating test/oracle suites and cleanup sagas. |
 
 ### Test Formats: Standard vs. Stateful Workflow
 
