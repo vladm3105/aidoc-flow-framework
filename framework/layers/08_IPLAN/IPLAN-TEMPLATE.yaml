@@ -34,6 +34,7 @@ metadata:
   # defect — see governance/LINT_RULES.md §"What STRUCT01 requires".
   total_sections: 6
   last_updated: "2026-04-29"
+  deliverable_type: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   tags:
     - iplan-document
     - layer-8-artifact
@@ -94,6 +95,10 @@ document_control:
       - deploy: rollback_procedure, smoke_tests, canary_metrics,
         observability_hooks, runbook_reference, traceability
         required; file_manifest + execution_commands NOT required.
+      - workflow: file_manifest, implementation_contracts,
+        session_handoff, traceability required; uses top-level
+        workflow state-machine definition (IPLAN-SWF-TEMPLATE.yaml)
+        instead of execution_commands.
       - combined (default): both sets required.
       - audit_fix: fixes audit findings ordered by severity (P0→P1→P2),
         not SPEC components. `source_spec` names the audit findings
@@ -134,7 +139,7 @@ document_control:
   iplan_id: "IPLAN-NN"
   flow: sdd_to_code  # hotfix | code_to_sdd | code_to_code | seed_to_code | iplan_to_code | sdd_to_code
   flow_code: SDD2C   # HOTFIX | CODE2S | CODE2C | SEED2C | DIR2C | SDD2C
-  subtype: combined  # code_build | deploy | combined | audit_fix | bugfix | docs
+  subtype: combined  # code_build | deploy | combined | workflow | audit_fix | bugfix | docs
   source_spec: "@spec: SPEC-NN"  # audit_fix: audit findings reference instead
                                  # bugfix: defect issue/tracker reference instead
                                  # iplan_to_code (DIR2C): optional/none
@@ -192,7 +197,7 @@ document_control:
 # =============================================================================
 file_manifest:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0
+  _required_when_subtype: [code_build, combined, workflow, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0; workflow added 0.96.24
   _guidance: |
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
@@ -453,7 +458,7 @@ failure_handling:
 # =============================================================================
 implementation_contracts:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined, docs]  # CLEANUP-PR-E item 17; docs added 0.72.0
+  _required_when_subtype: [code_build, combined, workflow, docs]  # CLEANUP-PR-E item 17; docs added 0.72.0; workflow added 0.96.24
   _guidance: |
     Optional. Required when 3+ files depend on shared interfaces.
     Contract types: Protocol Interface, Exception Hierarchy, State Machine,
@@ -476,7 +481,7 @@ implementation_contracts:
 # =============================================================================
 session_handoff:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0
+  _required_when_subtype: [code_build, combined, workflow, bugfix, docs]  # CLEANUP-PR-E item 17; bugfix added 0.56.0; docs added 0.72.0; workflow added 0.96.24
   _guidance: |
     Critical for stateless executor calls. Each AI agent session is
     independent — no memory across invocations. This section is the bridge.
@@ -545,7 +550,9 @@ traceability:
       - "@chg: CHG-NN"
   code_inventory:
     _guidance: |
-      Audit trail: every file planned, created or modified during implementation.
+      Audit trail: every file planned, created or modified during implementation
+      (whether source code, workflow DAGs, schemas, infrastructure definitions,
+      prose documents, or media assets).
 
       Status lifecycle (this list, the `status:` key below and §2's carrier note
       MUST name the same three values):
@@ -554,6 +561,7 @@ traceability:
         modified — already existed, changed during `session:`
 
       SEEDED AT DRAFT. A Draft IPLAN of subtype `code_build` or `combined`
+      (and any other manifest-bearing subtype such as `workflow` or `docs`)
       carries one entry per §2 `file_manifest` path, in manifest order, every one
       of them `status: planned`, `session: null`, `verified: false` — so a
       stateless executor reading this block alone sees that nothing has been

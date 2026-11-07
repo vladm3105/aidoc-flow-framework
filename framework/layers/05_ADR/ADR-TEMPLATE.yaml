@@ -106,8 +106,8 @@ metadata:
 
   deliverable_type:
     _guidance: |
-      Inherited from upstream PRD (which inherits from BRD).
-    value: code  # code | document | ux | risk | process
+      Inherited from upstream PRD (which inherits from BRD; enforced by CSC01).
+    value: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process
 
   id_standard:
     state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)

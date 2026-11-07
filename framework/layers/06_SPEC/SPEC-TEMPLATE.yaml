@@ -25,7 +25,7 @@ metadata:
   layer: 6
   total_sections: 8
   last_updated: "2026-04-29"
-  deliverable_type: code
+  deliverable_type: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   tags:
     - spec-document
     - layer-6-artifact
@@ -110,17 +110,19 @@ component_overview:
       flowchart LR
         Caller --> Component
         Component --> Dependency
-  language: "[Python | TypeScript | Go | Java | ...]"
+  language: "[Python | TypeScript | Go | Java | Rust | CNCF-Workflow | OpenTofu-HCL | OpenAPI-3.1 | JSON-Schema | Markdown | Media-Spec | ...]"
   toolchain:
     _required: false
     _guidance: |
       SPEC owns the toolchain conventions for downstream implementation and testing.
       IPLAN execution_commands and TDD test runner conventions derive directly from these declarations.
-    runtime_version: "[Version pin, e.g. 3.13, Node 22, Go 1.24]"
-    package_manager: "[pip | poetry | npm | pnpm | cargo]"
-    setup_command: "[Command to provision virtualenv / install dependencies]"
-    type_check_command: "[Command to verify types, e.g. mypy --strict]"
-    test_runner_command: "[Command to execute test suite, e.g. pytest tests/unit/ -v]"
+      For non-code deliverables (workflow DAGs, data contracts, infrastructure, prose docs, or media assets),
+      declare the validator/linter/harness CLI (e.g., spectral, jsonschema, tofu validate, markdownlint-cli2, ffprobe).
+    runtime_version: "[Version pin, e.g. 3.13, Node 22, Go 1.24, OpenTofu 1.8, CNCF-SW 0.8]"
+    package_manager: "[pip | uv | poetry | npm | pnpm | cargo | tofu | none]"
+    setup_command: "[Command to provision virtualenv / install dependencies / initialize validator]"
+    type_check_command: "[Command to verify types or schemas, e.g. mypy --strict, jsonschema, tofu validate]"
+    test_runner_command: "[Command to execute test/oracle suite, e.g. pytest tests/unit/ -v, spectral lint, ffprobe]"
   dependencies:
     - name: "[Dependency Package]"
       version: "[>=X.Y.Z]"
@@ -132,8 +134,12 @@ component_overview:
 interfaces:
   _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Define the public API of this component: classes, functions, method signatures.
-    Use type annotations. No implementation — this is the contract.
+    Define the public contract of this component or deliverable:
+      - Code deliverables: classes, functions, method signatures, and error types.
+      - Workflow / Agent deliverables: workflow input/output envelopes, agent handoff contracts, and tool-invocation schemas.
+      - Contract / Infrastructure deliverables: OpenAPI/Protobuf endpoints, JSON Schema exports, or OpenTofu module input/output variables.
+      - Document / Media deliverables: structural section contracts, frontmatter schemas, or asset codec/resolution/loudness envelopes.
+    Use type/schema annotations. No implementation — this is the contract.
     Element-ID exemption: §3 Protocol/method specs MAY omit `SPEC.NN.SS.xxxx`
     element IDs — lineage comes from `@ears`/`@bdd`/`@adr` citations + the method
     names. Do NOT over-assign IDs here. See `governance/ID_NAMING_STANDARDS.md`
@@ -168,7 +174,9 @@ interfaces:
 data_models:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Define data structures passed through component interfaces.
+    Define data structures or state/schema envelopes passed through component interfaces
+    (e.g., dataclasses/Pydantic models, JSON Schema definitions, workflow state payloads,
+    OpenTofu variable types, or media metadata schemas).
     Use typed field definitions, not SQL/ORM.
     For persistent or database entities, declare monotonic time-ordered primary keys
     (e.g. UUIDv7 standard), vector embedding dimensions/metrics, and declarative

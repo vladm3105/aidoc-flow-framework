@@ -25,7 +25,7 @@ metadata:
   layer: 7
   total_sections: 7
   last_updated: "2026-04-29"
-  deliverable_type: code
+  deliverable_type: code  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   tags:
     - tdd-document
     - layer-7-artifact
@@ -104,8 +104,11 @@ test_strategy:
     and IPLAN implementation. IPLANs reference these conventions when
     generating test files.
 
-    Test strategy must align with SPEC's `language:` and `test_framework:`
-    declarations. Do NOT re-pin a language here — reference SPEC ownership.
+    Test strategy must align with SPEC's `language:` and `toolchain:`
+    declarations (whether a code test runner such as pytest/go test/vitest, or a
+    declarative/artifact verification oracle such as jsonschema, spectral,
+    tofu test, markdownlint-cli2, or ffprobe). Do NOT re-pin a language here —
+    reference SPEC ownership.
 
   # Test types and their purposes
   test_types:
@@ -302,10 +305,10 @@ test_cases:
     data models, and behavior contracts. Each test case defines inputs,
     expected outputs, and edge case coverage.
 
-    Test cases are organized by SPEC component contract:
-    - Unit tests validate individual interfaces and data models (SPEC Sections 3-4)
-    - Integration tests validate component interactions and behavior (SPEC Section 5)
-    - E2E tests validate full workflows mapped from BDD scenarios
+    Test cases are organized by SPEC component contract (code or non-code deliverable):
+    - Unit tests / structural oracles validate individual interfaces, schemas, or asset invariants (SPEC Sections 3-4)
+    - Integration tests / contract oracles validate component interactions, state transitions, and handoffs (SPEC Section 5)
+    - E2E tests / pipeline oracles validate full workflows or deliverable pipelines mapped from BDD scenarios
 
     Test-file paths and test-function names follow the conventions of the
     language and framework declared in `@spec: SPEC-NN` (SPEC owns `language:`).
