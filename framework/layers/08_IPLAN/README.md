@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.24 |
+| Framework Version | 0.96.25 |
 
 
 ## C4 Model Position
@@ -57,7 +57,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 ## IPLAN Subtypes
 
 `document_control.subtype` selects which section set an IPLAN carries
-(`code_build | deploy | combined | audit_fix | bugfix | docs`; default `combined` for
+(`code_build | deploy | combined | workflow | audit_fix | bugfix | docs`; default `combined` for
 pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
 breaking instance-format change; a future `devops` direction (infrastructure +
 cutover under one umbrella) is noted but not adopted.

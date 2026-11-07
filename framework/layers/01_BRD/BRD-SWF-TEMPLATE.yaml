@@ -79,7 +79,7 @@ metadata:
     - cncf-serverless-workflow
 
   deliverable_type:
-    value: documentation
+    value: workflow  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited downstream via CSC01)
 
   id_standard:
     state: canonical

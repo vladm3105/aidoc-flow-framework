@@ -63,6 +63,7 @@ metadata:
   lifecycle: mvp-prod-newmvp
   total_sections: 5
   last_updated: "2026-10-05"
+  deliverable_type: workflow  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   validation:
     _guidance: |
       Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-06 |
 | Author | Framework Maintainer |
-| Framework Version | 0.96.24 |
+| Framework Version | 0.96.25 |
 
 
 ## Overview
@@ -124,7 +124,7 @@ SDD enforces a strict boundary between development and deployment concerns. Deve
 
 | Concern | Plan Type | Owns | Done When |
 |---------|-----------|------|-----------|
-| **Development** | IPLAN (L8) | Source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, shipped via `git push` | Code + IaC + scripts authored, committed, green; tests pass |
+| **Development** | IPLAN (L8) | Source code, multi-agent workflow DAGs, data contracts, Terraform/OpenTofu modules, Helm charts, CI/CD workflow files, schema DDL, prose documents, media assets, scripts — anything authored, committed, shipped via `git push` | Code + workflow/contract/doc/media deliverables + IaC + scripts authored, committed, green; tests and verification oracles pass |
 | **Deployment** | Separate deployment plan | Operator execution: `terraform apply`, `atlas migrate apply`, image build + deploy, environment activation, acceptance/soak runs | Artifacts applied to target environment; acceptance gates green |
 
 **Rule.** An IPLAN flips to `Completed` once source code + Terraform modules + CI/CD scripts are authored, committed, and green. It does NOT wait for deployment. A deployment-stuck IPLAN (e.g., "ready for `terraform apply`") is still complete from the development side.

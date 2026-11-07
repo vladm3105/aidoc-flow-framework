@@ -46,6 +46,7 @@ metadata:
   lifecycle: iplan-coupled
   total_sections: 7
   last_updated: "YYYY-MM-DD"
+  deliverable_type: workflow  # code | document | contract | infrastructure | workflow | media | ux | risk | process (inherited from upstream BRD via CSC01)
   workflow_standard: "CNCF-Serverless-Workflow-0.8"
   tags:
     - eval-document
